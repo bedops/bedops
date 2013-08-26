@@ -1,4 +1,4 @@
-BEDOPS
+BEDOPS: high-performance genomic feature operations
 ====
 
 <img src="https://dl.dropboxusercontent.com/u/31495717/bedops/logo.png" align="right"/>
