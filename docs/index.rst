@@ -10,6 +10,7 @@ BEDOPS also offers logarithmic speedups in access to per-chromosome regions in s
 Table of contents
 =================
 .. toctree::
+   :numbered:
 
    content/overview
    content/installation
