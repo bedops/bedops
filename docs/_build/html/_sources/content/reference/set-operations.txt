@@ -2,7 +2,6 @@ Set operations
 ==============
 
 .. toctree::
-   :numbered:
 
    set-operations/bedops
    set-operations/bedextract

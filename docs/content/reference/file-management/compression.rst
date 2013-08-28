@@ -2,7 +2,6 @@ Compression
 ===========
 
 .. toctree::
-   :numbered:
 
    compression/starch
    compression/unstarch

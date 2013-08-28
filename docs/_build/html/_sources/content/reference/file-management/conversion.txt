@@ -2,7 +2,6 @@ Data conversion
 ===============
 
 .. toctree::
-   :numbered:
 
    conversion/bam2bed
    conversion/gff2bed
