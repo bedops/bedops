@@ -4,6 +4,6 @@ BEDOPS is a suite of tools to address common questions raised in genomic studies
 
 Features
 ----------
-The suite includes tools for set and statistical operations (<tt>bedops</tt>, <tt>bedmap</tt> and <tt>closest-features</tt>) and compression of large inputs into a novel lossless format (<tt>starch</tt>) that can provide greater space savings and faster data extractions than current alternatives. We offer native support for this compression format to these and other BEDOPS tools.
+The suite includes tools for set and statistical operations (``bedops``, ``bedmap`` and ``closest-features``) and compression of large inputs into a novel lossless format (``starch``) that can provide greater space savings and faster data extractions than current alternatives. We offer native support for this compression format to these and other BEDOPS tools.
 
-BEDOPS also offers logarithmic speedups in access to per-chromosome regions in sorted BED data (<tt>bedextract</tt>, core BEDOPS tools). These tools make whole-genome analyses "embarassingly parallel", in that per-chromosome computations can be placed onto separate work nodes, with results collated at the end in [map-reduce](http://en.wikipedia.org/wiki/MapReduce) fashion.
+BEDOPS also offers logarithmic speedups in access to per-chromosome regions in sorted BED data (``bedextract``, core BEDOPS tools). These tools make whole-genome analyses "embarassingly parallel", in that per-chromosome computations can be placed onto separate work nodes, with results collated at the end in `map-reduce http://en.wikipedia.org/wiki/MapReduce` fashion.
