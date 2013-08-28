@@ -1,8 +1,6 @@
 Reference
 =========
 
-Table of contents
-=================
 .. toctree::
    :numbered:
 
