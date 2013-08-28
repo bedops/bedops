@@ -24,6 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="top" title="BEDOPS 2.3 documentation" href="#" /> 
   </head>
   <body>
@@ -44,11 +45,12 @@
             
   <div class="section" id="bedops">
 <h1>BEDOPS<a class="headerlink" href="#bedops" title="Permalink to this headline">¶</a></h1>
+<img alt="https://dl.dropboxusercontent.com/u/31495717/bedops/logo.png" class="align-right" src="https://dl.dropboxusercontent.com/u/31495717/bedops/logo.png" />
 <p>BEDOPS is a suite of tools to address common questions raised in genomic studies — mostly with regard to overlap and proximity relationships between data sets. It aims to be scalable and flexible, facilitating the efficient and accurate analysis and management of large-scale genomic data.</p>
 <div class="section" id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
 <p>The suite includes tools for set and statistical operations (<tt class="docutils literal"><span class="pre">bedops</span></tt>, <tt class="docutils literal"><span class="pre">bedmap</span></tt> and <tt class="docutils literal"><span class="pre">closest-features</span></tt>) and compression of large inputs into a novel lossless format (<tt class="docutils literal"><span class="pre">starch</span></tt>) that can provide greater space savings and faster data extractions than current alternatives. We offer native support for this compression format to these and other BEDOPS tools.</p>
-<p>BEDOPS also offers logarithmic speedups in access to per-chromosome regions in sorted BED data (<tt class="docutils literal"><span class="pre">bedextract</span></tt>, core BEDOPS tools). These tools make whole-genome analyses &#8220;embarassingly parallel&#8221;, in that per-chromosome computations can be placed onto separate work nodes, with results collated at the end in <cite>map-reduce http://en.wikipedia.org/wiki/MapReduce</cite> fashion.</p>
+<p>BEDOPS also offers logarithmic speedups in access to per-chromosome regions in sorted BED data (<tt class="docutils literal"><span class="pre">bedextract</span></tt>, core BEDOPS tools). These tools make whole-genome analyses &#8220;embarassingly parallel&#8221;, in that per-chromosome computations can be placed onto separate work nodes, with results collated at the end in <a class="reference external" href="http://en.wikipedia.org/wiki/MapReduce">map-reduce</a> fashion.</p>
 </div>
 </div>
 
@@ -58,6 +60,9 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="#">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">BEDOPS</a><ul>
