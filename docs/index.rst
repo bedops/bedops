@@ -1,8 +1,5 @@
 BEDOPS
 ======
-.. image:: https://dl.dropboxusercontent.com/u/31495717/bedops/logo.png
-    :align: center
-
 BEDOPS is a suite of tools to address common questions raised in genomic studies — mostly with regard to overlap and proximity relationships between data sets. It aims to be scalable and flexible, facilitating the efficient and accurate analysis and management of large-scale genomic data.
 
 Features
