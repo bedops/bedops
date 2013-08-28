@@ -3,6 +3,6 @@ Reference
 
 .. toctree::
 
-   reference/file-management
    reference/set-operations
    reference/statistics
+   reference/file-management
