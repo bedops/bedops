@@ -20,5 +20,6 @@ Table of contents
    content/installation
    content/quick-start
    content/usage-examples
+   content/performance
    content/reference
    content/faq
