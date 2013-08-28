@@ -10,32 +10,11 @@ BEDOPS also offers logarithmic speedups in access to per-chromosome regions in s
 Table of contents
 =================
 .. toctree::
-   :maxdepth: 3
    :numbered:
 
    content/overview
    content/installation
    content/quick-start
    content/usage-examples
-   content/reference/set-operations
-   content/reference/set-operations/bedops
-   content/reference/set-operations/bedextract
-   content/reference/set-operations/closest-features
-   content/reference/statistics
-   content/reference/statistics/bedmap
-   content/reference/file-management
-   content/reference/file-management/sorting
-   content/reference/file-management/sorting/sort-bed
-   content/reference/file-management/compression
-   content/reference/file-management/compression/starch
-   content/reference/file-management/compression/unstarch
-   content/reference/file-management/compression/starchcat
-   content/reference/file-management/conversion
-   content/reference/file-management/conversion/bam2bed
-   content/reference/file-management/conversion/gff2bed
-   content/reference/file-management/conversion/gtf2bed
-   content/reference/file-management/conversion/psl2bed
-   content/reference/file-management/conversion/sam2bed
-   content/reference/file-management/conversion/vcf2bed
-   content/reference/file-management/conversion/wig2bed
+   content/reference
    content/faq
