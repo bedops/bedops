@@ -5,7 +5,17 @@ BEDOPS is an open-source command-line toolkit that performs efficient and scalab
 +-----------------------+-----------------------+------------------------+
 | |set_operations.png|  | |statistics.png|      | |file_management.png|  |
 +-----------------------+-----------------------+------------------------+
-| |set_operations_list| |                       |                        |
+| * bedops - apply set  |                       |                        |
+|   operations on any   |                       |                        |
+|   number of BED       |                       |                        |
+|   inputs              |                       |                        |
+| * bedextract -        |                       |                        |
+|   efficiently extract |                       |                        |
+|   BED features        |                       |                        |
+| * closest-features -  |                       |                        |
+|   matches nearest     |                       |                        |
+|   features between    |                       |                        |
+|   BED files           |                       |                        |
 +-----------------------+-----------------------+------------------------+
 
 =================
@@ -27,9 +37,7 @@ Table of contents
 .. |file_management.png| image:: assets/index/file_management.png
 
 .. |set_operations_list| replace:: 
-   * bedops - apply set operations on any number of BED inputs
-   * bedextract - efficiently extract BED features
-   * closest-features - matches nearest features between BED files                   
+
 .. |statistics_list| replace::
    * bedmap - foo bar baz
 .. |file_management_list| replace::
