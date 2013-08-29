@@ -2,11 +2,11 @@ BEDOPS: the fastest scalable and easily-parallelizable genome analysis toolkit
 ======
 BEDOPS is an open-source command-line toolkit that performs efficient and scalable Boolean and other set operations, statistical calculations, archiving, conversion and other management of genomic data of arbitrary scale. Tasks can be easily split by chromosome for distributing BEDOPS operations across a computational cluster.
 
-+----------------------+------------------+-----------------------+
-| |set_operations.png| | |statistics.png| | |file_management.png| |
-+======================+==================+=======================+
-| foo                  | bar              | baz                   |
-+----------------------+------------------+-----------------------+
++----------------------+------------------+---------------------------+
+| |set_operations.png| | |statistics.png| ||    |file_management.png| |
++======================+==================+===========================+
+| foo                  | bar              | baz                       |
++----------------------+------------------+---------------------------+
 
 =================
 Table of contents
