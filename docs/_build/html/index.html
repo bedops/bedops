@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>BEDOPS &mdash; BEDOPS 2.3 documentation</title>
+    <title>BEDOPS: the fastest scalable and easily-parallelizable genome analysis toolkit &mdash; BEDOPS 2.3 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -47,18 +47,43 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="bedops">
-<h1>BEDOPS<a class="headerlink" href="#bedops" title="Permalink to this headline">¶</a></h1>
-<p>BEDOPS is a suite of tools to address common questions raised in genomic studies — mostly with regard to overlap and proximity relationships between data sets. It aims to be scalable and flexible, facilitating the efficient and accurate analysis and management of large-scale genomic data.</p>
-<p>The suite includes tools for set and statistical operations (<tt class="docutils literal"><span class="pre">bedops</span></tt>, <tt class="docutils literal"><span class="pre">bedmap</span></tt> and <tt class="docutils literal"><span class="pre">closest-features</span></tt>) and compression of large inputs into a novel lossless format (<tt class="docutils literal"><span class="pre">starch</span></tt>) that can provide greater space savings and faster data extractions than current alternatives. We offer native support for this compression format to these and other BEDOPS tools.</p>
-<p>BEDOPS also offers logarithmic speedups in access to per-chromosome regions in sorted BED data (in <tt class="docutils literal"><span class="pre">bedextract</span></tt> and core BEDOPS tools). This feature makes whole-genome analyses &#8220;embarassingly parallel&#8221;, in that per-chromosome computations can be distributed onto separate work nodes, with results collated at the end in <a class="reference external" href="http://en.wikipedia.org/wiki/MapReduce">map-reduce</a> fashion.</p>
-<p>Sorting BED files is easy with <tt class="docutils literal"><span class="pre">sort-bed</span></tt>, which scales to arbitrarily large datasets. We also offer portable conversion tools that convert common genomic formats (SAM/BAM, GFF/GTF, PSL, WIG, and VCF) to sorted BED data that are ready to use with core BEDOPS utilities.</p>
-<p>All of these tools are made to be glued together with common UNIX input and output streams. This helps make your pipeline design and maintenance easy, fast and flexible.</p>
+  <div class="section" id="bedops-the-fastest-scalable-and-easily-parallelizable-genome-analysis-toolkit">
+<h1>BEDOPS: the fastest scalable and easily-parallelizable genome analysis toolkit<a class="headerlink" href="#bedops-the-fastest-scalable-and-easily-parallelizable-genome-analysis-toolkit" title="Permalink to this headline">¶</a></h1>
+<p>BEDOPS is an open-source command-line toolkit that performs efficient and scalable Boolean and other set operations, statistical calculations, archiving, conversion and other management of genomic data of arbitrary scale. Tasks can be easily split by chromosome for distributing BEDOPS operations across a computational cluster.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="43%" />
+<col width="24%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><img alt="set_operations.png" src="_images/set_operations.png" /></th>
+<th class="head">statistics</th>
+<th class="head">file management</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>foo</td>
+<td>bar</td>
+<td>baz</td>
+</tr>
+</tbody>
+</table>
 <div class="section" id="table-of-contents">
 <h2>Table of contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="content/overview.html">1. Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="content/overview.html">1. Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="content/overview.html#id1">1.1. Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="content/overview.html#why-use-bedops">1.2. Why use BEDOPS?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="content/overview.html#bedops-tools-are-flexible">1.2.1. BEDOPS tools are flexible</a></li>
+<li class="toctree-l3"><a class="reference internal" href="content/overview.html#bedops-tools-are-fast-and-efficient">1.2.2. BEDOPS tools are fast and efficient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="content/overview.html#bedops-tools-make-your-work-embarrassingly-easy-to-parallelize">1.2.3. BEDOPS tools make your work embarrassingly easy to parallelize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="content/overview.html#bedops-tools-are-open-documented-and-supported">1.2.4. BEDOPS tools are open, documented and supported</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="content/installation.html">2. Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="content/quick-start.html">3. Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="content/usage-examples.html">4. Usage examples</a></li>
@@ -117,11 +142,11 @@
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="#">
-              <img class="logo" src="_static/logo_with_label.png" alt="Logo"/>
+              <img class="logo" src="_static/logo_with_label_v2.png" alt="Logo"/>
             </a></p>
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">BEDOPS</a><ul>
+<li><a class="reference internal" href="#">BEDOPS: the fastest scalable and easily-parallelizable genome analysis toolkit</a><ul>
 <li><a class="reference internal" href="#table-of-contents">Table of contents</a><ul>
 </ul>
 </li>
