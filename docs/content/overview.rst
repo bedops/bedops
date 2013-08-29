@@ -18,7 +18,9 @@ All of these tools are made to be glued together with common UNIX input and outp
 Why use BEDOPS?
 ===============
 
-**BEDOPS tools are flexible**
+-------------------------
+BEDOPS tools are flexible
+-------------------------
 
 Our tools fit easily into analysis pipelines, allow practically unlimited inputs, and reduce I/O overhead through standard UNIX input and output streams:::
 
@@ -33,7 +35,9 @@ Our ``bedops`` and ``bedmap`` core tools offer numerous operations of all kinds,
 
 .. image:: ../assets/overview/BEDOPS_Presentation-6.small.png
 
-**BEDOPS tools are fast and efficient**
+-----------------------------------
+BEDOPS tools are fast and efficient
+-----------------------------------
 
 BEDOPS tools take advantage of the information in a sorted BED file to use only what data are needed to perform the analysis. Our tools are agnostic about genomes: Run BEDOPS tools on genomes as small as *Circovirus* or as large as *Polychaos dubium*!
 
@@ -45,10 +49,14 @@ BEDOPS also introduces a novel and **lossless** compression format called *Starc
 
 .. image:: ../assets/overview/BEDOPS_Presentation-10.small.png
 
-**BEDOPS tools make your work embarrassingly easy to parallelize**
+--------------------------------------------------------------
+BEDOPS tools make your work embarrassingly easy to parallelize
+--------------------------------------------------------------
 
 BEDOPS tools introduce the ``--chrom`` option to efficiently locate a specified chromosome within a sorted BED file, useful for “embarrassingly parallel” whole-genome analyses, where work can be logically divided by units of chromosome in a "map-reduce" fashion.
 
-**BEDOPS tools are open, documented and supported**
+-----------------------------------------------
+BEDOPS tools are open, documented and supported
+-----------------------------------------------
 
 `BEDOPS <https://github.com/alexpreynolds/bedops>`_ is available as GPL-licensed source code and precompiled binaries for Linux and Mac OS X. We offer support through online forums such as our `own <http://bedops.uwencode.org/forum/>`_ and `Biostars <http://www.biostars.org>`_ and `recipes <https://bedops.readthedocs.org/en/latest/content/usage-examples.html>`_ showing BEDOPS tools in use for answering common research questions.
