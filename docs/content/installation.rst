@@ -23,6 +23,7 @@ Linux
 3. Copy the extracted binaries to a location of your choice which is in your environment's ``PATH``, *e.g.* ``~/opt/bin``:
    ::
        $ cp bin/* ~/opt/bin
+   Change this destination folder, as needed.
 
 --------
 Mac OS X
@@ -65,6 +66,8 @@ a. For Mac OS X users, we recommend first installing `Apple Xcode <https://devel
 5. Copy the extracted binaries to a location of your choice that is in your environment's ``PATH``, *e.g.* ``~/opt/bin``: ::
  
    $ cp bin/* ~/opt/bin
+
+   Change this destination folder, as needed.
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
