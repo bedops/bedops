@@ -22,7 +22,10 @@ Table of contents
    content/reference
    content/faq
 
-.. |set_operations_png| image:: assets/index/set_operations.png
+.. |set_operations_png| raw:: html 
+
+   <img src="assets/index/set_operations.png" style="margin-left:5px;" />
+
 .. |statistics_png| image:: assets/index/statistics.png
 .. |file_management_png| image:: assets/index/file_management.png
 
