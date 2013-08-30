@@ -1,6 +1,8 @@
 Usage examples
 ==============
 
+The following examples demonstrate the use of BEDOPS in analyzing genomic data. Here, we provide source code and snippets of data to demonstrate "real-world" examples based on daily usage of these tools in the `Stamatoyannopoulos <http://www.gs.washington.edu/faculty/stamj.htm>`_ lab.
+
 .. toctree::
 
    usage-examples/snp-visualization
