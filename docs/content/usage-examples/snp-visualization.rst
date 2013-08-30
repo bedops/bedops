@@ -96,10 +96,10 @@ Downloads
 * The `example`_ script, after modification to use loops and other shell features.
 * `Data`_ for this example are contained in a tarball (use ``tar -xzf`` to extract files).
 
-The ``bedmap``_ tool can operate directly on Starch-formatted archives. Alternatively, use the ``unstarch`` tool to decompress Starch data files to sorted BED format.
+The |``bedmap``| tool can operate directly on Starch-formatted archives. Alternatively, use the ``unstarch`` tool to decompress Starch data files to sorted BED format.
 
 Note that these are not the full datasets that went into the original research, but snippets that should otherwise demonstrate the disease-DHS association phenomenon and the use of parts of the BEDOPS toolset.
 
 .. _example: ../../assets/usage-examples/SNP_DHS_heatmap.tcsh
 .. _Data: ../../assets/usage-examples/SNP_DHS_data.tgz
-.. _``bedmap``: ../reference/statistics/bedmap.rst
+.. |``bedmap``| ../reference/statistics/bedmap.rst
