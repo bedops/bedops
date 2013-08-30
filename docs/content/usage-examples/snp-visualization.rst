@@ -78,14 +78,14 @@ Each use of ``bedmap`` is identical: the options ``--ec --delim "\t" --bp-ovr 1 
 These results are calculated for each of the seven cell types and collated into matrix form to run through ``matrix2png``. We show it here to give an idea of what kind of data ``bedmap`` generates, to help create these quantitative visualizations:
 
 .. image:: ../../assets/usage-examples/SNP_DHS_matrix.png
-   :width: 75%
+   :width: 50%
 
 Rows are presented in ``sort-bed`` order. Cells in red show greatest relative number of counts, while yellow shows the least. Examining this heatmap, DHS elements appear to associate with prostate disease-related GWAS SNPs.
 
 To make this clearer, here is the same result, with rows sorted by disease name:
 
 .. image:: ../../assets/usage-examples/SNP_DHS_matrix_diseaseSorted.png
-   :width: 75%
+   :width: 50%
 
 While there are some DHSs associated with non-disease SNPs, the majority accumulate with the prostate SNPs.
 
