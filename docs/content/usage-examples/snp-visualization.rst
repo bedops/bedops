@@ -1,7 +1,7 @@
 Visualizing the relationship of SNPs and generic genomic features
 =================================================================
 
-We want to visualize how genome-wide association study single nucleotide repeats (GWAS SNPs) relate to other genomic features — in this case, these features are DNaseI-hypersensitive sites (DHSs). We could, instead, look at methylated regions, CpG islands, coding sequence or other genomic features. Normally, we might do this for all sites in the genome, but to reduce the file sizes we only look at a subset of data here and we have taken a subset of the real data for the purposes of demonstration.
+We want to visualize how genome-wide association study single nucleotide repeats (GWAS SNPs) relate to other genomic features |---| in this case, these features are DNaseI-hypersensitive sites (DHSs). We could, instead, look at methylated regions, CpG islands, coding sequence or other genomic features. Normally, we might do this for all sites in the genome, but to reduce the file sizes we only look at a subset of data here and we have taken a subset of the real data for the purposes of demonstration.
 
 Roughly speaking, we considered two classes of SNPs: those which are prostate-related (associated with PSA and prostate cancer) and some not (height). We have some BED files with positions of DNaseI-hypersensitive sites for various tissues: two from prostate (LNCaP and PrEC), the rest from other tissues (CACO2, HEPG2, K562, MCF7).
 
@@ -103,3 +103,6 @@ Note that these are not the full datasets that went into the original research, 
 .. _example: ../../assets/usage-examples/SNP_DHS_heatmap.tcsh
 .. _Data: ../../assets/usage-examples/SNP_DHS_data.tgz
 .. _bedmap: ../reference/statistics/bedmap.html
+.. |--| unicode:: U+2013   .. en dash
+.. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
+   :trim:
