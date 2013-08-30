@@ -27,6 +27,7 @@ Table of contents
 .. |file_management_png| image:: assets/index/file_management.png
 
 .. |set_operations| raw:: html
+
    <ul style="list-style-type: square; font-size:smaller; margin: 0px;">
    <li>bedops - apply set operations on any number of BED inputs</li>
    <li>bedextract - efficiently extract BED features</li>
@@ -34,11 +35,13 @@ Table of contents
    </ul>
 
 .. |statistics| raw:: html
+
    <ul style="list-style-type: square; font-size:smaller; margin: 0px;">
    <li>bedmap - map overlapping BED elements onto target regions, and optionally compute any number of common statistical operations</li>
    </ul>
 
 .. |file_management| raw:: html
+
    <ul style="list-style-type: square; font-size:smaller; margin: 0px;">
    <li>sort-bed - apply lexicographical sort to BED data</li>
    <li>starch and unstarch - compress and extract BED data</li>
