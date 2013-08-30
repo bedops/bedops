@@ -22,13 +22,7 @@ Table of contents
    content/reference
    content/faq
 
-.. |set_operations_png| raw:: html 
-
-   <img src="assets/index/set_operations.png" style="margin-left:5px;" />
-
-.. |statistics_png| image:: assets/index/statistics.png
-.. |file_management_png| image:: assets/index/file_management.png
-
+.. |set_operations_png| image:: assets/index/set_operations.png
 .. |set_operations| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:15px; padding:0;">
@@ -37,12 +31,14 @@ Table of contents
    <li>closest-features - matches nearest features between BED files</li>
    </ul>
 
+.. |statistics_png| image:: assets/index/statistics.png
 .. |statistics| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:15px; padding:0;">
    <li>bedmap - map overlapping BED elements onto target regions, and optionally compute any number of common statistical operations</li>
    </ul>
 
+.. |file_management_png| image:: assets/index/file_management.png
 .. |file_management| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:15px; padding:0;">
