@@ -45,23 +45,24 @@ Via source code
 
 At this time, compilation of BEDOPS requires GCC 4.7 or greater (which includes support for `C++11 <http://en.wikipedia.org/wiki/C%2B%2B11>`_ features required by core BEDOPS tools).
 
-1. If you do not have GCC 4.7 or greater installed, first do so.  
-   For Mac OS X users, we recommend first installing `Apple Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option within Xcode. Then install GCC 4.7 or greater using `MacPorts <http://www.macports.org>`_.  
-   In the future, we may provide support for OS X compilation via Clang/LLVM, which is the default compiler included with Xcode.
-2. Clone the BEDOPS Git repository in an appropriate local directory:::
+1. If you do not have GCC 4.7 or greater installed, first do so.
+
+a. For Mac OS X users, we recommend first installing `Apple Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option within Xcode. Then install GCC 4.7 or greater using `MacPorts <http://www.macports.org>`_. In the future, we may provide support for OS X compilation via Clang/LLVM, which is the default compiler included with Xcode.
+
+2. Clone the BEDOPS Git repository in an appropriate local directory: ::
 
    $ git clone https://github.com/alexpreynolds/bedops.git
 
-3. Run ``make`` in the top-level of the local copy of the BEDOPS repository:::
+3. Run ``make`` in the top-level of the local copy of the BEDOPS repository: ::
 
    $ cd bedops
    $ make
 
-4. Install compiled binaries and scripts to a local ``bin`` folder:::
+4. Install compiled binaries and scripts to a local ``bin`` folder: ::
 
    $ make install
 
-5. Copy the extracted binaries to a location of your choice that is in your environment's ``PATH``, *e.g.* ``~/opt/bin``:::
+5. Copy the extracted binaries to a location of your choice that is in your environment's ``PATH``, *e.g.* ``~/opt/bin``: ::
  
    $ cp bin/* ~/opt/bin
 
