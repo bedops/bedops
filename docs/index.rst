@@ -5,7 +5,7 @@ BEDOPS is an open-source command-line toolkit that performs efficient and scalab
 +-----------------------+-----------------------+------------------------+
 | |set_operations.png|  | |statistics.png|      | |file_management.png|  |
 +-----------------------+-----------------------+------------------------+
-|                       |                       |                        |
+||                      |                       |                        |
 | * bedops - apply set  |                       |                        |
 |   operations on any   |                       |                        |
 |   number of BED       |                       |                        |
