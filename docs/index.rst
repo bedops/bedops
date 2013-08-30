@@ -35,15 +35,15 @@ Contents
 .. |statistics| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li>bedmap - map overlapping BED elements onto target regions, and optionally compute any number of common statistical operations</li>
+   <li><tt>bedmap</tt> - map overlapping BED elements onto target regions, and optionally compute any number of common statistical operations</li>
    </ul>
 
 .. |file_management_png| image:: assets/index/file_management.png
 .. |file_management| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li>sort-bed - apply lexicographical sort to BED data</li>
-   <li>starch and unstarch - compress and extract BED data</li>
-   <li>starchcat - merge compressed archives</li>
+   <li><tt>sort-bed</tt> - apply lexicographical sort to BED data</li>
+   <li><tt>starch</tt> and <tt>unstarch</tt> - compress and extract BED data</li>
+   <li><tt>starchcat</tt> - merge compressed archives</li>
    <li>conversion tools - convert common genomic formats to BED</li>
    </ul>
