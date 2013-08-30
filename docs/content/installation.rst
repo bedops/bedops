@@ -11,7 +11,7 @@ Pre-built binaries offer the easiest installation option for uses of BEDOPS. At 
 Linux
 -----
 
-1. Download the 32- or 64-bit package for Linux
+1. Download the 32- or 64-bit package for Linux.
 2. Extract the package to a location of your choice. 
    In the case of 32-bit Linux:
    ::
@@ -27,6 +27,14 @@ Linux
 --------
 Mac OS X
 --------
+
+1. Download the Mac OS X installer for BEDOPS.
+2. Locate the installer package (usually located in ``~/Downloads`` &emdash; this will depend on your web browser configuration).
+3. Double-click to open the installer package:
+
+.. image:: ../assets/installation/bedops_macosx_installer_screen.png
+
+4. Follow the instructions to install BEDOPS and library dependencies to your Mac.
 
 ===============
 Via source code
