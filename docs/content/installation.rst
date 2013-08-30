@@ -55,7 +55,7 @@ At this time, compilation of BEDOPS requires GCC 4.7 or greater (which includes 
 
    $ cd bedops
    $ make
-   ...
+     ...
 
 4. Run ``make install`` to place binaries and scripts in a local ``bin`` folder:::
 
