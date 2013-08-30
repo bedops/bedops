@@ -26,9 +26,9 @@ Contents
 .. |set_operations| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li>bedops - apply set operations on any number of BED inputs</li>
-   <li>bedextract - efficiently extract BED features</li>
-   <li>closest-features - matches nearest features between BED files</li>
+   <li><tt>bedops</tt> - apply set operations on any number of BED inputs</li>
+   <li><tt>bedextract</tt> - efficiently extract BED features</li>
+   <li><tt>closest-features</tt> - matches nearest features between BED files</li>
    </ul>
 
 .. |statistics_png| image:: assets/index/statistics.png
