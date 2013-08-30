@@ -15,16 +15,19 @@ Linux
 
 1. Download the current 32- or 64-bit package for Linux from Github.
 2. Extract the package to a location of your choice. 
-   In the case of 32-bit Linux:
-   ::
+   In the case of 32-bit Linux: ::
+
        $ tar jxvf bedops_linux_i386-vx.y.z.tar.bz2
-   In the case of 64-bit Linux:
-   ::
+
+   In the case of 64-bit Linux: ::
+
        $ tar jxvf bedops_linux_x86_64-vx.y.z.tar.bz2
+
    Replace ``x``, ``y`` and ``z`` with the version number of BEDOPS you have downloaded.
-3. Copy the extracted binaries to a location of your choice which is in your environment's ``PATH``, *e.g.* ``~/opt/bin``:
-   ::
+3. Copy the extracted binaries to a location of your choice which is in your environment's ``PATH``, *e.g.* ``~/opt/bin``: ::
+
        $ cp bin/* ~/opt/bin
+
    Change this destination folder, as needed.
 
 --------

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>BEDOPS: the fastest scalable and easily-parallelizable genome analysis toolkit &mdash; BEDOPS 2.3 documentation</title>
+    <title>BEDOPS: the fastest, highly scalable and easily-parallelizable genome analysis toolkit &mdash; BEDOPS 2.3 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -47,9 +47,9 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="bedops-the-fastest-scalable-and-easily-parallelizable-genome-analysis-toolkit">
-<h1>BEDOPS: the fastest scalable and easily-parallelizable genome analysis toolkit<a class="headerlink" href="#bedops-the-fastest-scalable-and-easily-parallelizable-genome-analysis-toolkit" title="Permalink to this headline">¶</a></h1>
-<p>BEDOPS is an open-source command-line toolkit that performs efficient and scalable Boolean and other set operations, statistical calculations, archiving, conversion and other management of genomic data of arbitrary scale. Tasks can be easily split by chromosome for distributing BEDOPS operations across a computational cluster.</p>
+  <div class="section" id="bedops-the-fastest-highly-scalable-and-easily-parallelizable-genome-analysis-toolkit">
+<h1>BEDOPS: the fastest, highly scalable and easily-parallelizable genome analysis toolkit<a class="headerlink" href="#bedops-the-fastest-highly-scalable-and-easily-parallelizable-genome-analysis-toolkit" title="Permalink to this headline">¶</a></h1>
+<p>BEDOPS is an open-source command-line toolkit that performs highly efficient and scalable Boolean and other set operations, statistical calculations, archiving, conversion and other management of genomic data of arbitrary scale. Tasks can be easily split by chromosome for distributing whole-genome analyses across a computational cluster.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -61,18 +61,18 @@
 <td><img alt="statistics_png" src="_images/statistics.png" /></td>
 <td><img alt="file_management_png" src="_images/file_management.png" /></td>
 </tr>
-<tr class="row-even"><td><ul style="list-style-type:square; font-size:smaller; margin:15px; padding:0;">
-<li>bedops - apply set operations on any number of BED inputs</li>
-<li>bedextract - efficiently extract BED features</li>
-<li>closest-features - matches nearest features between BED files</li>
+<tr class="row-even"><td><ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
+<li><tt>bedops</tt> - apply set operations on any number of BED inputs</li>
+<li><tt>bedextract</tt> - efficiently extract BED features</li>
+<li><tt>closest-features</tt> - matches nearest features between BED files</li>
 </ul></td>
-<td><ul style="list-style-type:square; font-size:smaller; margin:15px; padding:0;">
-<li>bedmap - map overlapping BED elements onto target regions, and optionally compute any number of common statistical operations</li>
+<td><ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
+<li><tt>bedmap</tt> - map overlapping BED elements onto target regions, and optionally compute any number of common statistical operations</li>
 </ul></td>
-<td><ul style="list-style-type:square; font-size:smaller; margin:15px; padding:0;">
-<li>sort-bed - apply lexicographical sort to BED data</li>
-<li>starch and unstarch - compress and extract BED data</li>
-<li>starchcat - merge compressed archives</li>
+<td><ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
+<li><tt>sort-bed</tt> - apply lexicographical sort to BED data</li>
+<li><tt>starch</tt> and <tt>unstarch</tt> - compress and extract BED data</li>
+<li><tt>starchcat</tt> - merge compressed archives</li>
 <li>conversion tools - convert common genomic formats to BED</li>
 </ul></td>
 </tr>
@@ -83,8 +83,8 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="content/overview.html">1. Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="content/overview.html#id1">1.1. Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="content/overview.html#why-use-bedops">1.2. Why use BEDOPS?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="content/overview.html#about-bedops">1.1. About BEDOPS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="content/overview.html#why-you-should-use-bedops">1.2. Why you should use BEDOPS</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="content/overview.html#bedops-tools-are-flexible">1.2.1. BEDOPS tools are flexible</a></li>
 <li class="toctree-l3"><a class="reference internal" href="content/overview.html#bedops-tools-are-fast-and-efficient">1.2.2. BEDOPS tools are fast and efficient</a></li>
 <li class="toctree-l3"><a class="reference internal" href="content/overview.html#bedops-tools-make-your-work-embarrassingly-easy-to-parallelize">1.2.3. BEDOPS tools make your work embarrassingly easy to parallelize</a></li>
@@ -93,52 +93,74 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="content/installation.html">2. Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="content/quick-start.html">3. Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="content/usage-examples.html">4. Usage examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="content/performance.html">5. Performance</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="content/performance.html#set-operations-with-bedops">5.1. Set operations with <tt class="docutils literal"><span class="pre">bedops</span></tt></a></li>
-<li class="toctree-l2"><a class="reference internal" href="content/performance.html#compression-characteristics-of-starch">5.2. Compression characteristics of <tt class="docutils literal"><span class="pre">starch</span></tt></a></li>
-<li class="toctree-l2"><a class="reference internal" href="content/performance.html#independent-testing-with-grok-toolkit">5.3. Independent testing with GROK toolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="content/installation.html">2. Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="content/installation.html#via-pre-built-packages">2.1. Via pre-built packages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="content/installation.html#linux">2.1.1. Linux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="content/installation.html#mac-os-x">2.1.2. Mac OS X</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="content/reference.html">6. Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="content/reference/set-operations.html">6.1. Set operations</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="content/reference/set-operations/bedops.html">6.1.1. <cite>bedops</cite></a></li>
-<li class="toctree-l3"><a class="reference internal" href="content/reference/set-operations/bedextract.html">6.1.2. <cite>bedextract</cite></a></li>
-<li class="toctree-l3"><a class="reference internal" href="content/reference/set-operations/closest-features.html">6.1.3. <cite>closest-features</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="content/installation.html#via-source-code">2.2. Via source code</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="content/reference/statistics.html">6.2. Statistics</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="content/reference/statistics/bedmap.html">6.2.1. <cite>bedmap</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="content/usage-examples.html">3. Usage examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="content/usage-examples/snp-visualization.html">3.1. Visualizing the relationship of SNPs and generic genomic features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="content/usage-examples/snp-visualization.html#bedops-tools-in-use">3.1.1. BEDOPS tools in use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="content/usage-examples/snp-visualization.html#script">3.1.2. Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="content/usage-examples/snp-visualization.html#discussion">3.1.3. Discussion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="content/usage-examples/snp-visualization.html#downloads">3.1.4. Downloads</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="content/reference/file-management.html">6.3. File management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="content/reference/file-management/sorting.html">6.3.1. Sorting</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/sorting/sort-bed.html">6.3.1.1. <cite>sort-bed</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="content/usage-examples/master-list.html">3.2. Collapsing multiple BED files into a master list by signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="content/usage-examples/distance-frequencies.html">3.3. Measuring the frequency of signed distances between SNPs and nearest DHSes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="content/usage-examples/snps-within-dhses.html">3.4. Finding the subset of SNPs within DHSes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="content/usage-examples/smoothing-tags.html">3.5. Smoothing raw tag count data across the genome</a></li>
+<li class="toctree-l2"><a class="reference internal" href="content/usage-examples/starchcluster.html">3.6. Efficiently creating Starch-formatted archives with a cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="content/usage-examples/multiple-inputs.html">3.7. Working with many input files at once with <tt class="docutils literal"><span class="pre">bedops</span></tt> and <tt class="docutils literal"><span class="pre">bedmap</span></tt></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="content/reference/file-management/compression.html">6.3.2. Compression</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/compression/starch.html">6.3.2.1. <cite>starch</cite></a></li>
-<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/compression/unstarch.html">6.3.2.2. <cite>unstarch</cite></a></li>
-<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/compression/starchcat.html">6.3.2.3. <cite>starchcat</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="content/performance.html">4. Performance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="content/performance.html#set-operations-with-bedops">4.1. Set operations with <tt class="docutils literal"><span class="pre">bedops</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="content/performance.html#compression-characteristics-of-starch">4.2. Compression characteristics of <tt class="docutils literal"><span class="pre">starch</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="content/performance.html#independent-testing-with-grok-toolkit">4.3. Independent testing with GROK toolkit</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="content/reference/file-management/conversion.html">6.3.3. Data conversion</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/conversion/bam2bed.html">6.3.3.1. <cite>bam2bed</cite></a></li>
-<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/conversion/gff2bed.html">6.3.3.2. <cite>gff2bed</cite></a></li>
-<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/conversion/gtf2bed.html">6.3.3.3. <cite>gtf2bed</cite></a></li>
-<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/conversion/psl2bed.html">6.3.3.4. <cite>psl2bed</cite></a></li>
-<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/conversion/sam2bed.html">6.3.3.5. <cite>sam2bed</cite></a></li>
-<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/conversion/vcf2bed.html">6.3.3.6. <cite>vcf2bed</cite></a></li>
-<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/conversion/wig2bed.html">6.3.3.7. <cite>wig2bed</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="content/reference.html">5. Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="content/reference/set-operations.html">5.1. Set operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="content/reference/set-operations/bedops.html">5.1.1. <cite>bedops</cite></a></li>
+<li class="toctree-l3"><a class="reference internal" href="content/reference/set-operations/bedextract.html">5.1.2. <cite>bedextract</cite></a></li>
+<li class="toctree-l3"><a class="reference internal" href="content/reference/set-operations/closest-features.html">5.1.3. <cite>closest-features</cite></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="content/reference/statistics.html">5.2. Statistics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="content/reference/statistics/bedmap.html">5.2.1. <cite>bedmap</cite></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="content/reference/file-management.html">5.3. File management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="content/reference/file-management/sorting.html">5.3.1. Sorting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/sorting/sort-bed.html">5.3.1.1. <cite>sort-bed</cite></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content/reference/file-management/compression.html">5.3.2. Compression</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/compression/starch.html">5.3.2.1. <cite>starch</cite></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/compression/unstarch.html">5.3.2.2. <cite>unstarch</cite></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/compression/starchcat.html">5.3.2.3. <cite>starchcat</cite></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content/reference/file-management/conversion.html">5.3.3. Data conversion</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/conversion/bam2bed.html">5.3.3.1. <cite>bam2bed</cite></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/conversion/gff2bed.html">5.3.3.2. <cite>gff2bed</cite></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/conversion/gtf2bed.html">5.3.3.3. <cite>gtf2bed</cite></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/conversion/psl2bed.html">5.3.3.4. <cite>psl2bed</cite></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/conversion/sam2bed.html">5.3.3.5. <cite>sam2bed</cite></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/conversion/vcf2bed.html">5.3.3.6. <cite>vcf2bed</cite></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content/reference/file-management/conversion/wig2bed.html">5.3.3.7. <cite>wig2bed</cite></a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="content/faq.html">7. Frequently answered questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="content/faq.html">6. Frequently answered questions</a></li>
 </ul>
 </div>
 </div>
@@ -155,7 +177,7 @@
             </a></p>
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">BEDOPS: the fastest scalable and easily-parallelizable genome analysis toolkit</a><ul>
+<li><a class="reference internal" href="#">BEDOPS: the fastest, highly scalable and easily-parallelizable genome analysis toolkit</a><ul>
 <li><a class="reference internal" href="#contents">Contents</a><ul>
 </ul>
 </li>

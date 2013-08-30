@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>3.1. Visualizing the relationship of SNPs and generic genomic features &mdash; BEDOPS 2.3 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="top" title="BEDOPS 2.3 documentation" href="../../index.html" />
+    <link rel="up" title="3. Usage examples" href="../usage-examples.html" />
+    <link rel="next" title="3.2. Collapsing multiple BED files into a master list by signal" href="master-list.html" />
+    <link rel="prev" title="3. Usage examples" href="../usage-examples.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="master-list.html" title="3.2. Collapsing multiple BED files into a master list by signal"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../usage-examples.html" title="3. Usage examples"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
+          <li><a href="../usage-examples.html" accesskey="U">3. Usage examples</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="visualizing-the-relationship-of-snps-and-generic-genomic-features">
+<h1>3.1. Visualizing the relationship of SNPs and generic genomic features<a class="headerlink" href="#visualizing-the-relationship-of-snps-and-generic-genomic-features" title="Permalink to this headline">¶</a></h1>
+<p>We want to visualize how genome-wide association study single nucleotide repeats (GWAS SNPs) relate to other genomic features—in this case, these features are DNaseI-hypersensitive sites (DHSs). We could, instead, look at methylated regions, CpG islands, coding sequence or other genomic features. Normally, we might do this for all sites in the genome, but to reduce the file sizes we only look at a subset of data here and we have taken a subset of the real data for the purposes of demonstration.</p>
+<p>Roughly speaking, we considered two classes of SNPs: those which are prostate-related (associated with PSA and prostate cancer) and some not (height). We have some BED files with positions of DNaseI-hypersensitive sites for various tissues: two from prostate (LNCaP and PrEC), the rest from other tissues (CACO2, HEPG2, K562, MCF7).</p>
+<p>We will use BEDOPS tools to generate per-tissue DHS counts associated with our SNPs, using <a class="reference external" href="http://www.chibi.ubc.ca/matrix2png/">matrix2png</a> to visualize results as a heatmap.</p>
+<div class="section" id="bedops-tools-in-use">
+<h2>3.1.1. BEDOPS tools in use<a class="headerlink" href="#bedops-tools-in-use" title="Permalink to this headline">¶</a></h2>
+<p>For this example, we use <a class="reference external" href="../reference/file-management/sorting/sort-bed.html">sort-bed</a> to sort the input SNP data, and <a class="reference external" href="../reference/statistics/bedmap.html">bedmap</a> to count the number of single-base or greater overlaps between a SNP and a tissue-specific DHS. A modified version of this script uses loops and other shell features.</p>
+</div>
+<div class="section" id="script">
+<h2>3.1.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><pre>#!/bin/tcsh -efx
+
+sort-bed GWAS_SNPs.bed &gt; GWAS_SNPs.sorted.bed
+bedmap --ec --delim "\t" --bp-ovr 1 --echo --count GWAS_SNPs.sorted.bed LNCaP_DHS.bed &gt; SNP_DHS_matrix.bed
+
+# add PrEC DHS overlap counts to matrix
+bedmap --ec --delim "\t" --bp-ovr 1 --count GWAS_SNPs.sorted.bed PrEC_DHS.bed &gt; counts.txt
+paste SNP_DHS_matrix.bed counts.txt &gt; new_SNP_DHS_matrix.bed
+mv new_SNP_DHS_matrix.bed SNP_DHS_matrix.bed
+
+# add CACO2 DHS overlap counts to matrix
+bedmap --ec --delim "\t" --bp-ovr 1 --count GWAS_SNPs.sorted.bed CACO2_DHS.bed &gt; counts.txt
+paste SNP_DHS_matrix.bed counts.txt &gt; new_SNP_DHS_matrix.bed
+mv new_SNP_DHS_matrix.bed SNP_DHS_matrix.bed
+
+# add HEPG2 DHS overlap counts to matrix
+bedmap --ec --delim "\t" --bp-ovr 1 --count GWAS_SNPs.sorted.bed HEPG2_DHS.bed &gt; counts.txt
+paste SNP_DHS_matrix.bed counts.txt &gt; new_SNP_DHS_matrix.bed
+mv new_SNP_DHS_matrix.bed SNP_DHS_matrix.bed
+
+# add K562 DHS overlap counts to matrix
+bedmap --ec --delim "\t" --bp-ovr 1 --count GWAS_SNPs.sorted.bed K562_DHS.bed &gt; counts.txt
+paste SNP_DHS_matrix.bed counts.txt &gt; new_SNP_DHS_matrix.bed
+mv new_SNP_DHS_matrix.bed SNP_DHS_matrix.bed
+
+# add MCF7 DHS overlap counts to matrix
+bedmap --ec --delim "\t" --bp-ovr 1 --count GWAS_SNPs.sorted.bed MCF7_DHS.bed &gt; counts.txt
+paste SNP_DHS_matrix.bed counts.txt &gt; new_SNP_DHS_matrix.bed
+mv new_SNP_DHS_matrix.bed SNP_DHS_matrix.bed
+
+# cleanup and sort by disease trait
+rm counts.txt
+sort -k5d SNP_DHS_matrix.bed &gt; new_SNP_DHS_matrix.bed
+mv new_SNP_DHS_matrix.bed SNP_DHS_matrix.bed
+
+# condense data fields into matrix2png form
+awk '{print $1":"$2"-"$3"_"$4"_"$5"_"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12}' SNP_DHS_matrix.bed &gt; new_SNP_DHS_matrix.txt
+mv new_SNP_DHS_matrix.txt SNP_DHS_matrix.txt
+
+# add header
+echo -e "0\tLNCaP\tPrEC\tCACO\tHEPG2\tK562\tMCF7" | cat - SNP_DHS_matrix.txt &gt; new_SNP_DHS_matrix.txt
+mv new_SNP_DHS_matrix.txt SNP_DHS_matrix.txt
+
+# make heatmap
+matrix2png -r -c -g -size 16:16 -mincolor yellow -midcolor black -maxcolor red -data SNP_DHS_matrix.txt &gt; SNP_DHS_matrix.png</pre>
+</div>
+</div>
+<div class="section" id="discussion">
+<h2>3.1.3. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
+<p>Each use of <a class="reference external" href="../reference/statistics/bedmap.html">bedmap</a> is identical: the options <tt class="docutils literal"><span class="pre">--ec</span> <span class="pre">--delim</span> <span class="pre">&quot;\t&quot;</span> <span class="pre">--bp-ovr</span> <span class="pre">1</span> <span class="pre">--count</span></tt> add several settings:</p>
+<ul class="simple">
+<li>Error checking/correction (<tt class="docutils literal"><span class="pre">--ec</span></tt>)</li>
+<li>Use of the tab character as a custom field delimiter (<tt class="docutils literal"><span class="pre">--delim</span> <span class="pre">&quot;\t&quot;</span></tt>) to make results easier to parse with <tt class="docutils literal"><span class="pre">awk</span></tt> further downstream</li>
+<li>Manual specification of a single base-pair criteria for overlap (<tt class="docutils literal"><span class="pre">--bp-ovr</span> <span class="pre">1</span></tt>, although this is the default)</li>
+<li>Using <tt class="docutils literal"><span class="pre">--count</span></tt>, counting the number of mapping elements (DHSs) which overlap a reference instance (a given SNP)</li>
+</ul>
+<p>These results are calculated for each of the seven cell types and collated into matrix form to run through <a class="reference external" href="http://www.chibi.ubc.ca/matrix2png/">matrix2png</a>. We show it here to give an idea of what kind of data <a class="reference external" href="../reference/statistics/bedmap.html">bedmap</a> generates, to help create these quantitative visualizations:</p>
+<a class="reference internal image-reference" href="../../_images/SNP_DHS_matrix.png"><img alt="../../_images/SNP_DHS_matrix.png" src="../../_images/SNP_DHS_matrix.png" style="width: 75%;" /></a>
+<p>Rows are presented in <a class="reference external" href="../reference/file-management/sorting/sort-bed.html">sort-bed</a> order. Cells in red show greatest relative number of counts, while yellow shows the least. Examining this heatmap, DHS elements appear to associate with prostate disease-related GWAS SNPs.</p>
+<p>To make this clearer, here is the same result, with rows sorted by disease name:</p>
+<a class="reference internal image-reference" href="../../_images/SNP_DHS_matrix_diseaseSorted.png"><img alt="../../_images/SNP_DHS_matrix_diseaseSorted.png" src="../../_images/SNP_DHS_matrix_diseaseSorted.png" style="width: 75%;" /></a>
+<p>While there are some DHSs associated with non-disease SNPs, the majority accumulate with the prostate SNPs.</p>
+</div>
+<div class="section" id="downloads">
+<h2>3.1.4. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>The <a class="reference external" href="../../assets/usage-examples/SNP_DHS_heatmap.tcsh">example</a> script, after modification to use loops and other shell features.</li>
+<li><a class="reference external" href="../../assets/usage-examples/SNP_DHS_data.tgz">Data</a> for this example are contained in a tarball (use <tt class="docutils literal"><span class="pre">tar</span> <span class="pre">-xzf</span></tt> to extract files).</li>
+</ul>
+<p>The <a class="reference external" href="../reference/statistics/bedmap.html">bedmap</a> tool can operate directly on Starch-formatted archives. Alternatively, use the <a class="reference external" href="../reference/file-management/compression/unstarch.html">unstarch</a> tool to decompress Starch data files to sorted BED format.</p>
+<p>Note that these are not the full datasets that went into the original research, but snippets that should otherwise demonstrate the disease-DHS association phenomenon and the use of parts of the BEDOPS toolset.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/logo_with_label_v2.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">3.1. Visualizing the relationship of SNPs and generic genomic features</a><ul>
+<li><a class="reference internal" href="#bedops-tools-in-use">3.1.1. BEDOPS tools in use</a></li>
+<li><a class="reference internal" href="#script">3.1.2. Script</a></li>
+<li><a class="reference internal" href="#discussion">3.1.3. Discussion</a></li>
+<li><a class="reference internal" href="#downloads">3.1.4. Downloads</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../usage-examples.html"
+                        title="previous chapter">3. Usage examples</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="master-list.html"
+                        title="next chapter">3.2. Collapsing multiple BED files into a master list by signal</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/content/usage-examples/snp-visualization.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="master-list.html" title="3.2. Collapsing multiple BED files into a master list by signal"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../usage-examples.html" title="3. Usage examples"
+             >previous</a> |</li>
+        <li><a href="../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
+          <li><a href="../usage-examples.html" >3. Usage examples</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Shane Neph, Alex Reynolds.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

@@ -27,7 +27,7 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="top" title="BEDOPS 2.3 documentation" href="../index.html" />
     <link rel="next" title="2. Installation" href="installation.html" />
-    <link rel="prev" title="BEDOPS: the fastest scalable and easily-parallelizable genome analysis toolkit" href="../index.html" /> 
+    <link rel="prev" title="BEDOPS: the fastest, highly scalable and easily-parallelizable genome analysis toolkit" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -40,7 +40,7 @@
           <a href="installation.html" title="2. Installation"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="../index.html" title="BEDOPS: the fastest scalable and easily-parallelizable genome analysis toolkit"
+          <a href="../index.html" title="BEDOPS: the fastest, highly scalable and easily-parallelizable genome analysis toolkit"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">BEDOPS 2.3 documentation</a> &raquo;</li> 
       </ul>
@@ -53,19 +53,19 @@
             
   <div class="section" id="overview">
 <h1>1. Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="id1">
-<h2>1.1. Overview<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<p>BEDOPS is an open-source command-line toolkit that performs efficient and scalable Boolean and other set operations, statistical calculations, archiving, conversion and other management of genomic data of arbitrary scale.</p>
+<div class="section" id="about-bedops">
+<h2>1.1. About BEDOPS<a class="headerlink" href="#about-bedops" title="Permalink to this headline">¶</a></h2>
+<p>BEDOPS is an open-source command-line toolkit that performs highly efficient and scalable Boolean and other set operations, statistical calculations, archiving, conversion and other management of genomic data of arbitrary scale.</p>
 <p>The suite includes tools for set and statistical operations (<tt class="docutils literal"><span class="pre">bedops</span></tt>, <tt class="docutils literal"><span class="pre">bedmap</span></tt> and <tt class="docutils literal"><span class="pre">closest-features</span></tt>) and compression of large inputs into a novel lossless format (<tt class="docutils literal"><span class="pre">starch</span></tt>) that can provide greater space savings and faster data extractions than current alternatives. We offer native support for this compression format to these and other BEDOPS tools.</p>
 <p>BEDOPS also offers logarithmic speedups in access to per-chromosome regions in sorted BED data (in <tt class="docutils literal"><span class="pre">bedextract</span></tt> and core BEDOPS tools). This feature makes whole-genome analyses &#8220;embarassingly parallel&#8221;, in that per-chromosome computations can be distributed onto separate work nodes, with results collated at the end in <a class="reference external" href="http://en.wikipedia.org/wiki/MapReduce">map-reduce</a> fashion.</p>
 <p>Sorting arbitrarily large BED files is easy with <tt class="docutils literal"><span class="pre">sort-bed</span></tt>, which easily scales beyond available system memory, as needed. We also offer portable conversion scripts that transform data in common genomic formats (SAM/BAM, GFF/GTF, PSL, WIG, and VCF) to sorted BED data that are ready to use with core BEDOPS utilities.</p>
 <p>All of these tools are made to be glued together with common UNIX input and output streams. This helps make your pipeline design and maintenance easy, fast and flexible.</p>
 </div>
-<div class="section" id="why-use-bedops">
-<h2>1.2. Why use BEDOPS?<a class="headerlink" href="#why-use-bedops" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="why-you-should-use-bedops">
+<h2>1.2. Why you should use BEDOPS<a class="headerlink" href="#why-you-should-use-bedops" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="bedops-tools-are-flexible">
 <h3>1.2.1. BEDOPS tools are flexible<a class="headerlink" href="#bedops-tools-are-flexible" title="Permalink to this headline">¶</a></h3>
-<p>Our tools fit easily into analysis pipelines, allow practically unlimited inputs, and reduce I/O overhead through standard UNIX input and output streams::</p>
+<p>Our tools fit easily into analysis pipelines, allow practically unlimited inputs, and reduce I/O overhead through standard UNIX input and output streams:</p>
 <div class="highlight-python"><pre>$ bedops --intersect A.bed B.bed C.bed \
     | bedmap --echo --mean - D.bed \
     | ... \
@@ -106,8 +106,8 @@
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">1. Overview</a><ul>
-<li><a class="reference internal" href="#id1">1.1. Overview</a></li>
-<li><a class="reference internal" href="#why-use-bedops">1.2. Why use BEDOPS?</a><ul>
+<li><a class="reference internal" href="#about-bedops">1.1. About BEDOPS</a></li>
+<li><a class="reference internal" href="#why-you-should-use-bedops">1.2. Why you should use BEDOPS</a><ul>
 <li><a class="reference internal" href="#bedops-tools-are-flexible">1.2.1. BEDOPS tools are flexible</a></li>
 <li><a class="reference internal" href="#bedops-tools-are-fast-and-efficient">1.2.2. BEDOPS tools are fast and efficient</a></li>
 <li><a class="reference internal" href="#bedops-tools-make-your-work-embarrassingly-easy-to-parallelize">1.2.3. BEDOPS tools make your work embarrassingly easy to parallelize</a></li>
@@ -120,7 +120,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="../index.html"
-                        title="previous chapter">BEDOPS: the fastest scalable and easily-parallelizable genome analysis toolkit</a></p>
+                        title="previous chapter">BEDOPS: the fastest, highly scalable and easily-parallelizable genome analysis toolkit</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="installation.html"
                         title="next chapter">2. Installation</a></p>
@@ -156,7 +156,7 @@
           <a href="installation.html" title="2. Installation"
              >next</a> |</li>
         <li class="right" >
-          <a href="../index.html" title="BEDOPS: the fastest scalable and easily-parallelizable genome analysis toolkit"
+          <a href="../index.html" title="BEDOPS: the fastest, highly scalable and easily-parallelizable genome analysis toolkit"
              >previous</a> |</li>
         <li><a href="../index.html">BEDOPS 2.3 documentation</a> &raquo;</li> 
       </ul>

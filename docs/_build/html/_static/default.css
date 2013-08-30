@@ -118,12 +118,12 @@ div.sphinxsidebar input {
 /* -- hyperlink styles ------------------------------------------------------ */
 
 a {
-    color: #355f7c;
+    color: blue;
     text-decoration: none;
 }
 
 a:visited {
-    color: #355f7c;
+    color: darkblue;
     text-decoration: none;
 }
 
