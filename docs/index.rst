@@ -25,24 +25,24 @@ Contents
 .. |set_operations| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><tt>bedops</tt> - apply set operations on any number of BED inputs</li>
-   <li><tt>bedextract</tt> - efficiently extract BED features</li>
-   <li><tt>closest-features</tt> - matches nearest features between BED files</li>
+   <li><a href="content/reference/set-operations/bedops.html"><tt>bedops</tt></a> - apply set operations on any number of BED inputs</li>
+   <li><a href="content/reference/set-operations/bedextract.html"><tt>bedextract</tt></a> - efficiently extract BED features</li>
+   <li><a href="content/reference/set-operations/closest-features.html"><tt>closest-features</tt></a> - matches nearest features between BED files</li>
    </ul>
 
 .. |statistics_png| image:: assets/index/statistics.png
 .. |statistics| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><tt>bedmap</tt> - map overlapping BED elements onto target regions, and optionally compute any number of common statistical operations</li>
+   <li><a href="content/reference/statistics/bedmap.html"><tt>bedmap</tt></a> - map overlapping BED elements onto target regions, and optionally compute any number of common statistical operations</li>
    </ul>
 
 .. |file_management_png| image:: assets/index/file_management.png
 .. |file_management| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><tt>sort-bed</tt> - apply lexicographical sort to BED data</li>
-   <li><tt>starch</tt> and <tt>unstarch</tt> - compress and extract BED data</li>
-   <li><tt>starchcat</tt> - merge compressed archives</li>
-   <li>conversion tools - convert common genomic formats to BED</li>
+   <li><a href="content/reference/file-management/sorting/sort-bed.html"><tt>sort-bed</tt></a> - apply lexicographical sort to BED data</li>
+   <li><a href="content/reference/file-management/compression/starch.html"><tt>starch</tt></a> and <a href="content/reference/file-management/compression/unstarch.html"><tt>unstarch</tt></a> - compress and extract BED data</li>
+   <li><a href="content/reference/file-management/compression/starchcat.html"><tt>starchcat</tt></a> - merge compressed archives</li>
+   <li><a href="content/reference/file-management/conversion.html">conversion tools</a> - convert common genomic formats to BED</li>
    </ul>
