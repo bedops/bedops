@@ -1,9 +1,9 @@
 Overview
 ========
 
-========
-Overview
-========
+=====
+About
+=====
 BEDOPS is an open-source command-line toolkit that performs efficient and scalable Boolean and other set operations, statistical calculations, archiving, conversion and other management of genomic data of arbitrary scale.
 
 The suite includes tools for set and statistical operations (``bedops``, ``bedmap`` and ``closest-features``) and compression of large inputs into a novel lossless format (``starch``) that can provide greater space savings and faster data extractions than current alternatives. We offer native support for this compression format to these and other BEDOPS tools.
@@ -14,9 +14,9 @@ Sorting arbitrarily large BED files is easy with ``sort-bed``, which easily scal
 
 All of these tools are made to be glued together with common UNIX input and output streams. This helps make your pipeline design and maintenance easy, fast and flexible.
 
-===============
-Why use BEDOPS?
-===============
+=========================
+Why you should use BEDOPS
+=========================
 
 -------------------------
 BEDOPS tools are flexible
