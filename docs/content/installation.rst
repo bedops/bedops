@@ -11,7 +11,7 @@ Pre-built binaries offer the easiest installation option for uses of BEDOPS. At 
 Linux
 -----
 
-1. Download the 32- or 64-bit package for Linux.
+1. Download the current 32- or 64-bit package for Linux from Github.
 2. Extract the package to a location of your choice. 
    In the case of 32-bit Linux:
    ::
@@ -28,7 +28,7 @@ Linux
 Mac OS X
 --------
 
-1. Download the Mac OS X installer for BEDOPS.
+1. Download the current Mac OS X package for BEDOPS from Github.
 2. Locate the installer package (usually located in ``~/Downloads`` |--| this will depend on your web browser configuration):
 
 .. image:: ../assets/installation/bedops_macosx_installer_icon.png
@@ -37,11 +37,33 @@ Mac OS X
 
 .. image:: ../assets/installation/bedops_macosx_installer_screen.png
 
-4. Follow the instructions to install BEDOPS and library dependencies to your Mac.
+4. Follow the instructions to install BEDOPS and library dependencies to your Mac. (If you are upgrading from a previous version, components will be overwritten or removed, as needed.)
 
 ===============
 Via source code
 ===============
+
+At this time, compilation of BEDOPS requires GCC 4.7 or greater (which includes support for `C++11 <http://en.wikipedia.org/wiki/C%2B%2B11>`_ features required by core BEDOPS tools).
+
+1. If you do not have GCC 4.7 or greater installed, first do so. 
+   For OS X, we recommend installing first installing `Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option. Then install GCC 4.7 or greater using `MacPorts <http://www.macports.org>`_. In the future, we may provide support for OS X compilation via Clang/LLVM, which is included with Xcode.
+2. Clone the BEDOPS Git repository:::
+
+   $ git clone https://github.com/alexpreynolds/bedops.git
+
+3. Run ``make`` in the top-level of the local copy of the BEDOPS repository:::
+
+   $ cd bedops
+   $ make
+   ...
+
+4. Run ``make install`` to place binaries and scripts in a local ``bin`` folder:::
+
+   $ make install
+
+5. Copy the extracted binaries to a location of your choice which is in your environment's ``PATH``, *e.g.* ``~/opt/bin``:
+   ::
+       $ cp bin/* ~/opt/bin
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
