@@ -5,12 +5,12 @@ We want to visualize how genome-wide association study single nucleotide repeats
 
 Roughly speaking, we considered two classes of SNPs: those which are prostate-related (associated with PSA and prostate cancer) and some not (height). We have some BED files with positions of DNaseI-hypersensitive sites for various tissues: two from prostate (LNCaP and PrEC), the rest from other tissues (CACO2, HEPG2, K562, MCF7).
 
-We will use BEDOPS tools to generate per-tissue DHS counts associated with our SNPs, using `matrix2png <http://www.chibi.ubc.ca/matrix2png/>`_ to visualize results as a heatmap.
+We will use BEDOPS tools to generate per-tissue DHS counts associated with our SNPs, using `matrix2png`_ to visualize results as a heatmap.
 
 ===================
 BEDOPS tools in use
 ===================
-For this example, we use ``sort-bed`` to sort the input SNP data, and ``bedmap`` to count the number of single-base or greater overlaps between a SNP and a tissue-specific DHS. A modified version of this script uses loops and other shell features.
+For this example, we use `sort-bed`_ to sort the input SNP data, and `bedmap`_ to count the number of single-base or greater overlaps between a SNP and a tissue-specific DHS. A modified version of this script uses loops and other shell features.
 
 ======
 Script
@@ -68,19 +68,19 @@ Script
 Discussion
 ==========
 
-Each use of ``bedmap`` is identical: the options ``--ec --delim "\t" --bp-ovr 1 --count`` add several settings:
+Each use of `bedmap`_ is identical: the options ``--ec --delim "\t" --bp-ovr 1 --count`` add several settings:
 
 * Error checking/correction (``--ec``)
 * Use of the tab character as a custom field delimiter (``--delim "\t"``) to make results easier to parse with ``awk`` further downstream
 * Manual specification of a single base-pair criteria for overlap (``--bp-ovr 1``, although this is the default)
 * Using ``--count``, counting the number of mapping elements (DHSs) which overlap a reference instance (a given SNP)
 
-These results are calculated for each of the seven cell types and collated into matrix form to run through ``matrix2png``. We show it here to give an idea of what kind of data ``bedmap`` generates, to help create these quantitative visualizations:
+These results are calculated for each of the seven cell types and collated into matrix form to run through `matrix2png`_. We show it here to give an idea of what kind of data `bedmap`_ generates, to help create these quantitative visualizations:
 
 .. image:: ../../assets/usage-examples/SNP_DHS_matrix.png
    :width: 75%
 
-Rows are presented in ``sort-bed`` order. Cells in red show greatest relative number of counts, while yellow shows the least. Examining this heatmap, DHS elements appear to associate with prostate disease-related GWAS SNPs.
+Rows are presented in `sort-bed`_ order. Cells in red show greatest relative number of counts, while yellow shows the least. Examining this heatmap, DHS elements appear to associate with prostate disease-related GWAS SNPs.
 
 To make this clearer, here is the same result, with rows sorted by disease name:
 
@@ -96,13 +96,16 @@ Downloads
 * The `example`_ script, after modification to use loops and other shell features.
 * `Data`_ for this example are contained in a tarball (use ``tar -xzf`` to extract files).
 
-The `bedmap`_ tool can operate directly on Starch-formatted archives. Alternatively, use the ``unstarch`` tool to decompress Starch data files to sorted BED format.
+The `bedmap`_ tool can operate directly on Starch-formatted archives. Alternatively, use the `unstarch`_ tool to decompress Starch data files to sorted BED format.
 
 Note that these are not the full datasets that went into the original research, but snippets that should otherwise demonstrate the disease-DHS association phenomenon and the use of parts of the BEDOPS toolset.
 
 .. _example: ../../assets/usage-examples/SNP_DHS_heatmap.tcsh
 .. _Data: ../../assets/usage-examples/SNP_DHS_data.tgz
 .. _bedmap: ../reference/statistics/bedmap.html
+.. _unstarch: ../reference/file-management/compression/unstarch.html
+.. _sort-bed: ../reference/file-management/sorting/sort-bed.html
+.. _matrix2png: http://www.chibi.ubc.ca/matrix2png/
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
    :trim:
