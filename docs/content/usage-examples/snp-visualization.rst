@@ -17,6 +17,7 @@ Script
 ======
 
 ::
+
   #!/bin/tcsh -efx
 
   sort-bed GWAS_SNPs.bed > GWAS_SNPs.sorted.bed
