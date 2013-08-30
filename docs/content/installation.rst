@@ -7,7 +7,7 @@ BEDOPS is available to users as pre-built binaries and source code.
 Via pre-built packages
 ======================
 
-Pre-built binaries offer the easiest installation option for users of BEDOPS. At this time, we offer binaries for 32- and 64-bit versions of Linux and OS X (Intel) platforms.
+Pre-built binaries offer the easiest and fastest installation option for users of BEDOPS. At this time, we offer binaries for 32- and 64-bit versions of Linux and OS X (Intel) platforms.
 
 -----
 Linux
@@ -50,7 +50,17 @@ At this time, compilation of BEDOPS requires GCC 4.7 or greater (which includes 
 
 1. If you do not have GCC 4.7 or greater installed, first do so.
 
-   For Mac OS X users, we recommend first installing `Apple Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option within Xcode. Then install GCC 4.7 or greater using `MacPorts <http://www.macports.org>`_. In the future, we may provide support for OS X compilation via Clang/LLVM, which is the default compiler included with Xcode.
+   For Mac OS X users, we recommend first installing `Apple Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option within Xcode. Then install GCC 4.7 or greater using `MacPorts <http://www.macports.org>`_, setting GCC to be the default compiler, *e.g.*: :: 
+
+   $ sudo port install gcc47
+   $ sudo port install gcc_select
+   $ sudo port select --set gcc gcc47
+
+   In the future, we may provide support for OS X compilation via Clang/LLVM, which is the default compiler included with Xcode.
+
+   For Linux users, use your favorite package manager to install the requisite compiler. For example, in Ubuntu, you might run the following: ::
+ 
+   $ sudo apt-get install gcc
 
 2. Clone the BEDOPS Git repository in an appropriate local directory: ::
 
