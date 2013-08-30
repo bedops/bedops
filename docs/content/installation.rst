@@ -1,11 +1,13 @@
 Installation
 ============
 
+BEDOPS is available to users as pre-built binaries and source code.
+
 ======================
 Via pre-built packages
 ======================
 
-Pre-built binaries offer the easiest installation option for uses of BEDOPS. At this time, we offer binaries for 32- and 64-bit versions of Linux and OS X (Intel) platforms.
+Pre-built binaries offer the easiest installation option for users of BEDOPS. At this time, we offer binaries for 32- and 64-bit versions of Linux and OS X (Intel) platforms.
 
 -----
 Linux
