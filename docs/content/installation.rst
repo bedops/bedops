@@ -29,8 +29,11 @@ Mac OS X
 --------
 
 1. Download the Mac OS X installer for BEDOPS.
-2. Locate the installer package (usually located in ``~/Downloads`` &emdash; this will depend on your web browser configuration).
-3. Double-click to open the installer package:
+2. Locate the installer package (usually located in ``~/Downloads`` |--| this will depend on your web browser configuration):
+
+.. image:: ../assets/installation/bedops_macosx_installer_icon.png
+
+3. Double-click to open the installer package. It will look something like this:
 
 .. image:: ../assets/installation/bedops_macosx_installer_screen.png
 
@@ -40,3 +43,6 @@ Mac OS X
 Via source code
 ===============
 
+.. |--| unicode:: U+2013   .. en dash
+.. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
+   :trim:
