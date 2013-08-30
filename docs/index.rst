@@ -35,10 +35,3 @@ Table of contents
 .. |set_operations.png| image:: assets/index/set_operations.png
 .. |statistics.png| image:: assets/index/statistics.png
 .. |file_management.png| image:: assets/index/file_management.png
-
-.. |set_operations| replace:: 
-
-.. |statistics| replace::
-   * bedmap - foo bar baz
-.. |file_management| replace::
-   * starch, unstarch, starchcat - compression!
