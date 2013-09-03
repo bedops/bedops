@@ -27,13 +27,14 @@ If we want to filter any BED file to retrieve elements from a specific chromosom
 
 However, just as BEDOPS tools use the information in :ref:`sorted data <sort-bed>` to apply efficient set and statistical operations, we can use this same information to jump quickly through our data of interest.
 
-Specifically, sorting allows us to perform a `binary search <http://en.wikipedia.org/wiki/Binary_search_algorithm>`: 
+Specifically, sorting allows us to perform a `binary search <http://en.wikipedia.org/wiki/Binary_search_algorithm>`_: 
 
 1. We jump to the middle byte of the BED file, stream to the nearest element, then parse and test the chromosome name. 
 2. Either we have a match, or we jump to the middle of the remaining left or right half (decided by dictionary order), parse and test again. 
 3. We repeat steps 1 and 2 until we have matches that define the bounds of the target chromosome.
 
 .. image:: ../../assets/reference/set-operations/bedextract_mechanism.png
+   width: 50%
 
 To indicate the kind of speed gain that the `bedextract`_ tool provides, in local testing, a naïve listing of chromosomes from a 36 GB BED input using UNIX ``cut`` and ``uniq`` utilities took approximately 20 minutes to complete on a typical Core 2 Duo-based Linux workstation. Retrieval of the same chromosome listing with ``bedextract --list-chr`` took only 2 seconds (cache flushed |---| no cheating!).
 
