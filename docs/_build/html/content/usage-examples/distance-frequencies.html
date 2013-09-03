@@ -63,7 +63,7 @@
 </div>
 <div class="section" id="script">
 <h2>3.3.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
-<p>SNPs are in a BED-formatted file called <tt class="docutils literal"><span class="pre">SNPs.bed</span></tt> sorted lexicographically with <a class="reference external" href="../reference/file-management/sorting/sort-bed.html">sort-bed</a>. The DNase-hypersensitive sites are stored in a sorted BED-formatted file called <tt class="docutils literal"><span class="pre">DHSs.bed</span></tt>. These two files are available in the <a class="reference internal" href="#downloads"><em>Downloads</em></a> section.</p>
+<p>SNPs are in a BED-formatted file called <tt class="docutils literal"><span class="pre">SNPs.bed</span></tt> sorted lexicographically with <a class="reference external" href="../reference/file-management/sorting/sort-bed.html">sort-bed</a>. The DNase-hypersensitive sites are stored in a sorted BED-formatted file called <tt class="docutils literal"><span class="pre">DHSs.bed</span></tt>. These two files are available in the <a class="reference internal" href="#distance-frequencies-downloads"><em>Downloads</em></a> section.</p>
 <div class="highlight-python"><pre># author : Eric Rynes
 closest-features --dist --closest --no-ref SNPs.bed DHSs.bed \
     | cut -f2 -d '|' \
@@ -81,7 +81,7 @@ closest-features --dist --closest --no-ref SNPs.bed DHSs.bed \
 <p>Thus, for every SNP, we have a corresponding distance to nearest DHS. As an example, from this data we could build a histogram showing the frequencies of distances-to-nearest-DHS.</p>
 </div>
 <div class="section" id="downloads">
-<span id="id1"></span><h2>3.3.4. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
+<span id="distance-frequencies-downloads"></span><h2>3.3.4. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference external" href="../../assets/usage-examples/Frequencies-SNPs.bed.starch">SNP</a> elements</li>
 <li><a class="reference external" href="../../assets/usage-examples/Frequencies-DHSs.bed.starch">DNase-hypersensitive</a> elements</li>

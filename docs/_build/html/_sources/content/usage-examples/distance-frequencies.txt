@@ -13,7 +13,7 @@ To find nearest elements, we will use `closest-features`_ with the ``--dist``, `
 Script
 ======
 
-SNPs are in a BED-formatted file called ``SNPs.bed`` sorted lexicographically with `sort-bed`_. The DNase-hypersensitive sites are stored in a sorted BED-formatted file called ``DHSs.bed``. These two files are available in the :ref:`downloads` section.
+SNPs are in a BED-formatted file called ``SNPs.bed`` sorted lexicographically with `sort-bed`_. The DNase-hypersensitive sites are stored in a sorted BED-formatted file called ``DHSs.bed``. These two files are available in the :ref:`distance_frequencies_downloads` section.
 
 ::
 
@@ -39,7 +39,7 @@ This type of result is chopped up with the standard UNIX utility ``cut`` to get 
 
 Thus, for every SNP, we have a corresponding distance to nearest DHS. As an example, from this data we could build a histogram showing the frequencies of distances-to-nearest-DHS.
 
-.. _downloads:
+.. _distance_frequencies_downloads:
 
 =========
 Downloads

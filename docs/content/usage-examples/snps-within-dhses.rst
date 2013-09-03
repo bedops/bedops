@@ -1,4 +1,56 @@
 Finding the subset of SNPs within DHSes
 =======================================
 
-Foo bar baz!
+In this example, we would like to identify the set of SNPs that are within a DHS, printing out both the SNP element *and* the DHS it is contained within.
+
+===================
+BEDOPS tools in use
+===================
+
+We use `bedmap`_ to answer this question, as it traverses a *reference* BED file (in this example, SNPs), and identifies overlapping elements from the *mapping* BED file (in this example, DHSs).
+
+======
+Script
+======
+
+SNPs are in a BED-formatted file called ``SNPs.bed`` sorted lexicographically with `sort-bed`_. The DNase-hypersensitive sites are stored in a sorted BED-formatted file called ``DHSs.bed``. These two files are available in the :ref:`snps_within_dhses_downloads` section.
+
+::
+
+  bedmap --indicator --echo --echo-map SNPs.bed DHSs.bed \
+    | awk -F"|" '(int($1) == 1) { print $2"|"$3; }' \
+    > subsetOfSNPsWithinAssociatedDHS.bed
+
+==========
+Discussion
+==========
+
+The output of this `bedmap`_ statement might look something like this:
+
+::
+
+  chr1    10799576    10799577    rs12046278  Systolic_blood_pressure Cardiovascular|chr1 10799460    10799610    MCV-1   9.18063
+
+The output is delimited by pipe symbols (``|``), showing the reference element (SNP) and the mapped element (DHS). 
+
+If multiple elements are mapped onto a single reference element, the mapped elements are further separated by semicolons, by default.
+
+.. _snps_within_dhses_downloads:
+
+=========
+Downloads
+=========
+
+* `SNP`_ elements
+* `DNase-hypersensitive`_ elements
+
+The `bedmap`_ tool can operate directly on Starch-formatted archives. Alternatively, use the `unstarch`_ tool to decompress Starch data files to sorted BED format.
+
+.. _SNP: ../../assets/usage-examples/Frequencies-SNPs.bed.starch
+.. _DNase-hypersensitive: ../../assets/usage-examples/Frequencies-DHSs.bed.starch
+.. _bedmap: ../reference/statistics/bedmap.html
+.. _unstarch: ../reference/file-management/compression/unstarch.html
+.. _sort-bed: ../reference/file-management/sorting/sort-bed.html
+.. |--| unicode:: U+2013   .. en dash
+.. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
+   :trim:
