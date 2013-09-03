@@ -35,7 +35,7 @@ The output from `closest-features`_ contains coordinates and the signed distance
 
   chr1    2513240 2513390 MCV-11  97.201400|25
 
-This type of result is chopped up with the standard UNIX utility ``cut`` to get at the distances to the closest elements. Finally, we throw out any non-distance, denoted by "``NA``". This can occur if there exists some chromosome in the SNP dataset that does not exist in the DHSs.
+This type of result is chopped up with the standard UNIX utility ``cut`` to get at the distances to the closest elements. Finally, we use ``grep -v`` to throw out any non-distance, denoted by ``NA``. This can occur if there exists some chromosome in the SNP dataset that does not exist in the DHSs.
 
 Thus, for every SNP, we have a corresponding distance to nearest DHS. As an example, from this data we could build a histogram showing the frequencies of distances-to-nearest-DHS.
 

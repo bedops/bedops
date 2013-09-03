@@ -104,7 +104,7 @@ A broad array of human cell tissue hotspot data for testing this example are ava
 This includes hotspot data for ``DS12528``, ``DS15123``, ``DS17319``, ``DS17677`` and ``DS20343`` lines.
 
 .. _bedmap: ../reference/statistics/bedmap.html
-.. _bedops: ../reference/statistics/bedops.html
+.. _bedops: ../reference/set-operations/bedops.html
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
    :trim:

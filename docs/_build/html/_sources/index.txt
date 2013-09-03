@@ -8,9 +8,6 @@ BEDOPS is an open-source command-line toolkit that performs highly efficient and
 | |set_operations|      | |statistics|          | |file_management|      |
 +-----------------------+-----------------------+------------------------+
 
-========
-Contents
-========
 .. toctree::
    :numbered:
 

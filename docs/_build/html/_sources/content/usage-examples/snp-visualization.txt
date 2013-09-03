@@ -10,6 +10,7 @@ We will use BEDOPS tools to generate per-tissue DHS counts associated with our S
 ===================
 BEDOPS tools in use
 ===================
+
 For this example, we use `sort-bed`_ to sort the input SNP data, and `bedmap`_ to count the number of single-base or greater overlaps between a SNP and a tissue-specific DHS. A modified version of this script uses loops and other shell features.
 
 ======
