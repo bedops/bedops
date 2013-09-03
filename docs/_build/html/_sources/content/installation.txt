@@ -3,6 +3,8 @@ Installation
 
 BEDOPS is available to users as pre-built binaries and source code.
 
+.. _installation_instructions:
+
 ======================
 Via pre-built packages
 ======================
