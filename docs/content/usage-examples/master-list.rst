@@ -7,7 +7,7 @@ Given a list of five-column UCSC BED files, where scores are kept in the fifth c
 BEDOPS tools in use
 ===================
 
-In the following example, we want to merge hotspot peaks for five fetal adrenal tissues, picking the highest scoring element where there are matches. We'll use a mix of `bedmap`_ and its `--max` operation with `bedops`_ set operations to accomplish this.
+In the following example, we want to merge hotspot peaks for five fetal adrenal tissues, picking the highest scoring element where there are matches. We'll use a mix of `bedmap`_ and its ``--max`` operation with `bedops`_ set operations to accomplish this.
 
 ======
 Script
