@@ -13,7 +13,7 @@ For this script, we use `bedextract`_ to quickly build a list of chromosomes in 
 Script
 ======
 
-Two versions of the ``starchcluster`` script are included with the source and package distributions of BEDOPS (see :ref:`installation_instructions` for more detail). 
+Two versions of the ``starchcluster`` script are included with the source and package distributions of BEDOPS (see :ref:`Installation <installation_instructions>` for more detail). 
 
 One version makes use of an `Oracle Grid Engine <http://en.wikipedia.org/wiki/Oracle_Grid_Engine>`_ (or Sun Grid Engine) cluster environment to distribute per-chromosome tasks, while the other script uses `GNU Parallel <http://www.gnu.org/software/parallel/>`_ to split the workload over hosts running SSH. 
 
