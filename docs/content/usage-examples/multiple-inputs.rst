@@ -1,3 +1,5 @@
+.. _multiple_inputs:
+
 Working with many input files at once with ``bedops`` and ``bedmap``
 ====================================================================
 

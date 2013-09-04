@@ -55,14 +55,38 @@
           <div class="body">
             
   <div class="section" id="working-with-many-input-files-at-once-with-bedops-and-bedmap">
-<h1>3.7. Working with many input files at once with <tt class="docutils literal"><span class="pre">bedops</span></tt> and <tt class="docutils literal"><span class="pre">bedmap</span></tt><a class="headerlink" href="#working-with-many-input-files-at-once-with-bedops-and-bedmap" title="Permalink to this headline">¶</a></h1>
-<p>BEDOPS is designed to work with as many input files at once as you need, either through the <em class="xref std std-ref">bedops</em> program, or through a combined use of that program with others in the suite.</p>
+<span id="multiple-inputs"></span><h1>3.7. Working with many input files at once with <tt class="docutils literal"><span class="pre">bedops</span></tt> and <tt class="docutils literal"><span class="pre">bedmap</span></tt><a class="headerlink" href="#working-with-many-input-files-at-once-with-bedops-and-bedmap" title="Permalink to this headline">¶</a></h1>
+<p>BEDOPS is designed to work with as many input files at once as you need, either through the <a class="reference internal" href="../reference/set-operations/bedops.html#bedops"><em>bedops</em></a> program, or through a combined use of that program with others in the suite.</p>
 <div class="section" id="discussion">
 <h2>3.7.1. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
-<p>Say we have five input BED files (<tt class="docutils literal"><span class="pre">A</span></tt>, <tt class="docutils literal"><span class="pre">B</span></tt>, <tt class="docutils literal"><span class="pre">C</span></tt>, <tt class="docutils literal"><span class="pre">D</span></tt>, <tt class="docutils literal"><span class="pre">E</span></tt>), and I need to identify those regions where any two (or more) of the input files (<tt class="docutils literal"><span class="pre">{A,B}</span></tt>, <tt class="docutils literal"><span class="pre">{A,C}</span></tt>, <tt class="docutils literal"><span class="pre">{A,D}</span></tt>, <tt class="docutils literal"><span class="pre">{A,E}</span></tt>, <tt class="docutils literal"><span class="pre">{B,C}</span></tt>, ...) overlap reciprocally by 30% or more.</p>
+<p>Say we have five input BED files (<tt class="docutils literal"><span class="pre">A</span></tt>, <tt class="docutils literal"><span class="pre">B</span></tt>, <tt class="docutils literal"><span class="pre">C</span></tt>, <tt class="docutils literal"><span class="pre">D</span></tt>, <tt class="docutils literal"><span class="pre">E</span></tt>), and we need to identify those regions where any two (or more) of the input files (<tt class="docutils literal"><span class="pre">{A,B}</span></tt>, <tt class="docutils literal"><span class="pre">{A,C}</span></tt>, <tt class="docutils literal"><span class="pre">{A,D}</span></tt>, <tt class="docutils literal"><span class="pre">{A,E}</span></tt>, <tt class="docutils literal"><span class="pre">{B,C}</span></tt>, ...) overlap reciprocally by 30% or more.</p>
 <p>One concrete application may be where we have multiple biological replicates, and we take any repeatable result (in two or more inputs, in this case) as true signal. Similarly, we might be interested in a problem like this if we have multiple related (or even unrelated) cell type samples and we want to be confident in peak calls for DNaseI sequencing of ChIP-seq experiments.</p>
 <p>These sorts of problems often have efficient solutions in BEDOPS. Here, the solution is independent of how many inputs we start with, what overlap criteria we use, and whether the requirement calls for two or more files of overlap (or whether it is 4 or more files in the overlap, or 9, or whatever).</p>
-<p>Consider a case study of one such problem that utilizes both <em class="xref std std-ref">bedops</em> and <em class="xref std std-ref">bedmap</em> together to create an efficient solution.</p>
+<p>Consider a case study of one such problem that utilizes both <a class="reference internal" href="../reference/set-operations/bedops.html#bedops"><em>bedops</em></a> and <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> together to create an efficient solution:</p>
+<div class="highlight-python"><pre>bedops -u file1.bed file2.bed ... fileN.bed \
+    | bedmap --echo --echo-map-id-uniq --fraction-both 0.5 - \
+    | awk -F"|" '(split($2, a, ";") &gt; 1)' \
+    &gt; answer.bed</pre>
+</div>
+<p>Here, we pass in as many files as we have to <a class="reference internal" href="../reference/set-operations/bedops.html#bedops"><em>bedops</em></a>. The requirement of elements overlapping reciprocally is met by using <tt class="docutils literal"><span class="pre">--fraction-both</span></tt>, and the requirement that overlapping elements must come from two or more (distinct) files is satisfied by checking how many elements there are via the <tt class="docutils literal"><span class="pre">--echo-map-id-uniq</span></tt> operator.</p>
+<p>The requirements for <tt class="docutils literal"><span class="pre">file1.bed</span></tt> through <tt class="docutils literal"><span class="pre">fileN.bed</span></tt> are that each is properly <a class="reference internal" href="../reference/file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a> (as expected for any BEDOPS input) and that their respective fourth-column ID fields identify the file. For example:</p>
+<div class="highlight-python"><pre>$ head -2 file1.bed
+chr1 1   50   1  anything-else
+chr1 230 400  1  whatever-you-like
+
+$ head -2 file2.bed
+chr1 23  78  2  other-fields
+chr1 56  98  2  5.678  +  peak-2</pre>
+</div>
+<p>As a nice side-effect, <tt class="docutils literal"><span class="pre">answer.bed</span></tt> will show from which file each entry originated. If we don&#8217;t want that extra information, we simply cut it out:</p>
+<div class="highlight-python"><pre>cut -f1-3,5- answer.bed &gt;! my-final-answer.bed</pre>
+</div>
+<p>There is also a column that shows exactly which files are part of the per-row intersection. If we don&#8217;t want that information, then we just cut that:</p>
+<div class="highlight-python"><pre>cut -f1 -d'|' my-final-answer.bed</pre>
+</div>
+<p>While this is just one example of how the tools can be used together to answer complicated questions efficiently, it demonstrates why it is worthwhile to learn about the relatively few core programs in BEDOPS.</p>
+<p>If we look at what is required to answer this kind of question using other tool suites, we will quickly find that solutions do not scale to the number of files, nor with the requirement that overlaps must come from <em>k</em> or more distinct input files. Even in the simplest case of just requiring the regions overlap in 2 of <em>n</em> inputs, we must build on the order of <em>n</em><sup>2</sup>/2 intermediate files (and sweep through the <em>n</em> original inputs <em>n</em><sup>2</sup> times as well). If our requirement is 3 of <em>n</em> inputs, the polynomials increase accordingly.</p>
+<p><em>The solution with BEDOPS is far more efficient than this and requires no intermediate results.</em></p>
 </div>
 </div>
 
