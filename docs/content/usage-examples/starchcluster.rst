@@ -57,7 +57,6 @@ Once we have per-chromosome Starch-formatted archives, we need some way to put t
 The big picture view is like this:
 
 .. image:: ../../assets/reference/file-management/compression/starchcluster_mechanism.png
-   :width: 50%
 
 As the figure notes, the compression time for a very large BED file is reduced roughly to the time taken to compress the largest chromosome in the original file. Parallelization of this process is an order of magnitude faster than compressing chromosomes in serial.
 
