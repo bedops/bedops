@@ -117,8 +117,6 @@ Operational input was a 14 MB BED file containing annotations of human gene and 
 
 .. image:: ../assets/performance/performance_independent_grok.png
 
-As Ovaska, et al. show here, the BEDOPS toolkit provides substantially reduced execution time and memory consumption. With the sole exception of the sort operation, all other operations consumed only 1 MB with :ref:`bedops`. As shown in this study, :ref:`sorting <sort-bed>` with BEDOPS also outperformed analogous operations in other tool suites in terms of memory and running time.
-
 Remember that with BEDOPS, sorting is, at most, a *one-time cost* to operate on data any number of times in the most efficient way. Since the programs in BEDOPS produce sorted outputs, you never need to sort results before using them in downstream analyses.
 
 -----------------------------
