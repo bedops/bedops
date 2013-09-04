@@ -38,7 +38,7 @@ Specifically, sorting allows us to perform a `binary search <http://en.wikipedia
 3. We repeat steps 1 and 2 until we have matches that define the bounds of the target chromosome.
 
 .. image:: ../../assets/reference/set-operations/bedextract_mechanism.png
-   :width: 50%
+   :width: 75%
 
 To indicate the kind of speed gain that the :ref:`bedextract` tool provides, in local testing, a naïve listing of chromosomes from a 36 GB BED input using UNIX ``cut`` and ``uniq`` utilities took approximately 20 minutes to complete on a typical Core 2 Duo-based Linux workstation. Retrieval of the same chromosome listing with ``bedextract --list-chr`` took only 2 seconds (cache flushed |---| no cheating!).
 
