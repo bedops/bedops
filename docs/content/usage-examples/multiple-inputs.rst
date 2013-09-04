@@ -50,6 +50,6 @@ There is also a column that shows exactly which files are part of the per-row in
 
 While this is just one example of how the tools can be used together to answer complicated questions efficiently, it demonstrates why it is worthwhile to learn about the relatively few core programs in BEDOPS. 
 
-If we look at what is required to answer this kind of question using other tool suites, we will quickly find that solutions do not scale to the number of files, nor with the requirement that overlaps must come from *k* or more distinct input files. Even in the simplest case of just requiring the regions overlap in 2 of *n* inputs, we must build on the order of (*n* * *n*)/2 intermediate files (and sweep through the *n* original inputs *n* :sup:`2` times as well). If our requirement is 3 of *n* inputs, the polynomials increase accordingly. 
+If we look at what is required to answer this kind of question using other tool suites, we will quickly find that solutions do not scale to the number of files, nor with the requirement that overlaps must come from *k* or more distinct input files. Even in the simplest case of just requiring the regions overlap in 2 of *n* inputs, we must build on the order of (*n* * *n*)/2 intermediate files (and sweep through the *n* original inputs *n*:sup:`2` times as well). If our requirement is 3 of *n* inputs, the polynomials increase accordingly. 
 
 *The solution with BEDOPS is far more efficient than this and requires no intermediate results.*
