@@ -1,4 +1,4 @@
-:: _psl2bed:
+.. _psl2bed:
 
 `psl2bed`
 =========

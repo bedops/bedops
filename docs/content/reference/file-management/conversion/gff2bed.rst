@@ -1,4 +1,4 @@
-:: _gff2bed:
+.. _gff2bed:
 
 `gff2bed`
 =========

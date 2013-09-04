@@ -1,7 +1,7 @@
 Working with many input files at once with ``bedops`` and ``bedmap``
 ====================================================================
 
-BEDOPS is designed to work with as many input files at once as you need, either through the :ref:`bedops <bedops>` program, or through a combined use of that program with others in the suite.
+BEDOPS is designed to work with as many input files at once as you need, either through the :ref:`bedops` program, or through a combined use of that program with others in the suite.
 
 ==========
 Discussion
@@ -13,4 +13,4 @@ One concrete application may be where we have multiple biological replicates, an
 
 These sorts of problems often have efficient solutions in BEDOPS. Here, the solution is independent of how many inputs we start with, what overlap criteria we use, and whether the requirement calls for two or more files of overlap (or whether it is 4 or more files in the overlap, or 9, or whatever).
 
-Consider a case study of one such problem that utilizes both :ref:`bedops <bedops>` and :ref:`bedmap <bedmap>` together to create an efficient solution.
+Consider a case study of one such problem that utilizes both :ref:`bedops` and :ref:`bedmap` together to create an efficient solution.

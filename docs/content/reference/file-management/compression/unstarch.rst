@@ -1,4 +1,4 @@
-:: _unstarch:
+.. _unstarch:
 
 `unstarch`
 ==========

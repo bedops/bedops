@@ -1,4 +1,6 @@
-:: _bedops:
+.. _bedops:
 
 `bedops`
 ========
+
+Foo bar baz!

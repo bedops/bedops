@@ -1,4 +1,4 @@
-:: _starchcat:
+.. _starchcat:
 
 `starchcat`
 ===========

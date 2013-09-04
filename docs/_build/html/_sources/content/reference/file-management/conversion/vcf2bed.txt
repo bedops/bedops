@@ -1,4 +1,4 @@
-:: _vcf2bed:
+.. _vcf2bed:
 
 `vcf2bed`
 =========

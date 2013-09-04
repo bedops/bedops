@@ -1,4 +1,4 @@
-:: _sam2bed:
+.. _sam2bed:
 
 `sam2bed`
 =========

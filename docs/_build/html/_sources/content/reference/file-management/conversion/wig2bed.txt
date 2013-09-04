@@ -1,4 +1,4 @@
-:: _wig2bed:
+.. _wig2bed:
 
 `wig2bed`
 =========

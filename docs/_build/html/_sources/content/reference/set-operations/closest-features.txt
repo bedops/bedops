@@ -1,4 +1,4 @@
-:: _closest-features:
+.. _closest-features:
 
 `closest-features`
 ==================
