@@ -39,9 +39,11 @@ The ``complementBed`` (with ``-i`` and ``-g`` options) and ``intersectBed`` (wit
 
 Both BEDTools programs were unable to complete operations after 51M elements with the allocated 18 GB of memory. The :ref:`bedops` program continued operating on the full dataset.
 
-+------------+------------------+
-| |note_png| | |intersect_note| |
-+------------+------------------+
++------------------+
+| |note_png|       | 
++------------------+
+| |intersect_note| |
++------------------+
 
 ----------
 Discussion
