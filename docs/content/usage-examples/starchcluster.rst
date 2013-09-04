@@ -21,6 +21,10 @@ One version makes use of an `Oracle Grid Engine <http://en.wikipedia.org/wiki/Or
 Discussion
 ==========
 
+-------------------
+Splitting BED files
+-------------------
+
 Whole-genome analyses are often "`embarassingly parallel <http://en.wikipedia.org/wiki/Embarrassingly_parallel>`_", in that per-chromosome computations can be placed onto separate work nodes, with results collated at the end in "`map-reduce <http://en.wikipedia.org/wiki/MapReduce>`_" fashion.
 
 If we want to filter any BED file to retrieve elements from a specific chromosome (say, to compress a BED file, one chromosome at a time), to arrange this kind of analysis, one trivial |---| but very slow |---| way to do this involves sequentially walking line by line through the file to parse and test each element. This can take a while to do. 
@@ -37,6 +41,25 @@ Specifically, sorting allows us to perform a `binary search <http://en.wikipedia
    :width: 50%
 
 To indicate the kind of speed gain that the `bedextract`_ tool provides, in local testing, a naïve listing of chromosomes from a 36 GB BED input using UNIX ``cut`` and ``uniq`` utilities took approximately 20 minutes to complete on a typical Core 2 Duo-based Linux workstation. Retrieval of the same chromosome listing with ``bedextract --list-chr`` took only 2 seconds (cache flushed |---| no cheating!).
+
+-----------------------
+Compressing BED subsets
+-----------------------
+
+Now we can very quickly demarcate where chromosomes start and stop in a BED file, we can apply `starch`_ on those subsets on separate cluster nodes. 
+
+----------------------------------
+Stitching together compressed sets
+----------------------------------
+
+Once we have per-chromosome Starch-formatted archives, we need some way to put them all together into one archive. This is where `starchcat`_ comes in, taking all the per-chromosome archives as inputs and creating a new archive as output.
+
+The big picture view is like this:
+
+:: image: ../../assets/reference/file-management/compression/starchcluster_mechanism.png
+   :width: 50%
+
+As the figure notes, the compression time for a very large BED file is reduced roughly to the time taken to compress the largest chromosome in the original file. Parallelization of this process is an order of magnitude faster than compressing chromosomes in serial.
 
 .. _bedextract: ../reference/set-operations/bedextract.html
 .. _starchcat: ../reference/file-management/compression/starchcat.html
