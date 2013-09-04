@@ -116,9 +116,30 @@ The ``--everything`` option is equivalent to concatenating and sorting BED eleme
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_everything.png
 
+As with all BEDOPS tools and operations, the output of this operation is :ref:`sorted <sort-bed>`.
+
 .. topic:: |note_header|
 
-   The ``--everything`` option preserves all columns from all inputs. This is useful for datasets with additional ID, score or other metadata.
+   The ``--everything`` option preserves all columns from all inputs. This is useful for multiset unions of datasets with additional ID, score or other metadata.
+
+-----------------------------
+Element-of (-e, --element-of)
+-----------------------------
+
+The ``--element-of`` operation shows the elements of the first ("*reference*") file that overlap elements in the second and subsequent files by the specified length (in bases) or by percentage of length.
+
+In the following example, we search for elements in the reference set ``A`` which overlap elements in ``B`` by at least one base:
+
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_elementof_ab.png
+
+Elements that are returned are always from the reference set (in this case, set ``A``).
+
+.. topic:: |note_header|
+
+   The ``--element-of`` option preserves all columns from the first input.
+
+Note that `--element-of` is *not* a symmetric operation, as demonstrated by making ``B`` the reference set:
+
 
 .. |note_header| raw:: html
 
