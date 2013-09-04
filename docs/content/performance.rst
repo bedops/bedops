@@ -97,9 +97,9 @@ Under the assumption that chromosomes create very natural partitions of the data
 
 .. _independent_testing:
 
--------------------------------------
-Independent testing with GROK toolkit
--------------------------------------
+-------------------
+Independent testing
+-------------------
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Genomic Region Operation Kit (GROK)
