@@ -104,7 +104,7 @@ Operations
 
 To demonstrate the various operations in :ref:`bedops`, we start with two simple datasets ``A`` and ``B``, containing genomic elements on generic chromsome ``chrN``:
 
-.. image:: ../../assets/reference/set-operations/reference_setops_bedops_inputs.png
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_inputs.png
 
 These datasets can be :ref:`sorted <sort-bed>` BED or :ref:`Starch-formatted <starch>` files or streams.
 
@@ -114,7 +114,7 @@ Everything (-u, --everything)
 
 The ``--everything`` option is equivalent to concatenating and sorting BED elements from multiple files, but works much faster:
 
-.. image:: ../../assets/reference/set-operations/reference_setops_bedops_everything.png
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_everything.png
 
 .. topic:: |note_header|
 
