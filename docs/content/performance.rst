@@ -113,6 +113,24 @@ In it, they compare the performance characteristics of their GROK toolkit with t
 
     Results of the benchmark analyses are shown in Table VII. GROK and BEDTools perform at comparable levels for speed and memory efficiency. In this benchmark BEDOPS is the fastest and least memory consuming method, which was expected due to performance optimized implementation of its operations :sup:`9`. The optimized performance of BEDOPS, however, entails stronger assumptions for the input than GROK and BEDTools, in particular the requirement for pre-sorting the input BED files.
 
+Operational input was a 14 MB BED file containing annotations of human gene and exon coordinates, totaling ~423k records. We summarize the results of operations on that input here:
+
+.. image:: ../assets/performance/performance_independent_grok.png
+
+As Ovaska, et al. show here, the BEDOPS toolkit provides substantially reduced execution time and memory consumption. With the sole exception of the sort operation, all other operations consumed only 1 MB with :ref:`bedops`. As shown in this study, :ref:`sorting <sort-bed>` with BEDOPS also outperformed analogous operations in other tool suites in terms of memory and running time.
+
+Remember that with BEDOPS, sorting is, at most, a *one-time cost* to operate on data any number of times in the most efficient way. Since the programs in BEDOPS produce sorted outputs, you never need to sort results before using them in downstream analyses.
+
+-----------------------------
+Worst-case memory performance
+-----------------------------
+
+Non-sorting utilities operate efficiently with large inputs by keeping memory overhead low. The worst-case design scenario, however, causes the :ref:`bedops` or :ref:`bedmap` programs to load all data from a single chromosome from a single input file into memory. For :ref:`bedops`, the worst-case scenario applies only to the ``--element-of`` and ``--not-element-of`` options.
+
+Fortunately, worst-case situations are conceptually easy to understand, and their underlying questions often require no windowing logic to answer, so simpler approaches can sometimes be used. Conceptually, any summary analysis over an entire chromosome triggers the worst-case scenario. For example, to determine the number of sequencing tags mapped to a given chromosome, :ref:`bedmap` loads all tag data for that one chromosome into memory, whereas a one-line ``awk`` statement can provide the answer with minimal memory overhead.
+
+We note that the worst case memory performance of non-sorting BEDOPS utilities still improves upon the best case performance of current alternatives.
+
 .. |note_header| raw:: html
 
    <span style="color:#a60489;">Note</span>
