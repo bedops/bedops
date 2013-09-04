@@ -160,7 +160,7 @@ The ``--not-element-of`` operation shows elements in the reference file which do
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_notelementof_ab.png
 
-As with the ``--element-of`` (``-e``) operator, the overlap criterion for ``--not-element-of`` (``-n``) can be specified by length (in bases) or by percentage of length.
+As with the ``--element-of`` (``-e``) operator, the overlap criterion for ``--not-element-of`` (``-n``) can be specified by length (in bases) or by percentage of length. Similarly, this operation is not symmetric |---| the order of inputs will specify the reference set.
 
 .. topic:: |note_header|
 
@@ -180,13 +180,59 @@ The ``--complement`` operation calculates the genomic regions in the gaps betwee
 
 .. topic:: |note_header|
 
-   Note this **computed result** will lack ID, score and other columnar data other than the first three columns. That is, computed elements will not come from any of the input sets, but are new elements created from the input set space.
+   Note this **computed result** will lack ID, score and other columnar data other than the first three columns that contain positional data. That is, computed elements will not come from any of the input sets, but are new elements created from the input set space.
 
 .. topic:: |note_header|
 
    For a more in-depth discussion on using ``--complement`` with left and right bounds of input chromosomes, please review the BEDOPS `forum discussion <http://bedops.uwencode.org/forum/index.php?topic=19.0>`_ on this subject.
 
+-----------------------------
+Difference (-d, --difference)
+-----------------------------
 
+-------------------------------------
+Symmetric difference (-s, --symmdiff)
+-------------------------------------
+
+---------------------------
+Intersect (-i, --intersect)
+---------------------------
+
+-------------------
+Merge (-m, --merge)
+-------------------
+
+---------------------------
+Partition (-p, --partition)
+---------------------------
+
+-----------------------------------
+Per-chromosome operations (--chrom)
+-----------------------------------
+
+---------------
+Range (--range)
+---------------
+
+==============
+Starch support
+==============
+
+=====================
+Error checking (--ec)
+=====================
+
+====
+Tips
+====
+
+-------------------
+Chaining operations
+-------------------
+
+--------------
+Sorting inputs
+--------------
 
 .. |note_header| raw:: html
 
