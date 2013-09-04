@@ -67,6 +67,8 @@ Independent testing with GROK toolkit
 Foo bar baz!
 
 .. |note_png| image:: ../assets/note.png
-.. |intersect_note| replace:: It is our understanding that the BEDTools' ``intersectBed`` program was modified to accept (optionally) sorted data for improved performance some time after these results were published.
+.. |intersect_note| raw:: html 
 
-A :ref:`more recent study <independent_testing>` suggests ``bedops --intersect`` still has better memory and running time performance characteristics than recent versions of BEDTools.
+It is our understanding that the BEDTools' <tt>intersectBed</tt> program was modified to accept (optionally) sorted data for improved performance some time after these results were published.
+
+A <a href="#independent_testing">more recent study</a> suggests <tt>bedops --intersect</tt> still has better memory and running time performance characteristics than recent versions of BEDTools.
