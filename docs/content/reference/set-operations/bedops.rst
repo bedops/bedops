@@ -136,10 +136,29 @@ Elements that are returned are always from the reference set (in this case, set 
 
 .. topic:: |note_header|
 
-   The ``--element-of`` option preserves all columns from the first input.
+   The ``--element-of`` option preserves all columns from the first (reference) input.
 
 Note that `--element-of` is *not* a symmetric operation, as demonstrated by making ``B`` the reference set:
 
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_elementof_ba.png
+
+.. topic:: |note_header|
+
+   The argument to ``--element-of`` is a value that species to degree of overlap for elements. The value is either integral for per-base overlap,  or fractional for overlap measured by length.
+
+In sum, ``--element-of`` (``-e``) produces exactly everything that ``--not-element-of`` (``-n``) does not, given the same overlap criterion (which is 100% by default).
+
+.. topic:: |note_header|
+
+   For a more in-depth discussion of ``--element-of`` and how overlaps are determined with three or more input files, please review the `BEDOPS forum discussion <http://bedops.uwencode.org/forum/index.php?topic=20.0>`_ on this subject.
+
+-------------------------------------
+Not-element-of (-n, --not-element-of)
+-------------------------------------
+
+The ``--not-element-of`` operation shows elements in the reference file which do not overlap elements in all other sets. For example:
+
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_notelementof_ab.png
 
 .. |note_header| raw:: html
 
