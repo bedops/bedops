@@ -35,7 +35,7 @@ The ``complementBed`` (with ``-i`` and ``-g`` options) and ``intersectBed`` (wit
 
 .. image:: ../assets/performance/performance_bedops_complement_sorted.png
 
-.. image:: ../assets/performance/performance_bedops_complement_sorted.png
+.. image:: ../assets/performance/performance_bedops_intersect_sorted.png
 
 Both BEDTools programs were unable to complete operations after 51M elements with the allocated 18 GB of memory. The :ref:`bedops` program continued operating on the full dataset.
 
@@ -69,6 +69,5 @@ Foo bar baz!
 .. |note_png| image:: ../assets/note.png
 .. |intersect_note| raw:: html 
 
-It is our understanding that the BEDTools' <tt>intersectBed</tt> program was modified to accept (optionally) sorted data for improved performance some time after these results were published.
-
-A <a href="#independent_testing">more recent study</a> suggests <tt>bedops --intersect</tt> still has better memory and running time performance characteristics than recent versions of BEDTools.
+   <p>It is our understanding that the BEDTools' <tt>intersectBed</tt> program was modified to accept (optionally) sorted data for improved performance some time after these results were published.</p>
+   <p>A <a href="#independent_testing">more recent study</a> suggests <tt>bedops --intersect</tt> still has better memory and running time performance characteristics than recent versions of BEDTools.</p>
