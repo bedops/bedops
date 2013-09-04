@@ -61,7 +61,7 @@
 <p>We will use BEDOPS tools to generate per-tissue DHS counts associated with our SNPs, using <a class="reference external" href="http://www.chibi.ubc.ca/matrix2png/">matrix2png</a> to visualize results as a heatmap.</p>
 <div class="section" id="bedops-tools-in-use">
 <h2>3.1.1. BEDOPS tools in use<a class="headerlink" href="#bedops-tools-in-use" title="Permalink to this headline">¶</a></h2>
-<p>For this example, we use <a class="reference external" href="../reference/file-management/sorting/sort-bed.html">sort-bed</a> to sort the input SNP data, and <a class="reference external" href="../reference/statistics/bedmap.html">bedmap</a> to count the number of single-base or greater overlaps between a SNP and a tissue-specific DHS. A modified version of this script uses loops and other shell features.</p>
+<p>For this example, we use <a class="reference internal" href="../reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> to sort the input SNP data, and <em class="xref std std-ref">bedmap</em> to count the number of single-base or greater overlaps between a SNP and a tissue-specific DHS. A modified version of this script uses loops and other shell features.</p>
 </div>
 <div class="section" id="script">
 <h2>3.1.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
@@ -114,16 +114,16 @@ matrix2png -r -c -g -size 16:16 -mincolor yellow -midcolor black -maxcolor red -
 </div>
 <div class="section" id="discussion">
 <h2>3.1.3. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
-<p>Each use of <a class="reference external" href="../reference/statistics/bedmap.html">bedmap</a> is identical: the options <tt class="docutils literal"><span class="pre">--ec</span> <span class="pre">--delim</span> <span class="pre">&quot;\t&quot;</span> <span class="pre">--bp-ovr</span> <span class="pre">1</span> <span class="pre">--count</span></tt> add several settings:</p>
+<p>Each use of <em class="xref std std-ref">bedmap</em> is identical: the options <tt class="docutils literal"><span class="pre">--ec</span> <span class="pre">--delim</span> <span class="pre">&quot;\t&quot;</span> <span class="pre">--bp-ovr</span> <span class="pre">1</span> <span class="pre">--count</span></tt> add several settings:</p>
 <ul class="simple">
 <li>Error checking/correction (<tt class="docutils literal"><span class="pre">--ec</span></tt>)</li>
 <li>Use of the tab character as a custom field delimiter (<tt class="docutils literal"><span class="pre">--delim</span> <span class="pre">&quot;\t&quot;</span></tt>) to make results easier to parse with <tt class="docutils literal"><span class="pre">awk</span></tt> further downstream</li>
 <li>Manual specification of a single base-pair criteria for overlap (<tt class="docutils literal"><span class="pre">--bp-ovr</span> <span class="pre">1</span></tt>, although this is the default)</li>
 <li>Using <tt class="docutils literal"><span class="pre">--count</span></tt>, counting the number of mapping elements (DHSs) which overlap a reference instance (a given SNP)</li>
 </ul>
-<p>These results are calculated for each of the seven cell types and collated into matrix form to run through <a class="reference external" href="http://www.chibi.ubc.ca/matrix2png/">matrix2png</a>. We show it here to give an idea of what kind of data <a class="reference external" href="../reference/statistics/bedmap.html">bedmap</a> generates, to help create these quantitative visualizations:</p>
+<p>These results are calculated for each of the seven cell types and collated into matrix form to run through <a class="reference external" href="http://www.chibi.ubc.ca/matrix2png/">matrix2png</a>. We show it here to give an idea of what kind of data <em class="xref std std-ref">bedmap</em> generates, to help create these quantitative visualizations:</p>
 <a class="reference internal image-reference" href="../../_images/SNP_DHS_matrix.png"><img alt="../../_images/SNP_DHS_matrix.png" src="../../_images/SNP_DHS_matrix.png" style="width: 75%;" /></a>
-<p>Rows are presented in <a class="reference external" href="../reference/file-management/sorting/sort-bed.html">sort-bed</a> order. Cells in red show greatest relative number of counts, while yellow shows the least. Examining this heatmap, DHS elements appear to associate with prostate disease-related GWAS SNPs.</p>
+<p>Rows are presented in <a class="reference internal" href="../reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> order. Cells in red show greatest relative number of counts, while yellow shows the least. Examining this heatmap, DHS elements appear to associate with prostate disease-related GWAS SNPs.</p>
 <p>To make this clearer, here is the same result, with rows sorted by disease name:</p>
 <a class="reference internal image-reference" href="../../_images/SNP_DHS_matrix_diseaseSorted.png"><img alt="../../_images/SNP_DHS_matrix_diseaseSorted.png" src="../../_images/SNP_DHS_matrix_diseaseSorted.png" style="width: 75%;" /></a>
 <p>While there are some DHSs associated with non-disease SNPs, the majority accumulate with the prostate SNPs.</p>
@@ -134,7 +134,7 @@ matrix2png -r -c -g -size 16:16 -mincolor yellow -midcolor black -maxcolor red -
 <li>The <a class="reference external" href="../../assets/usage-examples/SNP_DHS_heatmap.tcsh">example</a> script, after modification to use loops and other shell features.</li>
 <li><a class="reference external" href="../../assets/usage-examples/SNP_DHS_data.tgz">Data</a> for this example are contained in a tarball (use <tt class="docutils literal"><span class="pre">tar</span> <span class="pre">-xzf</span></tt> to extract files).</li>
 </ul>
-<p>The <a class="reference external" href="../reference/statistics/bedmap.html">bedmap</a> tool can operate directly on Starch-formatted archives. Alternatively, use the <a class="reference external" href="../reference/file-management/compression/unstarch.html">unstarch</a> tool to decompress Starch data files to sorted BED format.</p>
+<p>The <em class="xref std std-ref">bedmap</em> tool can operate directly on Starch-formatted archives. Alternatively, use the <em class="xref std std-ref">unstarch</em> tool to decompress Starch data files to sorted BED format.</p>
 <p>Note that these are not the full datasets that went into the original research, but snippets that should otherwise demonstrate the disease-DHS association phenomenon and the use of parts of the BEDOPS toolset.</p>
 </div>
 </div>

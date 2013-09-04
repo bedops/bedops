@@ -1,2 +1,4 @@
+:: _bedextract:
+
 `bedextract`
 ============

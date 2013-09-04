@@ -56,7 +56,14 @@
             
   <div class="section" id="working-with-many-input-files-at-once-with-bedops-and-bedmap">
 <h1>3.7. Working with many input files at once with <tt class="docutils literal"><span class="pre">bedops</span></tt> and <tt class="docutils literal"><span class="pre">bedmap</span></tt><a class="headerlink" href="#working-with-many-input-files-at-once-with-bedops-and-bedmap" title="Permalink to this headline">¶</a></h1>
-<p>Foo bar baz!</p>
+<p>BEDOPS is designed to work with as many input files at once as you need, either through the <em class="xref std std-ref">bedops</em> program, or through a combined use of that program with others in the suite.</p>
+<div class="section" id="discussion">
+<h2>3.7.1. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
+<p>Say we have five input BED files (<tt class="docutils literal"><span class="pre">A</span></tt>, <tt class="docutils literal"><span class="pre">B</span></tt>, <tt class="docutils literal"><span class="pre">C</span></tt>, <tt class="docutils literal"><span class="pre">D</span></tt>, <tt class="docutils literal"><span class="pre">E</span></tt>), and I need to identify those regions where any two (or more) of the input files (<tt class="docutils literal"><span class="pre">{A,B}</span></tt>, <tt class="docutils literal"><span class="pre">{A,C}</span></tt>, <tt class="docutils literal"><span class="pre">{A,D}</span></tt>, <tt class="docutils literal"><span class="pre">{A,E}</span></tt>, <tt class="docutils literal"><span class="pre">{B,C}</span></tt>, ...) overlap reciprocally by 30% or more.</p>
+<p>One concrete application may be where we have multiple biological replicates, and we take any repeatable result (in two or more inputs, in this case) as true signal. Similarly, we might be interested in a problem like this if we have multiple related (or even unrelated) cell type samples and we want to be confident in peak calls for DNaseI sequencing of ChIP-seq experiments.</p>
+<p>These sorts of problems often have efficient solutions in BEDOPS. Here, the solution is independent of how many inputs we start with, what overlap criteria we use, and whether the requirement calls for two or more files of overlap (or whether it is 4 or more files in the overlap, or 9, or whatever).</p>
+<p>Consider a case study of one such problem that utilizes both <em class="xref std std-ref">bedops</em> and <em class="xref std std-ref">bedmap</em> together to create an efficient solution.</p>
+</div>
 </div>
 
 
@@ -68,6 +75,14 @@
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/logo_with_label_v2.png" alt="Logo"/>
             </a></p>
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">3.7. Working with many input files at once with <tt class="docutils literal"><span class="pre">bedops</span></tt> and <tt class="docutils literal"><span class="pre">bedmap</span></tt></a><ul>
+<li><a class="reference internal" href="#discussion">3.7.1. Discussion</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="starchcluster.html"
                         title="previous chapter">3.6. Efficiently creating Starch-formatted archives with a cluster</a></p>

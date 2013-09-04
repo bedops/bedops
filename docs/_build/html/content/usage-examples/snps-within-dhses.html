@@ -59,11 +59,11 @@
 <p>In this example, we would like to identify the set of SNPs that are within a DHS, printing out both the SNP element <em>and</em> the DHS it is contained within.</p>
 <div class="section" id="bedops-tools-in-use">
 <h2>3.4.1. BEDOPS tools in use<a class="headerlink" href="#bedops-tools-in-use" title="Permalink to this headline">¶</a></h2>
-<p>We use <a class="reference external" href="../reference/statistics/bedmap.html">bedmap</a> to answer this question, as it traverses a <em>reference</em> BED file (in this example, SNPs), and identifies overlapping elements from the <em>mapping</em> BED file (in this example, DHSs).</p>
+<p>We use <em class="xref std std-ref">bedmap</em> to answer this question, as it traverses a <em>reference</em> BED file (in this example, SNPs), and identifies overlapping elements from the <em>mapping</em> BED file (in this example, DHSs).</p>
 </div>
 <div class="section" id="script">
 <h2>3.4.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
-<p>SNPs are in a BED-formatted file called <tt class="docutils literal"><span class="pre">SNPs.bed</span></tt> sorted lexicographically with <a class="reference external" href="../reference/file-management/sorting/sort-bed.html">sort-bed</a>. The DNase-hypersensitive sites are stored in a sorted BED-formatted file called <tt class="docutils literal"><span class="pre">DHSs.bed</span></tt>. These two files are available in the <a class="reference internal" href="#snps-within-dhses-downloads"><em>Downloads</em></a> section.</p>
+<p>SNPs are in a BED-formatted file called <tt class="docutils literal"><span class="pre">SNPs.bed</span></tt> sorted lexicographically with <a class="reference internal" href="../reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a>. The DNase-hypersensitive sites are stored in a sorted BED-formatted file called <tt class="docutils literal"><span class="pre">DHSs.bed</span></tt>. These two files are available in the <a class="reference internal" href="#snps-within-dhses-downloads"><em>Downloads</em></a> section.</p>
 <div class="highlight-python"><pre>bedmap --indicator --echo --echo-map SNPs.bed DHSs.bed \
   | awk -F"|" '(int($1) == 1) { print $2"|"$3; }' \
   &gt; subsetOfSNPsWithinAssociatedDHS.bed</pre>
@@ -71,7 +71,7 @@
 </div>
 <div class="section" id="discussion">
 <h2>3.4.3. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
-<p>The output of this <a class="reference external" href="../reference/statistics/bedmap.html">bedmap</a> statement might look something like this:</p>
+<p>The output of this <em class="xref std std-ref">bedmap</em> statement might look something like this:</p>
 <div class="highlight-python"><pre>chr1    10799576    10799577    rs12046278  Systolic_blood_pressure Cardiovascular|chr1 10799460    10799610    MCV-1   9.18063</pre>
 </div>
 <p>The output is delimited by pipe symbols (<tt class="docutils literal"><span class="pre">|</span></tt>), showing the reference element (SNP) and the mapped element (DHS).</p>
@@ -83,7 +83,7 @@
 <li><a class="reference external" href="../../assets/usage-examples/Frequencies-SNPs.bed.starch">SNP</a> elements</li>
 <li><a class="reference external" href="../../assets/usage-examples/Frequencies-DHSs.bed.starch">DNase-hypersensitive</a> elements</li>
 </ul>
-<p>The <a class="reference external" href="../reference/statistics/bedmap.html">bedmap</a> tool can operate directly on Starch-formatted archives. Alternatively, use the <a class="reference external" href="../reference/file-management/compression/unstarch.html">unstarch</a> tool to decompress Starch data files to sorted BED format.</p>
+<p>The <em class="xref std std-ref">bedmap</em> tool can operate directly on Starch-formatted archives. Alternatively, use the <em class="xref std std-ref">unstarch</em> tool to decompress Starch data files to sorted BED format.</p>
 </div>
 </div>
 

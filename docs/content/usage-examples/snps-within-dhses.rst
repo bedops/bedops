@@ -7,13 +7,13 @@ In this example, we would like to identify the set of SNPs that are within a DHS
 BEDOPS tools in use
 ===================
 
-We use `bedmap`_ to answer this question, as it traverses a *reference* BED file (in this example, SNPs), and identifies overlapping elements from the *mapping* BED file (in this example, DHSs).
+We use :ref:`bedmap` to answer this question, as it traverses a *reference* BED file (in this example, SNPs), and identifies overlapping elements from the *mapping* BED file (in this example, DHSs).
 
 ======
 Script
 ======
 
-SNPs are in a BED-formatted file called ``SNPs.bed`` sorted lexicographically with `sort-bed`_. The DNase-hypersensitive sites are stored in a sorted BED-formatted file called ``DHSs.bed``. These two files are available in the :ref:`snps_within_dhses_downloads` section.
+SNPs are in a BED-formatted file called ``SNPs.bed`` sorted lexicographically with :ref:`sort-bed`. The DNase-hypersensitive sites are stored in a sorted BED-formatted file called ``DHSs.bed``. These two files are available in the :ref:`snps_within_dhses_downloads` section.
 
 ::
 
@@ -25,7 +25,7 @@ SNPs are in a BED-formatted file called ``SNPs.bed`` sorted lexicographically wi
 Discussion
 ==========
 
-The output of this `bedmap`_ statement might look something like this:
+The output of this :ref:`bedmap` statement might look something like this:
 
 ::
 
@@ -44,13 +44,10 @@ Downloads
 * `SNP`_ elements
 * `DNase-hypersensitive`_ elements
 
-The `bedmap`_ tool can operate directly on Starch-formatted archives. Alternatively, use the `unstarch`_ tool to decompress Starch data files to sorted BED format.
+The :ref:`bedmap` tool can operate directly on Starch-formatted archives. Alternatively, use the :ref:`unstarch` tool to decompress Starch data files to sorted BED format.
 
 .. _SNP: ../../assets/usage-examples/Frequencies-SNPs.bed.starch
 .. _DNase-hypersensitive: ../../assets/usage-examples/Frequencies-DHSs.bed.starch
-.. _bedmap: ../reference/statistics/bedmap.html
-.. _unstarch: ../reference/file-management/compression/unstarch.html
-.. _sort-bed: ../reference/file-management/sorting/sort-bed.html
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
    :trim:

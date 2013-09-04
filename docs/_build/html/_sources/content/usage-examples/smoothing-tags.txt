@@ -7,7 +7,7 @@ In this example, we generate smoothed density signal by binning the genome into 
 BEDOPS tools in use
 ===================
 
-For this script, we use `bam2bed`_ to convert a BAM file to BED, then we use `bedmap`_ to run a sliding density window over input genomic regions. Finally `starch`_ compresses the results.
+For this script, we use :ref:`bam2bed` to convert a BAM file to BED, then we use :ref:`bedmap` to run a sliding density window over input genomic regions. Finally :ref:`starch` compresses the results.
 
 ======
 Script
@@ -68,9 +68,6 @@ Script
 
   exit 0
 
-.. _bam2bed: ../reference/file-management/conversion/bam2bed.html
-.. _bedmap: ../reference/statistics/bedmap.html
-.. _starch: ../reference/file-management/compression/starch.html
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
    :trim:

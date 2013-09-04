@@ -1,19 +1,19 @@
 Efficiently creating Starch-formatted archives with a cluster
 =============================================================
 
-In this example, we demonstrate how to use `bedextract`_ and `starchcat`_ to efficiently generate Starch-formatted archives from BED datasets.
+In this example, we demonstrate how to use :ref:`bedextract` and :ref:`starchcat` to efficiently generate Starch-formatted archives from BED datasets.
 
 ===================
 BEDOPS tools in use
 ===================
 
-For this script, we use `bedextract`_ to quickly build a list of chromosomes in an input BED dataset and extract records for each chromosome to separate files. We then use `starch`_ to compress each per-chromosome file and `starchcat`_ to concatenate per-chromosome Starch archives into one file.
+For this script, we use :ref:`bedextract` to quickly build a list of chromosomes in an input BED dataset and extract records for each chromosome to separate files. We then use :ref:`starch` to compress each per-chromosome file and :ref:`starchcat` to concatenate per-chromosome Starch archives into one file.
 
 ======
 Script
 ======
 
-Two versions of the ``starchcluster`` script are included with the source and package distributions of BEDOPS (see :ref:`Installation <installation_instructions>` for more detail). 
+Two versions of the ``starchcluster`` script are included with the source and package distributions of BEDOPS (see :ref:`Installation <installation>` for more detail). 
 
 One version makes use of an `Oracle Grid Engine <http://en.wikipedia.org/wiki/Oracle_Grid_Engine>`_ (or Sun Grid Engine) cluster environment to distribute per-chromosome tasks, while the other script uses `GNU Parallel <http://www.gnu.org/software/parallel/>`_ to split the workload over hosts running SSH. 
 
@@ -40,19 +40,19 @@ Specifically, sorting allows us to perform a `binary search <http://en.wikipedia
 .. image:: ../../assets/reference/set-operations/bedextract_mechanism.png
    :width: 50%
 
-To indicate the kind of speed gain that the `bedextract`_ tool provides, in local testing, a naïve listing of chromosomes from a 36 GB BED input using UNIX ``cut`` and ``uniq`` utilities took approximately 20 minutes to complete on a typical Core 2 Duo-based Linux workstation. Retrieval of the same chromosome listing with ``bedextract --list-chr`` took only 2 seconds (cache flushed |---| no cheating!).
+To indicate the kind of speed gain that the :ref:`bedextract` tool provides, in local testing, a naïve listing of chromosomes from a 36 GB BED input using UNIX ``cut`` and ``uniq`` utilities took approximately 20 minutes to complete on a typical Core 2 Duo-based Linux workstation. Retrieval of the same chromosome listing with ``bedextract --list-chr`` took only 2 seconds (cache flushed |---| no cheating!).
 
 -----------------------
 Compressing BED subsets
 -----------------------
 
-Now we can very quickly demarcate where chromosomes start and stop in a BED file, we can apply `starch`_ on those subsets on separate cluster nodes. 
+Now we can very quickly demarcate where chromosomes start and stop in a BED file, we can apply :ref:`starch` on those subsets on separate cluster nodes. 
 
 ----------------------------------
 Stitching together compressed sets
 ----------------------------------
 
-Once we have per-chromosome Starch-formatted archives, we need some way to put them all together into one archive. This is where `starchcat`_ comes in, taking all the per-chromosome archives as inputs and creating a new archive as output.
+Once we have per-chromosome Starch-formatted archives, we need some way to put them all together into one archive. This is where :ref:`starchcat` comes in, taking all the per-chromosome archives as inputs and creating a new archive as output.
 
 The big picture view is like this:
 
@@ -61,9 +61,6 @@ The big picture view is like this:
 
 As the figure notes, the compression time for a very large BED file is reduced roughly to the time taken to compress the largest chromosome in the original file. Parallelization of this process is an order of magnitude faster than compressing chromosomes in serial.
 
-.. _bedextract: ../reference/set-operations/bedextract.html
-.. _starchcat: ../reference/file-management/compression/starchcat.html
-.. _starch: ../reference/file-management/compression/starch.html
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
    :trim:

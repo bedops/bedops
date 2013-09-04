@@ -7,13 +7,13 @@ In this example, we would like to find the **signed** distance between a single 
 BEDOPS tools in use
 ===================
 
-To find nearest elements, we will use `closest-features`_ with the ``--dist``, ``--closest``, and ``--no-ref`` options.
+To find nearest elements, we will use :ref:`closest-features` with the ``--dist``, ``--closest``, and ``--no-ref`` options.
 
 ======
 Script
 ======
 
-SNPs are in a BED-formatted file called ``SNPs.bed`` sorted lexicographically with `sort-bed`_. The DNase-hypersensitive sites are stored in a sorted BED-formatted file called ``DHSs.bed``. These two files are available in the :ref:`distance_frequencies_downloads` section.
+SNPs are in a BED-formatted file called ``SNPs.bed`` sorted lexicographically with :ref:`sort-bed`. The DNase-hypersensitive sites are stored in a sorted BED-formatted file called ``DHSs.bed``. These two files are available in the :ref:`distance_frequencies_downloads` section.
 
 ::
 
@@ -29,7 +29,7 @@ Discussion
 
 The ``--dist`` option returns signed distances between input elements and reference elements, ``--closest`` chooses the single closest element, and ``--no-ref`` keeps SNP coordinates from being printed out.
 
-The output from `closest-features`_ contains coordinates and the signed distance to the closest DHS, separated by the pipe (``|``) character. Such output might look something like this:
+The output from :ref:`closest-features` contains coordinates and the signed distance to the closest DHS, separated by the pipe (``|``) character. Such output might look something like this:
 
 ::
 
@@ -48,13 +48,10 @@ Downloads
 * `SNP`_ elements
 * `DNase-hypersensitive`_ elements
 
-The `closest-features`_ tool can operate directly on Starch-formatted archives. Alternatively, use the `unstarch`_ tool to decompress Starch data files to sorted BED format.
+The :ref:`closest-features` tool can operate directly on Starch-formatted archives. Alternatively, use the :ref:`unstarch` tool to decompress Starch data files to sorted BED format.
 
 .. _SNP: ../../assets/usage-examples/Frequencies-SNPs.bed.starch
 .. _DNase-hypersensitive: ../../assets/usage-examples/Frequencies-DHSs.bed.starch
-.. _closest-features: ../reference/set-operations/closest-features.html
-.. _sort-bed: ../reference/file-management/sorting/sort-bed.html
-.. _unstarch: ../reference/file-management/compression/unstarch.html
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
    :trim:
