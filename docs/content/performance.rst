@@ -45,6 +45,16 @@ Both BEDTools programs were unable to complete operations after 51M elements wit
 | |intersect_note| |
 +------------------+
 
+^^^^^^^^^^^^^^^^^^^^^^^
+Direct merge (unsorted)
+^^^^^^^^^^^^^^^^^^^^^^^
+
+In typical pipelines, where utilities are chained together to perform more complex operations, the performance and scalability gaps between BEDOPS and competitive tool suites widen. We show here the use of :ref:`sort-bed` on unsorted BED input, piping it to BEDOPS tools:
+
+.. image:: ../assets/performance/performance_bedops_merge_unsorted.png
+
+Time performance of :ref:`bedops` stays under that of ``mergeBed`` (BEDTools v2.12), while continuing past the point where ``mergeBed`` fails. Memory limitations of the system are easily overcome by using the ``--max-mem`` operator with :ref:`sort-bed`, allowing the ``--merge`` operation to continue unimpeded even with ever-larger unsorted BED inputs.
+
 ^^^^^^^^^^
 Discussion
 ^^^^^^^^^^
@@ -57,7 +67,35 @@ Another important feature of :ref:`bedops` that separates it from the competitio
 Compression characteristics of ``starch``
 -----------------------------------------
 
-Foo bar baz!
+The :ref:`starch` utility offers high-quality BED compression into a format with a smaller footprint than common alternatives. The format is designed to help manage data bloat in this genomic era. Further, the format actually enables improved access times to the vast majority of datasets, as compared with raw (uncompressed) and naively-compressed data.
+
+Here, we provide two measures of this format's utility: comparing the compression efficiency of the ``bzip2``-backed Starch format against common, "naive" ``bzip2``-compression of UCSC `BedGraph <http://genome.ucsc.edu/goldenPath/help/bedgraph.html>`_ and `WIG <http://genome.ucsc.edu/goldenPath/help/wiggle.html>`_ forms of BED data, and by comparing the time required to extract the records for any one chromosome from these formats as well as from a raw (uncompressed) BED file.
+
+^^^^^^^^^^^^^^^^^^^^^^
+Compression efficiency
+^^^^^^^^^^^^^^^^^^^^^^
+
+After just 10K rows (roughly 300 kB of raw BED data storing phyloP conservation scores), compression into the Starch format begins to consistently outperform ``bzip2`` compression of the same data stored in either variable-step WIG or UCSC BedGraph formats. 
+
+.. image:: ../assets/performance/performance_starch_efficiency.png
+
+For very large raw BED datasets, the Starch format stores the original data in approximately 5% of the original input size. These improved compression results generalize to compressed versions of the fixed-step WIG format, as well. For more information, refer to the Supplemental Data in our `Bioinformatics <http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract>`_ paper.
+
+^^^^^^^^^^^^^^^
+Extraction time
+^^^^^^^^^^^^^^^
+
+Data were sorted per sort-bed with chromosomes in lexicographical order. Extractions by chromosomes were significantly faster in general with the Starch format, even over raw (sequentially-processed) BED inputs:
+
+.. image:: ../assets/performance/performance_unstarch_extractiontime.png
+
+Under the assumption that chromosomes create very natural partitions of the data, the Starch format was designed using a chromosome-indexing scheme. This mechanism for random access further helps to improve data processing times within a clustered environment. Again, for more information, refer to the Supplemental Data in our `Bioinformatics <http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract>`_ paper.
+
++-------------------+
+| |note_png|        | 
++-------------------+
+| |extraction_note| |
++-------------------+
 
 .. _independent_testing:
 
@@ -65,10 +103,28 @@ Foo bar baz!
 Independent testing with GROK toolkit
 -------------------------------------
 
-Foo bar baz!
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Genomic Region Operation Kit (GROK)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Ovaska, et al. independently developed a genomic analysis toolkit called Genomic Region Operation Kit (GROK), which is described in more detail in `their publication in IEEE/ACM Transactions on Computational Biology and Bioinformatics <http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=6399464&isnumber=4359833>`_.
+
+In it, they compare the performance characteristics of their GROK toolkit with their analogs in the BEDTools and BEDOPS suites, which they summarize as follows:
+
+.. topic:: Summary
+
+    Results of the benchmark analyses are shown in Table VII. GROK and BEDTools perform at comparable levels for speed and memory efficiency. In this benchmark BEDOPS is the fastest and least memory consuming method, which was expected due to performance optimized implementation of its operations9. The optimized performance of BEDOPS, however, entails stronger assumptions for the input than GROK and BEDTools, in particular the requirement for pre-sorting the input BED files.
 
 .. |note_png| image:: ../assets/note.png
 .. |intersect_note| raw:: html 
 
    <p>It is our understanding that the BEDTools' <tt>intersectBed</tt> program was modified to accept (optionally) sorted data for improved performance some time after these results were published.</p>
    <p>A <a href="#independent_testing">more recent study</a> suggests <tt>bedops --intersect</tt> still has better memory and running time performance characteristics than recent versions of BEDTools.</p>
+
+.. |extraction_note| raw:: html
+
+   <p>Our <a href="content/reference/set-operations/bedextract.html"><tt>bedextract</tt></a> program similarly makes it possible to extract data quickly by chromosome in any properly sorted BED file. However, for large (or many) data sets, deep compression has serious benefit. In our lab, more than 99% of all files are not touched (even) on a monthly basis &emdash; and new results are generated every day. Why would we want to keep all of that data in fully-bloated BED form? The workhorse programs of BEDOPS accept inputs in Starch format directly, just as they do raw BED files, to help manage 'big data'.</p>
+
+.. |--| unicode:: U+2013   .. en dash
+.. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
+   :trim:
