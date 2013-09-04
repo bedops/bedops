@@ -57,7 +57,97 @@
             
   <div class="section" id="bedops">
 <span id="id1"></span><h1>5.1.1. <cite>bedops</cite><a class="headerlink" href="#bedops" title="Permalink to this headline">¶</a></h1>
-<p>Foo bar baz!</p>
+<p>Finding relationships between two or more genomic datasets is an important problem.</p>
+<p>As examples, one might want to:</p>
+<ul class="simple">
+<li>Know how much overlap exists between the elements of two datasets, to quantitatively establish the degree to which they are similar</li>
+<li>Merge or filter elements. For example, retrieving non-overlapping, &#8220;unique&#8221; elements from multiple BED files.</li>
+<li>Split elements from multiple BED files into disjoint subsets.</li>
+</ul>
+<p>The <a class="reference internal" href="#bedops"><em>bedops</em></a> program offers several Boolean set and multiset operations, including union, subset, and difference, to assist investigators with answering these types of questions.</p>
+<p>Importantly, <a class="reference internal" href="#bedops"><em>bedops</em></a> handles any number of any-size inputs at once when computing results in order to maximize efficiency. This use case has <a class="reference internal" href="../../usage-examples/multiple-inputs.html#multiple-inputs"><em>serious practical consequences</em></a> for many genomic studies.</p>
+<p>One can also use <a class="reference internal" href="#bedops"><em>bedops</em></a> to symmetrically or asymmetrically pad coordinates.</p>
+<div class="section" id="inputs-and-outputs">
+<h2>5.1.1.1. Inputs and outputs<a class="headerlink" href="#inputs-and-outputs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="input">
+<h3>5.1.1.1.1. Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="#bedops"><em>bedops</em></a> program reads <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED data and BEDOPS <a class="reference internal" href="../file-management/compression/starch.html#starch"><em>Starch-formatted</em></a> archives as input.</p>
+<p>Finally, <a class="reference internal" href="#bedops"><em>bedops</em></a> requires specification of a set operation (and, optionally, may include modifier options).</p>
+<p>Support for common headers (including UCSC track headers) is offered through the <tt class="docutils literal"><span class="pre">--header</span></tt> option. Headers are stripped from output.</p>
+</div>
+<div class="section" id="output">
+<h3>5.1.1.1.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="#bedops"><em>bedops</em></a> program returns <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED results to standard output. This output can be redirected to a file or piped to other utilities.</p>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>5.1.1.2. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#bedops"><em>bedops</em></a> program takes sorted BED-formatted data as input, either from a file or streamed from standard input. It will process any number of input files in parallel.</p>
+<p>If your data are unsorted, use BEDOPS <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> to prepare data for <a class="reference internal" href="#bedops"><em>bedops</em></a>. You only need to sort once, as all BEDOPS tools read and write sorted BED data.</p>
+<p>Because memory usage is very low, one can use sorted inputs of any size. Processing times generally follow a simple linear relationship with input sizes (<em>e.g.</em>, as the input size doubles, the processing time doubles accordingly).</p>
+<p>The <tt class="docutils literal"><span class="pre">--help</span></tt> option describes the set operation and other options available to the end user:</p>
+<div class="highlight-python"><pre>bedops
+  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
+  version:  2.2.0
+  authors:  Shane Neph &amp; Scott Kuehn
+
+    USAGE: bedops [process-flags] &lt;operation&gt; &lt;File(s)&gt;*
+
+        Every input file must be sorted per the sort-bed utility.
+        Each operation requires a minimum number of files as shown below.
+          There is no fixed maximum number of files that may be used.
+        Input files must have at least the first 3 columns of the BED specification.
+        The program accepts BED and starch file formats.
+        May use '-' for a file to indicate reading from standard input (BED format only).
+
+    Process Flags:
+        --chrom &lt;chromosome&gt; Process data for given &lt;chromosome&gt; only.
+        --ec                 Error check input files (slower).
+        --header             Accept headers (VCF, GFF, SAM, BED, WIG) in any input file.
+        --help               Print this message and exit successfully.
+        --help-&lt;operation&gt;   Detailed help on &lt;operation&gt;.
+                               An example is --help-c or --help-complement
+        --range L:R          Add 'L' bp to all start coordinates and 'R' bp to end
+                               coordinates. Either value may be + or - to grow or
+                               shrink regions.  With the -e/-n operations, the first
+                               (reference) file is not padded, unlike all other files.
+        --range S            Pad input file(s) coordinates symmetrically by S.
+                               This is shorthand for: --range -S:S.
+        --version            Print program information.
+
+    Operations: (choose one of)
+        -c, --complement [-L] File1 [File]*
+        -d, --difference ReferenceFile File2 [File]*
+        -e, --element-of [-number% | -number (in bp)] ReferenceFile File2 [File]*
+               by default, -e -100% is used.
+        -i, --intersect File1 File2 [File]*
+        -m, --merge File1 [File]*
+        -n, --not-element-of [-number% | -number (in bp)] ReferenceFile File2 [File]*
+               by default, -n -100% is used.
+        -p, --partition File1 [File]*
+        -s, --symmdiff File1 File2 [File]*
+        -u, --everything File1 [File]*
+
+    Example: bedops --range 10 -u file1.bed
+    NOTE: Only operations -e|n|u preserve all columns (no flattening)</pre>
+</div>
+<p>Extended help is available for all operations in <a class="reference internal" href="#bedops"><em>bedops</em></a>. For example, the <tt class="docutils literal"><span class="pre">--help-symmdiff</span></tt> option in <a class="reference internal" href="#bedops"><em>bedops</em></a> gives detailed information on the <tt class="docutils literal"><span class="pre">--symmdiff</span></tt> operation.</p>
+</div>
+<div class="section" id="operations">
+<h2>5.1.1.3. Operations<a class="headerlink" href="#operations" title="Permalink to this headline">¶</a></h2>
+<p>To demonstrate the various operations in <a class="reference internal" href="#bedops"><em>bedops</em></a>, we start with two simple datasets <tt class="docutils literal"><span class="pre">A</span></tt> and <tt class="docutils literal"><span class="pre">B</span></tt>, containing genomic elements on generic chromsome <tt class="docutils literal"><span class="pre">chrN</span></tt>:</p>
+<img alt="../../../_images/reference_setops_bedops_inputs.png" src="../../../_images/reference_setops_bedops_inputs.png" />
+<p>These datasets can be <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED or <a class="reference internal" href="../file-management/compression/starch.html#starch"><em>Starch-formatted</em></a> files or streams.</p>
+<div class="section" id="everything-u-everything">
+<h3>5.1.1.3.1. Everything (-u, &#8211;everything)<a class="headerlink" href="#everything-u-everything" title="Permalink to this headline">¶</a></h3>
+<p>The <tt class="docutils literal"><span class="pre">--everything</span></tt> option is equivalent to concatenating and sorting BED elements from multiple files, but works much faster:</p>
+<img alt="../../../_images/reference_setops_bedops_everything.png" src="../../../_images/reference_setops_bedops_everything.png" />
+<div class="topic">
+<p class="topic-title first"><span style="color:#a60489;">Note</span></p>
+<p>The <tt class="docutils literal"><span class="pre">--everything</span></tt> option preserves all columns from all inputs. This is useful for datasets with additional ID, score or other metadata.</p>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -69,6 +159,23 @@
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/logo_with_label_v2.png" alt="Logo"/>
             </a></p>
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">5.1.1. <cite>bedops</cite></a><ul>
+<li><a class="reference internal" href="#inputs-and-outputs">5.1.1.1. Inputs and outputs</a><ul>
+<li><a class="reference internal" href="#input">5.1.1.1.1. Input</a></li>
+<li><a class="reference internal" href="#output">5.1.1.1.2. Output</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usage">5.1.1.2. Usage</a></li>
+<li><a class="reference internal" href="#operations">5.1.1.3. Operations</a><ul>
+<li><a class="reference internal" href="#everything-u-everything">5.1.1.3.1. Everything (-u, &#8211;everything)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="../set-operations.html"
                         title="previous chapter">5.1. Set operations</a></p>

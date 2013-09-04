@@ -59,49 +59,81 @@
 <h2>4.1. Test environment and data<a class="headerlink" href="#test-environment-and-data" title="Permalink to this headline">¶</a></h2>
 <p>Timed results were derived using actual running times (also known as wall-clock times), averaged over 3 runs. All timed tests were performed using a single 64-bit Linux machine with a dual-core 3 GHz Intel Xeon processor, 8 GB of physical RAM, and 18 GB of total virtual memory. All caches were purged in between sequential program runs to remove hardware biases.</p>
 <p>Random subsamples of <a class="reference external" href="http://compgen.bscb.cornell.edu/phast/">phyloP conservation</a> for the human genome were used as inputs for testing whenever the full phyloP results were not used. The full phyloP results were downloaded from <a class="reference external" href="http://hgdownload.cse.ucsc.edu/goldenPath/hg19/phyloP46way/">UCSC</a>.</p>
+</div>
 <div class="section" id="set-operations-with-bedops">
-<h3>4.1.1. Set operations with <tt class="docutils literal"><span class="pre">bedops</span></tt><a class="headerlink" href="#set-operations-with-bedops" title="Permalink to this headline">¶</a></h3>
-<p>In this section, we provide time and memory measurements of various <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> operations against analogous <cite>BEDTools &lt;http://code.google.com/p/bedtools/&gt;</cite> utilities.</p>
-</div>
-</div>
+<h2>4.2. Set operations with <tt class="docutils literal"><span class="pre">bedops</span></tt><a class="headerlink" href="#set-operations-with-bedops" title="Permalink to this headline">¶</a></h2>
+<p>In this section, we provide time and memory measurements of various <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> operations against analogous <a class="reference external" href="http://code.google.com/p/bedtools/">BEDTools</a> utilities.</p>
 <div class="section" id="direct-merge-sorted">
-<h2>4.2. Direct merge (sorted)<a class="headerlink" href="#direct-merge-sorted" title="Permalink to this headline">¶</a></h2>
-<img alt="../_images/performance_bedops_merge_sorted.png" src="../_images/performance_bedops_merge_sorted.png" />
+<h3>4.2.1. Direct merge (sorted)<a class="headerlink" href="#direct-merge-sorted" title="Permalink to this headline">¶</a></h3>
 <p>The performance of the <tt class="docutils literal"><span class="pre">mergeBed</span></tt> program (with the <tt class="docutils literal"><span class="pre">-i</span></tt> option) from the BEDTools suite (v2.12.0) was compared with that of the <tt class="docutils literal"><span class="pre">--merge</span></tt> option of our <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> utility.</p>
+<img alt="../_images/performance_bedops_merge_sorted.png" src="../_images/performance_bedops_merge_sorted.png" />
 <p>As measured, the <tt class="docutils literal"><span class="pre">mergeBed</span></tt> program loads all data from a file into memory and creates an index before computing results, incurring longer run times and higher memory costs that can lead to failures. The <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> utility minimizes memory consumption by retaining only the information required to compute the next line of output.</p>
 </div>
 <div class="section" id="complement-and-intersection">
-<h2>4.3. Complement and intersection<a class="headerlink" href="#complement-and-intersection" title="Permalink to this headline">¶</a></h2>
-<img alt="../_images/performance_bedops_complement_sorted.png" src="../_images/performance_bedops_complement_sorted.png" />
-<img alt="../_images/performance_bedops_complement_sorted.png" src="../_images/performance_bedops_complement_sorted.png" />
+<h3>4.2.2. Complement and intersection<a class="headerlink" href="#complement-and-intersection" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">complementBed</span></tt> (with <tt class="docutils literal"><span class="pre">-i</span></tt> and <tt class="docutils literal"><span class="pre">-g</span></tt> options) and <tt class="docutils literal"><span class="pre">intersectBed</span></tt> (with <tt class="docutils literal"><span class="pre">-u</span></tt>, <tt class="docutils literal"><span class="pre">-a</span></tt>, and <tt class="docutils literal"><span class="pre">-b</span></tt> options) programs from the BEDTools suite (v2.12.0) also were compared to our <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> program.</p>
+<img alt="../_images/performance_bedops_complement_sorted.png" src="../_images/performance_bedops_complement_sorted.png" />
+<img alt="../_images/performance_bedops_intersect_sorted.png" src="../_images/performance_bedops_intersect_sorted.png" />
 <p>Both BEDTools programs were unable to complete operations after 51M elements with the allocated 18 GB of memory. The <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> program continued operating on the full dataset.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="40%" />
-<col width="60%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><img alt="note_png" src="content/assets/note.png" /></td>
-<td>replacement</td>
-</tr>
-</tbody>
-</table>
+<div class="topic">
+<p class="topic-title first"><span style="color:#a60489;">Note</span></p>
+<p>It is our understanding that the BEDTools&#8217; <tt class="docutils literal"><span class="pre">intersectBed</span></tt> program was modified to accept (optionally) sorted data for improved performance some time after these results were published.</p>
+<p>A <a class="reference internal" href="#independent-testing"><em>more recent study</em></a> suggests <tt class="docutils literal"><span class="pre">bedops</span> <span class="pre">--intersect</span></tt> still offers better memory and running time performance characteristics than recent versions of BEDTools.</p>
+</div>
+</div>
+<div class="section" id="direct-merge-unsorted">
+<h3>4.2.3. Direct merge (unsorted)<a class="headerlink" href="#direct-merge-unsorted" title="Permalink to this headline">¶</a></h3>
+<p>In typical pipelines, where utilities are chained together to perform more complex operations, the performance and scalability gaps between BEDOPS and competitive tool suites widen. We show here the use of <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> on unsorted BED input, piping it to BEDOPS tools:</p>
+<img alt="../_images/performance_bedops_merge_unsorted.png" src="../_images/performance_bedops_merge_unsorted.png" />
+<p>Time performance of <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> stays under that of <tt class="docutils literal"><span class="pre">mergeBed</span></tt> (BEDTools v2.12), while continuing past the point where <tt class="docutils literal"><span class="pre">mergeBed</span></tt> fails. Memory limitations of the system are easily overcome by using the <tt class="docutils literal"><span class="pre">--max-mem</span></tt> operator with <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a>, allowing the <tt class="docutils literal"><span class="pre">--merge</span></tt> operation to continue unimpeded even with ever-larger unsorted BED inputs.</p>
 </div>
 <div class="section" id="discussion">
-<h2>4.4. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
+<h3>4.2.4. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h3>
 <p>The <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> utility performs a wide range of set operations (merge, intersect, union, symmetric difference, and so forth). As with all main utilities in BEDOPS, the program requires <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a> inputs and creates sorted results on output. As such, sorting is, at most, a <em>one-time cost</em> to operate on data any number of times in the most efficient way. Also, as shown in an <a class="reference internal" href="#independent-testing"><em>independent study</em></a>, BEDOPS also sorts data more efficiently than other tools. Further, our utility can sort BED inputs of any size.</p>
 <p>Another important feature of <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> that separates it from the competition is its ability to work with <a class="reference internal" href="usage-examples/multiple-inputs.html#multiple-inputs"><em>any number of inputs</em></a> at once. Every operation (union, difference, intersection, and so forth) accepts an arbitrary number of inputs, and each input can be of any size.</p>
+</div>
+</div>
 <div class="section" id="compression-characteristics-of-starch">
-<h3>4.4.1. Compression characteristics of <tt class="docutils literal"><span class="pre">starch</span></tt><a class="headerlink" href="#compression-characteristics-of-starch" title="Permalink to this headline">¶</a></h3>
-<p>Foo bar baz!</p>
+<h2>4.3. Compression characteristics of <tt class="docutils literal"><span class="pre">starch</span></tt><a class="headerlink" href="#compression-characteristics-of-starch" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a> utility offers high-quality BED compression into a format with a smaller footprint than common alternatives. The format is designed to help manage data bloat in this genomic era. Further, the format actually enables improved access times to the vast majority of datasets, as compared with raw (uncompressed) and naively-compressed data.</p>
+<p>Here, we provide two measures of this format&#8217;s utility: comparing the compression efficiency of the <tt class="docutils literal"><span class="pre">bzip2</span></tt>-backed Starch format against common, &#8220;naive&#8221; <tt class="docutils literal"><span class="pre">bzip2</span></tt>-compression of UCSC <a class="reference external" href="http://genome.ucsc.edu/goldenPath/help/bedgraph.html">BedGraph</a> and <a class="reference external" href="http://genome.ucsc.edu/goldenPath/help/wiggle.html">WIG</a> forms of BED data, and by comparing the time required to extract the records for any one chromosome from these formats as well as from a raw (uncompressed) BED file.</p>
+<div class="section" id="compression-efficiency">
+<h3>4.3.1. Compression efficiency<a class="headerlink" href="#compression-efficiency" title="Permalink to this headline">¶</a></h3>
+<p>After just 10K rows (roughly 300 kB of raw BED data storing phyloP conservation scores), compression into the Starch format begins to consistently outperform <tt class="docutils literal"><span class="pre">bzip2</span></tt> compression of the same data stored in either variable-step WIG or UCSC BedGraph formats.</p>
+<img alt="../_images/performance_starch_efficiency.png" src="../_images/performance_starch_efficiency.png" />
+<p>For very large raw BED datasets, the Starch format stores the original data in approximately 5% of the original input size. These improved compression results generalize to compressed versions of the fixed-step WIG format, as well. For more information, refer to the Supplemental Data in our <a class="reference external" href="http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract">Bioinformatics</a> paper.</p>
 </div>
-<div class="section" id="independent-testing-with-grok-toolkit">
-<span id="independent-testing"></span><h3>4.4.2. Independent testing with GROK toolkit<a class="headerlink" href="#independent-testing-with-grok-toolkit" title="Permalink to this headline">¶</a></h3>
-<p>Foo bar baz!</p>
-<p>It is our understanding that the BEDTools&#8217; intersectBed program was modified to accept (optionally) sorted data for improved performance some time after these results were published.</p>
-<p>A more recent study suggests bedops &#8211;intersect still has better memory and running time performance characteristics than recent versions of BEDTools.</p>
+<div class="section" id="extraction-time">
+<h3>4.3.2. Extraction time<a class="headerlink" href="#extraction-time" title="Permalink to this headline">¶</a></h3>
+<p>Data were sorted per sort-bed with chromosomes in lexicographical order. Extractions by chromosomes were significantly faster in general with the Starch format, even over raw (sequentially-processed) BED inputs:</p>
+<img alt="../_images/performance_unstarch_extractiontime.png" src="../_images/performance_unstarch_extractiontime.png" />
+<p>Under the assumption that chromosomes create very natural partitions of the data, the Starch format was designed using a chromosome-indexing scheme. This mechanism for random access further helps to improve data processing times within a clustered environment. Again, for more information, refer to the Supplemental Data in our <a class="reference external" href="http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract">Bioinformatics</a> paper.</p>
+<div class="topic">
+<p class="topic-title first"><span style="color:#a60489;">Note</span></p>
+<p>Our <a class="reference internal" href="reference/set-operations/bedextract.html#bedextract"><em>bedextract</em></a> program similarly makes it possible to extract data quickly by chromosome in any properly sorted BED file. However, for large (or many) data sets, deep compression has serious benefit. In our lab, more than 99% of all files are not touched (even) on a monthly basis—and new results are generated every day. Why would we want to keep all of that data in fully-bloated BED form? The workhorse programs of BEDOPS accept inputs in Starch format directly, just as they do raw BED files, to help manage &#8216;big data&#8217;.</p>
 </div>
+</div>
+</div>
+<div class="section" id="independent-testing">
+<span id="id2"></span><h2>4.4. Independent testing<a class="headerlink" href="#independent-testing" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="genomic-region-operation-kit-grok">
+<h3>4.4.1. Genomic Region Operation Kit (GROK)<a class="headerlink" href="#genomic-region-operation-kit-grok" title="Permalink to this headline">¶</a></h3>
+<p>Ovaska, et al. independently developed a genomic analysis toolkit called Genomic Region Operation Kit (GROK), which is described in more detail in <a class="reference external" href="http://ieeexplore.ieee.org/xpl/login.jsp?tp=&amp;arnumber=6399464&amp;isnumber=4359833">their publication in IEEE/ACM Transactions on Computational Biology and Bioinformatics</a>.</p>
+<p>In it, they compare the performance characteristics of their GROK toolkit with their analogs in the BEDTools and BEDOPS suites, which they summarize as follows:</p>
+<div class="topic">
+<p class="topic-title first">Results</p>
+<p>Results of the benchmark analyses are shown in Table VII. GROK and BEDTools perform at comparable levels for speed and memory efficiency. In this benchmark BEDOPS is the fastest and least memory consuming method, which was expected due to performance optimized implementation of its operations <sup>9</sup>. The optimized performance of BEDOPS, however, entails stronger assumptions for the input than GROK and BEDTools, in particular the requirement for pre-sorting the input BED files.</p>
+</div>
+<p>Operational input was a 14 MB BED file containing annotations of human gene and exon coordinates, totaling ~423k records. We summarize the results of operations on that input here:</p>
+<img alt="../_images/performance_independent_grok.png" src="../_images/performance_independent_grok.png" />
+<p>Remember that with BEDOPS, sorting is, at most, a <em>one-time cost</em> to operate on data any number of times in the most efficient way. Since the programs in BEDOPS produce sorted outputs, you never need to sort results before using them in downstream analyses.</p>
+</div>
+</div>
+<div class="section" id="worst-case-memory-performance">
+<h2>4.5. Worst-case memory performance<a class="headerlink" href="#worst-case-memory-performance" title="Permalink to this headline">¶</a></h2>
+<p>Non-sorting utilities operate efficiently with large inputs by keeping memory overhead low. The worst-case design scenario, however, causes the <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> or <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> programs to load all data from a single chromosome from a single input file into memory. For <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a>, the worst-case scenario applies only to the <tt class="docutils literal"><span class="pre">--element-of</span></tt> and <tt class="docutils literal"><span class="pre">--not-element-of</span></tt> options.</p>
+<p>Fortunately, worst-case situations are conceptually easy to understand, and their underlying questions often require no windowing logic to answer, so simpler approaches can sometimes be used. Conceptually, any summary analysis over an entire chromosome triggers the worst-case scenario. For example, to determine the number of sequencing tags mapped to a given chromosome, <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> loads all tag data for that one chromosome into memory, whereas a one-line <tt class="docutils literal"><span class="pre">awk</span></tt> statement can provide the answer with minimal memory overhead.</p>
+<p>We note that the worst case memory performance of non-sorting BEDOPS utilities still improves upon the best case performance of current alternatives.</p>
 </div>
 </div>
 
@@ -117,17 +149,24 @@
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">4. Performance</a><ul>
-<li><a class="reference internal" href="#test-environment-and-data">4.1. Test environment and data</a><ul>
-<li><a class="reference internal" href="#set-operations-with-bedops">4.1.1. Set operations with <tt class="docutils literal"><span class="pre">bedops</span></tt></a></li>
+<li><a class="reference internal" href="#test-environment-and-data">4.1. Test environment and data</a></li>
+<li><a class="reference internal" href="#set-operations-with-bedops">4.2. Set operations with <tt class="docutils literal"><span class="pre">bedops</span></tt></a><ul>
+<li><a class="reference internal" href="#direct-merge-sorted">4.2.1. Direct merge (sorted)</a></li>
+<li><a class="reference internal" href="#complement-and-intersection">4.2.2. Complement and intersection</a></li>
+<li><a class="reference internal" href="#direct-merge-unsorted">4.2.3. Direct merge (unsorted)</a></li>
+<li><a class="reference internal" href="#discussion">4.2.4. Discussion</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#direct-merge-sorted">4.2. Direct merge (sorted)</a></li>
-<li><a class="reference internal" href="#complement-and-intersection">4.3. Complement and intersection</a></li>
-<li><a class="reference internal" href="#discussion">4.4. Discussion</a><ul>
-<li><a class="reference internal" href="#compression-characteristics-of-starch">4.4.1. Compression characteristics of <tt class="docutils literal"><span class="pre">starch</span></tt></a></li>
-<li><a class="reference internal" href="#independent-testing-with-grok-toolkit">4.4.2. Independent testing with GROK toolkit</a></li>
+<li><a class="reference internal" href="#compression-characteristics-of-starch">4.3. Compression characteristics of <tt class="docutils literal"><span class="pre">starch</span></tt></a><ul>
+<li><a class="reference internal" href="#compression-efficiency">4.3.1. Compression efficiency</a></li>
+<li><a class="reference internal" href="#extraction-time">4.3.2. Extraction time</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#independent-testing">4.4. Independent testing</a><ul>
+<li><a class="reference internal" href="#genomic-region-operation-kit-grok">4.4.1. Genomic Region Operation Kit (GROK)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#worst-case-memory-performance">4.5. Worst-case memory performance</a></li>
 </ul>
 </li>
 </ul>
