@@ -97,6 +97,10 @@ Under the assumption that chromosomes create very natural partitions of the data
 | |extraction_note| |
 +-------------------+
 
+.. topic:: |note_png|
+
+   Our :ref:`bedextract` program similarly makes it possible to extract data quickly by chromosome in any properly sorted BED file. However, for large (or many) data sets, deep compression has serious benefit. In our lab, more than 99% of all files are not touched (even) on a monthly basis |---| and new results are generated every day. Why would we want to keep all of that data in fully-bloated BED form? The workhorse programs of BEDOPS accept inputs in Starch format directly, just as they do raw BED files, to help manage 'big data'.
+
 .. _independent_testing:
 
 -------------------------------------
