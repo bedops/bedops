@@ -97,7 +97,7 @@ Under the assumption that chromosomes create very natural partitions of the data
 | |extraction_note| |
 +-------------------+
 
-.. topic:: |note_png|
+.. topic:: |note_header|
 
    Our :ref:`bedextract` program similarly makes it possible to extract data quickly by chromosome in any properly sorted BED file. However, for large (or many) data sets, deep compression has serious benefit. In our lab, more than 99% of all files are not touched (even) on a monthly basis |---| and new results are generated every day. Why would we want to keep all of that data in fully-bloated BED form? The workhorse programs of BEDOPS accept inputs in Starch format directly, just as they do raw BED files, to help manage 'big data'.
 
@@ -120,6 +120,11 @@ In it, they compare the performance characteristics of their GROK toolkit with t
     Results of the benchmark analyses are shown in Table VII. GROK and BEDTools perform at comparable levels for speed and memory efficiency. In this benchmark BEDOPS is the fastest and least memory consuming method, which was expected due to performance optimized implementation of its operations:sup:`9`. The optimized performance of BEDOPS, however, entails stronger assumptions for the input than GROK and BEDTools, in particular the requirement for pre-sorting the input BED files.
 
 .. |note_png| image:: ../assets/note.png
+
+.. |note_header| raw:: html
+
+   <span style="color:#a60489;">Note</span>
+
 .. |intersect_note| raw:: html 
 
    <p>It is our understanding that the BEDTools' <tt>intersectBed</tt> program was modified to accept (optionally) sorted data for improved performance some time after these results were published.</p>
