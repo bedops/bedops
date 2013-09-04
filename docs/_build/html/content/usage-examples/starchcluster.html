@@ -63,22 +63,47 @@
 </div>
 <div class="section" id="script">
 <h2>3.6.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
-<p>Two versions of the <tt class="docutils literal"><span class="pre">starchcluster</span></tt> script are included with the source and package distributions of BEDOPS (see <a class="reference internal" href="../installation.html#installation-instructions"><em>Via pre-built packages</em></a> for more detail).</p>
+<p>Two versions of the <tt class="docutils literal"><span class="pre">starchcluster</span></tt> script are included with the source and package distributions of BEDOPS (see <a class="reference internal" href="../installation.html#installation-instructions"><em>Installation</em></a> for more detail).</p>
 <p>One version makes use of an <a class="reference external" href="http://en.wikipedia.org/wiki/Oracle_Grid_Engine">Oracle Grid Engine</a> (or Sun Grid Engine) cluster environment to distribute per-chromosome tasks, while the other script uses <a class="reference external" href="http://www.gnu.org/software/parallel/">GNU Parallel</a> to split the workload over hosts running SSH.</p>
 </div>
 <div class="section" id="discussion">
 <h2>3.6.3. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="splitting-bed-files">
+<h3>3.6.3.1. Splitting BED files<a class="headerlink" href="#splitting-bed-files" title="Permalink to this headline">¶</a></h3>
 <p>Whole-genome analyses are often &#8220;<a class="reference external" href="http://en.wikipedia.org/wiki/Embarrassingly_parallel">embarassingly parallel</a>&#8221;, in that per-chromosome computations can be placed onto separate work nodes, with results collated at the end in &#8220;<a class="reference external" href="http://en.wikipedia.org/wiki/MapReduce">map-reduce</a>&#8221; fashion.</p>
 <p>If we want to filter any BED file to retrieve elements from a specific chromosome (say, to compress a BED file, one chromosome at a time), to arrange this kind of analysis, one trivial—but very slow—way to do this involves sequentially walking line by line through the file to parse and test each element. This can take a while to do.</p>
 <p>However, just as BEDOPS tools use the information in <a class="reference internal" href="../reference/file-management/sorting/sort-bed.html#sort-bed"><em>sorted data</em></a> to apply efficient set and statistical operations, we can use this same information to jump quickly through our data of interest.</p>
-<p>Specifically, sorting allows us to perform a <cite>binary search &lt;http://en.wikipedia.org/wiki/Binary_search_algorithm&gt;</cite>:</p>
+<p>Specifically, sorting allows us to perform a <a class="reference external" href="http://en.wikipedia.org/wiki/Binary_search_algorithm">binary search</a>:</p>
 <ol class="arabic simple">
 <li>We jump to the middle byte of the BED file, stream to the nearest element, then parse and test the chromosome name.</li>
 <li>Either we have a match, or we jump to the middle of the remaining left or right half (decided by dictionary order), parse and test again.</li>
 <li>We repeat steps 1 and 2 until we have matches that define the bounds of the target chromosome.</li>
 </ol>
-<img alt="../../_images/bedextract_mechanism.png" src="../../_images/bedextract_mechanism.png" />
+<a class="reference internal image-reference" href="../../_images/bedextract_mechanism.png"><img alt="../../_images/bedextract_mechanism.png" src="../../_images/bedextract_mechanism.png" style="width: 50%;" /></a>
 <p>To indicate the kind of speed gain that the <a class="reference external" href="../reference/set-operations/bedextract.html">bedextract</a> tool provides, in local testing, a naïve listing of chromosomes from a 36 GB BED input using UNIX <tt class="docutils literal"><span class="pre">cut</span></tt> and <tt class="docutils literal"><span class="pre">uniq</span></tt> utilities took approximately 20 minutes to complete on a typical Core 2 Duo-based Linux workstation. Retrieval of the same chromosome listing with <tt class="docutils literal"><span class="pre">bedextract</span> <span class="pre">--list-chr</span></tt> took only 2 seconds (cache flushed—no cheating!).</p>
+</div>
+<div class="section" id="compressing-bed-subsets">
+<h3>3.6.3.2. Compressing BED subsets<a class="headerlink" href="#compressing-bed-subsets" title="Permalink to this headline">¶</a></h3>
+<p>Now we can very quickly demarcate where chromosomes start and stop in a BED file, we can apply <a class="reference external" href="../reference/file-management/compression/starch.html">starch</a> on those subsets on separate cluster nodes.</p>
+</div>
+<div class="section" id="stitching-together-compressed-sets">
+<h3>3.6.3.3. Stitching together compressed sets<a class="headerlink" href="#stitching-together-compressed-sets" title="Permalink to this headline">¶</a></h3>
+<p>Once we have per-chromosome Starch-formatted archives, we need some way to put them all together into one archive. This is where <a class="reference external" href="../reference/file-management/compression/starchcat.html">starchcat</a> comes in, taking all the per-chromosome archives as inputs and creating a new archive as output.</p>
+<p>The big picture view is like this:</p>
+<dl class="docutils">
+<dt>:: image: ../../assets/reference/file-management/compression/starchcluster_mechanism.png</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">width:</th><td class="field-body">50%</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<p>As the figure notes, the compression time for a very large BED file is reduced roughly to the time taken to compress the largest chromosome in the original file. Parallelization of this process is an order of magnitude faster than compressing chromosomes in serial.</p>
+</div>
 </div>
 </div>
 
@@ -96,7 +121,12 @@
 <li><a class="reference internal" href="#">3.6. Efficiently creating Starch-formatted archives with a cluster</a><ul>
 <li><a class="reference internal" href="#bedops-tools-in-use">3.6.1. BEDOPS tools in use</a></li>
 <li><a class="reference internal" href="#script">3.6.2. Script</a></li>
-<li><a class="reference internal" href="#discussion">3.6.3. Discussion</a></li>
+<li><a class="reference internal" href="#discussion">3.6.3. Discussion</a><ul>
+<li><a class="reference internal" href="#splitting-bed-files">3.6.3.1. Splitting BED files</a></li>
+<li><a class="reference internal" href="#compressing-bed-subsets">3.6.3.2. Compressing BED subsets</a></li>
+<li><a class="reference internal" href="#stitching-together-compressed-sets">3.6.3.3. Stitching together compressed sets</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
