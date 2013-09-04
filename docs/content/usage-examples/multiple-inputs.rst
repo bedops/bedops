@@ -24,7 +24,7 @@ Consider a case study of one such problem that utilizes both :ref:`bedops` and :
 
 Here, we pass in as many files as we have to :ref:`bedops`. The requirement of elements overlapping reciprocally is met by using ``--fraction-both``, and the requirement that overlapping elements must come from two or more (distinct) files is satisfied by checking how many elements there are via the ``--echo-map-id-uniq`` operator.
 
-The requirements for ``file1.bed`` through ``fileN.bed`` is that each is properly :ref:`sorted <sort-bed>` as usual, and that their respective fourth-column ID fields identify the file. For example:
+The requirements for ``file1.bed`` through ``fileN.bed`` are that each is properly :ref:`sorted <sort-bed>` (as expected for any BEDOPS input) and that their respective fourth-column ID fields identify the file. For example:
 
 ::
 
