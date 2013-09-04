@@ -15,15 +15,15 @@ Random subsamples of `phyloP conservation <http://compgen.bscb.cornell.edu/phast
 Set operations with ``bedops``
 ==============================
 
-In this section, we provide time and memory measurements of various :ref:`bedops` operations against analogous `BEDTools <http://code.google.com/p/bedtools/>` utilities.
+In this section, we provide time and memory measurements of various :ref:`bedops` operations against analogous `BEDTools <http://code.google.com/p/bedtools/>`_ utilities.
 
 ---------------------
 Direct merge (sorted)
 ---------------------
 
-.. image:: ../assets/performance/performance_bedops_merge_sorted.png
-
 The performance of the ``mergeBed`` program (with the ``-i`` option) from the BEDTools suite (v2.12.0) was compared with that of the ``--merge`` option of our :ref:`bedops` utility.
+
+.. image:: ../assets/performance/performance_bedops_merge_sorted.png
 
 As measured, the ``mergeBed`` program loads all data from a file into memory and creates an index before computing results, incurring longer run times and higher memory costs that can lead to failures. The :ref:`bedops` utility minimizes memory consumption by retaining only the information required to compute the next line of output.
 
@@ -31,11 +31,11 @@ As measured, the ``mergeBed`` program loads all data from a file into memory and
 Complement and intersection
 ---------------------------
 
-.. image:: ../assets/performance/performance_bedops_complement_sorted.png
-
-.. image:: ../assets/performance/performance_bedops_complement_sorted.png
-
 The ``complementBed`` (with ``-i`` and ``-g`` options) and ``intersectBed`` (with ``-u``, ``-a``, and ``-b`` options) programs from the BEDTools suite (v2.12.0) also were compared to our :ref:`bedops` program. 
+
+.. image:: ../assets/performance/performance_bedops_complement_sorted.png
+
+.. image:: ../assets/performance/performance_bedops_complement_sorted.png
 
 Both BEDTools programs were unable to complete operations after 51M elements with the allocated 18 GB of memory. The :ref:`bedops` program continued operating on the full dataset.
 
@@ -66,9 +66,7 @@ Independent testing with GROK toolkit
 
 Foo bar baz!
 
-.. |note_png| image:: assets/note.png
-.. |intersect_note| replace:: replacement
+.. |note_png| image:: ../assets/note.png
+.. |intersect_note| replace:: It is our understanding that the BEDTools' ``intersectBed`` program was modified to accept (optionally) sorted data for improved performance some time after these results were published.
 
-It is our understanding that the BEDTools' intersectBed program was modified to accept (optionally) sorted data for improved performance some time after these results were published.
-
-A more recent study suggests bedops --intersect still has better memory and running time performance characteristics than recent versions of BEDTools.
+A :ref:`more recent study <independent_testing>` suggests ``bedops --intersect`` still has better memory and running time performance characteristics than recent versions of BEDTools.
