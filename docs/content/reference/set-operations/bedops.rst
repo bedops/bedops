@@ -160,6 +160,34 @@ The ``--not-element-of`` operation shows elements in the reference file which do
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_notelementof_ab.png
 
+As with the ``--element-of`` (``-e``) operator, the overlap criterion for ``--not-element-of`` (``-n``) can be specified by length (in bases) or by percentage of length.
+
+.. topic:: |note_header|
+
+   The ``--not-element-of`` operatior preserves columns from the first (reference) dataset.
+
+.. topic:: |note_header|
+
+   The same caveat applies to use of ``--not-element-of`` (``-n``) as with ``--element-of`` (``-e``), namely that the second and all subsequent input files are merged before the set operation is applied. Please review the BEDOPS `forum discussion thread <http://bedops.uwencode.org/forum/index.php?topic=20.0>`_ on this topic for more details.
+
+-----------------------------
+Complement (-c, --complement)
+-----------------------------
+
+The ``--complement`` operation calculates the genomic regions in the gaps between the contiguous per-chromosome ranges defined by one or more inputs. The following example shows the use of two inputs:
+
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_complement_ab.png
+
+.. topic:: |note_header|
+
+   Note this **computed result** will lack ID, score and other columnar data other than the first three columns. That is, computed elements will not come from any of the input sets, but are new elements created from the input set space.
+
+.. topic:: |note_header|
+
+   For a more in-depth discussion on using ``--complement`` with left and right bounds of input chromosomes, please review the BEDOPS `forum discussion <http://bedops.uwencode.org/forum/index.php?topic=19.0>`_ on this subject.
+
+
+
 .. |note_header| raw:: html
 
    <span style="color:#a60489;">Note</span>
