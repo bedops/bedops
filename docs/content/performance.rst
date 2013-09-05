@@ -131,7 +131,7 @@ We note that the worst case memory performance of non-sorting BEDOPS utilities s
 
 .. |note_header| raw:: html
 
-   <span style="color:#a60489;">Note</span>
+   <span style="color:#a60489; font-weight:bolder;">Note</span>
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
