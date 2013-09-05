@@ -202,6 +202,14 @@ The ``--difference`` operation calculates the genomic regions found within the f
 Symmetric difference (-s, --symmdiff)
 -------------------------------------
 
+The ``--symmdiff`` operation calculates the genomic range that is exclusive to each input, excluding any ranges shared across inputs:
+
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_symmetricdifference_ab.png
+
+.. topic:: |tip_header|
+
+   It has been observed that ``--symmdiff`` (``-s``) is the same as ``--difference A B`` unionized with ``--difference B A``, but ``--symmdiff`` runs faster in practice.
+
 ---------------------------
 Intersect (-i, --intersect)
 ---------------------------
@@ -244,7 +252,11 @@ Sorting inputs
 
 .. |note_header| raw:: html
 
-   <span style="color:#a60489;">Note</span>
+   <span style="color:#a60489; font-weight:bolder;">Note</span>
+
+.. |tip_header| raw:: html
+
+   <span style="color:darkgreen; font-weight:bolder;">Tip</span>
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
