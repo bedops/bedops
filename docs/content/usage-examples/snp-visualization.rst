@@ -94,15 +94,13 @@ While there are some DHSs associated with non-disease SNPs, the majority accumul
 Downloads
 =========
 
-* The `example`_ script, after modification to use loops and other shell features.
-* `Data`_ for this example are contained in a tarball (use ``tar -xzf`` to extract files).
+* The :download:`example <../../assets/usage-examples/SNP_DHS_heatmap.tcsh>` script, after modification to use loops and other shell features.
+* :download:`Data <../../assets/usage-examples/SNP_DHS_data.tgz>` for this example are contained in a tarball (use ``tar -xzf`` to extract files).
 
 The :ref:`bedmap` tool can operate directly on Starch-formatted archives. Alternatively, use the :ref:`unstarch` tool to decompress Starch data files to sorted BED format.
 
 Note that these are not the full datasets that went into the original research, but snippets that should otherwise demonstrate the disease-DHS association phenomenon and the use of parts of the BEDOPS toolset.
 
-.. _example: ../../assets/usage-examples/SNP_DHS_heatmap.tcsh
-.. _Data: ../../assets/usage-examples/SNP_DHS_data.tgz
 .. _matrix2png: http://www.chibi.ubc.ca/matrix2png/
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
