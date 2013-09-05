@@ -211,8 +211,8 @@ Downloads
 =========
 
 * Sample :download:`FIMO motifs <../../../assets/reference/set-operations/reference_bedextract_motifs.starch>`
-* Sample ``Query`` :download:`DHS signal <../../../assets/reference/statistics/reference_bedmap_map.bed>`
-* Sample ``Target`` :download:`ad-hoc coordinate <../../../assets/reference/set-operations/reference_bedextract_target.starch>`
+* Sample ``Query`` dataset: :download:`DHS signal <../../../assets/reference/statistics/reference_bedmap_map.bed>`
+* Sample ``Target`` dataset: :download:`ad-hoc coordinates <../../../assets/reference/set-operations/reference_bedextract_target.starch>`
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
