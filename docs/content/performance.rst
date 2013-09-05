@@ -39,7 +39,7 @@ The ``complementBed`` (with ``-i`` and ``-g`` options) and ``intersectBed`` (wit
 
 Both BEDTools programs were unable to complete operations after 51M elements with the allocated 18 GB of memory. The :ref:`bedops` program continued operating on the full dataset.
 
-.. note:: It is our understanding that the BEDTools' ``intersectBed`` program was modified to accept (optionally) sorted data for improved performance some time after these results were published.
+.. important:: It is our understanding that the BEDTools' ``intersectBed`` program was modified to accept (optionally) sorted data for improved performance some time after these results were published.
 
    A :ref:`more recent study <independent_testing>` suggests ``bedops --intersect`` still offers better memory and running time performance characteristics than recent versions of BEDTools.
 
@@ -89,7 +89,7 @@ Data were sorted per sort-bed with chromosomes in lexicographical order. Extract
 
 Under the assumption that chromosomes create very natural partitions of the data, the Starch format was designed using a chromosome-indexing scheme. This mechanism for random access further helps to improve data processing times within a clustered environment. Again, for more information, refer to the Supplemental Data in our `Bioinformatics <http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract>`_ paper.
 
-.. note:: Our :ref:`bedextract` program similarly makes it possible to extract data quickly by chromosome in any properly sorted BED file. However, for large (or many) data sets, deep compression has serious benefit. In our lab, more than 99% of all files are not touched (even) on a monthly basis |---| and new results are generated every day. Why would we want to keep all of that data in fully-bloated BED form? The workhorse programs of BEDOPS accept inputs in Starch format directly, just as they do raw BED files, to help manage 'big data'.
+.. important:: Our :ref:`bedextract` program similarly makes it possible to extract data quickly by chromosome in any properly sorted BED file. However, for large (or many) data sets, deep compression has serious benefit. In our lab, more than 99% of all files are not touched (even) on a monthly basis |---| and new results are generated every day. Why would we want to keep all of that data in fully-bloated BED form? The workhorse programs of BEDOPS accept inputs in Starch format directly, just as they do raw BED files, to help manage 'big data'.
 
 .. _independent_testing:
 
