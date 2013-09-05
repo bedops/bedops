@@ -141,7 +141,7 @@ An example of a sorted BED file which contains a nested element follows:
 While this dataset is sorted, the element ``chr1:125-150`` is entirely nested within ``chr1:100-200``:
 
 .. image:: ../../../assets/reference/set-operations/reference_bedextract_nested_elements.png
-   :width: 75%
+   :width: 50%
 
 .. _bedextract_downloads:
 
