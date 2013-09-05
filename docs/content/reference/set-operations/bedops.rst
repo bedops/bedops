@@ -206,7 +206,7 @@ The ``--symmdiff`` operation calculates the genomic range that is exclusive to e
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_symmetricdifference_ab.png
 
-.. topic:: |tip_header|
+.. tip:: Tip
 
    It has been observed that ``--symmdiff`` (``-s``) is the same as ``--difference A B`` unionized with ``--difference B A``, but ``--symmdiff`` runs faster in practice.
 
