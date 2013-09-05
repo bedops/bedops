@@ -9,13 +9,13 @@ The ``bedextract`` utility performs three primary tasks, with the goal of doing 
 2. Extracts all the elements in a sorted input BED file, for a given chromosome.
 3. Finds elements of one BED file, which overlap elements in a second, reference BED file (when specific element criteria are satisfied).
 
-One might ask why use this utility, when the first two tasks can already be performed with common UNIX text processing tools, such as ``cut``, ``sort``, ``uniq``, and ``awk``, and the third task can be performed with :ref:`bedops` with the ``-e -1`` options?
+One might ask why use this utility, when the first two tasks can already be performed with common UNIX text processing tools, such as ``cut``, ``sort``, ``uniq``, and ``awk``, and the third task can be performed with :ref:`bedops` with the ``--element-of -1`` options?
 
 The ``bedextract`` utility does the work of all those tools without streaming through an entire BED file, resulting in massive performance improvements. By using the hints provided by sorted BED input, the :ref:`bedextract` tool can jump around, seeking very quick answers to these questions about your data.
 
-=================
-How does it work?
-=================
+============
+How it works
+============
 
 Specifically, sorting with :ref:`sort-bed` allows us to perform a `binary search <http://en.wikipedia.org/wiki/Binary_search_algorithm>`_: 
 
@@ -23,7 +23,7 @@ Specifically, sorting with :ref:`sort-bed` allows us to perform a `binary search
 2. Either we have a match, or we jump to the middle of the remaining left or right half (decided by dictionary order), parse and test again. 
 3. We repeat steps 1 and 2 until we have matches that define the bounds of the target chromosome.
 
-.. image:: ../../../assets/reference/set-operations/bedextract_mechanism.png
+.. image:: ../../../assets/reference/set-operations/reference_bedextract_mechanism.png
    :width: 75%
 
 To indicate the kind of speed gain that the :ref:`bedextract` tool provides, in local testing, a naïve listing of chromosomes from a 36 GB BED input using UNIX ``cut`` and ``uniq`` utilities took approximately 20 minutes to complete on a typical Core 2 Duo-based Linux workstation. Retrieval of the same chromosome listing with ``bedextract --list-chr`` took only 2 seconds (cache flushed |---| no cheating!).
@@ -60,7 +60,7 @@ The ``--help`` option describes the functionality available to the end user:
 
   bedextract
     citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-    version:  2.2.0
+    version:  2.3.0
     authors:  Shane Neph & Alex Reynolds
 
       Every input file must be sorted per sort-bed.
@@ -114,6 +114,33 @@ For example, to retrieve ``chrX`` from the same motif sample:
 -------------------------------------------------
 Retrieving elements which overlap target elements
 -------------------------------------------------
+
+A common :ref:`bedops` query involves asking which elements overlap one or more bases between two BED datasets, which we will call here ``Query`` and ``Target``. 
+
+One can already use ``bedops --element-of -1`` to accomplish this task, but if certain specific criteria are met (which we will describe shortly) then a much faster result can often be obtained by instead using :ref:`bedextract`. 
+
+Three criteria make the use of :ref:`bedextract` in this mode very successful in practice, with potentially massive speed improvements:
+
+1. ``Query`` is a huge file.
+2. There are relatively few regions of interest in ``Target`` (say, roughly 30,000 or fewer).
+3. There are **no fully-nested elements** in ``Query`` (but duplicate coordinates are fine).
+
+^^^^^^^^^^^^^^^^^^^^^^^^^
+What are nested elements?
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+An example of a sorted BED file which contains a nested element follows:
+
+::
+
+  chr1    1      100
+  chr1    100    200
+  chr1    125    150
+  chr1    150    1000
+
+While this dataset is sorted, the element ``chr1:125-150`` is entirely nested within ``chr1:100-200``:
+
+
 
 .. _bedextract_downloads:
 
