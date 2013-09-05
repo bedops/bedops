@@ -143,6 +143,67 @@ While this dataset is sorted, the element ``chr1:125-150`` is entirely nested wi
 .. image:: ../../../assets/reference/set-operations/reference_bedextract_nested_elements.png
    :width: 50%
 
+.. note::  Fully-nested elements are not a problem for the other two :ref:`bedextract` features: 1) Listing all chromosomes, and 2) Retrieving all information for a single chromosome.
+
+Fully-nested elements are only an issue if they exist in the ``Query`` dataset. Results are not affected if the ``Target`` datacontains nested elements. Overlapping (but not fully-nested) elements in the ``Query`` input file are fine, as are duplicated genomic positions.
+
+.. note:: Our lab works with BED data of various types: cut-counts, hotspots, peaks, footprints, etc. These data generally do not contain nested elements and so are amenable to use with bedextract for extracting overlapping elements.
+
+   However, other types of ``Query`` datasets can be problematic. FIMO search results, for example, might cause trouble, where the boundaries of one motif hit can be contained within another larger hit. Or paired-end sequence data, where tags are not of a fixed length. Be sure to consider the makeup of your BED data before using :ref:`bedextract`.
+
+^^^^^^^^^^^^^
+Demonstration
+^^^^^^^^^^^^^
+
+To demonstrate this use of :ref:`bedextract`, for our ``Query`` dataset we will use the ``Map`` example from our :ref:`bedmap` documentation, which contains raw DNaseI hypersensitivity signal from a human K562 cell line (see the :ref:`Downloads <bedextract_downloads>` section for sample data):
+
+::
+ 
+  $ cat query.bed
+  chr21   33031165        33031185        map-1   1.000000
+  chr21   33031185        33031205        map-2   3.000000
+  chr21   33031205        33031225        map-3   3.000000
+  chr21   33031225        33031245        map-4   3.000000
+  ...
+  chr21   33032445        33032465        map-65  5.000000
+  chr21   33032465        33032485        map-66  6.000000
+
+Our ``Target`` data is simply an *ad-hoc* BED region which overlaps part of the ``Query`` dataset, stored in a :ref:`Starch-formatted <starch>` archive:
+
+::
+
+  $ unstarch target.starch
+  chr21   33031600        33031700
+
+We now ask which elements of ``Query`` overlap the element in ``Target``:
+
+::
+
+  $ bedextract query.bed target.bed
+  chr21   33031585        33031605        map-22  26.000000
+  chr21   33031605        33031625        map-23  27.000000
+  chr21   33031625        33031645        map-24  29.000000
+  chr21   33031645        33031665        map-25  31.000000
+  chr21   33031665        33031685        map-26  31.000000
+  chr21   33031685        33031705        map-27  37.000000
+
+Note that we can also use "-" to denote standard input for the ``Target`` dataset, as well as a regular BED- or Starch-formatted file. This means we can pipe target elements from another process to :ref:`bedextract`, *e.g.* we can query for an ad-hoc element as follows:
+
+::
+
+  $ echo -e "chr21\t33031590\t33031600" | bedextract query.bed -
+  chr21   33031585        33031605        map-22  26.000000
+
+Instead of an *ad-hoc* element as in this example, however, target elements could just as easily be piped in from upstream :ref:`bedmap` or :ref:`bedops` operations, or extracted elements from a Starch archive, etc. 
+
+.. tip:: The output of this particular use of :ref:`bedextract` is made up of elements from the ``Query`` dataset and is therefore :ref:`sorted <sort-bed>` BED data, which can be piped to :ref:`bedops`, :ref:`bedmap` and other BEDOPS utilities for further downstream processing.
+
+.. note:: Though :ref:`bedextract` only supports the overlap equivalent of ``bedops --element-of -1``, other overlap criteria are efficiently supported by combining :ref:`bedextract` with :ref:`bedops`. 
+
+   Specifically, we can quickly filter through just the results given by :ref:`bedextract` and implement other overlap criteria with :ref:`bedops`, *e.g.*:
+
+   ``bedextract query.bed target.bed | bedops -e -50% - target.bed``
+
 .. _bedextract_downloads:
 
 =========
@@ -150,7 +211,8 @@ Downloads
 =========
 
 * Sample :download:`FIMO motifs <../../../assets/reference/set-operations/reference_bedextract_motifs.starch>`
-
+* Sample ``Query`` :download:`DHS signal <../../../assets/reference/statistics/reference_bedmap_map.bed>`
+* Sample ``Target`` :download:`ad-hoc coordinate <../../../assets/reference/set-operations/reference_bedextract_target.starch>`
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
