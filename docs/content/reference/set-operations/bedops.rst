@@ -242,13 +242,13 @@ This option is immediately useful for adjusting the coordinate index of BED file
 
 ::
 
-  bedops --range -1:-1 --everything my1BasedCoordinates.bed > my0BasedCoordinates.bed
+  $ bedops --range -1:-1 --everything my1BasedCoordinates.bed > my0BasedCoordinates.bed
 
 And, likewise, for 0-based to 1-based indexing:
 
 ::
 
-  bedops --range 1:1 --everything my0BasedCoordinates.bed > my1BasedCoordinates.bed
+  $ bedops --range 1:1 --everything my0BasedCoordinates.bed > my1BasedCoordinates.bed
 
 .. note:: The ``--range`` value is applied to inputs prior to the application of other operations (such as ``--intersect`` or ``--merge``, etc.).
 
