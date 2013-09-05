@@ -305,9 +305,9 @@ In this example, elements from ``A`` are padded 50 bases up- and downstream and 
 Sorting inputs
 --------------
 
-For unsorted input that fit in available memory, be sure to use :ref:`sort-bed` to presort the data stream before using with :ref:`bedops`.
+For unsorted input, be sure to first use :ref:`sort-bed` to presort the data stream before using with :ref:`bedops`. Unsorted input will not work properly with BEDOPS tools.
 
-.. tip:: If you will use an initially-unsorted file more than once, save the results of sorting. You only need to sort once!
+.. tip:: If you will use an initially-unsorted file more than once, save the results of sorting. You only need to sort once! BEDOPS tools take in and export sorted data.
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
