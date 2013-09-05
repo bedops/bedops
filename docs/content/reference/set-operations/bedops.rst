@@ -190,6 +190,14 @@ The ``--complement`` operation calculates the genomic regions in the gaps betwee
 Difference (-d, --difference)
 -----------------------------
 
+The ``--difference`` operation calculates the genomic regions found within the first (reference) input file, excluding regions in all other input files:
+
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_difference_ab.png
+
+.. topic:: |note_header|
+
+   As with ``--element-of`` and ``--not-element-of``, this operation is not symmetric. While ``--not-element-of`` preserves all columns of elements found in the reference input and allows one to define overlaps, the ``--difference`` operator simply reports every genomic range as three-column BED, which does not overlap elements found in the second and subsequent input files by any amount.
+
 -------------------------------------
 Symmetric difference (-s, --symmdiff)
 -------------------------------------
