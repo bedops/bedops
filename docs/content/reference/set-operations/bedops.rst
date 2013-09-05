@@ -216,7 +216,7 @@ The ``--partition`` operator splits all overlapping input regions into a set of 
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_partition_ab.png
 
-Note the lack of ID, score and other columnar data in this computed result.
+.. note:: As with ``--merge``, ``--complement`` and other "computing" operations, note the lack of ID, score and other columnar data in this computed result.
 
 -----------------------------------
 Per-chromosome operations (--chrom)
