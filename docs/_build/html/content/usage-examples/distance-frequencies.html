@@ -59,7 +59,7 @@
 <p>In this example, we would like to find the <strong>signed</strong> distance between a single nucleotide repeat and the DNase-hypersensitive site nearest to it, as measured in base pairs (bp).</p>
 <div class="section" id="bedops-tools-in-use">
 <h2>3.3.1. BEDOPS tools in use<a class="headerlink" href="#bedops-tools-in-use" title="Permalink to this headline">¶</a></h2>
-<p>To find nearest elements, we will use <em class="xref std std-ref">closest-features</em> with the <tt class="docutils literal"><span class="pre">--dist</span></tt>, <tt class="docutils literal"><span class="pre">--closest</span></tt>, and <tt class="docutils literal"><span class="pre">--no-ref</span></tt> options.</p>
+<p>To find nearest elements, we will use <a class="reference internal" href="../reference/set-operations/closest-features.html#closest-features"><em>closest-features</em></a> with the <tt class="docutils literal"><span class="pre">--dist</span></tt>, <tt class="docutils literal"><span class="pre">--closest</span></tt>, and <tt class="docutils literal"><span class="pre">--no-ref</span></tt> options.</p>
 </div>
 <div class="section" id="script">
 <h2>3.3.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
@@ -74,7 +74,7 @@ closest-features --dist --closest --no-ref SNPs.bed DHSs.bed \
 <div class="section" id="discussion">
 <h2>3.3.3. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
 <p>The <tt class="docutils literal"><span class="pre">--dist</span></tt> option returns signed distances between input elements and reference elements, <tt class="docutils literal"><span class="pre">--closest</span></tt> chooses the single closest element, and <tt class="docutils literal"><span class="pre">--no-ref</span></tt> keeps SNP coordinates from being printed out.</p>
-<p>The output from <em class="xref std std-ref">closest-features</em> contains coordinates and the signed distance to the closest DHS, separated by the pipe (<tt class="docutils literal"><span class="pre">|</span></tt>) character. Such output might look something like this:</p>
+<p>The output from <a class="reference internal" href="../reference/set-operations/closest-features.html#closest-features"><em>closest-features</em></a> contains coordinates and the signed distance to the closest DHS, separated by the pipe (<tt class="docutils literal"><span class="pre">|</span></tt>) character. Such output might look something like this:</p>
 <div class="highlight-python"><pre>chr1    2513240 2513390 MCV-11  97.201400|25</pre>
 </div>
 <p>This type of result is chopped up with the standard UNIX utility <tt class="docutils literal"><span class="pre">cut</span></tt> to get at the distances to the closest elements. Finally, we use <tt class="docutils literal"><span class="pre">grep</span> <span class="pre">-v</span></tt> to throw out any non-distance, denoted by <tt class="docutils literal"><span class="pre">NA</span></tt>. This can occur if there exists some chromosome in the SNP dataset that does not exist in the DHSs.</p>
@@ -83,10 +83,10 @@ closest-features --dist --closest --no-ref SNPs.bed DHSs.bed \
 <div class="section" id="downloads">
 <span id="distance-frequencies-downloads"></span><h2>3.3.4. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><a class="reference external" href="../../assets/usage-examples/Frequencies-SNPs.bed.starch">SNP</a> elements</li>
-<li><a class="reference external" href="../../assets/usage-examples/Frequencies-DHSs.bed.starch">DNase-hypersensitive</a> elements</li>
+<li><a class="reference download internal" href="../../_downloads/Frequencies-SNPs.bed.starch"><tt class="xref download docutils literal"><span class="pre">SNP</span></tt></a> elements</li>
+<li><a class="reference download internal" href="../../_downloads/Frequencies-DHSs.bed.starch"><tt class="xref download docutils literal"><span class="pre">DNase-hypersensitive</span></tt></a> elements</li>
 </ul>
-<p>The <em class="xref std std-ref">closest-features</em> tool can operate directly on Starch-formatted archives. Alternatively, use the <em class="xref std std-ref">unstarch</em> tool to decompress Starch data files to sorted BED format.</p>
+<p>The <a class="reference internal" href="../reference/set-operations/closest-features.html#closest-features"><em>closest-features</em></a> tool can operate directly on Starch-formatted archives. Alternatively, use the <a class="reference internal" href="../reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a> tool to decompress Starch data files to sorted BED format.</p>
 </div>
 </div>
 

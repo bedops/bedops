@@ -59,7 +59,7 @@
 <p>In this example, we would like to identify the set of SNPs that are within a DHS, printing out both the SNP element <em>and</em> the DHS it is contained within.</p>
 <div class="section" id="bedops-tools-in-use">
 <h2>3.4.1. BEDOPS tools in use<a class="headerlink" href="#bedops-tools-in-use" title="Permalink to this headline">¶</a></h2>
-<p>We use <em class="xref std std-ref">bedmap</em> to answer this question, as it traverses a <em>reference</em> BED file (in this example, SNPs), and identifies overlapping elements from the <em>mapping</em> BED file (in this example, DHSs).</p>
+<p>We use <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> to answer this question, as it traverses a <em>reference</em> BED file (in this example, SNPs), and identifies overlapping elements from the <em>mapping</em> BED file (in this example, DHSs).</p>
 </div>
 <div class="section" id="script">
 <h2>3.4.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
@@ -71,7 +71,7 @@
 </div>
 <div class="section" id="discussion">
 <h2>3.4.3. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
-<p>The output of this <em class="xref std std-ref">bedmap</em> statement might look something like this:</p>
+<p>The output of this <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> statement might look something like this:</p>
 <div class="highlight-python"><pre>chr1    10799576    10799577    rs12046278  Systolic_blood_pressure Cardiovascular|chr1 10799460    10799610    MCV-1   9.18063</pre>
 </div>
 <p>The output is delimited by pipe symbols (<tt class="docutils literal"><span class="pre">|</span></tt>), showing the reference element (SNP) and the mapped element (DHS).</p>
@@ -80,10 +80,10 @@
 <div class="section" id="downloads">
 <span id="snps-within-dhses-downloads"></span><h2>3.4.4. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><a class="reference external" href="../../assets/usage-examples/Frequencies-SNPs.bed.starch">SNP</a> elements</li>
-<li><a class="reference external" href="../../assets/usage-examples/Frequencies-DHSs.bed.starch">DNase-hypersensitive</a> elements</li>
+<li><a class="reference download internal" href="../../_downloads/Frequencies-SNPs.bed.starch"><tt class="xref download docutils literal"><span class="pre">SNP</span></tt></a> elements</li>
+<li><a class="reference download internal" href="../../_downloads/Frequencies-DHSs.bed.starch"><tt class="xref download docutils literal"><span class="pre">DNase-hypersensitive</span></tt></a> elements</li>
 </ul>
-<p>The <em class="xref std std-ref">bedmap</em> tool can operate directly on Starch-formatted archives. Alternatively, use the <em class="xref std std-ref">unstarch</em> tool to decompress Starch data files to sorted BED format.</p>
+<p>The <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> tool can operate directly on Starch-formatted archives. Alternatively, use the <a class="reference internal" href="../reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a> tool to decompress Starch data files to sorted BED format.</p>
 </div>
 </div>
 

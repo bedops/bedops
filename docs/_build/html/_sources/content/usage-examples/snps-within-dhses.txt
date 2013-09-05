@@ -41,13 +41,11 @@ If multiple elements are mapped onto a single reference element, the mapped elem
 Downloads
 =========
 
-* `SNP`_ elements
-* `DNase-hypersensitive`_ elements
+* :download:`SNP <../../assets/usage-examples/Frequencies-SNPs.bed.starch>` elements
+* :download:`DNase-hypersensitive <../../assets/usage-examples/Frequencies-DHSs.bed.starch>` elements
 
 The :ref:`bedmap` tool can operate directly on Starch-formatted archives. Alternatively, use the :ref:`unstarch` tool to decompress Starch data files to sorted BED format.
 
-.. _SNP: ../../assets/usage-examples/Frequencies-SNPs.bed.starch
-.. _DNase-hypersensitive: ../../assets/usage-examples/Frequencies-DHSs.bed.starch
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
    :trim:
