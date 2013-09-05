@@ -57,6 +57,104 @@
             
   <div class="section" id="bedextract">
 <span id="id1"></span><h1>5.1.2. <cite>bedextract</cite><a class="headerlink" href="#bedextract" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">bedextract</span></tt> utility performs three primary tasks, with the goal of doing them very quickly:</p>
+<ol class="arabic simple">
+<li>Lists all the chromosomes in a sorted input BED file.</li>
+<li>Extracts all the elements in a sorted input BED file, for a given chromosome.</li>
+<li>Finds elements of one BED file, which overlap elements in a second, reference BED file (when specific element criteria are satisfied).</li>
+</ol>
+<p>One might ask why use this utility, when the first two tasks can already be performed with common UNIX text processing tools, such as <tt class="docutils literal"><span class="pre">cut</span></tt>, <tt class="docutils literal"><span class="pre">sort</span></tt>, <tt class="docutils literal"><span class="pre">uniq</span></tt>, and <tt class="docutils literal"><span class="pre">awk</span></tt>, and the third task can be performed with <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a> with the <tt class="docutils literal"><span class="pre">-e</span> <span class="pre">-1</span></tt> options?</p>
+<p>The <tt class="docutils literal"><span class="pre">bedextract</span></tt> utility does the work of all those tools without streaming through an entire BED file, resulting in massive performance improvements. By using the hints provided by sorted BED input, the <a class="reference internal" href="#bedextract"><em>bedextract</em></a> tool can jump around, seeking very quick answers to these questions about your data.</p>
+<div class="section" id="how-does-it-work">
+<h2>5.1.2.1. How does it work?<a class="headerlink" href="#how-does-it-work" title="Permalink to this headline">¶</a></h2>
+<p>Specifically, sorting with <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> allows us to perform a <a class="reference external" href="http://en.wikipedia.org/wiki/Binary_search_algorithm">binary search</a>:</p>
+<ol class="arabic simple">
+<li>We jump to the middle byte of the BED file, stream to the nearest element, then parse and test the chromosome name.</li>
+<li>Either we have a match, or we jump to the middle of the remaining left or right half (decided by dictionary order), parse and test again.</li>
+<li>We repeat steps 1 and 2 until we have matches that define the bounds of the target chromosome.</li>
+</ol>
+<a class="reference internal image-reference" href="../../../_images/bedextract_mechanism1.png"><img alt="../../../_images/bedextract_mechanism1.png" src="../../../_images/bedextract_mechanism1.png" style="width: 75%;" /></a>
+<p>To indicate the kind of speed gain that the <a class="reference internal" href="#bedextract"><em>bedextract</em></a> tool provides, in local testing, a naïve listing of chromosomes from a 36 GB BED input using UNIX <tt class="docutils literal"><span class="pre">cut</span></tt> and <tt class="docutils literal"><span class="pre">uniq</span></tt> utilities took approximately 20 minutes to complete on a typical Core 2 Duo-based Linux workstation. Retrieval of the same chromosome listing with <tt class="docutils literal"><span class="pre">bedextract</span> <span class="pre">--list-chr</span></tt> took only 2 seconds (cache flushed—no cheating!).</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">While listing chromosomes is perhaps a trivial task, 1200 seconds to 2 seconds is a 600-fold speedup. Similar improvements are gained from using <tt class="docutils literal"><span class="pre">--chrom</span></tt> and <tt class="docutils literal"><span class="pre">--faster</span></tt> options with other core BEDOPS tools like <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a> and <a class="reference internal" href="../statistics/bedmap.html#bedmap"><em>bedmap</em></a>. If your data meet the criteria for using this approach—and a lot of genomic datasets do—we strongly encourage adding this to your toolkit.</p>
+</div>
+</div>
+<div class="section" id="inputs-and-outputs">
+<h2>5.1.2.2. Inputs and outputs<a class="headerlink" href="#inputs-and-outputs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="input">
+<h3>5.1.2.2.1. Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
+<p>Depending on specified options, <a class="reference internal" href="#bedextract"><em>bedextract</em></a> requires one or two <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED files.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It is critical that inputs are <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a> as the information in a sorted file allows <a class="reference internal" href="#bedextract"><em>bedextract</em></a> to do its work correctly. If your datasets are output from other BEDOPS tools, then they are already sorted!</p>
+</div>
+</div>
+<div class="section" id="output">
+<h3>5.1.2.2.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
+<p>Depending on specified options, the <a class="reference internal" href="#bedextract"><em>bedextract</em></a> program will send a list of chromosomes or BED elements to standard output.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">The use of UNIX-like standard streams allows easy downstream analysis or post-processing with other tools and scripts, including other BEDOPS utilities.</p>
+</div>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>5.1.2.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">--help</span></tt> option describes the functionality available to the end user:</p>
+<div class="highlight-python"><pre>bedextract
+  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
+  version:  2.2.0
+  authors:  Shane Neph &amp; Alex Reynolds
+
+    Every input file must be sorted per sort-bed.
+
+ USAGE:
+   0) --help or --version           Print requested info and exit successfully.
+   1) --list-chr &lt;input.bed&gt;        Print all unique chromosome names found in &lt;input.bed&gt;.
+   2) &lt;chromosome&gt; &lt;input.bed&gt;      Retrieve all rows for chr8 with:  bedextract chr8 &lt;input.bed&gt;.
+   3) &lt;query.bed&gt; &lt;target&gt;          Grab elements from the &lt;query.bed&gt; that overlap elements in &lt;target&gt;. Same as
+                                     `bedops -e -1 &lt;query.bed&gt; &lt;target&gt;`, except that this option fails silently
+                                      if &lt;query.bed&gt; contains fully-nested BED elements.  If no fully-nested
+                                      element exists, bedextract can vastly improve upon the performance of bedops.
+                                      &lt;target&gt; may be a BED or Starch file (with or without fully-nested elements).
+                                      Using '-' for &lt;target&gt; indicates input (in BED format) comes from stdin.</pre>
+</div>
+<div class="section" id="listing-chromosomes">
+<h3>5.1.2.3.1. Listing chromosomes<a class="headerlink" href="#listing-chromosomes" title="Permalink to this headline">¶</a></h3>
+<p>Use the <tt class="docutils literal"><span class="pre">--list-chr</span></tt> option to quickly retrieve a listing of chromosomes from a given sorted BED input.</p>
+<p>For example, the following lists the chromosomes in an example BED file of FIMO motif hits (see the <em class="xref std std-ref">Downloads</em> section):</p>
+<div class="highlight-python"><pre>$ bedextract --list-chr motifs.starch
+chr1
+chr10
+chr11
+chr12
+...
+chr9
+chrX</pre>
+</div>
+</div>
+<div class="section" id="retrieving-elements-from-a-specific-chromosome">
+<h3>5.1.2.3.2. Retrieving elements from a specific chromosome<a class="headerlink" href="#retrieving-elements-from-a-specific-chromosome" title="Permalink to this headline">¶</a></h3>
+<p>To quickly retrieve the subset of elements from a sorted BED file associated with a given chromosome, apply the second usage case and specify the chromosome as the argument.</p>
+<p>For example, to retrieve <tt class="docutils literal"><span class="pre">chrX</span></tt> from the same motif sample:</p>
+<div class="highlight-python"><pre>$ bedextract chrX motifs.starch
+chrX    6775077 6775092 +V_SPZ1_01      4.92705e-06     +       GTTGGAGGGAAGGGC
+chrX    6775168 6775179 +V_ELF5_01      8.57585e-06     +       TCAAGGAAGTA
+chrX    6777790 6777799 +V_CKROX_Q2     8.90515e-06     +       TCCCTCCCC
+...</pre>
+</div>
+</div>
+<div class="section" id="retrieving-elements-which-overlap-target-elements">
+<h3>5.1.2.3.3. Retrieving elements which overlap target elements<a class="headerlink" href="#retrieving-elements-which-overlap-target-elements" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+<div class="section" id="downloads">
+<h2>5.1.2.4. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Sample <a class="reference download internal" href="../../../_downloads/reference_bedextract_motifs.starch"><tt class="xref download docutils literal"><span class="pre">FIMO</span> <span class="pre">motifs</span></tt></a></li>
+</ul>
+</div>
 </div>
 
 
@@ -68,6 +166,26 @@
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/logo_with_label_v2.png" alt="Logo"/>
             </a></p>
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">5.1.2. <cite>bedextract</cite></a><ul>
+<li><a class="reference internal" href="#how-does-it-work">5.1.2.1. How does it work?</a></li>
+<li><a class="reference internal" href="#inputs-and-outputs">5.1.2.2. Inputs and outputs</a><ul>
+<li><a class="reference internal" href="#input">5.1.2.2.1. Input</a></li>
+<li><a class="reference internal" href="#output">5.1.2.2.2. Output</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usage">5.1.2.3. Usage</a><ul>
+<li><a class="reference internal" href="#listing-chromosomes">5.1.2.3.1. Listing chromosomes</a></li>
+<li><a class="reference internal" href="#retrieving-elements-from-a-specific-chromosome">5.1.2.3.2. Retrieving elements from a specific chromosome</a></li>
+<li><a class="reference internal" href="#retrieving-elements-which-overlap-target-elements">5.1.2.3.3. Retrieving elements which overlap target elements</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#downloads">5.1.2.4. Downloads</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="bedops.html"
                         title="previous chapter">5.1.1. <cite>bedops</cite></a></p>

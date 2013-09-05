@@ -63,7 +63,7 @@
 <p>One concrete application may be where we have multiple biological replicates, and we take any repeatable result (in two or more inputs, in this case) as true signal. Similarly, we might be interested in a problem like this if we have multiple related (or even unrelated) cell type samples and we want to be confident in peak calls for DNaseI sequencing of ChIP-seq experiments.</p>
 <p>These sorts of problems often have efficient solutions in BEDOPS. Here, the solution is independent of how many inputs we start with, what overlap criteria we use, and whether the requirement calls for two or more files of overlap (or whether it is 4 or more files in the overlap, or 9, or whatever).</p>
 <p>Consider a case study of one such problem that utilizes both <a class="reference internal" href="../reference/set-operations/bedops.html#bedops"><em>bedops</em></a> and <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> together to create an efficient solution:</p>
-<div class="highlight-python"><pre>bedops -u file1.bed file2.bed ... fileN.bed \
+<div class="highlight-python"><pre>$ bedops -u file1.bed file2.bed ... fileN.bed \
     | bedmap --echo --echo-map-id-uniq --fraction-both 0.5 - \
     | awk -F"|" '(split($2, a, ";") &gt; 1)' \
     &gt; answer.bed</pre>
