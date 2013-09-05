@@ -206,27 +206,84 @@ The ``--merge`` operation flattens all overlapping and adjoining elements into c
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_merge_ab.png
 
-.. tip:: The preceding example shows use of ``--merge`` (``-m``) with two inputs, but the merge operation works just as well with one input, collapsing overlapping and adjoining regions.
+.. tip:: The preceding example shows use of ``--merge`` (``-m``) with two inputs, but the merge operation works just as well with one input, collapsing regions which overlap or which are directly adjoining.
 
 ---------------------------
 Partition (-p, --partition)
 ---------------------------
 
+The ``--partition`` operator splits all overlapping input regions into a set of disjoint segments. One or more input files may be provided; this option will segment regions from all inputs:
+
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_partition_ab.png
+
+Note the lack of ID, score and other columnar data in this computed result.
+
 -----------------------------------
 Per-chromosome operations (--chrom)
 -----------------------------------
+
+All operations on inputs can be restricted to one chromosome, by adding the ``--chrom <val>`` operator. 
+
+.. note:: This operator is highly useful for cluster-based work, where operations on large BED inputs can be split up by chromosome and pushed to separate cluster nodes. (See the :ref:`starchcluster` documentation for a demonstration of this technique in action.)
 
 ---------------
 Range (--range)
 ---------------
 
+The ``--range`` operation works in conjunction with other operations.
+
+When used with one value (``--range S``), this operation **symmetrically** pads all elements of input sets by the specified integral value ``S``. When the specified value is positive, every genomic segment grows in size. An element will grow asymmetrically to prevent growth beyond base position 0, if needed. Otherwise, when negative, elements shrink, and any element with zero (or less) length is discarded.
+
+Alternatively, when used with two values (``--range L:R``), this operation **asymmetrically** pads elements, adding ``L`` to each start coordinate, and adding ``R`` to each stop coordinate. Negative values may be specified to grow or shrink the region, accordingly.
+
+.. _bed_index_shifting:
+
+This option is immediately useful for adjusting the coordinate index of BED files. For example, to shift from 1-based to 0-based coordinate indexing: 
+
+::
+
+  bedops --range -1:-1 --everything my1BasedCoordinates.bed > my0BasedCoordinates.bed
+
+And, likewise, for 0-based to 1-based indexing:
+
+::
+
+  bedops --range 1:1 --everything my0BasedCoordinates.bed > my1BasedCoordinates.bed
+
+.. note:: The ``--range`` value is applied to inputs prior to the application of other operations (such as ``--intersect`` or ``--merge``, etc.).
+
+Padding elements with :ref:`bedops` is much more efficient that doing so with ``awk`` or some other script, *and you do not need to go back and resort your data*. Even symmetric padding can cause data to become unsorted in non-obvious ways. Using ``--range`` ensures that your data remain sorted and it works efficiently with any set operation.
+
+Also, note that the ``--element-of`` and ``--not-element-of`` operations behave differently with ``--range``, in that only the second and subsequent input files are padded.
+
 ==============
 Starch support
 ==============
 
+The :ref:`bedops` application supports use of :ref:`Starch <starch>`-formatted archives as inputs, as well as text-based BED data. One or multiple inputs may be Starch archives.
+
+.. tip:: By combining the ``--chrom`` operator with operations on :ref:`Starch <starch>` archives, the end user can achieve improved computing performance and disk space savings, particularly where :ref:`bedops`, :ref:`bedmap` and :ref:`closest-features` operations are applied with a computational cluster on separate chromosomes.
+
 =====================
 Error checking (--ec)
 =====================
+
+Use the ``--ec`` option in conjunction with any aforementioned operation to do more stringent checking of the inputs' compliance to :ref:`bedops` requirements, including sorting checks, delimiter checks, among others.
+
+To demonstrate, we can deliberately introduce a typo in dataset `A`, using the ``--ec`` option to try to catch it:
+
+::
+
+  $ bedops --ec --everything BEDFileA
+  May use bedops --help for more help.
+
+  Error: in BEDFileA
+  First column should not have spaces.  Consider 'chr1' vs. 'chr1 '.  These are different names.
+  See row: 3
+
+The typo introduced was the addition of a space within the third line of dataset ``A``.
+
+.. note:: Use of the ``--ec`` option will roughly *double* the running times of set operations, but it provides stringent error checking to ensure inputs and outputs are valid. ``--ec`` can help check problematic input and offers helpful hints for any needed corrections, when problems are detected.
 
 ====
 Tips
@@ -236,9 +293,21 @@ Tips
 Chaining operations
 -------------------
 
+You can efficiently chain operations together, *e.g.*:
+
+::
+
+  $ bedops --range 50 --merge A | bedops --intersect - B > answer.bed
+
+In this example, elements from ``A`` are padded 50 bases up- and downstream and merged, before intersecting with coordinates in ``B``.
+
 --------------
 Sorting inputs
 --------------
+
+For unsorted input that fit in available memory, be sure to use :ref:`sort-bed` to presort the data stream before using with :ref:`bedops`.
+
+.. tip:: If you will use an initially-unsorted file more than once, save the results of sorting. You only need to sort once!
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
