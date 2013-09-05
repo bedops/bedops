@@ -194,9 +194,19 @@ The ``--symmdiff`` operation calculates the genomic range that is exclusive to e
 Intersect (-i, --intersect)
 ---------------------------
 
+The ``--intersect`` operation determines genomic regions common to all input sets:
+
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_intersect_ab.png
+
 -------------------
 Merge (-m, --merge)
 -------------------
+
+The ``--merge`` operation flattens all overlapping and adjoining elements into contiguous regions:
+
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_merge_ab.png
+
+.. tip:: The preceding example shows use of ``--merge`` (``-m``) with two inputs, but the merge operation works just as well with one input, collapsing overlapping and adjoining regions.
 
 ---------------------------
 Partition (-p, --partition)
