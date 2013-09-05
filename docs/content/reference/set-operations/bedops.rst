@@ -256,7 +256,7 @@ Sorting inputs
 
 .. |tip_header| raw:: html
 
-   <span style="color:darkgreen; font-weight:bolder;">Tip</span>
+   <span style="color:green; font-weight:bolder;">Tip</span>
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
