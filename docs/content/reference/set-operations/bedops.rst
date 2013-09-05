@@ -118,9 +118,7 @@ The ``--everything`` option is equivalent to concatenating and sorting BED eleme
 
 As with all BEDOPS tools and operations, the output of this operation is :ref:`sorted <sort-bed>`.
 
-.. topic:: |note_header|
-
-   The ``--everything`` option preserves all columns from all inputs. This is useful for multiset unions of datasets with additional ID, score or other metadata.
+.. note:: The ``--everything`` option preserves all columns from all inputs. This is useful for multiset unions of datasets with additional ID, score or other metadata.
 
 -----------------------------
 Element-of (-e, --element-of)
@@ -134,23 +132,17 @@ In the following example, we search for elements in the reference set ``A`` whic
 
 Elements that are returned are always from the reference set (in this case, set ``A``).
 
-.. topic:: |note_header|
-
-   The ``--element-of`` option preserves all columns from the first (reference) input.
+.. note:: The ``--element-of`` option preserves all columns from the first (reference) input.
 
 Note that `--element-of` is *not* a symmetric operation, as demonstrated by making ``B`` the reference set:
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_elementof_ba.png
 
-.. topic:: |note_header|
-
-   The argument to ``--element-of`` is a value that species to degree of overlap for elements. The value is either integral for per-base overlap,  or fractional for overlap measured by length.
+.. note:: The argument to ``--element-of`` is a value that species to degree of overlap for elements. The value is either integral for per-base overlap,  or fractional for overlap measured by length.
 
 In sum, ``--element-of`` (``-e``) produces exactly everything that ``--not-element-of`` (``-n``) does not, given the same overlap criterion (which is 100% by default).
 
-.. topic:: |note_header|
-
-   For a more in-depth discussion of ``--element-of`` and how overlaps are determined with three or more input files, please review the `BEDOPS forum discussion <http://bedops.uwencode.org/forum/index.php?topic=20.0>`_ on this subject.
+.. note:: For a more in-depth discussion of ``--element-of`` and how overlaps are determined with three or more input files, please review the `BEDOPS forum discussion <http://bedops.uwencode.org/forum/index.php?topic=20.0>`_ on this subject.
 
 -------------------------------------
 Not-element-of (-n, --not-element-of)
@@ -162,13 +154,9 @@ The ``--not-element-of`` operation shows elements in the reference file which do
 
 As with the ``--element-of`` (``-e``) operator, the overlap criterion for ``--not-element-of`` (``-n``) can be specified by length (in bases) or by percentage of length. Similarly, this operation is not symmetric |---| the order of inputs will specify the reference set.
 
-.. topic:: |note_header|
+.. note:: The ``--not-element-of`` operatior preserves columns from the first (reference) dataset.
 
-   The ``--not-element-of`` operatior preserves columns from the first (reference) dataset.
-
-.. topic:: |note_header|
-
-   The same caveat applies to use of ``--not-element-of`` (``-n``) as with ``--element-of`` (``-e``), namely that the second and all subsequent input files are merged before the set operation is applied. Please review the BEDOPS `forum discussion thread <http://bedops.uwencode.org/forum/index.php?topic=20.0>`_ on this topic for more details.
+.. note:: The same caveat applies to use of ``--not-element-of`` (``-n``) as with ``--element-of`` (``-e``), namely that the second and all subsequent input files are merged before the set operation is applied. Please review the BEDOPS `forum discussion thread <http://bedops.uwencode.org/forum/index.php?topic=20.0>`_ on this topic for more details.
 
 -----------------------------
 Complement (-c, --complement)
@@ -178,13 +166,9 @@ The ``--complement`` operation calculates the genomic regions in the gaps betwee
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_complement_ab.png
 
-.. topic:: |note_header|
+.. note:: Note this **computed result** will lack ID, score and other columnar data other than the first three columns that contain positional data. That is, computed elements will not come from any of the input sets, but are new elements created from the input set space.
 
-   Note this **computed result** will lack ID, score and other columnar data other than the first three columns that contain positional data. That is, computed elements will not come from any of the input sets, but are new elements created from the input set space.
-
-.. topic:: |note_header|
-
-   For a more in-depth discussion on using ``--complement`` with left and right bounds of input chromosomes, please review the BEDOPS `forum discussion <http://bedops.uwencode.org/forum/index.php?topic=19.0>`_ on this subject.
+.. note:: For a more in-depth discussion on using ``--complement`` with left and right bounds of input chromosomes, please review the BEDOPS `forum discussion <http://bedops.uwencode.org/forum/index.php?topic=19.0>`_ on this subject.
 
 -----------------------------
 Difference (-d, --difference)
@@ -194,9 +178,7 @@ The ``--difference`` operation calculates the genomic regions found within the f
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_difference_ab.png
 
-.. topic:: |note_header|
-
-   As with ``--element-of`` and ``--not-element-of``, this operation is not symmetric. While ``--not-element-of`` preserves all columns of elements found in the reference input and allows one to define overlaps, the ``--difference`` operator simply reports every genomic range as three-column BED, which does not overlap elements found in the second and subsequent input files by any amount.
+.. note:: As with ``--element-of`` and ``--not-element-of``, this operation is not symmetric. While ``--not-element-of`` preserves all columns of elements found in the reference input and allows one to define overlaps, the ``--difference`` operator simply reports every genomic range as three-column BED, which does not overlap elements found in the second and subsequent input files by any amount.
 
 -------------------------------------
 Symmetric difference (-s, --symmdiff)
@@ -206,9 +188,7 @@ The ``--symmdiff`` operation calculates the genomic range that is exclusive to e
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_symmetricdifference_ab.png
 
-.. tip:: Tip
-
-   It has been observed that ``--symmdiff`` (``-s``) is the same as ``--difference A B`` unionized with ``--difference B A``, but ``--symmdiff`` runs faster in practice.
+.. tip:: It has been observed that ``--symmdiff`` (``-s``) is the same as ``--difference A B`` unionized with ``--difference B A``, but ``--symmdiff`` runs faster in practice.
 
 ---------------------------
 Intersect (-i, --intersect)
@@ -249,14 +229,6 @@ Chaining operations
 --------------
 Sorting inputs
 --------------
-
-.. |note_header| raw:: html
-
-   <span style="color:#a60489; font-weight:bolder;">Note</span>
-
-.. |tip_header| raw:: html
-
-   <span style="color:green; font-weight:bolder;">Tip</span>
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
