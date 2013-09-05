@@ -3,11 +3,11 @@
 `bedops`
 ========
 
-Finding relationships between two or more genomic datasets is an important problem. 
+``bedops`` is a core tool for finding relationships between two or more genomic datasets.
 
-As examples, one might want to:
+This is an important category of problems to solve. As examples, one might want to:
 
-* Know how much overlap exists between the elements of two datasets, to quantitatively establish the degree to which they are similar
+* Know how much overlap exists between the elements of two datasets, to quantitatively establish the degree to which they are similar.
 * Merge or filter elements. For example, retrieving non-overlapping, "unique" elements from multiple BED files.
 * Split elements from multiple BED files into disjoint subsets.
 
@@ -53,50 +53,50 @@ The ``--help`` option describes the set operation and other options available to
 
   bedops
     citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-    version:  2.2.0
+    version:  2.3.0
     authors:  Shane Neph & Scott Kuehn
 
-      USAGE: bedops [process-flags] <operation> <File(s)>*
+        USAGE: bedops [process-flags] <operation> <File(s)>*
 
-          Every input file must be sorted per the sort-bed utility.
-          Each operation requires a minimum number of files as shown below.
-            There is no fixed maximum number of files that may be used.
-          Input files must have at least the first 3 columns of the BED specification.
-          The program accepts BED and starch file formats.
-          May use '-' for a file to indicate reading from standard input (BED format only).
+            Every input file must be sorted per the sort-bed utility.
+            Each operation requires a minimum number of files as shown below.
+              There is no fixed maximum number of files that may be used.
+            Input files must have at least the first 3 columns of the BED specification.
+            The program accepts BED and starch file formats.
+            May use '-' for a file to indicate reading from standard input (BED format only).
 
-      Process Flags:
-          --chrom <chromosome> Process data for given <chromosome> only.
-          --ec                 Error check input files (slower).
-          --header             Accept headers (VCF, GFF, SAM, BED, WIG) in any input file.
-          --help               Print this message and exit successfully.
-          --help-<operation>   Detailed help on <operation>.
-                                 An example is --help-c or --help-complement
-          --range L:R          Add 'L' bp to all start coordinates and 'R' bp to end
-                                 coordinates. Either value may be + or - to grow or
-                                 shrink regions.  With the -e/-n operations, the first
-                                 (reference) file is not padded, unlike all other files.
-          --range S            Pad input file(s) coordinates symmetrically by S.
-                                 This is shorthand for: --range -S:S.
-          --version            Print program information.
+        Process Flags:
+            --chrom <chromosome> Process data for given <chromosome> only.
+            --ec                 Error check input files (slower).
+            --header             Accept headers (VCF, GFF, SAM, BED, WIG) in any input file.
+            --help               Print this message and exit successfully.
+            --help-<operation>   Detailed help on <operation>.
+                                   An example is --help-c or --help-complement
+            --range L:R          Add 'L' bp to all start coordinates and 'R' bp to end
+                                   coordinates. Either value may be + or - to grow or
+                                   shrink regions.  With the -e/-n operations, the first
+                                   (reference) file is not padded, unlike all other files.
+            --range S            Pad input file(s) coordinates symmetrically by S.
+                                   This is shorthand for: --range -S:S.
+            --version            Print program information.
 
-      Operations: (choose one of)
-          -c, --complement [-L] File1 [File]*
-          -d, --difference ReferenceFile File2 [File]*
-          -e, --element-of [-number% | -number (in bp)] ReferenceFile File2 [File]*
-                 by default, -e -100% is used.
-          -i, --intersect File1 File2 [File]*
-          -m, --merge File1 [File]*
-          -n, --not-element-of [-number% | -number (in bp)] ReferenceFile File2 [File]*
-                 by default, -n -100% is used.
-          -p, --partition File1 [File]*
-          -s, --symmdiff File1 File2 [File]*
-          -u, --everything File1 [File]*
+        Operations: (choose one of)
+            -c, --complement [-L] File1 [File]*
+            -d, --difference ReferenceFile File2 [File]*
+            -e, --element-of [-number% | -number (in bp)] ReferenceFile File2 [File]*
+                   by default, -e -100% is used.
+            -i, --intersect File1 File2 [File]*
+            -m, --merge File1 [File]*
+            -n, --not-element-of [-number% | -number (in bp)] ReferenceFile File2 [File]*
+                   by default, -n -100% is used.
+            -p, --partition File1 [File]*
+            -s, --symmdiff File1 File2 [File]*
+            -u, --everything File1 [File]*
 
-      Example: bedops --range 10 -u file1.bed
-      NOTE: Only operations -e|n|u preserve all columns (no flattening)
+        Example: bedops --range 10 -u file1.bed
+        NOTE: Only operations -e|n|u preserve all columns (no flattening)
 
-Extended help is available for all operations in :ref:`bedops`. For example, the ``--help-symmdiff`` option in :ref:`bedops` gives detailed information on the ``--symmdiff`` operation.
+.. note:: Extended help is available for all operations in :ref:`bedops`. For example, the ``--help-symmdiff`` option in :ref:`bedops` gives detailed information on the ``--symmdiff`` operation.
 
 ==========
 Operations
