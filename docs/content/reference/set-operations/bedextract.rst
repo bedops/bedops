@@ -175,11 +175,11 @@ Our ``Target`` data is simply an *ad-hoc* BED region which overlaps part of the 
   $ unstarch target.starch
   chr21   33031600        33031700
 
-We now ask which elements of ``Query`` overlap the element in ``Target``:
+We can now ask which elements of ``Query`` overlap the element in ``Target``:
 
 ::
 
-  $ bedextract query.bed target.bed
+  $ bedextract query.bed target.starch
   chr21   33031585        33031605        map-22  26.000000
   chr21   33031605        33031625        map-23  27.000000
   chr21   33031625        33031645        map-24  29.000000
@@ -187,7 +187,7 @@ We now ask which elements of ``Query`` overlap the element in ``Target``:
   chr21   33031665        33031685        map-26  31.000000
   chr21   33031685        33031705        map-27  37.000000
 
-Note that we can also use "-" to denote standard input for the ``Target`` dataset, as well as a regular BED- or Starch-formatted file. This means we can pipe target elements from another process to :ref:`bedextract`, *e.g.* we can query for an ad-hoc element as follows:
+Our ``Target`` dataset is a Starch-formatted file. Note that we can also use "-" to denote standard input for the ``Target`` dataset, as well as a regular BED- or Starch-formatted file. In other words, we can pipe target elements from another process to :ref:`bedextract`, *e.g.* we can query for an ad-hoc element as follows:
 
 ::
 
@@ -202,7 +202,7 @@ Instead of an *ad-hoc* element as in this example, however, target elements coul
 
    Specifically, we can quickly filter through just the results given by :ref:`bedextract` and implement other overlap criteria with :ref:`bedops`, *e.g.*:
 
-   ``bedextract query.bed target.bed | bedops -e -50% - target.bed``
+   ``$ bedextract query.bed target.bed | bedops -e -50% - target.bed``
 
 .. _bedextract_downloads:
 
