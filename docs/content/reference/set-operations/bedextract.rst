@@ -86,7 +86,7 @@ For example, the following lists the chromosomes in an example BED file of FIMO 
 
 ::
 
-  $ bedextract --list-chr motifs.starch
+  $ bedextract --list-chr motifs.bed
   chr1
   chr10
   chr11
@@ -94,6 +94,8 @@ For example, the following lists the chromosomes in an example BED file of FIMO 
   ...
   chr9
   chrX
+
+.. note:: The ``bedextract --list-chr`` operation only works on BED files. If you have a Starch file, use ``unstarch --list-chr`` to list its chromosomes.
 
 ----------------------------------------------
 Retrieving elements from a specific chromosome
@@ -105,11 +107,13 @@ For example, to retrieve ``chrX`` from the same motif sample:
 
 ::
 
-  $ bedextract chrX motifs.starch
+  $ bedextract chrX motifs.bed
   chrX    6775077 6775092 +V_SPZ1_01      4.92705e-06     +       GTTGGAGGGAAGGGC
   chrX    6775168 6775179 +V_ELF5_01      8.57585e-06     +       TCAAGGAAGTA
   chrX    6777790 6777799 +V_CKROX_Q2     8.90515e-06     +       TCCCTCCCC
   ...
+
+.. note:: The ``bedextract <chromosome>`` operation only works on BED files. If you have a Starch file, use ``unstarch <chromosome>`` to list the elements associated with that chromosome.
 
 -------------------------------------------------
 Retrieving elements which overlap target elements
@@ -210,7 +214,7 @@ Instead of an *ad-hoc* element as in this example, however, target elements coul
 Downloads
 =========
 
-* Sample :download:`FIMO motifs <../../../assets/reference/set-operations/reference_bedextract_motifs.starch>`
+* Sample :download:`FIMO motifs <../../../assets/reference/set-operations/reference_bedextract_motifs.bed>`
 * Sample ``Query`` dataset: :download:`DHS signal <../../../assets/reference/statistics/reference_bedmap_map.bed>`
 * Sample ``Target`` dataset: :download:`ad-hoc coordinates <../../../assets/reference/set-operations/reference_bedextract_target.starch>`
 
