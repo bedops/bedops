@@ -118,8 +118,7 @@ The ``--everything`` option is equivalent to concatenating and sorting BED eleme
 
 As with all BEDOPS tools and operations, the output of this operation is :ref:`sorted <sort-bed>`.
 
-.. admonition:: Note
-   :class: admonition-note
+.. warning:: Note
 
    The ``--everything`` option preserves all columns from all inputs. This is useful for multiset unions of datasets with additional ID, score or other metadata.
 
