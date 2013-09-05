@@ -145,9 +145,9 @@ While this dataset is sorted, the element ``chr1:125-150`` is entirely nested wi
 
 .. note::  Fully-nested elements are not a problem for the other two :ref:`bedextract` features: 1) Listing all chromosomes, and 2) Retrieving all information for a single chromosome.
 
-Fully-nested elements are only an issue if they exist in the ``Query`` dataset. Results are not affected if the ``Target`` datacontains nested elements. Overlapping (but not fully-nested) elements in the ``Query`` input file are fine, as are duplicated genomic positions.
+Fully-nested elements are only an issue if they exist in the ``Query`` dataset. Results are not affected if the ``Target`` dataset contains nested elements. Overlapping (but not fully-nested) elements in the ``Query`` input file are fine, as are duplicated genomic positions.
 
-.. note:: Our lab works with BED data of various types: cut-counts, hotspots, peaks, footprints, etc. These data generally do not contain nested elements and so are amenable to use with bedextract for extracting overlapping elements.
+.. note:: Our lab works with BED data of various types: cut-counts, hotspots, peaks, footprints, etc. These data generally do not contain nested elements and so are amenable to use with :ref:`bedextract` for extracting overlapping elements.
 
    However, other types of ``Query`` datasets can be problematic. FIMO search results, for example, might cause trouble, where the boundaries of one motif hit can be contained within another larger hit. Or paired-end sequence data, where tags are not of a fixed length. Be sure to consider the makeup of your BED data before using :ref:`bedextract`.
 
