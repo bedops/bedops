@@ -19,7 +19,7 @@ Consider a case study of one such problem that utilizes both :ref:`bedops` and :
 
 ::
 
-  bedops -u file1.bed file2.bed ... fileN.bed \
+  $ bedops -u file1.bed file2.bed ... fileN.bed \
       | bedmap --echo --echo-map-id-uniq --fraction-both 0.5 - \
       | awk -F"|" '(split($2, a, ";") > 1)' \
       > answer.bed

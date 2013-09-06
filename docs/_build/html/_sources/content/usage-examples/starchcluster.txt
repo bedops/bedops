@@ -1,3 +1,5 @@
+.. _starchcluster:
+
 Efficiently creating Starch-formatted archives with a cluster
 =============================================================
 

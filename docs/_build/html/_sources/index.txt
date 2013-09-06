@@ -7,6 +7,10 @@ BEDOPS is an open-source command-line toolkit that performs highly efficient and
 +-----------------------+-----------------------+------------------------+
 | |set_operations|      | |statistics|          | |file_management|      |
 +-----------------------+-----------------------+------------------------+
+| |performance_png|     |                       |                        |
++-----------------------+-----------------------+------------------------+
+| |performance|         |                       |                        |
++-----------------------+-----------------------+------------------------+
 
 .. toctree::
    :numbered:
@@ -42,4 +46,13 @@ BEDOPS is an open-source command-line toolkit that performs highly efficient and
    <li><a href="content/reference/file-management/compression/starch.html"><tt>starch</tt></a> and <a href="content/reference/file-management/compression/unstarch.html"><tt>unstarch</tt></a> - compress and extract BED data</li>
    <li><a href="content/reference/file-management/compression/starchcat.html"><tt>starchcat</tt></a> - merge compressed archives</li>
    <li><a href="content/reference/file-management/conversion.html">conversion tools</a> - convert common genomic formats to BED</li>
+   </ul>
+
+.. |performance_png| image:: assets/index/performance.png
+.. |performance| raw:: html
+
+   <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
+   <li><a href="content/performance.html#set-operations-with-bedops">Set operations with <tt>bedops</tt></li>
+   <li><a href="content/performance.html#compression-characteristics-of-starch">Compression characteristics of <tt>starch</tt></li>
+   <li><a href="content/performance.html#independent-testing">Independent testing</a></li>
    </ul>
