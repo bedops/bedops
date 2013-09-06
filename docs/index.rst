@@ -45,7 +45,7 @@ BEDOPS is an open-source command-line toolkit that performs highly efficient and
    <li><a href="content/reference/file-management/sorting/sort-bed.html"><tt>sort-bed</tt></a> - apply lexicographical sort to BED data</li>
    <li><a href="content/reference/file-management/compression/starch.html"><tt>starch</tt></a> and <a href="content/reference/file-management/compression/unstarch.html"><tt>unstarch</tt></a> - compress and extract BED data</li>
    <li><a href="content/reference/file-management/compression/starchcat.html"><tt>starchcat</tt></a> - merge compressed archives</li>
-   <li><a href="content/reference/file-management/conversion.html">conversion tools</a> - convert common genomic formats to BED</li>
+   <li><a href="content/reference/file-management/conversion.html">Conversion tools</a> - convert common genomic formats to BED</li>
    </ul>
 
 .. |performance_png| image:: assets/index/performance.png
