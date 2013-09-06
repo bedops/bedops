@@ -1,3 +1,5 @@
+.. _distance_frequencies:
+
 Measuring the frequency of signed distances between SNPs and nearest DHSes
 ==========================================================================
 
