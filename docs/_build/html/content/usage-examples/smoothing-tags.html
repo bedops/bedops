@@ -59,7 +59,7 @@
 <p>In this example, we generate smoothed density signal by binning the genome into 20 bp intervals and counting the number of non-paired-end tag reads falling within 75 bp of each interval. A simple follow-on script marks up results to wig or bigWig format for loading into a track of a local UCSC Genome Browser.</p>
 <div class="section" id="bedops-tools-in-use">
 <h2>3.5.1. BEDOPS tools in use<a class="headerlink" href="#bedops-tools-in-use" title="Permalink to this headline">¶</a></h2>
-<p>For this script, we use <em class="xref std std-ref">bam2bed</em> to convert a BAM file to BED, then we use <em class="xref std std-ref">bedmap</em> to run a sliding density window over input genomic regions. Finally <em class="xref std std-ref">starch</em> compresses the results.</p>
+<p>For this script, we use <a class="reference internal" href="../reference/file-management/conversion/bam2bed.html#bam2bed"><em>bam2bed</em></a> to convert a BAM file to BED, then we use <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> to run a sliding density window over input genomic regions. Finally <a class="reference internal" href="../reference/file-management/compression/starch.html#starch"><em>starch</em></a> compresses the results.</p>
 </div>
 <div class="section" id="script">
 <h2>3.5.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>

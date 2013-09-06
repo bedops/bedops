@@ -2,3 +2,128 @@
 
 `bedextract`
 ============
+
+The ``bedextract`` utility performs three primary tasks, with the goal of doing them very quickly:
+
+1. Lists all the chromosomes in a sorted input BED file.
+2. Extracts all the elements in a sorted input BED file, for a given chromosome.
+3. Finds elements of one BED file, which overlap elements in a second, reference BED file (when specific element criteria are satisfied).
+
+One might ask why use this utility, when the first two tasks can already be performed with common UNIX text processing tools, such as ``cut``, ``sort``, ``uniq``, and ``awk``, and the third task can be performed with :ref:`bedops` with the ``-e -1`` options?
+
+The ``bedextract`` utility does the work of all those tools without streaming through an entire BED file, resulting in massive performance improvements. By using the hints provided by sorted BED input, the :ref:`bedextract` tool can jump around, seeking very quick answers to these questions about your data.
+
+=================
+How does it work?
+=================
+
+Specifically, sorting with :ref:`sort-bed` allows us to perform a `binary search <http://en.wikipedia.org/wiki/Binary_search_algorithm>`_: 
+
+1. We jump to the middle byte of the BED file, stream to the nearest element, then parse and test the chromosome name. 
+2. Either we have a match, or we jump to the middle of the remaining left or right half (decided by dictionary order), parse and test again. 
+3. We repeat steps 1 and 2 until we have matches that define the bounds of the target chromosome.
+
+.. image:: ../../../assets/reference/set-operations/bedextract_mechanism.png
+   :width: 75%
+
+To indicate the kind of speed gain that the :ref:`bedextract` tool provides, in local testing, a naïve listing of chromosomes from a 36 GB BED input using UNIX ``cut`` and ``uniq`` utilities took approximately 20 minutes to complete on a typical Core 2 Duo-based Linux workstation. Retrieval of the same chromosome listing with ``bedextract --list-chr`` took only 2 seconds (cache flushed |---| no cheating!).
+
+.. tip:: While listing chromosomes is perhaps a trivial task, 1200 seconds to 2 seconds is a 600-fold speedup. Similar improvements are gained from using ``--chrom`` and ``--faster`` options with other core BEDOPS tools like :ref:`bedops` and :ref:`bedmap`. If your data meet the criteria for using this approach |---| and a lot of genomic datasets do |---| we strongly encourage adding this to your toolkit.
+
+==================
+Inputs and outputs
+==================
+
+-----
+Input
+-----
+
+Depending on specified options, :ref:`bedextract` requires one or two :ref:`sorted <sort-bed>` BED files.
+
+.. note:: It is critical that inputs are :ref:`sorted <sort-bed>` as the information in a sorted file allows :ref:`bedextract` to do its work correctly. If your datasets are output from other BEDOPS tools, then they are already sorted!
+
+------
+Output
+------
+
+Depending on specified options, the :ref:`bedextract` program will send a list of chromosomes or BED elements to standard output. 
+
+.. tip:: The use of UNIX-like standard streams allows easy downstream analysis or post-processing with other tools and scripts, including other BEDOPS utilities.
+
+=====
+Usage
+=====
+
+The ``--help`` option describes the functionality available to the end user:
+
+::
+
+  bedextract
+    citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
+    version:  2.2.0
+    authors:  Shane Neph & Alex Reynolds
+
+      Every input file must be sorted per sort-bed.
+
+   USAGE:
+     0) --help or --version           Print requested info and exit successfully.
+     1) --list-chr <input.bed>        Print all unique chromosome names found in <input.bed>.
+     2) <chromosome> <input.bed>      Retrieve all rows for chr8 with:  bedextract chr8 <input.bed>.
+     3) <query.bed> <target>          Grab elements from the <query.bed> that overlap elements in <target>. Same as
+                                       `bedops -e -1 <query.bed> <target>`, except that this option fails silently
+                                        if <query.bed> contains fully-nested BED elements.  If no fully-nested
+                                        element exists, bedextract can vastly improve upon the performance of bedops.
+                                        <target> may be a BED or Starch file (with or without fully-nested elements).
+                                        Using '-' for <target> indicates input (in BED format) comes from stdin.
+
+-------------------
+Listing chromosomes
+-------------------
+
+Use the ``--list-chr`` option to quickly retrieve a listing of chromosomes from a given sorted BED input. 
+
+For example, the following lists the chromosomes in an example BED file of FIMO motif hits (see the :ref:`Downloads <bedextract_downloads>` section):
+
+::
+
+  $ bedextract --list-chr motifs.starch
+  chr1
+  chr10
+  chr11
+  chr12
+  ...
+  chr9
+  chrX
+
+----------------------------------------------
+Retrieving elements from a specific chromosome
+----------------------------------------------
+
+To quickly retrieve the subset of elements from a sorted BED file associated with a given chromosome, apply the second usage case and specify the chromosome as the argument. 
+
+For example, to retrieve ``chrX`` from the same motif sample:
+
+::
+
+  $ bedextract chrX motifs.starch
+  chrX    6775077 6775092 +V_SPZ1_01      4.92705e-06     +       GTTGGAGGGAAGGGC
+  chrX    6775168 6775179 +V_ELF5_01      8.57585e-06     +       TCAAGGAAGTA
+  chrX    6777790 6777799 +V_CKROX_Q2     8.90515e-06     +       TCCCTCCCC
+  ...
+
+-------------------------------------------------
+Retrieving elements which overlap target elements
+-------------------------------------------------
+
+
+
+=========
+Downloads
+=========
+
+* Sample :download:`FIMO motifs <../../../assets/reference/set-operations/reference_bedextract_motifs.starch>`
+
+
+.. |--| unicode:: U+2013   .. en dash
+.. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
+   :trim:
