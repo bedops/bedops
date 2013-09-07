@@ -38,6 +38,36 @@ Output
 
 Depending on specified options, the :ref:`bedmap` program can send a variety of delimited information about the reference and mapped elements (as well as analytical results) to standard output. If the ``--echo`` option is used, the output will be at least a three-column BED file. The use of predictable delimiters (which are customizable) and the use of UNIX-like standard streams allows easy downstream analysis or post-processing with other tools and scripts.
 
+.. _bedmap_operations:
+
+==========
+Operations
+==========
+
+.. _bedmap_overlap_criteria:
+
+----------------
+Overlap criteria
+----------------
+
+.. _bedmap_score_operations:
+
+----------------
+Score operations
+----------------
+
+.. _bedmap_non_score_operations:
+
+--------------------
+Non-score operations
+--------------------
+
+.. _bedmap_modifier_operations:
+
+---------
+Modifiers
+---------
+
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
    :trim:
