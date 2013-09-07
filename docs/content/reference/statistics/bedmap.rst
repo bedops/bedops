@@ -15,9 +15,6 @@ Input
 
 The :ref:`bedmap` program takes in *reference* and *mapping* ﬁles and calculates statistics for each reference element. These calculations |---| *operations* |---| are applied to overlapping elements from the mapped ﬁle:
 
-.. image:: ../../../assets/reference/statistics/reference_bedmap_inputs.png
-   :width: 75%
-
 The :ref:`bedmap` program requires files in a relaxed variation of the BED format as described by `UCSC's browser documentation <http://genome.ucsc.edu/FAQ/FAQformat.html#format1>`_. The chromosome field can be any non-empty string, the score field can be any valid numeric value, and information is unconstrained beyond the minimum number of columns required by the chosen options.
 
 Alternatively, :ref:`bedmap` can accept :ref:`Starch-formatted archives <starch>` of BED data as input |---| it is no longer necessary to extract Starch archive data to intermediate BED files!
