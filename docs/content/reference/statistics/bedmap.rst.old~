@@ -13,7 +13,7 @@ Inputs and outputs
 Input
 -----
 
-The :ref:`bedmap` program takes in *reference* and *mapping* files and calculates statistics for each reference element. These calculations |---| *operations* |---| are applied to overlapping elements from the mapped file:
+The :ref:`bedmap` program takes in *reference* and *mapping* ﬁles and calculates statistics for each reference element. These calculations |---| *operations* |---| are applied to overlapping elements from the mapped ﬁle:
 
 .. image:: ../../../assets/reference/statistics/reference_bedmap_inputs.png
    :width: 75%
@@ -189,6 +189,7 @@ Endlines
 =========
 Downloads
 =========
+
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
