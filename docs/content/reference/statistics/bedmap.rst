@@ -28,10 +28,6 @@ Most importantly, :ref:`bedmap` expects :ref:`sorted <sort-bed>` inputs. You can
 
 .. note:: You only need to sort once, and only if your input data are unsorted, as all BEDOPS tools take in and export sorted BED data.
 
-Operations are applied over map elements that overlap the coordinates of each reference element. You can use the default overlap criterion of one base, or define your own criteria using the :ref:`overlap criteria operators <bedmap_overlap_criteria>`.
-
-Once you have overlapping elements, you can either perform :ref:`numerical calculations <bedmap_score_operations>` on their scores or return identifiers or other :ref:`non-score information <bedmap_non_score_operations>`. Additional :ref:`modifier operators <bedmap_modifier_operations>` allow customization of how output is presented, to assist with downstream processing in a pipeline setting.
-
 ------
 Output
 ------
