@@ -1,3 +1,5 @@
+.. _master_list:
+
 Collapsing multiple BED files into a master list by signal
 ==========================================================
 

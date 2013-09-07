@@ -1,3 +1,5 @@
+.. _smoothing_raw_tags:
+
 Smoothing raw tag count data across the genome
 ==============================================
 
