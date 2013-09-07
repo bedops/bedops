@@ -79,7 +79,7 @@
 <li>Either we have a match, or we jump to the middle of the remaining left or right half (decided by dictionary order), parse and test again.</li>
 <li>We repeat steps 1 and 2 until we have matches that define the bounds of the target chromosome.</li>
 </ol>
-<a class="reference internal image-reference" href="../../_images/bedextract_mechanism.png"><img alt="../../_images/bedextract_mechanism.png" src="../../_images/bedextract_mechanism.png" style="width: 75%;" /></a>
+<a class="reference internal image-reference" href="../../_images/reference_bedextract_mechanism1.png"><img alt="../../_images/reference_bedextract_mechanism1.png" src="../../_images/reference_bedextract_mechanism1.png" style="width: 75%;" /></a>
 <p>To indicate the kind of speed gain that the <a class="reference internal" href="../reference/set-operations/bedextract.html#bedextract"><em>bedextract</em></a> tool provides, in local testing, a naïve listing of chromosomes from a 36 GB BED input using UNIX <tt class="docutils literal"><span class="pre">cut</span></tt> and <tt class="docutils literal"><span class="pre">uniq</span></tt> utilities took approximately 20 minutes to complete on a typical Core 2 Duo-based Linux workstation. Retrieval of the same chromosome listing with <tt class="docutils literal"><span class="pre">bedextract</span> <span class="pre">--list-chr</span></tt> took only 2 seconds (cache flushed—no cheating!).</p>
 </div>
 <div class="section" id="compressing-bed-subsets">

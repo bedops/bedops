@@ -1,3 +1,5 @@
+.. _finding_elements_within_elements:
+
 Finding the subset of SNPs within DHSes
 =======================================
 
