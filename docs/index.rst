@@ -7,9 +7,9 @@ BEDOPS is an open-source command-line toolkit that performs highly efficient and
 +-----------------------+-----------------------+------------------------+
 | |set_operations|      | |statistics|          | |file_management|      |
 +-----------------------+-----------------------+------------------------+
-| |performance_png|     | |support_png|         |                        |
+| |performance_png|     | |support_png|         | |other_png|            |
 +-----------------------+-----------------------+------------------------+
-| |performance|         | |support|             |                        |
+| |performance|         | |support|             | |other|                |
 +-----------------------+-----------------------+------------------------+
 
 .. toctree::
@@ -65,4 +65,13 @@ BEDOPS is an open-source command-line toolkit that performs highly efficient and
    <li><a href="content/usage-examples.html">Usage examples</a> of BEDOPS tools in action</li>
    <li><a href="http://bedops.uwencode.org/forum/">BEDOPS user forum</li>
    <li><a href="http://groups.google.com/group/bedops-discuss">BEDOPS discusssion mailing list</li>
+   </ul>
+
+.. |other_png| image:: assets/index/other.png
+.. |other| raw:: html
+
+   <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
+   <li><a href="content/summary.html">Table summary</a> of BEDOPS toolkit</li>
+   <li><a href="https://github.com/alexpreynolds/bedops">Github repository</a></li>
+   <li></li>
    </ul>

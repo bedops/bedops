@@ -140,9 +140,41 @@ The ``--help`` option describes the various mapping and analytical operations an
         --echo-map-score    List scores from overlapping <map-file> elements.
         --indicator         Print 1 if there exists an overlapping element in <map-file>, 0 otherwise.
 
+.. _bedmap_operations:
+
 ==========
 Operations
 ==========
+
+To demonstrate the various operations in bedmap, we start with two simple, pre-sorted BED files that we label as ``Map`` and ``Reference`` (see the :ref:`Downloads <bedmap_downloads>` section for files you can use to follow along).
+
+Our ``Map`` file is a snippet of real-world BED data derived from `ENCODE <http://www.uwencode.org/>`_ experiments conducted by our lab: specifically, raw `DNaseI hypersensitivity <http://en.wikipedia.org/wiki/Hypersensitive_site>`_ signal for the human K562 cell line (region ``chr21:33031165-33032485``, assembly ``GRCh37/h19`` and table ``wgEncodeUwDnaseK562RawRep1`` from the `UCSC Genome Browser <http://genome.ucsc.edu/>`_).
+
+This raw signal is the density of sequence tags which map within a 150 bp sliding window, at 20 bp steps across the genome |---| a smoothed picture of DNaseI hypersensitivity:
+
+::
+
+  chr21   33031165        33031185        map-1   1.000000
+  chr21   33031185        33031205        map-2   3.000000
+  chr21   33031205        33031225        map-3   3.000000
+  chr21   33031225        33031245        map-4   3.000000   
+  chr21   33031245        33031265        map-5   3.000000
+  chr21   33031265        33031285        map-6   5.000000
+  chr21   33031285        33031305        map-7   7.000000
+  chr21   33031305        33031325        map-8   7.000000
+  chr21   33031325        33031345        map-9   8.000000
+  chr21   33031345        33031365        map-10  14.000000
+  chr21   33031365        33031385        map-11  15.000000
+  chr21   33031385        33031405        map-12  17.000000
+  chr21   33031405        33031425        map-13  17.000000
+  ...
+  chr21   33032425        33032445        map-64  5.000000
+  chr21   33032445        33032465        map-65  5.000000
+  chr21   33032465        33032485        map-66  6.000000
+
+When visualized, the signal data has the following appearance:
+
+
 
 .. _bedmap_overlap_criteria:
 

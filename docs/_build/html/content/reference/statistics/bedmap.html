@@ -62,7 +62,7 @@
 <h2>5.2.1.1. Inputs and outputs<a class="headerlink" href="#inputs-and-outputs" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="input">
 <h3>5.2.1.1.1. Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
-<p>The <a class="reference internal" href="#bedmap"><em>bedmap</em></a> program takes in <em>reference</em> and <em>mapping</em> ﬁles and calculates statistics for each reference element. These calculations—<em>operations</em>—are applied to overlapping elements from the mapped ﬁle:</p>
+<p>The <a class="reference internal" href="#bedmap"><em>bedmap</em></a> program takes in <em>reference</em> and <em>mapping</em> files and calculates statistics for each reference element. These calculations—<em>operations</em>—are applied to overlapping elements from the mapped file:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_bedmap_inputs.png"><img alt="../../../_images/reference_bedmap_inputs.png" src="../../../_images/reference_bedmap_inputs.png" style="width: 75%;" /></a>
 <p>The <a class="reference internal" href="#bedmap"><em>bedmap</em></a> program requires files in a relaxed variation of the BED format as described by <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1">UCSC&#8217;s browser documentation</a>. The chromosome field can be any non-empty string, the score field can be any valid numeric value, and information is unconstrained beyond the minimum number of columns required by the chosen options.</p>
 <p>Alternatively, <a class="reference internal" href="#bedmap"><em>bedmap</em></a> can accept <a class="reference internal" href="../file-management/compression/starch.html#starch"><em>Starch-formatted archives</em></a> of BED data as input—it is no longer necessary to extract Starch archive data to intermediate BED files!</p>
@@ -72,28 +72,163 @@
 <p class="first admonition-title">Note</p>
 <p class="last">You only need to sort once, and only if your input data are unsorted, as all BEDOPS tools take in and export sorted BED data.</p>
 </div>
-<p>Operations are applied over map elements that overlap the coordinates of each reference element. You can use the default overlap criterion of one base, or define your own criteria using the overlap criteria operators.</p>
-<p>Once you have overlapping elements, you can either perform numerical calculations on their scores or return identifiers or other non-score information. Additional modifier operators allow customization of how output is presented, to assist with downstream processing in a pipeline setting.</p>
+<p>Operations are applied over map elements that overlap the coordinates of each reference element. You can use the default overlap criterion of one base, or define your own criteria using the <a class="reference internal" href="#bedmap-overlap-criteria"><em>overlap criteria operators</em></a>.</p>
+<p>Once you have overlapping elements, you can either perform <a class="reference internal" href="#bedmap-score-operations"><em>numerical calculations</em></a> on their scores or return identifiers or other <a class="reference internal" href="#bedmap-non-score-operations"><em>non-score information</em></a>. Additional <a class="reference internal" href="#bedmap-modifier-operations"><em>modifier operators</em></a> allow customization of how output is presented, to assist with downstream processing in a pipeline setting.</p>
 </div>
 <div class="section" id="output">
 <h3>5.2.1.1.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
 <p>Depending on specified options, the <a class="reference internal" href="#bedmap"><em>bedmap</em></a> program can send a variety of delimited information about the reference and mapped elements (as well as analytical results) to standard output. If the <tt class="docutils literal"><span class="pre">--echo</span></tt> option is used, the output will be at least a three-column BED file. The use of predictable delimiters (which are customizable) and the use of UNIX-like standard streams allows easy downstream analysis or post-processing with other tools and scripts.</p>
 </div>
 </div>
+<div class="section" id="usage">
+<h2>5.2.1.2. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">--help</span></tt> option describes the various mapping and analytical operations and other options available to the end user:</p>
+<div class="highlight-python"><pre>bedmap
+  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
+  version:  2.3.0
+  authors:  Shane Neph &amp; Scott Kuehn
+
+ USAGE: bedmap [process-flags] [overlap-option] &lt;operation(s)...&gt; &lt;ref-file&gt; [map-file]
+     All input files must be sorted per the sort-bed utility.
+     The program accepts BED and starch file formats.
+     May use '-' for a file to indicate reading from standard input (BED format only).
+
+     Traverse &lt;ref-file&gt;, while applying &lt;operation(s)&gt; on qualified, overlapping elements from
+       &lt;map-file&gt;.  Output is one line for each line in &lt;ref-file&gt;, sent to standard output.  There
+       is no limit on the number of operations you can specify to compute in one bedmap call.
+     If &lt;map-file&gt; is omitted, the given file is treated as both the &lt;ref-file&gt; and &lt;map-file&gt;.
+       This usage is more efficient than specifying the same file twice.
+     Arguments may be given in any order before the input file(s).
+
+    Process Flags:
+     --------
+      --chrom &lt;chromosome&gt;  Process data for given &lt;chromosome&gt; only.
+      --delim &lt;delim&gt;       Change output delimiter from '|' to &lt;delim&gt; between columns (e.g. '\t').
+      --ec                  Error check all input files (slower).
+      --faster              (advanced) Strong input assumptions are made.  Review docs before use.
+                              Compatible with --bp-ovr and --range overlap options only.
+      --header              Accept headers (VCF, GFF, SAM, BED, WIG) in any input file.
+      --help                Print this message and exit successfully.
+      --multidelim &lt;delim&gt;  Change delimiter of multi-value output columns from ';' to &lt;delim&gt;.
+      --prec &lt;int&gt;          Change the post-decimal precision of scores to &lt;int&gt;.  0 &lt;= &lt;int&gt;.
+      --sci                 Use scientific notation for score outputs.
+      --version             Print program information.
+
+
+    Overlap Options (At most, one may be selected.  By default, --bp-ovr 1 is used):
+     --------
+      --bp-ovr &lt;int&gt;           Require &lt;int&gt; bp overlap between elements of input files.
+      --range &lt;int&gt;            Grab &lt;map-file&gt; elements within &lt;int&gt; bp of &lt;ref-file&gt;'s element,
+                                 where 0 &lt;= int.  --range 0 is an alias for --bp-ovr 1.
+      --fraction-ref &lt;val&gt;     The fraction of the element's size from &lt;ref-file&gt; that must overlap
+                                 the element in &lt;map-file&gt;.  Expect 0 &lt; val &lt;= 1.
+      --fraction-map &lt;val&gt;     The fraction of the element's size from &lt;map-file&gt; that must overlap
+                                 the element in &lt;ref-file&gt;.  Expect 0 &lt; val &lt;= 1.
+      --fraction-both &lt;val&gt;    Both --fraction-ref &lt;val&gt; and --fraction-map &lt;val&gt; must be true to
+                                 qualify as overlapping.  Expect 0 &lt; val &lt;= 1.
+      --fraction-either &lt;val&gt;  Either --fraction-ref &lt;val&gt; or --fraction-map &lt;val&gt; must be true to
+                                 qualify as overlapping.  Expect 0 &lt; val &lt;= 1.
+      --exact                  Shorthand for --fraction-both 1.  First 3 fields from &lt;map-file&gt; must
+                                 be identical to &lt;ref-file&gt;'s element.
+
+
+    Operations:  (Any number of operations may be used any number of times.)
+     ----------
+      SCORE:
+       &lt;ref-file&gt; must have at least 3 columns and &lt;map-file&gt; 5 columns.
+
+      --cv                The result of --stdev divided by the result of --mean.
+      --kth &lt;val&gt;         Generalized median. Report the value, x, such that the fraction &lt;val&gt;
+                            of overlapping elements' scores from &lt;map-file&gt; is less than x,
+                            and the fraction 1-&lt;val&gt; of scores is greater than x.  0 &lt; val &lt;= 1.
+      --mad &lt;mult=1&gt;      The median absolute deviation of overlapping elements in &lt;map-file&gt;.
+                            Multiply mad score by &lt;mult&gt;.  0 &lt; mult, and mult is 1 by default.
+      --max               The highest score from overlapping elements in &lt;map-file&gt;.
+      --max-element       An element with the highest score from overlapping elements in &lt;map-file&gt;.
+      --mean              The average score from overlapping elements in &lt;map-file&gt;.
+      --median            The median score from overlapping elements in &lt;map-file&gt;.
+      --min               The lowest score from overlapping elements in &lt;map-file&gt;.
+      --min-element       An element with the lowest score from overlapping elements in &lt;map-file&gt;.
+      --stdev             The square root of the result of --variance.
+      --sum               Accumulated scores from overlapping elements in &lt;map-file&gt;.
+      --tmean &lt;low&gt; &lt;hi&gt;  The mean score from overlapping elements in &lt;map-file&gt;, after
+                            ignoring the bottom &lt;low&gt; and top &lt;hi&gt; fractions of those scores.
+                            0 &lt;= low &lt;= 1.  0 &lt;= hi &lt;= 1.  low+hi &lt;= 1.
+      --variance          The variance of scores from overlapping elements in &lt;map-file&gt;.
+
+     ----------
+      NON-SCORE:
+       &lt;ref-file&gt; must have at least 3 columns.
+       For --echo-map-id/echo-map-id-uniq, &lt;map-file&gt; must have at least 4 columns.
+       For --echo-map-score, &lt;map-file&gt; must have at least 5 columns.
+       For all others, &lt;map-file&gt; requires at least 3 columns.
+
+      --bases             The total number of overlapping bases from &lt;map-file&gt;.
+      --bases-uniq        The number of distinct bases from &lt;ref-file&gt;'s element covered by
+                            overlapping elements in &lt;map-file&gt;.
+      --bases-uniq-f      The fraction of distinct bases from &lt;ref-file&gt;'s element covered by
+                            overlapping elements in &lt;map-file&gt;.
+      --count             The number of overlapping elements in &lt;map-file&gt;.
+      --echo              Print each line from &lt;ref-file&gt;.
+      --echo-map          List all overlapping elements from &lt;map-file&gt;.
+      --echo-map-id       List IDs from all overlapping &lt;map-file&gt; elements.
+      --echo-map-id-uniq  List unique IDs from overlapping &lt;map-file&gt; elements.
+      --echo-map-range    Print genomic range of overlapping elements from &lt;map-file&gt;.
+      --echo-map-score    List scores from overlapping &lt;map-file&gt; elements.
+      --indicator         Print 1 if there exists an overlapping element in &lt;map-file&gt;, 0 otherwise.</pre>
+</div>
+</div>
 <div class="section" id="operations">
-<h2>5.2.1.2. Operations<a class="headerlink" href="#operations" title="Permalink to this headline">¶</a></h2>
+<span id="bedmap-operations"></span><h2>5.2.1.3. Operations<a class="headerlink" href="#operations" title="Permalink to this headline">¶</a></h2>
+<p>To demonstrate the various operations in bedmap, we start with two simple, pre-sorted BED files that we label as <tt class="docutils literal"><span class="pre">Map</span></tt> and <tt class="docutils literal"><span class="pre">Reference</span></tt> (see the <a class="reference internal" href="#bedmap-downloads"><em>Downloads</em></a> section for files you can use to follow along).</p>
+<p>Our <tt class="docutils literal"><span class="pre">Map</span></tt> file is a snippet of real-world BED data derived from <a class="reference external" href="http://www.uwencode.org/">ENCODE</a> experiments conducted by our lab: specifically, raw <a class="reference external" href="http://en.wikipedia.org/wiki/Hypersensitive_site">DNaseI hypersensitivity</a> signal for the human K562 cell line (region <tt class="docutils literal"><span class="pre">chr21:33031165-33032485</span></tt>, assembly <tt class="docutils literal"><span class="pre">GRCh37/h19</span></tt> and table <tt class="docutils literal"><span class="pre">wgEncodeUwDnaseK562RawRep1</span></tt> from the <a class="reference external" href="http://genome.ucsc.edu/">UCSC Genome Browser</a>).</p>
+<p>This raw signal is the density of sequence tags which map within a 150 bp sliding window, at 20 bp steps across the genome—a smoothed picture of DNaseI hypersensitivity:</p>
+<div class="highlight-python"><pre>chr21   33031165        33031185        map-1   1.000000
+chr21   33031185        33031205        map-2   3.000000
+chr21   33031205        33031225        map-3   3.000000
+chr21   33031225        33031245        map-4   3.000000
+chr21   33031245        33031265        map-5   3.000000
+chr21   33031265        33031285        map-6   5.000000
+chr21   33031285        33031305        map-7   7.000000
+chr21   33031305        33031325        map-8   7.000000
+chr21   33031325        33031345        map-9   8.000000
+chr21   33031345        33031365        map-10  14.000000
+chr21   33031365        33031385        map-11  15.000000
+chr21   33031385        33031405        map-12  17.000000
+chr21   33031405        33031425        map-13  17.000000
+...
+chr21   33032425        33032445        map-64  5.000000
+chr21   33032445        33032465        map-65  5.000000
+chr21   33032465        33032485        map-66  6.000000</pre>
+</div>
+<p>When visualized, the signal data has the following appearance:</p>
 <div class="section" id="overlap-criteria">
-<h3>5.2.1.2.1. Overlap criteria<a class="headerlink" href="#overlap-criteria" title="Permalink to this headline">¶</a></h3>
+<span id="bedmap-overlap-criteria"></span><h3>5.2.1.3.1. Overlap criteria<a class="headerlink" href="#overlap-criteria" title="Permalink to this headline">¶</a></h3>
 </div>
 <div class="section" id="score-operations">
-<h3>5.2.1.2.2. Score operations<a class="headerlink" href="#score-operations" title="Permalink to this headline">¶</a></h3>
+<span id="bedmap-score-operations"></span><h3>5.2.1.3.2. Score operations<a class="headerlink" href="#score-operations" title="Permalink to this headline">¶</a></h3>
 </div>
 <div class="section" id="non-score-operations">
-<h3>5.2.1.2.3. Non-score operations<a class="headerlink" href="#non-score-operations" title="Permalink to this headline">¶</a></h3>
+<span id="bedmap-non-score-operations"></span><h3>5.2.1.3.3. Non-score operations<a class="headerlink" href="#non-score-operations" title="Permalink to this headline">¶</a></h3>
 </div>
 <div class="section" id="modifiers">
-<h3>5.2.1.2.4. Modifiers<a class="headerlink" href="#modifiers" title="Permalink to this headline">¶</a></h3>
+<span id="bedmap-modifier-operations"></span><h3>5.2.1.3.4. Modifiers<a class="headerlink" href="#modifiers" title="Permalink to this headline">¶</a></h3>
 </div>
+</div>
+<div class="section" id="per-chromosome-operations-chrom">
+<h2>5.2.1.4. Per-chromosome operations (&#8211;chrom)<a class="headerlink" href="#per-chromosome-operations-chrom" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="starch-support">
+<h2>5.2.1.5. Starch support<a class="headerlink" href="#starch-support" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="error-checking">
+<h2>5.2.1.6. Error checking<a class="headerlink" href="#error-checking" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="endlines">
+<h2>5.2.1.7. Endlines<a class="headerlink" href="#endlines" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="downloads">
+<span id="bedmap-downloads"></span><h2>5.2.1.8. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -114,13 +249,19 @@
 <li><a class="reference internal" href="#output">5.2.1.1.2. Output</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#operations">5.2.1.2. Operations</a><ul>
-<li><a class="reference internal" href="#overlap-criteria">5.2.1.2.1. Overlap criteria</a></li>
-<li><a class="reference internal" href="#score-operations">5.2.1.2.2. Score operations</a></li>
-<li><a class="reference internal" href="#non-score-operations">5.2.1.2.3. Non-score operations</a></li>
-<li><a class="reference internal" href="#modifiers">5.2.1.2.4. Modifiers</a></li>
+<li><a class="reference internal" href="#usage">5.2.1.2. Usage</a></li>
+<li><a class="reference internal" href="#operations">5.2.1.3. Operations</a><ul>
+<li><a class="reference internal" href="#overlap-criteria">5.2.1.3.1. Overlap criteria</a></li>
+<li><a class="reference internal" href="#score-operations">5.2.1.3.2. Score operations</a></li>
+<li><a class="reference internal" href="#non-score-operations">5.2.1.3.3. Non-score operations</a></li>
+<li><a class="reference internal" href="#modifiers">5.2.1.3.4. Modifiers</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#per-chromosome-operations-chrom">5.2.1.4. Per-chromosome operations (&#8211;chrom)</a></li>
+<li><a class="reference internal" href="#starch-support">5.2.1.5. Starch support</a></li>
+<li><a class="reference internal" href="#error-checking">5.2.1.6. Error checking</a></li>
+<li><a class="reference internal" href="#endlines">5.2.1.7. Endlines</a></li>
+<li><a class="reference internal" href="#downloads">5.2.1.8. Downloads</a></li>
 </ul>
 </li>
 </ul>
