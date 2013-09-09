@@ -74,5 +74,6 @@ BEDOPS is an open-source command-line toolkit that performs highly efficient and
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
    <li><a href="content/summary.html">Table summary</a> of BEDOPS toolkit</li>
    <li><a href="content/reference/file-management/compression/starch-specification.html">Starch v2</a> format specification</li>
+   <li><a href="content/revision-history.html">Revision history</a></li>
    <li><a href="https://github.com/alexpreynolds/bedops">Github repository</a></li>
    </ul>
