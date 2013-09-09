@@ -90,11 +90,46 @@ The ``note`` key is an optional string that can contain information if the ``--n
 Streams
 ^^^^^^^
 
+The ``streams`` key scheme contains an array of objects, each describing the attributes of an individually-compressed chromosome stream, sorted on chromosome name:
+
+::
+
+  {
+    ...,
+    "streams": [
+      {
+        "chromosome": (string),
+        "filename": (string),
+        "size": (unsigned integer),
+        "uncompressedLineCount": (unsigned integer),
+        "nonUniqueBaseCount": (unsigned integer),
+        "uniqueBaseCount": (unsigned integer)
+      },
+      ...
+    ]
+  }
+
+The ``chromosome`` key specifies the name of the chromosome associated with the compressed regions. For example, this might be ``chr1``, ``chrX``, etc.
+
+The ``filename`` key is a string that concatenates the chromosome name, process ID and host strings (unless a ``unique-tag`` value is given to :ref:`starch` when creating an archive, which would replace the process ID and host values). It is a holdover from a procedure for creating legacy archives and exists for backwards-compatibility.
+
+The ``size`` key specifies the byte-size of the compressed stream and exists for calculating offsets within the archive where a chromosome stream begins (and ends). In this way, :ref:`unstarch` and other Starch-capable applications can extract data only from a desired chromosome, without wasteful processing of the remainder of the archive.
+
+The ``uncompressedLineCount`` key specifies the number of BED elements that were compressed into the chromosome stream. This is a precomputed equivalent to the result of a ``wc -l`` (line count) operation performed on BED elements that match the given chromosome, without needing to stream through the entire file.
+
+The ``nonUniqueBaseCount`` key specifies the sum of non-unique bases across all BED elements compressed into the chromosome stream. Non-uniqueness allows multiple counting of bases in elements which overlap.
+
+The ``uniqueBaseCount`` key specifies the sum of unique bases across all BED elements compressed into the chromosome stream. Uniqueness takes into account overlapping elements and therefore only counts bases once.
+
 ------
 Offset
 ------
 
 .. image:: ../../../../assets/reference/file-management/compression/starch_specification_metadataoffset.png
+
+The metadata offset is a 20-byte long, zero-padded string that specifies the number of bytes into the file where the JSON-formatted metadata string is stored.
+
+The :ref:`unstarch` utility and the newer versions of :ref:`bedops` and :ref:`bedmap` applications use this offset to jump to the correct point in the file where the metadata can be read into memory and processed into an internal data structure.
 
 ----
 Hash
@@ -102,11 +137,17 @@ Hash
 
 .. image:: ../../../../assets/reference/file-management/compression/starch_specification_metadatachecksum.png
 
+The metadata hash is a 28-byte long, `Base64 <http://en.wikipedia.org/wiki/Base64>`_ -encoded `SHA-1 <http://en.wikipedia.org/wiki/SHA-1#Data_Integrity>`_ hash of the bytes that make up the JSON-formatted metadata string.
+
+This data is used to validate the integrity of the metadata: Any change to the metadata (*e.g.*, data corruption that changes stream offset values) causes :ref:`unstarch` and other Starch utilities and applications to exit early with a fatal, informative error.
+
 =======
 Padding
 =======
 
 .. image:: ../../../../assets/reference/file-management/compression/starch_specification_padding.png
+
+The remainder of the file is made up of 80 bytes of padding, which are unused at this time.
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
