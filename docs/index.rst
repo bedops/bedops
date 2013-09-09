@@ -17,6 +17,7 @@ BEDOPS is an open-source command-line toolkit that performs highly efficient and
 
    content/overview
    content/installation
+   content/revision-history
    content/usage-examples
    content/performance
    content/reference

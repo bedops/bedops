@@ -35,7 +35,7 @@ The ``--help`` option is fairly basic, but describes the usage:
 
   sort-bed
     citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-    version:  2.2.0
+    version:  2.3.0
     authors:  Scott Kuehn
 
   USAGE: sort-bed [--help] [--version] [--max-mem <val>] <file1.bed> <file2.bed> <...>
@@ -59,7 +59,7 @@ The :ref:`sort-bed` program efficiently sorts BED inputs. By default, all input 
 
 This option allows :ref:`sort-bed` to scale to input of any size.
 
-.. note:: While `sort-bed` can sort BED files of any size, users may run into trouble sorting files with more than 1021 distinct chromosome names. This can be an issue if your dataset contains unassigned contigs, such as ``chrN_*`` and ``chrUn_*`` `pseudochromosome records <http://genome.ucsc.edu/FAQ/FAQdownloads.html#download11>`_. 
+.. note:: While `sort-bed` can sort BED files of any size, users may run into trouble sorting files with more than 1021 distinct chromosome names, due to operating system limits on the number of open files. This can be an issue if, for example, your dataset contains unassigned contigs, such as ``chrN_*`` and ``chrUn_*`` `pseudochromosome records <http://genome.ucsc.edu/FAQ/FAQdownloads.html#download11>`_. 
 
    In this case, you could also use the following command:
 
