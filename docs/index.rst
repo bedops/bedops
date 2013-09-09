@@ -12,10 +12,10 @@ BEDOPS is an open-source command-line toolkit that performs highly efficient and
 | |performance|         | |support|             | |other|                |
 +-----------------------+-----------------------+------------------------+
 
-  
+|space|
 
 .. image:: assets/index/toc.png
-   :width: 50%
+   :width: 33%
 
 .. toctree::
    :numbered:
@@ -83,3 +83,7 @@ BEDOPS is an open-source command-line toolkit that performs highly efficient and
    <li><a href="content/revision-history.html">Revision history</a></li>
    <li><a href="https://github.com/alexpreynolds/bedops">Github repository</a></li>
    </ul>
+
+.. |space| raw:: html
+ 
+   <p>&nbsp;</p>
