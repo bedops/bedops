@@ -7,7 +7,7 @@ With high-throughput sequencing generating large amounts of genomic data, archiv
 
 Starch v2 archives can be extracted with :ref:`unstarch` to recover the original BED input, or processed as inputs to :ref:`bedops` and :ref:`bedmap`, where set operations and element calculations can be performed directly and without the need for intermediate file extraction.
 
-The :ref:`starch` utility includes `large file support <http://en.wikipedia.org/wiki/Large_file_support>` on 64-bit operating systems, enabling compression of more than 2 GB of data (a common restriction on 32-bit systems).
+The :ref:`starch` utility includes `large file support <http://en.wikipedia.org/wiki/Large_file_support>`_ on 64-bit operating systems, enabling compression of more than 2 GB of data (a common restriction on 32-bit systems).
 
 Data can be stored with one of two open-source backend compression methods, either ``bzip2`` or ``gzip``, providing the end user with a reasonable tradeoff between speed and storage performance that can be useful for working with constrained storage situations or slower hardware.
 
@@ -35,7 +35,7 @@ This utility outputs a :ref:`Starch v2-formatted <starch_specification>` archive
 Requirements
 ============
 
-The :ref:`starch` tool requires data in a relaxed variation of the BED format as described by `UCSC’s browser documentation <http://genome.ucsc.edu/FAQ/FAQformat.html#format1>`. BED data should be sorted before compression, *e.g.* with BEDOPS :ref:`sort-bed`. 
+The :ref:`starch` tool requires data in a relaxed variation of the BED format as described by `UCSC’s browser documentation <http://genome.ucsc.edu/FAQ/FAQformat.html#format1>`_. BED data should be sorted before compression, *e.g.* with BEDOPS :ref:`sort-bed`. 
 
 At a minimum, three columns are required to specify the chromosome name and start and stop positions. Additional columns may be specified, containing up to 128 kB of data per row (including tab delimiters).
 
