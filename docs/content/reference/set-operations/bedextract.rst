@@ -129,6 +129,8 @@ Three criteria make the use of :ref:`bedextract` in this mode very successful in
 2. There are relatively few regions of interest in ``Target`` (say, roughly 30,000 or fewer).
 3. There are **no fully-nested elements** in ``Query`` (but duplicate coordinates are fine).
 
+.. _bedextract_nested_elements:
+
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 What are nested elements?
 ^^^^^^^^^^^^^^^^^^^^^^^^^

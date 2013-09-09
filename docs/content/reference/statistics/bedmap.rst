@@ -193,12 +193,12 @@ Among them, what are the quantitative and qualitative features of the ``map`` el
 
 It may help to first visualize the reference regions and the mapped elements associated with them. A default :ref:`bedmap` task will operate on the following set of mapped (red-colored) elements, for each reference element ``ref-1``, ``-2`` and ``-3``.
 
-Here we show elements from the ``Map`` set which overlap the ``ref-1`` region, colored in red:
+Here we show elements from the ``Map`` set which overlap the ``ref-1`` region ``chr21:33031200-33032400``, colored in red:
 
 .. image:: ../../../assets/reference/statistics/reference_bedmap_mapref_ref1.png
    :width: 99%
 
-Likewise, here are elements of the ``Map`` set which overlap the ``ref-2`` and ``ref-3`` regions, respectively, with the same red coloring:
+Likewise, here are elements of the ``Map`` set which overlap the ``ref-2`` element ``chr21:33031400-33031800`` and ``ref-3`` element ``chr21:33031900-33032000``, respectively, with the same coloring applied:
 
 .. image:: ../../../assets/reference/statistics/reference_bedmap_mapref_ref2.png
    :width: 99%
@@ -214,11 +214,144 @@ In these sample files, we provide the ``Map`` file with ID and score columns, an
 Overlap criteria
 ----------------
 
+The default overlap criterion that :ref:`bedmap` uses is *one base*. That is, one or more bases of overlap between reference and mapping elements is sufficient for inclusion in operations. This value can be adjusted with the ``--bp-ovr`` option. The ``--range`` overlap option implicitly applies ``--bp-ovr 1`` after symmetrically padding elements.
+
+If a fractional overlap is desired, the ``--fraction-{ref,map,both,either}`` options provide the ability to filter on overlap by a specified percentage of the length of either or both the reference and mapping elements.
+
+Finally, the ``--exact`` flag enforces exact matches between reference and mapping elements. 
+
+.. note:: The ``--exact`` option is an alias for ``--fraction-both 1``.
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Using ``--faster`` with ``--bp-ovr`` and ``--range``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``--faster`` modifier works with the ``--bp-ovr`` overlap and ``--range`` specifiers to dramatically increase the performance of :ref:`bedmap`, when the following input restriction is met:
+
+* No fully-nested elements in any input mapping file (duplicate elements and other overlapping elements are okay).
+
+.. note:: The details of this nested-element restriction are explained in more detail in the :ref:`bedextract <bedextract_nested_elements>` documentation.
+
+This option also works with the ``--ec`` error checking flag, which indicates if the data contain nested elements. Using ``--ec`` carries its usual overhead, but as it only doubles the much-improved execution time, it may be worth using.
+
+.. tip:: To give an idea of the speed improvement, a ``--range 100000 --echo --count`` operation on 8.4 million, non-nested mapping elements (DNaseI footprints across multiple cell types) took *2 minutes and 55 seconds* without speed-up. By adding the ``--faster`` flag, the same calculation took *10 seconds*. That is an 18-fold speed improvement.
+ 
+   One scenario where this option can provide great speed gains is where ``--range`` is used with a large numerical parameter. Another scenario where this option is very useful is where the reference file has large elements, and the mapping file is made up of many small elements |---| specifically, where a number of small elements overlap each big element from the reference file. 
+
+   An example of a research application for our lab which benefits from this flag is where we perform statistical analysis of large numbers of small sequence tags that fall in hotspot regions.
+
+   If your data meet the :ref:`non-nesting criteria <bedextract_nested_elements>`, using ``--faster`` with ``--bp-ovr`` or ``--range`` is highly recommended.
+
+.. note:: Our lab works with BED data of various types: cut-counts, hotspots, peaks, footprints, etc. These data generally do not contain nested elements and so are amenable to use with :ref:`bedmap's <bedmap>` ``--faster`` flag for extracting overlapping elements.
+
+   However, other types of data can be problematic. `FIMO <http://meme.nbcr.net/meme/fimo-intro.html>`_ search results, for example, may cause trouble, where the boundaries of one motif hit can be contained within another larger hit. Or paired-end sequence data, where tags are not of a fixed length.
+
+   Be sure to consider the makeup of your BED data before using ``--faster``. 
+
+.. tip:: Using ``--ec`` with ``--faster`` will report if any nested elements exist in your data.
+
 .. _bedmap_score_operations:
 
 ----------------
 Score operations
 ----------------
+
+Score operators apply a numerical calculation on the values of the score column of mapping elements. Per `UCSC specifications <http://genome.ucsc.edu/FAQ/FAQformat.html#format1>`_, :ref:`bedmap` assumes the score data are stored in the fifth column.
+
+The variety of score operators include common statistical measures:
+
+* `mean <http://en.wikipedia.org/wiki/Expected_value>`_ (``--mean``)
+* `trimmed mean <http://en.wikipedia.org/wiki/Truncated_mean>`_ (``--tmean``)
+* `standard deviation <http://en.wikipedia.org/wiki/Standard_deviation>`_ (``--stdev``)
+* `variance <http://en.wikipedia.org/wiki/Variance>`_ (``--variance``)
+* `coefficient of variance <http://en.wikipedia.org/wiki/Coefficient_of_variation>`_ (``--cv``)
+* `median <http://en.wikipedia.org/wiki/Median>`_ (``--median``)
+* `median absolute deviation <http://en.wikipedia.org/wiki/Median_absolute_deviation>`_ (``--mad``)
+* `*k*-th order statistic <http://en.wikipedia.org/wiki/Order_statistic>`_ (``--kth``)
+
+One can also take the sum of scores (``--sum``), find the minimum or maximum score over a region (``--min`` and ``--max``, respectively), or retrieve the map element with the least or greatest signal over the reference region (``--min-element`` and ``--max-element``, respectively).
+
+We will demonstrate some of these operators by applying them to the ``Reference`` and ``Map`` datasets (see the :ref:`Downloads <bedmap_downloads>` section for sample inputs).
+
+As a reminder, the ``Map`` file contains regions of DNaseI-seq tag density. If we want the mean of the density across `Reference` elements, we use the ``--mean`` option:
+
+::
+
+  $ bedmap --echo --mean reference.bed map.bed > mappedReferences.mean.bed
+
+The ``--echo`` flag prints each ``Reference`` element, while the ``--mean`` flag calculates the mean signal of the ``Map`` elements which overlap the reference element:
+
+::
+
+  $ more mappedReferences.mean.bed
+  chr21   33031200    33032400    ref-1|43.442623
+  chr21   33031400    33031800    ref-2|31.571429
+  chr21   33031900    33032000    ref-3|154.500000
+
+This result tells us that the mean density across regions ``ref-1``, ``ref-2`` and ``ref-3`` is ``44.442623``, ``31.571429`` and ``154.5``, respectively.
+
+.. note:: The pipe character (``|``) delimits the results of each specified option (with the exception of the so-called "multi" operators that return multiple results — this is discussed in the section on ``--echo`` flags). In the provided example, the delimiter divides the reference element from the mean score across the reference element.
+
+.. tip:: Because we used the ``--echo`` flag in this example, we are guaranteed output that is at least three-column BED format and which is :ref:`sorted <sort-bed>`, which can be useful for `pipeline <http://en.wikipedia.org/wiki/Pipeline_(Unix)>`_ design, where results are piped downstream to :ref:`bedmap`, :ref:`bedops` and other BEDOPS and UNIX utilities.
+
+If we simply want the mean values and don't care about the reference data, we can skip ``--echo``:
+
+::
+
+  $ bedmap --mean reference.bed map.bed
+  43.442623
+  31.571429
+  154.500000
+
+While not very detailed, this single-column representation can be useful for those who use UNIX utilities like ``paste`` or need to do additional downstream calculations with ``R`` or other utilities, where the reference information is unnecessary (or, at least, more work to excise).
+
+If a reference element does not overlap any map element, then a ``NAN`` is returned for any operation on that entry, *e.g.*, we know that the *ad hoc* element ``chr21:1000-2000`` does not overlap any member of our ``Map`` dataset, and there is therefore no mean value that can be calculated for that element:
+
+::
+
+  $ echo -e "chr21\t1000\t2000\tfoo-1" | bedmap --echo --mean - map.bed
+  chr21   1000    2000    foo-1|NAN
+
+.. tip:: For this example, we use ``echo -e`` to send :ref:`bedmap` a sample reference coordinate by way of standard input. The :ref:`bedmap` program can process any BED data from the standard input stream, either as the reference or map data, by placing the dash character (``-``) where the file name would otherwise go. 
+
+   In the example above, we sent :ref:`bedmap` a single reference element via standard input, but multiple lines of BED data can come from other upstream processes. 
+
+   Using `standard streams <http://en.wikipedia.org/wiki/Pipeline_(Unix)>`_ is useful for reducing file I/O and improving performance, especially in situations where one is using :ref:`bedmap` in the middle of an extended pipeline.
+
+Another option is to retrieve the mapping element with the highest or lowest score within the reference region, using the ``--max-element`` or ``--min-element`` operators, respectively.
+
+Going back to our sample ``Reference`` and ``Map`` data, we can search for the highest scoring mapping elements across the three reference elements:
+
+::
+
+  $ bedmap --echo --max-element --prec 0 reference.bed map.bed
+  chr21   33031200        33032400        ref-1|chr21     33031885        33031905        map-37  165
+  chr21   33031400        33031800        ref-2|chr21     33031785        33031805        map-32  82
+  chr21   33031900        33032000        ref-3|chr21     33031885        33031905        map-37  165
+
+Over reference elements ``ref-1`` and ``ref-3``, the mapping element ``map-37`` has the highest score. Over reference element ``ref-2``, the highest scoring mapping element is ``map-32``.
+
+Likewise, we can repeat this operation, but look for the lowest scoring elements, instead:
+
+::
+
+  $ bedmap --echo --min-element --prec 0 reference.bed map.bed
+  chr21   33031200        33032400        ref-1|chr21     33032265        33032285        map-56  2
+  chr21   33031400        33031800        ref-2|chr21     33031525        33031545        map-19  13
+  chr21   33031900        33032000        ref-3|chr21     33031985        33032005        map-42  138
+
+.. note:: Where there are ties in score values, there is no guarantee about which tied element will be chosen. In this case, the ``--echo-map`` operator can be used to manually examine the full list of elements and apply different logic.
+
+We can also perform multiple score operations, which are summarized on one line, e.g. to show the mean, standard deviation, and minimum and maximum signal over each ``Reference`` element, we simply add the requisite options in series:
+
+::
+
+  $ bedmap --echo --mean --stdev --min --max reference.bed map.bed
+  chr21   33031200    33032400    ref-1|43.442623|50.874527|2.000000|165.000000
+  chr21   33031400    33031800    ref-2|31.571429|19.638155|13.000000|82.000000
+  chr21   33031900    33032000    ref-3|154.500000|9.311283|138.000000|165.000000
+
+Multiple score-operational results are ordered identically with the command-line options. The section on :ref:`formatting score output <bedmap_formatting_score_output>` demonstrates how one can change the precision and general format of numerical score results.
 
 .. _bedmap_non_score_operations:
 
@@ -226,11 +359,162 @@ Score operations
 Non-score operations
 --------------------
 
+Sometimes it is useful to get summary or non-score statistics about the map elements. This category of operators returns information from the ID column of mapping elements, or can return counts and base overlap totals. 
+
+.. note:: As with score data, we follow the `UCSC convention <http://genome.ucsc.edu/FAQ/FAQformat.html#format1>`_ for the BED format and retrieve ID data from the fourth column.
+
+.. _bedmap_echo:
+
+^^^^
+Echo
+^^^^
+
+The ID, score and coordinate columns of the reference and map files are very useful for reading and debugging results, or reporting a more detailed mapping.
+
+We can use the ``--echo``, ``--echo-map``, ``--echo-map-id``, ``--echo-map-id-uniq``, ``--echo-map-score`` and ``--echo-map-range`` flags to tell :ref:`bedmap` to report additional details about the reference and map elements.
+
+The ``--echo`` flag reports each reference element. We have already seen the application of ``--echo`` in earlier examples. The option helps to clearly associate results from other chosen operations with specific reference elements. Additionally, ``--echo`` enables the output from :ref:`bedmap` to be used as input to additional BEDOPS utilities, including :ref:`bedmap` itself.
+
+The ``--echo-map`` flag gathers overlapping mapped elements for every reference element. The option is useful for debugging and detailed downstream processing needs. This is the most general operation in :ref:`bedmap` in that overlapping elements are returned in full detail, for every reference element. While results are well-defined and easily parsed, the output can be very large and difficult to read.
+
+As an example of using the ``--echo-map-id`` operator in a biological context, we examine a `FIMO <http://meme.nbcr.net/meme/fimo-intro.html>`_ analysis that returns a subset of transcription factor binding sites in BED format, with `TRANSFAC <http://en.wikipedia.org/wiki/TRANSFAC>`_ motif names listed in the ID column:
+
+::
+
+  chr1    4534161 4534177 -V_GRE_C        4.20586e-06     -       CGTACACACAGTTCTT
+  chr1    4534192 4534205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
+  chr1    4534209 4534223 +V_HNF4_Q6_01   6.93604e-06     +       GGACCAGAGTCCAC
+  chr1    4962522 4962540 -V_GCNF_01      9.4497e-06      -       CCCAAGGTCAAGATAAAG
+  chr1    4962529 4962539 +V_NUR77_Q5     8.43564e-06     +       TTGACCTTGG
+  ...
+
+This input is available from the :ref:`Downloads <bedmap_downloads>` section as the ``Motifs`` dataset.
+
+We will treat this as a map file, asking which motif IDs are associated with a region of interest (``chr1:4534150-4534300``). To do this using :ref:`bedmap`, we use the ``--echo-map-id`` option to summarize the IDs of mapped elements:
+
+::
+
+  $ echo -e "chr1\t4534150\t4534300\tref-1" | bedmap --echo --echo-map-id - motifs.bed
+  chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01
+
+.. note:: To expand on the types of questions one can answer with :ref:`bedmap` in this context, in conjunction with the ``--count`` operator (described below), one can quantify predicted transcription factor binding sites by sliding a reference window across the entire genome. 
+
+   One could determine, for example, where predicted sites are most prevalent and investigate the distribution of factors or other genomic features at or around these dense regions.
+
+The ``--echo-map-id-uniq`` operator works exactly like ``--echo-map-id``, except that duplicate IDs are removed from the result. For example, we can pull all the motifs hits from a wide region on ``chr2``:
+
+::
+
+  $ echo -e "chr2\t1000\t10000000\tref-1" | bedmap --echo --echo-map-id - motifs.bed
+  chr2    1000    10000000        ref-1|+V_OCT1_05;+V_OCT_C;-V_CACD_01;+V_IRF_Q6;-V_BLIMP1_Q6;-V_IRF2_01;-V_IRF_Q6_01;+V_SMAD_Q6_01;-V_TATA_01;-V_TATA_C;-V_CEBP_01;-V_HNF6_Q6;+V_MTF1_Q4;+V_MYOD_Q6_01;-V_KROX_Q6;+V_EGR1_01;-V_SP1SP3_Q4;+V_EGR_Q6;+V_SP1_Q6;-V_SP1_Q2_01;-V_CKROX_Q2;+V_SP1_Q6_01;-V_SREBP1_Q5;+V_VDR_Q3;-V_DMRT1_01;-V_DMRT7_01;+V_DMRT1_01;-V_DMRT1_01;-V_DMRT7_01;+V_DMRT1_01;-V_DMRT1_01;-V_DMRT7_01
+
+However, some hits (*e.g.*, ``-V_DMRT7_01``) show up two or more times. If we want a non-redundant list, we replace ``--echo-map-id`` with ``--echo-map-id-uniq``:
+
+::
+
+  $ echo -e "chr2\t1000\t10000000\tref-1" | bedmap --echo --echo-map-id-uniq - motifs.bed
+  chr2    1000    10000000        ref-1|+V_DMRT1_01;+V_EGR1_01;+V_EGR_Q6;+V_IRF_Q6;+V_MTF1_Q4;+V_MYOD_Q6_01;+V_OCT1_05;+V_OCT_C;+V_SMAD_Q6_01;+V_SP1_Q6;+V_SP1_Q6_01;+V_VDR_Q3;-V_BLIMP1_Q6;-V_CACD_01;-V_CEBP_01;-V_CKROX_Q2;-V_DMRT1_01;-V_DMRT7_01;-V_HNF6_Q6;-V_IRF2_01;-V_IRF_Q6_01;-V_KROX_Q6;-V_SP1SP3_Q4;-V_SP1_Q2_01;-V_SREBP1_Q5;-V_TATA_01;-V_TATA_C
+
+The ``--echo-map-score`` flag works in a similar fashion to ``--echo-map-id``, reporting scores instead of IDs. The :ref:`formatting score output <bedmap_formatting_score_output>` section demonstrates how one can use ``--echo-map-score`` to summarize score data from mapped elements.
+
+.. note:: Both the ``--echo-map-id`` and ``--echo-map-score`` flags use the semi-colon (``;``) as a default delimiter, which may be changed with the ``--multidelim`` option (see the :ref:`Delimiters <bedmap_delimiters>` section for more information on this and other modifier operators).
+
+Finally, the ``--echo-map-range`` flag tells :ref:`bedmap` to report the genomic range of overlapping mapped elements. If we apply this flag to the ``Reference`` and ``Map`` datasets (see :ref:`Downloads <bedmap_downloads>`), we get the following result:
+
+::
+
+  $ bedmap --echo --echo-map-range reference.bed map.bed
+  chr21   33031200    33032400    ref-1|chr21 33031185    33032405
+  chr21   33031400    33031800    ref-2|chr21 33031385    33031805
+  chr21   33031900    33032000    ref-3|chr21 33031885    33032005
+
+.. note:: The ``--echo-map-range`` option produces three-column BED results that are not always guaranteed to be sorted. The ``--echo`` operation is independent, and it produces reference elements in proper BEDOPS order, as shown. If the results of the ``--echo-map-range`` option will be used directly as BED coordinates in downstream BEDOPS analyses (*i.e.*, no ``--echo`` operator), first pipe them to :ref:`sort-bed` to ensure proper sort order.
+
+.. _bedmap_element_and_overlap_statistics:
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Element and overlap statistics
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Looking back at the ``Map`` and ``Reference`` datasets, let's say we want to count the number of elements in ``Map`` that overlap a given ``Reference`` element, as well as the extent of that overlap as measured by the total number of overlapping bases from mapped elements. For this, we use the ``--count`` and ``--bases`` flags, respectively:
+
+::
+
+  $ bedmap --echo --count --bases reference.bed map.bed
+  chr21   33031200    33032400    ref-1|61|1200
+  chr21   33031400    33031800    ref-2|21|400
+  chr21   33031900    33032000    ref-3|6|100
+
+This result tells us that there are 61 elements in ``Map`` that overlap ``ref-1``, and 1200 total bases from the 61 elements overlap bases of ``ref-1``. Similarly, 21 elements overlap ``ref-2``, and 400 total bases from the 21 elements overlap bases of ``ref-2``, etc.
+
+The ``--bases`` operator works on ``Map`` elements. If, instead, we want to quantify the degree to which ``Reference`` elements overlap ``Map`` , we can use the ``--bases-uniq`` and ``--bases-uniq-f`` flags to count the number of bases and, respectively, the fraction of total bases within ``Reference`` which are covered by overlapping elements in ``Map``.
+
+This last example uses ``Motifs`` elements and all of the options: ``--bases``, ``--bases-uniq`` and ``--bases-uniq-f``, to illustrate their different behaviors:
+
+::
+
+  $ echo -e "chr1\t4534161\t4962550\tadhoc-1" | bedmap --echo --bases --bases-uniq --bases-uniq-f - motifs.bed
+  chr1    4534161     4962550     adhoc-1|169|71|0.000166
+
+.. _bedmap_indicator:
+
+^^^^^^^^^
+Indicator
+^^^^^^^^^
+
+If we simply want to know if a reference element overlaps one or more map elements, we can use the ``--indicator`` operator, which returns a ``1`` or ``0`` value, depending on whether there is or is not an overlap, respectively. For example:
+
+::
+
+  $ bedmap --echo --indicator reference.bed map.bed
+  chr21   33031200    33032400    ref-1|1
+  chr21   33031400    33031800    ref-2|1
+  chr21   33031900    33032000    ref-3|1
+
+All three of our reference elements have mapped elements associated with them. If we, instead, test a reference element that we know ahead of time does not contain overlapping map elements, we get a ``0`` result, as we expect:
+
+::
+
+  $ echo -e "chr21\t1000\t2000\tfoo-1" | bedmap --echo --indicator - map.bed
+  chr21   1000    2000    foo-1|0
+
+.. note:: The ``--indicator`` option is equivalent to testing if the result from ``--count`` is equal to or greater than ``0``:
+
+   ::
+
+     $ bedmap --count foo bar | awk '{ print ($1 > 0 ? "1" : "0") }' - 
+
+   This option eliminates the need for piping :ref:`bedmap` results to ``awk``.
+
 .. _bedmap_modifier_operations:
 
 ---------
 Modifiers
 ---------
+
+.. _bedmap_range:
+
+^^^^^
+Range
+^^^^^
+
+.. _bedmap_faster_with_range:
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Using ``--faster`` with ``--range``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. _bedmap_formatting_score_output:
+
+^^^^^^^^^^^^^^^^^^^^^^^
+Formatting score output
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. _bedmap_delimiters:
+
+^^^^^^^^^^
+Delimiters
+^^^^^^^^^^
 
 ===================================
 Per-chromosome operations (--chrom)
