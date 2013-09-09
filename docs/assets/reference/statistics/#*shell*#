@@ -10857,4 +10857,43 @@ drwxr-xr-x 8 alexpreynolds staff 272 Aug 28 15:14 ..
 -rw-r--r-- 1 alexpreynolds staff  40 Sep  4 00:12 starchcat.rst
 -rw-r--r-- 1 alexpreynolds staff  37 Sep  4 00:12 unstarch.rst
 bash-3.2$ cp content/reference/file-management/compression/starch.rst content/reference/file-management/compression/starch-specification.rst 
-bash-3.2$ 
+bash-3.2$ git add .
+bash-3.2$ git commit -m 'added starch specification doc stub'
+[master f3cdadb] added starch specification doc stub
+ Committer: Alex Reynolds <alexpreynolds@Papillion.local>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 50 files changed, 21495 insertions(+), 66 deletions(-)
+ rewrite docs/_build/doctrees/content/faq.doctree (96%)
+ rewrite docs/_build/doctrees/content/reference/set-operations/bedextract.doctree (78%)
+ rewrite docs/_build/doctrees/content/reference/set-operations/bedops.doctree (86%)
+ rewrite docs/_build/doctrees/content/reference/statistics/bedmap.doctree (62%)
+ create mode 100644 docs/_build/doctrees/content/summary.doctree
+ rewrite docs/_build/doctrees/environment.pickle (81%)
+ create mode 100644 docs/_build/html/_downloads/reference_bedmap_motifs.bed
+ create mode 100644 docs/_build/html/_downloads/reference_bedmap_reference.bed
+ rewrite docs/_build/html/_images/other.png (99%)
+ create mode 100644 docs/_build/html/_images/reference_bedmap_mapref_all.png
+ create mode 100644 docs/_build/html/_images/reference_bedmap_mapref_ref1.png
+ create mode 100644 docs/_build/html/_images/reference_bedmap_mapref_ref2.png
+ create mode 100644 docs/_build/html/_images/reference_bedmap_mapref_ref3.png
+ create mode 100644 docs/_build/html/_images/reference_bedmap_mapref_ref3_padded.png
+ rewrite docs/_build/html/_images/support.png (99%)
+ create mode 100644 docs/_build/html/_sources/content/summary.txt
+ create mode 100644 docs/_build/html/content/summary.html
+ rewrite docs/_build/html/objects.inv (87%)
+ rewrite docs/_build/html/searchindex.js (100%)
+ create mode 100644 docs/assets/reference/statistics/#*shell*#
+ create mode 100644 docs/content/reference/file-management/compression/starch-specification.rst
+ create mode 100644 docs/content/reference/file-management/compression/starch-specification.rst~
+bash-3.2$ git push
+Counting objects: 105, done.
