@@ -524,11 +524,57 @@ Any operation will now be applied to a broader set of mapped elements, as visual
 .. image:: ../../../assets/reference/statistics/reference_bedmap_mapref_ref3_padded.png
    :width: 99%
 
-.. _bedmap_faster_with_range:
+We can compare mean densities, in order to see the effect of using ``--range``. Here is the mean density across the original, unpadded ``ref-3``:
+
+::
+
+  $ bedmap --echo --mean reference.bed map.bed
+  ...
+  chr21   33031900    33032000    ref-3|154.500000
+
+And here is the mean density across the padded ``ref-3``:
+
+::
+
+  $ bedmap --echo --range 100 --mean reference.bed map.bed
+  ...
+  chr21   33031900    33032000    ref-3|117.750000
+
+Looking at the visualizations above, we would expect the mean density to be lower, as the expanded reference region includes map elements with lower tag density, which pushes down the overall mean.
+
+.. note:: The ``--range`` option is classified as an overlap option (like ``--fraction-map`` or ``--exact``) that implicitly uses ``--bp-ovr 1`` after padding reference elements. As shown above, the extended padding is an internal operation and it is not reflected in the output with the ``--echo`` option. Real padding can be added by using ``bedops --range 100 --everything reference.bed`` and piping results to :ref:`bedmap`.
+
+.. _bedmap_using_faster_with_range:
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Using ``--faster`` with ``--range``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``--faster`` modifier works with the ``--bp-ovr`` overlap and ``--range`` specifiers to dramatically increase the performance of :ref:`bedmap`, where the following input restriction is met:
+
+* No fully-nested elements in any input mapping file (duplicate elements and other overlapping elements are okay).
+
+.. note:: The details of this nested-element restriction are explained in more detail in the :ref:`bedextract <bedextract_nested_elements>` documentation.
+
+This option also works with the ``--ec`` error checking flag, which indicates if the data contain nested elements. Using ``--ec`` carries its usual overhead, but as it only doubles the much-improved execution time, it may be worth using.
+
+.. tip:: To give an idea of the speed improvement, a ``--range 100000 --echo --count`` operation on 8.4 million, non-nested mapping elements (DNaseI footprints across multiple cell types) took *2 minutes and 55 seconds* without speed-up. By adding the ``--faster`` flag, the same calculation took *10 seconds*. That is an 18-fold speed improvement.
+ 
+   One scenario where this option can provide great speed gains is where ``--range`` is used with a large numerical parameter. Another scenario where this option is very useful is where the reference file has large elements, and the mapping file is made up of many small elements |---| specifically, where a number of small elements overlap each big element from the reference file. 
+
+   An example of a research application for our lab which benefits from this flag is where we perform statistical analysis of large numbers of small sequence tags that fall in hotspot regions.
+
+   If your data meet the :ref:`non-nesting criteria <bedextract_nested_elements>`, using ``--faster`` with ``--bp-ovr`` or ``--range`` is highly recommended.
+
+.. note:: Our lab works with BED data of various types: cut-counts, hotspots, peaks, footprints, etc. These data generally do not contain nested elements and so are amenable to use with :ref:`bedmap's <bedmap>` ``--faster`` flag for extracting overlapping elements.
+
+   However, other types of data can be problematic. `FIMO <http://meme.nbcr.net/meme/fimo-intro.html>`_ search results, for example, may cause trouble, where the boundaries of one motif hit can be contained within another larger hit. Or paired-end sequence data, where tags are not of a fixed length.
+
+   Be sure to consider the makeup of your BED data before using ``--faster``. 
+
+.. tip:: Using ``--ec`` with ``--faster`` will report if any nested elements exist in your data.
+
+This option also works with the --ec error checking flag, which indicates if the data contain nested elements. Using --ec carries its usual overhead, but as it only doubles the much-improved execution time, it may be worth using.
 
 .. _bedmap_formatting_score_output:
 
@@ -536,33 +582,164 @@ Using ``--faster`` with ``--range``
 Formatting score output
 ^^^^^^^^^^^^^^^^^^^^^^^
 
+The ``--prec`` and ``--sci`` process flags are useful for controlling the `arithmetic precision <http://en.wikipedia.org/wiki/Precision_(arithmetic)>`_ and `notation <http://en.wikipedia.org/wiki/Scientific_notation>`_ of score output, when used with the ``--echo-map-score``, ``--sum``, ``--mean`` and other numerical score operators. This will also format results from the non-score operator ``--bases-uniq-f``.
+
+To demonstrate their use, we revisit the ``Motifs`` dataset, which includes *p*-values reporting the statistical significance of putative transcription factor binding sites:
+
+::
+
+  chr1    4534161 4534177 -V_GRE_C        4.20586e-06     -       CGTACACACAGTTCTT
+  chr1    4534192 4534205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
+  chr1    4534209 4534223 +V_HNF4_Q6_01   6.93604e-06     +       GGACCAGAGTCCAC
+  chr1    4962522 4962540 -V_GCNF_01      9.4497e-06      -       CCCAAGGTCAAGATAAAG
+  chr1    4962529 4962539 +V_NUR77_Q5     8.43564e-06     +       TTGACCTTGG
+  ...
+
+Let's say we want a list of motifs and associated *p*-values mapped to a coordinate range of interest (``chr1:4534150-4534300``). In order to conserve space, however, we only want two significant figures for the score data. So we use ``--prec 2`` to try to reformat the score output:
+
+::
+
+  $ echo -e "chr1\t4534150\t4534300\tref-1" \
+      | bedmap --prec 2 --echo --echo-map-id --echo-map-score - motifs.bed \
+      > motifsForRef1.bed
+
+Here is the output:
+
+::
+
+  chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01|0.00;0.00;0.00
+
+It looks like our *p*-values were rounded down to zeroes, which is not what we want. But we remember that the binding site *p*-values are listed in scientific notation, and so we add the ``--sci`` flag to preserve the format of the score data in scientific notation:
+
+::
+
+  $ echo -e "chr1\t4534150\t4534300\tref-1" \
+      | bedmap --prec 2 --sci --echo --echo-map-id --echo-map-score - motifs.bed \
+      > correctedMotifsForRef1.bed
+
+Here is the corrected output:
+
+::
+
+  chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01|4.21e-06;2.22e-06;6.94e-06
+
+Rounding of the mantissa is done to the precision specified in ``--prec``.
+
+Obviously, the ``--sci`` flag is useful for very small or large score data. You probably wouldn't use ``--sci`` with most integer signal (*e.g.*, raw tag counts or most discrete measurements).
+
 .. _bedmap_delimiters:
 
 ^^^^^^^^^^
 Delimiters
 ^^^^^^^^^^
 
+As shown in the examples above, the pipe (``|``) and semi-colon (``;``) characters are used to split operational and ``echo``-ed results, respectively. The ``--delim`` and ``--multidelim`` flags change these delimiters to characters of your choice, which let you pick what makes most sense for your custom post-processing or other downstream pipelining work (for instance, in our lab ``--delim "\t"`` is a popular alternative to the default ``|`` character).
+
+As an example, the following :ref:`bedmap` result is obtained from using the ``--echo``, ``--echo-map-id``, ``--echo-map-score`` and ``--max`` options on the ``Motifs`` dataset:
+
+::
+
+  chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01|4.21e-06;2.22e-06;6.94e-06|6.94e-06
+
+For this result, the :ref:`bedmap` program organizes data using the default set of delimiters:
+
+::
+
+  [reference-line] | [map-IDs] | [map-scores] | [maximum-map-score]
+
+Here, you can use the ``--delim`` option to replace the pipe character with an alternative delimiter.
+
+Within the ``map-IDs`` and ``map-scores`` subgroups, individual results are split further by semi-colon:
+
+::
+
+  [id-1] ; [id-2] ; ... ; [id-N]
+
+::
+
+  [score-1] ; [score-2] ; ... ; [score-N]
+
+You can use the ``--multidelim`` option to replace the semi-colon with another delimiter, *e.g.*:
+
+::
+
+  $ echo -e "chr1\t4534150\t4534300\tref-1" | bedmap --multidelim '$' --echo --echo-map-id - motifs.bed
+  chr1    4534150 4534300 ref-1|-V_GRE_C$-V_STAT_Q6$+V_HNF4_Q6_01
+
+.. note:: Grouped results derived with the ``--echo-map``, ``--echo-map-id``, and ``--echo-map-score`` options are listed in identical order. In other words, ID results line up at the same position as their score result counterparts when both ``--echo-map-id`` and ``--echo-map-score`` are chosen together. The same applies to the ``--echo-map`` option.
+
+.. _bedmap_per_chromosome_operations:
+
 ===================================
 Per-chromosome operations (--chrom)
 ===================================
+
+All operations on inputs described so far can be restricted to one chromosome, by adding the ``--chrom <val>`` operator. This is highly useful for cluster-based work, where operations on large BED inputs can be split up by chromosome and pushed to separate cluster nodes.
+
+Here, we use the ``--echo`` and ``--echo-map-id`` operators on our ``Motifs`` dataset, but we limit operations to those on elements on chromosome ``chr2``:
+
+::
+
+  $ echo -e "chr2\t1000000\t5000000\tref-1" | bedmap --chrom chr2 --echo --echo-map-id - motifs.bed
+  chr2    1000000 5000000 ref-1|+V_OCT1_05;+V_OCT_C;-V_CACD_01;+V_IRF_Q6;-V_BLIMP1_Q6;-V_IRF2_01;-V_IRF_Q6_01
+
+If the reference elements are not on the specified chromosome provided to ``--chrom``, then no output is generated. In the following example, our reference element is on ``chr2``, but we ask for operations to be limited to ``chr3``, yielding an empty set:
+
+::
+
+  $ echo -e "chr2\t1000000\t5000000\tref-1" | bedmap --chrom chr3 --echo --echo-map-id - motifs.bed 
+  $ 
+
+.. _bedmap_starch_support:
 
 ==============
 Starch support
 ==============
 
+The :ref:`bedmap` application supports use of :ref:`Starch-formatted archives <starch>` as inputs, as well as text-based BED data. One or multiple inputs may be Starch archives.
+
+For example, we can repeat the overlapping-motif example from the :ref:`Echo section <bedmap_echo>`, using a Starch archive made from the regions in ``Motifs``:
+
+::
+
+  $ echo -e "chr1\t4534150\t4534300\tref-1" | bedmap --echo --echo-map-id - motifs.bed.starch
+  chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01
+
+By combining the ``--chrom`` operator with operations on Starch archives, the end user can achieve improved computing performance and disk space savings, particularly where :ref:`bedops`, :ref:`bedmap` and :ref:`closest-features` operations are applied with a computational cluster on separate chromosomes.
+
+.. _bedmap_error_checking:
+
 ==============
 Error checking
 ==============
 
+The bedmap program does not perform error checking by default, but it offers an --ec option for comprehensive checks.
+
+.. note:: Use of the ``--ec`` option will roughly double the running time, but it provides stringent error checking to ensure all inputs are valid. ``--ec`` can help check problematic input and offers helpful hints for any needed corrections, when problems are detected.
+
+.. _bedmap_endlines:
+
 ========
 Endlines
 ========
+
+The :ref:`bedmap` program expects endlines (``\n``) appropriate to your operating system. In UNIX-like environments, you can quickly check to see if your file contains the native endlines with this command:
+
+::
+
+  $ head myData.bed | cat -et 
+
+The appropriate endlines will show up as a ``$`` character at the end of each line. See the ``dos2unix`` program (sometimes called ``fromdos``) to convert newlines from files saved on Microsoft Windows. The ``unix2dos`` (or ``todos``) program can convert files in the other direction, if needed.
 
 .. _bedmap_downloads:
 
 =========
 Downloads
 =========
+
+* Sample ``Reference`` dataset: :download:`reference elements <../../../assets/reference/statistics/reference_bedmap_reference.bed>`
+* Sample ``Map`` dataset: :download:`reference elements <../../../assets/reference/statistics/reference_bedmap_map.bed>`
+* Sample ``Motifs`` dataset: :download:`reference elements <../../../assets/reference/statistics/reference_bedmap_motifs.bed>`
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
