@@ -11079,3 +11079,38 @@ After doing this, you may fix the identity used for this commit with:
  delete mode 100644 docs/assets/reference/statistics/#*shell*#
 bash-3.2$ git push
 Counting objects: 25, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (14/14), done.
+Writing objects: 100% (15/15), 27.86 KiB | 0 bytes/s, done.
+Total 15 (delta 5), reused 0 (delta 0)
+To https://github.com/alexpreynolds/bedops.git
+   4c5e0cb..9d00d35  master -> master
+bash-3.2$ git add .
+bash-3.2$ git commit -m 'added starch specification data'
+[master a086551] added starch specification data
+ Committer: Alex Reynolds <alexpreynolds@papillion.regulomecorp.com>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 3 files changed, 11083 insertions(+)
+ create mode 100644 docs/assets/reference/file-management/compression/starch_specification_chromosomestreams.png
+ create mode 100644 docs/assets/reference/statistics/#*shell*#
+bash-3.2$ git rm -f assets/reference/statistics/#\*shell\*\# 
+rm 'docs/assets/reference/statistics/#*shell*#'
+bash-3.2$ git push
+Counting objects: 25, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (14/14), done.
+Writing objects: 100% (15/15), 175.58 KiB | 0 bytes/s, done.
+Total 15 (delta 7), reused 0 (delta 0)
+To https://github.com/alexpreynolds/bedops.git
+   9d00d35..a086551  master -> master
+bash-3.2$ 
