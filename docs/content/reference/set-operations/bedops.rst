@@ -109,6 +109,8 @@ To demonstrate the various operations in :ref:`bedops`, we start with two simple
 
 These datasets can be :ref:`sorted <sort-bed>` BED or :ref:`Starch-formatted <starch>` files or streams.
 
+.. _bedops_everything:
+
 -----------------------------
 Everything (-u, --everything)
 -----------------------------
@@ -236,6 +238,8 @@ Per-chromosome operations (--chrom)
 All operations on inputs can be restricted to one chromosome, by adding the ``--chrom <val>`` operator. 
 
 .. note:: This operator is highly useful for cluster-based work, where operations on large BED inputs can be split up by chromosome and pushed to separate cluster nodes. (See the :ref:`starchcluster` documentation for a demonstration of this technique in action.)
+
+.. _bedops_range:
 
 ---------------
 Range (--range)
