@@ -183,9 +183,9 @@ Our sample ``Reference`` file is not as exciting. It is just three BED elements 
 
 ::
 
-chr21   33031200    33032400    ref-1
-chr21   33031400    33031800    ref-2
-chr21   33031900    33032000    ref-3
+  chr21   33031200    33032400    ref-1
+  chr21   33031400    33031800    ref-2
+  chr21   33031900    33032000    ref-3
 
 These reference elements could be exons, promoter regions, etc. It doesn't matter for purposes of demonstration here, except to say that we can use :ref:`bedmap` to ask some questions about the ``Reference`` set. 
 
@@ -206,7 +206,7 @@ Likewise, here are elements of the ``Map`` set which overlap the ``ref-2`` and `
 .. image:: ../../../assets/reference/statistics/reference_bedmap_mapref_ref3.png
    :width: 75%
 
-In these sample files, we provide the `Map` file with ID and score columns, and the `Reference` file with an ID column. These extra columns are not required by :ref:`bedmap`, but we can use the information in these columns in conjunction with the options provided by :ref:`bedmap` to identify matches, retrieve matched signals, and summarize data about signal across mapped elements.
+In these sample files, we provide the ``Map`` file with ID and score columns, and the ``Reference`` file with an ID column. These extra columns are not required by :ref:`bedmap`, but we can use the information in these columns in conjunction with the options provided by :ref:`bedmap` to identify matches, retrieve matched signals, and summarize data about signal across mapped elements.
 
 .. _bedmap_overlap_criteria:
 
