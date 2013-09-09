@@ -30,6 +30,8 @@ If the file does not have these bytes, it may still be a legacy (v1, v1.2 or v1.
 Chromosome streams
 ==================
 
+.. image:: ../../../../assets/reference/file-management/compression/starch_specification_chromosomestreams.png
+
 These variable-length data streams contain compressed, transformed BED data separated by chromosome.
 
 Transformation is performed on BED input to remove redundancy in the coordinate data provided in the second and third columns ("start" and "stop" coordinates). Data in any additional columns are left unchanged. Transformed data are highly reduced and compressed further with open-source ``bzip2`` or ``gzip`` libraries.
