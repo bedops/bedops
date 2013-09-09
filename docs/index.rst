@@ -12,6 +12,10 @@ BEDOPS is an open-source command-line toolkit that performs highly efficient and
 | |performance|         | |support|             | |other|                |
 +-----------------------+-----------------------+------------------------+
 
+------------
+
+.. image:: assets/index/toc.png
+
 .. toctree::
    :numbered:
 
