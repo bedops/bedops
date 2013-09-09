@@ -24,6 +24,7 @@ Direct merge (sorted)
 The performance of the ``mergeBed`` program (with the ``-i`` option) from the BEDTools suite (v2.12.0) was compared with that of the ``--merge`` option of our :ref:`bedops` utility.
 
 .. image:: ../assets/performance/performance_bedops_merge_sorted.png
+   :width: 99%
 
 As measured, the ``mergeBed`` program loads all data from a file into memory and creates an index before computing results, incurring longer run times and higher memory costs that can lead to failures. The :ref:`bedops` utility minimizes memory consumption by retaining only the information required to compute the next line of output.
 
@@ -34,8 +35,10 @@ Complement and intersection
 The ``complementBed`` (with ``-i`` and ``-g`` options) and ``intersectBed`` (with ``-u``, ``-a``, and ``-b`` options) programs from the BEDTools suite (v2.12.0) also were compared to our :ref:`bedops` program. 
 
 .. image:: ../assets/performance/performance_bedops_complement_sorted.png
+   :width: 99%
 
 .. image:: ../assets/performance/performance_bedops_intersect_sorted.png
+   :width: 99%
 
 Both BEDTools programs were unable to complete operations after 51M elements with the allocated 18 GB of memory. The :ref:`bedops` program continued operating on the full dataset.
 
@@ -50,6 +53,7 @@ Direct merge (unsorted)
 In typical pipelines, where utilities are chained together to perform more complex operations, the performance and scalability gaps between BEDOPS and competitive tool suites widen. We show here the use of :ref:`sort-bed` on unsorted BED input, piping it to BEDOPS tools:
 
 .. image:: ../assets/performance/performance_bedops_merge_unsorted.png
+   :width: 99%
 
 Time performance of :ref:`bedops` stays under that of ``mergeBed`` (BEDTools v2.12), while continuing past the point where ``mergeBed`` fails. Memory limitations of the system are easily overcome by using the ``--max-mem`` operator with :ref:`sort-bed`, allowing the ``--merge`` operation to continue unimpeded even with ever-larger unsorted BED inputs.
 
@@ -76,6 +80,7 @@ Compression efficiency
 After just 10K rows (roughly 300 kB of raw BED data storing phyloP conservation scores), compression into the Starch format begins to consistently outperform ``bzip2`` compression of the same data stored in either variable-step WIG or UCSC BedGraph formats. 
 
 .. image:: ../assets/performance/performance_starch_efficiency.png
+   :width: 99%
 
 For very large raw BED datasets, the Starch format stores the original data in approximately 5% of the original input size. These improved compression results generalize to compressed versions of the fixed-step WIG format, as well. For more information, refer to the Supplemental Data in our `Bioinformatics <http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract>`_ paper.
 
@@ -86,6 +91,7 @@ Extraction time
 Data were sorted per sort-bed with chromosomes in lexicographical order. Extractions by chromosomes were significantly faster in general with the Starch format, even over raw (sequentially-processed) BED inputs:
 
 .. image:: ../assets/performance/performance_unstarch_extractiontime.png
+   :width: 99%
 
 Under the assumption that chromosomes create very natural partitions of the data, the Starch format was designed using a chromosome-indexing scheme. This mechanism for random access further helps to improve data processing times within a clustered environment. Again, for more information, refer to the Supplemental Data in our `Bioinformatics <http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract>`_ paper.
 
@@ -112,6 +118,7 @@ In it, they compare the performance characteristics of their GROK toolkit with t
 Operational input was a 14 MB BED file containing annotations of human gene and exon coordinates, totaling ~423k records. We summarize the results of operations on that input here:
 
 .. image:: ../assets/performance/performance_independent_grok.png
+   :width: 99%
 
 Remember that with BEDOPS, sorting is, at most, a *one-time cost* to operate on data any number of times in the most efficient way. Since the programs in BEDOPS produce sorted outputs, you never need to sort results before using them in downstream analyses.
 

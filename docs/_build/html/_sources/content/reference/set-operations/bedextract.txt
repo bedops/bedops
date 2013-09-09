@@ -24,7 +24,7 @@ Specifically, sorting with :ref:`sort-bed` allows us to perform a `binary search
 3. We repeat steps 1 and 2 until we have matches that define the bounds of the target chromosome.
 
 .. image:: ../../../assets/reference/set-operations/reference_bedextract_mechanism.png
-   :width: 75%
+   :width: 99%
 
 To indicate the kind of speed gain that the :ref:`bedextract` tool provides, in local testing, a naïve listing of chromosomes from a 36 GB BED input using UNIX ``cut`` and ``uniq`` utilities took approximately 20 minutes to complete on a typical Core 2 Duo-based Linux workstation. Retrieval of the same chromosome listing with ``bedextract --list-chr`` took only 2 seconds (cache flushed |---| no cheating!).
 
@@ -129,6 +129,8 @@ Three criteria make the use of :ref:`bedextract` in this mode very successful in
 2. There are relatively few regions of interest in ``Target`` (say, roughly 30,000 or fewer).
 3. There are **no fully-nested elements** in ``Query`` (but duplicate coordinates are fine).
 
+.. _bedextract_nested_elements:
+
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 What are nested elements?
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -145,7 +147,7 @@ An example of a sorted BED file which contains a nested element follows:
 While this dataset is sorted, the element ``chr1:125-150`` is entirely nested within ``chr1:100-200``:
 
 .. image:: ../../../assets/reference/set-operations/reference_bedextract_nested_elements.png
-   :width: 50%
+   :width: 99%
 
 .. note::  Fully-nested elements are not a problem for the other two :ref:`bedextract` features: 1) Listing all chromosomes, and 2) Retrieving all information for a single chromosome.
 

@@ -105,8 +105,11 @@ Operations
 To demonstrate the various operations in :ref:`bedops`, we start with two simple datasets ``A`` and ``B``, containing genomic elements on generic chromsome ``chrN``:
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_inputs.png
+   :width: 99%
 
 These datasets can be :ref:`sorted <sort-bed>` BED or :ref:`Starch-formatted <starch>` files or streams.
+
+.. _bedops_everything:
 
 -----------------------------
 Everything (-u, --everything)
@@ -115,6 +118,7 @@ Everything (-u, --everything)
 The ``--everything`` option is equivalent to concatenating and sorting BED elements from multiple files, but works much faster:
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_everything.png
+   :width: 99%
 
 As with all BEDOPS tools and operations, the output of this operation is :ref:`sorted <sort-bed>`.
 
@@ -129,6 +133,7 @@ The ``--element-of`` operation shows the elements of the first ("*reference*") f
 In the following example, we search for elements in the reference set ``A`` which overlap elements in ``B`` by at least one base:
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_elementof_ab.png
+   :width: 99%
 
 Elements that are returned are always from the reference set (in this case, set ``A``).
 
@@ -137,6 +142,7 @@ Elements that are returned are always from the reference set (in this case, set 
 Note that `--element-of` is *not* a symmetric operation, as demonstrated by making ``B`` the reference set:
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_elementof_ba.png
+   :width: 99%
 
 .. note:: The argument to ``--element-of`` is a value that species to degree of overlap for elements. The value is either integral for per-base overlap,  or fractional for overlap measured by length.
 
@@ -151,6 +157,7 @@ Not-element-of (-n, --not-element-of)
 The ``--not-element-of`` operation shows elements in the reference file which do not overlap elements in all other sets. For example:
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_notelementof_ab.png
+   :width: 99%
 
 As with the ``--element-of`` (``-e``) operator, the overlap criterion for ``--not-element-of`` (``-n``) can be specified by length (in bases) or by percentage of length. Similarly, this operation is not symmetric |---| the order of inputs will specify the reference set.
 
@@ -165,6 +172,7 @@ Complement (-c, --complement)
 The ``--complement`` operation calculates the genomic regions in the gaps between the contiguous per-chromosome ranges defined by one or more inputs. The following example shows the use of two inputs:
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_complement_ab.png
+   :width: 99%
 
 .. note:: Note this **computed result** will lack ID, score and other columnar data other than the first three columns that contain positional data. That is, computed elements will not come from any of the input sets, but are new elements created from the input set space.
 
@@ -177,6 +185,7 @@ Difference (-d, --difference)
 The ``--difference`` operation calculates the genomic regions found within the first (reference) input file, excluding regions in all other input files:
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_difference_ab.png
+   :width: 99%
 
 .. note:: As with ``--element-of`` and ``--not-element-of``, this operation is not symmetric. While ``--not-element-of`` preserves all columns of elements found in the reference input and allows one to define overlaps, the ``--difference`` operator simply reports every genomic range as three-column BED, which does not overlap elements found in the second and subsequent input files by any amount.
 
@@ -187,6 +196,7 @@ Symmetric difference (-s, --symmdiff)
 The ``--symmdiff`` operation calculates the genomic range that is exclusive to each input, excluding any ranges shared across inputs:
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_symmetricdifference_ab.png
+   :width: 99%
 
 .. tip:: It has been observed that ``--symmdiff`` (``-s``) is the same as ``--difference A B`` unionized with ``--difference B A``, but ``--symmdiff`` runs faster in practice.
 
@@ -197,6 +207,7 @@ Intersect (-i, --intersect)
 The ``--intersect`` operation determines genomic regions common to all input sets:
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_intersect_ab.png
+   :width: 99%
 
 -------------------
 Merge (-m, --merge)
@@ -205,6 +216,7 @@ Merge (-m, --merge)
 The ``--merge`` operation flattens all overlapping and adjoining elements into contiguous regions:
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_merge_ab.png
+   :width: 99%
 
 .. tip:: The preceding example shows use of ``--merge`` (``-m``) with two inputs, but the merge operation works just as well with one input, collapsing regions which overlap or which are directly adjoining.
 
@@ -215,6 +227,7 @@ Partition (-p, --partition)
 The ``--partition`` operator splits all overlapping input regions into a set of disjoint segments. One or more input files may be provided; this option will segment regions from all inputs:
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_partition_ab.png
+   :width: 99%
 
 .. note:: As with ``--merge``, ``--complement`` and other "computing" operations, note the lack of ID, score and other columnar data in this computed result.
 
@@ -225,6 +238,8 @@ Per-chromosome operations (--chrom)
 All operations on inputs can be restricted to one chromosome, by adding the ``--chrom <val>`` operator. 
 
 .. note:: This operator is highly useful for cluster-based work, where operations on large BED inputs can be split up by chromosome and pushed to separate cluster nodes. (See the :ref:`starchcluster` documentation for a demonstration of this technique in action.)
+
+.. _bedops_range:
 
 ---------------
 Range (--range)
