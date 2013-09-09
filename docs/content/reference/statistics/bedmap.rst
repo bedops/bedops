@@ -738,8 +738,8 @@ Downloads
 =========
 
 * Sample ``Reference`` dataset: :download:`reference elements <../../../assets/reference/statistics/reference_bedmap_reference.bed>`
-* Sample ``Map`` dataset: :download:`reference elements <../../../assets/reference/statistics/reference_bedmap_map.bed>`
-* Sample ``Motifs`` dataset: :download:`reference elements <../../../assets/reference/statistics/reference_bedmap_motifs.bed>`
+* Sample ``Map`` dataset: :download:`map elements <../../../assets/reference/statistics/reference_bedmap_map.bed>`
+* Sample ``Motifs`` dataset: :download:`motif elements <../../../assets/reference/statistics/reference_bedmap_motifs.bed>`
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
