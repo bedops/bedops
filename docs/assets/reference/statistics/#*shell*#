@@ -10954,4 +10954,46 @@ Writing objects: 100% (12/12), 1.06 KiB | 0 bytes/s, done.
 Total 12 (delta 10), reused 0 (delta 0)
 To https://github.com/alexpreynolds/bedops.git
    109e462..60db7ae  master -> master
-bash-3.2$ 
+bash-3.2$ git add .
+bash-3.2$ git commit -m 'added sort-bed data'
+[master a587744] added sort-bed data
+ Committer: Alex Reynolds <alexpreynolds@Papillion.local>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 4 files changed, 847 insertions(+)
+ create mode 100644 docs/content/reference/statistics/#bedmap.rst#
+ create mode 120000 docs/content/reference/statistics/.#bedmap.rst
+bash-3.2$ git rm content/reference/statistics/#bedmap.rst\# 
+rm 'docs/content/reference/statistics/#bedmap.rst#'
+bash-3.2$ git rm content/reference/statistics/.\#bedmap.rst\# 
+fatal: pathspec 'docs/content/reference/statistics/.#bedmap.rst#' did not match any files
+bash-3.2$ git rm content/reference/statistics/.\#bedmap.rst
+rm 'docs/content/reference/statistics/.#bedmap.rst'
+bash-3.2$ git commit -m 'added sort-bed data'
+[master 0fd4754] added sort-bed data
+ Committer: Alex Reynolds <alexpreynolds@Papillion.local>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 2 files changed, 747 deletions(-)
+ delete mode 100644 docs/content/reference/statistics/#bedmap.rst#
+ delete mode 120000 docs/content/reference/statistics/.#bedmap.rst
+bash-3.2$ git push
+Counting objects: 30, done.
