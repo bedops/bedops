@@ -58,6 +58,34 @@ The format of a typical Starch v2 JSON object is made up of two key-value pairs,
 Archive
 ^^^^^^^
 
+The archive key scheme is described below:
+
+::
+
+  {
+    "archive": {
+      "type": "starch",
+      "customUCSCHeaders": (Boolean),
+      "creationTimestamp": (string),
+      "version": { "major": 2, "minor": 0, "revision": 0 },
+      "compressionFormat": (unsigned integer),
+      "note": (string, optional)
+    },
+    ...
+  }
+
+At this time, the ``type`` key will specify ``starch``.
+
+The ``customUCSCHeaders`` value is either ``true`` or ``false``. If ``true``, the ``--header`` option was provided to :ref:`starch` when the archive was created, and the archive may likely contain `UCSC headers <http://genome.ucsc.edu/FAQ/FAQformat.html#format1.7>`_ commonly encountered with UCSC Genome Browser data downloads. Archives created with :ref:`starchcat` do not support UCSC headers (*i.e.*, this value is false in archives created with :ref:`starchcat`).
+
+The ``creationTimestamp`` value is an `ISO 8601 <http://en.wikipedia.org/wiki/ISO-8601>`_ string that specifies the creation date and time of the archive. Most scripting and programming languages can parse ISO 8601-formatted date strings with little or no extra work.
+
+The version is a triplet of integer values specifying the version of the archive. For a v2 archive, the major version will be set to ``2``. Major, minor and revision values need not necessarily be the identical to the version of the :ref:`starch` binary used to create the archive.
+
+The ``compressionFormat`` key specifies the backend compression format used for the chromosome streams contained within the archive. We currently use ``0`` to specify ``bzip2`` and ``1`` to specify ``gzip``. No other backend formats are available at this time.
+
+The ``note`` key is an optional string that can contain information if the ``--note="abc..."`` option is provided to :ref:`starch` when the archive is created. If this option is not specified at creation time, this key will not be present in the metadata.
+
 ^^^^^^^
 Streams
 ^^^^^^^
