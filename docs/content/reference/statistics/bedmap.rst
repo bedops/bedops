@@ -16,7 +16,7 @@ Input
 The :ref:`bedmap` program takes in *reference* and *mapping* files and calculates statistics for each reference element. These calculations |---| *operations* |---| are applied to overlapping elements from the mapped file:
 
 .. image:: ../../../assets/reference/statistics/reference_bedmap_inputs.png
-   :width: 75%
+   :width: 99%
 
 The :ref:`bedmap` program requires files in a relaxed variation of the BED format as described by `UCSC's browser documentation <http://genome.ucsc.edu/FAQ/FAQformat.html#format1>`_. The chromosome field can be any non-empty string, the score field can be any valid numeric value, and information is unconstrained beyond the minimum number of columns required by the chosen options.
 
@@ -175,7 +175,7 @@ This raw signal is the density of sequence tags which map within a 150 bp slidin
 When visualized, the signal data has the following appearance:
 
 .. image:: ../../../assets/reference/statistics/reference_bedmap_mapref_all.png
-   :width: 75%
+   :width: 99%
 
 .. note:: Rectangles colored in grey represent each of the sixty-six ``map`` elements. The x-axis represents the start coordinate of the ``map`` element, while the y-axis denotes the tag density, or sum of tags over that element's 20-base window.
 
@@ -196,15 +196,15 @@ It may help to first visualize the reference regions and the mapped elements ass
 Here we show elements from the ``Map`` set which overlap the ``ref-1`` region:
 
 .. image:: ../../../assets/reference/statistics/reference_bedmap_mapref_ref1.png
-   :width: 75%
+   :width: 99%
 
 Likewise, here are elements of the ``Map`` set which overlap the ``ref-2`` and ``ref-3`` regions, respectively:
 
 .. image:: ../../../assets/reference/statistics/reference_bedmap_mapref_ref2.png
-   :width: 75%
+   :width: 99%
 
 .. image:: ../../../assets/reference/statistics/reference_bedmap_mapref_ref3.png
-   :width: 75%
+   :width: 99%
 
 In these sample files, we provide the ``Map`` file with ID and score columns, and the ``Reference`` file with an ID column. These extra columns are not required by :ref:`bedmap`, but we can use the information in these columns in conjunction with the options provided by :ref:`bedmap` to identify matches, retrieve matched signals, and summarize data about signal across mapped elements.
 
