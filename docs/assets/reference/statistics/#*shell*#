@@ -10897,3 +10897,27 @@ After doing this, you may fix the identity used for this commit with:
  create mode 100644 docs/content/reference/file-management/compression/starch-specification.rst~
 bash-3.2$ git push
 Counting objects: 105, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (57/57), done.
+Writing objects: 100% (60/60), 561.54 KiB | 0 bytes/s, done.
+Total 60 (delta 26), reused 0 (delta 0)
+To https://github.com/alexpreynolds/bedops.git
+   5df8ff8..f3cdadb  master -> master
+bash-3.2$ git add .
+bash-3.2$ git commit -m 'added starch specification doc stub'
+[master 109e462] added starch specification doc stub
+ Committer: Alex Reynolds <alexpreynolds@Papillion.local>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 2 files changed, 41 insertions(+), 2 deletions(-)
+bash-3.2$ git push
+Counting objects: 15, done.
