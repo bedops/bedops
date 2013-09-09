@@ -174,7 +174,39 @@ This raw signal is the density of sequence tags which map within a 150 bp slidin
 
 When visualized, the signal data has the following appearance:
 
+.. image:: ../../../assets/reference/statistics/reference_bedmap_mapref_all.png
+   :width: 75%
 
+.. note:: Rectangles colored in grey represent each of the sixty-six ``map`` elements. The x-axis represents the start coordinate of the ``map`` element, while the y-axis denotes the tag density, or sum of tags over that element's 20-base window.
+
+Our sample ``Reference`` file is not as exciting. It is just three BED elements which span portions of this density file:
+
+::
+
+chr21   33031200    33032400    ref-1
+chr21   33031400    33031800    ref-2
+chr21   33031900    33032000    ref-3
+
+These reference elements could be exons, promoter regions, etc. It doesn't matter for purposes of demonstration here, except to say that we can use :ref:`bedmap` to ask some questions about the ``Reference`` set. 
+
+Among them, what are the quantitative and qualitative features of the ``map`` elements that span over these three reference regions? For example, we might want to know the mean DNase hypersensitivity across each |---| the answer may have some biological significance.
+
+It may help to first visualize the reference regions and the mapped elements associated with them. A default :ref:`bedmap` task will operate on the following set of mapped (red-colored) elements, for each reference element ``ref-1``, ``-2`` and ``-3``.
+
+Here we show elements from the ``Map`` set which overlap the ``ref-1`` region:
+
+.. image:: ../../../assets/reference/statistics/reference_bedmap_mapref_ref1.png
+   :width: 75%
+
+Likewise, here are elements of the ``Map`` set which overlap the ``ref-2`` and ``ref-3`` regions, respectively:
+
+.. image:: ../../../assets/reference/statistics/reference_bedmap_mapref_ref2.png
+   :width: 75%
+
+.. image:: ../../../assets/reference/statistics/reference_bedmap_mapref_ref3.png
+   :width: 75%
+
+In these sample files, we provide the `Map` file with ID and score columns, and the `Reference` file with an ID column. These extra columns are not required by :ref:`bedmap`, but we can use the information in these columns in conjunction with the options provided by :ref:`bedmap` to identify matches, retrieve matched signals, and summarize data about signal across mapped elements.
 
 .. _bedmap_overlap_criteria:
 

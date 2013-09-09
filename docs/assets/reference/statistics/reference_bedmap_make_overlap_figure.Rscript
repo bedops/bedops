@@ -1,0 +1,107 @@
+#! /opt/local/bin/Rscript
+
+args <- commandArgs(TRUE)
+
+if (length(args) != 3) {
+   cat("Usage: reference_bedmap_make_overlap_figure.Rscript map.bed ref.bed figure.pdf\n")
+   q(status=-1)
+}
+mapFn <- args[1]
+refFn <- args[2]
+pdfFn <- args[3]
+#print(paste(mapFn, refFn, pdfFn, sep=" "))
+
+mapData <- read.table(mapFn, sep="\t", stringsAsFactors=TRUE)
+zeroes <- as.data.frame(rep(0, nrow(mapData)))
+#print(mapData)
+#print(zeroes)
+
+result <- system(paste("bedmap --echo --echo-map-id", mapFn, refFn, sep=" "), intern=TRUE, ignore.stderr=TRUE)
+splitResult <- strsplit(result, "|", fixed=TRUE)
+mappedRefs <- list(1:length(splitResult))
+mappedRefs <- unlist(lapply(splitResult, function(x) { if (length(x) > 1) { x[2:length(x)] } else { NA } }))
+mappedMatrix <- cbind(mapData$V2, mapData$V3, zeroes, mapData$V5, mappedRefs)
+mappedData <- as.data.frame(mappedMatrix, stringsAsFactors=FALSE)
+colnames(mappedData)[1] <- "x_start"
+colnames(mappedData)[2] <- "x_stop"
+colnames(mappedData)[3] <- "y_start"
+colnames(mappedData)[4] <- "y_stop"
+colnames(mappedData)[5] <- "categories"
+mappedData <- transform(mappedData, 
+                        x_start=as.numeric(x_start), 
+                        x_stop=as.numeric(x_stop),
+                        y_start=as.numeric(y_start),
+                        y_stop=as.numeric(y_stop))
+
+library(ggplot2)
+pdf(pdfFn, width=8, height=5)
+ggplot(mappedData) + 
+                   geom_rect(data=mappedData, 
+                             mapping=aes(xmin=x_start, xmax=x_stop, ymin=y_start, ymax=y_stop),
+                             size=0.5, 
+                             fill="grey50",
+                             color="white", 
+                             alpha=1) +
+                   labs(x="Start position", y="Tag density", title="DNaseI hypersensitivity (all elements)") +
+                   theme(axis.text.x=element_text(angle=90, vjust=0.5))
+                   
+dev.off()
+
+pdf(paste(pdfFn, ".ref1.pdf", sep=""), width=8, height=5)
+ggplot(mappedData) + 
+                   geom_rect(data=mappedData, 
+                             mapping=aes(xmin=x_start, xmax=x_stop, ymin=y_start, ymax=y_stop),
+                             size=0.5, 
+                             fill="grey50",
+                             color="white", 
+                             alpha=1) +
+                   geom_rect(data=subset(mappedData, grepl("ref-1", categories)), 
+                             mapping=aes(xmin=x_start, xmax=x_stop, ymin=y_start, ymax=y_stop),
+                             size=0.5, 
+                             fill="red",
+                             color="white", 
+                             alpha=1) +
+                   labs(x="Start position", y="Tag density", title="DNaseI hypersensitivity (ref-1 elements)") +
+                   theme(axis.text.x=element_text(angle=90, vjust=0.5))
+                   
+dev.off()
+
+pdf(paste(pdfFn, ".ref2.pdf", sep=""), width=8, height=5)
+ggplot(mappedData) + 
+                   geom_rect(data=mappedData, 
+                             mapping=aes(xmin=x_start, xmax=x_stop, ymin=y_start, ymax=y_stop),
+                             size=0.5, 
+                             fill="grey50",
+                             color="white", 
+                             alpha=1) +
+                   geom_rect(data=subset(mappedData, grepl("ref-2", categories)), 
+                             mapping=aes(xmin=x_start, xmax=x_stop, ymin=y_start, ymax=y_stop),
+                             size=0.5, 
+                             fill="red",
+                             color="white", 
+                             alpha=1) +
+                   labs(x="Start position", y="Tag density", title="DNaseI hypersensitivity (ref-2 elements)") +
+                   theme(axis.text.x=element_text(angle=90, vjust=0.5))
+                   
+dev.off()
+
+pdf(paste(pdfFn, ".ref3.pdf", sep=""), width=8, height=5)
+ggplot(mappedData) + 
+                   geom_rect(data=mappedData, 
+                             mapping=aes(xmin=x_start, xmax=x_stop, ymin=y_start, ymax=y_stop),
+                             size=0.5, 
+                             fill="grey50",
+                             color="white", 
+                             alpha=1) +
+                   geom_rect(data=subset(mappedData, grepl("ref-3", categories)), 
+                             mapping=aes(xmin=x_start, xmax=x_stop, ymin=y_start, ymax=y_stop),
+                             size=0.5, 
+                             fill="red",
+                             color="white", 
+                             alpha=1) +
+                   labs(x="Start position", y="Tag density", title="DNaseI hypersensitivity (ref-3 elements)") +
+                   theme(axis.text.x=element_text(angle=90, vjust=0.5))
+                   
+dev.off()
+
+q(status=0)
