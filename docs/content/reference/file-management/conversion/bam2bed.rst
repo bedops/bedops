@@ -7,7 +7,7 @@ The ``bam2bed`` script converts 0-based `Binary (Sequence) Alignment/Map <http:/
 
 For convenience, we also offer ``bam2starch``, which performs the extra step of creating a :ref:`Starch-formatted <starch_specification>` archive.
 
-Similar tools in the world tend to throw out information from the original BAM input upon conversion; ``bam2bed`` retains everything. 
+The ``bam2bed`` script is "non-lossy". Similar tools in the world tend to throw out information from the original BAM input upon conversion; ``bam2bed`` retains everything, facilitating reuse of converted data and conversion to other formats.
 
 .. tip:: Doing the extra step of creating a :ref:`Starch-formatted <starch_specification>` archive can save a lot of space relative to the original BAM format, up to 33% of the original BAM dataset, while offering per-chromosome random access.
 
