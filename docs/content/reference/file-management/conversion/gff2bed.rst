@@ -3,7 +3,7 @@
 `gff2bed`
 =========
 
-The ``gff2bed`` script converts 1-based, closed [a, b] `General Feature Format v3 <http://www.sequenceontology.org/gff3.shtml>`_ (GFF3) to unsorted, 0-based, half-open [a-1, b) extended BED-formatted data.
+The ``gff2bed`` script converts 1-based, closed ``[a, b]`` `General Feature Format v3 <http://www.sequenceontology.org/gff3.shtml>`_ (GFF3) to unsorted, 0-based, half-open ``[a-1, b)`` extended BED-formatted data.
 
 For convenience, we also offer ``gff2starch``, which performs the extra step of creating a :ref:`Starch-formatted <starch_specification>` archive.
 
