@@ -15,7 +15,7 @@ The ``bam2bed`` script is "non-lossy". Similar tools in the world tend to throw 
 Dependencies
 ============
 
-This ``bash`` shell script is dependent upon installation of `SAMtools <http://samtools.sourceforge.net/>`_ and `GNU awk <http://www.gnu.org/software/gawk/>`_.
+This ``bash`` shell script is dependent upon the installation of `SAMtools <http://samtools.sourceforge.net/>`_ and `GNU awk <http://www.gnu.org/software/gawk/>`_ tools.
 
 .. note:: GNU ``awk`` is already installed on Linux systems, but is usually an additional installation on Mac OS X systems. Use `MacPorts <http://www.macports.org/>`_, `Homebrew <http://mxcl.github.com/homebrew/>`_, or compile from `source <http://www.gnu.org/software/gawk/>`_).
 
@@ -30,6 +30,10 @@ Usage
 =====
 
 The ``bam2bed`` script parses BAM data from standard input and prints :ref:`sorted <sort-bed>` BED to standard output. The ``bam2starch`` script uses an extra step to parse BAM to a compressed BEDOPS :ref:`Starch-formatted <starch_specification>` archive, which is also directed to standard output.
+
+.. tip:: By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the ``--do-not-sort`` option. Run the script with the ``--help`` option for more details.
+
+.. tip:: If you are sorting data larger than system memory, use the ``--max-mem`` option to limit sort memory usage to a reasonable fraction of available memory, *e.g.*, ``--max-mem 2G`` or similar. See ``--help`` for more details.
 
 =======
 Example
@@ -57,10 +61,6 @@ We can convert it to sorted BED data in the following manner (omitting standard 
      samtools view BAM_file | gawk '(and(4, $2))' > unmapped.sam
 
    Converting unmapped reads into BED with dummy chromosome and coordinates is a bit more involved (but not much). Visit our `user forum <http://bedops.uwencode.org/forum>`_ and ask for help on this, if needed.
-
-.. tip:: By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the ``--do-not-sort`` option. Run the script with the ``--help`` option for more details.
-
-.. tip:: If you are sorting data larger than system memory, use the ``--max-mem`` option to limit sort memory usage to a reasonable fraction of available memory, *e.g.*, ``--max-mem 2G`` or similar. See ``--help`` for more details.
 
 .. _bam2bed_downloads:
 
