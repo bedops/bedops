@@ -71,7 +71,7 @@ We can convert it to sorted BED data in the following manner:
    
    ::
      
-     awk '{gsub(/;$/,"");print}' badFoo.gff | gff2bed - > goodFoo.bed 
+     $ awk '{gsub(/;$/,"");print}' badFoo.gff | gff2bed - > goodFoo.bed 
 
    This issue is also discussed on the `BEDOPS User Forum <http://bedops.uwencode.org/forum/index.php?topic=34.0>`_.
 
