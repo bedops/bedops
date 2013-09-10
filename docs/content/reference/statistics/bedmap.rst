@@ -721,7 +721,7 @@ The bedmap program does not perform error checking by default, but it offers an 
 Endlines
 ========
 
-The :ref:`bedmap` program expects endlines (``\n``) appropriate to your operating system. In UNIX-like environments, you can quickly check to see if your file contains the native endlines with this command:
+The :ref:`bedmap` program expects endlines (``\n``) appropriate to Linux and Mac OS X operating systems. Microsoft Windows uses different characters for endlines. In UNIX-like environments, you can quickly check to see if your file contains the native endlines with this command:
 
 ::
 
