@@ -3,7 +3,7 @@
 `starchcat`
 ===========
 
-The ``starchcat`` utility efficiently merges per-chromosome records contained within one or more BEDOPS :ref:`Starch-formatted <starch_specification>` archives. This is an equivalent operation to ``bedops --everything`` or ``bedops -u`` (a multiset union), but inputs are :ref:`starch` archives rather than uncompressed BED files.
+The ``starchcat`` utility efficiently merges per-chromosome records contained within one or more BEDOPS :ref:`Starch-formatted <starch_specification>` archives. This is an equivalent operation to ``bedops --everything`` or ``bedops -u`` (a :ref:`multiset union <bedops_everything>`), but inputs are :ref:`starch` archives rather than uncompressed BED files.
 
 As a further advantage to using this over :ref:`bedops`, in the case where a :ref:`starch` input contains BED elements exclusive to one chromosome, this utility will directly and quickly copy over compressed elements to a new archive, avoiding the need for costly and wasteful extraction and re-compression. 
 
