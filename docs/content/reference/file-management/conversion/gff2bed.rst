@@ -85,7 +85,7 @@ We can convert it to sorted BED data in the following manner:
 Downloads
 =========
 
-* Sample ``foo`` GFF dataset: :download:`foo.gff <../../../../assets/reference/file-management/conversion/reference_bam2bed_foo.gff>`
+* Sample ``foo`` GFF dataset: :download:`foo.gff <../../../../../assets/reference/file-management/conversion/reference_gff2bed_foo.gff>`
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
