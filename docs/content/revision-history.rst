@@ -63,7 +63,7 @@ Released: **May 3, 2013**
 
   * Major performance improvements made in v2.1.1, such that current :ref:`bedmap` now operates as fast or faster than the v1.2.5 version of :ref:`bedmap`!
 
-* :ref: `bedops`
+* :ref:`bedops`
 
   * Resolves bug with ``--partition`` option.
 
