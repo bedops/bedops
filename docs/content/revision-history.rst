@@ -121,7 +121,7 @@ v2.0.0b
 
 Released: **February 19, 2013**
 
-* Added :ref:`starchcluster` script variant which supports task distribution with `GNU Parallel <http://www.gnu.org/software/parallel/>`.
+* Added :ref:`starchcluster` script variant which supports task distribution with `GNU Parallel <http://www.gnu.org/software/parallel/>`_.
 
 * Fixed minor problem with :ref:`bam2bed` and :ref:`sam2bed` conversion scripts.
 
