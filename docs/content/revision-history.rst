@@ -25,7 +25,7 @@ Previous versions
 v2.2.0b
 -------
 
-Fixed bug with OS X installer's post-installation scripts
+* Fixed bug with OS X installer's post-installation scripts
 
 ------
 v2.2.0
