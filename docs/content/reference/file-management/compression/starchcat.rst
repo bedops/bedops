@@ -15,13 +15,13 @@ Parallelization
 
 Those with access to a computational cluster such as an Oracle/Sun Grid Engine or a group of hosts running SSH services should find :ref:`starchcat` highly useful, as this facilitates:
 
-* Much faster compression of an entire genome of BED data, using nodes of a computational cluster to compress separate chromosomes, followed by a collation step with :ref:`starchcat` (see the :ref:`starchcluster` script).
+* Much faster compression of an entire genome of BED data, using nodes of a computational cluster to compress separate chromosomes, followed by a collation step with :ref:`starchcat` (see the :ref:`starchcluster` documentation).
 
 * Extraction, manipulation and reintegration of a :ref:`starch` -ed chromosome into a larger :ref:`starch` archive
 
 * Refreshing metadata or re-compressing the data within a lone :ref:`starch` archive.
 
-To demonstrate the first application of this utility, we have packaged a helper script with the BEDOPS suite called :ref:`starchcluster`, which archives data much faster than :ref:`starch` alone. By distributing work across the nodes of a computational cluster, the upper bound on compression time is almost entirely determined by the largest chromosome, reducing compression time by an order of magnitude.
+To demonstrate the first application of this utility, we have packaged a helper script with the BEDOPS suite called :ref:`starchcluster <starchcluster>`, which archives data much faster than :ref:`starch` alone. By distributing work across the nodes of a computational cluster, the upper bound on compression time is almost entirely determined by the largest chromosome, reducing compression time by an order of magnitude.
 
 ==================
 Inputs and outputs
