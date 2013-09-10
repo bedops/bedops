@@ -711,7 +711,7 @@ By combining the ``--chrom`` operator with operations on Starch archives, the en
 Error checking
 ==============
 
-The bedmap program does not perform error checking by default, but it offers an --ec option for comprehensive checks.
+The bedmap program does not perform error checking by default, but it offers an ``--ec`` option for comprehensive checks.
 
 .. note:: Use of the ``--ec`` option will roughly double the running time, but it provides stringent error checking to ensure all inputs are valid. ``--ec`` can help check problematic input and offers helpful hints for any needed corrections, when problems are detected.
 
