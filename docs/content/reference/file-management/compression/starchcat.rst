@@ -9,9 +9,9 @@ As a further advantage to using this over :ref:`bedops`, in the case where a :re
 
 In the general case, where two or more :ref:`starch` inputs contain BED elements from the same chromosome, a :ref:`sorted <sort-bed>` merge is performed and the stream reprocessed into a :ref:`Starch-formatted <starch_specification>` archive.
 
----------------
+===============
 Parallelization
----------------
+===============
 
 Those with access to a computational cluster such as an Oracle/Sun Grid Engine or a group of hosts running SSH services should find :ref:`starchcat` highly useful, as this facilitates:
 
