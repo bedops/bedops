@@ -75,7 +75,7 @@ We can convert it to sorted BED data in the following manner:
 
    This issue is also discussed on the `BEDOPS User Forum <http://bedops.uwencode.org/forum/index.php?topic=34.0>`_.
 
-.. note:: Zero-length insertion elements are given an extra attribute called ``zeroLengthInsertion`` which lets a BED-to-GFF or other parser know that the element will require conversion back to a right-closed element ``[a, b]`` where ``a`` and ``b`` are equal.
+.. note:: Zero-length insertion elements are given an extra attribute called ``zeroLengthInsertion`` which lets a BED-to-GFF or other parser know that the element will require conversion back to a right-closed element ``[a, b]``, where ``a`` and ``b`` are equal.
 
 .. note:: Note the conversion from 1- to 0-based coordinate indexing, in the transition from GFF3 to BED. *BEDOPS supports operations on input with any coordinate indexing*, but the coordinate change made here is believed to be convenient for most end users.
 
