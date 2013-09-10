@@ -572,9 +572,7 @@ This option also works with the ``--ec`` error checking flag, which indicates if
 
    Be sure to consider the makeup of your BED data before using ``--faster``. 
 
-.. tip:: Using ``--ec`` with ``--faster`` will report if any nested elements exist in your data.
-
-This option also works with the --ec error checking flag, which indicates if the data contain nested elements. Using --ec carries its usual overhead, but as it only doubles the much-improved execution time, it may be worth using.
+.. tip:: Using ``--ec`` with ``--faster`` will report if any nested elements exist in your data. Using ``--ec`` carries its usual overhead, but as it only doubles the much-improved execution time, it may be worth using.
 
 .. _bedmap_formatting_score_output:
 
