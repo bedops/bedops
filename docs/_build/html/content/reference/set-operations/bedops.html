@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.1.1. bedops &mdash; BEDOPS 2.3 documentation</title>
+    <title>6.1.1. bedops &mdash; BEDOPS 2.3 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -27,9 +27,9 @@
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
     <link rel="top" title="BEDOPS 2.3 documentation" href="../../../index.html" />
-    <link rel="up" title="5.1. Set operations" href="../set-operations.html" />
-    <link rel="next" title="5.1.2. bedextract" href="bedextract.html" />
-    <link rel="prev" title="5.1. Set operations" href="../set-operations.html" /> 
+    <link rel="up" title="6.1. Set operations" href="../set-operations.html" />
+    <link rel="next" title="6.1.2. bedextract" href="bedextract.html" />
+    <link rel="prev" title="6.1. Set operations" href="../set-operations.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,14 +39,14 @@
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="bedextract.html" title="5.1.2. bedextract"
+          <a href="bedextract.html" title="6.1.2. bedextract"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="../set-operations.html" title="5.1. Set operations"
+          <a href="../set-operations.html" title="6.1. Set operations"
              accesskey="P">previous</a> |</li>
         <li><a href="../../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../../reference.html" >5. Reference</a> &raquo;</li>
-          <li><a href="../set-operations.html" accesskey="U">5.1. Set operations</a> &raquo;</li> 
+          <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
+          <li><a href="../set-operations.html" accesskey="U">6.1. Set operations</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,7 +56,7 @@
           <div class="body">
             
   <div class="section" id="bedops">
-<span id="id1"></span><h1>5.1.1. <cite>bedops</cite><a class="headerlink" href="#bedops" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>6.1.1. <cite>bedops</cite><a class="headerlink" href="#bedops" title="Permalink to this headline">¶</a></h1>
 <p><tt class="docutils literal"><span class="pre">bedops</span></tt> is a core tool for finding relationships between two or more genomic datasets.</p>
 <p>This is an important category of problems to solve. As examples, one might want to:</p>
 <ul class="simple">
@@ -68,20 +68,20 @@
 <p>Importantly, <a class="reference internal" href="#bedops"><em>bedops</em></a> handles any number of any-size inputs at once when computing results in order to maximize efficiency. This use case has <a class="reference internal" href="../../usage-examples/multiple-inputs.html#multiple-inputs"><em>serious practical consequences</em></a> for many genomic studies.</p>
 <p>One can also use <a class="reference internal" href="#bedops"><em>bedops</em></a> to symmetrically or asymmetrically pad coordinates.</p>
 <div class="section" id="inputs-and-outputs">
-<h2>5.1.1.1. Inputs and outputs<a class="headerlink" href="#inputs-and-outputs" title="Permalink to this headline">¶</a></h2>
+<h2>6.1.1.1. Inputs and outputs<a class="headerlink" href="#inputs-and-outputs" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="input">
-<h3>5.1.1.1.1. Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.1.1.1. Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
 <p>The <a class="reference internal" href="#bedops"><em>bedops</em></a> program reads <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED data and BEDOPS <a class="reference internal" href="../file-management/compression/starch.html#starch"><em>Starch-formatted</em></a> archives as input.</p>
 <p>Finally, <a class="reference internal" href="#bedops"><em>bedops</em></a> requires specification of a set operation (and, optionally, may include modifier options).</p>
 <p>Support for common headers (including UCSC track headers) is offered through the <tt class="docutils literal"><span class="pre">--header</span></tt> option. Headers are stripped from output.</p>
 </div>
 <div class="section" id="output">
-<h3>5.1.1.1.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.1.1.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
 <p>The <a class="reference internal" href="#bedops"><em>bedops</em></a> program returns <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED results to standard output. This output can be redirected to a file or piped to other utilities.</p>
 </div>
 </div>
 <div class="section" id="usage">
-<h2>5.1.1.2. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<h2>6.1.1.2. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="#bedops"><em>bedops</em></a> program takes sorted BED-formatted data as input, either from a file or streamed from standard input. It will process any number of input files in parallel.</p>
 <p>If your data are unsorted, use BEDOPS <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> to prepare data for <a class="reference internal" href="#bedops"><em>bedops</em></a>. You only need to sort once, as all BEDOPS tools read and write sorted BED data.</p>
 <p>Because memory usage is very low, one can use sorted inputs of any size. Processing times generally follow a simple linear relationship with input sizes (<em>e.g.</em>, as the input size doubles, the processing time doubles accordingly).</p>
@@ -137,12 +137,12 @@
 </div>
 </div>
 <div class="section" id="operations">
-<h2>5.1.1.3. Operations<a class="headerlink" href="#operations" title="Permalink to this headline">¶</a></h2>
+<h2>6.1.1.3. Operations<a class="headerlink" href="#operations" title="Permalink to this headline">¶</a></h2>
 <p>To demonstrate the various operations in <a class="reference internal" href="#bedops"><em>bedops</em></a>, we start with two simple datasets <tt class="docutils literal"><span class="pre">A</span></tt> and <tt class="docutils literal"><span class="pre">B</span></tt>, containing genomic elements on generic chromsome <tt class="docutils literal"><span class="pre">chrN</span></tt>:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_inputs.png"><img alt="../../../_images/reference_setops_bedops_inputs.png" src="../../../_images/reference_setops_bedops_inputs.png" style="width: 99%;" /></a>
 <p>These datasets can be <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED or <a class="reference internal" href="../file-management/compression/starch.html#starch"><em>Starch-formatted</em></a> files or streams.</p>
 <div class="section" id="everything-u-everything">
-<span id="bedops-everything"></span><h3>5.1.1.3.1. Everything (-u, &#8211;everything)<a class="headerlink" href="#everything-u-everything" title="Permalink to this headline">¶</a></h3>
+<span id="bedops-everything"></span><h3>6.1.1.3.1. Everything (-u, &#8211;everything)<a class="headerlink" href="#everything-u-everything" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--everything</span></tt> option is equivalent to concatenating and sorting BED elements from multiple files, but works much faster:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_everything.png"><img alt="../../../_images/reference_setops_bedops_everything.png" src="../../../_images/reference_setops_bedops_everything.png" style="width: 99%;" /></a>
 <p>As with all BEDOPS tools and operations, the output of this operation is <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a>.</p>
@@ -152,7 +152,7 @@
 </div>
 </div>
 <div class="section" id="element-of-e-element-of">
-<h3>5.1.1.3.2. Element-of (-e, &#8211;element-of)<a class="headerlink" href="#element-of-e-element-of" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.1.3.2. Element-of (-e, &#8211;element-of)<a class="headerlink" href="#element-of-e-element-of" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--element-of</span></tt> operation shows the elements of the first (&#8220;<em>reference</em>&#8221;) file that overlap elements in the second and subsequent files by the specified length (in bases) or by percentage of length.</p>
 <p>In the following example, we search for elements in the reference set <tt class="docutils literal"><span class="pre">A</span></tt> which overlap elements in <tt class="docutils literal"><span class="pre">B</span></tt> by at least one base:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_elementof_ab.png"><img alt="../../../_images/reference_setops_bedops_elementof_ab.png" src="../../../_images/reference_setops_bedops_elementof_ab.png" style="width: 99%;" /></a>
@@ -174,7 +174,7 @@
 </div>
 </div>
 <div class="section" id="not-element-of-n-not-element-of">
-<h3>5.1.1.3.3. Not-element-of (-n, &#8211;not-element-of)<a class="headerlink" href="#not-element-of-n-not-element-of" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.1.3.3. Not-element-of (-n, &#8211;not-element-of)<a class="headerlink" href="#not-element-of-n-not-element-of" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--not-element-of</span></tt> operation shows elements in the reference file which do not overlap elements in all other sets. For example:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_notelementof_ab.png"><img alt="../../../_images/reference_setops_bedops_notelementof_ab.png" src="../../../_images/reference_setops_bedops_notelementof_ab.png" style="width: 99%;" /></a>
 <p>As with the <tt class="docutils literal"><span class="pre">--element-of</span></tt> (<tt class="docutils literal"><span class="pre">-e</span></tt>) operator, the overlap criterion for <tt class="docutils literal"><span class="pre">--not-element-of</span></tt> (<tt class="docutils literal"><span class="pre">-n</span></tt>) can be specified by length (in bases) or by percentage of length. Similarly, this operation is not symmetric—the order of inputs will specify the reference set.</p>
@@ -188,7 +188,7 @@
 </div>
 </div>
 <div class="section" id="complement-c-complement">
-<h3>5.1.1.3.4. Complement (-c, &#8211;complement)<a class="headerlink" href="#complement-c-complement" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.1.3.4. Complement (-c, &#8211;complement)<a class="headerlink" href="#complement-c-complement" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--complement</span></tt> operation calculates the genomic regions in the gaps between the contiguous per-chromosome ranges defined by one or more inputs. The following example shows the use of two inputs:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_complement_ab.png"><img alt="../../../_images/reference_setops_bedops_complement_ab.png" src="../../../_images/reference_setops_bedops_complement_ab.png" style="width: 99%;" /></a>
 <div class="admonition note">
@@ -201,7 +201,7 @@
 </div>
 </div>
 <div class="section" id="difference-d-difference">
-<h3>5.1.1.3.5. Difference (-d, &#8211;difference)<a class="headerlink" href="#difference-d-difference" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.1.3.5. Difference (-d, &#8211;difference)<a class="headerlink" href="#difference-d-difference" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--difference</span></tt> operation calculates the genomic regions found within the first (reference) input file, excluding regions in all other input files:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_difference_ab.png"><img alt="../../../_images/reference_setops_bedops_difference_ab.png" src="../../../_images/reference_setops_bedops_difference_ab.png" style="width: 99%;" /></a>
 <div class="admonition note">
@@ -210,7 +210,7 @@
 </div>
 </div>
 <div class="section" id="symmetric-difference-s-symmdiff">
-<h3>5.1.1.3.6. Symmetric difference (-s, &#8211;symmdiff)<a class="headerlink" href="#symmetric-difference-s-symmdiff" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.1.3.6. Symmetric difference (-s, &#8211;symmdiff)<a class="headerlink" href="#symmetric-difference-s-symmdiff" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--symmdiff</span></tt> operation calculates the genomic range that is exclusive to each input, excluding any ranges shared across inputs:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_symmetricdifference_ab.png"><img alt="../../../_images/reference_setops_bedops_symmetricdifference_ab.png" src="../../../_images/reference_setops_bedops_symmetricdifference_ab.png" style="width: 99%;" /></a>
 <div class="admonition tip">
@@ -219,12 +219,12 @@
 </div>
 </div>
 <div class="section" id="intersect-i-intersect">
-<h3>5.1.1.3.7. Intersect (-i, &#8211;intersect)<a class="headerlink" href="#intersect-i-intersect" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.1.3.7. Intersect (-i, &#8211;intersect)<a class="headerlink" href="#intersect-i-intersect" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--intersect</span></tt> operation determines genomic regions common to all input sets:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_intersect_ab.png"><img alt="../../../_images/reference_setops_bedops_intersect_ab.png" src="../../../_images/reference_setops_bedops_intersect_ab.png" style="width: 99%;" /></a>
 </div>
 <div class="section" id="merge-m-merge">
-<h3>5.1.1.3.8. Merge (-m, &#8211;merge)<a class="headerlink" href="#merge-m-merge" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.1.3.8. Merge (-m, &#8211;merge)<a class="headerlink" href="#merge-m-merge" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--merge</span></tt> operation flattens all overlapping and adjoining elements into contiguous regions:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_merge_ab.png"><img alt="../../../_images/reference_setops_bedops_merge_ab.png" src="../../../_images/reference_setops_bedops_merge_ab.png" style="width: 99%;" /></a>
 <div class="admonition tip">
@@ -233,7 +233,7 @@
 </div>
 </div>
 <div class="section" id="partition-p-partition">
-<h3>5.1.1.3.9. Partition (-p, &#8211;partition)<a class="headerlink" href="#partition-p-partition" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.1.3.9. Partition (-p, &#8211;partition)<a class="headerlink" href="#partition-p-partition" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--partition</span></tt> operator splits all overlapping input regions into a set of disjoint segments. One or more input files may be provided; this option will segment regions from all inputs:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_partition_ab.png"><img alt="../../../_images/reference_setops_bedops_partition_ab.png" src="../../../_images/reference_setops_bedops_partition_ab.png" style="width: 99%;" /></a>
 <div class="admonition note">
@@ -242,7 +242,7 @@
 </div>
 </div>
 <div class="section" id="per-chromosome-operations-chrom">
-<h3>5.1.1.3.10. Per-chromosome operations (&#8211;chrom)<a class="headerlink" href="#per-chromosome-operations-chrom" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.1.3.10. Per-chromosome operations (&#8211;chrom)<a class="headerlink" href="#per-chromosome-operations-chrom" title="Permalink to this headline">¶</a></h3>
 <p>All operations on inputs can be restricted to one chromosome, by adding the <tt class="docutils literal"><span class="pre">--chrom</span> <span class="pre">&lt;val&gt;</span></tt> operator.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -250,7 +250,7 @@
 </div>
 </div>
 <div class="section" id="range-range">
-<span id="bedops-range"></span><h3>5.1.1.3.11. Range (&#8211;range)<a class="headerlink" href="#range-range" title="Permalink to this headline">¶</a></h3>
+<span id="bedops-range"></span><h3>6.1.1.3.11. Range (&#8211;range)<a class="headerlink" href="#range-range" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--range</span></tt> operation works in conjunction with other operations.</p>
 <p>When used with one value (<tt class="docutils literal"><span class="pre">--range</span> <span class="pre">S</span></tt>), this operation <strong>symmetrically</strong> pads all elements of input sets by the specified integral value <tt class="docutils literal"><span class="pre">S</span></tt>. When the specified value is positive, every genomic segment grows in size. An element will grow asymmetrically to prevent growth beyond base position 0, if needed. Otherwise, when negative, elements shrink, and any element with zero (or less) length is discarded.</p>
 <p>Alternatively, when used with two values (<tt class="docutils literal"><span class="pre">--range</span> <span class="pre">L:R</span></tt>), this operation <strong>asymmetrically</strong> pads elements, adding <tt class="docutils literal"><span class="pre">L</span></tt> to each start coordinate, and adding <tt class="docutils literal"><span class="pre">R</span></tt> to each stop coordinate. Negative values may be specified to grow or shrink the region, accordingly.</p>
@@ -269,7 +269,7 @@
 </div>
 </div>
 <div class="section" id="starch-support">
-<h2>5.1.1.4. Starch support<a class="headerlink" href="#starch-support" title="Permalink to this headline">¶</a></h2>
+<h2>6.1.1.4. Starch support<a class="headerlink" href="#starch-support" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="#bedops"><em>bedops</em></a> application supports use of <a class="reference internal" href="../file-management/compression/starch.html#starch"><em>Starch</em></a>-formatted archives as inputs, as well as text-based BED data. One or multiple inputs may be Starch archives.</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
@@ -277,7 +277,7 @@
 </div>
 </div>
 <div class="section" id="error-checking-ec">
-<h2>5.1.1.5. Error checking (&#8211;ec)<a class="headerlink" href="#error-checking-ec" title="Permalink to this headline">¶</a></h2>
+<h2>6.1.1.5. Error checking (&#8211;ec)<a class="headerlink" href="#error-checking-ec" title="Permalink to this headline">¶</a></h2>
 <p>Use the <tt class="docutils literal"><span class="pre">--ec</span></tt> option in conjunction with any aforementioned operation to do more stringent checking of the inputs&#8217; compliance to <a class="reference internal" href="#bedops"><em>bedops</em></a> requirements, including sorting checks, delimiter checks, among others.</p>
 <p>To demonstrate, we can deliberately introduce a typo in dataset <cite>A</cite>, using the <tt class="docutils literal"><span class="pre">--ec</span></tt> option to try to catch it:</p>
 <div class="highlight-python"><pre>$ bedops --ec --everything BEDFileA
@@ -294,16 +294,16 @@ See row: 3</pre>
 </div>
 </div>
 <div class="section" id="tips">
-<h2>5.1.1.6. Tips<a class="headerlink" href="#tips" title="Permalink to this headline">¶</a></h2>
+<h2>6.1.1.6. Tips<a class="headerlink" href="#tips" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="chaining-operations">
-<h3>5.1.1.6.1. Chaining operations<a class="headerlink" href="#chaining-operations" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.1.6.1. Chaining operations<a class="headerlink" href="#chaining-operations" title="Permalink to this headline">¶</a></h3>
 <p>You can efficiently chain operations together, <em>e.g.</em>:</p>
 <div class="highlight-python"><pre>$ bedops --range 50 --merge A | bedops --intersect - B &gt; answer.bed</pre>
 </div>
 <p>In this example, elements from <tt class="docutils literal"><span class="pre">A</span></tt> are padded 50 bases up- and downstream and merged, before intersecting with coordinates in <tt class="docutils literal"><span class="pre">B</span></tt>.</p>
 </div>
 <div class="section" id="sorting-inputs">
-<h3>5.1.1.6.2. Sorting inputs<a class="headerlink" href="#sorting-inputs" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.1.6.2. Sorting inputs<a class="headerlink" href="#sorting-inputs" title="Permalink to this headline">¶</a></h3>
 <p>For unsorted input, be sure to first use <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> to presort the data stream before using with <a class="reference internal" href="#bedops"><em>bedops</em></a>. Unsorted input will not work properly with BEDOPS tools.</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
@@ -324,32 +324,32 @@ See row: 3</pre>
             </a></p>
   <h3><a href="../../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5.1.1. <cite>bedops</cite></a><ul>
-<li><a class="reference internal" href="#inputs-and-outputs">5.1.1.1. Inputs and outputs</a><ul>
-<li><a class="reference internal" href="#input">5.1.1.1.1. Input</a></li>
-<li><a class="reference internal" href="#output">5.1.1.1.2. Output</a></li>
+<li><a class="reference internal" href="#">6.1.1. <cite>bedops</cite></a><ul>
+<li><a class="reference internal" href="#inputs-and-outputs">6.1.1.1. Inputs and outputs</a><ul>
+<li><a class="reference internal" href="#input">6.1.1.1.1. Input</a></li>
+<li><a class="reference internal" href="#output">6.1.1.1.2. Output</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#usage">5.1.1.2. Usage</a></li>
-<li><a class="reference internal" href="#operations">5.1.1.3. Operations</a><ul>
-<li><a class="reference internal" href="#everything-u-everything">5.1.1.3.1. Everything (-u, &#8211;everything)</a></li>
-<li><a class="reference internal" href="#element-of-e-element-of">5.1.1.3.2. Element-of (-e, &#8211;element-of)</a></li>
-<li><a class="reference internal" href="#not-element-of-n-not-element-of">5.1.1.3.3. Not-element-of (-n, &#8211;not-element-of)</a></li>
-<li><a class="reference internal" href="#complement-c-complement">5.1.1.3.4. Complement (-c, &#8211;complement)</a></li>
-<li><a class="reference internal" href="#difference-d-difference">5.1.1.3.5. Difference (-d, &#8211;difference)</a></li>
-<li><a class="reference internal" href="#symmetric-difference-s-symmdiff">5.1.1.3.6. Symmetric difference (-s, &#8211;symmdiff)</a></li>
-<li><a class="reference internal" href="#intersect-i-intersect">5.1.1.3.7. Intersect (-i, &#8211;intersect)</a></li>
-<li><a class="reference internal" href="#merge-m-merge">5.1.1.3.8. Merge (-m, &#8211;merge)</a></li>
-<li><a class="reference internal" href="#partition-p-partition">5.1.1.3.9. Partition (-p, &#8211;partition)</a></li>
-<li><a class="reference internal" href="#per-chromosome-operations-chrom">5.1.1.3.10. Per-chromosome operations (&#8211;chrom)</a></li>
-<li><a class="reference internal" href="#range-range">5.1.1.3.11. Range (&#8211;range)</a></li>
+<li><a class="reference internal" href="#usage">6.1.1.2. Usage</a></li>
+<li><a class="reference internal" href="#operations">6.1.1.3. Operations</a><ul>
+<li><a class="reference internal" href="#everything-u-everything">6.1.1.3.1. Everything (-u, &#8211;everything)</a></li>
+<li><a class="reference internal" href="#element-of-e-element-of">6.1.1.3.2. Element-of (-e, &#8211;element-of)</a></li>
+<li><a class="reference internal" href="#not-element-of-n-not-element-of">6.1.1.3.3. Not-element-of (-n, &#8211;not-element-of)</a></li>
+<li><a class="reference internal" href="#complement-c-complement">6.1.1.3.4. Complement (-c, &#8211;complement)</a></li>
+<li><a class="reference internal" href="#difference-d-difference">6.1.1.3.5. Difference (-d, &#8211;difference)</a></li>
+<li><a class="reference internal" href="#symmetric-difference-s-symmdiff">6.1.1.3.6. Symmetric difference (-s, &#8211;symmdiff)</a></li>
+<li><a class="reference internal" href="#intersect-i-intersect">6.1.1.3.7. Intersect (-i, &#8211;intersect)</a></li>
+<li><a class="reference internal" href="#merge-m-merge">6.1.1.3.8. Merge (-m, &#8211;merge)</a></li>
+<li><a class="reference internal" href="#partition-p-partition">6.1.1.3.9. Partition (-p, &#8211;partition)</a></li>
+<li><a class="reference internal" href="#per-chromosome-operations-chrom">6.1.1.3.10. Per-chromosome operations (&#8211;chrom)</a></li>
+<li><a class="reference internal" href="#range-range">6.1.1.3.11. Range (&#8211;range)</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#starch-support">5.1.1.4. Starch support</a></li>
-<li><a class="reference internal" href="#error-checking-ec">5.1.1.5. Error checking (&#8211;ec)</a></li>
-<li><a class="reference internal" href="#tips">5.1.1.6. Tips</a><ul>
-<li><a class="reference internal" href="#chaining-operations">5.1.1.6.1. Chaining operations</a></li>
-<li><a class="reference internal" href="#sorting-inputs">5.1.1.6.2. Sorting inputs</a></li>
+<li><a class="reference internal" href="#starch-support">6.1.1.4. Starch support</a></li>
+<li><a class="reference internal" href="#error-checking-ec">6.1.1.5. Error checking (&#8211;ec)</a></li>
+<li><a class="reference internal" href="#tips">6.1.1.6. Tips</a><ul>
+<li><a class="reference internal" href="#chaining-operations">6.1.1.6.1. Chaining operations</a></li>
+<li><a class="reference internal" href="#sorting-inputs">6.1.1.6.2. Sorting inputs</a></li>
 </ul>
 </li>
 </ul>
@@ -358,10 +358,10 @@ See row: 3</pre>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="../set-operations.html"
-                        title="previous chapter">5.1. Set operations</a></p>
+                        title="previous chapter">6.1. Set operations</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="bedextract.html"
-                        title="next chapter">5.1.2. <cite>bedextract</cite></a></p>
+                        title="next chapter">6.1.2. <cite>bedextract</cite></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../../_sources/content/reference/set-operations/bedops.txt"
@@ -391,14 +391,14 @@ See row: 3</pre>
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="bedextract.html" title="5.1.2. bedextract"
+          <a href="bedextract.html" title="6.1.2. bedextract"
              >next</a> |</li>
         <li class="right" >
-          <a href="../set-operations.html" title="5.1. Set operations"
+          <a href="../set-operations.html" title="6.1. Set operations"
              >previous</a> |</li>
         <li><a href="../../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../../reference.html" >5. Reference</a> &raquo;</li>
-          <li><a href="../set-operations.html" >5.1. Set operations</a> &raquo;</li> 
+          <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
+          <li><a href="../set-operations.html" >6.1. Set operations</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

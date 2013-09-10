@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.1.2. bedextract &mdash; BEDOPS 2.3 documentation</title>
+    <title>6.1.2. bedextract &mdash; BEDOPS 2.3 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -27,9 +27,9 @@
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
     <link rel="top" title="BEDOPS 2.3 documentation" href="../../../index.html" />
-    <link rel="up" title="5.1. Set operations" href="../set-operations.html" />
-    <link rel="next" title="5.1.3. closest-features" href="closest-features.html" />
-    <link rel="prev" title="5.1.1. bedops" href="bedops.html" /> 
+    <link rel="up" title="6.1. Set operations" href="../set-operations.html" />
+    <link rel="next" title="6.1.3. closest-features" href="closest-features.html" />
+    <link rel="prev" title="6.1.1. bedops" href="bedops.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,14 +39,14 @@
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="closest-features.html" title="5.1.3. closest-features"
+          <a href="closest-features.html" title="6.1.3. closest-features"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="bedops.html" title="5.1.1. bedops"
+          <a href="bedops.html" title="6.1.1. bedops"
              accesskey="P">previous</a> |</li>
         <li><a href="../../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../../reference.html" >5. Reference</a> &raquo;</li>
-          <li><a href="../set-operations.html" accesskey="U">5.1. Set operations</a> &raquo;</li> 
+          <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
+          <li><a href="../set-operations.html" accesskey="U">6.1. Set operations</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,7 +56,7 @@
           <div class="body">
             
   <div class="section" id="bedextract">
-<span id="id1"></span><h1>5.1.2. <cite>bedextract</cite><a class="headerlink" href="#bedextract" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>6.1.2. <cite>bedextract</cite><a class="headerlink" href="#bedextract" title="Permalink to this headline">¶</a></h1>
 <p>The <tt class="docutils literal"><span class="pre">bedextract</span></tt> utility performs three primary tasks, with the goal of doing them very quickly:</p>
 <ol class="arabic simple">
 <li>Lists all the chromosomes in a sorted input BED file.</li>
@@ -66,7 +66,7 @@
 <p>One might ask why use this utility, when the first two tasks can already be performed with common UNIX text processing tools, such as <tt class="docutils literal"><span class="pre">cut</span></tt>, <tt class="docutils literal"><span class="pre">sort</span></tt>, <tt class="docutils literal"><span class="pre">uniq</span></tt>, and <tt class="docutils literal"><span class="pre">awk</span></tt>, and the third task can be performed with <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a> with the <tt class="docutils literal"><span class="pre">--element-of</span> <span class="pre">-1</span></tt> options?</p>
 <p>The <tt class="docutils literal"><span class="pre">bedextract</span></tt> utility does the work of all those tools without streaming through an entire BED file, resulting in massive performance improvements. By using the hints provided by sorted BED input, the <a class="reference internal" href="#bedextract"><em>bedextract</em></a> tool can jump around, seeking very quick answers to these questions about your data.</p>
 <div class="section" id="how-it-works">
-<h2>5.1.2.1. How it works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h2>
+<h2>6.1.2.1. How it works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h2>
 <p>Specifically, sorting with <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> allows us to perform a <a class="reference external" href="http://en.wikipedia.org/wiki/Binary_search_algorithm">binary search</a>:</p>
 <ol class="arabic simple">
 <li>We jump to the middle byte of the BED file, stream to the nearest element, then parse and test the chromosome name.</li>
@@ -81,9 +81,9 @@
 </div>
 </div>
 <div class="section" id="inputs-and-outputs">
-<h2>5.1.2.2. Inputs and outputs<a class="headerlink" href="#inputs-and-outputs" title="Permalink to this headline">¶</a></h2>
+<h2>6.1.2.2. Inputs and outputs<a class="headerlink" href="#inputs-and-outputs" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="input">
-<h3>5.1.2.2.1. Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.2.2.1. Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
 <p>Depending on specified options, <a class="reference internal" href="#bedextract"><em>bedextract</em></a> requires one or two <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED files.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -91,7 +91,7 @@
 </div>
 </div>
 <div class="section" id="output">
-<h3>5.1.2.2.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.2.2.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
 <p>Depending on specified options, the <a class="reference internal" href="#bedextract"><em>bedextract</em></a> program will send a list of chromosomes or BED elements to standard output.</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
@@ -100,7 +100,7 @@
 </div>
 </div>
 <div class="section" id="usage">
-<h2>5.1.2.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<h2>6.1.2.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>The <tt class="docutils literal"><span class="pre">--help</span></tt> option describes the functionality available to the end user:</p>
 <div class="highlight-python"><pre>bedextract
   citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
@@ -121,7 +121,7 @@
                                       Using '-' for &lt;target&gt; indicates input (in BED format) comes from stdin.</pre>
 </div>
 <div class="section" id="listing-chromosomes">
-<h3>5.1.2.3.1. Listing chromosomes<a class="headerlink" href="#listing-chromosomes" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.2.3.1. Listing chromosomes<a class="headerlink" href="#listing-chromosomes" title="Permalink to this headline">¶</a></h3>
 <p>Use the <tt class="docutils literal"><span class="pre">--list-chr</span></tt> option to quickly retrieve a listing of chromosomes from a given sorted BED input.</p>
 <p>For example, the following lists the chromosomes in an example BED file of FIMO motif hits (see the <a class="reference internal" href="#bedextract-downloads"><em>Downloads</em></a> section):</p>
 <div class="highlight-python"><pre>$ bedextract --list-chr motifs.bed
@@ -139,7 +139,7 @@ chrX</pre>
 </div>
 </div>
 <div class="section" id="retrieving-elements-from-a-specific-chromosome">
-<h3>5.1.2.3.2. Retrieving elements from a specific chromosome<a class="headerlink" href="#retrieving-elements-from-a-specific-chromosome" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.2.3.2. Retrieving elements from a specific chromosome<a class="headerlink" href="#retrieving-elements-from-a-specific-chromosome" title="Permalink to this headline">¶</a></h3>
 <p>To quickly retrieve the subset of elements from a sorted BED file associated with a given chromosome, apply the second usage case and specify the chromosome as the argument.</p>
 <p>For example, to retrieve <tt class="docutils literal"><span class="pre">chrX</span></tt> from the same motif sample:</p>
 <div class="highlight-python"><pre>$ bedextract chrX motifs.bed
@@ -154,7 +154,7 @@ chrX    6777790 6777799 +V_CKROX_Q2     8.90515e-06     +       TCCCTCCCC
 </div>
 </div>
 <div class="section" id="retrieving-elements-which-overlap-target-elements">
-<h3>5.1.2.3.3. Retrieving elements which overlap target elements<a class="headerlink" href="#retrieving-elements-which-overlap-target-elements" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.2.3.3. Retrieving elements which overlap target elements<a class="headerlink" href="#retrieving-elements-which-overlap-target-elements" title="Permalink to this headline">¶</a></h3>
 <p>A common <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a> query involves asking which elements overlap one or more bases between two BED datasets, which we will call here <tt class="docutils literal"><span class="pre">Query</span></tt> and <tt class="docutils literal"><span class="pre">Target</span></tt>.</p>
 <p>One can already use <tt class="docutils literal"><span class="pre">bedops</span> <span class="pre">--element-of</span> <span class="pre">-1</span></tt> to accomplish this task, but if certain specific criteria are met (which we will describe shortly) then a much faster result can often be obtained by instead using <a class="reference internal" href="#bedextract"><em>bedextract</em></a>.</p>
 <p>Three criteria make the use of <a class="reference internal" href="#bedextract"><em>bedextract</em></a> in this mode very successful in practice, with potentially massive speed improvements:</p>
@@ -164,7 +164,7 @@ chrX    6777790 6777799 +V_CKROX_Q2     8.90515e-06     +       TCCCTCCCC
 <li>There are <strong>no fully-nested elements</strong> in <tt class="docutils literal"><span class="pre">Query</span></tt> (but duplicate coordinates are fine).</li>
 </ol>
 <div class="section" id="what-are-nested-elements">
-<span id="bedextract-nested-elements"></span><h4>5.1.2.3.3.1. What are nested elements?<a class="headerlink" href="#what-are-nested-elements" title="Permalink to this headline">¶</a></h4>
+<span id="bedextract-nested-elements"></span><h4>6.1.2.3.3.1. What are nested elements?<a class="headerlink" href="#what-are-nested-elements" title="Permalink to this headline">¶</a></h4>
 <p>An example of a sorted BED file which contains a nested element follows:</p>
 <div class="highlight-python"><pre>chr1    1      100
 chr1    100    200
@@ -185,7 +185,7 @@ chr1    150    1000</pre>
 </div>
 </div>
 <div class="section" id="demonstration">
-<h4>5.1.2.3.3.2. Demonstration<a class="headerlink" href="#demonstration" title="Permalink to this headline">¶</a></h4>
+<h4>6.1.2.3.3.2. Demonstration<a class="headerlink" href="#demonstration" title="Permalink to this headline">¶</a></h4>
 <p>To demonstrate this use of <a class="reference internal" href="#bedextract"><em>bedextract</em></a>, for our <tt class="docutils literal"><span class="pre">Query</span></tt> dataset we will use the <tt class="docutils literal"><span class="pre">Map</span></tt> example from our <a class="reference internal" href="../statistics/bedmap.html#bedmap"><em>bedmap</em></a> documentation, which contains raw DNaseI hypersensitivity signal from a human K562 cell line (see the <a class="reference internal" href="#bedextract-downloads"><em>Downloads</em></a> section for sample data):</p>
 <div class="highlight-python"><pre>$ cat query.bed
 chr21   33031165        33031185        map-1   1.000000
@@ -228,7 +228,7 @@ chr21   33031585        33031605        map-22  26.000000</pre>
 </div>
 </div>
 <div class="section" id="downloads">
-<span id="bedextract-downloads"></span><h2>5.1.2.4. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
+<span id="bedextract-downloads"></span><h2>6.1.2.4. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Sample <a class="reference download internal" href="../../../_downloads/reference_bedextract_motifs.bed"><tt class="xref download docutils literal"><span class="pre">FIMO</span> <span class="pre">motifs</span></tt></a></li>
 <li>Sample <tt class="docutils literal"><span class="pre">Query</span></tt> dataset: <a class="reference download internal" href="../../../_downloads/reference_bedmap_map.bed"><tt class="xref download docutils literal"><span class="pre">DHS</span> <span class="pre">signal</span></tt></a></li>
@@ -248,34 +248,34 @@ chr21   33031585        33031605        map-22  26.000000</pre>
             </a></p>
   <h3><a href="../../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5.1.2. <cite>bedextract</cite></a><ul>
-<li><a class="reference internal" href="#how-it-works">5.1.2.1. How it works</a></li>
-<li><a class="reference internal" href="#inputs-and-outputs">5.1.2.2. Inputs and outputs</a><ul>
-<li><a class="reference internal" href="#input">5.1.2.2.1. Input</a></li>
-<li><a class="reference internal" href="#output">5.1.2.2.2. Output</a></li>
+<li><a class="reference internal" href="#">6.1.2. <cite>bedextract</cite></a><ul>
+<li><a class="reference internal" href="#how-it-works">6.1.2.1. How it works</a></li>
+<li><a class="reference internal" href="#inputs-and-outputs">6.1.2.2. Inputs and outputs</a><ul>
+<li><a class="reference internal" href="#input">6.1.2.2.1. Input</a></li>
+<li><a class="reference internal" href="#output">6.1.2.2.2. Output</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#usage">5.1.2.3. Usage</a><ul>
-<li><a class="reference internal" href="#listing-chromosomes">5.1.2.3.1. Listing chromosomes</a></li>
-<li><a class="reference internal" href="#retrieving-elements-from-a-specific-chromosome">5.1.2.3.2. Retrieving elements from a specific chromosome</a></li>
-<li><a class="reference internal" href="#retrieving-elements-which-overlap-target-elements">5.1.2.3.3. Retrieving elements which overlap target elements</a><ul>
-<li><a class="reference internal" href="#what-are-nested-elements">5.1.2.3.3.1. What are nested elements?</a></li>
-<li><a class="reference internal" href="#demonstration">5.1.2.3.3.2. Demonstration</a></li>
+<li><a class="reference internal" href="#usage">6.1.2.3. Usage</a><ul>
+<li><a class="reference internal" href="#listing-chromosomes">6.1.2.3.1. Listing chromosomes</a></li>
+<li><a class="reference internal" href="#retrieving-elements-from-a-specific-chromosome">6.1.2.3.2. Retrieving elements from a specific chromosome</a></li>
+<li><a class="reference internal" href="#retrieving-elements-which-overlap-target-elements">6.1.2.3.3. Retrieving elements which overlap target elements</a><ul>
+<li><a class="reference internal" href="#what-are-nested-elements">6.1.2.3.3.1. What are nested elements?</a></li>
+<li><a class="reference internal" href="#demonstration">6.1.2.3.3.2. Demonstration</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#downloads">5.1.2.4. Downloads</a></li>
+<li><a class="reference internal" href="#downloads">6.1.2.4. Downloads</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="bedops.html"
-                        title="previous chapter">5.1.1. <cite>bedops</cite></a></p>
+                        title="previous chapter">6.1.1. <cite>bedops</cite></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="closest-features.html"
-                        title="next chapter">5.1.3. <cite>closest-features</cite></a></p>
+                        title="next chapter">6.1.3. <cite>closest-features</cite></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../../_sources/content/reference/set-operations/bedextract.txt"
@@ -305,14 +305,14 @@ chr21   33031585        33031605        map-22  26.000000</pre>
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="closest-features.html" title="5.1.3. closest-features"
+          <a href="closest-features.html" title="6.1.3. closest-features"
              >next</a> |</li>
         <li class="right" >
-          <a href="bedops.html" title="5.1.1. bedops"
+          <a href="bedops.html" title="6.1.1. bedops"
              >previous</a> |</li>
         <li><a href="../../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../../reference.html" >5. Reference</a> &raquo;</li>
-          <li><a href="../set-operations.html" >5.1. Set operations</a> &raquo;</li> 
+          <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
+          <li><a href="../set-operations.html" >6.1. Set operations</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

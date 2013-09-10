@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.7. Working with many input files at once with bedops and bedmap &mdash; BEDOPS 2.3 documentation</title>
+    <title>4.7. Working with many input files at once with bedops and bedmap &mdash; BEDOPS 2.3 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -27,9 +27,9 @@
     <script type="text/javascript" src="../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="top" title="BEDOPS 2.3 documentation" href="../../index.html" />
-    <link rel="up" title="3. Usage examples" href="../usage-examples.html" />
-    <link rel="next" title="4. Performance" href="../performance.html" />
-    <link rel="prev" title="3.6. Efficiently creating Starch-formatted archives with a cluster" href="starchcluster.html" /> 
+    <link rel="up" title="4. Usage examples" href="../usage-examples.html" />
+    <link rel="next" title="5. Performance" href="../performance.html" />
+    <link rel="prev" title="4.6. Efficiently creating Starch-formatted archives with a cluster" href="starchcluster.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,13 +39,13 @@
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../performance.html" title="4. Performance"
+          <a href="../performance.html" title="5. Performance"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="starchcluster.html" title="3.6. Efficiently creating Starch-formatted archives with a cluster"
+          <a href="starchcluster.html" title="4.6. Efficiently creating Starch-formatted archives with a cluster"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../usage-examples.html" accesskey="U">3. Usage examples</a> &raquo;</li> 
+          <li><a href="../usage-examples.html" accesskey="U">4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -55,10 +55,10 @@
           <div class="body">
             
   <div class="section" id="working-with-many-input-files-at-once-with-bedops-and-bedmap">
-<span id="multiple-inputs"></span><h1>3.7. Working with many input files at once with <tt class="docutils literal"><span class="pre">bedops</span></tt> and <tt class="docutils literal"><span class="pre">bedmap</span></tt><a class="headerlink" href="#working-with-many-input-files-at-once-with-bedops-and-bedmap" title="Permalink to this headline">¶</a></h1>
+<span id="multiple-inputs"></span><h1>4.7. Working with many input files at once with <tt class="docutils literal"><span class="pre">bedops</span></tt> and <tt class="docutils literal"><span class="pre">bedmap</span></tt><a class="headerlink" href="#working-with-many-input-files-at-once-with-bedops-and-bedmap" title="Permalink to this headline">¶</a></h1>
 <p>BEDOPS is designed to work with as many input files at once as you need, either through the <a class="reference internal" href="../reference/set-operations/bedops.html#bedops"><em>bedops</em></a> program, or through a combined use of that program with others in the suite.</p>
 <div class="section" id="discussion">
-<h2>3.7.1. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
+<h2>4.7.1. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
 <p>Say we have five input BED files (<tt class="docutils literal"><span class="pre">A</span></tt>, <tt class="docutils literal"><span class="pre">B</span></tt>, <tt class="docutils literal"><span class="pre">C</span></tt>, <tt class="docutils literal"><span class="pre">D</span></tt>, <tt class="docutils literal"><span class="pre">E</span></tt>), and we need to identify those regions where any two (or more) of the input files (<tt class="docutils literal"><span class="pre">{A,B}</span></tt>, <tt class="docutils literal"><span class="pre">{A,C}</span></tt>, <tt class="docutils literal"><span class="pre">{A,D}</span></tt>, <tt class="docutils literal"><span class="pre">{A,E}</span></tt>, <tt class="docutils literal"><span class="pre">{B,C}</span></tt>, ...) overlap reciprocally by 30% or more.</p>
 <p>One concrete application may be where we have multiple biological replicates, and we take any repeatable result (in two or more inputs, in this case) as true signal. Similarly, we might be interested in a problem like this if we have multiple related (or even unrelated) cell type samples and we want to be confident in peak calls for DNaseI sequencing of ChIP-seq experiments.</p>
 <p>These sorts of problems often have efficient solutions in BEDOPS. Here, the solution is independent of how many inputs we start with, what overlap criteria we use, and whether the requirement calls for two or more files of overlap (or whether it is 4 or more files in the overlap, or 9, or whatever).</p>
@@ -101,18 +101,18 @@ chr1 56  98  2  5.678  +  peak-2</pre>
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">3.7. Working with many input files at once with <tt class="docutils literal"><span class="pre">bedops</span></tt> and <tt class="docutils literal"><span class="pre">bedmap</span></tt></a><ul>
-<li><a class="reference internal" href="#discussion">3.7.1. Discussion</a></li>
+<li><a class="reference internal" href="#">4.7. Working with many input files at once with <tt class="docutils literal"><span class="pre">bedops</span></tt> and <tt class="docutils literal"><span class="pre">bedmap</span></tt></a><ul>
+<li><a class="reference internal" href="#discussion">4.7.1. Discussion</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="starchcluster.html"
-                        title="previous chapter">3.6. Efficiently creating Starch-formatted archives with a cluster</a></p>
+                        title="previous chapter">4.6. Efficiently creating Starch-formatted archives with a cluster</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../performance.html"
-                        title="next chapter">4. Performance</a></p>
+                        title="next chapter">5. Performance</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/content/usage-examples/multiple-inputs.txt"
@@ -142,13 +142,13 @@ chr1 56  98  2  5.678  +  peak-2</pre>
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../performance.html" title="4. Performance"
+          <a href="../performance.html" title="5. Performance"
              >next</a> |</li>
         <li class="right" >
-          <a href="starchcluster.html" title="3.6. Efficiently creating Starch-formatted archives with a cluster"
+          <a href="starchcluster.html" title="4.6. Efficiently creating Starch-formatted archives with a cluster"
              >previous</a> |</li>
         <li><a href="../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../usage-examples.html" >3. Usage examples</a> &raquo;</li> 
+          <li><a href="../usage-examples.html" >4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

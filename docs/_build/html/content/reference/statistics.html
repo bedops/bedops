@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.2. Statistics &mdash; BEDOPS 2.3 documentation</title>
+    <title>6.2. Statistics &mdash; BEDOPS 2.3 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -27,9 +27,9 @@
     <script type="text/javascript" src="../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="top" title="BEDOPS 2.3 documentation" href="../../index.html" />
-    <link rel="up" title="5. Reference" href="../reference.html" />
-    <link rel="next" title="5.2.1. bedmap" href="statistics/bedmap.html" />
-    <link rel="prev" title="5.1.3. closest-features" href="set-operations/closest-features.html" /> 
+    <link rel="up" title="6. Reference" href="../reference.html" />
+    <link rel="next" title="6.2.1. bedmap" href="statistics/bedmap.html" />
+    <link rel="prev" title="6.1.3. closest-features" href="set-operations/closest-features.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,13 +39,13 @@
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="statistics/bedmap.html" title="5.2.1. bedmap"
+          <a href="statistics/bedmap.html" title="6.2.1. bedmap"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="set-operations/closest-features.html" title="5.1.3. closest-features"
+          <a href="set-operations/closest-features.html" title="6.1.3. closest-features"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../reference.html" accesskey="U">5. Reference</a> &raquo;</li> 
+          <li><a href="../reference.html" accesskey="U">6. Reference</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -55,42 +55,42 @@
           <div class="body">
             
   <div class="section" id="statistics">
-<h1>5.2. Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h1>
+<h1>6.2. Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="statistics/bedmap.html">5.2.1. <cite>bedmap</cite></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="statistics/bedmap.html#inputs-and-outputs">5.2.1.1. Inputs and outputs</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="statistics/bedmap.html#input">5.2.1.1.1. Input</a></li>
-<li class="toctree-l3"><a class="reference internal" href="statistics/bedmap.html#output">5.2.1.1.2. Output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistics/bedmap.html">6.2.1. <cite>bedmap</cite></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="statistics/bedmap.html#inputs-and-outputs">6.2.1.1. Inputs and outputs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="statistics/bedmap.html#input">6.2.1.1.1. Input</a></li>
+<li class="toctree-l3"><a class="reference internal" href="statistics/bedmap.html#output">6.2.1.1.2. Output</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="statistics/bedmap.html#usage">5.2.1.2. Usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="statistics/bedmap.html#operations">5.2.1.3. Operations</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="statistics/bedmap.html#overlap-criteria">5.2.1.3.1. Overlap criteria</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="statistics/bedmap.html#using-faster-with-bp-ovr-and-range">5.2.1.3.1.1. Using <tt class="docutils literal"><span class="pre">--faster</span></tt> with <tt class="docutils literal"><span class="pre">--bp-ovr</span></tt> and <tt class="docutils literal"><span class="pre">--range</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistics/bedmap.html#usage">6.2.1.2. Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistics/bedmap.html#operations">6.2.1.3. Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="statistics/bedmap.html#overlap-criteria">6.2.1.3.1. Overlap criteria</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="statistics/bedmap.html#using-faster-with-bp-ovr-and-range">6.2.1.3.1.1. Using <tt class="docutils literal"><span class="pre">--faster</span></tt> with <tt class="docutils literal"><span class="pre">--bp-ovr</span></tt> and <tt class="docutils literal"><span class="pre">--range</span></tt></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="statistics/bedmap.html#score-operations">5.2.1.3.2. Score operations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="statistics/bedmap.html#non-score-operations">5.2.1.3.3. Non-score operations</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="statistics/bedmap.html#echo">5.2.1.3.3.1. Echo</a></li>
-<li class="toctree-l4"><a class="reference internal" href="statistics/bedmap.html#element-and-overlap-statistics">5.2.1.3.3.2. Element and overlap statistics</a></li>
-<li class="toctree-l4"><a class="reference internal" href="statistics/bedmap.html#indicator">5.2.1.3.3.3. Indicator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="statistics/bedmap.html#score-operations">6.2.1.3.2. Score operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="statistics/bedmap.html#non-score-operations">6.2.1.3.3. Non-score operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="statistics/bedmap.html#echo">6.2.1.3.3.1. Echo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="statistics/bedmap.html#element-and-overlap-statistics">6.2.1.3.3.2. Element and overlap statistics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="statistics/bedmap.html#indicator">6.2.1.3.3.3. Indicator</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="statistics/bedmap.html#modifiers">5.2.1.3.4. Modifiers</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="statistics/bedmap.html#range">5.2.1.3.4.1. Range</a></li>
-<li class="toctree-l4"><a class="reference internal" href="statistics/bedmap.html#using-faster-with-range">5.2.1.3.4.2. Using <tt class="docutils literal"><span class="pre">--faster</span></tt> with <tt class="docutils literal"><span class="pre">--range</span></tt></a></li>
-<li class="toctree-l4"><a class="reference internal" href="statistics/bedmap.html#formatting-score-output">5.2.1.3.4.3. Formatting score output</a></li>
-<li class="toctree-l4"><a class="reference internal" href="statistics/bedmap.html#delimiters">5.2.1.3.4.4. Delimiters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="statistics/bedmap.html#modifiers">6.2.1.3.4. Modifiers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="statistics/bedmap.html#range">6.2.1.3.4.1. Range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="statistics/bedmap.html#using-faster-with-range">6.2.1.3.4.2. Using <tt class="docutils literal"><span class="pre">--faster</span></tt> with <tt class="docutils literal"><span class="pre">--range</span></tt></a></li>
+<li class="toctree-l4"><a class="reference internal" href="statistics/bedmap.html#formatting-score-output">6.2.1.3.4.3. Formatting score output</a></li>
+<li class="toctree-l4"><a class="reference internal" href="statistics/bedmap.html#delimiters">6.2.1.3.4.4. Delimiters</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="statistics/bedmap.html#per-chromosome-operations-chrom">5.2.1.4. Per-chromosome operations (&#8211;chrom)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="statistics/bedmap.html#starch-support">5.2.1.5. Starch support</a></li>
-<li class="toctree-l2"><a class="reference internal" href="statistics/bedmap.html#error-checking">5.2.1.6. Error checking</a></li>
-<li class="toctree-l2"><a class="reference internal" href="statistics/bedmap.html#endlines">5.2.1.7. Endlines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="statistics/bedmap.html#downloads">5.2.1.8. Downloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistics/bedmap.html#per-chromosome-operations-chrom">6.2.1.4. Per-chromosome operations (&#8211;chrom)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistics/bedmap.html#starch-support">6.2.1.5. Starch support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistics/bedmap.html#error-checking">6.2.1.6. Error checking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistics/bedmap.html#endlines">6.2.1.7. Endlines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistics/bedmap.html#downloads">6.2.1.8. Downloads</a></li>
 </ul>
 </li>
 </ul>
@@ -108,10 +108,10 @@
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="set-operations/closest-features.html"
-                        title="previous chapter">5.1.3. <cite>closest-features</cite></a></p>
+                        title="previous chapter">6.1.3. <cite>closest-features</cite></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="statistics/bedmap.html"
-                        title="next chapter">5.2.1. <cite>bedmap</cite></a></p>
+                        title="next chapter">6.2.1. <cite>bedmap</cite></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/content/reference/statistics.txt"
@@ -141,13 +141,13 @@
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="statistics/bedmap.html" title="5.2.1. bedmap"
+          <a href="statistics/bedmap.html" title="6.2.1. bedmap"
              >next</a> |</li>
         <li class="right" >
-          <a href="set-operations/closest-features.html" title="5.1.3. closest-features"
+          <a href="set-operations/closest-features.html" title="6.1.3. closest-features"
              >previous</a> |</li>
         <li><a href="../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../reference.html" >5. Reference</a> &raquo;</li> 
+          <li><a href="../reference.html" >6. Reference</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

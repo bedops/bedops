@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.1. Set operations &mdash; BEDOPS 2.3 documentation</title>
+    <title>6.1. Set operations &mdash; BEDOPS 2.3 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -27,9 +27,9 @@
     <script type="text/javascript" src="../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="top" title="BEDOPS 2.3 documentation" href="../../index.html" />
-    <link rel="up" title="5. Reference" href="../reference.html" />
-    <link rel="next" title="5.1.1. bedops" href="set-operations/bedops.html" />
-    <link rel="prev" title="5. Reference" href="../reference.html" /> 
+    <link rel="up" title="6. Reference" href="../reference.html" />
+    <link rel="next" title="6.1.1. bedops" href="set-operations/bedops.html" />
+    <link rel="prev" title="6. Reference" href="../reference.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,13 +39,13 @@
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="set-operations/bedops.html" title="5.1.1. bedops"
+          <a href="set-operations/bedops.html" title="6.1.1. bedops"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="../reference.html" title="5. Reference"
+          <a href="../reference.html" title="6. Reference"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../reference.html" accesskey="U">5. Reference</a> &raquo;</li> 
+          <li><a href="../reference.html" accesskey="U">6. Reference</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -55,69 +55,69 @@
           <div class="body">
             
   <div class="section" id="set-operations">
-<h1>5.1. Set operations<a class="headerlink" href="#set-operations" title="Permalink to this headline">¶</a></h1>
+<h1>6.1. Set operations<a class="headerlink" href="#set-operations" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="set-operations/bedops.html">5.1.1. <cite>bedops</cite></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="set-operations/bedops.html#inputs-and-outputs">5.1.1.1. Inputs and outputs</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#input">5.1.1.1.1. Input</a></li>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#output">5.1.1.1.2. Output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="set-operations/bedops.html">6.1.1. <cite>bedops</cite></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="set-operations/bedops.html#inputs-and-outputs">6.1.1.1. Inputs and outputs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#input">6.1.1.1.1. Input</a></li>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#output">6.1.1.1.2. Output</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="set-operations/bedops.html#usage">5.1.1.2. Usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set-operations/bedops.html#operations">5.1.1.3. Operations</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#everything-u-everything">5.1.1.3.1. Everything (-u, &#8211;everything)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#element-of-e-element-of">5.1.1.3.2. Element-of (-e, &#8211;element-of)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#not-element-of-n-not-element-of">5.1.1.3.3. Not-element-of (-n, &#8211;not-element-of)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#complement-c-complement">5.1.1.3.4. Complement (-c, &#8211;complement)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#difference-d-difference">5.1.1.3.5. Difference (-d, &#8211;difference)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#symmetric-difference-s-symmdiff">5.1.1.3.6. Symmetric difference (-s, &#8211;symmdiff)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#intersect-i-intersect">5.1.1.3.7. Intersect (-i, &#8211;intersect)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#merge-m-merge">5.1.1.3.8. Merge (-m, &#8211;merge)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#partition-p-partition">5.1.1.3.9. Partition (-p, &#8211;partition)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#per-chromosome-operations-chrom">5.1.1.3.10. Per-chromosome operations (&#8211;chrom)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#range-range">5.1.1.3.11. Range (&#8211;range)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set-operations/bedops.html#usage">6.1.1.2. Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set-operations/bedops.html#operations">6.1.1.3. Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#everything-u-everything">6.1.1.3.1. Everything (-u, &#8211;everything)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#element-of-e-element-of">6.1.1.3.2. Element-of (-e, &#8211;element-of)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#not-element-of-n-not-element-of">6.1.1.3.3. Not-element-of (-n, &#8211;not-element-of)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#complement-c-complement">6.1.1.3.4. Complement (-c, &#8211;complement)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#difference-d-difference">6.1.1.3.5. Difference (-d, &#8211;difference)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#symmetric-difference-s-symmdiff">6.1.1.3.6. Symmetric difference (-s, &#8211;symmdiff)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#intersect-i-intersect">6.1.1.3.7. Intersect (-i, &#8211;intersect)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#merge-m-merge">6.1.1.3.8. Merge (-m, &#8211;merge)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#partition-p-partition">6.1.1.3.9. Partition (-p, &#8211;partition)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#per-chromosome-operations-chrom">6.1.1.3.10. Per-chromosome operations (&#8211;chrom)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#range-range">6.1.1.3.11. Range (&#8211;range)</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="set-operations/bedops.html#starch-support">5.1.1.4. Starch support</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set-operations/bedops.html#error-checking-ec">5.1.1.5. Error checking (&#8211;ec)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set-operations/bedops.html#tips">5.1.1.6. Tips</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#chaining-operations">5.1.1.6.1. Chaining operations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#sorting-inputs">5.1.1.6.2. Sorting inputs</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="set-operations/bedextract.html">5.1.2. <cite>bedextract</cite></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="set-operations/bedextract.html#how-it-works">5.1.2.1. How it works</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set-operations/bedextract.html#inputs-and-outputs">5.1.2.2. Inputs and outputs</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedextract.html#input">5.1.2.2.1. Input</a></li>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedextract.html#output">5.1.2.2.2. Output</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="set-operations/bedextract.html#usage">5.1.2.3. Usage</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedextract.html#listing-chromosomes">5.1.2.3.1. Listing chromosomes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedextract.html#retrieving-elements-from-a-specific-chromosome">5.1.2.3.2. Retrieving elements from a specific chromosome</a></li>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/bedextract.html#retrieving-elements-which-overlap-target-elements">5.1.2.3.3. Retrieving elements which overlap target elements</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="set-operations/bedextract.html#what-are-nested-elements">5.1.2.3.3.1. What are nested elements?</a></li>
-<li class="toctree-l4"><a class="reference internal" href="set-operations/bedextract.html#demonstration">5.1.2.3.3.2. Demonstration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set-operations/bedops.html#starch-support">6.1.1.4. Starch support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set-operations/bedops.html#error-checking-ec">6.1.1.5. Error checking (&#8211;ec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set-operations/bedops.html#tips">6.1.1.6. Tips</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#chaining-operations">6.1.1.6.1. Chaining operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedops.html#sorting-inputs">6.1.1.6.2. Sorting inputs</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="set-operations/bedextract.html#downloads">5.1.2.4. Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="set-operations/bedextract.html">6.1.2. <cite>bedextract</cite></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="set-operations/bedextract.html#how-it-works">6.1.2.1. How it works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set-operations/bedextract.html#inputs-and-outputs">6.1.2.2. Inputs and outputs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedextract.html#input">6.1.2.2.1. Input</a></li>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedextract.html#output">6.1.2.2.2. Output</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="set-operations/closest-features.html">5.1.3. <cite>closest-features</cite></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="set-operations/closest-features.html#inputs-and-outputs">5.1.3.1. Inputs and outputs</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/closest-features.html#input">5.1.3.1.1. Input</a></li>
-<li class="toctree-l3"><a class="reference internal" href="set-operations/closest-features.html#output">5.1.3.1.2. Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set-operations/bedextract.html#usage">6.1.2.3. Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedextract.html#listing-chromosomes">6.1.2.3.1. Listing chromosomes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedextract.html#retrieving-elements-from-a-specific-chromosome">6.1.2.3.2. Retrieving elements from a specific chromosome</a></li>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/bedextract.html#retrieving-elements-which-overlap-target-elements">6.1.2.3.3. Retrieving elements which overlap target elements</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="set-operations/bedextract.html#what-are-nested-elements">6.1.2.3.3.1. What are nested elements?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="set-operations/bedextract.html#demonstration">6.1.2.3.3.2. Demonstration</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="set-operations/closest-features.html#usage">5.1.3.2. Usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set-operations/closest-features.html#per-chromosome-operations-chrom">5.1.3.3. Per-chromosome operations (&#8211;chrom)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set-operations/closest-features.html#error-checking">5.1.3.4. Error checking</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set-operations/closest-features.html#downloads">5.1.3.5. Downloads</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="set-operations/bedextract.html#downloads">6.1.2.4. Downloads</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="set-operations/closest-features.html">6.1.3. <cite>closest-features</cite></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="set-operations/closest-features.html#inputs-and-outputs">6.1.3.1. Inputs and outputs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/closest-features.html#input">6.1.3.1.1. Input</a></li>
+<li class="toctree-l3"><a class="reference internal" href="set-operations/closest-features.html#output">6.1.3.1.2. Output</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="set-operations/closest-features.html#usage">6.1.3.2. Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set-operations/closest-features.html#per-chromosome-operations-chrom">6.1.3.3. Per-chromosome operations (&#8211;chrom)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set-operations/closest-features.html#error-checking">6.1.3.4. Error checking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set-operations/closest-features.html#downloads">6.1.3.5. Downloads</a></li>
 </ul>
 </li>
 </ul>
@@ -135,10 +135,10 @@
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="../reference.html"
-                        title="previous chapter">5. Reference</a></p>
+                        title="previous chapter">6. Reference</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="set-operations/bedops.html"
-                        title="next chapter">5.1.1. <cite>bedops</cite></a></p>
+                        title="next chapter">6.1.1. <cite>bedops</cite></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/content/reference/set-operations.txt"
@@ -168,13 +168,13 @@
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="set-operations/bedops.html" title="5.1.1. bedops"
+          <a href="set-operations/bedops.html" title="6.1.1. bedops"
              >next</a> |</li>
         <li class="right" >
-          <a href="../reference.html" title="5. Reference"
+          <a href="../reference.html" title="6. Reference"
              >previous</a> |</li>
         <li><a href="../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../reference.html" >5. Reference</a> &raquo;</li> 
+          <li><a href="../reference.html" >6. Reference</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.3.2. Compression &mdash; BEDOPS 2.3 documentation</title>
+    <title>6.3.2. Compression &mdash; BEDOPS 2.3 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -27,9 +27,9 @@
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
     <link rel="top" title="BEDOPS 2.3 documentation" href="../../../index.html" />
-    <link rel="up" title="5.3. File management" href="../file-management.html" />
-    <link rel="next" title="5.3.2.1. starch" href="compression/starch.html" />
-    <link rel="prev" title="5.3.1.1. sort-bed" href="sorting/sort-bed.html" /> 
+    <link rel="up" title="6.3. File management" href="../file-management.html" />
+    <link rel="next" title="6.3.2.1. starch" href="compression/starch.html" />
+    <link rel="prev" title="6.3.1.1. sort-bed" href="sorting/sort-bed.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,14 +39,14 @@
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="compression/starch.html" title="5.3.2.1. starch"
+          <a href="compression/starch.html" title="6.3.2.1. starch"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="sorting/sort-bed.html" title="5.3.1.1. sort-bed"
+          <a href="sorting/sort-bed.html" title="6.3.1.1. sort-bed"
              accesskey="P">previous</a> |</li>
         <li><a href="../../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../../reference.html" >5. Reference</a> &raquo;</li>
-          <li><a href="../file-management.html" accesskey="U">5.3. File management</a> &raquo;</li> 
+          <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
+          <li><a href="../file-management.html" accesskey="U">6.3. File management</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,12 +56,29 @@
           <div class="body">
             
   <div class="section" id="compression">
-<h1>5.3.2. Compression<a class="headerlink" href="#compression" title="Permalink to this headline">¶</a></h1>
+<h1>6.3.2. Compression<a class="headerlink" href="#compression" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="compression/starch.html">5.3.2.1. <cite>starch</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="compression/unstarch.html">5.3.2.2. <cite>unstarch</cite></a></li>
-<li class="toctree-l1"><a class="reference internal" href="compression/starchcat.html">5.3.2.3. <cite>starchcat</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="compression/starch.html">6.3.2.1. <cite>starch</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="compression/unstarch.html">6.3.2.2. <cite>unstarch</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="compression/starchcat.html">6.3.2.3. <cite>starchcat</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="compression/starch-specification.html">6.3.2.4. Starch (v2) specification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="compression/starch-specification.html#archive-structure">6.3.2.4.1. Archive structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compression/starch-specification.html#magic-bytes">6.3.2.4.2. Magic bytes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compression/starch-specification.html#chromosome-streams">6.3.2.4.3. Chromosome streams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compression/starch-specification.html#metadata">6.3.2.4.4. Metadata</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="compression/starch-specification.html#data">6.3.2.4.4.1. Data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="compression/starch-specification.html#archive">6.3.2.4.4.1.1. Archive</a></li>
+<li class="toctree-l4"><a class="reference internal" href="compression/starch-specification.html#streams">6.3.2.4.4.1.2. Streams</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="compression/starch-specification.html#offset">6.3.2.4.4.2. Offset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="compression/starch-specification.html#hash">6.3.2.4.4.3. Hash</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="compression/starch-specification.html#padding">6.3.2.4.5. Padding</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -77,10 +94,10 @@
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="sorting/sort-bed.html"
-                        title="previous chapter">5.3.1.1. <cite>sort-bed</cite></a></p>
+                        title="previous chapter">6.3.1.1. <cite>sort-bed</cite></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="compression/starch.html"
-                        title="next chapter">5.3.2.1. <cite>starch</cite></a></p>
+                        title="next chapter">6.3.2.1. <cite>starch</cite></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../../_sources/content/reference/file-management/compression.txt"
@@ -110,14 +127,14 @@
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="compression/starch.html" title="5.3.2.1. starch"
+          <a href="compression/starch.html" title="6.3.2.1. starch"
              >next</a> |</li>
         <li class="right" >
-          <a href="sorting/sort-bed.html" title="5.3.1.1. sort-bed"
+          <a href="sorting/sort-bed.html" title="6.3.1.1. sort-bed"
              >previous</a> |</li>
         <li><a href="../../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../../reference.html" >5. Reference</a> &raquo;</li>
-          <li><a href="../file-management.html" >5.3. File management</a> &raquo;</li> 
+          <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
+          <li><a href="../file-management.html" >6.3. File management</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

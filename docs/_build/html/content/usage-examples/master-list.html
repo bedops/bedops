@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.2. Collapsing multiple BED files into a master list by signal &mdash; BEDOPS 2.3 documentation</title>
+    <title>4.2. Collapsing multiple BED files into a master list by signal &mdash; BEDOPS 2.3 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -27,9 +27,9 @@
     <script type="text/javascript" src="../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="top" title="BEDOPS 2.3 documentation" href="../../index.html" />
-    <link rel="up" title="3. Usage examples" href="../usage-examples.html" />
-    <link rel="next" title="3.3. Measuring the frequency of signed distances between SNPs and nearest DHSes" href="distance-frequencies.html" />
-    <link rel="prev" title="3.1. Visualizing the relationship of SNPs and generic genomic features" href="snp-visualization.html" /> 
+    <link rel="up" title="4. Usage examples" href="../usage-examples.html" />
+    <link rel="next" title="4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes" href="distance-frequencies.html" />
+    <link rel="prev" title="4.1. Visualizing the relationship of SNPs and generic genomic features" href="snp-visualization.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,13 +39,13 @@
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="distance-frequencies.html" title="3.3. Measuring the frequency of signed distances between SNPs and nearest DHSes"
+          <a href="distance-frequencies.html" title="4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="snp-visualization.html" title="3.1. Visualizing the relationship of SNPs and generic genomic features"
+          <a href="snp-visualization.html" title="4.1. Visualizing the relationship of SNPs and generic genomic features"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../usage-examples.html" accesskey="U">3. Usage examples</a> &raquo;</li> 
+          <li><a href="../usage-examples.html" accesskey="U">4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -55,14 +55,14 @@
           <div class="body">
             
   <div class="section" id="collapsing-multiple-bed-files-into-a-master-list-by-signal">
-<span id="master-list"></span><h1>3.2. Collapsing multiple BED files into a master list by signal<a class="headerlink" href="#collapsing-multiple-bed-files-into-a-master-list-by-signal" title="Permalink to this headline">¶</a></h1>
+<span id="master-list"></span><h1>4.2. Collapsing multiple BED files into a master list by signal<a class="headerlink" href="#collapsing-multiple-bed-files-into-a-master-list-by-signal" title="Permalink to this headline">¶</a></h1>
 <p>Given a list of five-column UCSC BED files, where scores are kept in the fifth column, we want to build a &#8220;master list&#8221; of non-overlapping elements from all the inputs. Elements that initially overlap are ranked by score, and the highest scoring element is added to the master list.</p>
 <div class="section" id="bedops-tools-in-use">
-<h2>3.2.1. BEDOPS tools in use<a class="headerlink" href="#bedops-tools-in-use" title="Permalink to this headline">¶</a></h2>
+<h2>4.2.1. BEDOPS tools in use<a class="headerlink" href="#bedops-tools-in-use" title="Permalink to this headline">¶</a></h2>
 <p>In the following example, we want to merge hotspot peaks for five fetal adrenal tissues, picking the highest scoring element where there are matches. We&#8217;ll use a mix of <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> and its <tt class="docutils literal"><span class="pre">--max</span></tt> operation with <a class="reference internal" href="../reference/set-operations/bedops.html#bedops"><em>bedops</em></a> set operations to accomplish this.</p>
 </div>
 <div class="section" id="script">
-<h2>3.2.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
+<h2>4.2.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python"><pre>#!/bin/bash
 # author : Bob Thurman
 
@@ -143,7 +143,7 @@ exit 0</pre>
 </div>
 </div>
 <div class="section" id="discussion">
-<h2>3.2.3. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
+<h2>4.2.3. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
 <p>A broad array of human cell tissue hotspot data for testing this example are available for public download from the UCSC Genome Browser:</p>
 <ul class="simple">
 <li><a class="reference external" href="http://genome.ucsc.edu/cgi-bin/hgFileUi?db=hg19&amp;g=wgEncodeUwDnase">http://genome.ucsc.edu/cgi-bin/hgFileUi?db=hg19&amp;g=wgEncodeUwDnase</a></li>
@@ -163,20 +163,20 @@ exit 0</pre>
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">3.2. Collapsing multiple BED files into a master list by signal</a><ul>
-<li><a class="reference internal" href="#bedops-tools-in-use">3.2.1. BEDOPS tools in use</a></li>
-<li><a class="reference internal" href="#script">3.2.2. Script</a></li>
-<li><a class="reference internal" href="#discussion">3.2.3. Discussion</a></li>
+<li><a class="reference internal" href="#">4.2. Collapsing multiple BED files into a master list by signal</a><ul>
+<li><a class="reference internal" href="#bedops-tools-in-use">4.2.1. BEDOPS tools in use</a></li>
+<li><a class="reference internal" href="#script">4.2.2. Script</a></li>
+<li><a class="reference internal" href="#discussion">4.2.3. Discussion</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="snp-visualization.html"
-                        title="previous chapter">3.1. Visualizing the relationship of SNPs and generic genomic features</a></p>
+                        title="previous chapter">4.1. Visualizing the relationship of SNPs and generic genomic features</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="distance-frequencies.html"
-                        title="next chapter">3.3. Measuring the frequency of signed distances between SNPs and nearest DHSes</a></p>
+                        title="next chapter">4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/content/usage-examples/master-list.txt"
@@ -206,13 +206,13 @@ exit 0</pre>
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="distance-frequencies.html" title="3.3. Measuring the frequency of signed distances between SNPs and nearest DHSes"
+          <a href="distance-frequencies.html" title="4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes"
              >next</a> |</li>
         <li class="right" >
-          <a href="snp-visualization.html" title="3.1. Visualizing the relationship of SNPs and generic genomic features"
+          <a href="snp-visualization.html" title="4.1. Visualizing the relationship of SNPs and generic genomic features"
              >previous</a> |</li>
         <li><a href="../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../usage-examples.html" >3. Usage examples</a> &raquo;</li> 
+          <li><a href="../usage-examples.html" >4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

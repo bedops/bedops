@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.4. Finding the subset of SNPs within DHSes &mdash; BEDOPS 2.3 documentation</title>
+    <title>4.4. Finding the subset of SNPs within DHSes &mdash; BEDOPS 2.3 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -27,9 +27,9 @@
     <script type="text/javascript" src="../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="top" title="BEDOPS 2.3 documentation" href="../../index.html" />
-    <link rel="up" title="3. Usage examples" href="../usage-examples.html" />
-    <link rel="next" title="3.5. Smoothing raw tag count data across the genome" href="smoothing-tags.html" />
-    <link rel="prev" title="3.3. Measuring the frequency of signed distances between SNPs and nearest DHSes" href="distance-frequencies.html" /> 
+    <link rel="up" title="4. Usage examples" href="../usage-examples.html" />
+    <link rel="next" title="4.5. Smoothing raw tag count data across the genome" href="smoothing-tags.html" />
+    <link rel="prev" title="4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes" href="distance-frequencies.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,13 +39,13 @@
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="smoothing-tags.html" title="3.5. Smoothing raw tag count data across the genome"
+          <a href="smoothing-tags.html" title="4.5. Smoothing raw tag count data across the genome"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="distance-frequencies.html" title="3.3. Measuring the frequency of signed distances between SNPs and nearest DHSes"
+          <a href="distance-frequencies.html" title="4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../usage-examples.html" accesskey="U">3. Usage examples</a> &raquo;</li> 
+          <li><a href="../usage-examples.html" accesskey="U">4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -55,14 +55,14 @@
           <div class="body">
             
   <div class="section" id="finding-the-subset-of-snps-within-dhses">
-<span id="finding-elements-within-elements"></span><h1>3.4. Finding the subset of SNPs within DHSes<a class="headerlink" href="#finding-the-subset-of-snps-within-dhses" title="Permalink to this headline">¶</a></h1>
+<span id="finding-elements-within-elements"></span><h1>4.4. Finding the subset of SNPs within DHSes<a class="headerlink" href="#finding-the-subset-of-snps-within-dhses" title="Permalink to this headline">¶</a></h1>
 <p>In this example, we would like to identify the set of SNPs that are within a DHS, printing out both the SNP element <em>and</em> the DHS it is contained within.</p>
 <div class="section" id="bedops-tools-in-use">
-<h2>3.4.1. BEDOPS tools in use<a class="headerlink" href="#bedops-tools-in-use" title="Permalink to this headline">¶</a></h2>
+<h2>4.4.1. BEDOPS tools in use<a class="headerlink" href="#bedops-tools-in-use" title="Permalink to this headline">¶</a></h2>
 <p>We use <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> to answer this question, as it traverses a <em>reference</em> BED file (in this example, SNPs), and identifies overlapping elements from the <em>mapping</em> BED file (in this example, DHSs).</p>
 </div>
 <div class="section" id="script">
-<h2>3.4.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
+<h2>4.4.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
 <p>SNPs are in a BED-formatted file called <tt class="docutils literal"><span class="pre">SNPs.bed</span></tt> sorted lexicographically with <a class="reference internal" href="../reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a>. The DNase-hypersensitive sites are stored in a sorted BED-formatted file called <tt class="docutils literal"><span class="pre">DHSs.bed</span></tt>. These two files are available in the <a class="reference internal" href="#snps-within-dhses-downloads"><em>Downloads</em></a> section.</p>
 <div class="highlight-python"><pre>bedmap --indicator --echo --echo-map SNPs.bed DHSs.bed \
   | awk -F"|" '(int($1) == 1) { print $2"|"$3; }' \
@@ -70,7 +70,7 @@
 </div>
 </div>
 <div class="section" id="discussion">
-<h2>3.4.3. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
+<h2>4.4.3. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
 <p>The output of this <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> statement might look something like this:</p>
 <div class="highlight-python"><pre>chr1    10799576    10799577    rs12046278  Systolic_blood_pressure Cardiovascular|chr1 10799460    10799610    MCV-1   9.18063</pre>
 </div>
@@ -78,7 +78,7 @@
 <p>If multiple elements are mapped onto a single reference element, the mapped elements are further separated by semicolons, by default.</p>
 </div>
 <div class="section" id="downloads">
-<span id="snps-within-dhses-downloads"></span><h2>3.4.4. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
+<span id="snps-within-dhses-downloads"></span><h2>4.4.4. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference download internal" href="../../_downloads/Frequencies-SNPs.bed.starch"><tt class="xref download docutils literal"><span class="pre">SNP</span></tt></a> elements</li>
 <li><a class="reference download internal" href="../../_downloads/Frequencies-DHSs.bed.starch"><tt class="xref download docutils literal"><span class="pre">DNase-hypersensitive</span></tt></a> elements</li>
@@ -98,21 +98,21 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">3.4. Finding the subset of SNPs within DHSes</a><ul>
-<li><a class="reference internal" href="#bedops-tools-in-use">3.4.1. BEDOPS tools in use</a></li>
-<li><a class="reference internal" href="#script">3.4.2. Script</a></li>
-<li><a class="reference internal" href="#discussion">3.4.3. Discussion</a></li>
-<li><a class="reference internal" href="#downloads">3.4.4. Downloads</a></li>
+<li><a class="reference internal" href="#">4.4. Finding the subset of SNPs within DHSes</a><ul>
+<li><a class="reference internal" href="#bedops-tools-in-use">4.4.1. BEDOPS tools in use</a></li>
+<li><a class="reference internal" href="#script">4.4.2. Script</a></li>
+<li><a class="reference internal" href="#discussion">4.4.3. Discussion</a></li>
+<li><a class="reference internal" href="#downloads">4.4.4. Downloads</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="distance-frequencies.html"
-                        title="previous chapter">3.3. Measuring the frequency of signed distances between SNPs and nearest DHSes</a></p>
+                        title="previous chapter">4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="smoothing-tags.html"
-                        title="next chapter">3.5. Smoothing raw tag count data across the genome</a></p>
+                        title="next chapter">4.5. Smoothing raw tag count data across the genome</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/content/usage-examples/snps-within-dhses.txt"
@@ -142,13 +142,13 @@
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="smoothing-tags.html" title="3.5. Smoothing raw tag count data across the genome"
+          <a href="smoothing-tags.html" title="4.5. Smoothing raw tag count data across the genome"
              >next</a> |</li>
         <li class="right" >
-          <a href="distance-frequencies.html" title="3.3. Measuring the frequency of signed distances between SNPs and nearest DHSes"
+          <a href="distance-frequencies.html" title="4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes"
              >previous</a> |</li>
         <li><a href="../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../usage-examples.html" >3. Usage examples</a> &raquo;</li> 
+          <li><a href="../usage-examples.html" >4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

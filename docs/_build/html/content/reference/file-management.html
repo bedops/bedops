@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.3. File management &mdash; BEDOPS 2.3 documentation</title>
+    <title>6.3. File management &mdash; BEDOPS 2.3 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -27,9 +27,9 @@
     <script type="text/javascript" src="../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="top" title="BEDOPS 2.3 documentation" href="../../index.html" />
-    <link rel="up" title="5. Reference" href="../reference.html" />
-    <link rel="next" title="5.3.1. Sorting" href="file-management/sorting.html" />
-    <link rel="prev" title="5.2.1. bedmap" href="statistics/bedmap.html" /> 
+    <link rel="up" title="6. Reference" href="../reference.html" />
+    <link rel="next" title="6.3.1. Sorting" href="file-management/sorting.html" />
+    <link rel="prev" title="6.2.1. bedmap" href="statistics/bedmap.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,13 +39,13 @@
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="file-management/sorting.html" title="5.3.1. Sorting"
+          <a href="file-management/sorting.html" title="6.3.1. Sorting"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="statistics/bedmap.html" title="5.2.1. bedmap"
+          <a href="statistics/bedmap.html" title="6.2.1. bedmap"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../reference.html" accesskey="U">5. Reference</a> &raquo;</li> 
+          <li><a href="../reference.html" accesskey="U">6. Reference</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -55,27 +55,52 @@
           <div class="body">
             
   <div class="section" id="file-management">
-<h1>5.3. File management<a class="headerlink" href="#file-management" title="Permalink to this headline">¶</a></h1>
+<h1>6.3. File management<a class="headerlink" href="#file-management" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="file-management/sorting.html">5.3.1. Sorting</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="file-management/sorting/sort-bed.html">5.3.1.1. <cite>sort-bed</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="file-management/sorting.html">6.3.1. Sorting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file-management/sorting/sort-bed.html">6.3.1.1. <cite>sort-bed</cite></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file-management/sorting/sort-bed.html#inputs-and-outputs">6.3.1.1.1. Inputs and outputs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file-management/sorting/sort-bed.html#input">6.3.1.1.1.1. Input</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file-management/sorting/sort-bed.html#output">6.3.1.1.1.2. Output</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="file-management/compression.html">5.3.2. Compression</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="file-management/compression/starch.html">5.3.2.1. <cite>starch</cite></a></li>
-<li class="toctree-l2"><a class="reference internal" href="file-management/compression/unstarch.html">5.3.2.2. <cite>unstarch</cite></a></li>
-<li class="toctree-l2"><a class="reference internal" href="file-management/compression/starchcat.html">5.3.2.3. <cite>starchcat</cite></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/sorting/sort-bed.html#usage">6.3.1.1.2. Usage</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="file-management/conversion.html">5.3.3. Data conversion</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/bam2bed.html">5.3.3.1. <cite>bam2bed</cite></a></li>
-<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/gff2bed.html">5.3.3.2. <cite>gff2bed</cite></a></li>
-<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/gtf2bed.html">5.3.3.3. <cite>gtf2bed</cite></a></li>
-<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/psl2bed.html">5.3.3.4. <cite>psl2bed</cite></a></li>
-<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/sam2bed.html">5.3.3.5. <cite>sam2bed</cite></a></li>
-<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/vcf2bed.html">5.3.3.6. <cite>vcf2bed</cite></a></li>
-<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/wig2bed.html">5.3.3.7. <cite>wig2bed</cite></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file-management/compression.html">6.3.2. Compression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file-management/compression/starch.html">6.3.2.1. <cite>starch</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="file-management/compression/unstarch.html">6.3.2.2. <cite>unstarch</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="file-management/compression/starchcat.html">6.3.2.3. <cite>starchcat</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="file-management/compression/starch-specification.html">6.3.2.4. Starch (v2) specification</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file-management/compression/starch-specification.html#archive-structure">6.3.2.4.1. Archive structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/compression/starch-specification.html#magic-bytes">6.3.2.4.2. Magic bytes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/compression/starch-specification.html#chromosome-streams">6.3.2.4.3. Chromosome streams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/compression/starch-specification.html#metadata">6.3.2.4.4. Metadata</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file-management/compression/starch-specification.html#data">6.3.2.4.4.1. Data</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="file-management/compression/starch-specification.html#archive">6.3.2.4.4.1.1. Archive</a></li>
+<li class="toctree-l5"><a class="reference internal" href="file-management/compression/starch-specification.html#streams">6.3.2.4.4.1.2. Streams</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="file-management/compression/starch-specification.html#offset">6.3.2.4.4.2. Offset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="file-management/compression/starch-specification.html#hash">6.3.2.4.4.3. Hash</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/compression/starch-specification.html#padding">6.3.2.4.5. Padding</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file-management/conversion.html">6.3.3. Data conversion</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/bam2bed.html">6.3.3.1. <cite>bam2bed</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/gff2bed.html">6.3.3.2. <cite>gff2bed</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/gtf2bed.html">6.3.3.3. <cite>gtf2bed</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/psl2bed.html">6.3.3.4. <cite>psl2bed</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/sam2bed.html">6.3.3.5. <cite>sam2bed</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/vcf2bed.html">6.3.3.6. <cite>vcf2bed</cite></a></li>
+<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/wig2bed.html">6.3.3.7. <cite>wig2bed</cite></a></li>
 </ul>
 </li>
 </ul>
@@ -93,10 +118,10 @@
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="statistics/bedmap.html"
-                        title="previous chapter">5.2.1. <cite>bedmap</cite></a></p>
+                        title="previous chapter">6.2.1. <cite>bedmap</cite></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="file-management/sorting.html"
-                        title="next chapter">5.3.1. Sorting</a></p>
+                        title="next chapter">6.3.1. Sorting</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/content/reference/file-management.txt"
@@ -126,13 +151,13 @@
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="file-management/sorting.html" title="5.3.1. Sorting"
+          <a href="file-management/sorting.html" title="6.3.1. Sorting"
              >next</a> |</li>
         <li class="right" >
-          <a href="statistics/bedmap.html" title="5.2.1. bedmap"
+          <a href="statistics/bedmap.html" title="6.2.1. bedmap"
              >previous</a> |</li>
         <li><a href="../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../reference.html" >5. Reference</a> &raquo;</li> 
+          <li><a href="../reference.html" >6. Reference</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

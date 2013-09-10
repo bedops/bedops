@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.2.1. bedmap &mdash; BEDOPS 2.3 documentation</title>
+    <title>6.2.1. bedmap &mdash; BEDOPS 2.3 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -27,9 +27,9 @@
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
     <link rel="top" title="BEDOPS 2.3 documentation" href="../../../index.html" />
-    <link rel="up" title="5.2. Statistics" href="../statistics.html" />
-    <link rel="next" title="5.3. File management" href="../file-management.html" />
-    <link rel="prev" title="5.2. Statistics" href="../statistics.html" /> 
+    <link rel="up" title="6.2. Statistics" href="../statistics.html" />
+    <link rel="next" title="6.3. File management" href="../file-management.html" />
+    <link rel="prev" title="6.2. Statistics" href="../statistics.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,14 +39,14 @@
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../file-management.html" title="5.3. File management"
+          <a href="../file-management.html" title="6.3. File management"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="../statistics.html" title="5.2. Statistics"
+          <a href="../statistics.html" title="6.2. Statistics"
              accesskey="P">previous</a> |</li>
         <li><a href="../../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../../reference.html" >5. Reference</a> &raquo;</li>
-          <li><a href="../statistics.html" accesskey="U">5.2. Statistics</a> &raquo;</li> 
+          <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
+          <li><a href="../statistics.html" accesskey="U">6.2. Statistics</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,12 +56,12 @@
           <div class="body">
             
   <div class="section" id="bedmap">
-<span id="id1"></span><h1>5.2.1. <cite>bedmap</cite><a class="headerlink" href="#bedmap" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>6.2.1. <cite>bedmap</cite><a class="headerlink" href="#bedmap" title="Permalink to this headline">¶</a></h1>
 <p>The <tt class="docutils literal"><span class="pre">bedmap</span></tt> program is used to retrieve and process signal or other features over regions of interest in BED files (including DNase hypersensitive regions, SNPs, transcription factor binding sites, etc.), performing tasks such as: <a class="reference internal" href="../../usage-examples/smoothing-tags.html#smoothing-raw-tags"><em>smoothing raw tag</em></a> count signal in preparation for uploading to the UCSC Genome Browser, <a class="reference internal" href="../../usage-examples/snps-within-dhses.html#finding-elements-within-elements"><em>finding subsets of elements</em></a> within a larger coordinate set, <a class="reference internal" href="../../usage-examples/master-list.html#master-list"><em>filtering multiple BED files</em></a> by signal, <a class="reference internal" href="../../usage-examples/multiple-inputs.html#multiple-inputs"><em>finding multi-input overlap</em></a> solutions, and much, much more.</p>
 <div class="section" id="inputs-and-outputs">
-<h2>5.2.1.1. Inputs and outputs<a class="headerlink" href="#inputs-and-outputs" title="Permalink to this headline">¶</a></h2>
+<h2>6.2.1.1. Inputs and outputs<a class="headerlink" href="#inputs-and-outputs" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="input">
-<h3>5.2.1.1.1. Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
+<h3>6.2.1.1.1. Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
 <p>The <a class="reference internal" href="#bedmap"><em>bedmap</em></a> program takes in <em>reference</em> and <em>mapping</em> files and calculates statistics for each reference element. These calculations—<em>operations</em>—are applied to overlapping elements from the mapped file:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_bedmap_inputs.png"><img alt="../../../_images/reference_bedmap_inputs.png" src="../../../_images/reference_bedmap_inputs.png" style="width: 99%;" /></a>
 <p>The <a class="reference internal" href="#bedmap"><em>bedmap</em></a> program requires files in a relaxed variation of the BED format as described by <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1">UCSC&#8217;s browser documentation</a>. The chromosome field can be any non-empty string, the score field can be any valid numeric value, and information is unconstrained beyond the minimum number of columns required by the chosen options.</p>
@@ -76,12 +76,12 @@
 <p>Once you have overlapping elements, you can either perform <a class="reference internal" href="#bedmap-score-operations"><em>numerical calculations</em></a> on their scores or return identifiers or other <a class="reference internal" href="#bedmap-non-score-operations"><em>non-score information</em></a>. Additional <a class="reference internal" href="#bedmap-modifier-operations"><em>modifier operators</em></a> allow customization of how output is presented, to assist with downstream processing in a pipeline setting.</p>
 </div>
 <div class="section" id="output">
-<h3>5.2.1.1.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
+<h3>6.2.1.1.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
 <p>Depending on specified options, the <a class="reference internal" href="#bedmap"><em>bedmap</em></a> program can send a variety of delimited information about the reference and mapped elements (as well as analytical results) to standard output. If the <tt class="docutils literal"><span class="pre">--echo</span></tt> option is used, the output will be at least a three-column BED file. The use of predictable delimiters (which are customizable) and the use of UNIX-like standard streams allows easy downstream analysis or post-processing with other tools and scripts.</p>
 </div>
 </div>
 <div class="section" id="usage">
-<h2>5.2.1.2. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<h2>6.2.1.2. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>The <tt class="docutils literal"><span class="pre">--help</span></tt> option describes the various mapping and analytical operations and other options available to the end user:</p>
 <div class="highlight-python"><pre>bedmap
   citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
@@ -179,7 +179,7 @@
 </div>
 </div>
 <div class="section" id="operations">
-<span id="bedmap-operations"></span><h2>5.2.1.3. Operations<a class="headerlink" href="#operations" title="Permalink to this headline">¶</a></h2>
+<span id="bedmap-operations"></span><h2>6.2.1.3. Operations<a class="headerlink" href="#operations" title="Permalink to this headline">¶</a></h2>
 <p>To demonstrate the various operations in <a class="reference internal" href="#bedmap"><em>bedmap</em></a>, we start with two simple, pre-sorted BED files that we label as <tt class="docutils literal"><span class="pre">Map</span></tt> and <tt class="docutils literal"><span class="pre">Reference</span></tt> (see the <a class="reference internal" href="#bedmap-downloads"><em>Downloads</em></a> section for files you can use to follow along).</p>
 <p>Our <tt class="docutils literal"><span class="pre">Map</span></tt> file is a snippet of real-world BED data derived from <a class="reference external" href="http://www.uwencode.org/">ENCODE</a> experiments conducted by our lab: specifically, raw <a class="reference external" href="http://en.wikipedia.org/wiki/Hypersensitive_site">DNaseI hypersensitivity</a> signal for the human K562 cell line (region <tt class="docutils literal"><span class="pre">chr21:33031165-33032485</span></tt>, assembly <tt class="docutils literal"><span class="pre">GRCh37/h19</span></tt> and table <tt class="docutils literal"><span class="pre">wgEncodeUwDnaseK562RawRep1</span></tt> from the <a class="reference external" href="http://genome.ucsc.edu/">UCSC Genome Browser</a>).</p>
 <p>This raw signal is the density of sequence tags which map within a 150 bp sliding window, at 20 bp steps across the genome—a smoothed picture of DNaseI hypersensitivity:</p>
@@ -222,7 +222,7 @@ chr21   33031900    33032000    ref-3</pre>
 <a class="reference internal image-reference" href="../../../_images/reference_bedmap_mapref_ref3.png"><img alt="../../../_images/reference_bedmap_mapref_ref3.png" src="../../../_images/reference_bedmap_mapref_ref3.png" style="width: 99%;" /></a>
 <p>In these sample files, we provide the <tt class="docutils literal"><span class="pre">Map</span></tt> file with ID and score columns, and the <tt class="docutils literal"><span class="pre">Reference</span></tt> file with an ID column. These extra columns are not required by <a class="reference internal" href="#bedmap"><em>bedmap</em></a>, but we can use the information in these columns in conjunction with the options provided by <a class="reference internal" href="#bedmap"><em>bedmap</em></a> to identify matches, retrieve matched signals, and summarize data about signal across mapped elements.</p>
 <div class="section" id="overlap-criteria">
-<span id="bedmap-overlap-criteria"></span><h3>5.2.1.3.1. Overlap criteria<a class="headerlink" href="#overlap-criteria" title="Permalink to this headline">¶</a></h3>
+<span id="bedmap-overlap-criteria"></span><h3>6.2.1.3.1. Overlap criteria<a class="headerlink" href="#overlap-criteria" title="Permalink to this headline">¶</a></h3>
 <p>The default overlap criterion that <a class="reference internal" href="#bedmap"><em>bedmap</em></a> uses is <em>one base</em>. That is, one or more bases of overlap between reference and mapping elements is sufficient for inclusion in operations. This value can be adjusted with the <tt class="docutils literal"><span class="pre">--bp-ovr</span></tt> option. The <tt class="docutils literal"><span class="pre">--range</span></tt> overlap option implicitly applies <tt class="docutils literal"><span class="pre">--bp-ovr</span> <span class="pre">1</span></tt> after symmetrically padding elements.</p>
 <p>If a fractional overlap is desired, the <tt class="docutils literal"><span class="pre">--fraction-{ref,map,both,either}</span></tt> options provide the ability to filter on overlap by a specified percentage of the length of either or both the reference and mapping elements.</p>
 <p>Finally, the <tt class="docutils literal"><span class="pre">--exact</span></tt> flag enforces exact matches between reference and mapping elements.</p>
@@ -231,7 +231,7 @@ chr21   33031900    33032000    ref-3</pre>
 <p class="last">The <tt class="docutils literal"><span class="pre">--exact</span></tt> option is an alias for <tt class="docutils literal"><span class="pre">--fraction-both</span> <span class="pre">1</span></tt>.</p>
 </div>
 <div class="section" id="using-faster-with-bp-ovr-and-range">
-<h4>5.2.1.3.1.1. Using <tt class="docutils literal"><span class="pre">--faster</span></tt> with <tt class="docutils literal"><span class="pre">--bp-ovr</span></tt> and <tt class="docutils literal"><span class="pre">--range</span></tt><a class="headerlink" href="#using-faster-with-bp-ovr-and-range" title="Permalink to this headline">¶</a></h4>
+<h4>6.2.1.3.1.1. Using <tt class="docutils literal"><span class="pre">--faster</span></tt> with <tt class="docutils literal"><span class="pre">--bp-ovr</span></tt> and <tt class="docutils literal"><span class="pre">--range</span></tt><a class="headerlink" href="#using-faster-with-bp-ovr-and-range" title="Permalink to this headline">¶</a></h4>
 <p>The <tt class="docutils literal"><span class="pre">--faster</span></tt> modifier works with the <tt class="docutils literal"><span class="pre">--bp-ovr</span></tt> overlap and <tt class="docutils literal"><span class="pre">--range</span></tt> specifiers to dramatically increase the performance of <a class="reference internal" href="#bedmap"><em>bedmap</em></a>, when the following input restriction is met:</p>
 <ul class="simple">
 <li>No fully-nested elements in any input mapping file (duplicate elements and other overlapping elements are okay).</li>
@@ -261,7 +261,7 @@ chr21   33031900    33032000    ref-3</pre>
 </div>
 </div>
 <div class="section" id="score-operations">
-<span id="bedmap-score-operations"></span><h3>5.2.1.3.2. Score operations<a class="headerlink" href="#score-operations" title="Permalink to this headline">¶</a></h3>
+<span id="bedmap-score-operations"></span><h3>6.2.1.3.2. Score operations<a class="headerlink" href="#score-operations" title="Permalink to this headline">¶</a></h3>
 <p>Score operators apply a numerical calculation on the values of the score column of mapping elements. Per <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1">UCSC specifications</a>, <a class="reference internal" href="#bedmap"><em>bedmap</em></a> assumes the score data are stored in the fifth column.</p>
 <p>The variety of score operators include common statistical measures:</p>
 <ul class="simple">
@@ -338,14 +338,14 @@ chr21   33031900    33032000    ref-3|154.500000|9.311283|138.000000|165.000000<
 <p>Multiple score-operational results are ordered identically with the command-line options. The section on <a class="reference internal" href="#bedmap-formatting-score-output"><em>formatting score output</em></a> demonstrates how one can change the precision and general format of numerical score results.</p>
 </div>
 <div class="section" id="non-score-operations">
-<span id="bedmap-non-score-operations"></span><h3>5.2.1.3.3. Non-score operations<a class="headerlink" href="#non-score-operations" title="Permalink to this headline">¶</a></h3>
+<span id="bedmap-non-score-operations"></span><h3>6.2.1.3.3. Non-score operations<a class="headerlink" href="#non-score-operations" title="Permalink to this headline">¶</a></h3>
 <p>Sometimes it is useful to get summary or non-score statistics about the map elements. This category of operators returns information from the ID column of mapping elements, or can return counts and base overlap totals.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">As with score data, we follow the <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1">UCSC convention</a> for the BED format and retrieve ID data from the fourth column.</p>
 </div>
 <div class="section" id="echo">
-<span id="bedmap-echo"></span><h4>5.2.1.3.3.1. Echo<a class="headerlink" href="#echo" title="Permalink to this headline">¶</a></h4>
+<span id="bedmap-echo"></span><h4>6.2.1.3.3.1. Echo<a class="headerlink" href="#echo" title="Permalink to this headline">¶</a></h4>
 <p>The ID, score and coordinate columns of the reference and map files are very useful for reading and debugging results, or reporting a more detailed mapping.</p>
 <p>We can use the <tt class="docutils literal"><span class="pre">--echo</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-id</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-id-uniq</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-score</span></tt> and <tt class="docutils literal"><span class="pre">--echo-map-range</span></tt> flags to tell <a class="reference internal" href="#bedmap"><em>bedmap</em></a> to report additional details about the reference and map elements.</p>
 <p>The <tt class="docutils literal"><span class="pre">--echo</span></tt> flag reports each reference element. We have already seen the application of <tt class="docutils literal"><span class="pre">--echo</span></tt> in earlier examples. The option helps to clearly associate results from other chosen operations with specific reference elements. Additionally, <tt class="docutils literal"><span class="pre">--echo</span></tt> enables the output from <a class="reference internal" href="#bedmap"><em>bedmap</em></a> to be used as input to additional BEDOPS utilities, including <a class="reference internal" href="#bedmap"><em>bedmap</em></a> itself.</p>
@@ -393,7 +393,7 @@ chr21   33031900    33032000    ref-3|chr21 33031885    33032005</pre>
 </div>
 </div>
 <div class="section" id="element-and-overlap-statistics">
-<span id="bedmap-element-and-overlap-statistics"></span><h4>5.2.1.3.3.2. Element and overlap statistics<a class="headerlink" href="#element-and-overlap-statistics" title="Permalink to this headline">¶</a></h4>
+<span id="bedmap-element-and-overlap-statistics"></span><h4>6.2.1.3.3.2. Element and overlap statistics<a class="headerlink" href="#element-and-overlap-statistics" title="Permalink to this headline">¶</a></h4>
 <p>Looking back at the <tt class="docutils literal"><span class="pre">Map</span></tt> and <tt class="docutils literal"><span class="pre">Reference</span></tt> datasets, let&#8217;s say we want to count the number of elements in <tt class="docutils literal"><span class="pre">Map</span></tt> that overlap a given <tt class="docutils literal"><span class="pre">Reference</span></tt> element, as well as the extent of that overlap as measured by the total number of overlapping bases from mapped elements. For this, we use the <tt class="docutils literal"><span class="pre">--count</span></tt> and <tt class="docutils literal"><span class="pre">--bases</span></tt> flags, respectively:</p>
 <div class="highlight-python"><pre>$ bedmap --echo --count --bases reference.bed map.bed
 chr21   33031200    33032400    ref-1|61|1200
@@ -408,7 +408,7 @@ chr1    4534161     4962550     adhoc-1|169|71|0.000166</pre>
 </div>
 </div>
 <div class="section" id="indicator">
-<span id="bedmap-indicator"></span><h4>5.2.1.3.3.3. Indicator<a class="headerlink" href="#indicator" title="Permalink to this headline">¶</a></h4>
+<span id="bedmap-indicator"></span><h4>6.2.1.3.3.3. Indicator<a class="headerlink" href="#indicator" title="Permalink to this headline">¶</a></h4>
 <p>If we simply want to know if a reference element overlaps one or more map elements, we can use the <tt class="docutils literal"><span class="pre">--indicator</span></tt> operator, which returns a <tt class="docutils literal"><span class="pre">1</span></tt> or <tt class="docutils literal"><span class="pre">0</span></tt> value, depending on whether there is or is not an overlap, respectively. For example:</p>
 <div class="highlight-python"><pre>$ bedmap --echo --indicator reference.bed map.bed
 chr21   33031200    33032400    ref-1|1
@@ -429,10 +429,10 @@ chr21   1000    2000    foo-1|0</pre>
 </div>
 </div>
 <div class="section" id="modifiers">
-<span id="bedmap-modifier-operations"></span><h3>5.2.1.3.4. Modifiers<a class="headerlink" href="#modifiers" title="Permalink to this headline">¶</a></h3>
+<span id="bedmap-modifier-operations"></span><h3>6.2.1.3.4. Modifiers<a class="headerlink" href="#modifiers" title="Permalink to this headline">¶</a></h3>
 <p>These options can modify the coordinates used for generating the set of mapped regions, as well as alter the presentation of results. These modifiers can be useful, depending on how <a class="reference internal" href="#bedmap"><em>bedmap</em></a> is used in your own workflow.</p>
 <div class="section" id="range">
-<span id="bedmap-range"></span><h4>5.2.1.3.4.1. Range<a class="headerlink" href="#range" title="Permalink to this headline">¶</a></h4>
+<span id="bedmap-range"></span><h4>6.2.1.3.4.1. Range<a class="headerlink" href="#range" title="Permalink to this headline">¶</a></h4>
 <p>The <tt class="docutils literal"><span class="pre">--range</span></tt> option uses <tt class="docutils literal"><span class="pre">--bp-ovr</span> <span class="pre">1</span></tt> (<em>i.e.</em>, <a class="reference internal" href="#bedmap-overlap-criteria"><em>one base of overlap</em></a>) after internally and symmetrically padding reference coordinates by a specified positive integer value. The larger reference elements are used to determine overlapping mapped elements, prior to applying chosen operations.</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
@@ -464,7 +464,7 @@ chr21   33031900    33032000    ref-3|117.750000</pre>
 </div>
 </div>
 <div class="section" id="using-faster-with-range">
-<span id="bedmap-using-faster-with-range"></span><h4>5.2.1.3.4.2. Using <tt class="docutils literal"><span class="pre">--faster</span></tt> with <tt class="docutils literal"><span class="pre">--range</span></tt><a class="headerlink" href="#using-faster-with-range" title="Permalink to this headline">¶</a></h4>
+<span id="bedmap-using-faster-with-range"></span><h4>6.2.1.3.4.2. Using <tt class="docutils literal"><span class="pre">--faster</span></tt> with <tt class="docutils literal"><span class="pre">--range</span></tt><a class="headerlink" href="#using-faster-with-range" title="Permalink to this headline">¶</a></h4>
 <p>The <tt class="docutils literal"><span class="pre">--faster</span></tt> modifier works with the <tt class="docutils literal"><span class="pre">--bp-ovr</span></tt> overlap and <tt class="docutils literal"><span class="pre">--range</span></tt> specifiers to dramatically increase the performance of <a class="reference internal" href="#bedmap"><em>bedmap</em></a>, where the following input restriction is met:</p>
 <ul class="simple">
 <li>No fully-nested elements in any input mapping file (duplicate elements and other overlapping elements are okay).</li>
@@ -494,7 +494,7 @@ chr21   33031900    33032000    ref-3|117.750000</pre>
 <p>This option also works with the &#8211;ec error checking flag, which indicates if the data contain nested elements. Using &#8211;ec carries its usual overhead, but as it only doubles the much-improved execution time, it may be worth using.</p>
 </div>
 <div class="section" id="formatting-score-output">
-<span id="bedmap-formatting-score-output"></span><h4>5.2.1.3.4.3. Formatting score output<a class="headerlink" href="#formatting-score-output" title="Permalink to this headline">¶</a></h4>
+<span id="bedmap-formatting-score-output"></span><h4>6.2.1.3.4.3. Formatting score output<a class="headerlink" href="#formatting-score-output" title="Permalink to this headline">¶</a></h4>
 <p>The <tt class="docutils literal"><span class="pre">--prec</span></tt> and <tt class="docutils literal"><span class="pre">--sci</span></tt> process flags are useful for controlling the <a class="reference external" href="http://en.wikipedia.org/wiki/Precision_(arithmetic)">arithmetic precision</a> and <a class="reference external" href="http://en.wikipedia.org/wiki/Scientific_notation">notation</a> of score output, when used with the <tt class="docutils literal"><span class="pre">--echo-map-score</span></tt>, <tt class="docutils literal"><span class="pre">--sum</span></tt>, <tt class="docutils literal"><span class="pre">--mean</span></tt> and other numerical score operators. This will also format results from the non-score operator <tt class="docutils literal"><span class="pre">--bases-uniq-f</span></tt>.</p>
 <p>To demonstrate their use, we revisit the <tt class="docutils literal"><span class="pre">Motifs</span></tt> dataset, which includes <em>p</em>-values reporting the statistical significance of putative transcription factor binding sites:</p>
 <div class="highlight-python"><pre>chr1    4534161 4534177 -V_GRE_C        4.20586e-06     -       CGTACACACAGTTCTT
@@ -524,7 +524,7 @@ chr1    4962529 4962539 +V_NUR77_Q5     8.43564e-06     +       TTGACCTTGG
 <p>Obviously, the <tt class="docutils literal"><span class="pre">--sci</span></tt> flag is useful for very small or large score data. You probably wouldn&#8217;t use <tt class="docutils literal"><span class="pre">--sci</span></tt> with most integer signal (<em>e.g.</em>, raw tag counts or most discrete measurements).</p>
 </div>
 <div class="section" id="delimiters">
-<span id="bedmap-delimiters"></span><h4>5.2.1.3.4.4. Delimiters<a class="headerlink" href="#delimiters" title="Permalink to this headline">¶</a></h4>
+<span id="bedmap-delimiters"></span><h4>6.2.1.3.4.4. Delimiters<a class="headerlink" href="#delimiters" title="Permalink to this headline">¶</a></h4>
 <p>As shown in the examples above, the pipe (<tt class="docutils literal"><span class="pre">|</span></tt>) and semi-colon (<tt class="docutils literal"><span class="pre">;</span></tt>) characters are used to split operational and <tt class="docutils literal"><span class="pre">echo</span></tt>-ed results, respectively. The <tt class="docutils literal"><span class="pre">--delim</span></tt> and <tt class="docutils literal"><span class="pre">--multidelim</span></tt> flags change these delimiters to characters of your choice, which let you pick what makes most sense for your custom post-processing or other downstream pipelining work (for instance, in our lab <tt class="docutils literal"><span class="pre">--delim</span> <span class="pre">&quot;\t&quot;</span></tt> is a popular alternative to the default <tt class="docutils literal"><span class="pre">|</span></tt> character).</p>
 <p>As an example, the following <a class="reference internal" href="#bedmap"><em>bedmap</em></a> result is obtained from using the <tt class="docutils literal"><span class="pre">--echo</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-id</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-score</span></tt> and <tt class="docutils literal"><span class="pre">--max</span></tt> options on the <tt class="docutils literal"><span class="pre">Motifs</span></tt> dataset:</p>
 <div class="highlight-python"><pre>chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01|4.21e-06;2.22e-06;6.94e-06|6.94e-06</pre>
@@ -553,7 +553,7 @@ chr1    4534150 4534300 ref-1|-V_GRE_C$-V_STAT_Q6$+V_HNF4_Q6_01</pre>
 </div>
 </div>
 <div class="section" id="per-chromosome-operations-chrom">
-<span id="bedmap-per-chromosome-operations"></span><h2>5.2.1.4. Per-chromosome operations (&#8211;chrom)<a class="headerlink" href="#per-chromosome-operations-chrom" title="Permalink to this headline">¶</a></h2>
+<span id="bedmap-per-chromosome-operations"></span><h2>6.2.1.4. Per-chromosome operations (&#8211;chrom)<a class="headerlink" href="#per-chromosome-operations-chrom" title="Permalink to this headline">¶</a></h2>
 <p>All operations on inputs described so far can be restricted to one chromosome, by adding the <tt class="docutils literal"><span class="pre">--chrom</span> <span class="pre">&lt;val&gt;</span></tt> operator. This is highly useful for cluster-based work, where operations on large BED inputs can be split up by chromosome and pushed to separate cluster nodes.</p>
 <p>Here, we use the <tt class="docutils literal"><span class="pre">--echo</span></tt> and <tt class="docutils literal"><span class="pre">--echo-map-id</span></tt> operators on our <tt class="docutils literal"><span class="pre">Motifs</span></tt> dataset, but we limit operations to those on elements on chromosome <tt class="docutils literal"><span class="pre">chr2</span></tt>:</p>
 <div class="highlight-python"><pre>$ echo -e "chr2\t1000000\t5000000\tref-1" | bedmap --chrom chr2 --echo --echo-map-id - motifs.bed
@@ -565,7 +565,7 @@ $</pre>
 </div>
 </div>
 <div class="section" id="starch-support">
-<span id="bedmap-starch-support"></span><h2>5.2.1.5. Starch support<a class="headerlink" href="#starch-support" title="Permalink to this headline">¶</a></h2>
+<span id="bedmap-starch-support"></span><h2>6.2.1.5. Starch support<a class="headerlink" href="#starch-support" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="#bedmap"><em>bedmap</em></a> application supports use of <a class="reference internal" href="../file-management/compression/starch.html#starch"><em>Starch-formatted archives</em></a> as inputs, as well as text-based BED data. One or multiple inputs may be Starch archives.</p>
 <p>For example, we can repeat the overlapping-motif example from the <a class="reference internal" href="#bedmap-echo"><em>Echo section</em></a>, using a Starch archive made from the regions in <tt class="docutils literal"><span class="pre">Motifs</span></tt>:</p>
 <div class="highlight-python"><pre>$ echo -e "chr1\t4534150\t4534300\tref-1" | bedmap --echo --echo-map-id - motifs.bed.starch
@@ -574,7 +574,7 @@ chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01</pre>
 <p>By combining the <tt class="docutils literal"><span class="pre">--chrom</span></tt> operator with operations on Starch archives, the end user can achieve improved computing performance and disk space savings, particularly where <a class="reference internal" href="../set-operations/bedops.html#bedops"><em>bedops</em></a>, <a class="reference internal" href="#bedmap"><em>bedmap</em></a> and <a class="reference internal" href="../set-operations/closest-features.html#closest-features"><em>closest-features</em></a> operations are applied with a computational cluster on separate chromosomes.</p>
 </div>
 <div class="section" id="error-checking">
-<span id="bedmap-error-checking"></span><h2>5.2.1.6. Error checking<a class="headerlink" href="#error-checking" title="Permalink to this headline">¶</a></h2>
+<span id="bedmap-error-checking"></span><h2>6.2.1.6. Error checking<a class="headerlink" href="#error-checking" title="Permalink to this headline">¶</a></h2>
 <p>The bedmap program does not perform error checking by default, but it offers an &#8211;ec option for comprehensive checks.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -582,14 +582,14 @@ chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01</pre>
 </div>
 </div>
 <div class="section" id="endlines">
-<span id="bedmap-endlines"></span><h2>5.2.1.7. Endlines<a class="headerlink" href="#endlines" title="Permalink to this headline">¶</a></h2>
+<span id="bedmap-endlines"></span><h2>6.2.1.7. Endlines<a class="headerlink" href="#endlines" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="#bedmap"><em>bedmap</em></a> program expects endlines (<tt class="docutils literal"><span class="pre">\n</span></tt>) appropriate to your operating system. In UNIX-like environments, you can quickly check to see if your file contains the native endlines with this command:</p>
 <div class="highlight-python"><pre>$ head myData.bed | cat -et</pre>
 </div>
 <p>The appropriate endlines will show up as a <tt class="docutils literal"><span class="pre">$</span></tt> character at the end of each line. See the <tt class="docutils literal"><span class="pre">dos2unix</span></tt> program (sometimes called <tt class="docutils literal"><span class="pre">fromdos</span></tt>) to convert newlines from files saved on Microsoft Windows. The <tt class="docutils literal"><span class="pre">unix2dos</span></tt> (or <tt class="docutils literal"><span class="pre">todos</span></tt>) program can convert files in the other direction, if needed.</p>
 </div>
 <div class="section" id="downloads">
-<span id="bedmap-downloads"></span><h2>5.2.1.8. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
+<span id="bedmap-downloads"></span><h2>6.2.1.8. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Sample <tt class="docutils literal"><span class="pre">Reference</span></tt> dataset: <a class="reference download internal" href="../../../_downloads/reference_bedmap_reference.bed"><tt class="xref download docutils literal"><span class="pre">reference</span> <span class="pre">elements</span></tt></a></li>
 <li>Sample <tt class="docutils literal"><span class="pre">Map</span></tt> dataset: <a class="reference download internal" href="../../../_downloads/reference_bedmap_map.bed"><tt class="xref download docutils literal"><span class="pre">map</span> <span class="pre">elements</span></tt></a></li>
@@ -609,49 +609,49 @@ chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01</pre>
             </a></p>
   <h3><a href="../../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5.2.1. <cite>bedmap</cite></a><ul>
-<li><a class="reference internal" href="#inputs-and-outputs">5.2.1.1. Inputs and outputs</a><ul>
-<li><a class="reference internal" href="#input">5.2.1.1.1. Input</a></li>
-<li><a class="reference internal" href="#output">5.2.1.1.2. Output</a></li>
+<li><a class="reference internal" href="#">6.2.1. <cite>bedmap</cite></a><ul>
+<li><a class="reference internal" href="#inputs-and-outputs">6.2.1.1. Inputs and outputs</a><ul>
+<li><a class="reference internal" href="#input">6.2.1.1.1. Input</a></li>
+<li><a class="reference internal" href="#output">6.2.1.1.2. Output</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#usage">5.2.1.2. Usage</a></li>
-<li><a class="reference internal" href="#operations">5.2.1.3. Operations</a><ul>
-<li><a class="reference internal" href="#overlap-criteria">5.2.1.3.1. Overlap criteria</a><ul>
-<li><a class="reference internal" href="#using-faster-with-bp-ovr-and-range">5.2.1.3.1.1. Using <tt class="docutils literal"><span class="pre">--faster</span></tt> with <tt class="docutils literal"><span class="pre">--bp-ovr</span></tt> and <tt class="docutils literal"><span class="pre">--range</span></tt></a></li>
+<li><a class="reference internal" href="#usage">6.2.1.2. Usage</a></li>
+<li><a class="reference internal" href="#operations">6.2.1.3. Operations</a><ul>
+<li><a class="reference internal" href="#overlap-criteria">6.2.1.3.1. Overlap criteria</a><ul>
+<li><a class="reference internal" href="#using-faster-with-bp-ovr-and-range">6.2.1.3.1.1. Using <tt class="docutils literal"><span class="pre">--faster</span></tt> with <tt class="docutils literal"><span class="pre">--bp-ovr</span></tt> and <tt class="docutils literal"><span class="pre">--range</span></tt></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#score-operations">5.2.1.3.2. Score operations</a></li>
-<li><a class="reference internal" href="#non-score-operations">5.2.1.3.3. Non-score operations</a><ul>
-<li><a class="reference internal" href="#echo">5.2.1.3.3.1. Echo</a></li>
-<li><a class="reference internal" href="#element-and-overlap-statistics">5.2.1.3.3.2. Element and overlap statistics</a></li>
-<li><a class="reference internal" href="#indicator">5.2.1.3.3.3. Indicator</a></li>
+<li><a class="reference internal" href="#score-operations">6.2.1.3.2. Score operations</a></li>
+<li><a class="reference internal" href="#non-score-operations">6.2.1.3.3. Non-score operations</a><ul>
+<li><a class="reference internal" href="#echo">6.2.1.3.3.1. Echo</a></li>
+<li><a class="reference internal" href="#element-and-overlap-statistics">6.2.1.3.3.2. Element and overlap statistics</a></li>
+<li><a class="reference internal" href="#indicator">6.2.1.3.3.3. Indicator</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#modifiers">5.2.1.3.4. Modifiers</a><ul>
-<li><a class="reference internal" href="#range">5.2.1.3.4.1. Range</a></li>
-<li><a class="reference internal" href="#using-faster-with-range">5.2.1.3.4.2. Using <tt class="docutils literal"><span class="pre">--faster</span></tt> with <tt class="docutils literal"><span class="pre">--range</span></tt></a></li>
-<li><a class="reference internal" href="#formatting-score-output">5.2.1.3.4.3. Formatting score output</a></li>
-<li><a class="reference internal" href="#delimiters">5.2.1.3.4.4. Delimiters</a></li>
+<li><a class="reference internal" href="#modifiers">6.2.1.3.4. Modifiers</a><ul>
+<li><a class="reference internal" href="#range">6.2.1.3.4.1. Range</a></li>
+<li><a class="reference internal" href="#using-faster-with-range">6.2.1.3.4.2. Using <tt class="docutils literal"><span class="pre">--faster</span></tt> with <tt class="docutils literal"><span class="pre">--range</span></tt></a></li>
+<li><a class="reference internal" href="#formatting-score-output">6.2.1.3.4.3. Formatting score output</a></li>
+<li><a class="reference internal" href="#delimiters">6.2.1.3.4.4. Delimiters</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#per-chromosome-operations-chrom">5.2.1.4. Per-chromosome operations (&#8211;chrom)</a></li>
-<li><a class="reference internal" href="#starch-support">5.2.1.5. Starch support</a></li>
-<li><a class="reference internal" href="#error-checking">5.2.1.6. Error checking</a></li>
-<li><a class="reference internal" href="#endlines">5.2.1.7. Endlines</a></li>
-<li><a class="reference internal" href="#downloads">5.2.1.8. Downloads</a></li>
+<li><a class="reference internal" href="#per-chromosome-operations-chrom">6.2.1.4. Per-chromosome operations (&#8211;chrom)</a></li>
+<li><a class="reference internal" href="#starch-support">6.2.1.5. Starch support</a></li>
+<li><a class="reference internal" href="#error-checking">6.2.1.6. Error checking</a></li>
+<li><a class="reference internal" href="#endlines">6.2.1.7. Endlines</a></li>
+<li><a class="reference internal" href="#downloads">6.2.1.8. Downloads</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="../statistics.html"
-                        title="previous chapter">5.2. Statistics</a></p>
+                        title="previous chapter">6.2. Statistics</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../file-management.html"
-                        title="next chapter">5.3. File management</a></p>
+                        title="next chapter">6.3. File management</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../../_sources/content/reference/statistics/bedmap.txt"
@@ -681,14 +681,14 @@ chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01</pre>
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../file-management.html" title="5.3. File management"
+          <a href="../file-management.html" title="6.3. File management"
              >next</a> |</li>
         <li class="right" >
-          <a href="../statistics.html" title="5.2. Statistics"
+          <a href="../statistics.html" title="6.2. Statistics"
              >previous</a> |</li>
         <li><a href="../../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
-          <li><a href="../../reference.html" >5. Reference</a> &raquo;</li>
-          <li><a href="../statistics.html" >5.2. Statistics</a> &raquo;</li> 
+          <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
+          <li><a href="../statistics.html" >6.2. Statistics</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
