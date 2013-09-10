@@ -5,6 +5,8 @@ Starch (v2) specification
 
 This document describes the specification for a "Starch v2"-formatted archive, which is created by the :ref:`starch` and :ref:`starchcat` utilities and extracted with the :ref:`unstarch` utility.
 
+.. _starch_archive_structure:
+
 =================
 Archive structure
 =================
@@ -16,6 +18,8 @@ A Starch v2 archive is divided up into six portions:
 
 Each portion is explained below.
 
+.. _starch_archive_magic_bytes:
+
 ===========
 Magic bytes
 ===========
@@ -25,6 +29,8 @@ Magic bytes
 We use four ``unsigned char`` bytes ``ca5cade5`` to identify the file as a Starch v2 archive. BEDOPS utilities and applications which process Starch archives search for these magic bytes at the start of the file to identify it as a v2 archive.
 
 If the file does not have these bytes, it may still be a legacy (v1, v1.2 or v1.5) Starch archive, which is identified and processed by other means not described in this document.
+
+.. _starch_archive_chromosome_streams:
 
 ==================
 Chromosome streams
@@ -38,11 +44,15 @@ Transformation is performed on BED input to remove redundancy in the coordinate 
 
 Starch v2 streams extracted with :ref:`unstarch`, :ref:`bedops`, :ref:`bedmap` or :ref:`closest-features` are uncompressed with the requisite backend compression library calls and then reverse-transformed to recover the original BED input.
 
+.. _starch_archive_metadata:
+
 ========
 Metadata
 ========
 
 The archive metadata is made up of data, offset and hash components, each with different characteristics as described below.
+
+.. _starch_archive_metadata_data:
 
 ----
 Data
@@ -53,6 +63,8 @@ Data
 This variable-length portion of the archive is a `JSON <http://www.json.org/>`_ -formatted ASCII string that describes the Starch archive contents. We choose JSON as it provides a human-readable structure, allows easier extensibility for future revisions of BEDOPS and is a common format in web services, facilitating usage with web- and command-line-based bioinformatics pipelines.
 
 The format of a typical Starch v2 JSON object is made up of two key-value pairs, one for archive and the second for streams, which we describe in greater detail below.
+
+.. _starch_archive_metadata_archive:
 
 ^^^^^^^
 Archive
@@ -85,6 +97,8 @@ The version is a triplet of integer values specifying the version of the archive
 The ``compressionFormat`` key specifies the backend compression format used for the chromosome streams contained within the archive. We currently use ``0`` to specify ``bzip2`` and ``1`` to specify ``gzip``. No other backend formats are available at this time.
 
 The ``note`` key is an optional string that can contain information if the ``--note="abc..."`` option is provided to :ref:`starch` when the archive is created. If this option is not specified at creation time, this key will not be present in the metadata.
+
+.. _starch_archive_metadata_streams:
 
 ^^^^^^^
 Streams
@@ -121,6 +135,8 @@ The ``nonUniqueBaseCount`` key specifies the sum of non-unique bases across all 
 
 The ``uniqueBaseCount`` key specifies the sum of unique bases across all BED elements compressed into the chromosome stream. Uniqueness takes into account overlapping elements and therefore only counts bases once.
 
+.. _starch_archive_metadata_offset:
+
 ------
 Offset
 ------
@@ -131,6 +147,8 @@ The metadata offset is a 20-byte long, zero-padded string that specifies the num
 
 The :ref:`unstarch` utility and the newer versions of :ref:`bedops` and :ref:`bedmap` applications use this offset to jump to the correct point in the file where the metadata can be read into memory and processed into an internal data structure.
 
+.. _starch_archive_metadata_checksum:
+
 ----
 Hash
 ----
@@ -140,6 +158,8 @@ Hash
 The metadata hash is a 28-byte long, `Base64 <http://en.wikipedia.org/wiki/Base64>`_ -encoded `SHA-1 <http://en.wikipedia.org/wiki/SHA-1#Data_Integrity>`_ hash of the bytes that make up the JSON-formatted metadata string.
 
 This data is used to validate the integrity of the metadata: Any change to the metadata (*e.g.*, data corruption that changes stream offset values) causes :ref:`unstarch` and other Starch utilities and applications to exit early with a fatal, informative error.
+
+.. _starch_archive_padding:
 
 =======
 Padding
