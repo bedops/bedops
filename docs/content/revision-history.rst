@@ -34,7 +34,9 @@ v2.2.0
 Released: **May 22, 2013**
 
 * Updated packages
+
   * Precompiled packages are now available for Linux (32- and 64-bit) and Mac OS X 10.6-10.8 (32- and 64-bit) hosts.
+
 * :ref:`Starch v2 test suite <starch_specification>`
   * We have added a test suite for the Starch archive toolkit with the source download. Test inputs include randomized BED data generated from chromosome and bounds data stored on UCSC servers as well as static FIMO search results. Tests put :ref:`starch`, :ref:`unstarch` and :ref:`starchcat` through various usage scenarios. Please refer to the Starch-specific Makefiles and the test target and subfolder's `README` doc for more information.
 * :ref:`starchcat`
