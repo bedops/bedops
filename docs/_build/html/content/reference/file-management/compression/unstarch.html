@@ -58,6 +58,173 @@
             
   <div class="section" id="unstarch">
 <span id="id1"></span><h1>6.3.2.2. <cite>unstarch</cite><a class="headerlink" href="#unstarch" title="Permalink to this headline">¶</a></h1>
+<p>With high-throughput sequencing generating large amounts of genomic data, archiving can be a critical part of an analysis toolkit. BEDOPS includes the <tt class="docutils literal"><span class="pre">unstarch</span></tt> utility to recover original BED input and whole-file or per-chromosome data attributes from archives created with <a class="reference internal" href="starch.html#starch"><em>starch</em></a> (these can be v1.x or <a class="reference internal" href="starch-specification.html#starch-specification"><em>v2 archives</em></a>).</p>
+<p>The <a class="reference internal" href="#unstarch"><em>unstarch</em></a> utility includes <a class="reference external" href="http://en.wikipedia.org/wiki/Large_file_support">large file support</a> on 64-bit operating systems, enabling extraction of more than 2 GB of data (a common restriction on 32-bit systems).</p>
+<p>Starch data can be stored with one of two open-source backend compression methods, either <tt class="docutils literal"><span class="pre">bzip2</span></tt> or <tt class="docutils literal"><span class="pre">gzip</span></tt>. The <a class="reference internal" href="#unstarch"><em>unstarch</em></a> utility will transparently extract data, without the end user needing to specify the backend type.</p>
+<div class="section" id="inputs-and-outputs">
+<h2>6.3.2.2.1. Inputs and outputs<a class="headerlink" href="#inputs-and-outputs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="input">
+<h3>6.3.2.2.1.1. Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="#unstarch"><em>unstarch</em></a> utility takes in a Starch v1.x or v2.x archive as input.</p>
+</div>
+<div class="section" id="output">
+<h3>6.3.2.2.1.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
+<p>The typical output of <a class="reference internal" href="#unstarch"><em>unstarch</em></a> is <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED data, which is sent to standard output.</p>
+<p>Specifying certain options will instead send <a class="reference internal" href="#unstarch-archive-metadata"><em>archive metadata</em></a> to standard output, either in text or JSON format, or export <a class="reference internal" href="#unstarch-stream-attributes"><em>whole-file or per-chromosome attributes</em></a> (also to standard output).</p>
+</div>
+</div>
+<div class="section" id="requirements">
+<h2>6.3.2.2.2. Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<p>The metadata of a Starch v2 archive must pass an integrity check before <a class="reference internal" href="#unstarch"><em>unstarch</em></a> can extract data. Any manual changes to the metadata will cause extraction to fail.</p>
+</div>
+<div class="section" id="usage">
+<h2>6.3.2.2.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>Use the <tt class="docutils literal"><span class="pre">--help</span></tt> option to list all options:</p>
+<div class="highlight-python"><pre>unstarch
+ citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
+ binary version: 2.2.0 (extracts archive version: 2.0.0 or older)
+ authors: Alex Reynolds and Shane Neph
+
+USAGE: unstarch [ &lt;chromosome&gt; ]  [ --elements | --bases | --bases-uniq | --list | --list-json | --list-chromosomes | --archive-timestamp | --note | --archive-version ] &lt;starch-file&gt;
+
+    Process Flags:
+
+    &lt;chromosome&gt;                     Optional. Either unarchives chromosome-specific records from the starch archive file or restricts action of operator to chromosome (e.g., chr1, chrY, etc.).
+    --elements                       Show total element count for archive. If &lt;chromosome&gt; is specified, the result shows the element count for the chromosome.
+    --bases,
+    --bases-uniq                     Show total and unique base counts, respectively, for archive. If &lt;chromosome&gt; is specified, the count is specific to the chromosome, if available.
+    --list                           List archive metadata (output is in text format). If chromosome is specified, the attributes of the given chromosome are shown.
+    --list-json,                     List archive metadata (output is in JSON format)
+    --list-json-no-trailing-newline
+    --list-chr,                      List all or specified chromosome in starch archive (similar to "bedextract --list-chr"). If &lt;chromosome&gt; is specified but is not in the output list, nothing is returned.
+    --list-chromosomes
+    --note                           Show descriptive note, if available.
+    --sha1-signature                 Show SHA1 signature of JSON-formatted metadata (Base64-encoded).
+    --archive-timestamp              Show archive creation timestamp (ISO 8601 format).
+    --archive-type                   Show archive compression type.
+    --archive-version                Show archive version.
+    --version                        Show binary version.
+    --help                           Show this usage message.</pre>
+</div>
+<div class="section" id="extraction">
+<h3>6.3.2.2.3.1. Extraction<a class="headerlink" href="#extraction" title="Permalink to this headline">¶</a></h3>
+<p>Specify a specific chromosome to extract data only from that chromosome. This is optional; if a chromosome is not specified, data are extracted from all chromosomes in the archive.</p>
+<div class="highlight-python"><pre>$ unstarch chr12 example.starch
+...</pre>
+</div>
+</div>
+<div class="section" id="archive-attributes">
+<span id="unstarch-archive-metadata"></span><h3>6.3.2.2.3.2. Archive attributes<a class="headerlink" href="#archive-attributes" title="Permalink to this headline">¶</a></h3>
+<p>Archive attributes are described in greater depth in the <a class="reference internal" href="starch-specification.html#starch-specification"><em>Starch specification</em></a> page. We provide an overview here of the major points.</p>
+<div class="section" id="metadata">
+<h4>6.3.2.2.3.2.1. Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h4>
+<p>Use the <tt class="docutils literal"><span class="pre">--list-json</span></tt> or <tt class="docutils literal"><span class="pre">--list</span></tt> options to export the archive metadata as a JSON- or table-formatted text string, sent to standard output:</p>
+<div class="highlight-python"><pre>$ unstarch --list-json example.starch
+{
+  "archive": {
+    "type": "starch",
+    "customUCSCHeaders": false,
+    "creationTimestamp": "2013-01-17T13:44:54-0800",
+    "version": {
+      "major": 2,
+      "minor": 0,
+      "revision": 0
+    },
+    "compressionFormat": 0
+  },
+  "streams": [
+    {
+      "chromosome": "chr1",
+      "filename": "chr1.pid31740.fiddlehead.regulomecorp.com",
+      "size": "88330",
+      "uncompressedLineCount": 10753,
+      "nonUniqueBaseCount": 549829,
+      "uniqueBaseCount": 548452
+    },
+    ...
+  ]
+}</pre>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">--list-chr</span></tt> (or <tt class="docutils literal"><span class="pre">--list-chromosomes</span></tt>) option exports a list of chromosomes stored in the Starch archive.</p>
+</div>
+<div class="section" id="note">
+<h4>6.3.2.2.3.2.2. Note<a class="headerlink" href="#note" title="Permalink to this headline">¶</a></h4>
+<p>Using <tt class="docutils literal"><span class="pre">--note</span></tt> will export any note stored with the archive, when created.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">One can use <a class="reference internal" href="starchcat.html#starchcat"><em>starchcat</em></a> to add a new note to an existing Starch archive.</p>
+</div>
+</div>
+<div class="section" id="timestamp">
+<h4>6.3.2.2.3.2.3. Timestamp<a class="headerlink" href="#timestamp" title="Permalink to this headline">¶</a></h4>
+<p>The <tt class="docutils literal"><span class="pre">--archive-timestamp</span></tt> option will report the archive&#8217;s creation date and time as an <a class="reference external" href="http://en.wikipedia.org/wiki/ISO-8601">ISO 8601</a> -formatted string.</p>
+</div>
+<div class="section" id="compression-type">
+<h4>6.3.2.2.3.2.4. Compression type<a class="headerlink" href="#compression-type" title="Permalink to this headline">¶</a></h4>
+<p>The <tt class="docutils literal"><span class="pre">--archive-type</span></tt> option will report the compression type of the archive, either <tt class="docutils literal"><span class="pre">bzip2</span></tt> or <tt class="docutils literal"><span class="pre">gzip</span></tt>:</p>
+<div class="highlight-python"><pre>$ unstarch --archive-type example.starch
+unstarch
+ archive compression type: bzip2</pre>
+</div>
+</div>
+<div class="section" id="version">
+<h4>6.3.2.2.3.2.5. Version<a class="headerlink" href="#version" title="Permalink to this headline">¶</a></h4>
+<p>The <tt class="docutils literal"><span class="pre">--version</span></tt> option reports the Starch archive version. This value is different from the version of the <a class="reference internal" href="starch.html#starch"><em>starch</em></a> binary used to create the archive.</p>
+</div>
+</div>
+<div class="section" id="whole-file-or-per-chromosome-attributes">
+<span id="unstarch-stream-attributes"></span><h3>6.3.2.2.3.3. Whole-file or per-chromosome attributes<a class="headerlink" href="#whole-file-or-per-chromosome-attributes" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="elements">
+<h4>6.3.2.2.3.3.1. Elements<a class="headerlink" href="#elements" title="Permalink to this headline">¶</a></h4>
+<p>The <tt class="docutils literal"><span class="pre">--elements</span></tt> operator reports the number of BED elements that were compressed into the chromosome stream, if specified. If no chromosome is specified, the sum of elements over all chromosomes is reported.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">This option is equivalent to a <tt class="docutils literal"><span class="pre">wc</span> <span class="pre">-l</span></tt> (line count) operation performed on BED elements that match the given chromosome, but is much, much faster as data are precomputed and stored with the archive, retrieved from the metadata.</p>
+</div>
+</div>
+<div class="section" id="bases">
+<h4>6.3.2.2.3.3.2. Bases<a class="headerlink" href="#bases" title="Permalink to this headline">¶</a></h4>
+<p>The <tt class="docutils literal"><span class="pre">--bases</span></tt> and <tt class="docutils literal"><span class="pre">--bases-uniq</span></tt> flags return the overall and unique base counts for a specified chromosome, or the sum of counts over all chromosomes, if no one chromosome is specified.</p>
+</div>
+</div>
+</div>
+<div class="section" id="example">
+<h2>6.3.2.2.4. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>To extract a generic Starch file input to a BED file:</p>
+<div class="highlight-python"><pre>$ unstarch example.starch &gt; example.bed</pre>
+</div>
+<p>This creates the <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sorted</em></a> file <tt class="docutils literal"><span class="pre">example.bed</span></tt>, containing BED data from extracting <tt class="docutils literal"><span class="pre">example.starch</span></tt>. This can be a <tt class="docutils literal"><span class="pre">bzip2</span></tt> or <tt class="docutils literal"><span class="pre">gzip</span></tt> -formatted Starch archive—<a class="reference internal" href="#unstarch"><em>unstarch</em></a> knows how to extract either type transparently.</p>
+<p>To list the chromosomes in a Starch v2 archive, use the <tt class="docutils literal"><span class="pre">--list-chr</span></tt> (or <tt class="docutils literal"><span class="pre">--list-chromosomes</span></tt>) option:</p>
+<div class="highlight-python"><pre>$ unstarch --list-chr example.starch
+chr1
+chr10
+chr11
+chr11_gl000202_random
+chr12
+chr13
+chr14
+chr15
+chr16
+chr17
+...</pre>
+</div>
+<p>To show the number of BED elements in chromosome <tt class="docutils literal"><span class="pre">chr13</span></tt>, use the <tt class="docutils literal"><span class="pre">--elements</span></tt> operator:</p>
+<div class="highlight-python"><pre>$ unstarch chr13 --elements example.starch
+10753</pre>
+</div>
+<p>To find the number of unique bases in chromosome <tt class="docutils literal"><span class="pre">chr8</span></tt>:</p>
+<div class="highlight-python"><pre>$ unstarch chr8 --bases-uniq example.starch
+545822</pre>
+</div>
+<p>To show when the archive was created:</p>
+<div class="highlight-python"><pre>$ unstarch --archive-timestamp example.starch
+2013-01-17T13:44:54-0800</pre>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Some option calls will not work with legacy v1.x archives. If you have v1.x archives, use the <a class="reference internal" href="starchcat.html#starchcat"><em>starchcat</em></a> utility to upgrade older archives to Starch v2 files, which get updated attributes.</p>
+</div>
+</div>
 </div>
 
 
@@ -69,6 +236,37 @@
             <p class="logo"><a href="../../../../index.html">
               <img class="logo" src="../../../../_static/logo_with_label_v2.png" alt="Logo"/>
             </a></p>
+  <h3><a href="../../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">6.3.2.2. <cite>unstarch</cite></a><ul>
+<li><a class="reference internal" href="#inputs-and-outputs">6.3.2.2.1. Inputs and outputs</a><ul>
+<li><a class="reference internal" href="#input">6.3.2.2.1.1. Input</a></li>
+<li><a class="reference internal" href="#output">6.3.2.2.1.2. Output</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#requirements">6.3.2.2.2. Requirements</a></li>
+<li><a class="reference internal" href="#usage">6.3.2.2.3. Usage</a><ul>
+<li><a class="reference internal" href="#extraction">6.3.2.2.3.1. Extraction</a></li>
+<li><a class="reference internal" href="#archive-attributes">6.3.2.2.3.2. Archive attributes</a><ul>
+<li><a class="reference internal" href="#metadata">6.3.2.2.3.2.1. Metadata</a></li>
+<li><a class="reference internal" href="#note">6.3.2.2.3.2.2. Note</a></li>
+<li><a class="reference internal" href="#timestamp">6.3.2.2.3.2.3. Timestamp</a></li>
+<li><a class="reference internal" href="#compression-type">6.3.2.2.3.2.4. Compression type</a></li>
+<li><a class="reference internal" href="#version">6.3.2.2.3.2.5. Version</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#whole-file-or-per-chromosome-attributes">6.3.2.2.3.3. Whole-file or per-chromosome attributes</a><ul>
+<li><a class="reference internal" href="#elements">6.3.2.2.3.3.1. Elements</a></li>
+<li><a class="reference internal" href="#bases">6.3.2.2.3.3.2. Bases</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#example">6.3.2.2.4. Example</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="starch.html"
                         title="previous chapter">6.3.2.1. <cite>starch</cite></a></p>

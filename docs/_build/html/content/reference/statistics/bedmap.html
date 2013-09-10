@@ -489,9 +489,8 @@ chr21   33031900    33032000    ref-3|117.750000</pre>
 </div>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
-<p class="last">Using <tt class="docutils literal"><span class="pre">--ec</span></tt> with <tt class="docutils literal"><span class="pre">--faster</span></tt> will report if any nested elements exist in your data.</p>
+<p class="last">Using <tt class="docutils literal"><span class="pre">--ec</span></tt> with <tt class="docutils literal"><span class="pre">--faster</span></tt> will report if any nested elements exist in your data. Using <tt class="docutils literal"><span class="pre">--ec</span></tt> carries its usual overhead, but as it only doubles the much-improved execution time, it may be worth using.</p>
 </div>
-<p>This option also works with the &#8211;ec error checking flag, which indicates if the data contain nested elements. Using &#8211;ec carries its usual overhead, but as it only doubles the much-improved execution time, it may be worth using.</p>
 </div>
 <div class="section" id="formatting-score-output">
 <span id="bedmap-formatting-score-output"></span><h4>6.2.1.3.4.3. Formatting score output<a class="headerlink" href="#formatting-score-output" title="Permalink to this headline">¶</a></h4>
@@ -575,7 +574,7 @@ chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01</pre>
 </div>
 <div class="section" id="error-checking">
 <span id="bedmap-error-checking"></span><h2>6.2.1.6. Error checking<a class="headerlink" href="#error-checking" title="Permalink to this headline">¶</a></h2>
-<p>The bedmap program does not perform error checking by default, but it offers an &#8211;ec option for comprehensive checks.</p>
+<p>The bedmap program does not perform error checking by default, but it offers an <tt class="docutils literal"><span class="pre">--ec</span></tt> option for comprehensive checks.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Use of the <tt class="docutils literal"><span class="pre">--ec</span></tt> option will roughly double the running time, but it provides stringent error checking to ensure all inputs are valid. <tt class="docutils literal"><span class="pre">--ec</span></tt> can help check problematic input and offers helpful hints for any needed corrections, when problems are detected.</p>
@@ -583,7 +582,7 @@ chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01</pre>
 </div>
 <div class="section" id="endlines">
 <span id="bedmap-endlines"></span><h2>6.2.1.7. Endlines<a class="headerlink" href="#endlines" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="#bedmap"><em>bedmap</em></a> program expects endlines (<tt class="docutils literal"><span class="pre">\n</span></tt>) appropriate to your operating system. In UNIX-like environments, you can quickly check to see if your file contains the native endlines with this command:</p>
+<p>The <a class="reference internal" href="#bedmap"><em>bedmap</em></a> program expects endlines (<tt class="docutils literal"><span class="pre">\n</span></tt>) appropriate to Linux and Mac OS X operating systems. Microsoft Windows uses different characters for endlines. In UNIX-like environments, you can quickly check to see if your file contains the native endlines with this command:</p>
 <div class="highlight-python"><pre>$ head myData.bed | cat -et</pre>
 </div>
 <p>The appropriate endlines will show up as a <tt class="docutils literal"><span class="pre">$</span></tt> character at the end of each line. See the <tt class="docutils literal"><span class="pre">dos2unix</span></tt> program (sometimes called <tt class="docutils literal"><span class="pre">fromdos</span></tt>) to convert newlines from files saved on Microsoft Windows. The <tt class="docutils literal"><span class="pre">unix2dos</span></tt> (or <tt class="docutils literal"><span class="pre">todos</span></tt>) program can convert files in the other direction, if needed.</p>

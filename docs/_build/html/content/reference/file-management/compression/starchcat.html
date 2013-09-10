@@ -58,6 +58,85 @@
             
   <div class="section" id="starchcat">
 <span id="id1"></span><h1>6.3.2.3. <cite>starchcat</cite><a class="headerlink" href="#starchcat" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">starchcat</span></tt> utility efficiently merges per-chromosome records contained within one or more BEDOPS <a class="reference internal" href="starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archives. This is an equivalent operation to <tt class="docutils literal"><span class="pre">bedops</span> <span class="pre">--everything</span></tt> or <tt class="docutils literal"><span class="pre">bedops</span> <span class="pre">-u</span></tt> (a <a class="reference internal" href="../../set-operations/bedops.html#bedops-everything"><em>multiset union</em></a>), but inputs are <a class="reference internal" href="starch.html#starch"><em>starch</em></a> archives rather than uncompressed BED files.</p>
+<p>As a further advantage to using this over <a class="reference internal" href="../../set-operations/bedops.html#bedops"><em>bedops</em></a>, in the case where a <a class="reference internal" href="starch.html#starch"><em>starch</em></a> input contains BED elements exclusive to one chromosome, this utility will directly and quickly copy over compressed elements to a new archive, avoiding the need for costly and wasteful extraction and re-compression.</p>
+<p>In the general case, where two or more <a class="reference internal" href="starch.html#starch"><em>starch</em></a> inputs contain BED elements from the same chromosome, a <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sorted</em></a> merge is performed and the stream reprocessed into a <a class="reference internal" href="starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive.</p>
+<div class="section" id="parallelization">
+<h2>6.3.2.3.1. Parallelization<a class="headerlink" href="#parallelization" title="Permalink to this headline">¶</a></h2>
+<p>Those with access to a computational cluster such as an Oracle/Sun Grid Engine or a group of hosts running SSH services should find <a class="reference internal" href="#starchcat"><em>starchcat</em></a> highly useful, as this facilitates:</p>
+<ul class="simple">
+<li>Much faster compression of an entire genome of BED data, using nodes of a computational cluster to compress separate chromosomes, followed by a collation step with <a class="reference internal" href="#starchcat"><em>starchcat</em></a> (see the <a class="reference internal" href="../../../usage-examples/starchcluster.html#starchcluster"><em>Efficiently creating Starch-formatted archives with a cluster</em></a> documentation).</li>
+<li>Extraction, manipulation and reintegration of a <a class="reference internal" href="starch.html#starch"><em>starch</em></a> -ed chromosome into a larger <a class="reference internal" href="starch.html#starch"><em>starch</em></a> archive</li>
+<li>Refreshing metadata or re-compressing the data within a lone <a class="reference internal" href="starch.html#starch"><em>starch</em></a> archive.</li>
+</ul>
+<p>To demonstrate the first application of this utility, we have packaged a helper script with the BEDOPS suite called <a class="reference internal" href="../../../usage-examples/starchcluster.html#starchcluster"><em>starchcluster</em></a>, which archives data much faster than <a class="reference internal" href="starch.html#starch"><em>starch</em></a> alone. By distributing work across the nodes of a computational cluster, the upper bound on compression time is almost entirely determined by the largest chromosome, reducing compression time by an order of magnitude.</p>
+</div>
+<div class="section" id="inputs-and-outputs">
+<h2>6.3.2.3.2. Inputs and outputs<a class="headerlink" href="#inputs-and-outputs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="input">
+<h3>6.3.2.3.2.1. Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
+<p>The input to <a class="reference internal" href="#starchcat"><em>starchcat</em></a> consists of one or more BEDOPS <a class="reference internal" href="starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive files.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If a single archive is provided as input, it may be reprocessed with specified options. When two or more archives are specified, the output will be the equivalent of a multiset union of the inputs.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This utility does not accept standard input.</p>
+</div>
+</div>
+<div class="section" id="output">
+<h3>6.3.2.3.2.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="#starchcat"><em>starchcat</em></a> tool outputs a <a class="reference internal" href="starch.html#starch"><em>starch</em></a> -formatted archive to standard output, which is usually redirected to a file.</p>
+<p>Additionally, an optional compression flag specifies if the final <a class="reference internal" href="starch.html#starch"><em>starch</em></a> output should be compressed with either the <tt class="docutils literal"><span class="pre">bzip2</span></tt> or <tt class="docutils literal"><span class="pre">gzip</span></tt> method (the default being <tt class="docutils literal"><span class="pre">bzip2</span></tt>).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If <a class="reference internal" href="starch.html#starch"><em>starch</em></a> inputs use a different backend compression method, the input stream is re-compressed before integrated into the larger archive. This will incur extra processing overhead.</p>
+</div>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>6.3.2.3.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>Use the <tt class="docutils literal"><span class="pre">--help</span></tt> option to list all options:</p>
+<div class="highlight-python"><pre>starchcat
+  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
+  version:  2.3.0
+  authors:  Alex Reynolds and Shane Neph
+
+USAGE: starchcat [ --note="..." ] [ --bzip2 | --gzip ] &lt;starch-file-1&gt; [&lt;starch-file-2&gt; ...]
+
+    * At least one lexicographically-sorted, headerless starch archive is required.
+      While two or more inputs make sense for a multiset union operation, you can starchcat
+      one file in order to update its metadata, recompress it with a different backend method,
+      or add a note annotation.
+
+    * Compressed data are sent to standard output. Use the '&gt;' operator to redirect
+      to a file.
+
+    Process Flags:
+
+    --note="foo bar..."   Append note to output archive metadata (optional)
+    --bzip2 | --gzip      Specify backend compression type (optional, default is bzip2)
+    --version             Show binary version
+    --help                Show this usage message</pre>
+</div>
+<div class="section" id="example">
+<h3>6.3.2.3.3.1. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<p>Let&#8217;s say we have a set of 23 <a class="reference internal" href="starch.html#starch"><em>starch</em></a> archives, one for each chromosome of the human genome: <tt class="docutils literal"><span class="pre">chr1.starch</span></tt>, <tt class="docutils literal"><span class="pre">chr2.starch</span></tt>, and so on, to <tt class="docutils literal"><span class="pre">chrY.starch</span></tt>. (To simplify this example, we leave out mitochondrial, random, pseudo- and other chromosomes.) We would like to build a new <a class="reference internal" href="starch.html#starch"><em>starch</em></a> archive from these 23 separate files:</p>
+<div class="highlight-python"><pre>$ starchcat chr1.starch chr2.starch ... chrY.starch &gt; humanGenome.starch</pre>
+</div>
+<p>The <a class="reference internal" href="#starchcat"><em>starchcat</em></a> utility parses the metadata from each of the 23 inputs, determines what data to either simple copy or reprocess, and then it performs the merge. Cleanup is performed afterwards, as necessary, and the output is a brand new <a class="reference internal" href="starch.html#starch"><em>starch</em></a> file, written to <tt class="docutils literal"><span class="pre">humanGenome.starch</span></tt>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>No filtering or processing is performed on extracted BED elements, before they are written to the final output. Thus, <em>it is possible for duplicate BED elements to occur</em>.</p>
+<p class="last">However, the final archive is sorted per <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> ordering, so that data extracted from this archive will be ready for use with BEDOPS utilities.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When input archives contain data on disjoint chromosomes, use of <a class="reference internal" href="#starchcat"><em>starchcat</em></a> is very efficient as data are simply copied, instead of extracted and re-compressed.</p>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -69,6 +148,23 @@
             <p class="logo"><a href="../../../../index.html">
               <img class="logo" src="../../../../_static/logo_with_label_v2.png" alt="Logo"/>
             </a></p>
+  <h3><a href="../../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">6.3.2.3. <cite>starchcat</cite></a><ul>
+<li><a class="reference internal" href="#parallelization">6.3.2.3.1. Parallelization</a></li>
+<li><a class="reference internal" href="#inputs-and-outputs">6.3.2.3.2. Inputs and outputs</a><ul>
+<li><a class="reference internal" href="#input">6.3.2.3.2.1. Input</a></li>
+<li><a class="reference internal" href="#output">6.3.2.3.2.2. Output</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usage">6.3.2.3.3. Usage</a><ul>
+<li><a class="reference internal" href="#example">6.3.2.3.3.1. Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="unstarch.html"
                         title="previous chapter">6.3.2.2. <cite>unstarch</cite></a></p>

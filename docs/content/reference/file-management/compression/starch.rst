@@ -3,7 +3,7 @@
 `starch`
 ========
 
-With high-throughput sequencing generating large amounts of genomic data, archiving can be a critical part of an analysis toolkit. BEDOPS includes the ``starch`` utility to provide a method for efficient and lossless compression of `UCSC BED-formatted data <http://genome.ucsc.edu/FAQ/FAQformat.html#format1>`_ into the :ref:`Starch v2 format <starch-specification>`.
+With high-throughput sequencing generating large amounts of genomic data, archiving can be a critical part of an analysis toolkit. BEDOPS includes the ``starch`` utility to provide a method for efficient and lossless compression of `UCSC BED-formatted data <http://genome.ucsc.edu/FAQ/FAQformat.html#format1>`_ into the :ref:`Starch v2 format <starch_specification>`.
 
 Starch v2 archives can be extracted with :ref:`unstarch` to recover the original BED input, or processed as inputs to :ref:`bedops` and :ref:`bedmap`, where set operations and element calculations can be performed directly and without the need for intermediate file extraction.
 

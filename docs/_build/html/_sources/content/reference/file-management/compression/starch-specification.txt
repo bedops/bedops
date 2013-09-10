@@ -98,7 +98,7 @@ The ``compressionFormat`` key specifies the backend compression format used for 
 
 The ``note`` key is an optional string that can contain information if the ``--note="abc..."`` option is provided to :ref:`starch` when the archive is created. If this option is not specified at creation time, this key will not be present in the metadata.
 
-.. _starch_archive_metadata_streams:
+.. _starch_archive_metadata_stream:
 
 ^^^^^^^
 Streams

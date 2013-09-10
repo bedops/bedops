@@ -54,7 +54,181 @@
             
   <div class="section" id="revision-history">
 <span id="id1"></span><h1>3. Revision history<a class="headerlink" href="#revision-history" title="Permalink to this headline">¶</a></h1>
-<p>Foo bar baz!</p>
+<p>This page summarizes some of the more important changes between releases.</p>
+<div class="section" id="current-version">
+<h2>3.1. Current version<a class="headerlink" href="#current-version" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="v2-3-0">
+<h3>3.1.1. v2.3.0<a class="headerlink" href="#v2-3-0" title="Permalink to this headline">¶</a></h3>
+<p>Released: <strong>TBD</strong></p>
+<ul class="simple">
+<li>New documentation via <a class="reference external" href="readthedocs.org">readthedocs.org</a>.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="previous-versions">
+<h2>3.2. Previous versions<a class="headerlink" href="#previous-versions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="v2-2-0b">
+<h3>3.2.1. v2.2.0b<a class="headerlink" href="#v2-2-0b" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Fixed bug with OS X installer&#8217;s post-installation scripts.</li>
+</ul>
+</div>
+<div class="section" id="v2-2-0">
+<h3>3.2.2. v2.2.0<a class="headerlink" href="#v2-2-0" title="Permalink to this headline">¶</a></h3>
+<p>Released: <strong>May 22, 2013</strong></p>
+<ul class="simple">
+<li>Updated packages<ul>
+<li>Precompiled packages are now available for Linux (32- and 64-bit) and Mac OS X 10.6-10.8 (32- and 64-bit) hosts.</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/file-management/compression/starch-specification.html#starch-specification"><em>Starch v2 test suite</em></a><ul>
+<li>We have added a test suite for the Starch archive toolkit with the source download. Test inputs include randomized BED data generated from chromosome and bounds data stored on UCSC servers as well as static FIMO search results. Tests put <a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a>, <a class="reference internal" href="reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a> and <a class="reference internal" href="reference/file-management/compression/starchcat.html#starchcat"><em>starchcat</em></a> through various usage scenarios. Please refer to the Starch-specific Makefiles and the test target and subfolder&#8217;s <cite>README</cite> doc for more information.</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/file-management/compression/starchcat.html#starchcat"><em>starchcat</em></a><ul>
+<li>Resolves bug with <tt class="docutils literal"><span class="pre">--gzip</span></tt> option, allowing updates of <tt class="docutils literal"><span class="pre">gzip</span></tt> -backed v1.2 and v1.5 archives to the <a class="reference internal" href="reference/file-management/compression/starch-specification.html#starch-specification"><em>v2 Starch format</em></a> (either <tt class="docutils literal"><span class="pre">bzip2</span></tt> - or <tt class="docutils literal"><span class="pre">gzip</span></tt> -backed).</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a><ul>
+<li>Resolves bug with extraction of <a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>Starch</em></a> archive made from BED files with four or more columns. A condition where the total length of additional columns exceeds a certain number of characters would result in extracted data in those columns being cut off. As an example, this could affect Starch archives made from the raw, uncut output of GTF- and GFF- <a class="reference internal" href="reference/file-management/conversion.html#conversion-scripts"><em>conversion scripts</em></a>.</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/file-management/conversion.html#conversion-scripts"><em>conversion scripts</em></a><ul>
+<li>We have partially reverted <a class="reference internal" href="reference/file-management/conversion/wig2bed.html#wig2bed"><em>wig2bed</em></a>, providing a Bash shell wrapper to the original C binary. This preserves consistency of command-line options across the conversion suite, while making use of the C binary to recover performance lost from the Python-based v2.1 revision of <a class="reference internal" href="reference/file-management/conversion/wig2bed.html#wig2bed"><em>wig2bed</em></a> (which at this time is no longer supported). (Thanks to Matt Maurano for reporting this issue.)</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="v2-1-1">
+<h3>3.2.3. v2.1.1<a class="headerlink" href="#v2-1-1" title="Permalink to this headline">¶</a></h3>
+<p>Released: <strong>May 3, 2013</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a><ul>
+<li>Major performance improvements made in v2.1.1, such that current <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> now operates as fast or faster than the v1.2.5 version of <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a>!</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a><ul>
+<li>Resolves bug with <tt class="docutils literal"><span class="pre">--partition</span></tt> option.</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/file-management/conversion.html#conversion-scripts"><em>conversion scripts</em></a><ul>
+<li>All v2.1.0 Python-based scripts now include fix for <tt class="docutils literal"><span class="pre">SIGPIPE</span></tt> handling, such that use of <tt class="docutils literal"><span class="pre">head</span></tt> or other common UNIX utilities to process buffered standard output no longer yields <tt class="docutils literal"><span class="pre">IOError</span></tt> exceptions. (Thanks to Matt Maurano for reporting this bug.)</li>
+</ul>
+</li>
+<li>32-bit Linux binary support<ul>
+<li>Pre-built Linux binaries are now available for end users with 32-bit workstations.</li>
+</ul>
+</li>
+</ul>
+<p>Other issues fixed:</p>
+<ul class="simple">
+<li>Jansson tarball no longer includes already-compiled libraries that could potentially interfere with 32-bit builds.</li>
+<li>Minor changes to conversion script test suite to exit with useful error code on successful completion of test.</li>
+</ul>
+</div>
+<div class="section" id="v2-1-0">
+<h3>3.2.4. v2.1.0<a class="headerlink" href="#v2-1-0" title="Permalink to this headline">¶</a></h3>
+<p>Released: <strong>April 22, 2013</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a><ul>
+<li>New <tt class="docutils literal"><span class="pre">--partition</span></tt> operator efficiently generates disjoint segments made from genomic boundaries of all overlapping inputs.</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/file-management/conversion.html#conversion-scripts"><em>conversion scripts</em></a><ul>
+<li>All scripts now use <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> behind the scenes to output sorted BED output, ready for use with BEDOPS utilities. It is no longer necessary to pipe data to or otherwise post-process converted data with <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a>.</li>
+<li>New <a class="reference internal" href="reference/file-management/conversion/psl2bed.html#psl2bed"><em>psl2bed</em></a> conversion script, converting <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format2">PSL-formatted UCSC BLAT output</a> to BED.</li>
+<li>New <a class="reference internal" href="reference/file-management/conversion/wig2bed.html#wig2bed"><em>wig2bed</em></a> conversion script written in Python.</li>
+<li>New <tt class="docutils literal"><span class="pre">*2starch</span></tt> <a class="reference internal" href="reference/file-management/conversion.html#conversion-scripts"><em>conversion scripts</em></a> offered for all <tt class="docutils literal"><span class="pre">*2bed</span></tt> scripts, which output Starch v2 archives.</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/set-operations/closest-features.html#closest-features"><em>closest-features</em></a><ul>
+<li>Replaced <tt class="docutils literal"><span class="pre">--shortest</span></tt> option name with <tt class="docutils literal"><span class="pre">--closest</span></tt>, for clarity. (Old scripts which use <tt class="docutils literal"><span class="pre">--shortest</span></tt> will continue to work with the deprecated option name for now. We advise editing pipelines, as needed.)</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a><ul>
+<li>Improved error checking for interleaved records. This also makes use of <tt class="docutils literal"><span class="pre">*2starch</span></tt> conversion scripts with the <tt class="docutils literal"><span class="pre">--do-not-sort</span></tt> option safer.</li>
+</ul>
+</li>
+<li>Improved Mac OS X support<ul>
+<li>New Mac OS X package installer makes installation of BEDOPS binaries and scripts very easy for OS X 10.6 - 10.8 hosts.</li>
+<li>Installer resolves fatal library errors seen by some end users of older OS X BEDOPS releases.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="v2-0-0b">
+<h3>3.2.5. v2.0.0b<a class="headerlink" href="#v2-0-0b" title="Permalink to this headline">¶</a></h3>
+<p>Released: <strong>February 19, 2013</strong></p>
+<ul class="simple">
+<li>Added <a class="reference internal" href="usage-examples/starchcluster.html#starchcluster"><em>Efficiently creating Starch-formatted archives with a cluster</em></a> script variant which supports task distribution with <a class="reference external" href="http://www.gnu.org/software/parallel/">GNU Parallel</a>.</li>
+<li>Fixed minor problem with <a class="reference internal" href="reference/file-management/conversion/bam2bed.html#bam2bed"><em>bam2bed</em></a> and <a class="reference internal" href="reference/file-management/conversion/sam2bed.html#sam2bed"><em>sam2bed</em></a> conversion scripts.</li>
+</ul>
+</div>
+<div class="section" id="v2-0-0a">
+<h3>3.2.6. v2.0.0a<a class="headerlink" href="#v2-0-0a" title="Permalink to this headline">¶</a></h3>
+<p>Released: <strong>February 7, 2013</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a><ul>
+<li>Takes in Starch-formatted archives as input, as well as raw BED (i.e., it is no longer required to extract a Starch archive to an intermediate, temporary file or named pipe before applying operations).</li>
+<li>New <tt class="docutils literal"><span class="pre">--chrom</span></tt> operator jumps to and operates on information for specified chromosome only.</li>
+<li>New <tt class="docutils literal"><span class="pre">--echo-map-id-uniq</span></tt> operator lists unique IDs from overlapping mapping elements.</li>
+<li>New <tt class="docutils literal"><span class="pre">--max-element</span></tt> and <tt class="docutils literal"><span class="pre">--min-element</span></tt> operators return the highest or lowest scoring overlapping map element.</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a><ul>
+<li>Takes in Starch-formatted archives as input, as well as raw BED.</li>
+<li>New <tt class="docutils literal"><span class="pre">--chrom</span></tt> operator jumps to and operates on information for specified chromosome only.</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/set-operations/closest-features.html#closest-features"><em>closest-features</em></a><ul>
+<li>Takes in Starch-formatted archives as input, as well as raw BED.</li>
+<li>New <tt class="docutils literal"><span class="pre">--chrom</span></tt> operator jumps to and operates on information for specified chromosome only.</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> and <tt class="docutils literal"><span class="pre">bbms</span></tt><ul>
+<li>New <tt class="docutils literal"><span class="pre">--max-mem</span></tt> option to limit system memory on large BED inputs.</li>
+<li>Incorporated <tt class="docutils literal"><span class="pre">bbms</span></tt> functionality into <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> with use of <tt class="docutils literal"><span class="pre">--max-mem</span></tt> operator.</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a>, <a class="reference internal" href="reference/file-management/compression/starchcat.html#starchcat"><em>starchcat</em></a> and <a class="reference internal" href="reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a><ul>
+<li>New metadata enhancements to Starch-format archival and extraction, including: <tt class="docutils literal"><span class="pre">--note</span></tt>, <tt class="docutils literal"><span class="pre">--elements</span></tt>, <tt class="docutils literal"><span class="pre">--bases</span></tt>, <tt class="docutils literal"><span class="pre">--bases-uniq</span></tt>, <tt class="docutils literal"><span class="pre">--list-chromosomes</span></tt>, <tt class="docutils literal"><span class="pre">--archive-timestamp</span></tt>, <tt class="docutils literal"><span class="pre">--archive-type</span></tt> and <tt class="docutils literal"><span class="pre">--archive-version</span></tt> (see <tt class="docutils literal"><span class="pre">--help</span></tt> to <a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a>, <a class="reference internal" href="reference/file-management/compression/starchcat.html#starchcat"><em>starchcat</em></a> and <a class="reference internal" href="reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a> binaries, or view the documentation for these applications for more detail).</li>
+<li>Adds 20-35% performance boost to creating Starch archives with <a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a> utility.</li>
+<li>New documentation with technical overview of the Starch format specification.</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/file-management/conversion.html#conversion-scripts"><em>conversion scripts</em></a><ul>
+<li>New <a class="reference internal" href="reference/file-management/conversion/gtf2bed.html#gtf2bed"><em>gtf2bed</em></a> conversion script, converting GTF (v2.2) to BED.</li>
+</ul>
+</li>
+<li>Scripts are now part of main download; it is no longer necessary to download the BEDOPS companion separately.</li>
+</ul>
+</div>
+<div class="section" id="v1-2-5b">
+<h3>3.2.7. v1.2.5b<a class="headerlink" href="#v1-2-5b" title="Permalink to this headline">¶</a></h3>
+<p>Released: <strong>January 14, 2013</strong></p>
+<ul class="simple">
+<li>Adds support for Apple 32- and 64-bit Intel hardware running OS X 10.5 through 10.8.</li>
+<li>Adds <tt class="docutils literal"><span class="pre">README</span></tt> for companion download.</li>
+<li>Removes some obsolete code.</li>
+</ul>
+</div>
+<div class="section" id="v1-2-5">
+<h3>3.2.8. v1.2.5<a class="headerlink" href="#v1-2-5" title="Permalink to this headline">¶</a></h3>
+<p>Released: <strong>October 13, 2012</strong></p>
+<ul class="simple">
+<li>Fixed unusual bug with <a class="reference internal" href="reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a>, where an extra (and incorrect) line of BED data can potentially be extracted from an archive.</li>
+<li>Updated companion download with updated <a class="reference internal" href="reference/file-management/conversion/bam2bed.html#bam2bed"><em>bam2bed</em></a> and <a class="reference internal" href="reference/file-management/conversion/sam2bed.html#sam2bed"><em>sam2bed</em></a> conversion scripts to address 0-indexing error with previous revisions.</li>
+</ul>
+</div>
+<div class="section" id="v1-2-3">
+<h3>3.2.9. v1.2.3<a class="headerlink" href="#v1-2-3" title="Permalink to this headline">¶</a></h3>
+<p>Released: <strong>August 17, 2012</strong></p>
+<ul class="simple">
+<li>Added <tt class="docutils literal"><span class="pre">--indicator</span></tt> option to <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a>.</li>
+<li>Assorted changes to conversion scripts and associated companion download.</li>
+</ul>
+</div>
+</div>
 </div>
 
 
@@ -66,6 +240,29 @@
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/logo_with_label_v2.png" alt="Logo"/>
             </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">3. Revision history</a><ul>
+<li><a class="reference internal" href="#current-version">3.1. Current version</a><ul>
+<li><a class="reference internal" href="#v2-3-0">3.1.1. v2.3.0</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#previous-versions">3.2. Previous versions</a><ul>
+<li><a class="reference internal" href="#v2-2-0b">3.2.1. v2.2.0b</a></li>
+<li><a class="reference internal" href="#v2-2-0">3.2.2. v2.2.0</a></li>
+<li><a class="reference internal" href="#v2-1-1">3.2.3. v2.1.1</a></li>
+<li><a class="reference internal" href="#v2-1-0">3.2.4. v2.1.0</a></li>
+<li><a class="reference internal" href="#v2-0-0b">3.2.5. v2.0.0b</a></li>
+<li><a class="reference internal" href="#v2-0-0a">3.2.6. v2.0.0a</a></li>
+<li><a class="reference internal" href="#v1-2-5b">3.2.7. v1.2.5b</a></li>
+<li><a class="reference internal" href="#v1-2-5">3.2.8. v1.2.5</a></li>
+<li><a class="reference internal" href="#v1-2-3">3.2.9. v1.2.3</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="installation.html"
                         title="previous chapter">2. Installation</a></p>

@@ -58,6 +58,63 @@
             
   <div class="section" id="bam2bed">
 <span id="id1"></span><h1>6.3.3.1. <cite>bam2bed</cite><a class="headerlink" href="#bam2bed" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">bam2bed</span></tt> script converts 0-based <a class="reference external" href="http://samtools.sourceforge.net/SAM1.pdf">Binary (Sequence) Alignment/Map</a> (BAM) to sorted, 0-based UCSC BED data.</p>
+<p>For convenience, we also offer <tt class="docutils literal"><span class="pre">bam2starch</span></tt>, which performs the extra step of creating a <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive.</p>
+<p>The <tt class="docutils literal"><span class="pre">bam2bed</span></tt> script is &#8220;non-lossy&#8221;. Similar tools in the world tend to throw out information from the original BAM input upon conversion; <tt class="docutils literal"><span class="pre">bam2bed</span></tt> retains everything, facilitating reuse of converted data and conversion to other formats.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Doing the extra step of creating a <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive can save a lot of space relative to the original BAM format, up to 33% of the original BAM dataset, while offering per-chromosome random access.</p>
+</div>
+<div class="section" id="dependencies">
+<h2>6.3.3.1.1. Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>This <tt class="docutils literal"><span class="pre">bash</span></tt> shell script is dependent upon the installation of <a class="reference external" href="http://samtools.sourceforge.net/">SAMtools</a> and <a class="reference external" href="http://www.gnu.org/software/gawk/">GNU awk</a> tools.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">GNU <tt class="docutils literal"><span class="pre">awk</span></tt> is already installed on Linux systems, but is usually an additional installation on Mac OS X systems. Use <a class="reference external" href="http://www.macports.org/">MacPorts</a>, <a class="reference external" href="http://mxcl.github.com/homebrew/">Homebrew</a>, or compile from <a class="reference external" href="http://www.gnu.org/software/gawk/">source</a>).</p>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>6.3.3.1.2. Source<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">bam2bed</span></tt> and <tt class="docutils literal"><span class="pre">bam2starch</span></tt> conversion scripts are part of the binary and source downloads of BEDOPS. See the <a class="reference internal" href="../../../installation.html#installation"><em>Installation</em></a> documentation for more details.</p>
+</div>
+<div class="section" id="usage">
+<h2>6.3.3.1.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">bam2bed</span></tt> script parses BAM data from standard input and prints <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED to standard output. The <tt class="docutils literal"><span class="pre">bam2starch</span></tt> script uses an extra step to parse BAM to a compressed BEDOPS <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive, which is also directed to standard output.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the <tt class="docutils literal"><span class="pre">--do-not-sort</span></tt> option. Run the script with the <tt class="docutils literal"><span class="pre">--help</span></tt> option for more details.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">If you are sorting data larger than system memory, use the <tt class="docutils literal"><span class="pre">--max-mem</span></tt> option to limit sort memory usage to a reasonable fraction of available memory, <em>e.g.</em>, <tt class="docutils literal"><span class="pre">--max-mem</span> <span class="pre">2G</span></tt> or similar. See <tt class="docutils literal"><span class="pre">--help</span></tt> for more details.</p>
+</div>
+</div>
+<div class="section" id="example">
+<h2>6.3.3.1.4. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>To demonstrate these scripts, we use a sample binary input called <tt class="docutils literal"><span class="pre">foo.bam</span></tt> (see the <a class="reference internal" href="#bam2bed-downloads"><em>Downloads</em></a> section to grab this file).</p>
+<p>We can convert it to sorted BED data in the following manner (omitting standard error messages):</p>
+<div class="highlight-python"><pre>$ bam2bed &lt; foo.bam
+seq1    0       36      B7_591:4:96:693:509     73      +       99      36M     *       0       0       CACTAGTGGCTCATTGTAAATGTGTGGTTTAACTCG    &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;5&lt;&lt;&lt;&lt;&lt;;:&lt;;7    MF:i:18 Aq:i:73 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
+seq1    2       37      EAS54_65:7:152:368:113  73      +       99      35M     *       0       0       CTAGTGGCTCATTGTAAATGTGTGGTTTAACTCGT     &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;0&lt;&lt;&lt;&lt;655&lt;&lt;7&lt;&lt;&lt;:9&lt;&lt;3/:&lt;6):     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
+seq1    4       39      EAS51_64:8:5:734:57     137     +       99      35M     *       0       0       AGTGGCTCATTGTAAATGTGTGGTTTAACTCGTCC     &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;7;71&lt;&lt;;&lt;;;&lt;7;&lt;&lt;3;);3*8/5     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
+seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     *       0       0       GTGGCTCATTGTAATTTTTTGTTTTAACTCTTCTCT    (-&amp;----,----)-)-),'--)---',+-,),''*,    MF:i:130        Aq:i:63 NM:i:5  UQ:i:38 H0:i:0  H1:i:0
+...</pre>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The provided scripts <strong>strip out unmapped reads</strong> from the BAM file. We believe this makes sense under most circumstances. Alternative approaches include spitting unmapped reads to <tt class="docutils literal"><span class="pre">stderr</span></tt>, or giving dummy chromosome and coordinates to unmapped reads. With the latter approach, one can process unmapped tags using BEDOPS.</p>
+<p>If you want to keep unmapped reads (not in BED format), you can do the following:</p>
+<div class="highlight-python"><pre>samtools view BAM_file | gawk '(and(4, $2))' &gt; unmapped.sam</pre>
+</div>
+<p class="last">Converting unmapped reads into BED with dummy chromosome and coordinates is a bit more involved (but not much). Visit our <a class="reference external" href="http://bedops.uwencode.org/forum">user forum</a> and ask for help on this, if needed.</p>
+</div>
+</div>
+<div class="section" id="downloads">
+<span id="bam2bed-downloads"></span><h2>6.3.3.1.5. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Sample <tt class="docutils literal"><span class="pre">foo</span></tt> BAM dataset: <a class="reference download internal" href="../../../../_downloads/reference_bam2bed_foo.bam"><tt class="xref download docutils literal"><span class="pre">foo.bam</span></tt></a></li>
+</ul>
+</div>
 </div>
 
 
@@ -69,6 +126,18 @@
             <p class="logo"><a href="../../../../index.html">
               <img class="logo" src="../../../../_static/logo_with_label_v2.png" alt="Logo"/>
             </a></p>
+  <h3><a href="../../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">6.3.3.1. <cite>bam2bed</cite></a><ul>
+<li><a class="reference internal" href="#dependencies">6.3.3.1.1. Dependencies</a></li>
+<li><a class="reference internal" href="#id2">6.3.3.1.2. Source</a></li>
+<li><a class="reference internal" href="#usage">6.3.3.1.3. Usage</a></li>
+<li><a class="reference internal" href="#example">6.3.3.1.4. Example</a></li>
+<li><a class="reference internal" href="#downloads">6.3.3.1.5. Downloads</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="../conversion.html"
                         title="previous chapter">6.3.3. Data conversion</a></p>

@@ -58,6 +58,98 @@
             
   <div class="section" id="starch">
 <span id="id1"></span><h1>6.3.2.1. <cite>starch</cite><a class="headerlink" href="#starch" title="Permalink to this headline">¶</a></h1>
+<p>With high-throughput sequencing generating large amounts of genomic data, archiving can be a critical part of an analysis toolkit. BEDOPS includes the <tt class="docutils literal"><span class="pre">starch</span></tt> utility to provide a method for efficient and lossless compression of <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1">UCSC BED-formatted data</a> into the <a class="reference internal" href="starch-specification.html#starch-specification"><em>Starch v2 format</em></a>.</p>
+<p>Starch v2 archives can be extracted with <a class="reference internal" href="unstarch.html#unstarch"><em>unstarch</em></a> to recover the original BED input, or processed as inputs to <a class="reference internal" href="../../set-operations/bedops.html#bedops"><em>bedops</em></a> and <a class="reference internal" href="../../statistics/bedmap.html#bedmap"><em>bedmap</em></a>, where set operations and element calculations can be performed directly and without the need for intermediate file extraction.</p>
+<p>The <a class="reference internal" href="#starch"><em>starch</em></a> utility includes <a class="reference external" href="http://en.wikipedia.org/wiki/Large_file_support">large file support</a> on 64-bit operating systems, enabling compression of more than 2 GB of data (a common restriction on 32-bit systems).</p>
+<p>Data can be stored with one of two open-source backend compression methods, either <tt class="docutils literal"><span class="pre">bzip2</span></tt> or <tt class="docutils literal"><span class="pre">gzip</span></tt>, providing the end user with a reasonable tradeoff between speed and storage performance that can be useful for working with constrained storage situations or slower hardware.</p>
+<div class="section" id="inputs-and-outputs">
+<h2>6.3.2.1.1. Inputs and outputs<a class="headerlink" href="#inputs-and-outputs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="input">
+<h3>6.3.2.1.1.1. Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
+<p>As with other BEDOPS utilities, <a class="reference internal" href="#starch"><em>starch</em></a> takes in <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED data as input. You can use <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> to sort BED data, piping it into <a class="reference internal" href="#starch"><em>starch</em></a> as standard input (see <a class="reference internal" href="#starch-example"><em>Example</em></a> section below).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">While more than three columns may be specified, most of the space savings in the Starch format are derived from from a pre-processing step on the coordinates. Therefore, minimizing or removing unnecessary columnar data from the fourth column on (<em>e.g.</em>, with <tt class="docutils literal"><span class="pre">cut</span> <span class="pre">-f1-3</span></tt> or similar) can help improve compression efficiency considerably.</p>
+</div>
+</div>
+<div class="section" id="output">
+<h3>6.3.2.1.1.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
+<p>This utility outputs a <a class="reference internal" href="starch-specification.html#starch-specification"><em>Starch v2-formatted</em></a> archive file.</p>
+</div>
+</div>
+<div class="section" id="requirements">
+<span id="starch-example"></span><h2>6.3.2.1.2. Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#starch"><em>starch</em></a> tool requires data in a relaxed variation of the BED format as described by <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1">UCSC’s browser documentation</a>. BED data should be sorted before compression, <em>e.g.</em> with BEDOPS <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a>.</p>
+<p>At a minimum, three columns are required to specify the chromosome name and start and stop positions. Additional columns may be specified, containing up to 128 kB of data per row (including tab delimiters).</p>
+</div>
+<div class="section" id="usage">
+<h2>6.3.2.1.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>Use the <tt class="docutils literal"><span class="pre">--help</span></tt> option to list all options:</p>
+<div class="highlight-python"><pre>starch
+ citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
+ binary version: 2.3.0 (creates archive version: 2.0.0)
+ authors:  Alex Reynolds and Shane Neph
+
+USAGE: starch [--note="foo bar..."] [--bzip2 | --gzip] [--header] [&lt;unique-tag&gt;] &lt;bed-file&gt;
+
+    * BED input must be sorted lexicographically (e.g., using BEDOPS sort-bed).
+    * Please use '-' to indicate reading BED data from standard input.
+    * Output must be directed to a regular file.
+    * The bzip2 compression type makes smaller archives, while gzip extracts faster.
+
+    Process Flags:
+
+    --note="foo bar..."   Append note to output archive metadata (optional)
+    --bzip2 | --gzip      Specify backend compression type (optional, default is bzip2)
+    --header              Support BED input with custom UCSC track, SAM or VCF headers, or generic comments (optional)
+    &lt;unique-tag&gt;          Specify unique identifier for transformed data (optional)
+    --help                Show this usage message
+    --version             Show binary version</pre>
+</div>
+</div>
+<div class="section" id="options">
+<h2>6.3.2.1.4. Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="backend-compression-type">
+<h3>6.3.2.1.4.1. Backend compression type<a class="headerlink" href="#backend-compression-type" title="Permalink to this headline">¶</a></h3>
+<p>Use the <tt class="docutils literal"><span class="pre">--bzip2</span></tt> or <tt class="docutils literal"><span class="pre">--gzip</span></tt> operators to use the <tt class="docutils literal"><span class="pre">bzip2</span></tt> or <tt class="docutils literal"><span class="pre">gzip</span></tt> compression algorithms on transformed BED data. By default, <a class="reference internal" href="#starch"><em>starch</em></a> uses the <tt class="docutils literal"><span class="pre">bzip2</span></tt> method.</p>
+</div>
+<div class="section" id="note">
+<h3>6.3.2.1.4.2. Note<a class="headerlink" href="#note" title="Permalink to this headline">¶</a></h3>
+<p>Use the <tt class="docutils literal"><span class="pre">--note=&quot;xyz...&quot;</span></tt> option to add a custom string that describes the archive. This data can be retrieved with <tt class="docutils literal"><span class="pre">unstarch</span> <span class="pre">--note</span></tt>.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Examples of usage might include a description of the experiment associated with the data, a URL to a UCSC Genome Browser session, or a bar code or other unique identifier for internal lab or LIMS use.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The only limitation on the length of a note is the command-line shell&#8217;s maximum argument length parameter (as found on most UNIX systems with the command <tt class="docutils literal"><span class="pre">getconf</span> <span class="pre">ARG_MAX</span></tt>) minus the length of the non- <tt class="docutils literal"><span class="pre">--note=&quot;...&quot;</span></tt> command components. On most desktop systems, this value will be approximately 256 kB.</p>
+</div>
+</div>
+<div class="section" id="headers">
+<h3>6.3.2.1.4.3. Headers<a class="headerlink" href="#headers" title="Permalink to this headline">¶</a></h3>
+<p>Add the <tt class="docutils literal"><span class="pre">--header</span></tt> flag if the BED data being compressed contain <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1.7">extra header data</a> that are exported from a UCSC Genome Browser session.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the BED data contain custom headers and <tt class="docutils literal"><span class="pre">--header</span></tt> is not specified, <a class="reference internal" href="#starch"><em>starch</em></a> will be unable to read chromosome data correctly and exit with an error state.</p>
+</div>
+</div>
+<div class="section" id="unique-tag">
+<h3>6.3.2.1.4.4. Unique tag<a class="headerlink" href="#unique-tag" title="Permalink to this headline">¶</a></h3>
+<p>Adding a <tt class="docutils literal"><span class="pre">&lt;unique-tag&gt;</span></tt> string replaces portions of the <cite>filename</cite> key in the archive&#8217;s <a class="reference internal" href="starch-specification.html#starch-archive-metadata-stream"><em>stream metadata</em></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This feature is largely obsolete and included for legacy support. It is better to use the <tt class="docutils literal"><span class="pre">--note=&quot;xyz...&quot;</span></tt> option to add identifiers or other custom data.</p>
+</div>
+</div>
+</div>
+<div class="section" id="example">
+<h2>6.3.2.1.5. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>To compress unsorted BED data (or data of unknown sort order), we feed <a class="reference internal" href="#starch"><em>starch</em></a> a <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sorted</em></a> stream, using the hyphen (<tt class="docutils literal"><span class="pre">-</span></tt>) to specify standard input:</p>
+<div class="highlight-python"><pre>$ sort-bed unsorted.bed | starch - &gt; sorted.starch</pre>
+</div>
+<p>This creates the file <tt class="docutils literal"><span class="pre">sorted.starch</span></tt>, which uses the <tt class="docutils literal"><span class="pre">bzip2</span></tt> algorithm to compress transformed BED data from a sorted permutation of data in <tt class="docutils literal"><span class="pre">unsorted.bed</span></tt>. No note or custom tag data is added.</p>
+<p>It is possible to speed up the compression of a BED file by using a cluster. Start by reviewing our <a class="reference internal" href="../../../usage-examples/starchcluster.html#starchcluster"><em>starchcluster</em></a> script.</p>
+</div>
 </div>
 
 
@@ -69,6 +161,28 @@
             <p class="logo"><a href="../../../../index.html">
               <img class="logo" src="../../../../_static/logo_with_label_v2.png" alt="Logo"/>
             </a></p>
+  <h3><a href="../../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">6.3.2.1. <cite>starch</cite></a><ul>
+<li><a class="reference internal" href="#inputs-and-outputs">6.3.2.1.1. Inputs and outputs</a><ul>
+<li><a class="reference internal" href="#input">6.3.2.1.1.1. Input</a></li>
+<li><a class="reference internal" href="#output">6.3.2.1.1.2. Output</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#requirements">6.3.2.1.2. Requirements</a></li>
+<li><a class="reference internal" href="#usage">6.3.2.1.3. Usage</a></li>
+<li><a class="reference internal" href="#options">6.3.2.1.4. Options</a><ul>
+<li><a class="reference internal" href="#backend-compression-type">6.3.2.1.4.1. Backend compression type</a></li>
+<li><a class="reference internal" href="#note">6.3.2.1.4.2. Note</a></li>
+<li><a class="reference internal" href="#headers">6.3.2.1.4.3. Headers</a></li>
+<li><a class="reference internal" href="#unique-tag">6.3.2.1.4.4. Unique tag</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#example">6.3.2.1.5. Example</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="../compression.html"
                         title="previous chapter">6.3.2. Compression</a></p>

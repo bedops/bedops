@@ -572,9 +572,7 @@ This option also works with the ``--ec`` error checking flag, which indicates if
 
    Be sure to consider the makeup of your BED data before using ``--faster``. 
 
-.. tip:: Using ``--ec`` with ``--faster`` will report if any nested elements exist in your data.
-
-This option also works with the --ec error checking flag, which indicates if the data contain nested elements. Using --ec carries its usual overhead, but as it only doubles the much-improved execution time, it may be worth using.
+.. tip:: Using ``--ec`` with ``--faster`` will report if any nested elements exist in your data. Using ``--ec`` carries its usual overhead, but as it only doubles the much-improved execution time, it may be worth using.
 
 .. _bedmap_formatting_score_output:
 
@@ -713,7 +711,7 @@ By combining the ``--chrom`` operator with operations on Starch archives, the en
 Error checking
 ==============
 
-The bedmap program does not perform error checking by default, but it offers an --ec option for comprehensive checks.
+The bedmap program does not perform error checking by default, but it offers an ``--ec`` option for comprehensive checks.
 
 .. note:: Use of the ``--ec`` option will roughly double the running time, but it provides stringent error checking to ensure all inputs are valid. ``--ec`` can help check problematic input and offers helpful hints for any needed corrections, when problems are detected.
 
@@ -723,7 +721,7 @@ The bedmap program does not perform error checking by default, but it offers an 
 Endlines
 ========
 
-The :ref:`bedmap` program expects endlines (``\n``) appropriate to your operating system. In UNIX-like environments, you can quickly check to see if your file contains the native endlines with this command:
+The :ref:`bedmap` program expects endlines (``\n``) appropriate to Linux and Mac OS X operating systems. Microsoft Windows uses different characters for endlines. In UNIX-like environments, you can quickly check to see if your file contains the native endlines with this command:
 
 ::
 

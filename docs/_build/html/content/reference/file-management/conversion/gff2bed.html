@@ -58,6 +58,77 @@
             
   <div class="section" id="gff2bed">
 <span id="id1"></span><h1>6.3.3.2. <cite>gff2bed</cite><a class="headerlink" href="#gff2bed" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">gff2bed</span></tt> script converts 1-based, closed <tt class="docutils literal"><span class="pre">[a,</span> <span class="pre">b]</span></tt> <a class="reference external" href="http://www.sequenceontology.org/gff3.shtml">General Feature Format v3</a> (GFF3) to unsorted, 0-based, half-open <tt class="docutils literal"><span class="pre">[a-1,</span> <span class="pre">b)</span></tt> extended BED-formatted data.</p>
+<p>For convenience, we also offer <tt class="docutils literal"><span class="pre">gff2starch</span></tt>, which performs the extra step of creating a <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive.</p>
+<div class="section" id="dependencies">
+<h2>6.3.3.2.1. Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">gff2bed</span></tt> script requires Python, version 2.5 or greater.</p>
+<p>This script is also dependent on input that follows the GFF3 specification. A GFF3-format validator is available <a class="reference external" href="http://modencode.oicr.on.ca/cgi-bin/validate_gff3_online">here</a> to ensure your input follows specification.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Conversion of data which are GFF-like, but which do not follow the specification can cause <tt class="docutils literal"><span class="pre">IOError</span></tt> and other runtime exceptions. If you run into problems, please check that your input follows the GFF specification.</p>
+</div>
+</div>
+<div class="section" id="source">
+<h2>6.3.3.2.2. Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">gff2bed</span></tt> and <tt class="docutils literal"><span class="pre">gff2starch</span></tt> conversion scripts are part of the binary and source downloads of BEDOPS. See the <a class="reference internal" href="../../../installation.html#installation"><em>Installation</em></a> documentation for more details.</p>
+</div>
+<div class="section" id="usage">
+<h2>6.3.3.2.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">gff2bed</span></tt> script parses GFF3 from standard input and prints sorted BED to standard output. The <tt class="docutils literal"><span class="pre">gff2starch</span></tt> script uses an extra step to parse GFF to a compressed BEDOPS <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive, which is also directed to standard output.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the <tt class="docutils literal"><span class="pre">--do-not-sort</span></tt> option. Run the script with the <tt class="docutils literal"><span class="pre">--help</span></tt> option for more details.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">If you are sorting data larger than system memory, use the <tt class="docutils literal"><span class="pre">--max-mem</span></tt> option to limit sort memory usage to a reasonable fraction of available memory, <em>e.g.</em>, <tt class="docutils literal"><span class="pre">--max-mem</span> <span class="pre">2G</span></tt> or similar. See <tt class="docutils literal"><span class="pre">--help</span></tt> for more details.</p>
+</div>
+</div>
+<div class="section" id="example">
+<h2>6.3.3.2.4. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>To demonstrate these scripts, we use a sample GFF input called <tt class="docutils literal"><span class="pre">foo.gff</span></tt> (see the <a class="reference internal" href="#gff2bed-downloads"><em>Downloads</em></a> section to grab this file).</p>
+<div class="highlight-python"><pre>##gff-version 3
+chr1    Canada  exon    1300    1300    .       +       .       ID=exon00001;score=1
+chr1    USA     exon    1050    1500    .       -       0       ID=exon00002;Ontology_term="GO:0046703";Ontology_term="GO:0046704"
+chr1    Canada  exon    3000    3902    .       ?       2       ID=exon00003;score=4;Name=foo
+chr1    .       exon    5000    5500    .       .       .       ID=exon00004;Gap=M8 D3 M6 I1 M6
+chr1    .       exon    7000    9000    10      +       1       ID=exon00005;Dbxref="NCBI_gi:10727410"</pre>
+</div>
+<p>We can convert it to sorted BED data in the following manner:</p>
+<div class="highlight-python"><pre>$ gff2bed &lt; foo.gff3
+chr1    1049    1500    exon00002       .       -       USA     exon    0       ID=exon00002;Ontology_term="GO:0046703";Ontology_term="GO:0046704"
+chr1    1299    1300    exon00001       .       +       Canada  exon    .       ID=exon00001;score=1;zeroLengthInsertion=True
+chr1    2999    3902    exon00003       .       ?       Canada  exon    2       ID=exon00003;score=4;Name=foo
+chr1    4999    5500    exon00004       .       .       .       exon    .       ID=exon00004;Gap=M8 D3 M6 I1 M6
+chr1    6999    9000    exon00005       10      +       .       exon    1       ID=exon00005;Dbxref="NCBI_gi:10727410"</pre>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>GFF3 data that have trailing semi-colons on attributes, <em>e.g.</em>:</p>
+<div class="highlight-python"><pre>Parent=ATMG00060.1,ATMG00060.1-Protein;</pre>
+</div>
+<p>will cause <tt class="docutils literal"><span class="pre">IndexError:</span> <span class="pre">list</span> <span class="pre">index</span> <span class="pre">out</span> <span class="pre">of</span> <span class="pre">range</span></tt> errors when used with this conversion script.</p>
+<p>The easiest fix is to use <tt class="docutils literal"><span class="pre">awk</span></tt> to strip the trailing delimiter and pipe the fixed results to the conversion script, <em>i.e.</em>:</p>
+<div class="highlight-python"><pre>$ awk '{gsub(/;$/,"");print}' badFoo.gff | gff2bed - &gt; goodFoo.bed</pre>
+</div>
+<p class="last">This issue is also discussed on the <a class="reference external" href="http://bedops.uwencode.org/forum/index.php?topic=34.0">BEDOPS User Forum</a>.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Zero-length insertion elements are given an extra attribute called <tt class="docutils literal"><span class="pre">zeroLengthInsertion</span></tt> which lets a BED-to-GFF or other parser know that the element will require conversion back to a right-closed element <tt class="docutils literal"><span class="pre">[a,</span> <span class="pre">b]</span></tt> where <tt class="docutils literal"><span class="pre">a</span></tt> and <tt class="docutils literal"><span class="pre">b</span></tt> are equal.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Note the conversion from 1- to 0-based coordinate indexing, in the transition from GFF3 to BED. <em>BEDOPS supports operations on input with any coordinate indexing</em>, but the coordinate change made here is believed to be convenient for most end users.</p>
+</div>
+</div>
+<div class="section" id="downloads">
+<span id="gff2bed-downloads"></span><h2>6.3.3.2.5. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Sample <tt class="docutils literal"><span class="pre">foo</span></tt> GFF dataset: <a class="reference download internal" href="../../../../_downloads/reference_gff2bed_foo.gff"><tt class="xref download docutils literal"><span class="pre">foo.gff</span></tt></a></li>
+</ul>
+</div>
 </div>
 
 
@@ -69,6 +140,18 @@
             <p class="logo"><a href="../../../../index.html">
               <img class="logo" src="../../../../_static/logo_with_label_v2.png" alt="Logo"/>
             </a></p>
+  <h3><a href="../../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">6.3.3.2. <cite>gff2bed</cite></a><ul>
+<li><a class="reference internal" href="#dependencies">6.3.3.2.1. Dependencies</a></li>
+<li><a class="reference internal" href="#source">6.3.3.2.2. Source</a></li>
+<li><a class="reference internal" href="#usage">6.3.3.2.3. Usage</a></li>
+<li><a class="reference internal" href="#example">6.3.3.2.4. Example</a></li>
+<li><a class="reference internal" href="#downloads">6.3.3.2.5. Downloads</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="bam2bed.html"
                         title="previous chapter">6.3.3.1. <cite>bam2bed</cite></a></p>
