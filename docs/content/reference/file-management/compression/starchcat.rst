@@ -91,7 +91,7 @@ The :ref:`starchcat` utility parses the metadata from each of the 23 inputs, det
 
 .. note:: No filtering or processing is performed on extracted BED elements, before they are written to the final output. Thus, *it is possible for duplicate BED elements to occur*. 
 
-   However, the final archive is sorted per sort-bed ordering, so that data extracted from this archive will be ready for use with BEDOPS utilities.
+   However, the final archive is sorted per :ref:`sort-bed` ordering, so that data extracted from this archive will be ready for use with BEDOPS utilities.
 
 .. note:: When input archives contain data on disjoint chromosomes, use of :ref:`starchcat` is very efficient as data are simply copied, instead of extracted and re-compressed.
 
