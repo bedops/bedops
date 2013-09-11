@@ -129,6 +129,57 @@ bedmap
 |                              | ``map-file``.                                                        |                  |                  |                  |
 +------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 
+------
+bedops
+------
+
+* Offers set and multiset operations for files in BED format.
+* BEDOPS :ref:`bedops` documentation
+
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| option                       | description                                                          | min. file inputs | max. file inputs | min. BED columns |
++==============================+======================================================================+==================+==================+==================+
+| ``--chrom <chromosome>``     | Process data for given ``chromosome`` only.                          | 1                | No imposed limit | 3                |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--complement``, ``-c``     | Reports the intervening intervals between the input coordinate       | 1                | No imposed limit | 3                |
+|                              | segments.                                                            |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--difference``, ``-d``     | Reports the intervals found in the first file that are not present   | 2                | No imposed limit | 3                |
+|                              | in any other input file.                                             |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--ec``                     | Error check input files (slower).                                    | 1                | No imposed limit | 3                |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--element-of``, ``-e``     | Reports rows from the first file that overlap, by a specified        | 2                | No imposed limit | 3                |
+|                              | percentage or number of base pairs, the merged segments from all     |                  |                  |                  |
+|                              | other input files.                                                   |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--header``                 | Accept headers (VCF, GFF, SAM, BED, WIG) in any input file.          | 1                | No imposed limit | 3                |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--intersect``, ``-i``      | Reports the intervals common to all input files.                     | 2                | No imposed limit | 3                |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--merge``, ``-m``          | Reports intervals from all input files, after merging overlapping    | 1                | No imposed limit | 3                |
+|                              | and adjoining segments.                                              |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--not-element-of``, ``-n`` | Reports exactly everything that ``--element-of`` does not, given the | 2                | No imposed limit | 3                |
+|                              | same overlap criterion.                                              |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--partition``, ``-p``      | Reports all disjoint intervals from all input files. Overlapping     | 1                | No imposed limit | 3                |
+|                              | segments are cut up into pieces at all segment boundaries.           |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--range L:R``              | Add ``L`` bases to all start coordinates and ``R`` base to end       | 1                | No imposed limit | 3                |
+|                              | coordinates. Either value may be positive or negative to grow or     |                  |                  |                  |
+|                              | shrink regions, respectively. With the ``-e`` or ``-n`` operation,   |                  |                  |                  |
+|                              | the first (reference) file is not padded, unlike all other files.    |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--range S``                | Pad input file(s) coordinates symmetrically by ``S`` bases. This is  | 1                | No imposed limit | 3                |
+|                              | shorthand for ``--range -S:S``.                                      |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--symmdiff``, ``-s``       | Reports the intervals found in exactly one input file.               | 2                | No imposed limit | 3                |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--everything``, ``-u``     | Reports the intervals from all input files in sorted order.          | 1                | No imposed limit | 3                |
+|                              | Duplicates are retained in the output.                               |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
    :trim:
