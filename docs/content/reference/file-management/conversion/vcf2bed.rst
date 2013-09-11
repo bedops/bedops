@@ -39,6 +39,8 @@ Example
 
 To demonstrate these scripts, we use a sample VCF input called ``foo.vcf`` (see the :ref:`Downloads <vcf2bed_downloads>` section to grab this file). 
 
+.. note:: This data is also publicly available from the `Broad Institute <http://www.broadinstitute.org/gsa/wiki/index.php/Understanding_the_Unified_Genotyper's_VCF_files>`_.
+
 ::
 
   ##fileformat=VCFv4.0
