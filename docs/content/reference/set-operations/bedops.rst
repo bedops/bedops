@@ -109,6 +109,8 @@ To demonstrate the various operations in :ref:`bedops`, we start with two simple
 
 These datasets can be :ref:`sorted <sort-bed>` BED or :ref:`Starch-formatted <starch>` files or streams.
 
+.. note:: The :ref:`bedops` tool can operate on multiple inputs, but we show the results of operations on just two sets to help demonstrate the basic principles.
+
 .. _bedops_everything:
 
 -----------------------------
