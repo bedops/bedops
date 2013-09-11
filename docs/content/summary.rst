@@ -24,9 +24,9 @@ bedextract
 | ``<chromosome>``             | Retrieve all rows for specified chromosome, *e.g.* ``bedextract chr8 | 1                | 1                | 3                |
 |                              | input.bed``                                                          |                  |                  |                  |
 +------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``<query> <reference>``      | Grab elements of query that overlap elements in reference. Same as   | 2                | 2                | 3                |
-|                              | ``bedops -e -1 query reference``, except that this option fails when |                  |                  |                  |
-|                              | ``query`` contains fully-nested BED elements. May use ``-`` to       |                  |                  |                  |
+| ``<query> <reference>``      | Grab elements of ``query`` that overlap elements in reference. Same  | 2                | 2                | 3                |
+|                              | as ``bedops -e -1 query reference``, except that this option fails   |                  |                  |                  |
+|                              | when ``query`` contains fully-nested BED elements. May use ``-`` to  |                  |                  |                  |
 |                              | indicate ``stdin`` for ``reference`` only.                           |                  |                  |                  |
 +------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 
@@ -76,6 +76,57 @@ bedmap
 | ``--faster``                 | **(Advanced)** Strong input assumptions are made. Review documents   | 1                | 2                | 5                |
 |                              | before use. Compatible with ``--bp-ovr`` and ``--range`` overlap     |                  |                  |                  |
 |                              | options only.                                                        |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--fraction-ref <val>``     | The fraction of the element's size from ``ref-file`` that must       | 1                | 2                | 5                |
+|                              | overlap the element in ``map-file``. Expects ``0 < val <= 1``.       |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--fraction-map <val>``     | The fraction of the element's size from ``map-file`` that must       | 1                | 2                | 5                |
+|                              | overlap the element in ``ref-file``. Expects ``0 < val <= 1``.       |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--fraction-both <val>``    | Both ``--fraction-ref <val>`` and ``--fraction-map <val>`` must be   | 1                | 2                | 5                |
+|                              | true to qualify as overlapping. Expects ``0 < val <= 1``.            |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--fraction-either <val>``  | Both ``--fraction-ref <val>`` and ``--fraction-map <val>`` must be   | 1                | 2                | 5                |
+|                              | true to qualify as overlapping. Expects ``0 < val <= 1``.            |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--exact``                  | Shorthand for ``--fraction-both 1``. First three fields from         | 1                | 2                | 5                |
+|                              | ``map-file`` must be identical to ``ref-file`` element.              |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--indicator``              | Reports the presence of one or more overlapping elements in          | 1                | 2                | 3                |
+|                              | ``map-file`` as a binary value (``0`` or ``1``).                     |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--kth <val>``              | Reports the value at the *k* th fraction. A generalized median-like  | 1                | 2                | 5                |
+|                              | calculation, where ``--kth 0.5`` is the median. (``0 < val <= 1``)   |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--mad <mult=1>``           | Reports the 'median absolute deviation' of overlapping elements in   | 1                | 2                | 5                |
+|                              | ``map-file``, multiplied by ``<mult>``.                              |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--max``                    | Reports the highest score from overlapping elements in ``map-file``. | 1                | 2                | 5                |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--max-element``            | An element with the highest score from overlapping elements in       | 1                | 2                | 5                |
+|                              | ``map-file``. If no overlapping element exists, ``NAN`` is reported. |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--mean``                   | Reports the average score from overlapping elements in ``map-file``. | 1                | 2                | 5                |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--median``                 | Reports the median score from overlapping elements in ``map-file``.  | 1                | 2                | 5                |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--min``                    | Reports the lowest score from overlapping elements in ``map-file``.  | 1                | 2                | 5                |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--min-element``            | An element with the lowest score from overlapping elements in        | 1                | 2                | 5                |
+|                              | ``map-file``. If no overlapping element exists, ``NAN`` is reported. |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--stdev``                  | Reports the square root of the result of ``--variance``.             | 1                | 2                | 5                |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--sum``                    | Reports the accumulated value from scores of overlapping elements in | 1                | 2                | 5                |
+|                              | ``map-file``.                                                        |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--tmean <low> <hi>``       | Reports the mean score from overlapping elements in ``map-file``,    | 1                | 2                | 5                |
+|                              | after ignoring the bottom ``<low>`` and top ``<hi>`` fractions of    |                  |                  |                  |
+|                              | those scores. (``0 <= low <= 1``, ``0 <= hi <= 1``, ``low + hi <=    |                  |                  |                  |
+|                              | 1``).                                                                |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--variance``               | Reports the variance of scores from overlapping elements in          | 1                | 2                | 5                |
+|                              | ``map-file``.                                                        |                  |                  |                  |
 +------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 
 .. |--| unicode:: U+2013   .. en dash
