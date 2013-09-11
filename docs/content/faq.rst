@@ -1,6 +1,0 @@
-.. _faq:
-
-Frequently answered questions
-=============================
-
-Foo bar baz!
