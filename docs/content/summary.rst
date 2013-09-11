@@ -257,7 +257,7 @@ Compression and extraction
 ``unstarch``
 ------------
 
-* Decompression of a starch archive.
+* Extraction of a ``starch`` archive.
 * BEDOPS :ref:`unstarch` documentation.
 
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
