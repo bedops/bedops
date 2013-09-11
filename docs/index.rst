@@ -2,7 +2,7 @@
 BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis toolkit
 ===================================================================================
 
-BEDOPS is an open-source command-line toolkit that performs highly efficient and scalable Boolean and other set operations, statistical calculations, archiving, conversion and other management of genomic data of arbitrary scale. Tasks can be easily split by chromosome for distributing whole-genome analyses across a computational cluster.
+**BEDOPS** is an open-source command-line toolkit that performs highly efficient and scalable Boolean and other set operations, statistical calculations, archiving, conversion and other management of genomic data of arbitrary scale. Tasks can be easily split by chromosome for distributing whole-genome analyses across a computational cluster.
 
 +-----------------------+-----------------------+------------------------+
 | |set_operations_png|  | |statistics_png|      | |file_management_png|  |
@@ -18,12 +18,9 @@ BEDOPS is an open-source command-line toolkit that performs highly efficient and
 Citation
 ========
 
-If you use BEDOPS in your research, please cite the following manuscript:
+If you use **BEDOPS** in your research, please cite the following manuscript:
 
-   Shane Neph, M. Scott Kuehn, Alex P. Reynolds, et al.
-   **BEDOPS: high-performance genomic feature operations**
-   *Bioinformatics* (2012) 28 (14): 1919-1920.
-   `doi: 10.1093/bioinformatics/bts277 <http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract>`_
+   Shane Neph, M. Scott Kuehn, Alex P. Reynolds, et al. **BEDOPS: high-performance genomic feature operations**. *Bioinformatics* (2012) 28 (14): 1919-1920. `doi: 10.1093/bioinformatics/bts277 <http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract>`_
 
 =================
 Table of contents
@@ -79,17 +76,17 @@ Table of contents
 .. |support| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><a href="content/installation.html">How to install BEDOPS</a></li>
-   <li><a href="content/usage-examples.html">Usage examples</a> of BEDOPS tools in action</li>
-   <li><a href="http://bedops.uwencode.org/forum/">BEDOPS user forum</li>
-   <li><a href="http://groups.google.com/group/bedops-discuss">BEDOPS discusssion mailing list</li>
+   <li><a href="content/installation.html">How to install <strong>BEDOPS</strong></a></li>
+   <li><a href="content/usage-examples.html">Usage examples</a> of <strong>BEDOPS</strong> tools in action</li>
+   <li><a href="http://bedops.uwencode.org/forum/"><strong>BEDOPS</strong> user forum</li>
+   <li><a href="http://groups.google.com/group/bedops-discuss"><strong>BEDOPS</strong> discusssion mailing list</li>
    </ul>
 
 .. |other_png| image:: assets/index/other.png
 .. |other| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><a href="content/summary.html">Table summary</a> of BEDOPS toolkit</li>
+   <li><a href="content/summary.html">Table summary</a> of <strong>BEDOPS</strong> toolkit</li>
    <li><a href="content/reference/file-management/compression/starch-specification.html">Starch v2</a> format specification</li>
    <li><a href="content/revision-history.html">Revision history</a></li>
    <li><a href="https://github.com/alexpreynolds/bedops">Github repository</a></li>
