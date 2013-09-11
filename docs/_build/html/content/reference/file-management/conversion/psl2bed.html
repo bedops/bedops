@@ -58,6 +58,76 @@
             
   <div class="section" id="psl2bed">
 <span id="id1"></span><h1>6.3.3.4. <cite>psl2bed</cite><a class="headerlink" href="#psl2bed" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">psl2bed</span></tt> script converts 0-based, half-open <tt class="docutils literal"><span class="pre">[a-1,</span> <span class="pre">b)</span></tt> <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format2">Pattern Space Layout</a> (PSL) to unsorted, 0-based, half-open <tt class="docutils literal"><span class="pre">[a-1,</span> <span class="pre">b)</span></tt> extended BED-formatted data.</p>
+<p>For convenience, we also offer <tt class="docutils literal"><span class="pre">psl2starch</span></tt>, which performs the extra step of creating a Starch-formatted archive.</p>
+<div class="section" id="dependencies">
+<h2>6.3.3.4.1. Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">psl2bed</span></tt> script requires Python, version 2.5 or greater.</p>
+<p>This script is also dependent on input that follows the <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format2">PSL specification</a>.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Conversion of data which are PSL-like, but which do not follow the specification can cause <tt class="docutils literal"><span class="pre">IOError</span></tt> and other runtime exceptions. If you run into problems, please check that your input follows the PSL specification.</p>
+</div>
+</div>
+<div class="section" id="source">
+<h2>6.3.3.4.2. Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">psl2bed</span></tt> and <tt class="docutils literal"><span class="pre">psl2starch</span></tt> conversion scripts are part of the binary and source downloads of BEDOPS. See the <a class="reference internal" href="../../../installation.html#installation"><em>Installation</em></a> documentation for more details.</p>
+</div>
+<div class="section" id="usage">
+<h2>6.3.3.4.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">psl2bed</span></tt> script parses PSL from standard input and prints sorted BED to standard output. The <tt class="docutils literal"><span class="pre">psl2starch</span></tt> script uses an extra step to parse GFF to a compressed BEDOPS <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive, which is also directed to standard output.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the <tt class="docutils literal"><span class="pre">--do-not-sort</span></tt> option. Run the script with the <tt class="docutils literal"><span class="pre">--help</span></tt> option for more details.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">If you are sorting data larger than system memory, use the <tt class="docutils literal"><span class="pre">--max-mem</span></tt> option to limit sort memory usage to a reasonable fraction of available memory, <em>e.g.</em>, <tt class="docutils literal"><span class="pre">--max-mem</span> <span class="pre">2G</span></tt> or similar. See <tt class="docutils literal"><span class="pre">--help</span></tt> for more details.</p>
+</div>
+</div>
+<div class="section" id="example">
+<h2>6.3.3.4.4. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>To demonstrate these scripts, we use a sample GFF input called <tt class="docutils literal"><span class="pre">foo.gff</span></tt> (see the <a class="reference internal" href="gff2bed.html#gff2bed-downloads"><em>Downloads</em></a> section to grab this file).</p>
+<div class="highlight-python"><pre>psLayout version 3
+
+match   mis-    rep.    N's     Q gap   Q gap   T gap   T gap   strand  Q               Q       Q       Q       T               T       T       T       block   blockSizes      qStarts  tStarts
+        match   match           count   bases   count   bases           name            size    start   end     name            size    start   end     count
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+35      0       0       0       0       0       0       0       +       foo     50      15      50      chrX    155270560       40535836        40535871        1       35,     15,     40535836,
+34      2       0       0       0       0       0       0       +       foo     50      14      50      chrX    155270560       68019028        68019064        1       36,     14,     68019028,
+33      2       0       0       0       0       0       0       +       foo     50      14      49      chrX    155270560       43068135        43068170        1       35,     14,     43068135,
+35      2       0       0       0       0       0       0       +       foo     50      13      50      chr8    146364022       131572122       131572159       1       37,     13,     131572122,
+30      0       0       0       0       0       0       0       +       foo     50      14      44      chr6    171115067       127685756       127685786       1       30,     14,     127685756,
+30      0       0       0       0       0       0       0       +       foo     50      14      44      chr6    171115067       93161871        93161901        1       30,     14,     93161871,
+31      0       0       0       0       0       0       0       +       foo     50      13      44      chr5    180915260       119897315       119897346       1       31,     13,     119897315,
+30      0       0       0       0       0       0       0       +       foo     50      14      44      chr5    180915260       123254725       123254755       1       30,     14,     123254725,
+...</pre>
+</div>
+<p>We can convert it to sorted BED data in the following manner:</p>
+<div class="highlight-python"><pre>$ psl2bed --headered &lt; foo.psl
+chr1    30571100        30571135        foo     50      -       35      0       0       0       0       0       0       0       15      50      249250621       1       35,     0,      30571100,
+chr1    69592160        69592195        foo     50      -       34      1       0       0       0       0       0       0       15      50      249250621       1       35,     0,      69592160,
+chr1    107200050       107200100       foo     50      +       50      0       0       0       0       0       0       0       0       50      249250621       1       50,     0,      107200050,
+chr11   12618347        12618389        foo     50      +       39      3       0       0       0       0       0       0       8       50      135006516       1       42,     8,      12618347,
+chr11   32933028        32933063        foo     50      +       35      0       0       0       1       1       0       0       8       44      135006516       2       4,31,   8,13,   32933028,32933032,
+chr11   80116421        80116457        foo     50      +       35      1       0       0       0       0       0       0       14      50      135006516       1       36,     14,     80116421,
+chr11   133952291       133952327       foo     50      +       34      2       0       0       0       0       0       0       14      50      135006516       1       36,     14,     133952291,
+chr13   99729482        99729523        foo     50      +       39      2       0       0       0       0       0       0       8       49      115169878       1       41,     8,      99729482,
+chr13   111391852       111391888       foo     50      +       34      2       0       0       0       0       0       0       14      50      115169878       1       36,     14,     111391852,
+chr16   8149657 8149694 foo     50      +       36      1       0       0       0       0       0       0       13      50      90354753        1       37,     13,     8149657,
+...</pre>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, the <tt class="docutils literal"><span class="pre">psl2bed</span></tt> and <tt class="docutils literal"><span class="pre">psl2starch</span></tt> scripts work with headerless PSL data. If you have headered PSL output, use the <tt class="docutils literal"><span class="pre">--headered</span></tt> operator with either conversion script, as shown in the example above.</p>
+</div>
+</div>
+<div class="section" id="downloads">
+<span id="psl2bed-downloads"></span><h2>6.3.3.4.5. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Sample PSL dataset: <tt class="xref download docutils literal"><span class="pre">foo.psl</span></tt></li>
+</ul>
+</div>
 </div>
 
 
@@ -69,6 +139,18 @@
             <p class="logo"><a href="../../../../index.html">
               <img class="logo" src="../../../../_static/logo_with_label_v2.png" alt="Logo"/>
             </a></p>
+  <h3><a href="../../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">6.3.3.4. <cite>psl2bed</cite></a><ul>
+<li><a class="reference internal" href="#dependencies">6.3.3.4.1. Dependencies</a></li>
+<li><a class="reference internal" href="#source">6.3.3.4.2. Source</a></li>
+<li><a class="reference internal" href="#usage">6.3.3.4.3. Usage</a></li>
+<li><a class="reference internal" href="#example">6.3.3.4.4. Example</a></li>
+<li><a class="reference internal" href="#downloads">6.3.3.4.5. Downloads</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="gtf2bed.html"
                         title="previous chapter">6.3.3.3. <cite>gtf2bed</cite></a></p>

@@ -329,7 +329,7 @@ chr21   33031900        33032000        ref-3|chr21     33031985        33032005
 <p class="first admonition-title">Note</p>
 <p class="last">Where there are ties in score values, there is no guarantee about which tied element will be chosen. In this case, the <tt class="docutils literal"><span class="pre">--echo-map</span></tt> operator can be used to manually examine the full list of elements and apply different logic.</p>
 </div>
-<p>We can also perform multiple score operations, which are summarized on one line, e.g. to show the mean, standard deviation, and minimum and maximum signal over each <tt class="docutils literal"><span class="pre">Reference</span></tt> element, we simply add the requisite options in series:</p>
+<p>We can also perform multiple score operations, which are summarized on one line, <em>e.g.</em>, to show the mean, standard deviation, and minimum and maximum signal over each <tt class="docutils literal"><span class="pre">Reference</span></tt> element, we simply add the requisite options in series:</p>
 <div class="highlight-python"><pre>$ bedmap --echo --mean --stdev --min --max reference.bed map.bed
 chr21   33031200    33032400    ref-1|43.442623|50.874527|2.000000|165.000000
 chr21   33031400    33031800    ref-2|31.571429|19.638155|13.000000|82.000000

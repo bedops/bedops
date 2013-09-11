@@ -342,7 +342,7 @@ Likewise, we can repeat this operation, but look for the lowest scoring elements
 
 .. note:: Where there are ties in score values, there is no guarantee about which tied element will be chosen. In this case, the ``--echo-map`` operator can be used to manually examine the full list of elements and apply different logic.
 
-We can also perform multiple score operations, which are summarized on one line, e.g. to show the mean, standard deviation, and minimum and maximum signal over each ``Reference`` element, we simply add the requisite options in series:
+We can also perform multiple score operations, which are summarized on one line, *e.g.*, to show the mean, standard deviation, and minimum and maximum signal over each ``Reference`` element, we simply add the requisite options in series:
 
 ::
 

@@ -58,6 +58,68 @@
             
   <div class="section" id="sam2bed">
 <span id="id1"></span><h1>6.3.3.5. <cite>sam2bed</cite><a class="headerlink" href="#sam2bed" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">sam2bed</span></tt> script converts 1-based <a class="reference external" href="http://samtools.sourceforge.net/">Sequence Alignment/Map</a> (SAM) to sorted, 0-based UCSC BED data.</p>
+<p>For convenience, we also offer <tt class="docutils literal"><span class="pre">sam2starch</span></tt>, which performs the extra step of creating a <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive.</p>
+<p>The <tt class="docutils literal"><span class="pre">sam2bed</span></tt> script is &#8220;non-lossy&#8221;. Similar tools in the world tend to throw out information from the original SAM input upon conversion; <tt class="docutils literal"><span class="pre">sam2bed</span></tt> retains everything, facilitating reuse of converted data and conversion to other formats.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Doing the extra step of creating a <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive can save a lot of space relative to the original SAM format, up to 33% of the original SAM dataset, while offering per-chromosome random access.</p>
+</div>
+<div class="section" id="dependencies">
+<h2>6.3.3.5.1. Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>This <tt class="docutils literal"><span class="pre">bash</span></tt> shell script is dependent upon the installation of <a class="reference external" href="http://samtools.sourceforge.net/">SAMtools</a> and <a class="reference external" href="http://www.gnu.org/software/gawk/">GNU awk</a> tools.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">GNU <tt class="docutils literal"><span class="pre">awk</span></tt> is already installed on Linux systems, but is usually an additional installation on Mac OS X systems. Use <a class="reference external" href="http://www.macports.org/">MacPorts</a>, <a class="reference external" href="http://mxcl.github.com/homebrew/">Homebrew</a>, or compile from <a class="reference external" href="http://www.gnu.org/software/gawk/">source</a>).</p>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>6.3.3.5.2. Source<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">sam2bed</span></tt> and <tt class="docutils literal"><span class="pre">sam2starch</span></tt> conversion scripts are part of the binary and source downloads of BEDOPS. See the <a class="reference internal" href="../../../installation.html#installation"><em>Installation</em></a> documentation for more details.</p>
+</div>
+<div class="section" id="usage">
+<h2>6.3.3.5.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">sam2bed</span></tt> script parses SAM data from standard input and prints <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED to standard output. The <tt class="docutils literal"><span class="pre">sam2starch</span></tt> script uses an extra step to parse SAM to a compressed BEDOPS <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive, which is also directed to standard output.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the <tt class="docutils literal"><span class="pre">--do-not-sort</span></tt> option. Run the script with the <tt class="docutils literal"><span class="pre">--help</span></tt> option for more details.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">If you are sorting data larger than system memory, use the <tt class="docutils literal"><span class="pre">--max-mem</span></tt> option to limit sort memory usage to a reasonable fraction of available memory, <em>e.g.</em>, <tt class="docutils literal"><span class="pre">--max-mem</span> <span class="pre">2G</span></tt> or similar. See <tt class="docutils literal"><span class="pre">--help</span></tt> for more details.</p>
+</div>
+</div>
+<div class="section" id="example">
+<h2>6.3.3.5.4. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>To demonstrate these scripts, we use a sample binary input called <tt class="docutils literal"><span class="pre">foo.sam</span></tt> (see the <a class="reference internal" href="#sam2bed-downloads"><em>Downloads</em></a> section to grab this file).</p>
+<div class="highlight-python"><pre>@HD     VN:1.0 SO:coordinate
+@SQ     SN:seq1 LN:5000
+@SQ     SN:seq2 LN:5000
+@CO     Example of SAM/BAM file format.
+B7_591:4:96:693:509     73      seq1    1       99      36M     *       0       0       CACTAGTGGCTCATTGTAAATGTGTGGTTTAACTCG    &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;5&lt;&lt;&lt;&lt;&lt;;:&lt;;7    MF:i:18 Aq:i:73 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
+EAS54_65:7:152:368:113  73      seq1    3       99      35M     *       0       0       CTAGTGGCTCATTGTAAATGTGTGGTTTAACTCGT     &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;0&lt;&lt;&lt;&lt;655&lt;&lt;7&lt;&lt;&lt;:9&lt;&lt;3/:&lt;6):     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
+EAS51_64:8:5:734:57     137     seq1    5       99      35M     *       0       0       AGTGGCTCATTGTAAATGTGTGGTTTAACTCGTCC     &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;7;71&lt;&lt;;&lt;;;&lt;7;&lt;&lt;3;);3*8/5     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
+...</pre>
+</div>
+<p>We can convert it to sorted BED data in the following manner (omitting standard error messages):</p>
+<div class="highlight-python"><pre>$ sam2bed &lt; foo.sam
+seq1    0       36      B7_591:4:96:693:509     73      +       99      36M     *       0       0       CACTAGTGGCTCATTGTAAATGTGTGGTTTAACTCG    &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;5&lt;&lt;&lt;&lt;&lt;;:&lt;;7    MF:i:18 Aq:i:73 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
+seq1    2       37      EAS54_65:7:152:368:113  73      +       99      35M     *       0       0       CTAGTGGCTCATTGTAAATGTGTGGTTTAACTCGT     &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;0&lt;&lt;&lt;&lt;655&lt;&lt;7&lt;&lt;&lt;:9&lt;&lt;3/:&lt;6):     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
+seq1    4       39      EAS51_64:8:5:734:57     137     +       99      35M     *       0       0       AGTGGCTCATTGTAAATGTGTGGTTTAACTCGTCC     &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;7;71&lt;&lt;;&lt;;;&lt;7;&lt;&lt;3;);3*8/5     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
+seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     *       0       0       GTGGCTCATTGTAATTTTTTGTTTTAACTCTTCTCT    (-&amp;----,----)-)-),'--)---',+-,),''*,    MF:i:130        Aq:i:63 NM:i:5  UQ:i:38 H0:i:0  H1:i:0
+...</pre>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Note the conversion from 1- to 0-based coordinates. While BEDOPS fully supports 0- and 1-based coordinates, the coordinate change in BED is believed to be convenient to most end users.</p>
+</div>
+</div>
+<div class="section" id="downloads">
+<span id="sam2bed-downloads"></span><h2>6.3.3.5.5. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Sample SAM dataset: <a class="reference download internal" href="../../../../_downloads/reference_sam2bed_foo.sam"><tt class="xref download docutils literal"><span class="pre">foo.sam</span></tt></a></li>
+</ul>
+</div>
 </div>
 
 
@@ -69,6 +131,18 @@
             <p class="logo"><a href="../../../../index.html">
               <img class="logo" src="../../../../_static/logo_with_label_v2.png" alt="Logo"/>
             </a></p>
+  <h3><a href="../../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">6.3.3.5. <cite>sam2bed</cite></a><ul>
+<li><a class="reference internal" href="#dependencies">6.3.3.5.1. Dependencies</a></li>
+<li><a class="reference internal" href="#id2">6.3.3.5.2. Source</a></li>
+<li><a class="reference internal" href="#usage">6.3.3.5.3. Usage</a></li>
+<li><a class="reference internal" href="#example">6.3.3.5.4. Example</a></li>
+<li><a class="reference internal" href="#downloads">6.3.3.5.5. Downloads</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="psl2bed.html"
                         title="previous chapter">6.3.3.4. <cite>psl2bed</cite></a></p>

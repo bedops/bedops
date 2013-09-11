@@ -70,7 +70,7 @@ We can convert it to sorted BED data in the following manner:
 Downloads
 =========
 
-* Sample ``foo`` GTF dataset: :download:`foo.gtf <../../../../assets/reference/file-management/conversion/reference_gtf2bed_foo.gtf>`
+* Sample GTF dataset: :download:`foo.gtf <../../../../assets/reference/file-management/conversion/reference_gtf2bed_foo.gtf>`
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace

@@ -141,6 +141,10 @@
 <p>To demonstrate the various operations in <a class="reference internal" href="#bedops"><em>bedops</em></a>, we start with two simple datasets <tt class="docutils literal"><span class="pre">A</span></tt> and <tt class="docutils literal"><span class="pre">B</span></tt>, containing genomic elements on generic chromsome <tt class="docutils literal"><span class="pre">chrN</span></tt>:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_inputs.png"><img alt="../../../_images/reference_setops_bedops_inputs.png" src="../../../_images/reference_setops_bedops_inputs.png" style="width: 99%;" /></a>
 <p>These datasets can be <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED or <a class="reference internal" href="../file-management/compression/starch.html#starch"><em>Starch-formatted</em></a> files or streams.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <a class="reference internal" href="#bedops"><em>bedops</em></a> tool can operate on multiple inputs, but we show the results of operations on just two sets to help demonstrate the basic principles.</p>
+</div>
 <div class="section" id="everything-u-everything">
 <span id="bedops-everything"></span><h3>6.1.1.3.1. Everything (-u, &#8211;everything)<a class="headerlink" href="#everything-u-everything" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--everything</span></tt> option is equivalent to concatenating and sorting BED elements from multiple files, but works much faster:</p>

@@ -68,7 +68,7 @@ We can convert it to sorted BED data in the following manner (omitting standard 
 Downloads
 =========
 
-* Sample ``foo`` BAM dataset: :download:`foo.bam <../../../../assets/reference/file-management/conversion/reference_bam2bed_foo.bam>`
+* Sample BAM dataset: :download:`foo.bam <../../../../assets/reference/file-management/conversion/reference_bam2bed_foo.bam>`
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
