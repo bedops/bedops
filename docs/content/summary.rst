@@ -225,7 +225,7 @@ Sorting
 | (no option)                   | NA                                                                   | 1                | 1000             | 3                |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--max-mem <val>``           | ``<val>`` specifies the maximum memory usage for the :ref:`sort-bed` | 1                | 1000             | 3                |
-|                               |  process, which is useful for very large BED inputs. For example,    |                  |                  |                  |
+|                               | process, which is useful for very large BED inputs. For example,     |                  |                  |                  |
 |                               | ``--max-mem`` may be ``8G``, ``8000M``, or ``8000000000`` to specify |                  |                  |                  |
 |                               | 8 GB of memory.                                                      |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
