@@ -1,5 +1,7 @@
+===================================================================================
 BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis toolkit
-======================================================================================
+===================================================================================
+
 BEDOPS is an open-source command-line toolkit that performs highly efficient and scalable Boolean and other set operations, statistical calculations, archiving, conversion and other management of genomic data of arbitrary scale. Tasks can be easily split by chromosome for distributing whole-genome analyses across a computational cluster.
 
 +-----------------------+-----------------------+------------------------+
@@ -12,10 +14,20 @@ BEDOPS is an open-source command-line toolkit that performs highly efficient and
 | |performance|         | |support|             | |other|                |
 +-----------------------+-----------------------+------------------------+
 
-|space|
+========
+Citation
+========
 
-.. image:: assets/index/toc.png
-   :width: 33%
+If you use BEDOPS in your research, please cite the following manuscript:
+
+   Shane Neph, M. Scott Kuehn, Alex P. Reynolds, et al.
+   **BEDOPS: high-performance genomic feature operations**
+   *Bioinformatics* (2012) 28 (14): 1919-1920.
+   `doi: 10.1093/bioinformatics/bts277 <http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract>`_
+
+=================
+Table of contents
+=================
 
 .. toctree::
    :numbered:
@@ -82,7 +94,3 @@ BEDOPS is an open-source command-line toolkit that performs highly efficient and
    <li><a href="content/revision-history.html">Revision history</a></li>
    <li><a href="https://github.com/alexpreynolds/bedops">Github repository</a></li>
    </ul>
-
-.. |space| raw:: html
- 
-   <p>&nbsp;</p>
