@@ -1,7 +1,7 @@
 BEDOPS
 ====
 
-<img src="https://dl.dropboxusercontent.com/u/31495717/bedops/logo.png" align="right"/>
+<img src="http://bedops.readthedocs.org/en/latest/_static/logo_with_label_v2.png" align="right"/>
 
 Shane Neph, M. Scott Kuehn, Alex P. Reynolds, et al.  
 [**BEDOPS: high-performance genomic feature operations**  
