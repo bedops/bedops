@@ -6,7 +6,8 @@ BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis tool
 
 You can read more about **BEDOPS** and how it can be useful for your research in the :ref:`overview <overview>` documentation, as well as in the `original manuscript <http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract>`_.
 
-:raw-html:`<br />`
+| 
+| 
 
 +-----------------------+-----------------------+------------------------+
 | |set_operations_png|  | |statistics_png|      | |file_management_png|  |
