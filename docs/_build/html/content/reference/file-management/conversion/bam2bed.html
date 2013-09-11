@@ -58,7 +58,7 @@
             
   <div class="section" id="bam2bed">
 <span id="id1"></span><h1>6.3.3.1. <cite>bam2bed</cite><a class="headerlink" href="#bam2bed" title="Permalink to this headline">¶</a></h1>
-<p>The <tt class="docutils literal"><span class="pre">bam2bed</span></tt> script converts 0-based <a class="reference external" href="http://samtools.sourceforge.net/SAM1.pdf">Binary (Sequence) Alignment/Map</a> (BAM) to sorted, 0-based UCSC BED data.</p>
+<p>The <tt class="docutils literal"><span class="pre">bam2bed</span></tt> script converts 0-based, half-open <tt class="docutils literal"><span class="pre">[start-1,</span> <span class="pre">end)</span></tt> <a class="reference external" href="http://samtools.sourceforge.net/SAM1.pdf">Binary (Sequence) Alignment/Map</a> (BAM) to sorted, 0-based, half-open <tt class="docutils literal"><span class="pre">[start-1,</span> <span class="pre">end)</span></tt> UCSC BED data.</p>
 <p>For convenience, we also offer <tt class="docutils literal"><span class="pre">bam2starch</span></tt>, which performs the extra step of creating a <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive.</p>
 <p>The <tt class="docutils literal"><span class="pre">bam2bed</span></tt> script is &#8220;non-lossy&#8221;. Similar tools in the world tend to throw out information from the original BAM input upon conversion; <tt class="docutils literal"><span class="pre">bam2bed</span></tt> retains everything, facilitating reuse of converted data and conversion to other formats.</p>
 <div class="admonition tip">

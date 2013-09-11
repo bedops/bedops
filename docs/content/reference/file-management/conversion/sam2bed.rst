@@ -3,7 +3,7 @@
 `sam2bed`
 =========
 
-The ``sam2bed`` script converts 1-based `Sequence Alignment/Map <http://samtools.sourceforge.net/>`_ (SAM) to sorted, 0-based UCSC BED data.
+The ``sam2bed`` script converts 1-based, closed ``[start, end]`` `Sequence Alignment/Map <http://samtools.sourceforge.net/>`_ (SAM) to sorted, 0-based, half-open ``[start-1, end)`` UCSC BED data.
 
 For convenience, we also offer ``sam2starch``, which performs the extra step of creating a :ref:`Starch-formatted <starch_specification>` archive.
 

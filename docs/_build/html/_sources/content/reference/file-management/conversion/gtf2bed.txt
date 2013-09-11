@@ -3,7 +3,7 @@
 `gtf2bed`
 =========
 
-The ``gtf2bed`` script converts 1-based, closed ``[a, b]`` `Gene Transfer Format v2.2 <http://mblab.wustl.edu/GTF22.html>`_ (GTF2.2) to sorted, 0-based, half-open ``[a-1, b)`` extended BED-formatted data.
+The ``gtf2bed`` script converts 1-based, closed ``[start, end]`` `Gene Transfer Format v2.2 <http://mblab.wustl.edu/GTF22.html>`_ (GTF2.2) to sorted, 0-based, half-open ``[start-1, end)`` extended BED-formatted data.
 
 For convenience, we also offer ``gtf2starch``, which performs the extra step of creating a Starch-formatted archive.
 

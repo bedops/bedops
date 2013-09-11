@@ -3,7 +3,7 @@
 `bam2bed`
 =========
 
-The ``bam2bed`` script converts 0-based `Binary (Sequence) Alignment/Map <http://samtools.sourceforge.net/SAM1.pdf>`_ (BAM) to sorted, 0-based UCSC BED data.
+The ``bam2bed`` script converts 0-based, half-open ``[start-1, end)`` `Binary (Sequence) Alignment/Map <http://samtools.sourceforge.net/SAM1.pdf>`_ (BAM) to sorted, 0-based, half-open ``[start-1, end)`` UCSC BED data.
 
 For convenience, we also offer ``bam2starch``, which performs the extra step of creating a :ref:`Starch-formatted <starch_specification>` archive.
 
