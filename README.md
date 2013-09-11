@@ -14,3 +14,9 @@ The suite includes tools for set and statistical operations (<tt>bedops</tt>, <t
 BEDOPS also offers logarithmic speedups in access to per-chromosome regions in sorted BED data (<tt>bedextract</tt>, core BEDOPS tools). These tools make whole-genome analyses "embarassingly parallel", in that per-chromosome computations can be placed onto separate work nodes, with results collated at the end in [map-reduce](http://en.wikipedia.org/wiki/MapReduce) fashion.
 
    
+<table>
+    <tr>
+        <td>Foo</td> 
+        <td>Bar</td>
+    </tr>
+</table>
