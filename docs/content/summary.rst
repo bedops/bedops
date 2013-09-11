@@ -14,7 +14,7 @@ bedextract
 ----------
 
 * Efficiently extracts features from BED input.
-* BEDOPS :ref:`bedextract` documentation
+* BEDOPS :ref:`bedextract` documentation.
 
 +------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | option                       | description                                                          | min. file inputs | max. file inputs | min. BED columns |
@@ -35,7 +35,7 @@ bedmap
 ------
 
 * Maps source signals from ``map-file`` onto qualified target regions from ``ref-file``. Calculates an output for every ``ref-file`` element.
-* BEDOPS :ref:`bedmap` documentation
+* BEDOPS :ref:`bedmap` documentation.
 
 +------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | option                       | description                                                          | min. file inputs | max. file inputs | min. BED columns |
@@ -58,7 +58,7 @@ bedmap
 | ``--cv``                     | Reports the Coefficient of Variation: the result of ``--stdev``      | 1                | 2                | 5                | 
 |                              | divided by the result of ``--mean``.                                 |                  |                  |                  |
 +------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--ec``                     | Error check all input files (slower).                                | 1                | 2                | 3                |
+| ``--ec``                     | Error-check all input files (slower).                                | 1                | 2                | 3                |
 +------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--echo``                   | Echo each line from ``ref-file``.                                    | 1                | 2                | 3                |
 +------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
@@ -134,7 +134,7 @@ bedops
 ------
 
 * Offers set and multiset operations for files in BED format.
-* BEDOPS :ref:`bedops` documentation
+* BEDOPS :ref:`bedops` documentation.
 
 +------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | option                       | description                                                          | min. file inputs | max. file inputs | min. BED columns |
@@ -147,7 +147,7 @@ bedops
 | ``--difference``, ``-d``     | Reports the intervals found in the first file that are not present   | 2                | No imposed limit | 3                |
 |                              | in any other input file.                                             |                  |                  |                  |
 +------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--ec``                     | Error check input files (slower).                                    | 1                | No imposed limit | 3                |
+| ``--ec``                     | Error-check input files (slower).                                    | 1                | No imposed limit | 3                |
 +------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--element-of``, ``-e``     | Reports rows from the first file that overlap, by a specified        | 2                | No imposed limit | 3                |
 |                              | percentage or number of base pairs, the merged segments from all     |                  |                  |                  |
@@ -178,6 +178,56 @@ bedops
 +------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--everything``, ``-u``     | Reports the intervals from all input files in sorted order.          | 1                | No imposed limit | 3                |
 |                              | Duplicates are retained in the output.                               |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+
+----------------
+closest-features
+----------------
+
+* For every element in ``input-file``, find those elements in ``query-file`` nearest to its left and right edges.
+* BEDOPS :ref:`closest-features` documentation.
+
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| option                       | description                                                          | min. file inputs | max. file inputs | min. BED columns |
++==============================+======================================================================+==================+==================+==================+
+| (no option)                  | -                                                                    | 2                | 2                | 3                |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--chrom <chromosome>``     | Process data for given ``<chromosome>`` only.                        | 2                | 2                | 3                |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--dist``                   | Output includes the signed distances between the ``input-file``      | 2                | 2                | 3                |
+|                              | element and the closest elements in ``query-file``.                  |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--ec``                     | Error-check all input files (slower).                                | 2                | 2                | 3                |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--no-overlaps``            | Do not consider elements that overlap. Overlapping elements,         | 2                | 2                | 3                |
+|                              | otherwise, have highest precedence.                                  |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--no-ref``                 | Do not echo elements from ``input-file``.                            | 2                | 2                | 3                |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--closest``                | Choose the nearest element from ``query-file`` only. Ties go to the  | 2                | 2                | 3                |
+|                              | leftmost closest element.                                            |                  |                  |                  |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+
+=======
+Sorting
+=======
+
+--------
+sort-bed
+--------
+
+* Sorts input BED file(s) into the order required by other utilities. Loads all input data into memory.
+* BEDOPS :ref:`sort-bed` documentation.
+
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| option                       | description                                                          | min. file inputs | max. file inputs | min. BED columns |
++==============================+======================================================================+==================+==================+==================+
+| (no option)                  | -                                                                    | 1                | 1000             | 3                |
++------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--max-mem <val>``          | ``<val>`` specifies the maximum memory usage for the :ref:`sort-bed` | 1                | 1000             | 3                |
+|                              |  process, which is useful for very large BED inputs. For example,    |                  |                  |                  |
+|                              | ``--max-mem`` may be ``8G``, ``8000M``, or ``8000000000`` to specify |                  |                  |                  |
+|                              | 8 GB of memory.                                                      |                  |                  |                  |
 +------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 
 .. |--| unicode:: U+2013   .. en dash
