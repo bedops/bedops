@@ -5,7 +5,7 @@ BEDOPS is an open-source command-line toolkit that performs highly efficient and
 |space|
 
 .. image:: assets/index/reference.png
-   :width: 33%
+   :width: 50%
 
 +-----------------------+-----------------------+------------------------+
 | |set_operations_png|  | |statistics_png|      | |file_management_png|  |
