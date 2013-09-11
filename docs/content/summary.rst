@@ -9,9 +9,9 @@ These tables summarize BEDOPS utilities by option, file inputs and BED column re
 Set operation and statistical utilities
 =======================================
 
-----------
-bedextract
-----------
+--------------
+``bedextract``
+--------------
 
 * Efficiently extracts features from BED input.
 * BEDOPS :ref:`bedextract` documentation.
@@ -30,9 +30,9 @@ bedextract
 |                               | indicate ``stdin`` for ``reference`` only.                           |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 
-------
-bedmap
-------
+----------
+``bedmap``
+----------
 
 * Maps source signals from ``map-file`` onto qualified target regions from ``ref-file``. Calculates an output for every ``ref-file`` element.
 * BEDOPS :ref:`bedmap` documentation.
@@ -129,9 +129,9 @@ bedmap
 |                               | ``map-file``.                                                        |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 
-------
-bedops
-------
+----------
+``bedops``
+----------
 
 * Offers set and multiset operations for files in BED format.
 * BEDOPS :ref:`bedops` documentation.
@@ -180,9 +180,9 @@ bedops
 |                               | Duplicates are retained in the output.                               |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 
-----------------
-closest-features
-----------------
+--------------------
+``closest-features``
+--------------------
 
 * For every element in ``input-file``, find those elements in ``query-file`` nearest to its left and right edges.
 * BEDOPS :ref:`closest-features` documentation.
@@ -212,9 +212,9 @@ closest-features
 Sorting
 =======
 
---------
-sort-bed
---------
+------------
+``sort-bed``
+------------
 
 * Sorts input BED file(s) into the order required by other utilities. Loads all input data into memory.
 * BEDOPS :ref:`sort-bed` documentation.
@@ -234,9 +234,9 @@ sort-bed
 Compression and extraction
 ==========================
 
-------
-starch
-------
+----------
+``starch``
+----------
 
 * Lossless compression of any BED file.
 * BEDOPS :ref:`starch` documentation.
@@ -253,9 +253,9 @@ starch
 | ``--note="foo bar..."``       | Append note to output archive metadata (optional).                   | 1                | 1                | 3                |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 
---------
-unstarch
---------
+------------
+``unstarch``
+------------
 
 * Decompression of a starch archive.
 * BEDOPS :ref:`unstarch` documentation.
@@ -293,9 +293,9 @@ unstarch
 | ``--sha1-signature``          | Show SHA1 signature of JSON-formatted metadata (Base64-encoded).     | 1                | 1                | NA               |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 
----------
-starchcat
----------
+-------------
+``starchcat``
+-------------
 
 * Merge multiple ``starch`` archive inputs into one ``starch`` archive output.
 * BEDOPS :ref:`starchcat` documentation.
