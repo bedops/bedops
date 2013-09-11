@@ -27,7 +27,7 @@ The ``vcf2bed`` and ``vcf2starch`` conversion scripts are part of the binary and
 Usage
 =====
 
-The ``vcf2bed`` script parses VCF from standard input and prints sorted BED to standard output. The ``vcf2starch`` script uses an extra step to parse GTF to a compressed BEDOPS :ref:`Starch-formatted <starch_specification>` archive, which is also directed to standard output.
+The ``vcf2bed`` script parses VCF from standard input and prints sorted BED to standard output. The ``vcf2starch`` script uses an extra step to parse VCF to a compressed BEDOPS :ref:`Starch-formatted <starch_specification>` archive, which is also directed to standard output.
 
 .. tip:: By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the ``--do-not-sort`` option. Run the script with the ``--help`` option for more details.
 

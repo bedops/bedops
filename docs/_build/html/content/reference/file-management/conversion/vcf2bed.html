@@ -75,7 +75,7 @@
 </div>
 <div class="section" id="usage">
 <h2>6.3.3.6.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">vcf2bed</span></tt> script parses VCF from standard input and prints sorted BED to standard output. The <tt class="docutils literal"><span class="pre">vcf2starch</span></tt> script uses an extra step to parse GTF to a compressed BEDOPS <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive, which is also directed to standard output.</p>
+<p>The <tt class="docutils literal"><span class="pre">vcf2bed</span></tt> script parses VCF from standard input and prints sorted BED to standard output. The <tt class="docutils literal"><span class="pre">vcf2starch</span></tt> script uses an extra step to parse VCF to a compressed BEDOPS <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive, which is also directed to standard output.</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
 <p class="last">By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the <tt class="docutils literal"><span class="pre">--do-not-sort</span></tt> option. Run the script with the <tt class="docutils literal"><span class="pre">--help</span></tt> option for more details.</p>
@@ -88,6 +88,10 @@
 <div class="section" id="example">
 <h2>6.3.3.6.4. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>To demonstrate these scripts, we use a sample VCF input called <tt class="docutils literal"><span class="pre">foo.vcf</span></tt> (see the <a class="reference internal" href="#vcf2bed-downloads"><em>Downloads</em></a> section to grab this file).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This data is also publicly available from the <a class="reference external" href="http://www.broadinstitute.org/gsa/wiki/index.php/Understanding_the_Unified_Genotyper's_VCF_files">Broad Institute</a>.</p>
+</div>
 <div class="highlight-python"><pre>##fileformat=VCFv4.0
 ##FILTER=&lt;ID=LowQual,Description="QUAL &lt; 50.0"&gt;
 ##FORMAT=&lt;ID=AD,Number=.,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed"&gt;
