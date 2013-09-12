@@ -54,36 +54,56 @@ Via source code
 
 At this time, compilation of BEDOPS requires GCC 4.7 or greater (which includes support for `C++11 <http://en.wikipedia.org/wiki/C%2B%2B11>`_ features required by core BEDOPS tools).
 
-1. If you do not have GCC 4.7 or greater installed, first do so.
+1. If you do not have GCC 4.7 or greater installed, first do so. You can check this with ``gcc --version``, *e.g.*: 
 
-   For Mac OS X users, we recommend first installing `Apple Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option within Xcode. Then install GCC 4.7 or greater using `MacPorts <http://www.macports.org>`_, setting GCC to be the default compiler, *e.g.*: :: 
+   ::
 
-   $ sudo port install gcc47
-   $ sudo port install gcc_select
-   $ sudo port select --set gcc gcc47
+     $ gcc --version
+     gcc (MacPorts gcc47 4.7.3_3+universal) 4.7.3
+     ...
+
+   For Mac OS X users, we recommend first installing `Apple Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option within Xcode. Then install GCC 4.7 or greater using `MacPorts <http://www.macports.org>`_, setting GCC to be the default compiler, *e.g.*: 
+ 
+   :: 
+
+     $ sudo port install gcc47
+     $ sudo port install gcc_select
+     $ sudo port select --set gcc gcc47
 
    In the future, we may provide support for OS X compilation via Clang/LLVM, which is the default compiler included with Xcode.
 
-   For Linux users, use your favorite package manager to install the requisite compiler. For example, in Ubuntu, you might run the following: ::
+   For Linux users, use your favorite package manager to install the requisite compiler. For example, in Ubuntu, you might run the following: 
+
+   ::
  
-   $ sudo apt-get install gcc
+     $ sudo apt-get install gcc
 
-2. Clone the BEDOPS Git repository in an appropriate local directory: ::
+2. Install a ``git`` client of your choice, if you do not already have one installed. Github offers an `installation guide <https://help.github.com/articles/set-up-git#platform-all>`_.
 
-   $ git clone https://github.com/alexpreynolds/bedops.git
+3. Clone the BEDOPS Git repository in an appropriate local directory: 
 
-3. Run ``make`` in the top-level of the local copy of the BEDOPS repository: ::
+   ::
+  
+     $ git clone https://github.com/alexpreynolds/bedops.git
+  
+4. Run ``make`` in the top-level of the local copy of the BEDOPS repository: 
 
-   $ cd bedops
-   $ make
+   ::
 
-4. Install compiled binaries and scripts to a local ``bin`` folder: ::
+     $ cd bedops
+     $ make
 
-   $ make install
+5. Install compiled binaries and scripts to a local ``bin`` folder: 
 
-5. Copy the extracted binaries to a location of your choice that is in your environment's ``PATH``, *e.g.* ``~/opt/bin``: ::
+   ::
+
+     $ make install
+
+6. Copy the extracted binaries to a location of your choice that is in your environment's ``PATH``, *e.g.* ``~/opt/bin``: 
+
+   ::
  
-   $ cp bin/* ~/opt/bin
+     $ cp bin/* ~/opt/bin
 
    Change this destination folder, as needed.
 
