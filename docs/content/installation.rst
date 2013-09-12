@@ -47,6 +47,8 @@ Mac OS X
 
 4. Follow the instructions to install BEDOPS and library dependencies to your Mac. (If you are upgrading from a previous version, components will be overwritten or removed, as needed.)
 
+.. _installation_via_source_code:
+
 ===============
 Via source code
 ===============
@@ -85,26 +87,59 @@ At this time, compilation of BEDOPS requires GCC 4.7 or greater (which includes 
   
      $ git clone https://github.com/alexpreynolds/bedops.git
   
-4. Run ``make`` in the top-level of the local copy of the BEDOPS repository: 
+4. (Linux) Run ``make static`` in the top-level of the local copy of the BEDOPS repository: 
 
    ::
 
      $ cd bedops
-     $ make
+     $ make static
 
-5. Install compiled binaries and scripts to a local ``bin`` folder: 
+5. (Mac OS X) Run ``make build_all_darwin_intel_fat`` in the top-level of the local copy of the BEDOPS repository:
+
+   ::
+
+     $ cd bedops
+     $ make build_all_darwin_intel_fat
+
+6. Install compiled binaries and scripts to a local ``bin`` folder: 
 
    ::
 
      $ make install
 
-6. Copy the extracted binaries to a location of your choice that is in your environment's ``PATH``, *e.g.* ``~/opt/bin``: 
+7. Copy the extracted binaries to a location of your choice that is in your environment's ``PATH``, *e.g.* ``~/opt/bin``: 
 
    ::
  
      $ cp bin/* ~/opt/bin
 
    Change this destination folder, as needed.
+
+=====================================================
+Building an OS X installer package for redistribution
+=====================================================
+
+1. Follow steps 1-3 and step 5 from the :ref:`Via Source Code <installation_via_source_code>` documentation.
+
+2. Run ``make install_osx_packaging_bins`` in the top-level of the local copy of the BEDOPS repository:
+
+   ::
+
+     $ make install_osx_packaging_bins
+
+3. Install `WhiteBox Packages.app <http://s.sudre.free.fr/Software/Packages/about.html>`_, an application for building OS X installers.
+
+4. Open the ``BEDOPS.pkgproj`` file in the top-level of the local copy of the BEDOPS repository, in order to open the BEDOPS installer project:
+
+   ::
+     
+     $ open packaging/os_x/BEDOPS.pkgproj
+
+   This will open up the installer project in the ``Packages.app`` application.
+
+5. Within ``Packages.app``, modify the project to include the current project version number or other desired changes, as applicable.
+
+6. Run the ``Build > Build`` menu selection to construct the installer package, located in the ``packaging/os_x/build`` subdirectory. Move this installer to the desired location with ``mv`` or the OS X Finder.
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
