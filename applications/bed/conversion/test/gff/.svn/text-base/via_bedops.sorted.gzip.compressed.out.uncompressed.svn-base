@@ -1,0 +1,5 @@
+chr1	1049	1500	exon00002	.	-	USA	exon	0	ID=exon00002;Ontology_term="GO:0046703";Ontology_term="GO:0046704"
+chr1	1299	1300	exon00001	.	+	Canada	exon	.	ID=exon00001;score=1;zero_length_insertion=True
+chr1	2999	3902	exon00003	.	?	Canada	exon	2	ID=exon00003;score=4;Name=foo
+chr1	4999	5500	exon00004	.	.	.	exon	.	ID=exon00004;Gap=M8 D3 M6 I1 M6
+chr1	6999	9000	exon00005	10	+	.	exon	1	ID=exon00005;Dbxref="NCBI_gi:10727410"

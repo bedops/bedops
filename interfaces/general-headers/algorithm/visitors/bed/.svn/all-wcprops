@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/bed
+END
+OvrAggregateVisitor.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/bed/OvrAggregateVisitor.hpp
+END
+OvrUniqueVisitor.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/bed/OvrUniqueVisitor.hpp
+END
+OvrUniqueFractionVisitor.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/bed/OvrUniqueFractionVisitor.hpp
+END
+BedBaseVisitor.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/bed/BedBaseVisitor.hpp
+END
+EchoMapBedVisitor.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/bed/EchoMapBedVisitor.hpp
+END

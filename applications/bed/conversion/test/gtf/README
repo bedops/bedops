@@ -1,0 +1,7 @@
+GTF test suite
+----------------------------
+
+t{1..5}.gtf -- Exported from UCSC Genome Browser (13 Mar 2013)
+               assembly: hg19
+               track: Assembly
+               table: gold

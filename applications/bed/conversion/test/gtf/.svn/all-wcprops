@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/gtf
+END
+t1.result
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/gtf/t1.result
+END
+t2.result
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/gtf/t2.result
+END
+t1.gtf
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/gtf/t1.gtf
+END
+t3.result
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/gtf/t3.result
+END
+t2.gtf
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/gtf/t2.gtf
+END
+t3.gtf
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/gtf/t3.gtf
+END
+t4.gtf
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/gtf/t4.gtf
+END
+t5.gtf
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/gtf/t5.gtf
+END
+test.sh
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/gtf/test.sh
+END
+t4.bzip2.result
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/gtf/t4.bzip2.result
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/gtf/README
+END
+t5.gzip.result
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/gtf/t5.gzip.result
+END

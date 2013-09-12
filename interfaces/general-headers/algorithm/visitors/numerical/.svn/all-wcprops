@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/numerical
+END
+ExtremeVisitor.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/numerical/ExtremeVisitor.hpp
+END
+AverageVisitor.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/numerical/AverageVisitor.hpp
+END
+IndicatorVisitor.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/numerical/IndicatorVisitor.hpp
+END
+MedianVisitor.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/numerical/MedianVisitor.hpp
+END
+RollingKthVisitor.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/numerical/RollingKthVisitor.hpp
+END
+MedianAbsoluteDeviationVisitor.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/numerical/MedianAbsoluteDeviationVisitor.hpp
+END
+CoeffVariationVisitor.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/numerical/CoeffVariationVisitor.hpp
+END
+TrimmedMeanVisitor.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/numerical/TrimmedMeanVisitor.hpp
+END
+SumVisitor.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/numerical/SumVisitor.hpp
+END
+StdevVisitor.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/numerical/StdevVisitor.hpp
+END
+CountVisitor.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/numerical/CountVisitor.hpp
+END
+VarianceVisitor.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/numerical/VarianceVisitor.hpp
+END
+RollingKthAverageVisitor.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/numerical/RollingKthAverageVisitor.hpp
+END

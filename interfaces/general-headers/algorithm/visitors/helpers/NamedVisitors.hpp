@@ -1,0 +1,193 @@
+/*
+  FILE: NamedVisitors.hpp
+  AUTHOR: Shane Neph & Scott Kuehn
+  CREATE DATE: Sun Dec 13 23:50:58 PST 2009
+  PROJECT: utility
+  ID: $Id$
+*/
+
+#ifndef _NAMED_VISITORS_HPP
+#define _NAMED_VISITORS_HPP
+
+// File included
+#include <sstream>
+#include <string>
+#include <vector>
+
+
+#include "algorithm/visitors/BedVisitors.hpp"
+#include "algorithm/visitors/NumericalVisitors.hpp"
+#include "algorithm/visitors/OtherVisitors.hpp"
+#include "algorithm/visitors/helpers/ProcessBedVisitorRow.hpp"
+#include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
+#include "utility/OrderCompare.hpp"
+
+// Names returned via VisitorName<...>::Name() must be unique
+//  to every other specialization here.  Compiler cannot catch.
+
+namespace Visitors {
+
+  namespace Helpers {
+
+    // default undefined:
+    //  compiler can help catch unimplemented details
+    template <typename T>
+    struct VisitorName;
+
+    template <typename A, typename B>
+    struct VisitorName< Visitors::Count<A,B> > {
+      static std::string Name()
+        { return "count"; }
+    };
+
+    template <typename A, typename B>
+    struct VisitorName< Visitors::CoeffVariation<A,B> > {
+      static std::string Name()
+        { return "cv"; }
+    };
+
+    template <typename A, typename B>
+    struct VisitorName< Visitors::Echo<A,B> > {
+      static std::string Name()
+        { return "echo"; }
+    };
+
+    template <typename A, typename B>
+    struct VisitorName< Visitors::Indicator<A,B> > {
+      static std::string Name()
+        { return "indicator"; }
+    };
+
+    template <typename A, typename B, typename C>
+    struct VisitorName< Visitors::RollingKthAverage<A,B,C> > {
+      static std::string Name()
+        { return "kth"; }
+    };
+
+    template <typename A, typename B, typename C>
+    struct VisitorName< Visitors::MedianAbsoluteDeviation<A,B,C> > {
+      static std::string Name()
+        { return "mad"; }
+    };
+
+    template <typename A, typename B, typename C>
+    struct VisitorName< Visitors::Extreme< A,B,Ordering::CompValueThenAddressGreater<C,C> > > {
+      static std::string Name()
+        { return "max"; }
+    };
+
+    template <typename A, typename B>
+    struct VisitorName< Visitors::Average<A,B> > {
+      static std::string Name()
+        { return "mean"; }
+    };
+
+    template <typename A, typename B>
+    struct VisitorName< Visitors::Median<A,B> > {
+      static std::string Name()
+        { return "median"; }
+    };
+
+    template <typename A, typename B, typename C>
+    struct VisitorName< Visitors::Extreme< A,B,Ordering::CompValueThenAddressLesser<C, C> > > {
+      static std::string Name()
+        { return "min"; }
+    };
+
+    template <typename A, typename B>
+    struct VisitorName< Visitors::StdDev<A,B> > {
+      static std::string Name()
+        { return "stdev"; }
+    };
+
+    template <typename A, typename B>
+    struct VisitorName< Visitors::Sum<A,B> > {
+      static std::string Name()
+        { return "sum"; }
+    };
+
+    template <typename A, typename B, typename C>
+    struct VisitorName< Visitors::TrimmedMean<A,B,C> > {
+      static std::string Name()
+        { return "tmean"; }
+    };
+
+    template <typename A, typename B, typename C>
+    struct VisitorName< Visitors::RollingKth<A,B,C> > {
+      static std::string Name()
+        { return "value-at"; }
+    };
+
+    template <typename A, typename B>
+    struct VisitorName< Visitors::Variance<A,B> > {
+      static std::string Name()
+        { return "variance"; }
+    };
+
+
+    // BED
+    template <typename A, typename B>
+    struct VisitorName< Visitors::BedSpecific::OvrAggregate<A,B> > {
+      static std::string Name()
+        { return "bases"; }
+    };
+
+    template <typename A, typename B>
+    struct VisitorName< Visitors::BedSpecific::OvrUnique<A,B> > {
+      static std::string Name()
+        { return "bases-uniq"; }
+    };
+
+    template <typename A, typename B>
+    struct VisitorName< Visitors::BedSpecific::OvrUniqueFract<A,B> > {
+      static std::string Name()
+        { return "bases-uniq-f"; }
+    };
+
+    template <typename B, typename C>
+    struct VisitorName< Visitors::Extreme< Visitors::BedHelpers::Print,B,Ordering::CompValueThenAddressGreater<C,C> > > {
+      static std::string Name()
+        { return "max-element"; }
+    };
+
+    template <typename B, typename C>
+    struct VisitorName< Visitors::Extreme< Visitors::BedHelpers::Print,B,Ordering::CompValueThenAddressLesser<C, C> > > {
+      static std::string Name()
+        { return "min-element"; }
+    };
+
+    template <template<class X> class A, class B>
+    struct VisitorName< Visitors::BedSpecific::EchoMapBed<A<Visitors::BedHelpers::Print>,B> > {
+      static std::string Name()
+        { return "echo-map"; }
+    };
+
+    template <template<class X> class A, class B>
+    struct VisitorName< Visitors::BedSpecific::EchoMapBed<A<Visitors::BedHelpers::PrintID>,B> > {
+      static std::string Name()
+        { return "echo-map-id"; }
+    };
+
+    template <class B>
+    struct VisitorName< Visitors::BedSpecific::EchoMapBed<Visitors::BedHelpers::PrintUniqueRangeIDs, B> > {
+      static std::string Name()
+        { return "echo-map-id-uniq"; }
+    };
+
+    template <class B>
+    struct VisitorName< Visitors::BedSpecific::EchoMapBed< Visitors::BedHelpers::PrintGenomicRange<Visitors::BedHelpers::PrintBED3>, B> > {
+      static std::string Name()
+        { return "echo-map-range"; }
+    };
+
+    template <template<class X> class A, class B>
+    struct VisitorName< Visitors::BedSpecific::EchoMapBed< A<Visitors::BedHelpers::PrintScorePrecision>, B> > {
+      static std::string Name()
+        { return "echo-map-score"; }
+    };
+
+  } // namespace Helpers
+
+} // Visitors
+
+#endif // _NAMED_VISITORS_HPP

@@ -1,0 +1,75 @@
+/*
+  FILE: WindowSweep.hpp
+  AUTHOR: Shane Neph & Scott Kuehn
+  CREATE DATE: Thu Nov 29 18:03:26 PST 2007
+  PROJECT: algorithm
+  ID: $Id$
+*/
+
+
+// Macro Guard
+#ifndef WINDOWED_SWEEP_ALGORITHM_H
+#define WINDOWED_SWEEP_ALGORITHM_H
+
+
+
+
+namespace WindowSweep {
+
+  //================================================================
+  // sweep() Overload1 : A single input iterator pair
+  //  This version is meant to sweep over a single input iterator
+  //   pair.  Examples usages may be for calculating trimmed means,
+  //   smoothing operations, interpolation, etc.
+  //================================================================
+  template <
+            class InputIterator,
+            class RangeComp,
+            class EventVisitor
+           >
+  void sweep(InputIterator start, InputIterator end,
+             RangeComp& inRange, EventVisitor& visitor);
+
+
+  //=================================================================
+  // sweep() Overload2 : Two pair of input iterator pairs
+  //  This version is meant to sweep over two input iterator pairs.
+  //   Examples usages may be for convolution calculations & mapping
+  //   aggregated values from iterator pair 2 onto iterator pair 1.
+  //=================================================================
+  template <
+            class InputIterator1,
+            class InputIterator2,
+            class RangeComp,
+            class EventVisitor
+           >
+  void sweep(InputIterator1 refStart, InputIterator1 refEnd,
+             InputIterator2 mapFromStart, InputIterator2 mapFromEnd,
+             RangeComp& inRange, EventVisitor& visitor, bool sweepMapAll = false);
+
+
+  /*
+    sweep() Assumptions:
+    1) in terms of RangeComp(a, b):
+         return 0 if a and b are 'within range' of each other
+         return less than 0 if a is 'greater than' b
+         return greater than 0 if a is 'less than' b
+
+    2) in terms of RangeComp(c, c):
+         return 0 : object must always be in range of itself
+
+    3) EventVisitor::reference_type, and in the case of the 2nd
+         sweep() overload, EventVisitor::mapping_type, must be
+         constructible from items pointed to by the iterators
+         passed into sweep().  In many cases, this is the copy
+         constructor, but may be any constructor with the appropriate
+         argument type.  An example could be a constructor taking
+         a string, where the iterators passed in point to strings.
+  */
+
+
+} // namespace WindowSweep
+
+#include "../../src/algorithm/sweep/WindowSweepImpl.cpp"
+
+#endif // WINDOWED_SWEEP_ALGORITHM_H

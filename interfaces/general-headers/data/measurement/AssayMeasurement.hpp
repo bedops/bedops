@@ -1,0 +1,137 @@
+/*
+  FILE: AssayMeasurement.hpp
+  AUTHOR: Scott Kuehn, Shane Neph
+  CREATE DATE: Fri Jul 27 11:49:03 PDT 2007
+  PROJECT: data/measurement
+  ID: $Id: AssayMeasurement.hpp 1745 2010-09-13 23:39:13Z sjn $
+*/
+
+#include <boost/type_traits.hpp>
+#include <boost/utility/enable_if.hpp>
+#include <limits>
+
+#include "utility/Formats.hpp"
+
+#ifndef ASSAY_MEASUREMENT_HPP
+#define ASSAY_MEASUREMENT_HPP
+
+namespace Signal
+{
+  namespace Details {
+
+    // The main idea:  AssayMeasurement inherits from AssayMeasurementImpl<T, T>.  When T happens
+    //  to be a built-in type, then the specialization <T,T> matches best over the general
+    //  <T,U> AssayMeasurementImpl.  When T is not a built-in type, the specialization is
+    //  invalidated from entering the overload set and the general case is inherited from.
+
+    template <typename T, typename U>
+    struct AssayMeasurementImpl; // Forward Decl
+
+    template <typename T>
+    struct AssayMeasurementImpl< T, typename boost::enable_if< boost::is_arithmetic<T>, T >::type > {
+      typedef T value_type;
+
+      explicit AssayMeasurementImpl(T m = 0) : measurement_(m)  { }
+      AssayMeasurementImpl(const AssayMeasurementImpl& a) : measurement_(a.measurement_) { /* */ }
+      bool isNaN() const
+        { return NL::has_quiet_NaN && measurement_ == NL::quiet_NaN(); }
+      T measurement() const { return measurement_; }
+      void measurement(T m) { measurement_ = m; }
+      operator T() const { return measurement_; }
+      AssayMeasurementImpl& operator=(T t) { measurement_ = t; return *this; }
+      AssayMeasurementImpl& operator=(const AssayMeasurementImpl& a)
+        { measurement_ = a.measurement_; return *this; }
+
+      static inline char const* formatter()
+        { return Formats::Format(typename boost::remove_cv<T>::type()); }
+
+    protected:
+      T measurement_;
+      typedef std::numeric_limits<T> NL;
+    };
+
+
+    // General implementation simply inherits a specialization from above
+    //  Requires T::MEASURETYPE to be defined.  This is useful for building
+    //  algorithms -> as long as T::MEASURETYPE is (eventually) defined to
+    //  be a built in numeric type, then we will (eventually) inherit from
+    //  a specialization from above, allowing an algorithm to be written in
+    //  terms of fundamental types via conversion functions.
+    template <typename T, typename U>
+    struct AssayMeasurementImpl
+      : public AssayMeasurementImpl<typename T::MEASURETYPE, typename T::MEASURETYPE> {
+      typedef typename T::MEASURETYPE MEASURETYPE; // in case T is a spec of this class
+      typedef AssayMeasurementImpl<MEASURETYPE, MEASURETYPE> BaseClass;
+
+      AssayMeasurementImpl() : BaseClass() { /* */ }
+      AssayMeasurementImpl(typename BaseClass::value_type t) : BaseClass(t) { /* */ }
+      AssayMeasurementImpl(const AssayMeasurementImpl& m) : BaseClass(m) { /* */ }
+    };
+
+  } // namespace Signal::Details
+
+
+
+  //==================
+  // AssayMeasurement
+  //==================
+  template <typename T>
+  struct AssayMeasurement : public Details::AssayMeasurementImpl<T, T> {
+    // Internal typedefs
+    typedef Details::AssayMeasurementImpl<T, T> BaseClass;
+    typedef typename BaseClass::value_type value_type;
+
+    // Construction
+    AssayMeasurement() : BaseClass() { /* */ }
+    explicit AssayMeasurement(value_type t) : BaseClass(t) { /* */ }
+    AssayMeasurement(const AssayMeasurement& a) : BaseClass(a) { /* */ }
+
+    // Copy-assignment
+    AssayMeasurement& operator=(const AssayMeasurement& a)
+      { BaseClass::measurement_ = a.measurement_; return *this; }
+    AssayMeasurement& operator=(value_type t)
+      { BaseClass::measurement_ = t; return *this; }
+
+    // non-friend operators
+    AssayMeasurement& operator-=(const AssayMeasurement& a)
+      { BaseClass::measurement_ -= a.measurement_; return *this; }
+    AssayMeasurement& operator+=(const AssayMeasurement& a)
+      { BaseClass::measurement_ += a.measurement_; return *this; }
+    AssayMeasurement& operator*=(const AssayMeasurement& a)
+      { BaseClass::measurement_ *= a.measurement_; return *this; }
+    AssayMeasurement& operator/=(const AssayMeasurement& a)
+      { BaseClass::measurement_ /= a.measurement_; return *this; }
+    AssayMeasurement& operator++()
+      { ++BaseClass::measurement_; return *this; }
+    AssayMeasurement operator++(int)
+      { AssayMeasurement cpy(*this); ++(*this); return cpy; }
+    AssayMeasurement& operator--()
+      { --BaseClass::measurement_; return *this; }
+    AssayMeasurement operator--(int)
+      { AssayMeasurement cpy(*this); --(*this); return cpy; }
+
+    // friend operator functions
+    friend bool operator<(const AssayMeasurement& a, const AssayMeasurement& b)
+      { return(a.measurement_ < b.measurement_); }
+    friend bool operator<=(const AssayMeasurement& a, const AssayMeasurement& b)
+      { return(a.measurement_ <= b.measurement_); }
+    friend bool operator>(const AssayMeasurement& a, const AssayMeasurement& b)
+      { return(a.measurement_ > b.measurement_); }
+    friend bool operator>=(const AssayMeasurement& a, const AssayMeasurement& b)
+      { return(a.measurement_ >= b.measurement_); }
+    friend bool operator==(const AssayMeasurement& a, const AssayMeasurement& b)
+      { return(a.measurement_ == b.measurmeent_); }
+    friend bool operator!=(const AssayMeasurement& a, const AssayMeasurement& b)
+      { return(a.measurement_ != b.measurement_); }
+    friend AssayMeasurement operator-(const AssayMeasurement& a, const AssayMeasurement& b)
+      { AssayMeasurement toRtn(a.measurement_ - b.measurement_); return toRtn; }
+    friend AssayMeasurement operator+(const AssayMeasurement& a, const AssayMeasurement& b)
+      { AssayMeasurement toRtn(a.measurement_ + b.measurement_); return toRtn; }
+    friend AssayMeasurement operator*(const AssayMeasurement& a, const AssayMeasurement& b)
+      { AssayMeasurement toRtn(a.measurement_ * b.measurement_); return toRtn; }
+    friend AssayMeasurement operator/(const AssayMeasurement& a, const AssayMeasurement& b)
+      { AssayMeasurement toRtn(a.measurement_ / b.measurement_); return toRtn; }
+  };
+} // namespace Signal
+
+#endif // ASSAY_MEASUREMENT_HPP

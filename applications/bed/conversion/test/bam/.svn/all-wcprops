@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/bam
+END
+via_bowtie.unsorted.out
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/bam/via_bowtie.unsorted.out
+END
+test.fa
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/bam/test.fa
+END
+via_bowtie.sorted.bzip2.compressed.out
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/bam/via_bowtie.sorted.bzip2.compressed.out
+END
+via_bowtie.bam
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/bam/via_bowtie.bam
+END
+via_bowtie.sam
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/bam/via_bowtie.sam
+END
+via_bowtie.sorted.gzip.compressed.out
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/bam/via_bowtie.sorted.gzip.compressed.out
+END
+test.sh
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/bam/test.sh
+END
+via_bowtie.unsorted.bzip2.compressed.out
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/bam/via_bowtie.unsorted.bzip2.compressed.out
+END
+via_bowtie.unsorted.gzip.compressed.out
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/bam/via_bowtie.unsorted.gzip.compressed.out
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/bam/README
+END
+via_bowtie.sorted.out
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/test/bam/via_bowtie.sorted.out
+END

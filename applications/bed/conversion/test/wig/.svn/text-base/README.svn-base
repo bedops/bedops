@@ -1,0 +1,9 @@
+Feb.2013
+
+wig2bed makes the conversion from 1-based to 0-based as a user-convenience
+
+Mar.2013
+
+The wig2bed C++ binary introduces a rounding error, which we fix in the Python
+port 'wig2bed.py'. We therefore adjust the t5.result file because we expect
+results which have enough precision to report the correct result.

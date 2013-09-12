@@ -1,0 +1,89 @@
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/src
+END
+wig2bed.bash
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/src/wig2bed.bash
+END
+gff2starch.py
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/src/gff2starch.py
+END
+vcf2bed.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/src/vcf2bed.py
+END
+bam2starch.bash
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/src/bam2starch.bash
+END
+psl2bed.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/src/psl2bed.py
+END
+sam2starch.bash
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/src/sam2starch.bash
+END
+gtf2bed.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/src/gtf2bed.py
+END
+gff2bed.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/src/gff2bed.py
+END
+bam2bed.bash
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/src/bam2bed.bash
+END
+sam2bed.bash
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/src/sam2bed.bash
+END
+wig2starch.bash
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/src/wig2starch.bash
+END
+psl2starch.py
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/src/psl2starch.py
+END
+vcf2starch.py
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/src/vcf2starch.py
+END
+gtf2starch.py
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/conversion/src/gtf2starch.py
+END

@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/1638/branches/v2p3p0/packaging/os_x/resources/lib
+END
+libstdc++.6.dylib
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/1638/branches/v2p3p0/packaging/os_x/resources/lib/libstdc++.6.dylib
+END
+libgcc_s.1.dylib
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/1638/branches/v2p3p0/packaging/os_x/resources/lib/libgcc_s.1.dylib
+END

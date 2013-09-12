@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/starch/src
+END
+starchcat.h
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/starch/src/starchcat.h
+END
+starch.c
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/starch/src/starch.c
+END
+starchcluster
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/starch/src/starchcluster
+END
+unstarch.c
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/starch/src/unstarch.c
+END
+Makefile.darwin_i386
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/starch/src/Makefile.darwin_i386
+END
+starch.h
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/starch/src/starch.h
+END
+starchcluster.gnu_parallel
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/starch/src/starchcluster.gnu_parallel
+END
+starchcat.c
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/starch/src/starchcat.c
+END
+unstarch.h
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/starch/src/unstarch.h
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/starch/src/Makefile
+END
+Makefile.darwin_x86_64
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/starch/src/Makefile.darwin_x86_64
+END

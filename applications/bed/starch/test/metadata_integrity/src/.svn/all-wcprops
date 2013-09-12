@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/starch/test/metadata_integrity/src
+END
+count_bases.pl
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/starch/test/metadata_integrity/src/count_bases.pl
+END
+count_unique_bases.pl
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/!svn/ver/1638/branches/v2p3p0/applications/bed/starch/test/metadata_integrity/src/count_unique_bases.pl
+END

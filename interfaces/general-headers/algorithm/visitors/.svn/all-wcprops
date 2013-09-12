@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors
+END
+BedVisitors.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/BedVisitors.hpp
+END
+Visitors.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/Visitors.hpp
+END
+NumericalVisitors.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/NumericalVisitors.hpp
+END
+OtherVisitors.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/OtherVisitors.hpp
+END
+VisitorFactory.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/!svn/ver/1638/branches/v2p3p0/interfaces/general-headers/algorithm/visitors/VisitorFactory.hpp
+END

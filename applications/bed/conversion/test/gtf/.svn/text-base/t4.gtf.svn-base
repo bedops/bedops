@@ -1,0 +1,7 @@
+chr1	hg19_gold	exon	67088326	67183780	0.000000	+	.	gene_id "AL139147.7"; transcript_id "AL139147.7"; 
+chr1	hg19_gold	exon	201216111	201371130	0.000000	+	.	gene_id "AC119427.3"; transcript_id "AC119427.3"; 
+chr1	hg19_gold	exon	8346224	8466555	0.000000	+	.	gene_id "AL356072.21"; transcript_id "AL356072.21"; 
+chr1	hg19_gold	exon	16773051	16859226	0.000000	+	.	gene_id "AL137802.7"; transcript_id "AL137802.7"; 
+chr1	hg19_gold	exon	25112511	25191441	0.000000	+	.	gene_id "AL662924.24"; transcript_id "AL662924.24"; 
+chr1	hg19_gold	exon	33456182	33607078	0.000000	+	.	gene_id "AL020995.14"; transcript_id "AL020995.14"; 
+chr1	hg19_gold	exon	41902276	42054428	0.000000	+	.	gene_id "AL445933.32"; transcript_id "AL445933.32";
