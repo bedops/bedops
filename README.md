@@ -1,13 +1,18 @@
-BEDOPS: high-performance genomic feature operations 
------
+## BEDOPS: high-performance genomic feature operations ##
 
 <!-- <img src="http://bedops.readthedocs.org/en/latest/_static/logo_with_label_v2.png" align="right" style="max-width:33%" /> -->
 
-Shane Neph, M. Scott Kuehn, Alex P. Reynolds, et al.  
-[**BEDOPS: high-performance genomic feature operations**  
-*Bioinformatics* (2012) 28 (14): 1919-1920.] (http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract)
+### Citation ###
+
+> Shane Neph, M. Scott Kuehn, Alex P. Reynolds, et al.  
+> [**BEDOPS: high-performance genomic feature operations**  
+> *Bioinformatics* (2012) 28 (14): 1919-1920.] (http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract)
+
+### About ###
 
 **BEDOPS** is a suite of tools to address common questions raised in genomic studies — mostly with regard to overlap and proximity relationships between data sets. It aims to be scalable and flexible, facilitating the efficient and accurate analysis and management of large-scale genomic data.
+
+### Links ###
 
 <table>
     <tr>
