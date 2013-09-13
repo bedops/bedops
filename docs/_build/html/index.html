@@ -50,7 +50,11 @@
             
   <div class="section" id="bedops-the-fast-highly-scalable-and-easily-parallelizable-genome-analysis-toolkit">
 <h1>BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis toolkit<a class="headerlink" href="#bedops-the-fast-highly-scalable-and-easily-parallelizable-genome-analysis-toolkit" title="Permalink to this headline">¶</a></h1>
-<p>BEDOPS is an open-source command-line toolkit that performs highly efficient and scalable Boolean and other set operations, statistical calculations, archiving, conversion and other management of genomic data of arbitrary scale. Tasks can be easily split by chromosome for distributing whole-genome analyses across a computational cluster.</p>
+<p><strong>BEDOPS</strong> is an open-source command-line toolkit that performs highly efficient and scalable Boolean and other set operations, statistical calculations, archiving, conversion and other management of genomic data of arbitrary scale. Tasks can be easily split by chromosome for distributing whole-genome analyses across a computational cluster.</p>
+<p>You can read more about <strong>BEDOPS</strong> and how it can be useful for your research in the <a class="reference internal" href="content/overview.html#overview"><em>Overview</em></a> documentation, as well as in the <a class="reference external" href="http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract">original manuscript</a>.</p>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -87,13 +91,13 @@
 <li><a href="content/performance.html#independent-testing">Independent testing</a></li>
 </ul></td>
 <td><ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-<li><a href="content/installation.html">How to install BEDOPS</a></li>
-<li><a href="content/usage-examples.html">Usage examples</a> of BEDOPS tools in action</li>
-<li><a href="http://bedops.uwencode.org/forum/">BEDOPS user forum</li>
-<li><a href="http://groups.google.com/group/bedops-discuss">BEDOPS discusssion mailing list</li>
+<li><a href="content/installation.html">How to install <strong>BEDOPS</strong></a></li>
+<li><a href="content/usage-examples.html">Usage examples</a> of <strong>BEDOPS</strong> tools in action</li>
+<li><a href="http://bedops.uwencode.org/forum/"><strong>BEDOPS</strong> user forum</li>
+<li><a href="http://groups.google.com/group/bedops-discuss"><strong>BEDOPS</strong> discusssion mailing list</li>
 </ul></td>
 <td><ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-<li><a href="content/summary.html">Table summary</a> of BEDOPS toolkit</li>
+<li><a href="content/summary.html">Table summary</a> of <strong>BEDOPS</strong> toolkit</li>
 <li><a href="content/reference/file-management/compression/starch-specification.html">Starch v2</a> format specification</li>
 <li><a href="content/revision-history.html">Revision history</a></li>
 <li><a href="https://github.com/alexpreynolds/bedops">Github repository</a></li>
@@ -101,8 +105,15 @@
 </tr>
 </tbody>
 </table>
-<p><p>&nbsp;</p></p>
-<a class="reference internal image-reference" href="_images/toc.png"><img alt="_images/toc.png" src="_images/toc.png" style="width: 33%;" /></a>
+</div>
+<div class="section" id="citation">
+<h1>Citation<a class="headerlink" href="#citation" title="Permalink to this headline">¶</a></h1>
+<p>If you use <strong>BEDOPS</strong> in your research, please cite the following manuscript:</p>
+<blockquote>
+<div>Shane Neph, M. Scott Kuehn, Alex P. Reynolds, et al. <strong>BEDOPS: high-performance genomic feature operations</strong>. <em>Bioinformatics</em> (2012) 28 (14): 1919-1920. <a class="reference external" href="http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract">doi: 10.1093/bioinformatics/bts277</a></div></blockquote>
+</div>
+<div class="section" id="table-of-contents">
+<h1>Table of contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="content/overview.html">1. Overview</a><ul>
@@ -123,6 +134,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="content/installation.html#via-source-code">2.2. Via source code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="content/installation.html#building-an-os-x-installer-package-for-redistribution">2.3. Building an OS X installer package for redistribution</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="content/revision-history.html">3. Revision history</a><ul>
@@ -472,8 +484,26 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="content/summary.html">7. Summary</a></li>
-<li class="toctree-l1"><a class="reference internal" href="content/faq.html">8. Frequently answered questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="content/summary.html">7. Summary</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="content/summary.html#set-operation-and-statistical-utilities">7.1. Set operation and statistical utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="content/summary.html#bedextract">7.1.1. <tt class="docutils literal"><span class="pre">bedextract</span></tt></a></li>
+<li class="toctree-l3"><a class="reference internal" href="content/summary.html#bedmap">7.1.2. <tt class="docutils literal"><span class="pre">bedmap</span></tt></a></li>
+<li class="toctree-l3"><a class="reference internal" href="content/summary.html#bedops">7.1.3. <tt class="docutils literal"><span class="pre">bedops</span></tt></a></li>
+<li class="toctree-l3"><a class="reference internal" href="content/summary.html#closest-features">7.1.4. <tt class="docutils literal"><span class="pre">closest-features</span></tt></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="content/summary.html#sorting">7.2. Sorting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="content/summary.html#sort-bed">7.2.1. <tt class="docutils literal"><span class="pre">sort-bed</span></tt></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="content/summary.html#compression-and-extraction">7.3. Compression and extraction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="content/summary.html#starch">7.3.1. <tt class="docutils literal"><span class="pre">starch</span></tt></a></li>
+<li class="toctree-l3"><a class="reference internal" href="content/summary.html#unstarch">7.3.2. <tt class="docutils literal"><span class="pre">unstarch</span></tt></a></li>
+<li class="toctree-l3"><a class="reference internal" href="content/summary.html#starchcat">7.3.3. <tt class="docutils literal"><span class="pre">starchcat</span></tt></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -487,6 +517,15 @@
             <p class="logo"><a href="#">
               <img class="logo" src="_static/logo_with_label_v2.png" alt="Logo"/>
             </a></p>
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis toolkit</a></li>
+<li><a class="reference internal" href="#citation">Citation</a></li>
+<li><a class="reference internal" href="#table-of-contents">Table of contents</a><ul>
+</ul>
+</li>
+</ul>
+
   <h4>Next topic</h4>
   <p class="topless"><a href="content/overview.html"
                         title="next chapter">1. Overview</a></p>

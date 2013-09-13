@@ -92,7 +92,7 @@ The ``customUCSCHeaders`` value is either ``true`` or ``false``. If ``true``, th
 
 The ``creationTimestamp`` value is an `ISO 8601 <http://en.wikipedia.org/wiki/ISO-8601>`_ string that specifies the creation date and time of the archive. Most scripting and programming languages can parse ISO 8601-formatted date strings with little or no extra work.
 
-The version is a triplet of integer values specifying the version of the archive. For a v2 archive, the major version will be set to ``2``. Major, minor and revision values need not necessarily be the identical to the version of the :ref:`starch` binary used to create the archive.
+The ``version`` is a triplet of integer values specifying the version of the archive. For a v2 archive, the major version will be set to ``2``. Major, minor and revision values need not necessarily be the identical to the version of the :ref:`starch` binary used to create the archive.
 
 The ``compressionFormat`` key specifies the backend compression format used for the chromosome streams contained within the archive. We currently use ``0`` to specify ``bzip2`` and ``1`` to specify ``gzip``. No other backend formats are available at this time.
 

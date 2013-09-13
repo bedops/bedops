@@ -3,7 +3,7 @@
 `wig2bed`
 =========
 
-The ``wig2bed`` script converts 1-based, closed ``[start, end]`` `UCSC Wiggle format <http://genome.ucsc.edu/goldenPath/help/wiggle.html>`_ (WIG) to sorted, 0-based, half-open ``[start-1, end)`` extended BED data.
+The ``wig2bed`` script converts both *variable* - and *fixed* -step, 1-based, closed ``[start, end]`` `UCSC Wiggle format <http://genome.ucsc.edu/goldenPath/help/wiggle.html>`_ (WIG) to sorted, 0-based, half-open ``[start-1, end)`` extended BED data.
 
 For convenience, we also offer ``wig2starch``, which performs the extra step of creating a :ref:`Starch-formatted <starch_specification>` archive.
 

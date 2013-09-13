@@ -13,7 +13,7 @@ The suite includes tools for set and statistical operations (<tt>bedops</tt>, <t
 
 <table>
     <tr>
-        <td>Foo</td> 
-        <td>Bar</td>
+        <td><img src="http://bedops.readthedocs.org/en/latest/_static/overview.png" /></td> 
+        <td><img src="http://bedops.readthedocs.org/en/latest/_static/documentation.png" /></td>
     </tr>
 </table>

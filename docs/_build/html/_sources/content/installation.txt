@@ -44,9 +44,10 @@ Mac OS X
 3. Double-click to open the installer package. It will look something like this:
 
 .. image:: ../assets/installation/bedops_macosx_installer_screen.png
-   :width: 90%
 
 4. Follow the instructions to install BEDOPS and library dependencies to your Mac. (If you are upgrading from a previous version, components will be overwritten or removed, as needed.)
+
+.. _installation_via_source_code:
 
 ===============
 Via source code
@@ -54,38 +55,91 @@ Via source code
 
 At this time, compilation of BEDOPS requires GCC 4.7 or greater (which includes support for `C++11 <http://en.wikipedia.org/wiki/C%2B%2B11>`_ features required by core BEDOPS tools).
 
-1. If you do not have GCC 4.7 or greater installed, first do so.
+1. If you do not have GCC 4.7 or greater installed, first do so. You can check this with ``gcc --version``, *e.g.*: 
 
-   For Mac OS X users, we recommend first installing `Apple Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option within Xcode. Then install GCC 4.7 or greater using `MacPorts <http://www.macports.org>`_, setting GCC to be the default compiler, *e.g.*: :: 
+   ::
 
-   $ sudo port install gcc47
-   $ sudo port install gcc_select
-   $ sudo port select --set gcc gcc47
+     $ gcc --version
+     gcc (MacPorts gcc47 4.7.3_3+universal) 4.7.3
+     ...
+
+   For Mac OS X users, we recommend first installing `Apple Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option within Xcode. Then install GCC 4.7 or greater using `MacPorts <http://www.macports.org>`_, setting GCC to be the default compiler, *e.g.*: 
+ 
+   :: 
+
+     $ sudo port install gcc47
+     $ sudo port install gcc_select
+     $ sudo port select --set gcc gcc47
 
    In the future, we may provide support for OS X compilation via Clang/LLVM, which is the default compiler included with Xcode.
 
-   For Linux users, use your favorite package manager to install the requisite compiler. For example, in Ubuntu, you might run the following: ::
+   For Linux users, use your favorite package manager to install the requisite compiler. For example, in Ubuntu, you might run the following: 
+
+   ::
  
-   $ sudo apt-get install gcc
+     $ sudo apt-get install gcc
 
-2. Clone the BEDOPS Git repository in an appropriate local directory: ::
+2. Install a ``git`` client of your choice, if you do not already have one installed. Github offers an `installation guide <https://help.github.com/articles/set-up-git#platform-all>`_.
 
-   $ git clone https://github.com/alexpreynolds/bedops.git
+3. Clone the BEDOPS Git repository in an appropriate local directory: 
 
-3. Run ``make`` in the top-level of the local copy of the BEDOPS repository: ::
+   ::
+  
+     $ git clone https://github.com/alexpreynolds/bedops.git
+  
+4. (Linux) Run ``make static`` in the top-level of the local copy of the BEDOPS repository: 
 
-   $ cd bedops
-   $ make
+   ::
 
-4. Install compiled binaries and scripts to a local ``bin`` folder: ::
+     $ cd bedops
+     $ make static
 
-   $ make install
+5. (Mac OS X) Run ``make build_all_darwin_intel_fat`` in the top-level of the local copy of the BEDOPS repository:
 
-5. Copy the extracted binaries to a location of your choice that is in your environment's ``PATH``, *e.g.* ``~/opt/bin``: ::
+   ::
+
+     $ cd bedops
+     $ make build_all_darwin_intel_fat
+
+6. Install compiled binaries and scripts to a local ``bin`` folder: 
+
+   ::
+
+     $ make install
+
+7. Copy the extracted binaries to a location of your choice that is in your environment's ``PATH``, *e.g.* ``~/opt/bin``: 
+
+   ::
  
-   $ cp bin/* ~/opt/bin
+     $ cp bin/* ~/opt/bin
 
    Change this destination folder, as needed.
+
+=====================================================
+Building an OS X installer package for redistribution
+=====================================================
+
+1. Follow steps 1-3 and step 5 from the :ref:`Via Source Code <installation_via_source_code>` documentation.
+
+2. Run ``make install_osx_packaging_bins`` in the top-level of the local copy of the BEDOPS repository:
+
+   ::
+
+     $ make install_osx_packaging_bins
+
+3. Install `WhiteBox Packages.app <http://s.sudre.free.fr/Software/Packages/about.html>`_, an application for building OS X installers, if not already installed.
+
+4. Open the ``BEDOPS.pkgproj`` file in the top-level of the local copy of the BEDOPS repository, in order to open the BEDOPS installer project, *e.g.*:
+
+   ::
+     
+     $ open packaging/os_x/BEDOPS.pkgproj
+
+   This will open up the installer project in the ``Packages.app`` application.
+
+5. Within ``Packages.app``, modify the project to include the current project version number or other desired changes, as applicable.
+
+6. Run the ``Build > Build`` menu selection to construct the installer package, located in the ``packaging/os_x/build`` subdirectory. Move this installer to the desired location with ``mv`` or the OS X Finder.
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace

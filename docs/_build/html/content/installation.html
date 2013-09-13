@@ -89,17 +89,21 @@ In the case of 32-bit Linux:</p>
 <ol class="arabic simple" start="3">
 <li>Double-click to open the installer package. It will look something like this:</li>
 </ol>
-<a class="reference internal image-reference" href="../_images/bedops_macosx_installer_screen.png"><img alt="../_images/bedops_macosx_installer_screen.png" src="../_images/bedops_macosx_installer_screen.png" style="width: 90%;" /></a>
+<img alt="../_images/bedops_macosx_installer_screen.png" src="../_images/bedops_macosx_installer_screen.png" />
 <ol class="arabic simple" start="4">
 <li>Follow the instructions to install BEDOPS and library dependencies to your Mac. (If you are upgrading from a previous version, components will be overwritten or removed, as needed.)</li>
 </ol>
 </div>
 </div>
 <div class="section" id="via-source-code">
-<h2>2.2. Via source code<a class="headerlink" href="#via-source-code" title="Permalink to this headline">¶</a></h2>
+<span id="installation-via-source-code"></span><h2>2.2. Via source code<a class="headerlink" href="#via-source-code" title="Permalink to this headline">¶</a></h2>
 <p>At this time, compilation of BEDOPS requires GCC 4.7 or greater (which includes support for <a class="reference external" href="http://en.wikipedia.org/wiki/C%2B%2B11">C++11</a> features required by core BEDOPS tools).</p>
 <ol class="arabic">
-<li><p class="first">If you do not have GCC 4.7 or greater installed, first do so.</p>
+<li><p class="first">If you do not have GCC 4.7 or greater installed, first do so. You can check this with <tt class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></tt>, <em>e.g.</em>:</p>
+<div class="highlight-python"><pre>$ gcc --version
+gcc (MacPorts gcc47 4.7.3_3+universal) 4.7.3
+...</pre>
+</div>
 <p>For Mac OS X users, we recommend first installing <a class="reference external" href="https://developer.apple.com/xcode/">Apple Xcode</a> and its Command Line Tools, via the <tt class="docutils literal"><span class="pre">Preferences</span> <span class="pre">&gt;</span> <span class="pre">Downloads</span></tt> option within Xcode. Then install GCC 4.7 or greater using <a class="reference external" href="http://www.macports.org">MacPorts</a>, setting GCC to be the default compiler, <em>e.g.</em>:</p>
 <div class="highlight-python"><pre>$ sudo port install gcc47
 $ sudo port install gcc_select
@@ -110,13 +114,20 @@ $ sudo port select --set gcc gcc47</pre>
 <div class="highlight-python"><pre>$ sudo apt-get install gcc</pre>
 </div>
 </li>
+<li><p class="first">Install a <tt class="docutils literal"><span class="pre">git</span></tt> client of your choice, if you do not already have one installed. Github offers an <a class="reference external" href="https://help.github.com/articles/set-up-git#platform-all">installation guide</a>.</p>
+</li>
 <li><p class="first">Clone the BEDOPS Git repository in an appropriate local directory:</p>
 <div class="highlight-python"><pre>$ git clone https://github.com/alexpreynolds/bedops.git</pre>
 </div>
 </li>
-<li><p class="first">Run <tt class="docutils literal"><span class="pre">make</span></tt> in the top-level of the local copy of the BEDOPS repository:</p>
+<li><p class="first">(Linux) Run <tt class="docutils literal"><span class="pre">make</span> <span class="pre">static</span></tt> in the top-level of the local copy of the BEDOPS repository:</p>
 <div class="highlight-python"><pre>$ cd bedops
-$ make</pre>
+$ make static</pre>
+</div>
+</li>
+<li><p class="first">(Mac OS X) Run <tt class="docutils literal"><span class="pre">make</span> <span class="pre">build_all_darwin_intel_fat</span></tt> in the top-level of the local copy of the BEDOPS repository:</p>
+<div class="highlight-python"><pre>$ cd bedops
+$ make build_all_darwin_intel_fat</pre>
 </div>
 </li>
 <li><p class="first">Install compiled binaries and scripts to a local <tt class="docutils literal"><span class="pre">bin</span></tt> folder:</p>
@@ -127,6 +138,28 @@ $ make</pre>
 <div class="highlight-python"><pre>$ cp bin/* ~/opt/bin</pre>
 </div>
 <p>Change this destination folder, as needed.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="building-an-os-x-installer-package-for-redistribution">
+<h2>2.3. Building an OS X installer package for redistribution<a class="headerlink" href="#building-an-os-x-installer-package-for-redistribution" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">Follow steps 1-3 and step 5 from the <a class="reference internal" href="#installation-via-source-code"><em>Via Source Code</em></a> documentation.</p>
+</li>
+<li><p class="first">Run <tt class="docutils literal"><span class="pre">make</span> <span class="pre">install_osx_packaging_bins</span></tt> in the top-level of the local copy of the BEDOPS repository:</p>
+<div class="highlight-python"><pre>$ make install_osx_packaging_bins</pre>
+</div>
+</li>
+<li><p class="first">Install <a class="reference external" href="http://s.sudre.free.fr/Software/Packages/about.html">WhiteBox Packages.app</a>, an application for building OS X installers, if not already installed.</p>
+</li>
+<li><p class="first">Open the <tt class="docutils literal"><span class="pre">BEDOPS.pkgproj</span></tt> file in the top-level of the local copy of the BEDOPS repository, in order to open the BEDOPS installer project, <em>e.g.</em>:</p>
+<div class="highlight-python"><pre>$ open packaging/os_x/BEDOPS.pkgproj</pre>
+</div>
+<p>This will open up the installer project in the <tt class="docutils literal"><span class="pre">Packages.app</span></tt> application.</p>
+</li>
+<li><p class="first">Within <tt class="docutils literal"><span class="pre">Packages.app</span></tt>, modify the project to include the current project version number or other desired changes, as applicable.</p>
+</li>
+<li><p class="first">Run the <tt class="docutils literal"><span class="pre">Build</span> <span class="pre">&gt;</span> <span class="pre">Build</span></tt> menu selection to construct the installer package, located in the <tt class="docutils literal"><span class="pre">packaging/os_x/build</span></tt> subdirectory. Move this installer to the desired location with <tt class="docutils literal"><span class="pre">mv</span></tt> or the OS X Finder.</p>
 </li>
 </ol>
 </div>
@@ -150,6 +183,7 @@ $ make</pre>
 </ul>
 </li>
 <li><a class="reference internal" href="#via-source-code">2.2. Via source code</a></li>
+<li><a class="reference internal" href="#building-an-os-x-installer-package-for-redistribution">2.3. Building an OS X installer package for redistribution</a></li>
 </ul>
 </li>
 </ul>
