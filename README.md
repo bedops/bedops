@@ -3,7 +3,7 @@ BEDOPS: high-performance genomic feature operations
 
 <!-- <img src="http://bedops.readthedocs.org/en/latest/_static/logo_with_label_v2.png" align="right" style="max-width:33%" /> -->
 
-<img src="http://bedops.readthedocs.org/en/latest/_static/bioinformatics.png" align="left" style="max-width:80px; right-padding:5px; bottom-padding:5px;" /> Shane Neph, M. Scott Kuehn, Alex P. Reynolds, et al.  
+Shane Neph, M. Scott Kuehn, Alex P. Reynolds, et al.  
 [**BEDOPS: high-performance genomic feature operations**  
 *Bioinformatics* (2012) 28 (14): 1919-1920.] (http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract)
 
