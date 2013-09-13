@@ -316,17 +316,13 @@ clean: clean_force_static
 	rm -f ${OSXPKGDIR}/*
 
 very_clean: clean clean_force_static
-	rm -f ${APPDIR}/sort-bed/bin/sort-bed
-	rm -f ${APPDIR}/bedops/bin/bedops
-	rm -f ${APPDIR}/closestfeats/bin/closest-features
-	rm -f ${APPDIR}/bedmap/bin/bedmap
-	rm -f ${APPDIR}/bedextract/bin/bedextract
-	rm -f ${APPDIR}/conversion/bin/wig2bed_bin
-	rm -f ${APPDIR}/starch/bin/starch
-	rm -f ${APPDIR}/starch/bin/unstarch
-	rm -f ${APPDIR}/starch/bin/starchcat
-	rm -f ${APPDIR}/starch/bin/starchcluster
-	rm -f ${APPDIR}/starch/bin/starchcluster.gnu_parallel
+	rm -f ${APPDIR}/sort-bed/bin/*
+	rm -f ${APPDIR}/bedops/bin/*
+	rm -f ${APPDIR}/closestfeats/bin/*
+	rm -f ${APPDIR}/bedmap/bin/*
+	rm -f ${APPDIR}/bedextract/bin/*
+	rm -f ${APPDIR}/conversion/bin/*
+	rm -f ${APPDIR}/starch/bin/*
 	rm -rf ${APPDIR}/sort-bed/src/objects
 	rm -rf ${APPDIR}/bedops/src/objects
 	rm -rf ${APPDIR}/closestfeats/src/objects

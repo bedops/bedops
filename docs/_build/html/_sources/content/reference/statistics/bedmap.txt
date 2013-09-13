@@ -267,7 +267,7 @@ The variety of score operators include common statistical measures:
 * `coefficient of variance <http://en.wikipedia.org/wiki/Coefficient_of_variation>`_ (``--cv``)
 * `median <http://en.wikipedia.org/wiki/Median>`_ (``--median``)
 * `median absolute deviation <http://en.wikipedia.org/wiki/Median_absolute_deviation>`_ (``--mad``)
-* `*k*-th order statistic <http://en.wikipedia.org/wiki/Order_statistic>`_ (``--kth``)
+* `k-th order statistic <http://en.wikipedia.org/wiki/Order_statistic>`_ (``--kth``)
 
 One can also take the sum of scores (``--sum``), find the minimum or maximum score over a region (``--min`` and ``--max``, respectively), or retrieve the map element with the least or greatest signal over the reference region (``--min-element`` and ``--max-element``, respectively).
 

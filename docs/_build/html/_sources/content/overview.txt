@@ -8,11 +8,11 @@ About BEDOPS
 ============
 BEDOPS is an open-source command-line toolkit that performs highly efficient and scalable Boolean and other set operations, statistical calculations, archiving, conversion and other management of genomic data of arbitrary scale.
 
-The suite includes tools for set and statistical operations (``bedops``, ``bedmap`` and ``closest-features``) and compression of large inputs into a novel lossless format (``starch``) that can provide greater space savings and faster data extractions than current alternatives. We offer native support for this compression format to these and other BEDOPS tools.
+The suite includes tools for set and statistical operations (:ref:`bedops`, :ref:`bedmap` and :ref:`closest-features`) and compression of large inputs into a novel lossless format (:ref:`starch`) that can provide greater space savings and faster data extractions than current alternatives. We offer native support for this compression format to these and other BEDOPS tools.
 
-BEDOPS also offers logarithmic speedups in access to per-chromosome regions in sorted BED data (in ``bedextract`` and core BEDOPS tools). This feature makes whole-genome analyses "embarassingly parallel", in that per-chromosome computations can be distributed onto separate work nodes, with results collated at the end in `map-reduce <http://en.wikipedia.org/wiki/MapReduce>`_ fashion.
+BEDOPS also offers logarithmic speedups in access to per-chromosome regions in sorted BED data (in :ref:`bedextract` and core BEDOPS tools). This feature makes whole-genome analyses "embarassingly parallel", in that per-chromosome computations can be distributed onto separate work nodes, with results collated at the end in `map-reduce <http://en.wikipedia.org/wiki/MapReduce>`_ fashion.
 
-Sorting arbitrarily large BED files is easy with ``sort-bed``, which easily scales beyond available system memory, as needed. We also offer portable conversion scripts that transform data in common genomic formats (SAM/BAM, GFF/GTF, PSL, WIG, and VCF) to sorted BED data that are ready to use with core BEDOPS utilities.
+Sorting arbitrarily large BED files is easy with :ref:`sort-bed`, which easily scales beyond available system memory, as needed. We also offer portable conversion scripts that transform data in common genomic formats (SAM/BAM, GFF/GTF, PSL, WIG, and VCF) to sorted BED data that are ready to use with core BEDOPS utilities.
 
 All of these tools are made to be glued together with common UNIX input and output streams. This helps make your pipeline design and maintenance easy, fast and flexible.
 
@@ -31,7 +31,7 @@ Our tools fit easily into analysis pipelines, allow practically unlimited inputs
       | ... \
       > Answer.bed
 
-Our ``bedops`` and ``bedmap`` core tools offer numerous operations of all kinds, including those in the slide below:
+Our :ref:`bedops` and :ref:`bedmap` core tools offer numerous operations of all kinds, including those in the slide below:
 
 .. image:: ../assets/overview/BEDOPS_Presentation_5_small.png
    :width: 99%
@@ -50,7 +50,7 @@ BEDOPS tools take advantage of the information in a sorted BED file to use only 
 .. image:: ../assets/overview/BEDOPS_Presentation_9_small.png
    :width: 99%
 
-BEDOPS also introduces a novel and **lossless** compression format called *Starch* that reduces whole-genome BED datasets to ~5% of their original size (and BAM datasets to roughly 35% of their original size), while adding useful metadata and random access, allowing instantaneous retrieval of any compressed chromosome:
+BEDOPS also introduces a novel and **lossless** compression format called :ref:`Starch <starch_specification>` that reduces whole-genome BED datasets to **~5%** of their original size (and BAM datasets to roughly 35% of their original size), while adding useful metadata and random access, allowing instantaneous retrieval of any compressed chromosome:
 
 .. image:: ../assets/overview/BEDOPS_Presentation_10_small.png
    :width: 99%
