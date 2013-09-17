@@ -10,7 +10,9 @@ ZLIBVERSION      = zlib-1.2.7
 WHICHZLIB       := ${PARTY3}/${ZLIBVERSION}
 APPDIR           = applications/bed
 BINDIR           = bin
-OSXPKGDIR        = packaging/os_x/resources/bin
+OSXPKGROOT       = packaging/os_x
+OSXBUILDDIR      = ${OSXPKGROOT}/build
+OSXPKGDIR        = ${OSXPKGROOT}/resources/bin
 THISDIR          = ${shell pwd}
 
 dist: prep_partial_nondarwin_static build_all
@@ -343,3 +345,4 @@ very_clean: clean clean_force_static
 	rm -rf ${WHICHZLIB}
 	rm -f ${PARTY3}/zlib
 	rm -f ${OSXPKGDIR}/*
+	rm -Rf ${OSXBUILDDIR}/*
