@@ -89,6 +89,7 @@ install_conversion_scripts: prep_c
 	cp ${APPDIR}/conversion/src/wig2starch.bash ${BINDIR}/wig2starch
 
 install_osx_packaging_bins: prep_c
+	mkdir -p ${OSXPKGDIR}
 	cp ${APPDIR}/sort-bed/bin/sort-bed ${OSXPKGDIR}/sort-bed
 	cp ${APPDIR}/bedops/bin/bedops ${OSXPKGDIR}/bedops
 	cp ${APPDIR}/closestfeats/bin/closest-features ${OSXPKGDIR}/closest-features
