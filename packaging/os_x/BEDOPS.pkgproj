@@ -1272,13 +1272,6 @@
 			</dict>
 			<key>PACKAGE_SCRIPTS</key>
 			<dict>
-				<key>POSTINSTALL_PATH</key>
-				<dict>
-					<key>PATH</key>
-					<string>resources/scripts/post-install.conversion-scripts.sh</string>
-					<key>PATH_TYPE</key>
-					<integer>1</integer>
-				</dict>
 				<key>PREINSTALL_PATH</key>
 				<dict/>
 				<key>RESOURCES</key>
@@ -1824,13 +1817,6 @@
 			</dict>
 			<key>PACKAGE_SCRIPTS</key>
 			<dict>
-				<key>POSTINSTALL_PATH</key>
-				<dict>
-					<key>PATH</key>
-					<string>resources/scripts/post-install.bedextract.sh</string>
-					<key>PATH_TYPE</key>
-					<integer>1</integer>
-				</dict>
 				<key>PREINSTALL_PATH</key>
 				<dict/>
 				<key>RESOURCES</key>
@@ -2376,13 +2362,6 @@
 			</dict>
 			<key>PACKAGE_SCRIPTS</key>
 			<dict>
-				<key>POSTINSTALL_PATH</key>
-				<dict>
-					<key>PATH</key>
-					<string>resources/scripts/post-install.bedmap.sh</string>
-					<key>PATH_TYPE</key>
-					<integer>1</integer>
-				</dict>
 				<key>PREINSTALL_PATH</key>
 				<dict/>
 				<key>RESOURCES</key>
@@ -2928,13 +2907,6 @@
 			</dict>
 			<key>PACKAGE_SCRIPTS</key>
 			<dict>
-				<key>POSTINSTALL_PATH</key>
-				<dict>
-					<key>PATH</key>
-					<string>resources/scripts/post-install.bedops.sh</string>
-					<key>PATH_TYPE</key>
-					<integer>1</integer>
-				</dict>
 				<key>PREINSTALL_PATH</key>
 				<dict/>
 				<key>RESOURCES</key>
@@ -3480,13 +3452,6 @@
 			</dict>
 			<key>PACKAGE_SCRIPTS</key>
 			<dict>
-				<key>POSTINSTALL_PATH</key>
-				<dict>
-					<key>PATH</key>
-					<string>resources/scripts/post-install.closest-features.sh</string>
-					<key>PATH_TYPE</key>
-					<integer>1</integer>
-				</dict>
 				<key>PREINSTALL_PATH</key>
 				<dict/>
 				<key>RESOURCES</key>
@@ -4032,13 +3997,6 @@
 			</dict>
 			<key>PACKAGE_SCRIPTS</key>
 			<dict>
-				<key>POSTINSTALL_PATH</key>
-				<dict>
-					<key>PATH</key>
-					<string>resources/scripts/post-install.sort-bed.sh</string>
-					<key>PATH_TYPE</key>
-					<integer>1</integer>
-				</dict>
 				<key>PREINSTALL_PATH</key>
 				<dict/>
 				<key>RESOURCES</key>
@@ -4616,13 +4574,6 @@
 			</dict>
 			<key>PACKAGE_SCRIPTS</key>
 			<dict>
-				<key>POSTINSTALL_PATH</key>
-				<dict>
-					<key>PATH</key>
-					<string>resources/scripts/post-install.starch.sh</string>
-					<key>PATH_TYPE</key>
-					<integer>1</integer>
-				</dict>
 				<key>PREINSTALL_PATH</key>
 				<dict/>
 				<key>RESOURCES</key>
