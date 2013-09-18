@@ -60,13 +60,14 @@ public:
   bed_check_iterator(std::istream& is, const std::string& filename, const std::string& chr = "all", bool nestCheck = false)
     : fp_(is), _M_ok(fp_), _M_value(0), fn_(filename), cnt_(0), lastChr_(""), lastStart_(1),
       lastEnd_(0), nestCheck_(nestCheck), maxEnd_(0), chr_(chr),
-      isStarch_(fp_ && (is != std::cin) && starch::Starch::isStarch(fn_)), all_(chr_ == "all"),
+      isStarch_(fp_ && (&is != &std::cin) && starch::Starch::isStarch(fn_)), all_(chr_ == "all"),
       archive_(0) {
 
     if ( !_M_ok )
       return;
 
-    if ( fp_ == std::cin && !all_ ) { // only BED through stdin
+    // compare pointers directly, to allow compilation with Clang/LLVM against C++11 standard
+    if ( &fp_ == &std::cin && !all_ ) { // only BED through stdin
       // cannot 'jump' to chr_ -> stream through, line by line until we find it or eof
       Ext::ByLine bl;
       while ( (_M_ok = (fp_ && fp_ >> bl)) ) {
@@ -275,7 +276,7 @@ public:
   }
 
   bool _M_equal(const bed_check_iterator& __x) const
-    { return ( (_M_ok == __x._M_ok) && (!_M_ok || fp_ == __x.fp_) ); }
+    { return ( (_M_ok == __x._M_ok) && (!_M_ok || &fp_ == &__x.fp_) ); }
 
   bool operator=(const bed_check_iterator& b);
 

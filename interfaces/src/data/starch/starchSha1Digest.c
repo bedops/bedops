@@ -34,6 +34,8 @@
 
 #include "data/starch/starchSha1Digest.h"
 
+struct offset_test { char c; sha1_uint32 x; };
+
 #ifdef WORDS_BIGENDIAN
 # define SWAP(n) (n)
 #else
@@ -230,39 +232,39 @@ sha1_process_bytes (const void *buffer, size_t len, struct sha1_ctx *ctx)
   if (len >= 64)
     {
 #if !_STRING_ARCH_unaligned
-# define alignof(type) offsetof (struct { char c; type x; }, x)
+# define alignof(type) offsetof (offset_test, x)
 # define UNALIGNED_P(p) (((size_t) p) % alignof (sha1_uint32) != 0)
       if (UNALIGNED_P (buffer))
-    while (len > 64)
-      {
-        sha1_process_block (memcpy (ctx->buffer, buffer, 64), 64, ctx);
-        buffer = (const char *) buffer + 64;
-        len -= 64;
-      }
+          while (len > 64)
+              {
+                  sha1_process_block (memcpy (ctx->buffer, buffer, 64), 64, ctx);
+                  buffer = (const char *) buffer + 64;
+                  len -= 64;
+              }
       else
 #endif
-    {
-      sha1_process_block (buffer, len & ~63, ctx);
-      buffer = (const char *) buffer + (len & ~63);
-      len &= 63;
+          {
+              sha1_process_block (buffer, len & ~63, ctx);
+              buffer = (const char *) buffer + (len & ~63);
+              len &= 63;
+          }
     }
-    }
-
+  
   /* Move remaining bytes in internal buffer.  */
   if (len > 0)
-    {
-      size_t left_over = ctx->buflen;
-
-      memcpy (&((char *) ctx->buffer)[left_over], buffer, len);
-      left_over += len;
-      if (left_over >= 64)
-    {
-      sha1_process_block (ctx->buffer, 64, ctx);
-      left_over -= 64;
-      memcpy (ctx->buffer, &ctx->buffer[16], left_over);
-    }
-      ctx->buflen = left_over;
-    }
+      {
+          size_t left_over = ctx->buflen;
+          
+          memcpy (&((char *) ctx->buffer)[left_over], buffer, len);
+          left_over += len;
+          if (left_over >= 64)
+              {
+                  sha1_process_block (ctx->buffer, 64, ctx);
+                  left_over -= 64;
+                  memcpy (ctx->buffer, &ctx->buffer[16], left_over);
+              }
+          ctx->buflen = left_over;
+      }
 }
 
 /* --- Code below is the primary difference between md5.c and sha1.c --- */

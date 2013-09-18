@@ -1162,7 +1162,7 @@ namespace starch
 #ifdef DEBUG
         std::fprintf(stderr, "\n--- Starch::breakdownBzip2Works() ---\n");
 #endif
-        int bzError;
+        int bzError = BZ_STREAM_END;
 
         if (bzOutput)
             free(bzOutput), bzOutput = NULL;

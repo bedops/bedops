@@ -1,7 +1,7 @@
-MIN_OSX_VERSION     = 10.5
+MIN_OSX_VERSION     = 10.7
 ARCH                = i386
-CC                  = g++
-NONSTATICFLAGS	    = -Wall -pedantic -O3 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH)
+CC                  = clang++
+NONSTATICFLAGS	    = -Wall -pedantic -O3 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -lc++ 
 
 ifeq ($(wildcard .forcestatic),)
 	SFLAGS	= $(NONSTATICFLAGS)
@@ -9,9 +9,9 @@ else
 	SFLAGS	= -static $(NONSTATICFLAGS)
 endif
 
-FLAGS               = $(SFLAGS) -std=c++11
-DFLAGS              = -Wall -pedantic -O0 -g -std=c++11 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH)
-GPROFFLAGS          = -Wall -pedantic -O -pg -std=c++11 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH)
+FLAGS               = $(SFLAGS) -std=c++11 -stdlib=libc++
+DFLAGS              = -Wall -pedantic -O0 -g -std=c++11 -stdlib=libc++ -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -lc++ 
+GPROFFLAGS          = -Wall -pedantic -O -pg -std=c++11 -stdlib=libc++ -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -lc++ 
 MAIN                = ../../../../..
 HEAD                = ${MAIN}/interfaces/general-headers
 SOURCE1	            = Wig2Bed.cpp

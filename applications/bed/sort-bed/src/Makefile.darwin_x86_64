@@ -1,4 +1,4 @@
-MIN_OSX_VERSION         = 10.6
+MIN_OSX_VERSION         = 10.7
 ARCH                    = x86_64
 
 MAIN                    = ../../../..
@@ -7,13 +7,13 @@ HEAD                    = $(MAIN)/interfaces/general-headers
 PROG                    = sort-bed
 DIST_DIR                = ../bin
 OBJ_DIR                 = objects
-OPTIMIZE                = -O3 -std=c++11
-WARNINGS                = -Wall -Wextra -ansi -pedantic
+OPTIMIZE                = -O3 -std=c++11 -stdlib=libc++
+WARNINGS                = -Wall -Wextra -pedantic
 MAIN                    = ../../../..
 HEAD                    = ${MAIN}/interfaces/general-headers
 
-CC                      = gcc
-CXX                     = g++
+CC                      = clang
+CXX                     = clang++
 
 ifneq ($(wildcard .forcestatic),)
 	SFLAGS	= -static
@@ -22,7 +22,7 @@ endif
 all: sort
 
 sort: sortbuild
-	${CXX} ${SFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${WARNINGS} ${OPTIMIZE} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -o ${DIST_DIR}/${PROG}_${ARCH}
+	${CXX} ${SFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${WARNINGS} ${OPTIMIZE} -lc++ ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -o ${DIST_DIR}/${PROG}_${ARCH}
 
 sortbuild: prep
 	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${WARNINGS} ${OPTIMIZE} -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
@@ -42,14 +42,14 @@ clean:
 nonstatic: sortbuild
 	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${WARNINGS} ${OPTIMIZE} -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
 	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${WARNINGS} ${OPTIMIZE} -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
-	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${WARNINGS} ${OPTIMIZE} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -o ${DIST_DIR}/${PROG}.nonstatic_${ARCH}
+	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${WARNINGS} ${OPTIMIZE} -lc++ ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -o ${DIST_DIR}/${PROG}.nonstatic_${ARCH}
 
 debug: prep
-	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -g -O0 -std=c++11 -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
-	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -g -O0 -std=c++11 -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
-	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -g ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -o ${DIST_DIR}/debug.${PROG}_${ARCH}
+	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -g -O0 -std=c++11 -stdlib=libc++ -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
+	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -g -O0 -std=c++11 -stdlib=libc++ -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
+	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -g -lc++ ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -o ${DIST_DIR}/debug.${PROG}_${ARCH}
 
 gprof: prep
-	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -pg -O -std=c++11 -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
-	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -pg -O -std=c++11 -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
-	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -o ${DIST_DIR}/gprof.${PROG}_${ARCH}
+	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -pg -O -std=c++11 -stdlib=libc++ -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
+	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -pg -O -std=c++11 -stdlib=libc++ -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
+	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -lc++ ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -o ${DIST_DIR}/gprof.${PROG}_${ARCH}

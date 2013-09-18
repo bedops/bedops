@@ -117,8 +117,6 @@ install_osx_packaging_bins: prep_c
 	mkdir -p ${OSXLIBDIR}
 	cp /opt/local/lib/libgcc/libstdc++.6.dylib ${OSXLIBDIR}
 	cp /opt/local/lib/libgcc/libgcc_s.1.dylib ${OSXLIBDIR}
-	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libstdc++.6.dylib /Library/Application\ Support/BEDOPS/libstdc++.6.dylib ${OSXPKGDIR}/sort-bed
-	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libgcc_s.1.dylib /Library/Application\ Support/BEDOPS/libgcc_s.1.dylib ${OSXPKGDIR}/sort-bed
 	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libstdc++.6.dylib /Library/Application\ Support/BEDOPS/libstdc++.6.dylib ${OSXPKGDIR}/bedops
 	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libgcc_s.1.dylib /Library/Application\ Support/BEDOPS/libgcc_s.1.dylib ${OSXPKGDIR}/bedops
 	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libstdc++.6.dylib /Library/Application\ Support/BEDOPS/libstdc++.6.dylib ${OSXPKGDIR}/closest-features
@@ -127,14 +125,6 @@ install_osx_packaging_bins: prep_c
 	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libgcc_s.1.dylib /Library/Application\ Support/BEDOPS/libgcc_s.1.dylib ${OSXPKGDIR}/bedmap
 	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libstdc++.6.dylib /Library/Application\ Support/BEDOPS/libstdc++.6.dylib ${OSXPKGDIR}/bedextract
 	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libgcc_s.1.dylib /Library/Application\ Support/BEDOPS/libgcc_s.1.dylib ${OSXPKGDIR}/bedextract
-	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libstdc++.6.dylib /Library/Application\ Support/BEDOPS/libstdc++.6.dylib ${OSXPKGDIR}/starch
-	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libgcc_s.1.dylib /Library/Application\ Support/BEDOPS/libgcc_s.1.dylib ${OSXPKGDIR}/starch
-	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libstdc++.6.dylib /Library/Application\ Support/BEDOPS/libstdc++.6.dylib ${OSXPKGDIR}/unstarch
-	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libgcc_s.1.dylib /Library/Application\ Support/BEDOPS/libgcc_s.1.dylib ${OSXPKGDIR}/unstarch
-	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libstdc++.6.dylib /Library/Application\ Support/BEDOPS/libstdc++.6.dylib ${OSXPKGDIR}/starchcat
-	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libgcc_s.1.dylib /Library/Application\ Support/BEDOPS/libgcc_s.1.dylib ${OSXPKGDIR}/starchcat
-	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libstdc++.6.dylib /Library/Application\ Support/BEDOPS/libstdc++.6.dylib ${OSXPKGDIR}/wig2bed_bin
-	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libgcc_s.1.dylib /Library/Application\ Support/BEDOPS/libgcc_s.1.dylib ${OSXPKGDIR}/wig2bed_bin
 
 prep_partial_nondarwin_static:
 ifneq (${KERNEL}, Darwin)
