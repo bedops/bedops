@@ -8,7 +8,7 @@ PROG                    = sort-bed
 DIST_DIR                = ../bin
 OBJ_DIR                 = objects
 OPTIMIZE                = -O3 -std=c++11 -stdlib=libc++
-WARNINGS                = -Wall -Wextra -pedantic
+WARNINGS                = -Weverything
 MAIN                    = ../../../..
 HEAD                    = ${MAIN}/interfaces/general-headers
 

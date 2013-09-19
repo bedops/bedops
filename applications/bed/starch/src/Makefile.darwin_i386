@@ -31,6 +31,7 @@ LOCALZLIBLIBPATH          = ${LOCALZLIBLIBDIR}/${LIBZLIB}
 LOCALZLIBINCDIR           = ${LOCALZLIBDIR}
 OBJDIR                    = ${INTERFACES}/src/data/starch
 LOCALOBJDIR               = objects
+WARNINGS                  = -Weverything
 
 PLATFORM                  = ${shell uname}
 ARCH_VERSION              = v2.0
@@ -40,10 +41,10 @@ TEST_OSX_BINDIR           = ${TEST}/binaries/osx/${ARCH_VERSION}/bin
 
 CC                        = clang
 CXX                       = clang++
-CFLAGS                    = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 -Wformat -Wall -Wextra -Wswitch-enum -std=c99 ${SFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH)
-CXXFLAGS                  = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 -Wformat -Wall -Wextra -Wswitch-enum -std=c++11 -stdlib=libc++ ${SFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH)
-CDFLAGS                   = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g -Wformat -Wall -Wextra -Wswitch-enum -std=c99 -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH)
-CXXDFLAGS                 = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g -Wformat -Wall -Wextra -Wswitch-enum -std=c++11 -stdlib=libc++ -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH)
+CFLAGS                    = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 ${WARNINGS} -std=c99 ${SFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH)
+CXXFLAGS                  = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 ${WARNINGS} -std=c++11 -stdlib=libc++ ${SFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH)
+CDFLAGS                   = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g ${WARNINGS} -std=c99 -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH)
+CXXDFLAGS                 = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g ${WARNINGS} -std=c++11 -stdlib=libc++ -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH)
 
 ifneq ($(wildcard .forcestatic),)
 	SFLAGS = -static
