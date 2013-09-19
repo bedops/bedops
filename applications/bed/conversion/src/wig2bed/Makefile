@@ -1,13 +1,14 @@
 CC               = g++
-NONSTATICFLAGS   = -ansi -Wall -pedantic -O3 -s
+WARNINGS         = -Wall -Wextra -pedantic
+NONSTATICFLAGS   = -ansi ${WARNINGS} -O3 -s
 ifeq ($(wildcard .forcestatic),)
 	SFLAGS = $(NONSTATICFLAGS)
 else
 	SFLAGS = -static $(NONSTATICFLAGS)
 endif
 FLAGS	         = $(SFLAGS) -std=c++11
-DFLAGS	         = -Wall -pedantic -O0 -g -std=c++11
-GPROFFLAGS       = -Wall -pedantic -O -pg -std=c++11
+DFLAGS	         = ${WARNINGS} -O0 -g -std=c++11
+GPROFFLAGS       = ${WARNINGS} -O -pg -std=c++11
 MAIN             = ../../../../..
 HEAD             = ${MAIN}/interfaces/general-headers
 SOURCE1	         = Wig2Bed.cpp
