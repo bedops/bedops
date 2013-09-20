@@ -22,31 +22,33 @@ static const unsigned long NUM_CHROM_EST     = 32;
 
 /* Data Structures */
 typedef struct {
-  Bed::SignedCoordType startCoord;
-  Bed::SignedCoordType endCoord;
-  char *data;
+    Bed::SignedCoordType startCoord;
+    Bed::SignedCoordType endCoord;
+    char *data;
 } BedCoordData;
 
 typedef struct {
-  char chromName[CHROM_NAME_LEN + 1];
-  Bed::LineCountType numCoords;
-  //BedCoordData coords[MAX_BED_ITEMS];
-  BedCoordData *coords;
+    char chromName[CHROM_NAME_LEN + 1];
+    Bed::LineCountType numCoords;
+    //BedCoordData coords[MAX_BED_ITEMS];
+    BedCoordData *coords;
 } ChromBedData;
 
 typedef struct {
-  int numChroms;
-  ChromBedData **chroms;
+    unsigned int numChroms;
+    ChromBedData **chroms; // struct is padded on 64-bit OS X system - cf. http://stackoverflow.com/questions/15031061/alignas-for-struct-members-using-clang-c11 for possible portable solution for warning
 } BedData;
 
 /* Function Prototypes */
-int processData(const char **bedFileNames, int numFiles, double maxMem);
+int checkfiles(const char **bedFileNames, unsigned int numFiles);
+int mergeSort(FILE **tmpFiles, unsigned int numFiles);
+int processData(const char **bedFileNames, unsigned int numFiles, double maxMem);
 void printBed(BedData *beds, FILE* out);
 void freeBedData(BedData *beds);
 void sortBedData(BedData *beds);
 void numSortBedData(BedData *beds);
 void lexSortBedData(BedData *beds);
-Bed::LineCountType appendChromBedEntry(ChromBedData *chrom, Bed::CoordType startPos, Bed::CoordType endPos, char *data, double* bytes);
+Bed::LineCountType appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::SignedCoordType endPos, char *data, double* bytes);
 ChromBedData * initializeChromBedData(char * chromName, double* bytes);
 BedData * initializeBedData(double* bytes);
 int numCompareBedData(const void *pos1, const void *pos2);
