@@ -71,8 +71,8 @@ typedef struct transformState {
     size_t                   t_currentRemainderLength;
     Bed::SignedCoordType     t_lastPosition;
     Bed::SignedCoordType     t_lcDiff;    
-    int                      t_nExtractionBuffer;
-    int                      t_nExtractionBufferPos;
+    size_t                   t_nExtractionBuffer;
+    size_t                   t_nExtractionBufferPos;
     char                     r_chromosome[Bed::TOKEN_CHR_MAX_LENGTH + 1];
     char                     r_remainder[UNSTARCH_SECOND_TOKEN_MAX_LENGTH + 1];
     Bed::SignedCoordType     r_start;
@@ -123,7 +123,7 @@ static const char *usage = "\n" \
     "    --version             Show binary version\n" \
     "    --help                Show this usage message\n";
 
-struct starchcat_client_global_args_t {
+static struct starchcat_client_global_args_t {
     CompressionType compressionType;
     char *note;
     char **inputFiles;
@@ -293,8 +293,8 @@ int      STARCHCAT2_breakdownBzip2InputStream (BZFILE **bzStream);
 int      STARCHCAT2_breakdownGzipInputStream (z_stream *zStream);
 int      STARCHCAT2_breakdownBzip2OutputStream (BZFILE **bzStream, uint64_t *bzOutBytesConsumed, uint64_t *bzOutBytesWritten);
 int      STARCHCAT2_breakdownGzipOutputStream (z_stream *zStream);
-int      STARCHCAT2_fillExtractionBufferFromBzip2Stream (Boolean *eofFlag, char *recordChromosome, char *extractionBuffer, int *nExtractionBuffer, BZFILE **bzStream, int *nBzRead, char *bzRemainderBuf, int *nBzRemainderBuf, TransformState *t_state);
-int      STARCHCAT2_fillExtractionBufferFromGzipStream (Boolean *eofFlag, FILE **inputFp, char *recordChromosome, char *extractionBuffer, int *nExtractionBuffer, z_stream *zStream, int *nZRead, char **zRemainderBuf, int *nZRemainderBuf, TransformState *t_state);
+int      STARCHCAT2_fillExtractionBufferFromBzip2Stream (Boolean *eofFlag, char *recordChromosome, char *extractionBuffer, size_t *nExtractionBuffer, BZFILE **bzStream, size_t *nBzRead, char *bzRemainderBuf, size_t *nBzRemainderBuf, TransformState *t_state);
+int      STARCHCAT2_fillExtractionBufferFromGzipStream (Boolean *eofFlag, FILE **inputFp, char *recordChromosome, char *extractionBuffer, size_t *nExtractionBuffer, z_stream *zStream, size_t *nZRead, char **zRemainderBuf, size_t *nZRemainderBuf, TransformState *t_state);
 int      STARCHCAT2_extractBedLine (Boolean *eobFlag, char *extractionBuffer, int *extractionBufferOffset, char **extractedElement);
 int      STARCHCAT2_parseCoordinatesFromBedLineV2 (Boolean *eobFlag, const char *extractedElement, Bed::SignedCoordType *start, Bed::SignedCoordType *stop);
 int      STARCHCAT2_addLowestBedElementToCompressionBuffer (char *compressionBuffer, const char *extractedElement, Bed::LineCountType *compressionLineCount);

@@ -465,17 +465,17 @@ STARCH_generateJSONMetadata(const Metadata *md, const CompressionType type, cons
         /* 1.3+ archive */
         if ((json_integer_value(streamArchiveVersionMajor) > 1) || ((json_integer_value(streamArchiveVersionMajor) == 1) && (json_integer_value(streamArchiveVersionMinor) >= 3))) {
             filenameLineCount = iter->lineCount;
-            streamLineCount = json_integer(filenameLineCount);
+            streamLineCount = json_integer((json_int_t)filenameLineCount);
             json_object_set_new(stream, STARCH_METADATA_STREAM_LINECOUNT_KEY, streamLineCount);
         }
         
         /* 1.4+ archive */
         if ((json_integer_value(streamArchiveVersionMajor) > 1) || ((json_integer_value(streamArchiveVersionMajor) == 1) && (json_integer_value(streamArchiveVersionMinor) >= 4))) {
             totalNonUniqueBases = iter->totalNonUniqueBases;
-            streamTotalNonUniqueBases = json_integer(totalNonUniqueBases);
+            streamTotalNonUniqueBases = json_integer((json_int_t)totalNonUniqueBases);
             json_object_set_new(stream, STARCH_METADATA_STREAM_TOTALNONUNIQUEBASES_KEY, streamTotalNonUniqueBases);
             totalUniqueBases = iter->totalUniqueBases;
-            streamTotalUniqueBases = json_integer(totalUniqueBases);
+            streamTotalUniqueBases = json_integer((json_int_t)totalUniqueBases);
             json_object_set_new(stream, STARCH_METADATA_STREAM_TOTALUNIQUEBASES_KEY, streamTotalUniqueBases);
         }
 
@@ -665,7 +665,7 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
 
     if ((STARCH_MAJOR_VERSION == 1) && (STARCH_MINOR_VERSION == 0) && (STARCH_REVISION_VERSION == 0)) {
         do {
-            currC = fgetc(*fp);
+            currC = (char) fgetc(*fp);
             if ((prevC == currC) && (currC == '\n'))
                 break;
              else {
@@ -745,7 +745,7 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
             return STARCH_EXIT_FAILURE;
         }
         do {
-            *(dynamicBuffer + mdOffsetIndex) = fgetc(*fp);
+            *(dynamicBuffer + mdOffsetIndex) = (char) fgetc(*fp);
             mdOffsetIndex++;
         } while (mdOffsetIndex < testMagicOffset);
         *(dynamicBuffer + mdOffsetIndex) = '\0';
@@ -785,14 +785,14 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
             offsetBuffer[mdOffsetIndex] = footerBuffer[mdOffsetIndex];
         }
         offsetBuffer[mdOffsetIndex] = '\0';
-        currentMdOffset = strtoull((const char *)offsetBuffer, NULL, STARCH_RADIX);
-        *mdOffset = currentMdOffset;
+        currentMdOffset = (off_t) strtoull((const char *)offsetBuffer, NULL, STARCH_RADIX);
+        *mdOffset = (uint64_t) currentMdOffset;
 #ifdef DEBUG
         fprintf(stderr, "\toffsetBuffer: %s\n", offsetBuffer);
         fprintf(stderr, "\tcurrentMdOffset: %" PRIu64 "\n", (uint64_t) currentMdOffset);
 #endif
         for (mdHashIndex = 0; mdHashIndex < STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH - 1; mdHashIndex++)
-            mdHashBuffer[mdHashIndex] = footerBuffer[(mdHashIndex + STARCH2_MD_FOOTER_CUMULATIVE_RECORD_SIZE_LENGTH)];
+            mdHashBuffer[mdHashIndex] = (unsigned char) footerBuffer[(mdHashIndex + STARCH2_MD_FOOTER_CUMULATIVE_RECORD_SIZE_LENGTH)];
 
         STARCH_fseeko(*fp, (off_t) 0, SEEK_END);
         fSize = ftell(*fp);
@@ -804,7 +804,7 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
 	        fprintf(stderr, "ERROR: File size (%" PRIu64 ") is smaller than metadata offset value (%" PRIu64 "). Is the archive possibly corrupt?\n", (uint64_t) fSize, (uint64_t) currentMdOffset);
             return STARCH_EXIT_FAILURE;
         }
-        mdLength = fSize - currentMdOffset - STARCH2_MD_FOOTER_LENGTH + 1;
+        mdLength = (size_t) (fSize - currentMdOffset - STARCH2_MD_FOOTER_LENGTH + 1);
 #ifdef DEBUG
         fprintf(stderr, "\tmdLength: %zu\n", mdLength);
 #endif
@@ -813,7 +813,7 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
             fprintf(stderr, "ERROR: Could not allocate space for dynamic buffer (v2).\n");
             return STARCH_EXIT_FAILURE;
         }        
-        STARCH_fseeko(*fp, -(mdLength + STARCH2_MD_FOOTER_LENGTH) + 1, SEEK_END);
+        STARCH_fseeko(*fp, (off_t) (-(mdLength + STARCH2_MD_FOOTER_LENGTH) + 1), SEEK_END);
         nReadBytes = fread(dynamicBuffer, 1, mdLength, *fp);
         if (nReadBytes != mdLength) {
             fprintf(stderr, "ERROR: Total amount of bytes read not equal to Starch v2 metadata length!\n");
@@ -882,37 +882,31 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
                         if (suppressErrorMsgs == kStarchFalse)
                             fprintf(stderr, "ERROR: Could not extract header flag value (JSON_OBJECT)\n");
                         return STARCH_EXIT_FAILURE;
-                        break;
                     }
                     case (JSON_ARRAY): {
                         if (suppressErrorMsgs == kStarchFalse)
                             fprintf(stderr, "ERROR: Could not extract header flag value (JSON_ARRAY)\n");
                         return STARCH_EXIT_FAILURE;
-                        break;
                     }
                     case (JSON_STRING): {
                         if (suppressErrorMsgs == kStarchFalse)
                             fprintf(stderr, "ERROR: Could not extract header flag value (JSON_STRING)\n");
                         return STARCH_EXIT_FAILURE;
-                        break;
                     }
                     case (JSON_INTEGER): {
                         if (suppressErrorMsgs == kStarchFalse)
                             fprintf(stderr, "ERROR: Could not extract header flag value (JSON_INTEGER)\n");
                         return STARCH_EXIT_FAILURE;
-                        break;
                     }
                     case (JSON_REAL): {
                         if (suppressErrorMsgs == kStarchFalse)  
                             fprintf(stderr, "ERROR: Could not extract header flag value (JSON_REAL)\n");
                         return STARCH_EXIT_FAILURE;
-                        break;
                     }
                     case (JSON_NULL): {
                         if (suppressErrorMsgs == kStarchFalse)
                             fprintf(stderr, "ERROR: Could not extract header flag value (JSON_NULL)\n");
                         return STARCH_EXIT_FAILURE;
-                        break;
                     }
                 }
             }
@@ -1300,7 +1294,7 @@ STARCH_readLegacyMetadata(const char *buf, Metadata **rec, CompressionType *type
             else
                 break;
 
-            tokBufIdx = -1;
+            tokBufIdx = (size_t) -1;
         }
         else
             tokBuf[tokBufIdx] = buf[bufIdx];        
@@ -1339,7 +1333,7 @@ STARCH_strnstr(const char *haystack, const char *needle, size_t haystackLen)
 
     pLen = haystackLen;
     for (p = (char *) haystack; p != NULL; p = (char *) memchr(p + 1, *needle, pLen-1)) {
-        pLen = haystackLen - (p - haystack);
+        pLen = haystackLen - (size_t) (p - haystack);
         if (pLen < len)
             return NULL;
         if (strncmp(p, needle, len) == 0)

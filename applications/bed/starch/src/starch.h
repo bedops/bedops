@@ -30,7 +30,7 @@ static const char *usage = "\n" \
     "    --help                Show this usage message\n" \
     "    --version             Show binary version";
 
-struct starch_client_global_args_t {
+static struct starch_client_global_args_t {
     char *note;
     CompressionType compressionType;
     Boolean headerFlag;

@@ -194,14 +194,24 @@ main(int argc, char **argv)
             if ((STARCH_MAJOR_VERSION == 1) || (archiveVersion->major == 1)) {
                 switch (type) {
                     case kBzip2: {
-                        if (UNSTARCH_extractDataWithBzip2( &inFilePtr, NULL, whichChromosome, (const Metadata *) records, (const unsigned long long) metadataOffset, (const unsigned int) headerFlag) != 0) {
+                        if (UNSTARCH_extractDataWithBzip2(&inFilePtr, 
+                                                          NULL, 
+                                                          whichChromosome, 
+                                                          (const Metadata *) records, 
+                                                          (const unsigned long long) metadataOffset, 
+                                                          (const Boolean) headerFlag) != 0) {
                             fprintf(stderr, "ERROR: Backend extraction failed (bzip2)\n");
                             resultValue = EXIT_FAILURE;
                         }
                         break;
                     }
                     case kGzip: {
-                        if (UNSTARCH_extractDataWithGzip( &inFilePtr, NULL, whichChromosome, (const Metadata *) records, (const unsigned long long) metadataOffset, (const unsigned int) headerFlag) != 0) {
+                        if (UNSTARCH_extractDataWithGzip(&inFilePtr, 
+                                                         NULL, 
+                                                         whichChromosome, 
+                                                         (const Metadata *) records, 
+                                                         (const unsigned long long) metadataOffset, 
+                                                         (const Boolean) headerFlag) != 0) {
                             fprintf(stderr, "ERROR: Backend extraction failed (gzip)\n");
                             resultValue = EXIT_FAILURE;
                         }
@@ -214,17 +224,27 @@ main(int argc, char **argv)
                     }
                 }
             }
-            else if ((STARCH_MAJOR_VERSION == 2) || (archiveVersion->major == 2)) {
+            else if ((STARCH_MAJOR_VERSION == 2) || (archiveVersion->major == 2)) { // warning is false-positive
                 switch (type) {
                     case kBzip2: {
-                        if (UNSTARCH_extractDataWithBzip2( &inFilePtr, NULL, whichChromosome, (const Metadata *) records, (const unsigned long long) sizeof(starchRevision2HeaderBytes), (const unsigned int) headerFlag) != 0) {
+                        if (UNSTARCH_extractDataWithBzip2(&inFilePtr, 
+                                                          NULL, 
+                                                          whichChromosome, 
+                                                          (const Metadata *) records, 
+                                                          (const unsigned long long) sizeof(starchRevision2HeaderBytes), 
+                                                          (const Boolean) headerFlag) != 0) {
                             fprintf(stderr, "ERROR: Backend extraction failed (bzip2)\n");
                             resultValue = EXIT_FAILURE;
                         }
                         break;
                     }
                     case kGzip: {                        
-                        if (UNSTARCH_extractDataWithGzip( &inFilePtr, NULL, whichChromosome, (const Metadata *) records, (const unsigned long long) sizeof(starchRevision2HeaderBytes), (const unsigned int) headerFlag) != 0) {
+                        if (UNSTARCH_extractDataWithGzip(&inFilePtr, 
+                                                         NULL, 
+                                                         whichChromosome, 
+                                                         (const Metadata *) records, 
+                                                         (const unsigned long long) sizeof(starchRevision2HeaderBytes), 
+                                                         (const Boolean) headerFlag) != 0) {
                             fprintf(stderr, "ERROR: Backend extraction failed (gzip)\n");
                             resultValue = EXIT_FAILURE;
                         }
@@ -238,7 +258,7 @@ main(int argc, char **argv)
                 }
             }
             else if (STARCH_MAJOR_VERSION > 2) {
-                fprintf(stderr, "ERROR: Unstarch does not support extracting archives in this major version release (built as: %d.%d.%d)\n", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION);
+                fprintf(stderr, "ERROR: Unstarch does not support extracting archives in this major version release (built as: %d.%d.%d)\n", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION); // this is preserved for future-proofing test builds of Starch binaries
                 exit(EXIT_FAILURE);                
             }
         }
@@ -780,7 +800,6 @@ UNSTARCH_printCompressionType(const CompressionType t)
             fprintf(stdout, "%s\n archive compression type: gzip\n", name);
             break;
         case kUndefined:
-        default:
             fprintf(stdout, "ERROR: compression type is undefined\n");
             break;
     }

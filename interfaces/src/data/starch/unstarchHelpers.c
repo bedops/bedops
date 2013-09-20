@@ -33,17 +33,18 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
     const Metadata *iter;
     char *chromosome;
     uint64_t size;	
-    uint64_t cumulativeSize = UINT64_C(0);
+    uint64_t cumulativeSize = 0;
     Bed::SignedCoordType start, pLength, lastEnd;
     char const *all = "all";
     char firstInputToken[UNSTARCH_FIRST_TOKEN_MAX_LENGTH]; 
     char secondInputToken[UNSTARCH_SECOND_TOKEN_MAX_LENGTH];
     unsigned char zInBuf[STARCH_Z_CHUNK];
     unsigned char zOutBuf[STARCH_Z_CHUNK];
-    char zLineBuf[STARCH_Z_CHUNK];
-    char *zRemainderBuf = (char*)malloc(1); 
+    unsigned char zLineBuf[STARCH_Z_CHUNK];
+    unsigned char *zRemainderBuf = (unsigned char *) malloc(1); 
     z_stream zStream;
-    unsigned int zHave, zBufIdx, zBufOffset, zOutBufIdx;
+    unsigned int zHave, zOutBufIdx;
+    size_t zBufIdx, zBufOffset;
     int zError;
     Boolean chrFound = kStarchFalse;
 
@@ -56,9 +57,9 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
     for (iter = md; iter != NULL; iter = iter->next) {
         chromosome = iter->chromosome; 
         size = iter->size;
-        start = INT64_C(0);
-        pLength = INT64_C(0);
-        lastEnd = INT64_C(0);
+        start = 0;
+        pLength = 0;
+        lastEnd = 0;
 
         if (STARCH_fseeko(*inFp, (off_t)(cumulativeSize + mdOffset), SEEK_SET) != 0) {
             fprintf(stderr, "ERROR: Could not seek data in archive at chromosome (%s) and offset (%" PRIu64 ")\n", chromosome, cumulativeSize + mdOffset);
@@ -88,7 +89,7 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
     
             /* while stream is open, read line from stream, and reverse transform */
             do {
-                zStream.avail_in = fread(zInBuf, 1, STARCH_Z_CHUNK, *inFp);
+                zStream.avail_in = (uInt) fread(zInBuf, 1, STARCH_Z_CHUNK, *inFp);
                 if (zStream.avail_in == 0)
                     break;
                 zStream.next_in = zInBuf;
@@ -106,8 +107,8 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
 
                     /* copy remainder buffer onto line buffer, if not NULL */
                     if (zRemainderBuf) {
-                        strncpy(zLineBuf, zRemainderBuf, strlen(zRemainderBuf));
-                        zBufOffset = strlen(zRemainderBuf);
+                        strncpy((char *) zLineBuf, (const char *) zRemainderBuf, strlen((const char *) zRemainderBuf));
+                        zBufOffset = strlen((const char *) zRemainderBuf);
                     }
                     else 
                         zBufOffset = 0;
@@ -117,22 +118,22 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
                         zLineBuf[zBufIdx] = zOutBuf[zOutBufIdx];
                         if (zLineBuf[zBufIdx] == '\n') {
                             zLineBuf[zBufIdx] = '\0';
-                            zBufIdx = -1;
+                            zBufIdx = (size_t) -1;
                             (!headerFlag) ? \
                                     UNSTARCH_reverseTransformHeaderlessInput(chromosome, zLineBuf, '\t', &start, &pLength, &lastEnd, firstInputToken, secondInputToken, outFp):\
-                                    UNSTARCH_reverseTransformInput(chromosome, zLineBuf, '\t', &start, &pLength, &lastEnd, firstInputToken, secondInputToken, outFp);
+                                UNSTARCH_reverseTransformInput(chromosome, zLineBuf, '\t', &start, &pLength, &lastEnd, firstInputToken, secondInputToken, outFp);
                             firstInputToken[0] = '\0';
                             secondInputToken[0] = '\0';
                         }
                     }
 
                     /* copy some of line buffer onto the remainder buffer, if there are remnants from the z-stream */
-                    if (strlen(zLineBuf) > 0) {
+                    if (strlen((const char *) zLineBuf) > 0) {
 
-                        if (strlen(zLineBuf) > strlen(zRemainderBuf)) {
+                        if (strlen((const char *) zLineBuf) > strlen((const char *) zRemainderBuf)) {
                             /* to minimize the chance of doing another (expensive) malloc, we double the length of zRemainderBuf */
                             free(zRemainderBuf);
-                            zRemainderBuf = (char *) malloc(strlen(zLineBuf) * 2);
+                            zRemainderBuf = (unsigned char *) malloc(strlen((const char *) zLineBuf) * 2);
                         }
 
                         /* it is necessary to copy only that part of zLineBuf up to zBufIdx characters  */
@@ -141,7 +142,7 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
                         /* zRemainderBuf, so that any cruft from a previous iteration is ignored in the */
                         /* next iteration of parsing the chromosome's z-stream                          */
 
-                        strncpy(zRemainderBuf, zLineBuf, zBufIdx);
+                        strncpy((char *) zRemainderBuf, (const char *) zLineBuf, zBufIdx);
                         zRemainderBuf[zBufIdx] = '\0';
 
                         /* we should only at most have to do this every STARCH_Z_CHUNK chars, and once  */
@@ -184,14 +185,14 @@ UNSTARCH_extractDataWithBzip2(FILE **inFp, FILE *outFp, const char *whichChr, co
     const Metadata *iter;
     char *chromosome;
     uint64_t size;	
-    uint64_t cumulativeSize = UINT64_C(0);
+    uint64_t cumulativeSize = 0;
     Bed::SignedCoordType start, pLength, lastEnd;
     char const *all = "all";
     char firstInputToken[UNSTARCH_FIRST_TOKEN_MAX_LENGTH]; 
     char secondInputToken[UNSTARCH_SECOND_TOKEN_MAX_LENGTH];
     BZFILE *bzFp;
     int bzError;
-    char *bzOutput;
+    unsigned char *bzOutput;
     size_t bzOutputLength = UNSTARCH_COMPRESSED_BUFFER_MAX_LENGTH;
     /* unsigned char chrFound = UNSTARCH_FALSE; */
 
@@ -205,9 +206,9 @@ UNSTARCH_extractDataWithBzip2(FILE **inFp, FILE *outFp, const char *whichChr, co
 
         chromosome = iter->chromosome; 
         size = iter->size;
-        start = INT64_C(0);
-        pLength = INT64_C(0);
-        lastEnd = INT64_C(0);
+        start = 0;
+        pLength = 0;
+        lastEnd = 0;
 
         if (STARCH_fseeko(*inFp, (off_t) (cumulativeSize + mdOffset), SEEK_SET) != 0) {
             fprintf(stderr, "ERROR: Could not seek data in archve\n");
@@ -226,7 +227,7 @@ UNSTARCH_extractDataWithBzip2(FILE **inFp, FILE *outFp, const char *whichChr, co
                 return UNSTARCH_FATAL_ERROR;
             }
 
-            bzOutput = (char *) malloc(bzOutputLength);
+            bzOutput = (unsigned char *) malloc(bzOutputLength);
             do {
                 UNSTARCH_bzReadLine(bzFp, &bzOutput);                
                 if (bzOutput) {
@@ -259,7 +260,7 @@ UNSTARCH_extractDataWithBzip2(FILE **inFp, FILE *outFp, const char *whichChr, co
 }
 
 void 
-UNSTARCH_bzReadLine(BZFILE *input, char **output) 
+UNSTARCH_bzReadLine(BZFILE *input, unsigned char **output) 
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_bzReadLine() ---\n");
@@ -267,7 +268,7 @@ UNSTARCH_bzReadLine(BZFILE *input, char **output)
     size_t offset = 0;
     size_t len = UNSTARCH_COMPRESSED_BUFFER_MAX_LENGTH;
     int bzError;
-    char *outputCopy = NULL;
+    unsigned char *outputCopy = NULL;
     Boolean runFlag = kStarchFalse;
 
     if ((!input) || (!*output)) {
@@ -284,7 +285,7 @@ UNSTARCH_bzReadLine(BZFILE *input, char **output)
         runFlag = kStarchTrue;
         if (offset + 1 == len) {
             len += UNSTARCH_COMPRESSED_BUFFER_MAX_LENGTH;
-            outputCopy = (char *) realloc(*output, len);
+            outputCopy = (unsigned char *) realloc(*output, len);
             if (! outputCopy) {
                 fprintf(stderr, "ERROR: Could not reallocate space for compressed buffer.\n");
                 exit(-1);
@@ -315,7 +316,7 @@ UNSTARCH_bzReadLine(BZFILE *input, char **output)
 }
 
 int 
-UNSTARCH_reverseTransformInput(const char *chr, const char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, FILE *outFp) 
+UNSTARCH_reverseTransformInput(const char *chr, const unsigned char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, FILE *outFp) 
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_reverseTransformInput() ---\n");
@@ -344,12 +345,12 @@ UNSTARCH_reverseTransformInput(const char *chr, const char *str, char delim, Bed
 
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
-                *start = *lastEnd + strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+                *start = *lastEnd + (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
                 *lastEnd = *start + *pLength;
                 fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (Bed::SignedCoordType) *start, (Bed::SignedCoordType) *lastEnd, elemTok2);
             }
             else {
-                *lastEnd = strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
+                *lastEnd = (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
                 fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX), (Bed::SignedCoordType) *lastEnd, elemTok2);
             }
         }
@@ -382,7 +383,7 @@ UNSTARCH_reverseTransformInput(const char *chr, const char *str, char delim, Bed
 }
 
 int 
-UNSTARCH_sReverseTransformInput(const char *chr, const char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, char **currentChr, size_t *currentChrLen, Bed::SignedCoordType *currentStart, Bed::SignedCoordType *currentStop, char **currentRemainder, size_t *currentRemainderLen)
+UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, char **currentChr, size_t *currentChrLen, Bed::SignedCoordType *currentStart, Bed::SignedCoordType *currentStop, char **currentRemainder, size_t *currentRemainderLen)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_sReverseTransformInput() ---\n");
@@ -556,7 +557,7 @@ UNSTARCH_sReverseTransformInput(const char *chr, const char *str, char delim, Be
 }
 
 int 
-UNSTARCH_reverseTransformIgnoringHeaderedInput(const char *chr, const char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, FILE *outFp) 
+UNSTARCH_reverseTransformIgnoringHeaderedInput(const char *chr, const unsigned char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, FILE *outFp) 
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_reverseTransformIgnoringHeaderedInput() ---\n");
@@ -623,7 +624,7 @@ UNSTARCH_reverseTransformIgnoringHeaderedInput(const char *chr, const char *str,
 }
 
 int 
-UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, char **currentChr, size_t *currentChrLen, Bed::SignedCoordType *currentStart, Bed::SignedCoordType *currentStop, char **currentRemainder, size_t *currentRemainderLen)
+UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, char **currentChr, size_t *currentChrLen, Bed::SignedCoordType *currentStart, Bed::SignedCoordType *currentStop, char **currentRemainder, size_t *currentRemainderLen)
 {
 #ifdef DEBUG
     
@@ -827,7 +828,7 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const char *str
 }
 
 int 
-UNSTARCH_reverseTransformHeaderlessInput(const char *chr, const char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, FILE *outFp) 
+UNSTARCH_reverseTransformHeaderlessInput(const char *chr, const unsigned char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, FILE *outFp) 
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_reverseTransformHeaderlessInput() ---\n");
@@ -882,7 +883,7 @@ UNSTARCH_reverseTransformHeaderlessInput(const char *chr, const char *str, char 
 }
 
 int
-UNSTARCH_extractRawLine(const char *chr, const char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, char **currentChr, size_t *currentChrLen, Bed::SignedCoordType *currentStart, Bed::SignedCoordType *currentStop, char **currentRemainder, size_t *currentRemainderLen)
+UNSTARCH_extractRawLine(const char *chr, const unsigned char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, char **currentChr, size_t *currentChrLen, Bed::SignedCoordType *currentStart, Bed::SignedCoordType *currentStop, char **currentRemainder, size_t *currentRemainderLen)
 {
     /*
         UNSTARCH_extractRawLine() takes in a buffer of post-transform BED data (which
@@ -892,9 +893,9 @@ UNSTARCH_extractRawLine(const char *chr, const char *str, char delim, Bed::Signe
 
         The following variables are "read-only" inputs:
 
-            char     *chr                -> chromosome (obtained from metadata record)
-            char     *str                -> buffer containing post-transform data to reverse transform
-            char      delim              -> field delimiter (shoud usually be a tab character)
+            char              *chr                -> chromosome (obtained from metadata record)
+            unsigned char     *str                -> buffer containing post-transform data to reverse transform
+            char               delim              -> field delimiter (shoud usually be a tab character)
 
         The *str value should be a single line of data extracted from a bzip2- or gzip-compressed
         chromosome stream. In other words, extract data from the stream into a buffer, scan through
@@ -962,7 +963,7 @@ UNSTARCH_extractRawLine(const char *chr, const char *str, char delim, Bed::Signe
 }
 
 int 
-UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, char **currentChr, size_t *currentChrLen, Bed::SignedCoordType *currentStart, Bed::SignedCoordType *currentStop, char **currentRemainder, size_t *currentRemainderLen)
+UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, char **currentChr, size_t *currentChrLen, Bed::SignedCoordType *currentStart, Bed::SignedCoordType *currentStop, char **currentRemainder, size_t *currentRemainderLen)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_sReverseTransformHeaderlessInput() ---\n");
@@ -1111,13 +1112,13 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const char *str, char
 }
 
 int 
-UNSTARCH_createInverseTransformTokens(const char *s, const char delim, char elemTok1[], char elemTok2[]) 
+UNSTARCH_createInverseTransformTokens(const unsigned char *s, const char delim, char elemTok1[], char elemTok2[]) 
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_createInverseTransformTokens() ---\n");
 #endif
     int charCnt, sCnt, elemCnt;
-    char buffer[UNSTARCH_BUFFER_MAX_LENGTH];
+    unsigned char buffer[UNSTARCH_BUFFER_MAX_LENGTH];
 
     charCnt = 0;
     sCnt = 0;
@@ -1128,7 +1129,7 @@ UNSTARCH_createInverseTransformTokens(const char *s, const char delim, char elem
         if (buffer[(charCnt - 1)] == delim) {
             if (elemCnt == 0) { 
                 buffer[(charCnt - 1)] = '\0';
-                strncpy(elemTok1, (const char *)buffer, strlen(buffer) + 1); 
+                strncpy(elemTok1, (const char *) buffer, strlen((const char *) buffer) + 1); 
                 elemCnt++; 
                 charCnt = 0;
             }
@@ -1137,11 +1138,11 @@ UNSTARCH_createInverseTransformTokens(const char *s, const char delim, char elem
 
     if (elemCnt == 0) {
         buffer[charCnt] = '\0';
-        strncpy(elemTok1, (const char *)buffer, strlen(buffer) + 1);
+        strncpy(elemTok1, (const char *) buffer, strlen((const char *) buffer) + 1);
     }
     if (elemCnt == 1) {
         buffer[charCnt] = '\0';
-        strncpy(elemTok2, (const char *)buffer, strlen(buffer) + 1);
+        strncpy(elemTok2, (const char *) buffer, strlen((const char *) buffer) + 1);
     }
 
     return 0;
@@ -1162,7 +1163,7 @@ UNSTARCH_strnstr(const char *haystack, const char *needle, size_t haystackLen)
 
     pLen = haystackLen;
     for (p = (char *) haystack; p != NULL; p = (char *) memchr(p + 1, *needle, pLen-1)) {
-        pLen = haystackLen - (p - haystack);
+        pLen = haystackLen - (size_t) (p - haystack);
         if (pLen < len) 
             return NULL;
         if (strncmp(p, needle, len) == 0)
@@ -1206,7 +1207,7 @@ UNSTARCH_lineCountForChromosome(const Metadata *md, const char *chr)
         }
     }
 
-    return (Bed::LineCountType) UINT64_C(0);
+    return (Bed::LineCountType) 0;
 }
 
 void
@@ -1229,7 +1230,7 @@ UNSTARCH_printLineCountForAllChromosomes(const Metadata *md)
     fprintf(stderr, "\n--- UNSTARCH_printLineCountForAllChromosomes() ---\n");
 #endif
     const Metadata *iter;
-    Bed::LineCountType totalLineCount = UINT64_C(0);
+    Bed::LineCountType totalLineCount = 0;
 
     for (iter = md; iter != NULL; iter = iter->next)
         totalLineCount += iter->lineCount;
@@ -1251,7 +1252,7 @@ UNSTARCH_nonUniqueBaseCountForChromosome(const Metadata *md, const char *chr)
         }
     }
 
-    return (Bed::BaseCountType) UINT64_C(0);
+    return (Bed::BaseCountType) 0;
 }
 
 void 
@@ -1274,7 +1275,7 @@ UNSTARCH_printNonUniqueBaseCountForAllChromosomes(const Metadata *md)
     fprintf(stderr, "\n--- UNSTARCH_printNonUniqueBaseCountForAllChromosomes() ---\n");
 #endif
     const Metadata *iter;
-    Bed::BaseCountType totalBaseCount = UINT64_C(0);
+    Bed::BaseCountType totalBaseCount = 0;
 
     for (iter = md; iter != NULL; iter = iter->next)
         totalBaseCount += iter->totalNonUniqueBases;
@@ -1296,7 +1297,7 @@ UNSTARCH_uniqueBaseCountForChromosome(const Metadata *md, const char *chr)
         }
     }
 
-    return (Bed::BaseCountType) UINT64_C(0);
+    return (Bed::BaseCountType) 0;
 }
 
 void 
@@ -1319,7 +1320,7 @@ UNSTARCH_printUniqueBaseCountForAllChromosomes(const Metadata *md)
     fprintf(stderr, "\n--- UNSTARCH_printUniqueBaseCountForChromosome() ---\n");
 #endif
     const Metadata *iter;
-    Bed::BaseCountType totalBaseCount = UINT64_C(0);
+    Bed::BaseCountType totalBaseCount = 0;
 
     for (iter = md; iter != NULL; iter = iter->next)
         totalBaseCount += iter->totalUniqueBases;
@@ -1328,7 +1329,7 @@ UNSTARCH_printUniqueBaseCountForAllChromosomes(const Metadata *md)
 }
 
 int
-UNSTARCH_reverseTransformCoordinates(const Bed::LineCountType lineIdx, Bed::SignedCoordType *lastPosition, Bed::SignedCoordType *lcDiff, Bed::SignedCoordType *currStart, Bed::SignedCoordType *currStop, char **currRemainder, char *lineBuf, int64_t *nLineBuf, int64_t *nLineBufPos)
+UNSTARCH_reverseTransformCoordinates(const Bed::LineCountType lineIdx, Bed::SignedCoordType *lastPosition, Bed::SignedCoordType *lcDiff, Bed::SignedCoordType *currStart, Bed::SignedCoordType *currStop, char **currRemainder, unsigned char *lineBuf, int64_t *nLineBuf, int64_t *nLineBufPos)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_reverseTransformCoordinates() ---\n");
@@ -1345,7 +1346,7 @@ UNSTARCH_reverseTransformCoordinates(const Bed::LineCountType lineIdx, Bed::Sign
     /* offset */
     if (coordDiff != *lcDiff) {
         *lcDiff = coordDiff;
-        *nLineBuf = sprintf(lineBuf + *nLineBufPos, "p%" PRId64 "\n", coordDiff);
+        *nLineBuf = sprintf((char *)lineBuf + *nLineBufPos, "p%" PRId64 "\n", coordDiff);
         if (*nLineBuf < 0) {
             fprintf(stderr, "ERROR: Could not copy reverse-transformed extracted stream buffer to line buffer.\n");
             return UNSTARCH_FATAL_ERROR;
@@ -1356,9 +1357,9 @@ UNSTARCH_reverseTransformCoordinates(const Bed::LineCountType lineIdx, Bed::Sign
     /* line + remainder */
     if (*lastPosition != 0) {
         if (*currRemainder)
-            *nLineBuf = sprintf(lineBuf + *nLineBufPos, "%" PRId64 "\t%s\n", (*currStart - *lastPosition), *currRemainder);
+            *nLineBuf = sprintf((char *)lineBuf + *nLineBufPos, "%" PRId64 "\t%s\n", (*currStart - *lastPosition), *currRemainder);
         else
-            *nLineBuf = sprintf(lineBuf + *nLineBufPos, "%" PRId64 "\n", *currStart - *lastPosition);
+            *nLineBuf = sprintf((char *)lineBuf + *nLineBufPos, "%" PRId64 "\n", *currStart - *lastPosition);
 
         if (*nLineBuf < 0) {
             fprintf(stderr, "ERROR: Could not copy reverse-transformed extracted stream buffer to line buffer.\n");
@@ -1368,9 +1369,9 @@ UNSTARCH_reverseTransformCoordinates(const Bed::LineCountType lineIdx, Bed::Sign
     }
     else {
         if (*currRemainder)
-            *nLineBuf = sprintf(lineBuf + *nLineBufPos, "%" PRId64 "\t%s\n", *currStart, *currRemainder);
+            *nLineBuf = sprintf((char *)lineBuf + *nLineBufPos, "%" PRId64 "\t%s\n", *currStart, *currRemainder);
         else
-            *nLineBuf = sprintf(lineBuf + *nLineBufPos, "%" PRId64 "\n", *currStart);
+            *nLineBuf = sprintf((char *)lineBuf + *nLineBufPos, "%" PRId64 "\n", *currStart);
 
         if (*nLineBuf < 0) {
             fprintf(stderr, "ERROR: Could not copy reverse-transformed extracted stream buffer to line buffer.\n");

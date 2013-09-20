@@ -151,7 +151,7 @@ STARCH_gzip_deflate(FILE *source, FILE *dest, int level)
 
     /* compress until end of file */
     do {
-        strm.avail_in = fread(in, 1, STARCH_Z_CHUNK, source);
+        strm.avail_in = (uInt) fread(in, 1, STARCH_Z_CHUNK, source);
         if (ferror(source)) {
             (void) deflateEnd(&strm);
             return Z_ERRNO;

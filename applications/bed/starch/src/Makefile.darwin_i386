@@ -31,7 +31,7 @@ LOCALZLIBLIBPATH          = ${LOCALZLIBLIBDIR}/${LIBZLIB}
 LOCALZLIBINCDIR           = ${LOCALZLIBDIR}
 OBJDIR                    = ${INTERFACES}/src/data/starch
 LOCALOBJDIR               = objects
-WARNINGS                  = -Weverything
+WARNINGS                  = -Weverything -Wno-c++98-compat-pedantic -Wno-padded
 
 PLATFORM                  = ${shell uname}
 ARCH_VERSION              = v2.0

@@ -130,23 +130,24 @@ STARCH_decodeBase64(char *input, unsigned char **output, size_t *outputLength)
         }
 
         switch (i % 4) {
-            case 0:
-                objResult[j] = intCurrent << 2;
+            case 0: {
+                objResult[j] = (unsigned char) (intCurrent << 2);
                 break;
-
-            case 1:
+            }
+            case 1: {
                 objResult[j++] |= intCurrent >> 4;
-                objResult[j] = (intCurrent & 0x0f) << 4;
+                objResult[j] = (unsigned char) ((intCurrent & 0x0f) << 4);
                 break;
-
-            case 2:
+            }
+            case 2: {
                 objResult[j++] |= intCurrent >>2;
-                objResult[j] = (intCurrent & 0x03) << 6;
+                objResult[j] = (unsigned char) ((intCurrent & 0x03) << 6);
                 break;
-
-            case 3:
+            }
+            case 3: {
                 objResult[j++] |= intCurrent;
                 break;
+            }
         }
         i++;
     }
@@ -155,21 +156,25 @@ STARCH_decodeBase64(char *input, unsigned char **output, size_t *outputLength)
     k = j;
     if (intCurrent == '=') {
         switch (i % 4) {
-            case 1:
+            case 1: {
                 // Invalid state
                 free(objResult);
                 return;
-
-            case 2:
+            }
+            case 2: {
                 k++;
-                // flow through
-            case 3:
                 objResult[k] = 0;
+                break;
+            }
+            case 3: {
+                objResult[k] = 0;
+                break;
+            }
         }
     }
 
     // Cleanup and setup the return bytes
-    *outputLength = j;
+    *outputLength = (size_t) j;
     memcpy(*output, objResult, *outputLength);
     free(objResult);
 }

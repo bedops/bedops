@@ -38,7 +38,7 @@
 #define UNSTARCH_METADATA_SHA1_SIGNATURE_ERROR 23
 
 int                UNSTARCH_reverseTransformInput(const char *chr,
-                                                  const char *str,
+                                         const unsigned char *str,
                                                         char delim,
                                         Bed::SignedCoordType *start,
                                         Bed::SignedCoordType *pLength,
@@ -48,7 +48,7 @@ int                UNSTARCH_reverseTransformInput(const char *chr,
                                                         FILE *outFp);
 
 int                UNSTARCH_sReverseTransformInput(const char *chr,
-                                                   const char *str,
+                                          const unsigned char *str,
                                                          char delim,
                                          Bed::SignedCoordType *start,
                                          Bed::SignedCoordType *pLength,
@@ -63,7 +63,7 @@ int                UNSTARCH_sReverseTransformInput(const char *chr,
                                                        size_t *currentRemainderLen);
 
 int                UNSTARCH_reverseTransformIgnoringHeaderedInput(const char *chr, 
-                                                                  const char *str, 
+                                                         const unsigned char *str, 
                                                                         char delim, 
                                                         Bed::SignedCoordType *start, 
                                                         Bed::SignedCoordType *pLength, 
@@ -73,7 +73,7 @@ int                UNSTARCH_reverseTransformIgnoringHeaderedInput(const char *ch
                                                                         FILE *outFp);
 
 int                UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, 
-                                                                   const char *str, 
+                                                          const unsigned char *str, 
                                                                          char delim, 
                                                          Bed::SignedCoordType *start, 
                                                          Bed::SignedCoordType *pLength, 
@@ -88,7 +88,7 @@ int                UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *c
                                                                        size_t *currentRemainderLen);
 
 int                UNSTARCH_reverseTransformHeaderlessInput(const char *chr, 
-                                                            const char *str, 
+                                                   const unsigned char *str, 
                                                                   char delim, 
                                                   Bed::SignedCoordType *start, 
                                                   Bed::SignedCoordType *pLength, 
@@ -98,7 +98,7 @@ int                UNSTARCH_reverseTransformHeaderlessInput(const char *chr,
                                                                   FILE *outFp);
 
 int                UNSTARCH_extractRawLine(const char *chr,
-                                           const char *str,
+                                  const unsigned char *str,
                                                  char delim,
                                  Bed::SignedCoordType *start,
                                  Bed::SignedCoordType *pLength,
@@ -113,7 +113,7 @@ int                UNSTARCH_extractRawLine(const char *chr,
                                                size_t *currentRemainderLen);
 
 int                UNSTARCH_sReverseTransformHeaderlessInput(const char *chr,
-                                                             const char *str,
+                                                    const unsigned char *str,
                                                                    char delim,
                                                    Bed::SignedCoordType *start,
                                                    Bed::SignedCoordType *pLength,
@@ -127,10 +127,10 @@ int                UNSTARCH_sReverseTransformHeaderlessInput(const char *chr,
                                                                    char **currentRemainder,
                                                                  size_t *currentRemainderLen);
 
-int                UNSTARCH_createInverseTransformTokens(const char *s, 
-                                                               char delim, 
-                                                               char elemTok1[], 
-                                                               char elemTok2[]);
+int                UNSTARCH_createInverseTransformTokens(const unsigned char *s, 
+                                                                        char delim, 
+                                                                        char elemTok1[], 
+                                                                        char elemTok2[]);
 
 int                UNSTARCH_extractDataWithBzip2(FILE **inFp, 
                                                  FILE *outFp, 
@@ -154,7 +154,7 @@ char *             UNSTARCH_strndup(const char *s,
                                         size_t n);
 
 void               UNSTARCH_bzReadLine(BZFILE *input, 
-                                         char **output);
+                                unsigned char **output);
 
 Bed::LineCountType UNSTARCH_lineCountForChromosome(const Metadata *md, 
                                                        const char *chr);
@@ -186,7 +186,7 @@ int                UNSTARCH_reverseTransformCoordinates(const Bed::LineCountType
                                                             Bed::SignedCoordType *currStart, 
                                                             Bed::SignedCoordType *currStop,
                                                                             char **currRemainder, 
-                                                                            char *lineBuf, 
+                                                                   unsigned char *lineBuf, 
                                                                          int64_t *nLineBuf,
                                                                          int64_t *nLineBufPos);
 

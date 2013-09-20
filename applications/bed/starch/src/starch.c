@@ -56,14 +56,23 @@ main (int argc, char **argv)
 
     if (STARCH_MAJOR_VERSION == 1)
     {
-        if (strcmp (bedFn, "-") == 0)
+        if (strcmp (bedFn, "-") == 0) // this condition is preserved in case of test-builds of legacy Starch binaries
         {
             /* process stdin */
             if ((bedHeaderFlag == kStarchTrue) &&
-     	        (STARCH_transformInput(&metadata, NULL, (const CompressionType) type, (const char *) tag, (const char *) note) != 0))
+     	        (STARCH_transformInput(&metadata, 
+                                       NULL, 
+                                       (const CompressionType) type, 
+                                       (const char *) tag, 
+                                       (const char *) note) != 0))
                 exit (EXIT_FAILURE);
-	        else if ((bedHeaderFlag == kStarchFalse) &&
-                (STARCH_transformHeaderlessInput(&metadata, NULL, (const CompressionType) type, (const char *) tag, (const unsigned int) kStarchFinalizeTransformTrue, (const char *) note) != 0))
+            else if ((bedHeaderFlag == kStarchFalse) &&
+                (STARCH_transformHeaderlessInput(&metadata, 
+                                                 NULL, 
+                                                 (const CompressionType) type, 
+                                                 (const char *) tag, 
+                                                 (const Boolean) kStarchFinalizeTransformTrue, 
+                                                 (const char *) note) != 0))
                 exit (EXIT_FAILURE);
         }
         else {
@@ -74,10 +83,19 @@ main (int argc, char **argv)
                 exit (EXIT_FAILURE);
             }
             if ((bedHeaderFlag == kStarchTrue) &&
-                (STARCH_transformInput(&metadata, (const FILE *) bedFnPtr, (const CompressionType) type, (const char *) tag, (const char *) note) != 0))
+                (STARCH_transformInput(&metadata, 
+                                       (const FILE *) bedFnPtr, 
+                                       (const CompressionType) type, 
+                                       (const char *) tag, 
+                                       (const char *) note) != 0))
                 exit (EXIT_FAILURE);
             else if ((bedHeaderFlag == kStarchFalse) &&
-                (STARCH_transformHeaderlessInput(&metadata, (const FILE *) bedFnPtr, (const CompressionType) type, (const char *) tag, (const unsigned int) kStarchFinalizeTransformTrue, (const char *) note) != 0))
+                (STARCH_transformHeaderlessInput(&metadata, 
+                                                 (const FILE *) bedFnPtr, 
+                                                 (const CompressionType) type, 
+                                                 (const char *) tag, 
+                                                 (const Boolean) kStarchFinalizeTransformTrue, 
+                                                 (const char *) note) != 0))
                 exit (EXIT_FAILURE);
         }
     }
@@ -105,7 +123,7 @@ main (int argc, char **argv)
     }
     
     else if (STARCH_MAJOR_VERSION > 2) {
-        fprintf (stderr, "ERROR: Starch does not yet support making archives in this major version release (built as: %d.%d.%d)\n", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION);
+        fprintf (stderr, "ERROR: Starch does not yet support making archives in this major version release (built as: %d.%d.%d)\n", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION); // this condition is preserved in case of test-builds of future-proofed Starch binaries
         exit (EXIT_FAILURE);
     }
 
@@ -188,7 +206,7 @@ STARCH_parseCommandLineOptions (int argc, char **argv)
     STARCH_buildProcessIDTag (&(starch_client_global_args.uniqueTag));
 
     starch_client_global_args.inputFiles = argv + optind;
-    starch_client_global_args.numberInputFiles = argc - optind;
+    starch_client_global_args.numberInputFiles = (size_t) (argc - optind);
 
     switch (starch_client_global_args.numberInputFiles) {
         case 0: {

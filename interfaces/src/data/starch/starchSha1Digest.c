@@ -215,13 +215,13 @@ sha1_process_bytes (const void *buffer, size_t len, struct sha1_ctx *ctx)
 
       if (ctx->buflen > 64)
     {
-      sha1_process_block (ctx->buffer, ctx->buflen & ~63, ctx);
+        sha1_process_block (ctx->buffer, (size_t) (ctx->buflen & (sha1_uint32) ~63), ctx);
 
       ctx->buflen &= 63;
       /* The regions in the following copy operation cannot overlap.  */
       memcpy (ctx->buffer,
-          &((char *) ctx->buffer)[(left_over + add) & ~63],
-          ctx->buflen);
+              &((char *) ctx->buffer)[(left_over + add) & (sha1_uint32) ~63],
+              ctx->buflen);
     }
 
       buffer = (const char *) buffer + add;
@@ -244,8 +244,8 @@ sha1_process_bytes (const void *buffer, size_t len, struct sha1_ctx *ctx)
       else
 #endif
           {
-              sha1_process_block (buffer, len & ~63, ctx);
-              buffer = (const char *) buffer + (len & ~63);
+              sha1_process_block (buffer, len & (sha1_uint32) ~63, ctx);
+              buffer = (const char *) buffer + (len & (sha1_uint32) ~63);
               len &= 63;
           }
     }
@@ -263,7 +263,7 @@ sha1_process_bytes (const void *buffer, size_t len, struct sha1_ctx *ctx)
                   left_over -= 64;
                   memcpy (ctx->buffer, &ctx->buffer[16], left_over);
               }
-          ctx->buflen = left_over;
+          ctx->buflen = (sha1_uint32) left_over;
       }
 }
 
