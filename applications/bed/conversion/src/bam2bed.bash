@@ -5,7 +5,7 @@
 #
 # Project:      Convert BAM to UCSC BED
 #
-# Version:      2.2
+# Version:      2.3
 #
 # Notes:        The BAM format is an indexed, binary representation of a SAM (Sequence 
 #               Alignment/Map) file. Internally, it is a 0-based, half-open [a-1,b) 

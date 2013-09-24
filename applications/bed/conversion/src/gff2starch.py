@@ -8,7 +8,7 @@
 #               and thence compressed into a BEDOPS Starch archive sent
 #               to standard output.
 #
-# Version:      2.2
+# Version:      2.3
 #
 # Notes:        The GFF3 specification (http://www.sequenceontology.org/gff3.shtml) 
 #               contains columns that do not map directly to common or UCSC BED columns.

@@ -6,7 +6,7 @@
 # Project:      Converts 1-based, closed [start, end] VCF v4 input
 #               into 0-based, half-open [start-1, end) extended BED
 #
-# Version:      2.2
+# Version:      2.3
 #
 # Notes:        This conversion script relies on the VCF v4 format, with its
 #               specifications outlined here by the 1000 Genomes project:

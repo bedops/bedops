@@ -5,7 +5,7 @@
 #
 # Project:      Convert SAM to BEDOPS Starch
 #
-# Version:      2.2
+# Version:      2.3
 #
 # Notes:        The SAM (Sequence Alignment/Map) format is 1-based, closed [a,b]. We convert 
 #               this indexing back to 0-based, half-open [a-1,b) when creating BED output. 

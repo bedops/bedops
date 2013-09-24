@@ -7,7 +7,7 @@
 #               into 0-based, half-open [a-1,b) extended BED and thence compressed into
 #               a BEDOPS Starch archive sent to standard output.
 #
-# Version:      2.2
+# Version:      2.3
 #
 # Notes:        The PSL specification (http://genome.ucsc.edu/goldenPath/help/blatSpec.html)
 #               contains 21 columns, some which map to UCSC BED columns and some which do not.

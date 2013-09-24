@@ -6,7 +6,7 @@
 # Project:      Converts 1-based, closed [a,b] GTF2.2 input
 #               into 0-based, half-open [a-1,b) six-column extended BED
 #
-# Version:      2.2
+# Version:      2.3
 #
 # Notes:        The GTF2.2 specification (http://mblab.wustl.edu/GTF22.html)
 #               contains columns that do not map directly to common or UCSC BED columns.

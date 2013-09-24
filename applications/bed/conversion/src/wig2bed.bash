@@ -5,7 +5,7 @@
 #
 # Project:      Convert UCSC Wiggle to UCSC BED
 #
-# Version:      2.2
+# Version:      2.3
 #
 # Notes:        The UCSC Wiggle format (http://genome.ucsc.edu/goldenPath/help/wiggle.html)
 #               is 1-based, closed [a,b] and is offered in variable or fixed step varieties.
