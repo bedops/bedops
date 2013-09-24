@@ -656,7 +656,7 @@ namespace starch
             std::string selectedChromosome;
             uint64_t cumulativeSize;
             BZFILE *bzFp;
-            char *bzOutput;
+            unsigned char *bzOutput;
             z_stream zStream;
             char *zOutput;
             char *zRemainderBuf;
@@ -717,8 +717,8 @@ namespace starch
             FILE ** getInFpPtr() { return &inFp; }
             BZFILE * getBzFp() { return bzFp; }
             BZFILE ** getBzFpPtr() { return &bzFp; }
-            char * getBzOutput() { return bzOutput; }
-            char ** getBzOutputPtr() { return &bzOutput; }
+            unsigned char * getBzOutput() { return bzOutput; }
+            unsigned char ** getBzOutputPtr() { return &bzOutput; }
             z_stream getZStream() { return zStream; }
             z_stream * getZStreamPtr() { return &zStream; }
             char * getZOutput() { return zOutput; }
@@ -752,7 +752,7 @@ namespace starch
             void setArchiveMdIter(Metadata *_aMdIter) { archMdIter = _aMdIter; }
             void setArchiveMdJSON(json_t *_aMdJSON) { archMdJSON = _aMdJSON; }
             void incrementCumulativeSize(uint64_t _inc) { cumulativeSize += _inc; }            
-            void setBzOutput(char * _bzOutput) { bzOutput = _bzOutput; }
+            void setBzOutput(unsigned char * _bzOutput) { bzOutput = _bzOutput; }
             void setZOutput(char * _zOutput) { zOutput = _zOutput; }
             void setZInBuf(char * _zInBuf) { zInBuf = _zInBuf; }
             void setZOutBuf(char * _zOutBuf) { zOutBuf = _zOutBuf; }
@@ -1138,7 +1138,7 @@ namespace starch
 
             // setting up initial bz output buffer...
             if (!bzOutput) 
-                bzOutput = (char *) std::malloc(bzOutputLength);
+                bzOutput = (unsigned char *) std::malloc(bzOutputLength);
             if (!bzOutput)
                 throw(std::string("ERROR: bzip2 output buffer could not be allocated"));
 
@@ -1365,7 +1365,7 @@ namespace starch
                         if (allowHeadersFlag) {
                             (archHeaderFlag == kStarchFalse) ?
                                 UNSTARCH_sReverseTransformHeaderlessInput( getCurrentChromosome(),
-                                                                           (const char *) bzOutput, 
+                                                                           (const unsigned char *) bzOutput, 
                                                                            tab,
                                                                            &t_start, 
                                                                            &t_pLength, 
@@ -1380,7 +1380,7 @@ namespace starch
                                                                            &_currRemainderLen)
                                               :
                                 UNSTARCH_sReverseTransformInput( getCurrentChromosome(),
-                                                                 (const char *) bzOutput, 
+                                                                 (const unsigned char *) bzOutput, 
                                                                  tab,
                                                                  &t_start, 
                                                                  &t_pLength, 
@@ -1397,7 +1397,7 @@ namespace starch
                         else {
                             do {
                                 res = UNSTARCH_sReverseTransformIgnoringHeaderedInput( getCurrentChromosome(),
-                                                                                       (const char *) bzOutput, 
+                                                                                       (const unsigned char *) bzOutput, 
                                                                                        tab,
                                                                                        &t_start, 
                                                                                        &t_pLength, 
@@ -1478,7 +1478,7 @@ namespace starch
                         if (allowHeadersFlag) {
                             (archHeaderFlag == kStarchFalse) ?
                                 UNSTARCH_sReverseTransformHeaderlessInput( getCurrentChromosome(),
-                                                                           (const char *) zLineBuf, 
+                                                                           (const unsigned char *) zLineBuf, 
                                                                            tab,
                                                                            &t_start, 
                                                                            &t_pLength, 
@@ -1493,7 +1493,7 @@ namespace starch
                                                                            &_currRemainderLen)
                                               :
                                 UNSTARCH_sReverseTransformInput( getCurrentChromosome(),
-                                                                 (const char *) zLineBuf, 
+                                                                 (const unsigned char *) zLineBuf, 
                                                                  tab,
                                                                  &t_start, 
                                                                  &t_pLength, 
@@ -1510,7 +1510,7 @@ namespace starch
                         else {
                             do {
                                 res = UNSTARCH_sReverseTransformIgnoringHeaderedInput( getCurrentChromosome(),
-                                                                                       (const char *) zLineBuf, 
+                                                                                       (const unsigned char *) zLineBuf, 
                                                                                        tab,
                                                                                        &t_start, 
                                                                                        &t_pLength,
