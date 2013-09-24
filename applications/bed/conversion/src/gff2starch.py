@@ -48,7 +48,7 @@
 #               $ gff2starch --do-not-sort < foo.gff > unsorted-foo.gff.bed.starch
 #
 
-import getopt, sys, os, stat, subprocess
+import getopt, sys, os, stat, subprocess, tempfile
 
 def printUsage(stream):
     usage = ("Usage:\n"
@@ -97,7 +97,7 @@ def printUsage(stream):
         sys.stdout.write(usage)
     elif stream is "stderr":
         sys.stderr.write(usage)
-    return 0    
+    return os.EX_OK
 
 def checkInstallation(rv):
     currentVersion = sys.version_info
@@ -105,11 +105,11 @@ def checkInstallation(rv):
         pass
     else:
         sys.stderr.write( "[%s] - Error: Your Python interpreter must be %d.%d or greater (within major version %d)\n" % (sys.argv[0], rv[0], rv[1], rv[0]) )
-        sys.exit(-1)
-    return 0
+        sys.exit(os.EX_CONFIG)
+    return os.EX_OK
 
 def main(*args):
-    requiredVersion = (2,5)
+    requiredVersion = (2,7)
     checkInstallation(requiredVersion)
 
     sortOutput = True
@@ -124,11 +124,11 @@ def main(*args):
     except getopt.GetoptError as error:
         sys.stderr.write( "[%s] - Error: %s\n" % (sys.argv[0], str(error)) )
         printUsage("stderr")
-        return -1
+        return os.EX_USAGE
     for key, value in options:
         if key in ("--help"):
             printUsage("stdout")
-            return 0
+            return os.EX_OK
         elif key in ("--do-not-sort"):
             sortOutput = False
         elif key in ("--max-mem"):
@@ -139,10 +139,13 @@ def main(*args):
 
     starchFormat = "--" + starchFormat
 
+    if maxMemChanged:
+        sys.stderr.write( "[%s] - Warning: The --max-mem parameter is currently ignored (cf. https://github.com/bedops/bedops/issues/1 )\n" % sys.argv[0] )
+
     if maxMemChanged and not sortOutput:
         sys.stderr.write( "[%s] - Error: Cannot specify both --do-not-sort and --max-mem parameters\n" % sys.argv[0] )
         printUsage("stderr")
-        return -1
+        return os.EX_USAGE
     
     mode = os.fstat(0).st_mode
     inputIsNotAvailable = True
@@ -151,16 +154,15 @@ def main(*args):
     if inputIsNotAvailable:
         sys.stderr.write( "[%s] - Error: Please redirect or pipe in GFF-formatted data\n" % sys.argv[0] )
         printUsage("stderr")
-        return -1
-
+        return os.EX_NOINPUT
+    
+    starchTF = tempfile.NamedTemporaryFile(mode='wb')
     if sortOutput:
-        sortProcess = subprocess.Popen(' '.join(['sort-bed', '--max-mem', maxMem, '-', '|', 'starch', starchFormat, '-']), stdin=subprocess.PIPE, shell=True)
-    else:
-        starchProcess = subprocess.Popen(' '.join(['starch', starchFormat, '-']), stdin=subprocess.PIPE, shell=True)
+        sortTF = tempfile.NamedTemporaryFile(mode='wb', delete=False)
 
     for line in sys.stdin:
         chomped_line = line.rstrip(os.linesep)
-        if chomped_line.startswith('##'):
+        if chomped_line.startswith('##') or chomped_line.startswith('#'):
             pass
         else:
             elems = chomped_line.split('\t')
@@ -192,33 +194,37 @@ def main(*args):
             else:
                 cols['start'] -= 1
 
-            line = '\t'.join([cols['chr'], 
-                              str(cols['start']),
-                              str(cols['end']),
-                              cols['id'],
-                              cols['score'],
-                              cols['strand'],
-                              cols['source'],
-                              cols['type'],
-                              cols['phase'],
-                              cols['attributes']])
-
-            line = line + '\n'
+            convertedLine = '\t'.join([cols['chr'], 
+                                       str(cols['start']),
+                                       str(cols['end']),
+                                       cols['id'],
+                                       cols['score'],
+                                       cols['strand'],
+                                       cols['source'],
+                                       cols['type'],
+                                       cols['phase'],
+                                       cols['attributes']]) + '\n'
+            
             if sortOutput:
-                sortProcess.stdin.write(line)
-                sortProcess.stdin.flush()
+                sortTF.write(convertedLine)
             else:
-                starchProcess.stdin.write(line)
-                starchProcess.stdin.flush()
+                starchTF.write(convertedLine)
 
     if sortOutput:
-        sortProcess.stdin.close()
+        sortTF.close()
+        # --max-mem disabled until sort-bed issue is fixed (cf. https://github.com/bedops/bedops/issues/1 )
+        # sortProcess = subprocess.Popen(["sort-bed", "--max-mem", maxMem, sortTF.name], stdout=starchTF)
+        sortProcess = subprocess.Popen(["sort-bed", sortTF.name], stdout=starchTF)
         sortProcess.wait()
-    else:
-        starchProcess.stdin.close()
-        starchProcess.wait()
+        try:
+            os.remove(sortTF.name)
+        except OSError:
+            sys.stderr.write( "[%s] - Warning: Could not delete intermediate sorted file [%s]\n" % (sys.argv[0], sortTF.name) )
 
-    return 0
+    starchProcess = subprocess.Popen(["starch", starchFormat, starchTF.name])
+    starchProcess.wait()
+        
+    return os.EX_OK
 
 if __name__ == '__main__':
     sys.exit(main(*sys.argv))

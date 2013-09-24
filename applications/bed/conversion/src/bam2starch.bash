@@ -155,8 +155,10 @@ convertAndArchiveWithSorting () {
                 printf "\n"; \
             } \
         }' \
-        | sort-bed --max-mem ${maxMem} - \
+        | sort-bed - \
         | starch --${starchFormat} -
+        # --max-mem disabled until sort-bed issue is fixed (cf. https://github.com/bedops/bedops/issues/1 )
+        # | sort-bed --max-mem ${maxMem} - \
 }
 
 # default sort-bed memory usage
@@ -180,10 +182,11 @@ while getopts "$optspec" optchar; do
                     exit 0;
                     ;;
                 max-mem)
+                    echo "[bam2starch] - Warning: --max-mem option currently disabled" >&2
                     val="${!OPTIND}"; 
                     OPTIND=$(( $OPTIND + 1 ));
                     if [[ ! ${val} ]]; then
-                        echo "[bam2bed] - Error: Must specify value for --max-mem" >&2
+                        echo "[bam2starch] - Error: Must specify value for --max-mem" >&2
                         printUsage;
                         exit -1;
                     fi
@@ -193,7 +196,7 @@ while getopts "$optspec" optchar; do
                     val="${!OPTIND}"; 
                     OPTIND=$(( $OPTIND + 1 ));
                     if [[ ! ${val} ]]; then
-                        echo "[bam2bed] - Error: Must specify either 'bzip2' or 'gzip' value for --starch-format" >&2
+                        echo "[bam2starch] - Error: Must specify either 'bzip2' or 'gzip' value for --starch-format" >&2
                         printUsage;
                         exit -1;
                     fi

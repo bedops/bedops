@@ -66,7 +66,7 @@
 #               $ psl2starch --do-not-sort < headerless-foo.psl > unsorted-headerless-foo.psl.bed.starch
 #
 
-import getopt, sys, os, stat, subprocess
+import getopt, sys, os, stat, subprocess, tempfile
 
 def printUsage(stream):
     usage = ("Usage:\n"
@@ -131,7 +131,7 @@ def printUsage(stream):
         sys.stdout.write(usage)
     elif stream is "stderr":
         sys.stderr.write(usage)
-    return 0
+    return os.EX_OK
              
 def checkInstallation(rv):
     currentVersion = sys.version_info
@@ -139,11 +139,11 @@ def checkInstallation(rv):
         pass
     else:
         sys.stderr.write( "[%s] - Error: Your Python interpreter must be %d.%d or greater (within major version %d)\n" % (sys.argv[0], rv[0], rv[1], rv[0]) )
-        sys.exit(-1)
-    return 0
+        sys.exit(os.EX_CONFIG)
+    return os.EX_OK
 
 def main(*args):
-    requiredVersion = (2,5)
+    requiredVersion = (2,7)
     checkInstallation(requiredVersion)
 
     sortOutput = True
@@ -176,10 +176,13 @@ def main(*args):
 
     starchFormat = "--" + starchFormat
 
+    if maxMemChanged:
+        sys.stderr.write( "[%s] - Warning: The --max-mem parameter is currently ignored (cf. https://github.com/bedops/bedops/issues/1 )\n" % sys.argv[0] )
+
     if maxMemChanged and not sortOutput:
         sys.stderr.write( "[%s] - Error: Cannot specify both --do-not-sort and --max-mem parameters\n" % sys.argv[0] )
         printUsage("stderr")
-        return -1            
+        return os.EX_USAGE
 
     mode = os.fstat(0).st_mode
     inputIsNotAvailable = True
@@ -188,7 +191,11 @@ def main(*args):
     if inputIsNotAvailable:
         sys.stderr.write( "[%s] - Error: Please redirect or pipe in PSL-formatted data\n" % sys.argv[0] )
         printUsage("stderr")
-        return -1
+        return os.EX_NOINPUT
+
+    starchTF = tempfile.NamedTemporaryFile(mode='wb')
+    if sortOutput:
+        sortTF = tempfile.NamedTemporaryFile(mode='wb', delete=False)
 
     lineCounter = 0
     
@@ -200,11 +207,6 @@ def main(*args):
             headerLineCounter += 1
             lineCounter += 1
 
-    if sortOutput:
-        sortProcess = subprocess.Popen(' '.join(['sort-bed', '--max-mem', maxMem, '-', '|', 'starch', starchFormat, '-']), stdin=subprocess.PIPE, shell=True)
-    else:
-        starchProcess = subprocess.Popen(' '.join(['starch', starchFormat, '-']), stdin=subprocess.PIPE, shell=True)
-
     for line in sys.stdin:
         lineCounter += 1
         chomped_line = line.rstrip(os.linesep)
@@ -215,7 +217,7 @@ def main(*args):
         except ValueError:
             sys.stderr.write ('[%s] - Error: Corrupt input on line %d? If input is headered, use the --headered option.\n' % (sys.argv[0], lineCounter) )
             printUsage("stderr")
-            return -1
+            return os.EX_DATAERR
         cols['misMatches'] = str(int(elems[1]))
         cols['repMatches'] = str(int(elems[2]))
         cols['nCount'] = str(int(elems[3]))
@@ -239,47 +241,50 @@ def main(*args):
 
         if (int(cols['tStart']) >= int(cols['tEnd'])):
             sys.stderr.write ('[%s] - Error: Corrupt input on line %d? Start coordinate must be less than end coordinate.\n' % (sys.argv[0], lineCounter) )
-            return -1
+            return os.EX_DATAERR
 
-        line = '\t'.join([
-            cols['tName'],
-            cols['tStart'],
-            cols['tEnd'],
-            cols['qName'],
-            cols['qSize'],
-            cols['strand'],
-            cols['matches'],
-            cols['misMatches'],
-            cols['repMatches'],
-            cols['nCount'],
-            cols['qNumInsert'],
-            cols['qBaseInsert'],
-            cols['tNumInsert'],
-            cols['tBaseInsert'],
-            cols['qStart'],
-            cols['qEnd'],
-            cols['tSize'],
-            cols['blockCount'],
-            cols['blockSizes'],
-            cols['qStarts'],
-            cols['tStarts']])
+        convertedLine = '\t'.join([cols['tName'],
+                                   cols['tStart'],
+                                   cols['tEnd'],
+                                   cols['qName'],
+                                   cols['qSize'],
+                                   cols['strand'],
+                                   cols['matches'],
+                                   cols['misMatches'],
+                                   cols['repMatches'],
+                                   cols['nCount'],
+                                   cols['qNumInsert'],
+                                   cols['qBaseInsert'],
+                                   cols['tNumInsert'],
+                                   cols['tBaseInsert'],
+                                   cols['qStart'],
+                                   cols['qEnd'],
+                                   cols['tSize'],
+                                   cols['blockCount'],
+                                   cols['blockSizes'],
+                                   cols['qStarts'],
+                                   cols['tStarts']]) + '\n'
 
-        line = line + '\n'                
         if sortOutput:
-            sortProcess.stdin.write(line)
-            sortProcess.stdin.flush()
+            sortTF.write(convertedLine)
         else:
-            starchProcess.stdin.write(line)
-            starchProcess.stdin.flush()
+            starchTF.write(convertedLine)
 
     if sortOutput:
-        sortProcess.stdin.close()
+        sortTF.close()
+        # --max-mem disabled until sort-bed issue is fixed (cf. https://github.com/bedops/bedops/issues/1 )
+        # sortProcess = subprocess.Popen(["sort-bed", "--max-mem", maxMem, sortTF.name], stdout=starchTF)
+        sortProcess = subprocess.Popen(["sort-bed", sortTF.name], stdout=starchTF)
         sortProcess.wait()
-    else:
-        starchProcess.stdin.close()
-        starchProcess.wait()
+        try:
+            os.remove(sortTF.name)
+        except OSError:
+            sys.stderr.write( "[%s] - Warning: Could not delete intermediate sorted file [%s]\n" % (sys.argv[0], sortTF.name) )
 
-    return 0
+    starchProcess = subprocess.Popen(["starch", starchFormat, starchTF.name])
+    starchProcess.wait()
+
+    return os.EX_OK
 
 if __name__ == '__main__':
     sys.exit(main(*sys.argv))

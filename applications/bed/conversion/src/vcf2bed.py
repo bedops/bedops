@@ -50,7 +50,7 @@
 #               $ vcf2bed --do-not-sort < foo.vcf > unsorted-foo.vcf.bed
 #
 
-import getopt, sys, os, stat, subprocess, signal
+import getopt, sys, os, stat, subprocess, signal, tempfile
 
 def printUsage(stream):
     usage = ("Usage:\n"
@@ -93,7 +93,7 @@ def printUsage(stream):
         sys.stdout.write(usage)
     elif stream is "stderr":
         sys.stderr.write(usage)
-    return 0
+    return os.EX_OK
 
 def checkInstallation(rv):
     currentVersion = sys.version_info
@@ -101,11 +101,11 @@ def checkInstallation(rv):
         pass
     else:
         sys.stderr.write( "[%s] - Error: Your Python interpreter must be %d.%d or greater (within major version %d)\n" % (sys.argv[0], rv[0], rv[1], rv[0]) )
-        sys.exit(-1)
-    return 0
+        sys.exit(os.EX_CONFIG)
+    return os.EX_OK
 
 def main(*args):
-    requiredVersion = (2,5)
+    requiredVersion = (2,7)
     checkInstallation(requiredVersion)
 
     sortOutput = True
@@ -123,21 +123,24 @@ def main(*args):
     except getopt.GetoptError as error:
         sys.stderr.write( "[%s] - Error: %s\n" % (sys.argv[0], str(error)) )
         printUsage("stderr")
-        return -1
+        return os.EX_USAGE
     for key, value in options:
         if key in ("--help"):
             printUsage("stdout")
-            return 0
+            return os.EX_OK
         elif key in ("--do-not-sort"):
             sortOutput = False
         elif key in ("--max-mem"):
             maxMem = str(value)
             maxMemChanged = True
 
+    if maxMemChanged:
+        sys.stderr.write( "[%s] - Warning: The --max-mem parameter is currently ignored (cf. https://github.com/bedops/bedops/issues/1 )\n" % sys.argv[0] )
+
     if maxMemChanged and not sortOutput:
         sys.stderr.write( "[%s] - Error: Cannot specify both --do-not-sort and --max-mem parameters\n" % sys.argv[0] )
         printUsage("stderr")
-        return -1            
+        return os.EX_USAGE  
 
     mode = os.fstat(0).st_mode
     inputIsNotAvailable = True
@@ -146,10 +149,10 @@ def main(*args):
     if inputIsNotAvailable:
         sys.stderr.write( "[%s] - Error: Please redirect or pipe in VCF-formatted data\n" % sys.argv[0] )
         printUsage("stderr")
-        return -1
+        return os.EX_NOINPUT
 
     if sortOutput:
-        sortProcess = subprocess.Popen(['sort-bed', '--max-mem', maxMem, '-'], stdin=subprocess.PIPE)
+        sortTF = tempfile.NamedTemporaryFile(mode='wb', delete=False)
             
     for line in sys.stdin:
         chomped_line = line.rstrip(os.linesep)
@@ -165,7 +168,7 @@ def main(*args):
                     metadata[columns[columnIdx]] = elems[columnIdx];
                 except IndexError:
                     print 'ERROR: Could not map data values to VCF header keys (perhaps missing or bad delimiters in header line?)'
-                    raise
+                    return os.EX_DATAERR
             try:
                 elem_chr = metadata['#CHROM']
                 elem_start = str(int(metadata['POS']) - 1)
@@ -178,28 +181,33 @@ def main(*args):
                 elem_info = metadata['INFO']
             except KeyError:
                 print 'ERROR: Could not map data value from VCF header key (perhaps missing or bad delimiters in header line or data row?)'
-                raise
+                return os.EX_DATAERR
             try:
                 elem_genotype = '\t'.join(elems[8:])
             except IndexError:
                 pass
             if not elem_genotype:
-                line = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info])
+                convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info]) + '\n'
             else:
-                line = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info, elem_genotype])
+                convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info, elem_genotype]) + '\n'
 
             if sortOutput:
-                line = line + '\n'
-                sortProcess.stdin.write(line)
-                sortProcess.stdin.flush()
+                sortTF.write(convertedLine)
             else:
-                sys.stdout.write( "%s\n" % line )
+                sys.stdout.write(convertedLine)
                 
     if sortOutput:
-        sortProcess.stdin.close()
+        # --max-mem disabled until sort-bed issue is fixed (cf. https://github.com/bedops/bedops/issues/1 )
+        # sortProcess = subprocess.Popen(["sort-bed", "--max-mem", maxMem, sortTF.name])
+        sortTF.close()
+        sortProcess = subprocess.Popen(['sort-bed', sortTF.name])
         sortProcess.wait()
-        
-    return 0
+        try:
+            os.remove(sortTF.name)
+        except OSError:
+            sys.stderr.write( "[%s] - Warning: Could not delete intermediate sorted file [%s]\n" % (sys.argv[0], sortTF.name) )
+
+    return os.EX_OK
 
 if __name__ == '__main__':
     sys.exit(main(*sys.argv))

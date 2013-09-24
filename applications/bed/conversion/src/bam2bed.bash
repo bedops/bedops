@@ -157,7 +157,9 @@ convertWithSorting () {
                 printf "\n"; \
             } \
         }' \
-        | sort-bed --max-mem ${maxMem} -
+        | sort-bed -
+        # --max-mem disabled until sort-bed issue is fixed (cf. https://github.com/bedops/bedops/issues/1 )
+        # | sort-bed --max-mem ${maxMem} -
 }
 
 # default sort-bed memory usage
@@ -178,6 +180,7 @@ while getopts "$optspec" optchar; do
                     exit 0;
                     ;;
                 max-mem)
+                    echo "[bam2bed] - Warning: --max-mem option currently disabled" >&2
                     val="${!OPTIND}"; 
                     OPTIND=$(( $OPTIND + 1 ));
                     if [[ ! ${val} ]]; then

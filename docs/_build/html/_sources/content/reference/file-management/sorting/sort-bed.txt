@@ -59,7 +59,7 @@ The :ref:`sort-bed` program efficiently sorts BED inputs. By default, all input 
 
 This option allows :ref:`sort-bed` to scale to input of any size.
 
-.. note:: While `sort-bed` can sort BED files of any size, users may run into trouble sorting files with more than 1021 distinct chromosome names, due to operating system limits on the number of open files. This can be an issue if, for example, your dataset contains unassigned contigs, such as ``chrN_*`` and ``chrUn_*`` `pseudochromosome records <http://genome.ucsc.edu/FAQ/FAQdownloads.html#download11>`_. 
+.. note:: While `sort-bed` can sort BED files of any size, users may run into trouble sorting files with more than approximately 800 distinct chromosome names when used with ``--max-mem``. This can be an issue if, for example, your dataset contains unassigned contigs, such as ``chrN_*`` and ``chrUn_*`` `pseudochromosome records <http://genome.ucsc.edu/FAQ/FAQdownloads.html#download11>`_. This is a bug that is being investigated |---| in the meantime, remove the ``--max-mem`` option until this is resolved.
 
    In this case, you could also use the following command:
 
@@ -68,3 +68,7 @@ This option allows :ref:`sort-bed` to scale to input of any size.
      $ sort --buffer-size=1G -k1,1 -k2,2n foo.bed > sortedFoo.bed
 
    to sort problematic data on a system with 1 Gb of available system memory.
+
+.. |--| unicode:: U+2013   .. en dash
+.. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
+   :trim:
