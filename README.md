@@ -21,3 +21,9 @@
         <td><a href="https://bedops.readthedocs.org/en/latest/index.html"><img src="http://bedops.readthedocs.org/en/latest/_static/documentation.png" /></a></td>
     </tr>
 </table>
+
+### Copyright ###
+
+Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+
+Released under GNU public license version 2 (GPL v2).
