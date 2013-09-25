@@ -26,4 +26,4 @@
 
 Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
 
-Released under GNU public license version 2 (GPL v2).
+Source code, documentation and media assets released under <a href="https://github.com/bedops/bedops/blob/master/LICENSE">GNU Public License Version 2</a> (GPL v2).
