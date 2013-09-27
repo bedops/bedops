@@ -93,5 +93,5 @@ Table of contents
    <li><a href="content/summary.html">Table summary</a> of <strong>BEDOPS</strong> toolkit</li>
    <li><a href="content/reference/file-management/compression/starch-specification.html">Starch v2</a> format specification</li>
    <li><a href="content/revision-history.html">Revision history</a></li>
-   <li><a href="https://github.com/alexpreynolds/bedops">Github repository</a></li>
+   <li><a href="https://github.com/bedops/bedops">Github repository</a></li>
    </ul>

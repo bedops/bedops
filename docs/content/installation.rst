@@ -3,7 +3,7 @@
 Installation
 ============
 
-BEDOPS is available to users as `pre-built binaries <installation_via_packages>` and `source code <installation_via_source_code>`.
+BEDOPS is available to users as :ref:`pre-built binaries <installation_via_packages>` and :ref:`source code <installation_via_source_code>`.
 
 .. _installation_via_packages:
 
@@ -17,7 +17,7 @@ Pre-built binaries offer the easiest and fastest installation option for users o
 Linux
 -----
 
-1. Download the current 32- or 64-bit package for Linux from Github.
+1. Download the current 32- or 64-bit package for Linux from `Github BEDOPS Releases <https://github.com/bedops/bedops/releases>`_.
 2. Extract the package to a location of your choice. 
    In the case of 32-bit Linux: ::
 
@@ -38,7 +38,7 @@ Linux
 Mac OS X
 --------
 
-1. Download the current Mac OS X package for BEDOPS from Github.
+1. Download the current Mac OS X package for BEDOPS from `Github BEDOPS Releases <https://github.com/bedops/bedops/releases>`_.
 2. Locate the installer package (usually located in ``~/Downloads`` |--| this will depend on your web browser configuration):
 
 .. image:: ../assets/installation/bedops_macosx_installer_icon.png
