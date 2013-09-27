@@ -3,7 +3,9 @@
 Installation
 ============
 
-BEDOPS is available to users as pre-built binaries and source code.
+BEDOPS is available to users as `pre-built binaries <installation_via_packages>` and `source code <installation_via_source_code>`.
+
+.. _installation_via_packages:
 
 ======================
 Via pre-built packages
@@ -85,7 +87,7 @@ At this time, compilation of BEDOPS requires GCC 4.7 or greater (which includes 
 
    ::
   
-     $ git clone https://github.com/alexpreynolds/bedops.git
+     $ git clone https://github.com/bedops/bedops.git
   
 4. (Linux) Run ``make static`` in the top-level of the local copy of the BEDOPS repository: 
 
