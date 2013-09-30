@@ -24,6 +24,6 @@
 
 ### Copyright ###
 
-> Copyright (C) 2011, 2012, 2013 Shane Neph, M. Scott Kuehn and Alex P. Reynolds
+> Copyright (C) 2011, 2012, 2013 Shane J. Neph, M. Scott Kuehn and Alex P. Reynolds
 >
 > Source code, documentation and media assets released under <a href="https://github.com/bedops/bedops/blob/master/LICENSE">GNU Public License Version 2</a> (GPL v2).
