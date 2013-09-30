@@ -326,16 +326,16 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
 
     outFileSizeCounter = outFileSize;
     do {
-        if (outFileSizeCounter > STARCHCAT_COPY_BUFFER_MAXSIZE) {
-            fread(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, inRec->fp);
-            fwrite(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, outFnPtr);
-            outFileSizeCounter -= STARCHCAT_COPY_BUFFER_MAXSIZE;
-        }
-        else {
-            fread(buffer, sizeof(char), (size_t)outFileSizeCounter, inRec->fp);
-            fwrite(buffer, sizeof(char), (size_t)outFileSizeCounter, outFnPtr);
-            outFileSizeCounter = 0ULL;
-        }
+      if (outFileSizeCounter > STARCHCAT_COPY_BUFFER_MAXSIZE) {
+	(void) fread(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, inRec->fp);
+	fwrite(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, outFnPtr);
+	outFileSizeCounter -= STARCHCAT_COPY_BUFFER_MAXSIZE;
+      }
+      else {
+	(void) fread(buffer, sizeof(char), (size_t)outFileSizeCounter, inRec->fp);
+	fwrite(buffer, sizeof(char), (size_t)outFileSizeCounter, outFnPtr);
+	outFileSizeCounter = 0ULL;
+      }
     } while (outFileSizeCounter > 0);
 
     /* update output metadata */
@@ -456,16 +456,16 @@ STARCHCAT_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const C
     outFileSizeCounter = outFileSize;
     fseeko(inRec->fp, (off_t)startOffset, SEEK_SET);
     do {
-        if (outFileSizeCounter > STARCHCAT_COPY_BUFFER_MAXSIZE) {
-            fread(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, inRec->fp);
-            fwrite(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, outFnPtr);
-            outFileSizeCounter -= STARCHCAT_COPY_BUFFER_MAXSIZE;
-        }
-        else {
-            fread(buffer, sizeof(char), (size_t)outFileSizeCounter, inRec->fp);
-            fwrite(buffer, sizeof(char), (size_t)outFileSizeCounter, outFnPtr);
-            outFileSizeCounter = 0ULL;
-        }
+      if (outFileSizeCounter > STARCHCAT_COPY_BUFFER_MAXSIZE) {
+	(void) fread(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, inRec->fp);
+	fwrite(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, outFnPtr);
+	outFileSizeCounter -= STARCHCAT_COPY_BUFFER_MAXSIZE;
+      }
+      else {
+	(void) fread(buffer, sizeof(char), (size_t)outFileSizeCounter, inRec->fp);
+	fwrite(buffer, sizeof(char), (size_t)outFileSizeCounter, outFnPtr);
+	outFileSizeCounter = 0ULL;
+      }
     } while (outFileSizeCounter > 0);
 
     /* update output metadata */
