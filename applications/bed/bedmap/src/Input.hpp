@@ -6,25 +6,6 @@
   ID: $Id$
 */
 
-//
-//    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
-//
-//    This program is free software; you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation; either version 2 of the License, or
-//    (at your option) any later version.
-//
-//    This program is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
-//
-//    You should have received a copy of the GNU General Public License along
-//    with this program; if not, write to the Free Software Foundation, Inc.,
-//    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-//
-
 #ifndef _BEDMAP_INPUT_HPP
 #define _BEDMAP_INPUT_HPP
 
@@ -81,7 +62,7 @@ namespace BedMap {
         isPercBoth_(false), isRangeBP_(false), isOverlapBP_(false), precision_(6),
         useScientific_(false), setPrec_(false), numFiles_(0), minRefFields_(0),
         minMapFields_(0), errorCheck_(false), outDelim_("|"), multiDelim_(";"),
-        fastMode_(false), rangeAlias_(false), chrom_("all") {
+        fastMode_(false), rangeAlias_(false), chrom_("all"), skipUnmappedRows_(false) {
 
       // Process user's operation options
       if ( argc <= 1 )
@@ -115,7 +96,7 @@ namespace BedMap {
                                 "Apparent option: " + std::string(argv[argcntr]) + " where output delimiter expected.");
         } else if ( next == "chrom" ) {
           Ext::Assert<ArgError>(chrom_ == "all", "--chrom specified multiple times");
-          Ext::Assert<ArgError>(argcntr < argc, "No output delimiter given");
+          Ext::Assert<ArgError>(argcntr < argc, "No chromosome name given");
           chrom_ = argv[argcntr++];
           Ext::Assert<ArgError>(chrom_.find("--") != 0,
                                 "Apparent option: " + std::string(argv[argcntr]) + " where chromosome expected.");
@@ -125,6 +106,8 @@ namespace BedMap {
           multiDelim_ = argv[argcntr++];
           Ext::Assert<ArgError>(multiDelim_.find("--") != 0,
                                 "Apparent option: " + std::string(argv[argcntr]) + " where output delimiter expected.");
+        } else if ( next == "skip-unmapped" ) {
+          skipUnmappedRows_ = true;
         } else if ( next == "sci" ) {
           useScientific_ = true;
         } else if ( next == "prec" ) {
@@ -374,6 +357,7 @@ namespace BedMap {
     bool fastMode_;
     bool rangeAlias_;
     std::string chrom_;
+    bool skipUnmappedRows_;
 
   private:
     struct MapFields {
@@ -447,6 +431,7 @@ namespace BedMap {
     usage << "      --multidelim <delim>  Change delimiter of multi-value output columns from ';' to <delim>.     \n";
     usage << "      --prec <int>          Change the post-decimal precision of scores to <int>.  0 <= <int>.      \n";
     usage << "      --sci                 Use scientific notation for score outputs.                              \n";
+    usage << "      --skip-unmapped       Don't print an output for rows with no mapped elements.                 \n";
     usage << "      --version             Print program information.                                              \n";
     usage << "                                                                                                    \n";
     usage << "                                                                                                    \n";

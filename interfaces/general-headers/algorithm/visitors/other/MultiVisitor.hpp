@@ -6,25 +6,6 @@
   ID: $Id$
 */
 
-//
-//    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
-//
-//    This program is free software; you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation; either version 2 of the License, or
-//    (at your option) any later version.
-//
-//    This program is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
-//
-//    You should have received a copy of the GNU General Public License along
-//    with this program; if not, write to the Free Software Foundation, Inc.,
-//    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-//
-
 #ifndef MULTIVISITOR_HPP
 #define MULTIVISITOR_HPP
 
@@ -51,29 +32,38 @@ namespace Visitors {
 
     explicit MultiVisitor(GroupType& visitors,
                           const ProcessFieldType& pFields = ProcessFieldType(),
-                          const ProcessRowType& pRows = ProcessRowType())
-      : BaseVisitor(), t_(visitors), pFields_(pFields), pRows_(pRows)
+                          const ProcessRowType& pRows = ProcessRowType(),
+                          bool processAll = true)
+      : BaseVisitor(), t_(visitors), pFields_(pFields), pRows_(pRows),
+        pAll_(processAll), cnt_(0)
       { /* */ }
 
     template <typename BaseDistType>
     explicit MultiVisitor(GroupType& visitors,
                           const BaseDistType& dist,
                           const ProcessFieldType& pFields = ProcessFieldType(),
-                          const ProcessRowType& pRows = ProcessRowType())
-      : BaseVisitor(dist), t_(visitors), pFields_(pFields), pRows_(pRows)
+                          const ProcessRowType& pRows = ProcessRowType(),
+                          bool processAll = true)
+      : BaseVisitor(dist), t_(visitors), pFields_(pFields), pRows_(pRows),
+        pAll_(processAll), cnt_(0)
       { /* */ }
 
     void Add(MapType* u) {
       void (BaseClass::*memberFuncPtr)(MapType*) = &BaseClass::Add;
       std::for_each(t_.begin(), t_.end(), std::bind2nd(std::mem_fun(memberFuncPtr), u));
+      ++cnt_;
     }
     
     void Delete(MapType* u) {
       void (BaseClass::*memberFuncPtr)(MapType*) = &BaseClass::Delete;
       std::for_each(t_.begin(), t_.end(), std::bind2nd(std::mem_fun(memberFuncPtr), u));
+      --cnt_;
     }
     
     void DoneReference() {
+      if ( !pAll_ && cnt_ == 0 )
+        return;
+
       typename GroupType::const_iterator i = t_.begin();
       if ( i != t_.end() )
         (*i)->DoneReference();
@@ -112,6 +102,8 @@ namespace Visitors {
     GroupType& t_;
     ProcessFields pFields_;
     ProcessRows pRows_;
+    bool pAll_;
+    long cnt_;
   };
 
 } // namespace Visitors
