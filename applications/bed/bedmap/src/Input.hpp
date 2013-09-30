@@ -451,7 +451,7 @@ namespace BedMap {
     usage << "      --multidelim <delim>  Change delimiter of multi-value output columns from ';' to <delim>.     \n";
     usage << "      --prec <int>          Change the post-decimal precision of scores to <int>.  0 <= <int>.      \n";
     usage << "      --sci                 Use scientific notation for score outputs.                              \n";
-    usage << "      --skip-unmapped       Don't print an output for rows with no mapped elements.                 \n";
+    usage << "      --skip-unmapped       Print no output for a row with no mapped elements.                      \n";
     usage << "      --version             Print program information.                                              \n";
     usage << "                                                                                                    \n";
     usage << "                                                                                                    \n";
