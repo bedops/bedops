@@ -75,6 +75,7 @@ The ``--help`` option describes the various mapping and analytical operations an
         --multidelim <delim>  Change delimiter of multi-value output columns from ';' to <delim>.
         --prec <int>          Change the post-decimal precision of scores to <int>.  0 <= <int>.
         --sci                 Use scientific notation for score outputs.
+        --skip-unmapped       Print no output for a row with no mapped elements.
         --version             Print program information.
   
   
@@ -317,6 +318,22 @@ If a reference element does not overlap any map element, then a ``NAN`` is retur
    In the example above, we sent :ref:`bedmap` a single reference element via standard input, but multiple lines of BED data can come from other upstream processes. 
 
    Using `standard streams <http://en.wikipedia.org/wiki/Pipeline_(Unix)>`_ is useful for reducing file I/O and improving performance, especially in situations where one is using :ref:`bedmap` in the middle of an extended pipeline.
+
+While :ref:`bedmap` returns a ``NAN`` if there are no mapped elements that associate with a reference element, we may want to filter these lines out. We can apply the ``--skip-unmapped`` option to leave out reference elements without mapped elements:
+
+::
+
+  $ echo -e "chr21\t1000\t2000\tfoo-1" | bedmap --echo --mean --skip-unmapped - map.bed 
+  $
+
+.. tip:: The ``--skip-unmapped`` option is equivalent to the following ``awk`` program:
+
+  ::
+    $ echo -e "chr21\t1000\t2000\tfoo-1" \
+      | bedmap --echo --mean - map.bed \
+      | awk -F| '{ if ($2 != "NAN") print $1 }'
+
+  It should be more convenient to use ``--skip-unmapped`` where unmapped results are not needed.
 
 Another option is to retrieve the mapping element with the highest or lowest score within the reference region, using the ``--max-element`` or ``--min-element`` operators, respectively.
 
