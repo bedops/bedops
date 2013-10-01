@@ -22,8 +22,8 @@
 #
 # Author:       Alex Reynolds
 #
-# Project:      Converts 0-based, half-open [a-1,b) headered or headerless PSL input
-#               into 0-based, half-open [a-1,b) extended BED and thence compressed into
+# Project:      Converts 0-based, half-open [a-1, b) headered or headerless PSL input
+#               into 0-based, half-open [a-1, b) extended BED and thence compressed into
 #               a BEDOPS Starch archive sent to standard output.
 #
 # Version:      2.3
@@ -99,8 +99,8 @@ def printUsage(stream):
              "  --starch-format <bzip2|gzip>  Specify backend compression format of starch\n"
              "                                archive (default: bzip2).\n\n"
              "About:\n"
-             "  This script converts 0-based, half-open [a-1,b) PSL data from standard input into\n"
-             "  0-based, half-open [a-1,b) extended BED, sorted and thence made into a BEDOPS Starch\n"
+             "  This script converts 0-based, half-open [a-1, b) PSL data from standard input into\n"
+             "  0-based, half-open [a-1, b) extended BED, sorted and thence made into a BEDOPS Starch\n"
              "  archive sent to standard output.\n\n"
              "  The PSL specification (http://genome.ucsc.edu/goldenPath/help/blatSpec.html)\n"
              "  contains 21 columns, some which map to UCSC BED columns and some which do not.\n\n"

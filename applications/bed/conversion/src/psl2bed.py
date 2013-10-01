@@ -22,8 +22,8 @@
 #
 # Author:       Alex Reynolds
 #
-# Project:      Converts 0-based, half-open [a-1,b) headered or headerless PSL input
-#               into 0-based, half-open [a-1,b) extended BED
+# Project:      Converts 0-based, half-open [a-1, b) headered or headerless PSL input
+#               into 0-based, half-open [a-1, b) extended BED
 #
 # Version:      2.3
 #

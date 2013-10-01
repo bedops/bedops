@@ -22,8 +22,8 @@
 #
 # Author:       Alex Reynolds
 #
-# Project:      Converts 1-based, closed [a,b] GFF3 input
-#               into 0-based, half-open [a-1,b) six-column extended BED
+# Project:      Converts 1-based, closed [a, b] GFF3 input
+#               into 0-based, half-open [a-1, b) six-column extended BED
 #
 # Version:      2.3
 #
@@ -75,10 +75,10 @@ def printUsage(stream):
              "  --do-not-sort       Do not sort converted data with BEDOPS sort-bed\n"
              "  --max-mem <value>   Sets aside <value> memory for sorting BED output. For example,\n"
              "                      <value> can be 8G, 8000M or 8000000000 to specify 8 GB of memory\n"
-             "                      (default: 2G).\n\n"             
+             "                      (default: 2G)\n\n"             
              "About:\n"
-             "  This script converts 1-based, closed [a,b] GFF3 data from standard\n"
-             "  input into 0-based, half-open [a-1,b) six-column extended BED, sorted and\n"
+             "  This script converts 1-based, closed [a, b] GFF3 data from standard\n"
+             "  input into 0-based, half-open [a-1, b) six-column extended BED, sorted and\n"
              "  sent to standard output.\n\n"
              "  The GFF3 specification (http://www.sequenceontology.org/gff3.shtml)\n"
              "  contains columns that do not map directly to common or UCSC BED columns.\n"

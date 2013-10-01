@@ -27,8 +27,8 @@
 # Version:      2.3
 #
 # Notes:        The UCSC Wiggle format (http://genome.ucsc.edu/goldenPath/help/wiggle.html)
-#               is 1-based, closed [a,b] and is offered in variable or fixed step varieties.
-#               We convert either variety to 0-based, half-open [a-1,b) indexing when creating 
+#               is 1-based, closed [a, b] and is offered in variable or fixed step varieties.
+#               We convert either variety to 0-based, half-open [a-1, b) indexing when creating 
 #               BED output.
 #
 #               By default, data are passed to sort-bed to provide sorted output
@@ -65,7 +65,7 @@ Options:
 
 About:
   This script converts UCSC WIG data to lexicographically-sorted BED. The WIG format is a  
-  1-based, closed [a,b] file. We convert this indexing back to 0-based, half-open when creating 
+  1-based, closed [a, b] file. We convert this indexing back to 0-based, half-open when creating 
   BED output.
 
 Example:

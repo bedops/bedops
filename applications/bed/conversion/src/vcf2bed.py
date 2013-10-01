@@ -22,8 +22,8 @@
 #
 # Author:       Alex Reynolds
 #
-# Project:      Converts 1-based, closed [start, end] VCF v4 input
-#               into 0-based, half-open [start-1, end) extended BED
+# Project:      Converts 1-based, closed [a, b] VCF v4 input into 0-based, 
+#               half-open [a-1, b) extended BED
 #
 # Version:      2.3
 #
@@ -81,8 +81,8 @@ def printUsage(stream):
              "                      <value> can be 8G, 8000M or 8000000000 to specify 8 GB of memory\n"
              "                      (default: 2G).\n\n"             
              "About:\n"
-             "  This script converts 1-based, closed [a,b] VCF v4 data from standard input\n"
-             "  into 0-based, half-open [a-1,b) extended BED, sent to standard output.\n\n"
+             "  This script converts 1-based, closed [a, b] VCF v4 data from standard input\n"
+             "  into 0-based, half-open [a-1, b) extended BED, sent to standard output.\n\n"
              "  This conversion script relies on the VCF v4 format, with its\n"
              "  specifications outlined here by the 1000 Genomes project:\n\n"
              "  http://www.1000genomes.org/wiki/Analysis/Variant%%20Call%%20Format/vcf-variant-call-format-version-41\n\n"

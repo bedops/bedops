@@ -73,18 +73,18 @@ install_starchcluster_scripts: prep_c
 	cp ${APPDIR}/starch/bin/starchcluster.gnu_parallel ${BINDIR}/starchcluster.gnu_parallel
 
 install_conversion_scripts: prep_c
-	cp ${APPDIR}/conversion/src/bam2bed.bash ${BINDIR}/bam2bed
+	cp ${APPDIR}/conversion/src/bam2bed.py ${BINDIR}/bam2bed
 	cp ${APPDIR}/conversion/src/gff2bed.py ${BINDIR}/gff2bed
 	cp ${APPDIR}/conversion/src/gtf2bed.py ${BINDIR}/gtf2bed
 	cp ${APPDIR}/conversion/src/psl2bed.py ${BINDIR}/psl2bed
-	cp ${APPDIR}/conversion/src/sam2bed.bash ${BINDIR}/sam2bed
+	cp ${APPDIR}/conversion/src/sam2bed.py ${BINDIR}/sam2bed
 	cp ${APPDIR}/conversion/src/vcf2bed.py ${BINDIR}/vcf2bed
 	cp ${APPDIR}/conversion/src/wig2bed.bash ${BINDIR}/wig2bed
-	cp ${APPDIR}/conversion/src/bam2starch.bash ${BINDIR}/bam2starch
+	cp ${APPDIR}/conversion/src/bam2starch.py ${BINDIR}/bam2starch
 	cp ${APPDIR}/conversion/src/gff2starch.py ${BINDIR}/gff2starch
 	cp ${APPDIR}/conversion/src/gtf2starch.py ${BINDIR}/gtf2starch
 	cp ${APPDIR}/conversion/src/psl2starch.py ${BINDIR}/psl2starch
-	cp ${APPDIR}/conversion/src/sam2starch.bash ${BINDIR}/sam2starch
+	cp ${APPDIR}/conversion/src/sam2starch.py ${BINDIR}/sam2starch
 	cp ${APPDIR}/conversion/src/vcf2starch.py ${BINDIR}/vcf2starch
 	cp ${APPDIR}/conversion/src/wig2starch.bash ${BINDIR}/wig2starch
 
@@ -101,18 +101,18 @@ install_osx_packaging_bins: prep_c
 	cp ${APPDIR}/starch/bin/starchcluster ${OSXPKGDIR}/starchcluster
 	cp ${APPDIR}/starch/bin/starchcluster.gnu_parallel ${OSXPKGDIR}/starchcluster.gnu_parallel
 	cp ${APPDIR}/conversion/bin/wig2bed_bin ${OSXPKGDIR}/wig2bed_bin
-	cp ${APPDIR}/conversion/src/bam2bed.bash ${OSXPKGDIR}/bam2bed
+	cp ${APPDIR}/conversion/src/bam2bed.py ${OSXPKGDIR}/bam2bed
 	cp ${APPDIR}/conversion/src/gff2bed.py ${OSXPKGDIR}/gff2bed
 	cp ${APPDIR}/conversion/src/gtf2bed.py ${OSXPKGDIR}/gtf2bed
 	cp ${APPDIR}/conversion/src/psl2bed.py ${OSXPKGDIR}/psl2bed
-	cp ${APPDIR}/conversion/src/sam2bed.bash ${OSXPKGDIR}/sam2bed
+	cp ${APPDIR}/conversion/src/sam2bed.py ${OSXPKGDIR}/sam2bed
 	cp ${APPDIR}/conversion/src/vcf2bed.py ${OSXPKGDIR}/vcf2bed
 	cp ${APPDIR}/conversion/src/wig2bed.bash ${OSXPKGDIR}/wig2bed
-	cp ${APPDIR}/conversion/src/bam2starch.bash ${OSXPKGDIR}/bam2starch
+	cp ${APPDIR}/conversion/src/bam2starch.py ${OSXPKGDIR}/bam2starch
 	cp ${APPDIR}/conversion/src/gff2starch.py ${OSXPKGDIR}/gff2starch
 	cp ${APPDIR}/conversion/src/gtf2starch.py ${OSXPKGDIR}/gtf2starch
 	cp ${APPDIR}/conversion/src/psl2starch.py ${OSXPKGDIR}/psl2starch
-	cp ${APPDIR}/conversion/src/sam2starch.bash ${OSXPKGDIR}/sam2starch
+	cp ${APPDIR}/conversion/src/sam2starch.py ${OSXPKGDIR}/sam2starch
 	cp ${APPDIR}/conversion/src/vcf2starch.py ${OSXPKGDIR}/vcf2starch
 	cp ${APPDIR}/conversion/src/wig2starch.bash ${OSXPKGDIR}/wig2starch
 	mkdir -p ${OSXLIBDIR}

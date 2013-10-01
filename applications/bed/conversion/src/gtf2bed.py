@@ -22,8 +22,8 @@
 #
 # Author:       Alex Reynolds
 #
-# Project:      Converts 1-based, closed [a,b] GTF2.2 input
-#               into 0-based, half-open [a-1,b) six-column extended BED
+# Project:      Converts 1-based, closed [a, b] GTF2.2 input
+#               into 0-based, half-open [a-1, b) six-column extended BED
 #
 # Version:      2.3
 #
@@ -78,8 +78,8 @@ def printUsage(stream):
              "                      <value> can be 8G, 8000M or 8000000000 to specify 8 GB of memory\n"
              "                      (default: 2G).\n\n"
              "About:\n"
-             "  This script converts 1-based, closed [a,b] GTF2.2 data from\n"
-             "  standard input into  0-based, half-open [a-1,b) six-column extended\n"
+             "  This script converts 1-based, closed [a, b] GTF2.2 data from\n"
+             "  standard input into  0-based, half-open [a-1, b) six-column extended\n"
              "  BED, sent to standard output.\n\n"
              "  The GTF2.2 specification (http://mblab.wustl.edu/GTF22.html)\n"
              "  contains columns that do not map directly to common or UCSC BED columns.\n"

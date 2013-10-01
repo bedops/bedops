@@ -22,8 +22,8 @@
 #
 # Author:       Alex Reynolds
 #
-# Project:      Converts 1-based, closed [a,b] GTF2.2 input
-#               into 0-based, half-open [a-1,b) six-column extended BED
+# Project:      Converts 1-based, closed [a, b] GTF2.2 input
+#               into 0-based, half-open [a-1, b) six-column extended BED
 #               and thence compressed into a BEDOPS Starch archive sent
 #               to standard output.
 #
@@ -82,8 +82,8 @@ def printUsage(stream):
              "  --starch-format <bzip2|gzip>  Specify backend compression format of starch\n"
              "                                archive (default: bzip2).\n\n"
              "About:\n"
-             "  This script converts 1-based, closed [a,b] GTF2.2 data from standard\n"
-             "  input into 0-based, half-open [a-1,b) six-column extended BED, sorted and\n"
+             "  This script converts 1-based, closed [a, b] GTF2.2 data from standard\n"
+             "  input into 0-based, half-open [a-1, b) six-column extended BED, sorted and\n"
              "  thence made into a BEDOPS Starch archive sent to standard output.\n\n"
              "  The GTF2.2 specification (http://mblab.wustl.edu/GTF22.html)\n"
              "  contains columns that do not map directly to common or UCSC BED columns.\n"
