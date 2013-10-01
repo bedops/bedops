@@ -329,6 +329,7 @@ While :ref:`bedmap` returns a ``NAN`` if there are no mapped elements that assoc
 .. tip:: The ``--skip-unmapped`` option is functionally equivalent to the following ``awk`` script:
 
    ::
+
      $ echo -e "chr21\t1000\t2000\tfoo-1" \
        | bedmap --echo --mean - map.bed \
        | awk -F"|" '{ if ($2 != "NAN") print $0 }'
