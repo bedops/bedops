@@ -326,14 +326,14 @@ While :ref:`bedmap` returns a ``NAN`` if there are no mapped elements that assoc
   $ echo -e "chr21\t1000\t2000\tfoo-1" | bedmap --echo --mean --skip-unmapped - map.bed 
   $
 
-.. tip:: The ``--skip-unmapped`` option is equivalent to the following ``awk`` program:
+.. tip:: The ``--skip-unmapped`` option is functionally equivalent to the following ``awk`` script:
 
-  ::
-    $ echo -e "chr21\t1000\t2000\tfoo-1" \
-      | bedmap --echo --mean - map.bed \
-      | awk -F| '{ if ($2 != "NAN") print $1 }'
+   ::
+     $ echo -e "chr21\t1000\t2000\tfoo-1" \
+       | bedmap --echo --mean - map.bed \
+       | awk -F"|" '{ if ($2 != "NAN") print $0 }'
 
-  It should be more convenient to use ``--skip-unmapped`` where unmapped results are not needed.
+   It should be more convenient to use ``--skip-unmapped`` where unmapped results are not needed.
 
 Another option is to retrieve the mapping element with the highest or lowest score within the reference region, using the ``--max-element`` or ``--min-element`` operators, respectively.
 
