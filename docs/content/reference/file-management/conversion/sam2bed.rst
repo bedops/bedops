@@ -15,9 +15,7 @@ The ``sam2bed`` script is "non-lossy". Similar tools in the world tend to throw 
 Dependencies
 ============
 
-This ``bash`` shell script is dependent upon the installation of `SAMtools <http://samtools.sourceforge.net/>`_ and `GNU awk <http://www.gnu.org/software/gawk/>`_ tools.
-
-.. note:: GNU ``awk`` is already installed on Linux systems, but is usually an additional installation on Mac OS X systems. Use `MacPorts <http://www.macports.org/>`_, `Homebrew <http://mxcl.github.com/homebrew/>`_, or compile from `source <http://www.gnu.org/software/gawk/>`_).
+This ``python`` shell script is dependent upon the installation of `SAMtools <http://samtools.sourceforge.net/>`_ and Python, version 2.7 or greater.
 
 ======
 Source
@@ -30,6 +28,8 @@ Usage
 =====
 
 The ``sam2bed`` script parses SAM data from standard input and prints :ref:`sorted <sort-bed>` BED to standard output. The ``sam2starch`` script uses an extra step to parse SAM to a compressed BEDOPS :ref:`Starch-formatted <starch_specification>` archive, which is also directed to standard output.
+
+.. tip:: If you work with RNA-seq data, you can use the ``--split`` option to process reads with ``N``-CIGAR operations, splitting them into separate BED elements.
 
 .. tip:: By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the ``--do-not-sort`` option. Run the script with the ``--help`` option for more details.
 
@@ -64,6 +64,7 @@ We can convert it to sorted BED data in the following manner (omitting standard 
   seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     *       0       0       GTGGCTCATTGTAATTTTTTGTTTTAACTCTTCTCT    (-&----,----)-)-),'--)---',+-,),''*,    MF:i:130        Aq:i:63 NM:i:5  UQ:i:38 H0:i:0  H1:i:0
   ...
 
+.. note:: The provided scripts **strip out unmapped reads** from the SAM file. We believe this makes sense under most circumstances. Add the ``--all-reads`` option if you need unmapped and mapped reads.
 
 .. note:: Note the conversion from 1- to 0-based coordinates. While BEDOPS fully supports 0- and 1-based coordinates, the coordinate change in BED is believed to be convenient to most end users.
 
