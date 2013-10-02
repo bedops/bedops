@@ -16,7 +16,8 @@
 <col width="34%">
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><img alt="linux_png" src="https://bedops.readthedocs.org/en/latest/_images/linux.png"></td>
+<tr class="row-odd">
+<td><img alt="linux_png" src="https://bedops.readthedocs.org/en/latest/_images/linux.png"></td>
 <td><img alt="macosx_png" src="https://bedops.readthedocs.org/en/latest/_images/macosx.png"></td>
 <td><img alt="source_png" src="https://bedops.readthedocs.org/en/latest/_images/source.png"></td>
 </tr>
@@ -26,7 +27,7 @@
 <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#linux">Installation instructions</a></li>
 </ul></td>
 <td><ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-<li><a href="https://github.com/bedops/bedops/releases/download/v2.3.0/BEDOPS.2.3.0.mpkg.zip">Intel (32-/64-bit)</a> installer package</li>
+<li><a href="https://github.com/bedops/bedops/releases/download/v2.3.0/BEDOPS.2.3.0.mpkg.zip">Intel (32-/64-bit)</a> installer</li>
 <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#mac-os-x">Installation instructions</a></li>
 </ul></td>
 <td><ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
