@@ -47,7 +47,7 @@ Released: **October 2, 2013**
 
   * Fixed array overflow bug with BEDOPS tools that take :ref:`starch <starch_specification>` archives as inputs, which affected use of archives as inputs to :ref:`closest-features`, :ref:`bedops` and :ref:`bedmap`.
 
-* All :ref:`conversion scripts <data_conversion>`_
+* All :ref:`conversion scripts <data_conversion>`
 
   * Python scripts require v2.7+ or greater.
 
