@@ -326,15 +326,25 @@ While :ref:`bedmap` returns a ``NAN`` if there are no mapped elements that assoc
   $ echo -e "chr21\t1000\t2000\tfoo-1" | bedmap --echo --mean --skip-unmapped - map.bed 
   $
 
-.. tip:: The ``--skip-unmapped`` option is functionally equivalent to the following ``awk`` script:
+.. note:: Some operations may yield a reference element with one or more mapped elements, which still return a ``NAN`` value by virtue of the calculation result. The ``--skip-unmapped`` operand will still allow these reference elements to be printed out!
+
+   For instance, consider the ``--variance`` operator, which requires two or more map elements to calculate a variance. Where there is only one mapped element associated with the reference element, a ``--variance`` calculation will return a ``NAN``. In this case, ``--skip-unmapped`` will still print this element, even though the result is ``NAN``. 
+
+   Given the following statement:
 
    ::
 
-     $ echo -e "chr21\t1000\t2000\tfoo-1" \
-       | bedmap --echo --mean - map.bed \
-       | awk -F"|" '{ if ($2 != "NAN") print $0 }'
+     $ bedmap --skip-unmapped --variance file1 file2
 
-   It should be more convenient to use ``--skip-unmapped`` where unmapped results are not needed.
+   This is functionally equivalent to the following statement:
+
+   ::
+
+     $ bedmap --indicator --variance --delim "\t" file1 file2 | awk '($1==1) {print $2}'
+
+   The ``--indicator`` operand calculates whether there are any mapped elements (or none) |---| see the :ref:`indicator <bedmap_indicator>` section for more detail. The ``awk`` statement then prints results which have one or more mapped elements, effectively filtering unmapped references.
+
+   It should therefore be more convenient to use ``--skip-unmapped`` where unmapped reference elements are not needed.
 
 Another option is to retrieve the mapping element with the highest or lowest score within the reference region, using the ``--max-element`` or ``--min-element`` operators, respectively.
 
