@@ -65,4 +65,4 @@ BEDOPS tools introduce the ``--chrom`` option to efficiently locate a specified 
 BEDOPS tools are open, documented and supported
 -----------------------------------------------
 
-`BEDOPS <https://github.com/alexpreynolds/bedops>`_ is available as GPL-licensed source code and precompiled binaries for Linux and Mac OS X. We offer support through online forums such as our `own <http://bedops.uwencode.org/forum/>`_ and `Biostars <http://www.biostars.org>`_ and `recipes <https://bedops.readthedocs.org/en/latest/content/usage-examples.html>`_ showing BEDOPS tools in use for answering common research questions.
+`BEDOPS <https://github.com/bedops/bedops>`_ is available as GPL-licensed source code and precompiled binaries for Linux and Mac OS X. We offer support through online forums such as our `own <http://bedops.uwencode.org/forum/>`_ and `Biostars <http://www.biostars.org>`_ and `recipes <https://bedops.readthedocs.org/en/latest/content/usage-examples.html>`_ showing BEDOPS tools in use for answering common research questions.
