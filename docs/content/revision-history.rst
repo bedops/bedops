@@ -13,13 +13,23 @@ Current version
 v2.3.0
 ------
 
-Released: **October 1, 2013**
+Released: **October 2, 2013**
 
-* General ``-ec`` performance improvements in :ref:`bedops`, :ref:`bedmap` and other core applications.
+* Migration of BEDOPS code and documentation from Google Code to Github.
+
+  * Due to changes with Google Code hosting policies at the end of the year, we have decided to change our process for distributing code, packages and documentation. While most of the work is done, we appreciate feedback on any problems you may encounter. Please email us at `bedops@stamlab.org <mailto:bedops@stamlab.org>`_ with details.
+
+  * Migration to Github should facilitate requests for code by those who are familiar with ``git`` and want to fork our project to submit `pull requests <https://help.github.com/articles/using-pull-requests>`_.
+
+* :ref:`bedops`
+
+  * General ``-ec`` performance improvements.
 
 * :ref:`bedmap`
 
   * Adds experimental support for the new ``--skip-unmapped`` option, which filters out reference elements which do not have mapped elements associated with them. See the end of the :ref:`score operations <score_operations>` section of the :ref:`bedmap` documentation for more detail.
+
+  * General ``-ec`` performance improvements.
 
 * :ref:`starch`
 
@@ -30,6 +40,7 @@ Released: **October 1, 2013**
 * :ref:`unstarch`
 
   * Can now unpack zero-byte ("empty set") compressed :ref:`starch` archive (see above).
+
   * Changed ``unstarch --list`` option to print to ``stdout`` stream (this was previously sent to ``stderr``).
 
 * :ref:`starch` metadata library
@@ -39,8 +50,11 @@ Released: **October 1, 2013**
 * :ref:`bam2bed` and :ref:`sam2bed` conversion scripts
 
   * Rewritten ``bam2*`` and ``sam2*`` scripts from ``bash`` into Python (v2.7+ support).
+
   * Improved BAM and SAM input validation against the `SAM v1.4 spec <http://samtools.sourceforge.net/SAMv1.pdf>`_.
+
   * New ``--split`` option prints reads with ``N`` CIGAR operations as separated BED elements.
+
   * New ``--all-reads`` option prints all reads, mapped and unmapped.
 
 * :ref:`bedextract`
@@ -50,17 +64,18 @@ Released: **October 1, 2013**
 * New documentation via `readthedocs.org <readthedocs.org>`_.
 
   * Documentation is now part of the BEDOPS distribution, instead of being a separate download.
+
   * We use `readthedocs.org <readthedocs.org>`_ to host indexed and searchable HTML. 
+
   * `PDF and eBook <https://readthedocs.org/projects/bedops/downloads/>`_ documents are also available for download.
+
   * Documentation is refreshed and simplified, with new installation and compilation guides.
 
 * OS X compilation improvements
 
   * We have made changes to the OS X build process for half of the BEDOPS binaries, which allows direct compilation with Clang/LLVM (part of the Apple Xcode distribution). Those binaries now use Apple's system-level C++ library, instead of GNU's ``libstdc++``.
 
-    This change already makes compilation faster and simpler, and it reduces the size and complexity of Mac OS X builds and installer packages. By using Apple's C++ library, we also reduce the likelihood of missing library errors.
-
-    When this process is completed for the remaining binaries, it will no longer be necessary to install GCC 4.7+ (by way of MacPorts or other package managers) in order to build BEDOPS on OS X, nor will we have to bundle ``libstdc++`` with the installer.
+    This change already makes compilation faster and simpler, and it reduces the size and complexity of Mac OS X builds and installer packages. By using Apple's C++ library, we also reduce the likelihood of missing library errors. When this process is completed for the remaining binaries, it will no longer be necessary to install GCC 4.7+ (by way of MacPorts or other package managers) in order to build BEDOPS on OS X, nor will we have to bundle ``libstdc++`` with the installer.
 
 =================
 Previous versions
