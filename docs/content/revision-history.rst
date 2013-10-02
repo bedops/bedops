@@ -23,13 +23,13 @@ Released: **October 2, 2013**
 
 * :ref:`bedops`
 
-  * General ``-ec`` performance improvements.
+  * General ``--ec`` performance improvements.
 
 * :ref:`bedmap`
 
   * Adds experimental support for the new ``--skip-unmapped`` option, which filters out reference elements which do not have mapped elements associated with them. See the end of the :ref:`score operations <score_operations>` section of the :ref:`bedmap` documentation for more detail.
 
-  * General ``-ec`` performance improvements.
+  * General ``--ec`` performance improvements.
 
 * :ref:`starch`
 
