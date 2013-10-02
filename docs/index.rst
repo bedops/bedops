@@ -16,7 +16,6 @@ Downloads
 | |linux_downloads|     | |macosx_downloads|                             |
 +-----------------------+-----------------------+------------------------+
 
-| 
 
 =========
 Reference
@@ -59,12 +58,15 @@ Table of contents
 .. |linux_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
+   <li><a href="https://github.com/bedops/bedops/releases/download/v2.3.0/bedops_linux_x86_64-v2.3.0.tar.bz2">x86-64 (64-bit)</a> binaries</li>
+   <li><a href="https://github.com/bedops/bedops/releases/download/v2.3.0/bedops_linux_i386-v2.3.0.tar.bz2">i386 (32-bit)</a> binaries</li>
    </ul>
 
 .. |macosx_png| image:: assets/index/macosx.png
 .. |macosx_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
+   <li><a href="https://github.com/bedops/bedops/releases/download/v2.3.0/BEDOPS.2.3.0.mpkg.zip">Intel (32-/64-bit)</a> installer package</li>
    </ul>
 
 .. |set_operations_png| image:: assets/index/set_operations.png
