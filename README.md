@@ -41,7 +41,7 @@
 
 ### Documentation ###
 
-
+Complete documentation for **BEDOPS** tools is available at: <a href="https://bedops.readthedocs.org/en/latest/index.html">https://bedops.readthedocs.org/</a>
 
 ### Citation ###
 
