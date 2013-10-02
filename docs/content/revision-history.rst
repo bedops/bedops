@@ -63,7 +63,7 @@ Released: **October 2, 2013**
 
   * Rewritten ``bam2*`` and ``sam2*`` scripts from ``bash`` into Python (v2.7+ support).
 
-  * Improved BAM and SAM input validation against the `SAM v1.4 spec <http://samtools.sourceforge.net/SAMv1.pdf>`_.
+  * Improved BAM and SAM input validation against the `v1.4 SAM spec <http://samtools.sourceforge.net/SAMv1.pdf>`_.
 
   * New ``--split`` option prints reads with ``N`` CIGAR operations as separated BED elements.
 
