@@ -67,19 +67,19 @@
 </div>
 <div class="section" id="dependencies">
 <h2>6.3.3.5.1. Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
-<p>This <tt class="docutils literal"><span class="pre">bash</span></tt> shell script is dependent upon the installation of <a class="reference external" href="http://samtools.sourceforge.net/">SAMtools</a> and <a class="reference external" href="http://www.gnu.org/software/gawk/">GNU awk</a> tools.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">GNU <tt class="docutils literal"><span class="pre">awk</span></tt> is already installed on Linux systems, but is usually an additional installation on Mac OS X systems. Use <a class="reference external" href="http://www.macports.org/">MacPorts</a>, <a class="reference external" href="http://mxcl.github.com/homebrew/">Homebrew</a>, or compile from <a class="reference external" href="http://www.gnu.org/software/gawk/">source</a>).</p>
+<p>This <tt class="docutils literal"><span class="pre">python</span></tt> shell script is dependent upon the installation of <a class="reference external" href="http://samtools.sourceforge.net/">SAMtools</a> and Python, version 2.7 or greater.</p>
 </div>
-</div>
-<div class="section" id="id2">
-<h2>6.3.3.5.2. Source<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="source">
+<h2>6.3.3.5.2. Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h2>
 <p>The <tt class="docutils literal"><span class="pre">sam2bed</span></tt> and <tt class="docutils literal"><span class="pre">sam2starch</span></tt> conversion scripts are part of the binary and source downloads of BEDOPS. See the <a class="reference internal" href="../../../installation.html#installation"><em>Installation</em></a> documentation for more details.</p>
 </div>
 <div class="section" id="usage">
 <h2>6.3.3.5.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>The <tt class="docutils literal"><span class="pre">sam2bed</span></tt> script parses SAM data from standard input and prints <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED to standard output. The <tt class="docutils literal"><span class="pre">sam2starch</span></tt> script uses an extra step to parse SAM to a compressed BEDOPS <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive, which is also directed to standard output.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">If you work with RNA-seq data, you can use the <tt class="docutils literal"><span class="pre">--split</span></tt> option to process reads with <tt class="docutils literal"><span class="pre">N</span></tt>-CIGAR operations, splitting them into separate BED elements.</p>
+</div>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
 <p class="last">By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the <tt class="docutils literal"><span class="pre">--do-not-sort</span></tt> option. Run the script with the <tt class="docutils literal"><span class="pre">--help</span></tt> option for more details.</p>
@@ -111,6 +111,10 @@ seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
+<p class="last">The provided scripts <strong>strip out unmapped reads</strong> from the SAM file. We believe this makes sense under most circumstances. Add the <tt class="docutils literal"><span class="pre">--all-reads</span></tt> option if you need unmapped and mapped reads.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
 <p class="last">Note the conversion from 1- to 0-based coordinates. While BEDOPS fully supports 0- and 1-based coordinates, the coordinate change in BED is believed to be convenient to most end users.</p>
 </div>
 </div>
@@ -135,7 +139,7 @@ seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     
   <ul>
 <li><a class="reference internal" href="#">6.3.3.5. <cite>sam2bed</cite></a><ul>
 <li><a class="reference internal" href="#dependencies">6.3.3.5.1. Dependencies</a></li>
-<li><a class="reference internal" href="#id2">6.3.3.5.2. Source</a></li>
+<li><a class="reference internal" href="#source">6.3.3.5.2. Source</a></li>
 <li><a class="reference internal" href="#usage">6.3.3.5.3. Usage</a></li>
 <li><a class="reference internal" href="#example">6.3.3.5.4. Example</a></li>
 <li><a class="reference internal" href="#downloads">6.3.3.5.5. Downloads</a></li>

@@ -15,9 +15,7 @@ The ``bam2bed`` script is "non-lossy". Similar tools in the world tend to throw 
 Dependencies
 ============
 
-This ``bash`` shell script is dependent upon the installation of `SAMtools <http://samtools.sourceforge.net/>`_ and `GNU awk <http://www.gnu.org/software/gawk/>`_ tools.
-
-.. note:: GNU ``awk`` is already installed on Linux systems, but is usually an additional installation on Mac OS X systems. Use `MacPorts <http://www.macports.org/>`_, `Homebrew <http://mxcl.github.com/homebrew/>`_, or compile from `source <http://www.gnu.org/software/gawk/>`_).
+This ``python`` shell script is dependent upon the installation of `SAMtools <http://samtools.sourceforge.net/>`_ and Python, version 2.7 or greater.
 
 ======
 Source
@@ -30,6 +28,8 @@ Usage
 =====
 
 The ``bam2bed`` script parses BAM data from standard input and prints :ref:`sorted <sort-bed>` BED to standard output. The ``bam2starch`` script uses an extra step to parse BAM to a compressed BEDOPS :ref:`Starch-formatted <starch_specification>` archive, which is also directed to standard output.
+
+.. tip:: If you work with RNA-seq data, you can use the ``--split`` option to process reads with ``N``-CIGAR operations, splitting them into separate BED elements.
 
 .. tip:: By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the ``--do-not-sort`` option. Run the script with the ``--help`` option for more details.
 
@@ -52,15 +52,7 @@ We can convert it to sorted BED data in the following manner (omitting standard 
   seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     *       0       0       GTGGCTCATTGTAATTTTTTGTTTTAACTCTTCTCT    (-&----,----)-)-),'--)---',+-,),''*,    MF:i:130        Aq:i:63 NM:i:5  UQ:i:38 H0:i:0  H1:i:0
   ...
 
-.. note:: The provided scripts **strip out unmapped reads** from the BAM file. We believe this makes sense under most circumstances. Alternative approaches include spitting unmapped reads to ``stderr``, or giving dummy chromosome and coordinates to unmapped reads. With the latter approach, one can process unmapped tags using BEDOPS.
-
-   If you want to keep unmapped reads (not in BED format), you can do the following:
-
-   ::
-
-     samtools view BAM_file | gawk '(and(4, $2))' > unmapped.sam
-
-   Converting unmapped reads into BED with dummy chromosome and coordinates is a bit more involved (but not much). Visit our `user forum <http://bedops.uwencode.org/forum>`_ and ask for help on this, if needed.
+.. note:: The provided scripts **strip out unmapped reads** from the BAM file. We believe this makes sense under most circumstances. Add the ``--all-reads`` option if you need unmapped and mapped reads.
 
 .. _bam2bed_downloads:
 

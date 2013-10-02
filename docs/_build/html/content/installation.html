@@ -152,10 +152,10 @@ $ make build_all_darwin_intel_fat</pre>
 </li>
 <li><p class="first">Install <a class="reference external" href="http://s.sudre.free.fr/Software/Packages/about.html">WhiteBox Packages.app</a>, an application for building OS X installers, if not already installed.</p>
 </li>
-<li><p class="first">Open the <tt class="docutils literal"><span class="pre">BEDOPS.pkgproj</span></tt> file in the top-level of the local copy of the BEDOPS repository, in order to open the BEDOPS installer project, <em>e.g.</em>:</p>
-<div class="highlight-python"><pre>$ open packaging/os_x/BEDOPS.pkgproj</pre>
+<li><p class="first">Create a <tt class="docutils literal"><span class="pre">build</span></tt> directory to store the installer and open the <tt class="docutils literal"><span class="pre">BEDOPS.pkgproj</span></tt> file in the top-level of the local copy of the BEDOPS repository, in order to open the BEDOPS installer project, <em>e.g.</em>:</p>
+<div class="highlight-python"><pre>$ mkdir packaging/os_x/build &amp;&amp; open packaging/os_x/BEDOPS.pkgproj</pre>
 </div>
-<p>This will open up the installer project in the <tt class="docutils literal"><span class="pre">Packages.app</span></tt> application.</p>
+<p>This will open up the installer project with the <tt class="docutils literal"><span class="pre">Packages.app</span></tt> application.</p>
 </li>
 <li><p class="first">Within <tt class="docutils literal"><span class="pre">Packages.app</span></tt>, modify the project to include the current project version number or other desired changes, as applicable.</p>
 </li>

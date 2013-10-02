@@ -112,6 +112,7 @@
       --multidelim &lt;delim&gt;  Change delimiter of multi-value output columns from ';' to &lt;delim&gt;.
       --prec &lt;int&gt;          Change the post-decimal precision of scores to &lt;int&gt;.  0 &lt;= &lt;int&gt;.
       --sci                 Use scientific notation for score outputs.
+      --skip-unmapped       Print no output for a row with no mapped elements.
       --version             Print program information.
 
 
@@ -310,6 +311,19 @@ chr21   1000    2000    foo-1|NAN</pre>
 <p>For this example, we use <tt class="docutils literal"><span class="pre">echo</span> <span class="pre">-e</span></tt> to send <a class="reference internal" href="#bedmap"><em>bedmap</em></a> a sample reference coordinate by way of standard input. The <a class="reference internal" href="#bedmap"><em>bedmap</em></a> program can process any BED data from the standard input stream, either as the reference or map data, by placing the dash character (<tt class="docutils literal"><span class="pre">-</span></tt>) where the file name would otherwise go.</p>
 <p>In the example above, we sent <a class="reference internal" href="#bedmap"><em>bedmap</em></a> a single reference element via standard input, but multiple lines of BED data can come from other upstream processes.</p>
 <p class="last">Using <a class="reference external" href="http://en.wikipedia.org/wiki/Pipeline_(Unix)">standard streams</a> is useful for reducing file I/O and improving performance, especially in situations where one is using <a class="reference internal" href="#bedmap"><em>bedmap</em></a> in the middle of an extended pipeline.</p>
+</div>
+<p>While <a class="reference internal" href="#bedmap"><em>bedmap</em></a> returns a <tt class="docutils literal"><span class="pre">NAN</span></tt> if there are no mapped elements that associate with a reference element, we may want to filter these lines out. We can apply the <tt class="docutils literal"><span class="pre">--skip-unmapped</span></tt> option to leave out reference elements without mapped elements:</p>
+<div class="highlight-python"><pre>$ echo -e "chr21\t1000\t2000\tfoo-1" | bedmap --echo --mean --skip-unmapped - map.bed
+$</pre>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p>The <tt class="docutils literal"><span class="pre">--skip-unmapped</span></tt> option is functionally equivalent to the following <tt class="docutils literal"><span class="pre">awk</span></tt> script:</p>
+<div class="highlight-python"><pre>$ echo -e "chr21\t1000\t2000\tfoo-1" \
+  | bedmap --echo --mean - map.bed \
+  | awk -F"|" '{ if ($2 != "NAN") print $0 }'</pre>
+</div>
+<p class="last">It should be more convenient to use <tt class="docutils literal"><span class="pre">--skip-unmapped</span></tt> where unmapped results are not needed.</p>
 </div>
 <p>Another option is to retrieve the mapping element with the highest or lowest score within the reference region, using the <tt class="docutils literal"><span class="pre">--max-element</span></tt> or <tt class="docutils literal"><span class="pre">--min-element</span></tt> operators, respectively.</p>
 <p>Going back to our sample <tt class="docutils literal"><span class="pre">Reference</span></tt> and <tt class="docutils literal"><span class="pre">Map</span></tt> data, we can search for the highest scoring mapping elements across the three reference elements:</p>

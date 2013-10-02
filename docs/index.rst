@@ -6,7 +6,21 @@ BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis tool
 
 You can read more about **BEDOPS** and how it can be useful for your research in the :ref:`Overview <overview>` documentation, as well as in the `original manuscript <http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract>`_.
 
+=========
+Downloads
+=========
+
++-----------------------+-----------------------+------------------------+
+| |linux_png|           | |macosx_png|                                   |
++-----------------------+-----------------------+------------------------+
+| |linux_downloads|     | |macosx_downloads|                             |
++-----------------------+-----------------------+------------------------+
+
 | 
+
+=========
+Reference
+=========
 
 +-----------------------+-----------------------+------------------------+
 | |set_operations_png|  | |statistics_png|      | |file_management_png|  |
@@ -40,6 +54,18 @@ Table of contents
    content/performance
    content/reference
    content/summary
+
+.. |linux_png| image:: assets/index/linux.png
+.. |linux_downloads| raw:: html
+
+   <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
+   </ul>
+
+.. |macosx_png| image:: assets/index/macosx.png
+.. |macosx_downloads| raw:: html
+
+   <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
+   </ul>
 
 .. |set_operations_png| image:: assets/index/set_operations.png
 .. |set_operations| raw:: html
