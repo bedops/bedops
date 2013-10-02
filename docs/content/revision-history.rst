@@ -23,7 +23,7 @@ Released: **October 1, 2013**
 
 * :ref:`starch`
 
-  * Fixed bug with :ref:`starch` where zero-byte BED input (i.e., an "empty set") created a truncated and unusable archive. We now put in a "dummy" chromosome for zero-byte input, which :ref:`unstarch` can now unpack. 
+  * Fixed bug with :ref:`starch` where zero-byte BED input (*i.e.*, an "empty set") created a truncated and unusable archive. We now put in a "dummy" chromosome for zero-byte input, which :ref:`unstarch` can now unpack. 
 
     This should simplify error handling with certain pipelines, specifically where set or other BEDOPS operations yield an "empty set" BED file that is subsequently compressed with :ref:`starch`.
 
@@ -40,7 +40,7 @@ Released: **October 1, 2013**
 
   * Rewritten ``bam2*`` and ``sam2*`` scripts from ``bash`` into Python (v2.7+ support).
   * Improved BAM and SAM input validation against the `SAM v1.4 spec <http://samtools.sourceforge.net/SAMv1.pdf>`_.
-  * New ``--split`` option prints reads with 'N' CIGAR operations as separated BED elements.
+  * New ``--split`` option prints reads with ``N`` CIGAR operations as separated BED elements.
   * New ``--all-reads`` option prints all reads, mapped and unmapped.
 
 * :ref:`bedextract`
@@ -56,11 +56,11 @@ Released: **October 1, 2013**
 
 * OS X compilation improvements
 
-  * We have made changes to the OS X build process for half of the BEDOPS binaries, which allows direct compilation with Clang/LLVM (part of the Apple Xcode distribution). Those binaries now use Apple's system C++ library, instead of GNU's ``libstdc++``.
+  * We have made changes to the OS X build process for half of the BEDOPS binaries, which allows direct compilation with Clang/LLVM (part of the Apple Xcode distribution). Those binaries now use Apple's system-level C++ library, instead of GNU's ``libstdc++``.
 
     This change already makes compilation faster and simpler, and it reduces the size and complexity of Mac OS X builds and installer packages. By using Apple's C++ library, we also reduce the likelihood of missing library errors.
 
-    When this process is complete with the remaining binaries, it will no longer be necessary to install GCC 4.7+ (by way of MacPorts or other package managers) in order to build BEDOPS on OS X, nor will we have to bundle ``libstdc++`` with the installer.
+    When this process is completed for the remaining binaries, it will no longer be necessary to install GCC 4.7+ (by way of MacPorts or other package managers) in order to build BEDOPS on OS X, nor will we have to bundle ``libstdc++`` with the installer.
 
 =================
 Previous versions
