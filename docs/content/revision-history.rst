@@ -47,6 +47,18 @@ Released: **October 2, 2013**
 
   * Fixed array overflow bug with BEDOPS tools that take :ref:`starch <starch_specification>` archives as inputs, which affected use of archives as inputs to :ref:`closest-features`, :ref:`bedops` and :ref:`bedmap`.
 
+* All :ref:`conversion scripts <data_conversion>`_
+
+  * Python scripts require v2.7+ or greater.
+
+  * Improved (more "Pythonic") error code handling.
+
+  * Disabled support for ``--max-mem`` sort parameter until :ref:`sort-bed` `issue <https://github.com/bedops/bedops/issues/1>`_ is resolved. Scripts will continue to sort, but they will be limited to available system memory. If you are processing files larger than system memory, please contact us at `bedops@stamlab.org <mailto:bedops@stamlab.org>`_ for details of a temporary workaround.
+
+* :ref:`gff2bed` conversion script
+
+  * Resolved ``IndexError`` exceptions by fixing header support, bringing script in line with `v1.21 GFF3 spec <http://www.sequenceontology.org/gff3.shtml>`_.
+
 * :ref:`bam2bed` and :ref:`sam2bed` conversion scripts
 
   * Rewritten ``bam2*`` and ``sam2*`` scripts from ``bash`` into Python (v2.7+ support).
