@@ -11,9 +11,9 @@ Downloads
 =========
 
 +-----------------------+-----------------------+------------------------+
-| |linux_png|           | |macosx_png|          |                        |
+| |linux_png|           | |macosx_png|          | |source_png|           |
 +-----------------------+-----------------------+------------------------+
-| |linux_downloads|     | |macosx_downloads|    |                        |
+| |linux_downloads|     | |macosx_downloads|    | |source_downloads|     |
 +-----------------------+-----------------------+------------------------+
 
 | 
@@ -70,6 +70,15 @@ Table of contents
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
    <li><a href="https://github.com/bedops/bedops/releases/download/v2.3.0/BEDOPS.2.3.0.mpkg.zip">Intel (32-/64-bit)</a> installer package</li>
    <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#mac-os-x">Installation instructions</a></li>
+   </ul>
+
+.. |source_png| image:: assets/index/source.png
+.. |source_downloads| raw:: html
+
+   <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
+   <li><a href="https://github.com/bedops/bedops/archive/v2.3.0.tar.gz">Source code</a> (tar.gz)</li>
+   <li><a href="https://github.com/bedops/bedops/archive/v2.3.0.zip">Source code</a> (zip)</li>
+   <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#installation-via-source-code">Compilation instructions</a></li>
    </ul>
 
 .. |set_operations_png| image:: assets/index/set_operations.png
