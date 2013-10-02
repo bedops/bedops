@@ -9,7 +9,7 @@
 
 ### Downloads ###
 
-<table border="1" class="docutils">
+<table border="1">
 <colgroup>
 <col width="33%">
 <col width="33%">
@@ -38,6 +38,10 @@
 </tr>
 </tbody>
 </table>
+
+### Documentation ###
+
+
 
 ### Citation ###
 
