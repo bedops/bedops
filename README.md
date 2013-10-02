@@ -61,3 +61,4 @@ If you use **BEDOPS** in your research, please cite the following manuscript:
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/bedops/bedops/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
+[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/6348063796c90e934767fcc384e724df "githalytics.com")](http://githalytics.com/bedops/bedops)
