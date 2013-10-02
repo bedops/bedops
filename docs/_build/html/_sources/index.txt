@@ -61,15 +61,15 @@ Table of contents
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
    <li><a href="https://github.com/bedops/bedops/releases/download/v2.3.0/bedops_linux_x86_64-v2.3.0.tar.bz2">x86-64 (64-bit)</a> binaries</li>
    <li><a href="https://github.com/bedops/bedops/releases/download/v2.3.0/bedops_linux_i386-v2.3.0.tar.bz2">i386 (32-bit)</a> binaries</li>
-   <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#linux">Installation instructions</a></li>
+   <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#linux">Installation instructions</a> for Linux hosts</li>
    </ul>
 
 .. |macosx_png| image:: assets/index/macosx.png
 .. |macosx_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><a href="https://github.com/bedops/bedops/releases/download/v2.3.0/BEDOPS.2.3.0.mpkg.zip">Intel (32-/64-bit)</a> installer package</li>
-   <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#mac-os-x">Installation instructions</a></li>
+   <li><a href="https://github.com/bedops/bedops/releases/download/v2.3.0/BEDOPS.2.3.0.mpkg.zip">Intel (32-/64-bit, 10.6-10.8)</a> installer package</li>
+   <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
    </ul>
 
 .. |source_png| image:: assets/index/source.png
