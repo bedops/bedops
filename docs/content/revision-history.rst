@@ -15,31 +15,33 @@ v2.3.0
 
 Released: **October 1, 2013**
 
-* General ``-ec`` performance improvements in :ref:`bedops`, :ref:`bedmap` and other applications.
+* General ``-ec`` performance improvements in :ref:`bedops`, :ref:`bedmap` and other core applications.
 
 * :ref:`bedmap`
 
-  * Adds experimental support for ``--skip-unmapped`` option, which filters out reference elements which do not have mapped elements associated with them.
+  * Adds experimental support for the new ``--skip-unmapped`` option, which filters out reference elements which do not have mapped elements associated with them. See the end of the :ref:`score operations <score_operations>` section of the :ref:`bedmap` documentation for more detail.
 
 * :ref:`starch`
 
-  * Fixed bug with :ref:`starch` where zero-byte BED input created a truncated and unusable archive. We now put in a "dummy" chromosome for zero-byte input, which :ref:`unstarch` can now unpack. This should simplify error handling with certain pipelines.
+  * Fixed bug with :ref:`starch` where zero-byte BED input (i.e., an "empty set") created a truncated and unusable archive. We now put in a "dummy" chromosome for zero-byte input, which :ref:`unstarch` can now unpack. 
+
+    This should simplify error handling with certain pipelines, specifically where set or other BEDOPS operations yield an "empty set" BED file that is subsequently compressed with :ref:`starch`.
 
 * :ref:`unstarch`
 
-  * Can unpack zero-byte compressed :ref:`starch` archive (see above).
-  * Changed ``unstarch --list`` option to print to ``stdout`` stream (previously sent to ``stderr``).
+  * Can now unpack zero-byte ("empty set") compressed :ref:`starch` archive (see above).
+  * Changed ``unstarch --list`` option to print to ``stdout`` stream (this was previously sent to ``stderr``).
 
 * :ref:`starch` metadata library
 
-  * Fixes array overflow bug with BEDOPS tools that take :ref:`starch <starch_specification>` archives as inputs, which affected :ref:`closest-features`, :ref:`bedops` and :ref:`bedmap`.
+  * Fixed array overflow bug with BEDOPS tools that take :ref:`starch <starch_specification>` archives as inputs, which affected use of archives as inputs to :ref:`closest-features`, :ref:`bedops` and :ref:`bedmap`.
 
 * :ref:`bam2bed` and :ref:`sam2bed` conversion scripts
 
-  * Rewritten ``bam2*`` and ``sam2*`` scripts from ``bash`` into Python (v2.7+).
-  * Improved input validation against SAM v1 specification.
-  * New ``--split`` option prints reads with 'N' CIGAR operations into separate BED elements.
-  * New ``--all-reads`` option prints all reads mapped and unmapped.
+  * Rewritten ``bam2*`` and ``sam2*`` scripts from ``bash`` into Python (v2.7+ support).
+  * Improved BAM and SAM input validation against the `SAM v1.4 spec <http://samtools.sourceforge.net/SAMv1.pdf>`_.
+  * New ``--split`` option prints reads with 'N' CIGAR operations as separated BED elements.
+  * New ``--all-reads`` option prints all reads, mapped and unmapped.
 
 * :ref:`bedextract`
 
@@ -47,15 +49,18 @@ Released: **October 1, 2013**
 
 * New documentation via `readthedocs.org <readthedocs.org>`_.
 
-  * Documentation is now part of the BEDOPS distribution, instead of being a separate download. 
-  * We use `readthedocs.org <readthedocs.org>`_ to host indexed and searchable HTML, PDF and eBook documents.
-  * Documentation is refreshed and simplified, with a new installation/compilation guide.
+  * Documentation is now part of the BEDOPS distribution, instead of being a separate download.
+  * We use `readthedocs.org <readthedocs.org>`_ to host indexed and searchable HTML. 
+  * `PDF and eBook <https://readthedocs.org/projects/bedops/downloads/>`_ documents are also available for download.
+  * Documentation is refreshed and simplified, with new installation and compilation guides.
 
 * OS X compilation improvements
 
-  * We have made changes to the OS X build process for half of the BEDOPS binaries, which allows direct compilation with Clang/LLVM (part of the Apple Xcode distribution). 
+  * We have made changes to the OS X build process for half of the BEDOPS binaries, which allows direct compilation with Clang/LLVM (part of the Apple Xcode distribution). Those binaries now use Apple's system C++ library, instead of GNU's ``libstdc++``.
 
-    This already makes compilation faster and easier, as well as reduces the size and complexity of Mac OS X builds and installer packages. When this process is complete, it will no longer be necessary to install GCC 4.7+ by way of MacPorts or other package managers, in order to build BEDOPS on OS X.
+    This change already makes compilation faster and simpler, and it reduces the size and complexity of Mac OS X builds and installer packages. By using Apple's C++ library, we also reduce the likelihood of missing library errors.
+
+    When this process is complete with the remaining binaries, it will no longer be necessary to install GCC 4.7+ (by way of MacPorts or other package managers) in order to build BEDOPS on OS X, nor will we have to bundle ``libstdc++`` with the installer.
 
 =================
 Previous versions
