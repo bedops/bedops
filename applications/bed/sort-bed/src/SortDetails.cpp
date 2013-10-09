@@ -296,9 +296,10 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
 
     FILE *bedFile = NULL;
     Bed::LineCountType chromEntryCount;
-    int k, notStdin = 0, newChrom,
+    int k, t, notStdin = 0, newChrom,
         fields = 0,
-        headCheck = 1;
+        headCheck = 1,
+        val = 0;
     unsigned int i, j;
     unsigned int tmpFileCount = 0U;
     size_t chromAllocs = 1;
@@ -515,7 +516,9 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                     sscanf(tmpArr, "%" SCNd64, &endPos);
 
                     /* rest of the line goes into bedLine */
-                    fields = 3 + sscanf(cptr, "\t%[^\n]s\n", bedLine);
+                    fields = 3;
+                    if ( (val = sscanf(cptr, "\t%[^\n]s\n", bedLine)) != EOF )
+                      fields += val;
                     headCheck = 0;
 
                     /* Validate Coords */
@@ -703,8 +706,8 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                             lexSortBedData(beds);
                             printBed(beds, tmpFiles[tmpFileCount]);
                             ++tmpFileCount;
-                            for(i = 0; i < beds->numChroms; ++i)
-                                free(chromBytes[i]);
+                            for(t = 0; t < beds->numChroms; ++t)
+                                free(chromBytes[t]);
                             free(chromBytes);
 
                             freeBedData(beds);
@@ -752,8 +755,8 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                     lexSortBedData(beds);
                     printBed(beds, tmpFiles[tmpFileCount]);
                     ++tmpFileCount;
-                    for(i = 0; i < beds->numChroms; ++i)
-                        free(chromBytes[i]);
+                    for(t = 0; t < beds->numChroms; ++t)
+                        free(chromBytes[t]);
                     free(chromBytes);
                     freeBedData(beds);
                 }
@@ -763,15 +766,15 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                     fclose(bedFile);
                     return -1;
                 }
-            for (i = 0; i < tmpFileCount; ++i)
-                fclose(tmpFiles[i]); /* deletes temporary files for us */
+            for (t = 0; t < tmpFileCount; ++t)
+                fclose(tmpFiles[t]); /* deletes temporary files for us */
         }
     else
         {
             lexSortBedData(beds);
             printBed(beds, stdout);
-            for(i = 0; i < beds->numChroms; ++i)
-                free(chromBytes[i]);
+            for(t = 0; t < beds->numChroms; ++t)
+                free(chromBytes[t]);
             free(chromBytes);
             /* freeBedData(beds); let the OS clean up - takes significant time to do this step manually */
         }
