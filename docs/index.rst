@@ -68,7 +68,7 @@ Table of contents
 .. |macosx_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><a href="https://github.com/bedops/bedops/releases/download/v2.3.0/BEDOPS.2.3.0.mpkg.zip">Intel (32-/64-bit, 10.6-10.8)</a> installer package</li>
+   <li><a href="https://github.com/bedops/bedops/releases/download/v2.3.0/BEDOPS.2.3.0.mpkg.zip">Intel (32-/64-bit, 10.7-10.8)</a> installer package</li>
    <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
    </ul>
 
