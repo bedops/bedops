@@ -98,7 +98,7 @@ initializeChromBedData(char *chromBuf, double *bytes) {
 
 
 
-Bed::LineCountType
+Bed::SignedCoordType
 appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::SignedCoordType endPos, char *data, double *bytes)
 {
 
@@ -109,7 +109,7 @@ appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::Sig
     if(chrom == NULL)
         {
             fprintf(stderr, "Error: %s, %d: Bad 'chrom' variable.\n", __FILE__, __LINE__);
-            return static_cast<Bed::LineCountType>(-1);
+            return static_cast<Bed::SignedCoordType>(-1);
         }
   
     index = chrom->numCoords;
@@ -122,7 +122,7 @@ appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::Sig
             if(chrom->coords == NULL)
                 {
                     fprintf(stderr, "Error: %s, %d: Unable to create BED structure. Out of memory.\n", __FILE__, __LINE__);
-                    return static_cast<Bed::LineCountType>(-1);
+                    return static_cast<Bed::SignedCoordType>(-1);
                 }
         }
 
@@ -137,14 +137,14 @@ appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::Sig
             if(dataBufLen <= 0)
                 {
                     fprintf(stderr, "Error: %s, %d: Bad 'data' variable.\n", __FILE__, __LINE__);
-                    return static_cast<Bed::LineCountType>(-1);
+                    return static_cast<Bed::SignedCoordType>(-1);
                 }
             dataPtr = (char*)calloc(dataBufLen + 1, sizeof(char));
             *bytes += dataBufLen + 1;
             if(dataPtr == NULL) 
                 {
                     fprintf(stderr, "Error: %s, %d: Unable to create BED structure. Out of memory.\n", __FILE__, __LINE__);
-                    return static_cast<Bed::LineCountType>(-1);
+                    return static_cast<Bed::SignedCoordType>(-1);
                 }
             chrom->coords[index].data = strncpy(dataPtr, data, dataBufLen + 1);
             chrom->coords[index].data[dataBufLen] = '\0';
@@ -295,7 +295,7 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
     /* maxMem will be ignored if <= 0 */
 
     FILE *bedFile = NULL;
-    Bed::LineCountType chromEntryCount;
+    Bed::SignedCoordType chromEntryCount;
     int notStdin = 0, newChrom,
         fields = 0,
         headCheck = 1,
@@ -580,7 +580,7 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                                     *chromBytes[jidx] += diffBytes;
                                     maxChromBytes = (*chromBytes[jidx] < maxChromBytes) ? maxChromBytes : *chromBytes[jidx]; 
 
-                                    if (static_cast<int>(chromEntryCount) < 0)
+                                    if (chromEntryCount < 0)
                                         {
                                             fprintf(stderr, "Error: %s, %d: Unable to create BED structure.\n", __FILE__, __LINE__);
                                             fclose(bedFile);
@@ -674,7 +674,7 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                             *chromBytes[beds->numChroms] += diffBytes;
                             maxChromBytes = (*chromBytes[beds->numChroms] < maxChromBytes) ? maxChromBytes : *chromBytes[beds->numChroms];
 
-                            if(static_cast<int>(chromEntryCount) < 0) 
+                            if(chromEntryCount < 0) 
                                 {
                                     fprintf(stderr, "Error: %s, %d: Unable to create BED structure.\n", __FILE__, __LINE__);
                                     fclose(bedFile);

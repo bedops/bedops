@@ -54,7 +54,7 @@ typedef struct {
 } ChromBedData;
 
 typedef struct {
-    unsigned int numChroms;
+    Bed::SignedCoordType numChroms;
     ChromBedData **chroms; // struct is padded on 64-bit OS X system - cf. http://stackoverflow.com/questions/15031061/alignas-for-struct-members-using-clang-c11 for possible portable solution for warning
 } BedData;
 
@@ -67,7 +67,7 @@ void freeBedData(BedData *beds);
 void sortBedData(BedData *beds);
 void numSortBedData(BedData *beds);
 void lexSortBedData(BedData *beds);
-Bed::LineCountType appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::SignedCoordType endPos, char *data, double* bytes);
+Bed::SignedCoordType appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::SignedCoordType endPos, char *data, double* bytes);
 ChromBedData * initializeChromBedData(char * chromName, double* bytes);
 BedData * initializeBedData(double* bytes);
 int numCompareBedData(const void *pos1, const void *pos2);
