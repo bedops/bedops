@@ -1,6 +1,7 @@
 /*
   FILE: Bed.c
   AUTHOR: Scott Kuehn
+    MODS: Shane Neph
   CREATE DATE: Tue May 16 10:06:58 PDT 2006
   PROJECT: CompBio
   ID: '$Id: Bed.c,v 1.10 2010/08/19 22:18:54 sjn Exp $'
@@ -81,12 +82,7 @@ initializeChromBedData(char *chromBuf, double *bytes) {
         }
 
     /* Coords */
-    chrom->coords = (BedCoordData*)malloc(sizeof(BedCoordData) * NUM_BED_ITEMS_EST);
-    *bytes += (sizeof(BedCoordData) * NUM_BED_ITEMS_EST);
-    if(chrom->coords == NULL)
-        {
-            return NULL;
-        }
+    chrom->coords = NULL;
   
     /* Chrom name*/
     chromBufLen = strlen(chromBuf);
@@ -114,7 +110,29 @@ appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::Sig
   
     index = chrom->numCoords;
 
-    if(((index + 1) % NUM_BED_ITEMS_EST) == 0)
+    // requires INIT_NUM_BED_ITEMS_EST < NUM_BED_ITEMS_EST
+    if (index == 0)
+        { // first initialization
+            chrom->coords = (BedCoordData*)malloc(sizeof(BedCoordData) * INIT_NUM_BED_ITEMS_EST);
+            *bytes += (sizeof(BedCoordData) * INIT_NUM_BED_ITEMS_EST);
+            if(chrom->coords == NULL)
+                {
+                    fprintf(stderr, "Error: %s, %d: Unable to create BedCoordData structure. Out of memory.\n", __FILE__, __LINE__);
+                    return static_cast<Bed::SignedCoordType>(-1);
+                }
+        }
+    else if (index == (INIT_NUM_BED_ITEMS_EST-1))
+        {
+            chrom->coords = (BedCoordData*)realloc(chrom->coords, sizeof(BedCoordData) * static_cast<size_t>(NUM_BED_ITEMS_EST));
+            *bytes += (sizeof(BedCoordData) * NUM_BED_ITEMS_EST);
+            *bytes -= (sizeof(BedCoordData) * INIT_NUM_BED_ITEMS_EST);
+            if(chrom->coords == NULL)
+                {
+                    fprintf(stderr, "Error: %s, %d: Unable to create BED structure. Out of memory.\n", __FILE__, __LINE__);
+                    return static_cast<Bed::SignedCoordType>(-1);
+                }
+        }
+    else if((index % (NUM_BED_ITEMS_EST+1)) == 0)
         {
             //fprintf(stderr, "Reallocating...\n");
             chrom->coords = (BedCoordData*)realloc(chrom->coords, sizeof(BedCoordData) * static_cast<size_t>(index + NUM_BED_ITEMS_EST));
@@ -152,9 +170,7 @@ appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::Sig
     else
         chrom->coords[index].data = NULL;
 
-    chrom->numCoords++;
-  
-    return chrom->numCoords;
+    return ++chrom->numCoords;
 }
 
 int
@@ -603,7 +619,7 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                                     /* fprintf(stderr, "Reallocating...\n"); */
                                     chromAllocs++;
                                     beds->chroms = (ChromBedData**)realloc(beds->chroms, sizeof(ChromBedData *) * NUM_CHROM_EST * chromAllocs);
-                                    totalBytes += sizeof(ChromBedData *) * NUM_CHROM_EST * chromAllocs;
+                                    totalBytes += sizeof(ChromBedData *) * NUM_CHROM_EST;
                                     if(beds->chroms == NULL)
                                         {
                                             fprintf(stderr, "Error: %s, %d: Unable to expand Chrom structure: %s. Out of memory.\n", __FILE__, 
@@ -630,14 +646,14 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                                     return -1;
                                 }
                             chromBytes[beds->numChroms] = (double*)malloc(sizeof(double));
+
                             if(chromBytes[beds->numChroms] == NULL)
                                 {
                                     fprintf(stderr, "Error: %s, %d: Unable to create double. Out of memory.\n", __FILE__, __LINE__);
                                     return -1;
                                 }
                             *chromBytes[beds->numChroms] = diffBytes;
-                            totalBytes += sizeof(double *) * (beds->numChroms + 1) + sizeof(double);
-
+                            totalBytes += sizeof(double*) + sizeof(double); // sizeof(double*) increments in realloc of chromBytes + sizeof(double) for malloc
                             diffBytes = totalBytes;
                             if(fields > 3)
                                 { /* check ID column is <= ID_NAME_LEN for the benefit of downstream programs */
