@@ -467,7 +467,7 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                         }
                     memcpy(tmpArr, cptr, static_cast<size_t>(dptr-cptr));
                     tmpArr[dptr-cptr] = '\0';
-                    for(kidx=0; kidx < dptr-cptr; ++kidx)
+                    for(kidx=0; kidx < static_cast<unsigned int>(dptr-cptr); ++kidx)
                         {
                             if(!isdigit(tmpArr[kidx]))
                                 {
@@ -515,7 +515,7 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                         }
                     memcpy(tmpArr, dptr, static_cast<size_t>(cptr-dptr));
                     tmpArr[cptr-dptr] = '\0';
-                    for(kidx=0; kidx < cptr-dptr; ++kidx)
+                    for(kidx=0; kidx < static_cast<unsigned int>(cptr-dptr); ++kidx)
                         {
                             if(!isdigit(tmpArr[kidx]))
                                 {
