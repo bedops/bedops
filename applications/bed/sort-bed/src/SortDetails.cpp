@@ -28,13 +28,12 @@
 #include <cerrno>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <cctype>
 #include <map>
 
 #if __clang__
 #include <string>
-#else
-#include <cstring>
 #endif
 
 #include "suite/BEDOPS.Constants.hpp"
