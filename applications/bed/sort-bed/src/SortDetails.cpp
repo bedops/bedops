@@ -1,5 +1,5 @@
 /*
-  FILE: Bed.c
+  File: Bed.c
   AUTHOR: Scott Kuehn
     MODS: Shane Neph
   CREATE DATE: Tue May 16 10:06:58 PDT 2006
@@ -28,9 +28,14 @@
 #include <cerrno>
 #include <cstdio>
 #include <cstdlib>
-#include <cstring>
 #include <cctype>
 #include <map>
+
+#if __clang__
+#include <string>
+#else
+#include <cstring>
+#endif
 
 #include "suite/BEDOPS.Constants.hpp"
 
@@ -169,7 +174,7 @@ appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::Sig
     else
         chrom->coords[index].data = NULL;
 
-    return ++chrom->numCoords;
+    return static_cast<Bed::SignedCoordType>(++chrom->numCoords);
 }
 
 int
@@ -642,7 +647,7 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                                     return -1;
                                 }
                             diffBytes = totalBytes - diffBytes;
-                            chromBytes = (double**)realloc(chromBytes, sizeof(double *) * (beds->numChroms + 1));
+                            chromBytes = (double**)realloc(chromBytes, sizeof(double *) * (static_cast<size_t>(beds->numChroms) + 1));
                             if(chromBytes == NULL)
                                 {
                                     fprintf(stderr, "Error: %s, %d: Unable to create double* array. Out of memory.\n", __FILE__, __LINE__);
@@ -866,7 +871,7 @@ lexSortBedData(BedData *beds)
         }
 
     /* sort chroms */
-    qsort(beds->chroms, beds->numChroms, sizeof(ChromBedData *), lexCompareBedData); 
+    qsort(beds->chroms, static_cast<size_t>(beds->numChroms), sizeof(ChromBedData *), lexCompareBedData); 
     return;
 
 }
