@@ -14,19 +14,23 @@
 
 CHROM_START=1
 CHROM_END=1000000
+TEST_FN=.test.bed
 
+rm -f ${TEST_FN}
+    
 for ((idx = CHROM_START; idx <= CHROM_END; idx++))
 do
     echo "testing sorting file with chrs ${CHROM_START}-${idx}..." > /dev/stderr
-    echo -e "chr${idx}\t1\t2" >> .test.bed
-    ../bin/sort-bed --max-mem 2G .test.bed > /dev/null
+    echo -e "chr${idx}\t1\t2" >> ${TEST_FN}
+    ../bin/sort-bed --max-mem 2G ${TEST_FN} > /dev/null
     if [ $? -ne 0 ]
     then
-        echo "failed on chr count [ ${i} ]"
+        echo "failed on chr count [ ${idx} ]"
         exit -1
     fi
 done
 
-rm .test.bed
+rm -f ${TEST_FN}
+
 echo "success!"
 exit 0
