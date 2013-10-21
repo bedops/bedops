@@ -31,10 +31,8 @@
 #include <cstring>
 #include <cctype>
 #include <map>
-
-#if __clang__
 #include <string>
-#endif
+
 
 #include "suite/BEDOPS.Constants.hpp"
 
