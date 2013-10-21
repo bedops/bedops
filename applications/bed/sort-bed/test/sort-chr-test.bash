@@ -13,7 +13,7 @@
 #
 
 CHROM_START=1
-CHROM_END=1024000
+CHROM_END=1000000
 
 for ((idx = CHROM_START; idx <= CHROM_END; idx++))
 do
