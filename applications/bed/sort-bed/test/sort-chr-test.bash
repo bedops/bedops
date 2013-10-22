@@ -5,7 +5,8 @@
 # Alex Reynolds
 #
 # This script creates BED files containing a simple genomic coordinate pair
-# for each of one to one million chromosomes, and then it sorts that file.
+# for each of one to one hundred thousand chromosomes, and then it sorts that 
+# file.
 #
 # Because the result of a numerical sort (which comes out of this script by 
 # default) is different from the lexicographical sort out of sort-bed, this 
@@ -13,7 +14,7 @@
 #
 
 CHROM_START=1
-CHROM_END=1000000
+CHROM_END=100000
 TEST_FN=.test.bed
 
 rm -f ${TEST_FN}
