@@ -133,7 +133,7 @@ appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::Sig
                     return static_cast<Bed::SignedCoordType>(-1);
                 }
         }
-    else if((index % (NUM_BED_ITEMS_EST+1)) == 0)
+    else if((index % (NUM_BED_ITEMS_EST-1)) == 0)
         {
             //fprintf(stderr, "Reallocating...\n");
             chrom->coords = (BedCoordData*)realloc(chrom->coords, sizeof(BedCoordData) * static_cast<size_t>(index + NUM_BED_ITEMS_EST));
