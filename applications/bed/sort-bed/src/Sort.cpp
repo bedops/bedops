@@ -1,7 +1,7 @@
 /*
   FILE: sort.c
   AUTHOR: Scott Kuehn
-    MAJOR MODS: Shane Neph
+    MODS: Shane Neph
   CREATE DATE: Thu Sep  7 08:48:35 PDT 2006
 */
 

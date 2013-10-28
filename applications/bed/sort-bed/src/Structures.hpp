@@ -1,7 +1,7 @@
 /*
   FILE: Bed.h
   AUTHOR: Scott Kuehn
-    MAJOR MODS: Shane Neph
+   MODS: Shane Neph
   CREATE DATE: Tue May 16 09:15:54 PDT 2006
 */
 
