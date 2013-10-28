@@ -1,7 +1,7 @@
 /*
   FILE: Bed.h
   AUTHOR: Scott Kuehn
-    MODS: Shane Neph
+    MAJOR MODS: Shane Neph
   CREATE DATE: Tue May 16 09:15:54 PDT 2006
   PROJECT: CompBio
 */
@@ -64,7 +64,7 @@ typedef struct {
 int checkfiles(const char **bedFileNames, unsigned int numFiles);
 int mergeSort(FILE **tmpFiles, unsigned int numFiles);
 int processData(const char **bedFileNames, unsigned int numFiles, double maxMem);
-void printBed(BedData *beds, FILE* out);
+void printBed(FILE *out, BedData *beds);
 void freeBedData(BedData *beds);
 void sortBedData(BedData *beds);
 void numSortBedData(BedData *beds);

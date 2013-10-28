@@ -1,9 +1,8 @@
 /*
   FILE: sort.c
   AUTHOR: Scott Kuehn
-    MODS: Shane Neph
+    MAJOR MODS: Shane Neph
   CREATE DATE: Thu Sep  7 08:48:35 PDT 2006
-  ID: $Id: sort.c,v 1.6 2010/08/20 05:05:32 sjn Exp $
 */
 
 //
