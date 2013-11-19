@@ -91,27 +91,27 @@ At this time, compilation of BEDOPS requires GCC 4.7 or greater (which includes 
   
      $ git clone https://github.com/bedops/bedops.git
   
-4. (Linux) Run ``make static`` in the top-level of the local copy of the BEDOPS repository: 
+4a. (Linux) Run ``make static`` in the top-level of the local copy of the BEDOPS repository: 
 
    ::
 
      $ cd bedops
      $ make static
 
-5. (Mac OS X) Run ``make build_all_darwin_intel_fat`` in the top-level of the local copy of the BEDOPS repository:
+4b. (Mac OS X) Run ``make build_all_darwin_intel_fat`` in the top-level of the local copy of the BEDOPS repository:
 
    ::
 
      $ cd bedops
      $ make build_all_darwin_intel_fat
 
-6. Install compiled binaries and scripts to a local ``bin`` folder: 
+5. Install compiled binaries and scripts to a local ``bin`` folder: 
 
    ::
 
      $ make install
 
-7. Copy the extracted binaries to a location of your choice that is in your environment's ``PATH``, *e.g.* ``~/opt/bin``: 
+6. Copy the extracted binaries to a location of your choice that is in your environment's ``PATH``, *e.g.* ``~/opt/bin``: 
 
    ::
  
