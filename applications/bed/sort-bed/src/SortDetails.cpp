@@ -1,7 +1,7 @@
 /*
   File: Bed.c
   AUTHOR: Scott Kuehn
-   MODS: Shane Neph
+    MODS: Shane Neph
   CREATE DATE: Tue May 16 10:06:58 PDT 2006
 */
 
@@ -68,7 +68,7 @@ initializeBedData(double *bytes)
 ChromBedData * 
 initializeChromBedData(char *chromBuf, double *bytes) {
     ChromBedData *chrom;
-    size_t chromBufLen;
+    size_t chromBufLen, i, j;
 
     if(chromBuf == NULL) 
         {
@@ -86,8 +86,14 @@ initializeChromBedData(char *chromBuf, double *bytes) {
     chrom->coords = NULL;
   
     /* Chrom name*/
-    chromBufLen = strlen(chromBuf);
-    strncpy(chrom->chromName, chromBuf, chromBufLen);
+    chromBufLen = strlen(chromBuf); // we know >= 1
+
+    // reverse string to actual chrom name
+    i = 0;
+    for ( j = chromBufLen; j > 0; )
+        chrom->chromName[i++] = chromBuf[--j];
+    chrom->chromName[chromBufLen-1] = chromBuf[0];
+    // strncpy(chrom->chromName, chromBuf, chromBufLen);
     chrom->chromName[chromBufLen] = '\0';
     chrom->numCoords = 0;
     return chrom;
@@ -345,7 +351,7 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
 
     /* a guess for general overhead for local vars, function call stacks, etc. */
     const int overhead = 100000;
-    const int maxTmpFiles = 50; // can hit max open file descriptors in extreme cases, so this can help
+    const int maxTmpFiles = 50; // can hit max open file descriptors in extreme cases.  use hierarchial merge-sort
     double totalBytes = overhead;
     double diffBytes = 0;
     double maxChromBytes = 0;
@@ -441,7 +447,13 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                             fclose(bedFile);
                             return -1;
                         }
-                    memcpy(chromBuf, bedLine, static_cast<size_t>(cptr-bedLine));
+
+                    // reverse chrom name for faster lookup
+                    jidx = 0;
+                    for ( kidx = static_cast<size_t>(cptr-bedLine); kidx > 0; )
+                      chromBuf[jidx++] = bedLine[--kidx];
+                    chromBuf[static_cast<size_t>(cptr-bedLine)-1] = bedLine[0];
+                    //  memcpy(chromBuf, bedLine, static_cast<size_t>(cptr-bedLine));
                     chromBuf[cptr-bedLine] = '\0';
 
                     /* start coord check */
@@ -736,7 +748,6 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                                 }
                             maxChromBytes = 0;
                             totalBytes = overhead; /* already includes chromBytes array */
-
                             if ( ++tmpFileCount == maxTmpFiles )
                                 { /* hierarchial merge sort to keep # open file descriptors low */
                                     tmpX = tmpfile();
