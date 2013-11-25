@@ -25,7 +25,7 @@
 # Project:      Converts 1-based, closed [a, b] headered or headerless SAM input
 #               into 0-based, half-open [a-1, b) extended BED
 #
-# Version:      2.3
+# Version:      2.4
 #
 # Notes:        The SAM format is Sequence Alignment/Map file that is a 1-based, closed 
 #               [a, b]. This script converts this indexing back to 0-based, half-
