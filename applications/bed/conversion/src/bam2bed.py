@@ -151,7 +151,7 @@ class SamTags:
         tagType = tagElems[1]
         tagValue = tagElems[2]
         customTags = []
-        if (customTagsAdded):
+        if customTagsAdded:
             customTags = customTagsStr.split(",")
         if str(tagName) in (allSpecificationSamTags + customTags) or tagName.startswith('X') or tagName.startswith('Y') or tagName.startswith('Z'):
             tag = SamTag()
@@ -536,6 +536,7 @@ def main(*args):
     includeAllReads = False
     maxMem = "2G"
     maxMemChanged = False
+    customTagsStr = ""
     customTagsAdded = False
 
     # fixes bug with Python handling of SIGPIPE signal from UNIX head, etc.

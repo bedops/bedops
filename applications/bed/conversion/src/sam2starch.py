@@ -87,48 +87,48 @@ import getopt, sys, os, stat, subprocess, signal, tempfile, re
 # cf. pgs. 6-7, http://samtools.sourceforge.net/SAMv1.pdf
 #
 
-allValidSamTags = ['AM', 
-                   'AS', 
-                   'BC', 
-                   'BQ', 
-                   'CC', 
-                   'CM', 
-                   'CO', 
-                   'CP', 
-                   'CQ', 
-                   'CS', 
-                   'CT', 
-                   'E2', 
-                   'FI', 
-                   'FS', 
-                   'FZ', 
-                   'LB', 
-                   'H0', 
-                   'H1', 
-                   'H2', 
-                   'HI', 
-                   'IH', 
-                   'MD', 
-                   'MQ', 
-                   'NH', 
-                   'NM', 
-                   'OQ', 
-                   'OP', 
-                   'OC', 
-                   'PG', 
-                   'PQ', 
-                   'PT', 
-                   'PU', 
-                   'QT', 
-                   'Q2', 
-                   'R2', 
-                   'RG', 
-                   'RT', 
-                   'SA', 
-                   'SM', 
-                   'TC', 
-                   'U2', 
-                   'UQ']
+allSpecificationSamTags = ['AM', 
+                           'AS', 
+                           'BC', 
+                           'BQ', 
+                           'CC', 
+                           'CM', 
+                           'CO', 
+                           'CP', 
+                           'CQ', 
+                           'CS', 
+                           'CT', 
+                           'E2', 
+                           'FI', 
+                           'FS', 
+                           'FZ', 
+                           'LB', 
+                           'H0', 
+                           'H1', 
+                           'H2', 
+                           'HI', 
+                           'IH', 
+                           'MD', 
+                           'MQ', 
+                           'NH', 
+                           'NM', 
+                           'OQ', 
+                           'OP', 
+                           'OC', 
+                           'PG', 
+                           'PQ', 
+                           'PT', 
+                           'PU', 
+                           'QT', 
+                           'Q2', 
+                           'R2', 
+                           'RG', 
+                           'RT', 
+                           'SA', 
+                           'SM', 
+                           'TC', 
+                           'U2', 
+                           'UQ']
 
 
 class SamTags:
@@ -148,13 +148,16 @@ class SamTags:
         tagName = tagElems[0]
         tagType = tagElems[1]
         tagValue = tagElems[2]
-        if str(tagName) in allValidSamTags or tagName.startswith('X') or tagName.startswith('Y') or tagName.startswith('Z'):
+        customTags = []
+        if customTagsAdded:
+            customTags = customTagsStr.split(",")
+        if str(tagName) in (allSpecificationSamTags + customTags) or tagName.startswith('X') or tagName.startswith('Y') or tagName.startswith('Z'):
             tag = SamTag()
             tag.tag = (tagName, tagValue)
             self.tags.append(tag)
             self.switchFlags(tag)
         else:
-            raise Exception("Appended tag (%s) is not valid per SAMtools specification" % tagName)
+            raise Exception("Appended tag (%s) is not valid per SAMtools specification\nConsider using --custom-tags <value> option (see --help)" % tagName)
 
     def switchFlags(self, tag):
         if tag.key == 'NH':
@@ -456,16 +459,17 @@ def printUsage(stream):
     usage = ("Usage:\n"
              "  %s [ --help ] [ --split ] [ --all-reads ] [ --do-not-sort | --max-mem <value> ] [ --starch-format <bzip2|gzip> ] < foo.sam\n\n"
              "Options:                                                                            \n"
-             "  --help              Print this help message and exit                              \n"
-             "  --split             Split reads with 'N' CIGAR operations into separate BED elements\n"
-             "  --all-reads         Include both unmapped and mapped reads in output              \n"
-             "  --do-not-sort       Do not sort converted data with BEDOPS sort-bed               \n"
-             "  --max-mem <value>   Sets aside <value> memory for sorting BED output. For example,\n"
-             "                      <value> can be 8G, 8000M or 8000000000 to specify 8 GB of     \n"
-             "                      memory (default: 2G)                                          \n"
+             "  --help                 Print this help message and exit                           \n"
+             "  --split                Split reads with 'N' CIGAR operations into separate BED elements\n"
+             "  --all-reads            Include both unmapped and mapped reads in output           \n"
+             "  --do-not-sort          Do not sort converted data with BEDOPS sort-bed            \n"
+             "  --custom-tags <value>  Add a comma-separated list of custom SAM tags              \n"
+             "  --max-mem <value>      Sets aside <value> memory for sorting BED output. For example,\n"
+             "                         <value> can be 8G, 8000M or 8000000000 to specify 8 GB of  \n"
+             "                         memory (default: 2G)                                       \n"
              "  --starch-format <bzip2|gzip>                                                      \n"
-             "                      Specify backend compression format of starch archive          \n"
-             "                      (default: bzip2)                                            \n\n"
+             "                         Specify backend compression format of starch archive       \n"
+             "                         (default: bzip2)                                         \n\n"
              "About:                                                                              \n"
              "  This script converts 1-based, closed [a, b] binary SAM data from standard         \n"
              "  input into 0-based, half-open [a-1, b) extended BED, which is sorted, converted   \n"
@@ -534,13 +538,15 @@ def main(*args):
     maxMem = "2G"
     maxMemChanged = False
     starchFormat = "bzip2"
+    customTagsStr = ""
+    customTagsAdded = False
 
     # fixes bug with Python handling of SIGPIPE signal from UNIX head, etc.
     # http://coding.derkeiler.com/Archive/Python/comp.lang.python/2004-06/3823.html
     signal.signal(signal.SIGPIPE,signal.SIG_DFL)
 
     optstr = ""
-    longopts = ["do-not-sort", "split", "all-reads", "help", "max-mem=", "starch-format="]
+    longopts = ["do-not-sort", "split", "all-reads", "help", "custom-tags=", "max-mem=", "starch-format="]
     try:
         (options, args) = getopt.getopt(sys.argv[1:], optstr, longopts)
     except getopt.GetoptError as error:
@@ -557,6 +563,9 @@ def main(*args):
             includeAllReads = True
         elif key in ("--do-not-sort"):
             sortOutput = False
+        elif key in ("--custom-tags"):
+            customTagsStr = str(value)
+            customTagsAdded = True
         elif key in ("--max-mem"):
             maxMem = str(value)
             maxMemChanged = True

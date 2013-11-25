@@ -5179,9 +5179,9 @@
 			ZW50LVN0eWxlLVR5cGUiIGNvbnRlbnQ9InRleHQvY3NzIj4KPHRp
 			dGxlPjwvdGl0bGU+CjxtZXRhIG5hbWU9IkdlbmVyYXRvciIgY29u
 			dGVudD0iQ29jb2EgSFRNTCBXcml0ZXIiPgo8bWV0YSBuYW1lPSJD
-			b2NvYVZlcnNpb24iIGNvbnRlbnQ9IjExODcuMzkiPgo8c3R5bGUg
-			dHlwZT0idGV4dC9jc3MiPgo8L3N0eWxlPgo8L2hlYWQ+Cjxib2R5
-			Pgo8L2JvZHk+CjwvaHRtbD4K
+			b2NvYVZlcnNpb24iIGNvbnRlbnQ9IjEyNjUiPgo8c3R5bGUgdHlw
+			ZT0idGV4dC9jc3MiPgo8L3N0eWxlPgo8L2hlYWQ+Cjxib2R5Pgo8
+			L2JvZHk+CjwvaHRtbD4K
 			</data>
 		</dict>
 		<key>PROJECT_PRESENTATION</key>
@@ -5784,6 +5784,11 @@
 					</dict>
 				</array>
 			</dict>
+			<key>SUMMARY</key>
+			<dict>
+				<key>LOCALIZATIONS</key>
+				<array/>
+			</dict>
 			<key>TITLE</key>
 			<dict>
 				<key>LOCALIZATIONS</key>
@@ -5792,7 +5797,7 @@
 						<key>LANGUAGE</key>
 						<string>English</string>
 						<key>VALUE</key>
-						<string>BEDOPS 2.3.0</string>
+						<string>BEDOPS 2.4.0</string>
 					</dict>
 				</array>
 			</dict>
@@ -6059,7 +6064,7 @@
 				</dict>
 			</array>
 			<key>NAME</key>
-			<string>BEDOPS 2.3.0</string>
+			<string>BEDOPS 2.4.0</string>
 		</dict>
 	</dict>
 	<key>TYPE</key>
