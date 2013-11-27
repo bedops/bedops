@@ -323,7 +323,7 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
         fields = 0,
         headCheck = 1,
         val = 0;
-    unsigned int iidx, jidx, kidx, tidx;
+    unsigned int iidx, jidx, kidx, tidx, newChrom;
     unsigned int tmpFileCount = 0U;
     size_t chromAllocs = 1;
 
@@ -351,10 +351,12 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
 
     /* a guess for general overhead for local vars, function call stacks, etc. */
     const int overhead = 100000;
+    const int chromCrossover = 1000;
     const int maxTmpFiles = 50; // can hit max open file descriptors in extreme cases.  use hierarchial merge-sort
     double totalBytes = overhead;
     double diffBytes = 0;
     double maxChromBytes = 0;
+    bool firstCross = true;
     std::map<std::string, unsigned int> chrNames;
     std::map<std::string, unsigned int>::iterator siter;
 
@@ -570,61 +572,127 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                             return -1;
                         }
 
-                    /*Find the chrom*/
-                    siter = chrNames.find(std::string(chromBuf));
-                    if ( siter == chrNames.end() )
-                        { /* Create a new chrom */
-                            chrNames.insert(std::make_pair(std::string(chromBuf), beds->numChroms));
-                            errno = 0;
 
-                            /* Resize Chrom Structure */
-                            if(beds->numChroms >= (double)((NUM_CHROM_EST * chromAllocs)))
+                    /*Find the chrom*/
+                    if (beds->numChroms < chromCrossover)
+                        { /* linear search */
+                            newChrom = 1;
+                            for(jidx = 0; jidx < beds->numChroms; jidx++) 
                                 {
-                                    /* fprintf(stderr, "Reallocating...\n"); */
-                                    chromAllocs++;
-                                    beds->chroms = (ChromBedData**)realloc(beds->chroms, sizeof(ChromBedData *) * NUM_CHROM_EST * chromAllocs);
-                                    totalBytes += sizeof(ChromBedData *) * NUM_CHROM_EST;
-                                    if(beds->chroms == NULL)
+                                    if(strcmp(beds->chroms[jidx]->chromName, chromBuf) == 0) 
                                         {
-                                            fprintf(stderr, "Error: %s, %d: Unable to expand Chrom structure: %s. Out of memory.\n", __FILE__, 
+                                            /* Append data to current chrom */
+                                            diffBytes = totalBytes;
+                                            if(fields > 3)
+                                                { /* check ID column is <= ID_NAME_LEN for the benefit of downstream programs */
+                                                    cptr = strpbrk(bedLine, "\t "); /* bedops/bedmap do not differentiate these whitespace characters */
+                                                    if(cptr == NULL)
+                                                        {
+                                                            if(strlen(bedLine) > ID_NAME_LEN)
+                                                                {
+                                                                    fprintf(stderr, "ID field too long at line %" PRIu64 " in %s.\n",
+                                                                            lines, bedFileNames[iidx]);
+                                                                    fprintf(stderr, "Check that you have unix newlines (cat -A) or increase TOKEN_ID_MAX_LENGTH in BEDOPS.Constants.hpp and recompile BEDOPS.\n");
+                                                                    fprintf(stderr, "You may instead choose to put a dummy id column (like 'id') in as the 4th field to fix this.\n");
+                                                                    fclose(bedFile);
+                                                                    return -1;
+                                                                }
+                                                        }
+                                                    else if(cptr - bedLine > (double)ID_NAME_LEN)
+                                                        {
+                                                            fprintf(stderr, "ID field too long at line %" PRIu64 " in %s.\n",
+                                                                    lines, bedFileNames[iidx]);
+                                                            fprintf(stderr, "Check that you have unix newlines (cat -A) or increase TOKEN_ID_MAX_LENGTH in BEDOPS.Constants.hpp and recompile BEDOPS.\n");
+                                                            fprintf(stderr, "You may instead choose to put a dummy id column (like 'id') in as the 4th field to fix this.\n");
+                                                            fclose(bedFile);
+                                                            return -1;
+                                                        }
+                                                    chromEntryCount = appendChromBedEntry(beds->chroms[jidx], startPos, endPos, bedLine, &totalBytes);
+                                                }
+                                            else
+                                                {
+                                                    chromEntryCount = appendChromBedEntry(beds->chroms[jidx], startPos, endPos, NULL, &totalBytes);
+                                                }
+        
+                                            diffBytes = totalBytes - diffBytes;
+                                            *chromBytes[jidx] += diffBytes;
+                                            maxChromBytes = (*chromBytes[jidx] < maxChromBytes) ? maxChromBytes : *chromBytes[jidx]; 
+        
+                                            if (static_cast<int>(chromEntryCount) < 0)
+                                                {
+                                                    fprintf(stderr, "Error: %s, %d: Unable to create BED structure.\n", __FILE__, __LINE__);
+                                                    fclose(bedFile);
+                                                    return -1;
+                                                }
+                                            newChrom = 0;
+                                            break;
+                                        }
+                                } /* for */
+        
+                            if((newChrom) || (beds->numChroms == 0)) 
+                                {
+                                    errno = 0;
+        
+                                    /* Create a new chrom */
+        
+                                    /* Resize Chrom Structure */
+                                    if(beds->numChroms >= (double)((NUM_CHROM_EST * chromAllocs) - 1))
+                                        {
+                                            /* fprintf(stderr, "Reallocating...\n"); */
+                                            chromAllocs++;
+                                            beds->chroms = (ChromBedData**)realloc(beds->chroms, sizeof(ChromBedData *) * NUM_CHROM_EST * chromAllocs);
+                                            totalBytes += sizeof(ChromBedData *) * NUM_CHROM_EST * chromAllocs;
+                                            if(beds->chroms == NULL)
+                                                {
+                                                    fprintf(stderr, "Error: %s, %d: Unable to expand Chrom structure: %s. Out of memory.\n", __FILE__, 
+                                                            __LINE__, strerror(errno));
+                                                    fclose(bedFile);
+                                                    return -1;
+                                                }
+                                        }
+        
+                                    diffBytes = totalBytes;
+                                    chrom = initializeChromBedData(chromBuf, &totalBytes);
+                                    if(chrom == NULL)
+                                        {
+                                            fprintf(stderr, "Error: %s, %d: Unable to create Chrom structure: %s. Out of memory.\n", __FILE__, 
                                                     __LINE__, strerror(errno));
                                             fclose(bedFile);
                                             return -1;
                                         }
-                                }
-
-                            diffBytes = totalBytes;
-                            chrom = initializeChromBedData(chromBuf, &totalBytes);
-                            if(chrom == NULL)
-                                {
-                                    fprintf(stderr, "Error: %s, %d: Unable to create Chrom structure: %s. Out of memory.\n", __FILE__, 
-                                            __LINE__, strerror(errno));
-                                    fclose(bedFile);
-                                    return -1;
-                                }
-                            diffBytes = totalBytes - diffBytes;
-                            chromBytes = (double**)realloc(chromBytes, sizeof(double *) * (static_cast<size_t>(beds->numChroms) + 1));
-                            if(chromBytes == NULL)
-                                {
-                                    fprintf(stderr, "Error: %s, %d: Unable to create double* array. Out of memory.\n", __FILE__, __LINE__);
-                                    return -1;
-                                }
-                            chromBytes[beds->numChroms] = (double*)malloc(sizeof(double));
-
-                            if(chromBytes[beds->numChroms] == NULL)
-                                {
-                                    fprintf(stderr, "Error: %s, %d: Unable to create double. Out of memory.\n", __FILE__, __LINE__);
-                                    return -1;
-                                }
-                            *chromBytes[beds->numChroms] = diffBytes;
-                            totalBytes += sizeof(double*) + sizeof(double); // sizeof(double*) increments in realloc of chromBytes + sizeof(double) for malloc
-                            diffBytes = totalBytes;
-                            if(fields > 3)
-                                { /* check ID column is <= ID_NAME_LEN for the benefit of downstream programs */
-                                    cptr = strpbrk(bedLine, "\t "); /* bedops/bedmap do not differentiate these whitespace characters */
-                                    if(cptr == NULL)
+                                    diffBytes = totalBytes - diffBytes;
+                                    chromBytes = (double**)realloc(chromBytes, sizeof(double *) * (beds->numChroms + 1));
+                                    if(chromBytes == NULL)
                                         {
-                                            if(strlen(bedLine) > ID_NAME_LEN)
+                                            fprintf(stderr, "Error: %s, %d: Unable to create double* array. Out of memory.\n", __FILE__, __LINE__);
+                                            return -1;
+                                        }
+                                    chromBytes[beds->numChroms] = (double*)malloc(sizeof(double));
+                                    if(chromBytes[beds->numChroms] == NULL)
+                                        {
+                                            fprintf(stderr, "Error: %s, %d: Unable to create double. Out of memory.\n", __FILE__, __LINE__);
+                                            return -1;
+                                        }
+                                    *chromBytes[beds->numChroms] = diffBytes;
+                                    totalBytes += sizeof(double *) * (beds->numChroms + 1) + sizeof(double);
+        
+                                    diffBytes = totalBytes;
+                                    if(fields > 3)
+                                        { /* check ID column is <= ID_NAME_LEN for the benefit of downstream programs */
+                                            cptr = strpbrk(bedLine, "\t "); /* bedops/bedmap do not differentiate these whitespace characters */
+                                            if(cptr == NULL)
+                                                {
+                                                    if(strlen(bedLine) > ID_NAME_LEN)
+                                                        {
+                                                            fprintf(stderr, "ID field too long at line %" PRIu64 " in %s.\n",
+                                                                    lines, bedFileNames[iidx]);
+                                                            fprintf(stderr, "Check that you have unix newlines (cat -A) or increase TOKEN_ID_MAX_LENGTH in BEDOPS.Constants.hpp and recompile BEDOPS.\n");
+                                                            fprintf(stderr, "You may instead choose to put a dummy id column (like 'id') in as the 4th field to fix this.\n");
+                                                            fclose(bedFile);
+                                                            return -1;
+                                                        }
+                                                }
+                                            else if(cptr - bedLine > (double)ID_NAME_LEN)
                                                 {
                                                     fprintf(stderr, "ID field too long at line %" PRIu64 " in %s.\n",
                                                             lines, bedFileNames[iidx]);
@@ -633,48 +701,103 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                                                     fclose(bedFile);
                                                     return -1;
                                                 }
+                                            chromEntryCount = appendChromBedEntry(chrom, startPos, endPos, bedLine, &totalBytes);
                                         }
-                                    else if(cptr - bedLine > (double)ID_NAME_LEN)
+                                    else
                                         {
-                                            fprintf(stderr, "ID field too long at line %" PRIu64 " in %s.\n",
-                                                    lines, bedFileNames[iidx]);
-                                            fprintf(stderr, "Check that you have unix newlines (cat -A) or increase TOKEN_ID_MAX_LENGTH in BEDOPS.Constants.hpp and recompile BEDOPS.\n");
-                                            fprintf(stderr, "You may instead choose to put a dummy id column (like 'id') in as the 4th field to fix this.\n");
+                                            chromEntryCount = appendChromBedEntry(chrom, startPos, endPos, NULL, &totalBytes);
+                                        }
+        
+                                    diffBytes = totalBytes - diffBytes;
+                                    *chromBytes[beds->numChroms] += diffBytes;
+                                    maxChromBytes = (*chromBytes[beds->numChroms] < maxChromBytes) ? maxChromBytes : *chromBytes[beds->numChroms];
+        
+                                    if(static_cast<int>(chromEntryCount) < 0) 
+                                        {
+                                            fprintf(stderr, "Error: %s, %d: Unable to create BED structure.\n", __FILE__, __LINE__);
                                             fclose(bedFile);
                                             return -1;
                                         }
-                                    chromEntryCount = appendChromBedEntry(chrom, startPos, endPos, bedLine, &totalBytes);
+        
+                                    beds->chroms[beds->numChroms] = chrom;
+                                    beds->numChroms++;
                                 }
-                            else
-                                {
-                                    chromEntryCount = appendChromBedEntry(chrom, startPos, endPos, NULL, &totalBytes);
-                                }
-
-                            if(chromEntryCount < 0) 
-                                {
-                                    fprintf(stderr, "Error: %s, %d: Unable to create BED structure.\n", __FILE__, __LINE__);
-                                    fclose(bedFile);
-                                    return -1;
-                                }
-                            diffBytes = totalBytes - diffBytes;
-                            *chromBytes[beds->numChroms] += diffBytes;
-                            maxChromBytes = (*chromBytes[beds->numChroms] < maxChromBytes) ? maxChromBytes : *chromBytes[beds->numChroms];
-
-                            beds->chroms[beds->numChroms] = chrom;
-                            beds->numChroms++;
-
-                        }
-                    else
+                            }
+                    else /* map search since there are a ridiculous # distinct chrom names */
                         {
-                            jidx = siter->second;
-                            // Append data to current chrom
-                            diffBytes = totalBytes;
-                            if(fields > 3)
-                                { // check ID column is <= ID_NAME_LEN for the benefit of downstream programs
-                                    cptr = strpbrk(bedLine, "\t "); // bedops/bedmap do not differentiate these whitespace characters
-                                    if(cptr == NULL)
+                            if (firstCross)
+                                {
+                                    firstCross = false;
+                                    chrNames.clear();
+                                    for(tidx = 0; tidx < beds->numChroms; ++tidx)
+                                       chrNames.insert(std::make_pair(std::string(beds->chroms[tidx]->chromName), tidx));
+                                }
+
+                            /*Find the chrom*/
+                            siter = chrNames.find(std::string(chromBuf));
+                            if ( siter == chrNames.end() )
+                                { /* Create a new chrom */
+                                    chrNames.insert(std::make_pair(std::string(chromBuf), beds->numChroms));
+                                    errno = 0;
+
+                                    /* Resize Chrom Structure */
+                                    if(beds->numChroms >= (double)((NUM_CHROM_EST * chromAllocs)))
                                         {
-                                            if(strlen(bedLine) > ID_NAME_LEN)
+                                            /* fprintf(stderr, "Reallocating...\n"); */
+                                            chromAllocs++;
+                                            beds->chroms = (ChromBedData**)realloc(beds->chroms, sizeof(ChromBedData *) * NUM_CHROM_EST * chromAllocs);
+                                            totalBytes += sizeof(ChromBedData *) * NUM_CHROM_EST;
+                                            if(beds->chroms == NULL)
+                                                {
+                                                    fprintf(stderr, "Error: %s, %d: Unable to expand Chrom structure: %s. Out of memory.\n", __FILE__, 
+                                                            __LINE__, strerror(errno));
+                                                    fclose(bedFile);
+                                                    return -1;
+                                                }
+                                        }
+
+                                    diffBytes = totalBytes;
+                                    chrom = initializeChromBedData(chromBuf, &totalBytes);
+                                    if(chrom == NULL)
+                                        {
+                                            fprintf(stderr, "Error: %s, %d: Unable to create Chrom structure: %s. Out of memory.\n", __FILE__, 
+                                                    __LINE__, strerror(errno));
+                                            fclose(bedFile);
+                                            return -1;
+                                        }
+                                    diffBytes = totalBytes - diffBytes;
+                                    chromBytes = (double**)realloc(chromBytes, sizeof(double *) * (static_cast<size_t>(beds->numChroms) + 1));
+                                    if(chromBytes == NULL)
+                                        {
+                                            fprintf(stderr, "Error: %s, %d: Unable to create double* array. Out of memory.\n", __FILE__, __LINE__);
+                                            return -1;
+                                        }
+                                    chromBytes[beds->numChroms] = (double*)malloc(sizeof(double));
+
+                                    if(chromBytes[beds->numChroms] == NULL)
+                                        {
+                                            fprintf(stderr, "Error: %s, %d: Unable to create double. Out of memory.\n", __FILE__, __LINE__);
+                                            return -1;
+                                        }
+                                    *chromBytes[beds->numChroms] = diffBytes;
+                                    totalBytes += sizeof(double*) + sizeof(double); // sizeof(double*) increments in realloc of chromBytes + sizeof(double) for malloc
+                                    diffBytes = totalBytes;
+                                    if(fields > 3)
+                                        { /* check ID column is <= ID_NAME_LEN for the benefit of downstream programs */
+                                            cptr = strpbrk(bedLine, "\t "); /* bedops/bedmap do not differentiate these whitespace characters */
+                                            if(cptr == NULL)
+                                                {
+                                                    if(strlen(bedLine) > ID_NAME_LEN)
+                                                        {
+                                                            fprintf(stderr, "ID field too long at line %" PRIu64 " in %s.\n",
+                                                                    lines, bedFileNames[iidx]);
+                                                            fprintf(stderr, "Check that you have unix newlines (cat -A) or increase TOKEN_ID_MAX_LENGTH in BEDOPS.Constants.hpp and recompile BEDOPS.\n");
+                                                            fprintf(stderr, "You may instead choose to put a dummy id column (like 'id') in as the 4th field to fix this.\n");
+                                                            fclose(bedFile);
+                                                            return -1;
+                                                        }
+                                                }
+                                            else if(cptr - bedLine > (double)ID_NAME_LEN)
                                                 {
                                                     fprintf(stderr, "ID field too long at line %" PRIu64 " in %s.\n",
                                                             lines, bedFileNames[iidx]);
@@ -683,115 +806,157 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                                                     fclose(bedFile);
                                                     return -1;
                                                 }
+                                            chromEntryCount = appendChromBedEntry(chrom, startPos, endPos, bedLine, &totalBytes);
                                         }
-                                    else if(cptr - bedLine > (double)ID_NAME_LEN)
+                                    else
                                         {
-                                            fprintf(stderr, "ID field too long at line %" PRIu64 " in %s.\n",
-                                                    lines, bedFileNames[iidx]);
-                                            fprintf(stderr, "Check that you have unix newlines (cat -A) or increase TOKEN_ID_MAX_LENGTH in BEDOPS.Constants.hpp and recompile BEDOPS.\n");
-                                            fprintf(stderr, "You may instead choose to put a dummy id column (like 'id') in as the 4th field to fix this.\n");
+                                            chromEntryCount = appendChromBedEntry(chrom, startPos, endPos, NULL, &totalBytes);
+                                        }
+
+                                    if(chromEntryCount < 0) 
+                                        {
+                                            fprintf(stderr, "Error: %s, %d: Unable to create BED structure.\n", __FILE__, __LINE__);
                                             fclose(bedFile);
                                             return -1;
                                         }
-                                    chromEntryCount = appendChromBedEntry(beds->chroms[jidx], startPos, endPos, bedLine, &totalBytes);
+                                    diffBytes = totalBytes - diffBytes;
+                                    *chromBytes[beds->numChroms] += diffBytes;
+                                    maxChromBytes = (*chromBytes[beds->numChroms] < maxChromBytes) ? maxChromBytes : *chromBytes[beds->numChroms];
+
+                                    beds->chroms[beds->numChroms] = chrom;
+                                    beds->numChroms++;
+
                                 }
                             else
                                 {
-                                    chromEntryCount = appendChromBedEntry(beds->chroms[jidx], startPos, endPos, NULL, &totalBytes);
-                                }
-
-                            diffBytes = totalBytes - diffBytes;
-                            *chromBytes[jidx] += diffBytes;
-                            maxChromBytes = (*chromBytes[jidx] < maxChromBytes) ? maxChromBytes : *chromBytes[jidx]; 
-
-                            if (chromEntryCount < 0)
-                                {
-                                    fprintf(stderr, "Error: %s, %d: Unable to create BED structure.\n", __FILE__, __LINE__);
-                                    fclose(bedFile);
-                                    return -1;
-                                }
-                        }
-
-                    if(maxMem > 0 && (totalBytes + maxChromBytes >= maxMem))
-                        {
-                            /* worst case quicksort memory is O(2*n),
-                               yet we sort by a single chrom at a time and totalBytes already
-                               accounts for 1*n maxChromBytes.  totalBytes is a conservative
-                               measure of memory used.
-                            */
-
-                            chrNames.clear();
-                            errno = 0;
-                            tmpFiles = (FILE**)realloc(tmpFiles, sizeof(FILE*) * (tmpFileCount+1));
-                            if(tmpFiles == NULL)
-                                {
-                                    fprintf(stderr, "Error: %s, %d: Unable to create FILE* array: %s. Out of memory.\n", __FILE__, 
-                                            __LINE__, strerror(errno));
-                                    fclose(bedFile);
-                                    return -1;
-                                }
-                            totalBytes += sizeof(FILE*) * (tmpFileCount+1);
-                            tmpFiles[tmpFileCount] = tmpfile();
-                            lexSortBedData(beds);
-                            printBed(tmpFiles[tmpFileCount], beds);
-                            for(tidx = 0; tidx < beds->numChroms; ++tidx)
-                                free(chromBytes[tidx]);
-                            free(chromBytes);
-
-                            freeBedData(beds);
-                            chromAllocs = 1;
-                            chromBytes = (double**)malloc(sizeof(double *));
-                            if(chromBytes == NULL)
-                                {
-                                    fprintf(stderr, "Error: %s, %d: Unable to create double* array. Out of memory.\n", __FILE__, __LINE__);
-                                    return -1;
-                                }
-                            maxChromBytes = 0;
-                            totalBytes = overhead; /* already includes chromBytes array */
-                            if ( ++tmpFileCount == maxTmpFiles )
-                                { /* hierarchial merge sort to keep # open file descriptors low */
-                                    tmpX = tmpfile();
-                                    if(0 != mergeSort(tmpX, tmpFiles, tmpFileCount))
+                                    jidx = siter->second;
+                                    // Append data to current chrom
+                                    diffBytes = totalBytes;
+                                    if(fields > 3)
+                                        { // check ID column is <= ID_NAME_LEN for the benefit of downstream programs
+                                            cptr = strpbrk(bedLine, "\t "); // bedops/bedmap do not differentiate these whitespace characters
+                                            if(cptr == NULL)
+                                                {
+                                                    if(strlen(bedLine) > ID_NAME_LEN)
+                                                        {
+                                                            fprintf(stderr, "ID field too long at line %" PRIu64 " in %s.\n",
+                                                                    lines, bedFileNames[iidx]);
+                                                            fprintf(stderr, "Check that you have unix newlines (cat -A) or increase TOKEN_ID_MAX_LENGTH in BEDOPS.Constants.hpp and recompile BEDOPS.\n");
+                                                            fprintf(stderr, "You may instead choose to put a dummy id column (like 'id') in as the 4th field to fix this.\n");
+                                                            fclose(bedFile);
+                                                            return -1;
+                                                        }
+                                                }
+                                            else if(cptr - bedLine > (double)ID_NAME_LEN)
+                                                {
+                                                    fprintf(stderr, "ID field too long at line %" PRIu64 " in %s.\n",
+                                                            lines, bedFileNames[iidx]);
+                                                    fprintf(stderr, "Check that you have unix newlines (cat -A) or increase TOKEN_ID_MAX_LENGTH in BEDOPS.Constants.hpp and recompile BEDOPS.\n");
+                                                    fprintf(stderr, "You may instead choose to put a dummy id column (like 'id') in as the 4th field to fix this.\n");
+                                                    fclose(bedFile);
+                                                    return -1;
+                                                }
+                                            chromEntryCount = appendChromBedEntry(beds->chroms[jidx], startPos, endPos, bedLine, &totalBytes);
+                                        }
+                                    else
                                         {
-                                            fprintf(stderr, "Error: %s, %d.  Out of memory.\n", __FILE__, __LINE__);
+                                            chromEntryCount = appendChromBedEntry(beds->chroms[jidx], startPos, endPos, NULL, &totalBytes);
+                                        }
+
+                                    diffBytes = totalBytes - diffBytes;
+                                    *chromBytes[jidx] += diffBytes;
+                                    maxChromBytes = (*chromBytes[jidx] < maxChromBytes) ? maxChromBytes : *chromBytes[jidx]; 
+
+                                    if (chromEntryCount < 0)
+                                        {
+                                            fprintf(stderr, "Error: %s, %d: Unable to create BED structure.\n", __FILE__, __LINE__);
                                             fclose(bedFile);
                                             return -1;
                                         }
-
-                                    for (tidx = 0; tidx < tmpFileCount; ++tidx)
-                                        fclose(tmpFiles[tidx]); /* deletes temporary files for us */
-                                    free(tmpFiles);
-                                    tmpFiles = (FILE**)malloc(sizeof(FILE *));
-                                    if(tmpFiles == NULL)
-                                        {
-                                            fprintf(stderr, "Error: %s, %d: Unable to create FILE* array. Out of memory.\n", __FILE__, __LINE__);
-                                            return -1;
-                                        }
-                                    totalBytes += sizeof(FILE*);
-                                    tmpFileCount = 1U;
-                                    tmpFiles[0] = tmpX;
-                                    tmpX = NULL;
-                                }
-
-                            beds = initializeBedData(&totalBytes);
-                            if(beds == NULL) 
-                                {
-                                    fprintf(stderr, "Error: %s, %d: Unable to create BED structure. Out of memory.\n", __FILE__, __LINE__);
-                                    return -1;
                                 }
                         }
+                        
 
-                    bedLine[BED_LINE_LEN] = '1';
-                    lines++;
-                } /* while */
-      
-            if(notStdin)
-                {
-                    fclose(bedFile);
-                }
-        } /* for */
+                     if(maxMem > 0 && (totalBytes + maxChromBytes >= maxMem))
+                         {
+                             /* worst case quicksort memory is O(2*n),
+                                yet we sort by a single chrom at a time and totalBytes already
+                                accounts for 1*n maxChromBytes.  totalBytes is a conservative
+                                measure of memory used.
+                             */
 
-    if(tmpFileCount > 0)
+                             chrNames.clear();
+                             errno = 0;
+                             tmpFiles = (FILE**)realloc(tmpFiles, sizeof(FILE*) * (tmpFileCount+1));
+                             if(tmpFiles == NULL)
+                                 {
+                                     fprintf(stderr, "Error: %s, %d: Unable to create FILE* array: %s. Out of memory.\n", __FILE__, 
+                                             __LINE__, strerror(errno));
+                                     fclose(bedFile);
+                                     return -1;
+                                 }
+                             totalBytes += sizeof(FILE*) * (tmpFileCount+1);
+                             tmpFiles[tmpFileCount] = tmpfile();
+                             lexSortBedData(beds);
+                             printBed(tmpFiles[tmpFileCount], beds);
+                             for(tidx = 0; tidx < beds->numChroms; ++tidx)
+                                 free(chromBytes[tidx]);
+                             free(chromBytes);
+
+                             freeBedData(beds);
+                             chromAllocs = 1;
+                             chromBytes = (double**)malloc(sizeof(double *));
+                             if(chromBytes == NULL)
+                                 {
+                                     fprintf(stderr, "Error: %s, %d: Unable to create double* array. Out of memory.\n", __FILE__, __LINE__);
+                                     return -1;
+                                 }
+                             maxChromBytes = 0;
+                             totalBytes = overhead; /* already includes chromBytes array */
+                             if ( ++tmpFileCount == maxTmpFiles )
+                                 { /* hierarchial merge sort to keep # open file descriptors low */
+                                     tmpX = tmpfile();
+                                     if(0 != mergeSort(tmpX, tmpFiles, tmpFileCount))
+                                         {
+                                             fprintf(stderr, "Error: %s, %d.  Out of memory.\n", __FILE__, __LINE__);
+                                             fclose(bedFile);
+                                             return -1;
+                                         }
+
+                                     for (tidx = 0; tidx < tmpFileCount; ++tidx)
+                                         fclose(tmpFiles[tidx]); /* deletes temporary files for us */
+                                     free(tmpFiles);
+                                     tmpFiles = (FILE**)malloc(sizeof(FILE *));
+                                     if(tmpFiles == NULL)
+                                         {
+                                             fprintf(stderr, "Error: %s, %d: Unable to create FILE* array. Out of memory.\n", __FILE__, __LINE__);
+                                             return -1;
+                                         }
+                                     totalBytes += sizeof(FILE*);
+                                     tmpFileCount = 1U;
+                                     tmpFiles[0] = tmpX;
+                                     tmpX = NULL;
+                                 }
+
+                             beds = initializeBedData(&totalBytes);
+                             if(beds == NULL) 
+                                 {
+                                     fprintf(stderr, "Error: %s, %d: Unable to create BED structure. Out of memory.\n", __FILE__, __LINE__);
+                                     return -1;
+                                 }
+                         }
+
+                     bedLine[BED_LINE_LEN] = '1';
+                     lines++;
+                 } /* while */
+
+             if(notStdin)
+                 {
+                     fclose(bedFile);
+                 }
+         } /* for */
+
+     if(tmpFileCount > 0)
         {
             if(beds->numChroms > 0)
                 { /* sort and spit out what's in memory */
