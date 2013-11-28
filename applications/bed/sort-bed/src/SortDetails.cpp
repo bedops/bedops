@@ -68,7 +68,7 @@ initializeBedData(double *bytes)
 ChromBedData * 
 initializeChromBedData(char *chromBuf, double *bytes) {
     ChromBedData *chrom;
-    size_t chromBufLen, i, j;
+    size_t chromBufLen;
 
     if(chromBuf == NULL) 
         {
@@ -88,12 +88,14 @@ initializeChromBedData(char *chromBuf, double *bytes) {
     /* Chrom name*/
     chromBufLen = strlen(chromBuf); // we know >= 1
 
+/* sjn
     // reverse string to actual chrom name
     i = 0;
     for ( j = chromBufLen; j > 0; )
         chrom->chromName[i++] = chromBuf[--j];
     chrom->chromName[chromBufLen-1] = chromBuf[0];
-    // strncpy(chrom->chromName, chromBuf, chromBufLen);
+*/
+strncpy(chrom->chromName, chromBuf, chromBufLen);
     chrom->chromName[chromBufLen] = '\0';
     chrom->numCoords = 0;
     return chrom;
@@ -323,7 +325,7 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
         fields = 0,
         headCheck = 1,
         val = 0;
-    unsigned int iidx, jidx, kidx, tidx, newChrom;
+    unsigned int iidx, jidx, kidx, tidx, newChrom, lastidx = 0;
     unsigned int tmpFileCount = 0U;
     size_t chromAllocs = 1;
 
@@ -450,7 +452,7 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                             return -1;
                         }
 
-                    // reverse chrom name for faster lookup
+                    // reverse chrom name for faster lookup in common case that everything looks like chrBLAH
                     jidx = 0;
                     for ( kidx = static_cast<size_t>(cptr-bedLine); kidx > 0; )
                       chromBuf[jidx++] = bedLine[--kidx];
@@ -573,32 +575,39 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                         }
 
 
-                    /*Find the chrom*/
+                    /*Find the chrom*/                    
                     if (beds->numChroms < chromCrossover)
-                        { /* linear search */
+                        {
                             newChrom = 1;
-                            for(jidx = 0; jidx < beds->numChroms; jidx++) 
+                            if (beds->numChroms > 0 && (strcmp(beds->chroms[lastidx]->chromName, chromBuf) == 0))
+                                { /* same chr as last row which often happens in practice */
+                                    jidx = lastidx;
+                                    newChrom = 0;
+                                }
+                            else /* linear search */
                                 {
-                                    if(strcmp(beds->chroms[jidx]->chromName, chromBuf) == 0) 
+                                    for(jidx = 0; jidx < beds->numChroms; jidx++)
                                         {
-                                            /* Append data to current chrom */
-                                            diffBytes = totalBytes;
-                                            if(fields > 3)
-                                                { /* check ID column is <= ID_NAME_LEN for the benefit of downstream programs */
-                                                    cptr = strpbrk(bedLine, "\t "); /* bedops/bedmap do not differentiate these whitespace characters */
-                                                    if(cptr == NULL)
-                                                        {
-                                                            if(strlen(bedLine) > ID_NAME_LEN)
-                                                                {
-                                                                    fprintf(stderr, "ID field too long at line %" PRIu64 " in %s.\n",
-                                                                            lines, bedFileNames[iidx]);
-                                                                    fprintf(stderr, "Check that you have unix newlines (cat -A) or increase TOKEN_ID_MAX_LENGTH in BEDOPS.Constants.hpp and recompile BEDOPS.\n");
-                                                                    fprintf(stderr, "You may instead choose to put a dummy id column (like 'id') in as the 4th field to fix this.\n");
-                                                                    fclose(bedFile);
-                                                                    return -1;
-                                                                }
-                                                        }
-                                                    else if(cptr - bedLine > (double)ID_NAME_LEN)
+                                            if(strcmp(beds->chroms[jidx]->chromName, chromBuf) == 0)
+                                                {
+                                                   lastidx = jidx;
+                                                   newChrom = 0;
+                                                   break;
+                                                }
+                                        } /* for */
+                                }
+
+                            if (!newChrom)
+                                {
+                                    /* Append data to current chrom */
+//                                    lastidx = jidx;
+                                    diffBytes = totalBytes;
+                                    if(fields > 3)
+                                        { /* check ID column is <= ID_NAME_LEN for the benefit of downstream programs */
+                                            cptr = strpbrk(bedLine, "\t "); /* bedops/bedmap do not differentiate these whitespace characters */
+                                            if(cptr == NULL)
+                                                {
+                                                    if(strlen(bedLine) > ID_NAME_LEN)
                                                         {
                                                             fprintf(stderr, "ID field too long at line %" PRIu64 " in %s.\n",
                                                                     lines, bedFileNames[iidx]);
@@ -607,38 +616,41 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                                                             fclose(bedFile);
                                                             return -1;
                                                         }
-                                                    chromEntryCount = appendChromBedEntry(beds->chroms[jidx], startPos, endPos, bedLine, &totalBytes);
                                                 }
-                                            else
+                                            else if(cptr - bedLine > (double)ID_NAME_LEN)
                                                 {
-                                                    chromEntryCount = appendChromBedEntry(beds->chroms[jidx], startPos, endPos, NULL, &totalBytes);
-                                                }
-        
-                                            diffBytes = totalBytes - diffBytes;
-                                            *chromBytes[jidx] += diffBytes;
-                                            maxChromBytes = (*chromBytes[jidx] < maxChromBytes) ? maxChromBytes : *chromBytes[jidx]; 
-        
-                                            if (static_cast<int>(chromEntryCount) < 0)
-                                                {
-                                                    fprintf(stderr, "Error: %s, %d: Unable to create BED structure.\n", __FILE__, __LINE__);
+                                                    fprintf(stderr, "ID field too long at line %" PRIu64 " in %s.\n",
+                                                            lines, bedFileNames[iidx]);
+                                                    fprintf(stderr, "Check that you have unix newlines (cat -A) or increase TOKEN_ID_MAX_LENGTH in BEDOPS.Constants.hpp and recompile BEDOPS.\n");
+                                                    fprintf(stderr, "You may instead choose to put a dummy id column (like 'id') in as the 4th field to fix this.\n");
                                                     fclose(bedFile);
                                                     return -1;
                                                 }
-                                            newChrom = 0;
-                                            break;
+                                            chromEntryCount = appendChromBedEntry(beds->chroms[jidx], startPos, endPos, bedLine, &totalBytes);
                                         }
-                                } /* for */
-        
-                            if((newChrom) || (beds->numChroms == 0)) 
-                                {
-                                    errno = 0;
-        
-                                    /* Create a new chrom */
-        
-                                    /* Resize Chrom Structure */
-                                    if(beds->numChroms >= (double)((NUM_CHROM_EST * chromAllocs) - 1))
+                                    else
                                         {
-                                            /* fprintf(stderr, "Reallocating...\n"); */
+                                            chromEntryCount = appendChromBedEntry(beds->chroms[jidx], startPos, endPos, NULL, &totalBytes);
+                                        }
+
+                                    diffBytes = totalBytes - diffBytes;
+                                    *chromBytes[jidx] += diffBytes;
+                                    maxChromBytes = (*chromBytes[jidx] < maxChromBytes) ? maxChromBytes : *chromBytes[jidx]; 
+
+                                    if (static_cast<int>(chromEntryCount) < 0)
+                                        {
+                                            fprintf(stderr, "Error: %s, %d: Unable to create BED structure.\n", __FILE__, __LINE__);
+                                            fclose(bedFile);
+                                            return -1;
+                                        }
+                                }
+                            else /* new chrom */
+                                {
+                                    /* Create a new chrom */
+                                    errno = 0;
+
+                                    if(beds->numChroms >= (double)((NUM_CHROM_EST * chromAllocs) - 1))
+                                        {   /* Resize Chrom Structure */
                                             chromAllocs++;
                                             beds->chroms = (ChromBedData**)realloc(beds->chroms, sizeof(ChromBedData *) * NUM_CHROM_EST * chromAllocs);
                                             totalBytes += sizeof(ChromBedData *) * NUM_CHROM_EST * chromAllocs;
@@ -720,13 +732,13 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                                         }
         
                                     beds->chroms[beds->numChroms] = chrom;
-                                    beds->numChroms++;
+                                    lastidx = beds->numChroms++;
                                 }
                             }
                     else /* map search since there are a ridiculous # distinct chrom names */
                         {
                             if (firstCross)
-                                {
+                                { /* copy over what we have up until this point into our map */
                                     firstCross = false;
                                     chrNames.clear();
                                     for(tidx = 0; tidx < beds->numChroms; ++tidx)
@@ -1051,15 +1063,29 @@ freeBedData(BedData *beds)
 void
 lexSortBedData(BedData *beds)
 {
-    unsigned int i;
+    unsigned int i, j, k;
+    char chromBuf[CHROM_NAME_LEN + 1];
+    chromBuf[0] = '\0';
+    size_t chromBufLen;
 
     if(beds == NULL) 
         {
             return;
         }
 
+    /* reverse chromosome names (back to correct names) before comparisons */
+    for(i = 0; i < beds->numChroms; ++i)
+        {
+            k = 0;
+            chromBufLen = strlen(beds->chroms[i]->chromName); // we know >= 1
+            strncpy(chromBuf, beds->chroms[i]->chromName, chromBufLen);
+            for ( j = chromBufLen; j > 0; )
+                beds->chroms[i]->chromName[k++] = chromBuf[--j];
+            /* terminating null is already in correct spot */
+        }
+
     /* sort coords */
-    for(i = 0; i < beds->numChroms; i++) 
+    for(i = 0; i < beds->numChroms; ++i) 
         {            
             qsort(beds->chroms[i]->coords, static_cast<size_t>(beds->chroms[i]->numCoords), sizeof(BedCoordData), numCompareBedData);
         }
@@ -1067,7 +1093,6 @@ lexSortBedData(BedData *beds)
     /* sort chroms */
     qsort(beds->chroms, static_cast<size_t>(beds->numChroms), sizeof(ChromBedData *), lexCompareBedData); 
     return;
-
 }
 
 int
