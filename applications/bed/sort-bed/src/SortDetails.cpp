@@ -592,7 +592,6 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                             if (!newChrom)
                                 {
                                     /* Append data to current chrom */
-//                                    lastidx = jidx;
                                     diffBytes = totalBytes;
                                     if(fields > 3)
                                         { /* check ID column is <= ID_NAME_LEN for the benefit of downstream programs */
