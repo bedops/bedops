@@ -87,15 +87,7 @@ initializeChromBedData(char *chromBuf, double *bytes) {
   
     /* Chrom name*/
     chromBufLen = strlen(chromBuf); // we know >= 1
-
-/* sjn
-    // reverse string to actual chrom name
-    i = 0;
-    for ( j = chromBufLen; j > 0; )
-        chrom->chromName[i++] = chromBuf[--j];
-    chrom->chromName[chromBufLen-1] = chromBuf[0];
-*/
-strncpy(chrom->chromName, chromBuf, chromBufLen);
+    strncpy(chrom->chromName, chromBuf, chromBufLen);
     chrom->chromName[chromBufLen] = '\0';
     chrom->numCoords = 0;
     return chrom;
