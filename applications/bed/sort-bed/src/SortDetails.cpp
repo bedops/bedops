@@ -346,7 +346,7 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
     /* a guess for general overhead for local vars, function call stacks, etc. */
     const int overhead = 100000;
     const int chromCrossover = 1000;
-    const int maxTmpFiles = 127; // can hit max open file descriptors in extreme cases.  use hierarchial merge-sort
+    const int maxTmpFiles = 120; // can hit max open file descriptors in extreme cases.  use hierarchial merge-sort
     double totalBytes = overhead;
     double diffBytes = 0;
     double maxChromBytes = 0;
