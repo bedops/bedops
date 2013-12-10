@@ -193,6 +193,18 @@ namespace Visitors {
         { return "echo-map-id-uniq"; }
     };
 
+    template <template<class X> class A, class B>
+    struct VisitorName< Visitors::BedSpecific::EchoMapBed<A<Visitors::BedHelpers::PrintLength>,B> > {
+      static std::string Name()
+        { return "echo-map-size"; }
+    };
+
+    template <class A, class B>
+    struct VisitorName< Visitors::BedSpecific::EchoMapIntersectLength<A, B> > {
+      static std::string Name()
+        { return "echo-overlap-size"; }
+    };
+
     template <class B>
     struct VisitorName< Visitors::BedSpecific::EchoMapBed< Visitors::BedHelpers::PrintGenomicRange<Visitors::BedHelpers::PrintBED3>, B> > {
       static std::string Name()
