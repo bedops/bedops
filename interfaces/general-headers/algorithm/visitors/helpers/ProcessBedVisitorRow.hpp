@@ -34,6 +34,7 @@
 
 #include <boost/type_traits.hpp>
 
+#include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
 #include "data/bed/BedCompare.hpp"
 #include "data/measurement/NaN.hpp"
 #include "utility/Formats.hpp"

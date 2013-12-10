@@ -32,7 +32,7 @@
 #include <limits>
 
 // Files included
-#include "algorithm/visitors/helpers/ProcessBedVisitorRow.hpp"
+#include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
 #include "suite/BEDOPS.Constants.hpp"
 #include "utility/PrintTypes.hpp"
 #include "utility/Typify.hpp"
@@ -50,8 +50,8 @@ namespace FeatDist {
   //==========
   // PrintAll
   //==========
-  struct PrintAll : private Visitors::BedHelpers::PrintDelim {
-    typedef Visitors::BedHelpers::PrintDelim Base;
+  struct PrintAll : private Visitors::Helpers::PrintDelim {
+    typedef Visitors::Helpers::PrintDelim Base;
 
     explicit PrintAll(const std::string& delim = "|", bool printDistances = false,
                       bool suppressRefField = false)
@@ -108,8 +108,8 @@ namespace FeatDist {
   //===============
   // PrintShortest
   //===============
-  struct PrintShortest : private Visitors::BedHelpers::PrintDelim {
-    typedef Visitors::BedHelpers::PrintDelim Base;
+  struct PrintShortest : private Visitors::Helpers::PrintDelim {
+    typedef Visitors::Helpers::PrintDelim Base;
 
     explicit PrintShortest(const std::string& delim = "|", bool printDistances = false,
                            bool suppressRefField = false)

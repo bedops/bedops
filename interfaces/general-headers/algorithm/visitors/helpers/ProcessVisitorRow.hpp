@@ -34,7 +34,6 @@
 
 #include "data/measurement/NaN.hpp"
 #include "utility/PrintTypes.hpp"
-#include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
 
 namespace Visitors {
 
@@ -105,75 +104,6 @@ namespace Visitors {
         PrintTypes::Println(t);
       }
     };
-
-/*  
-    //=========
-    // Print()
-    //=========
-    struct Print {
-      Print(std::ostream& os = std::cout, const std::string& fieldSep = "\t")
-        : os_(os), fieldSep_(fieldSep)
-        { }
-  
-      template <typename T>
-      void operator()(T* t) {
-        os_ << *t;
-      }
-
-      template <typename T>
-      void operator()(const T& t) {
-        os_ << t;
-      }
-  
-      template <typename T, typename U>
-      void operator()(const T& t, const U& u) {
-        os_ << t << fieldSep_ << u;
-      }
-  
-      template <typename T, typename U, typename V>
-      void operator()(const T& t, const U& u, const V& v) {
-        os_ << t << fieldSep_ << u << fieldSep_ << v;
-      }
-  
-    protected:
-      std::ostream& os_;
-      std::string fieldSep_;
-    };
-  
-  
-    //===========
-    // Println()
-    //===========
-    struct Println {
-      Println(std::ostream& os = std::cout, const std::string& fieldSep = "\t")
-        : os_(os), fieldSep_(fieldSep)
-        { }
-
-      template <typename T>
-      void operator()(T* t) {
-        os_ << *t << std::endl;
-      }
-  
-      template <typename T>
-      void operator()(const T& t) {
-        os_ << t << std::endl;
-      }
-  
-      template <typename T, typename U>
-      void operator()(const T& t, const U& u) {
-        os_ << t << fieldSep_ << u << std::endl;
-      }
-  
-      template <typename T, typename U, typename V>
-      void operator()(const T& t, const U& u, const V& v) {
-        os_ << t << fieldSep_ << u << fieldSep_ << v << std::endl;
-      }
-  
-    protected:
-      std::ostream& os_;
-      std::string fieldSep_;
-    };
-*/
 
     //============
     // PrintDelim
