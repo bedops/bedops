@@ -30,6 +30,7 @@
 
 #include <set>
 
+#include "data/bed/BedCompare.hpp"
 
 namespace Visitors {
 
@@ -63,7 +64,7 @@ namespace Visitors {
       virtual ~EchoMapBed() { }
 
     private:
-      typedef std::set<MapType*> SType;
+      typedef std::set< MapType*, Bed::GenomicAddressCompare<MapType, MapType> > SType; // consistent w/sort-bed
       typedef typename SType::iterator SIter;
       ProcessType pt_;
       SType win_;

@@ -32,6 +32,7 @@
 #include "algorithm/visitors/bed/BedBaseVisitor.hpp"
 #include "algorithm/visitors/BedVisitors.hpp"
 #include "algorithm/visitors/helpers/ProcessBedVisitorRow.hpp"
+#include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
 #include "utility/Exception.hpp"
 
 
@@ -47,14 +48,18 @@ namespace BedMap {
     typedef Visitors::BedHelpers::Print ProcessAll;
     typedef Visitors::BedHelpers::Print ProcessOne;
     typedef Visitors::BedHelpers::PrintID ProcessID;
+    typedef Visitors::BedHelpers::PrintLength ProcessLength;
+    typedef Visitors::Helpers::Print ProcessIntegerLength;
     typedef Visitors::BedHelpers::PrintScore ProcessScore;
     typedef Visitors::BedHelpers::PrintScorePrecision ProcessScorePrecision;
     typedef Visitors::BedHelpers::PrintBED3 ProcessBED3;
-    typedef Visitors::BedHelpers::PrintSortedRangeDelim<ProcessAll> ProcessRangeDelimAll;
-    typedef Visitors::BedHelpers::PrintSortedRangeDelim<ProcessID> ProcessRangeDelimID;
+    typedef Visitors::Helpers::PrintRangeDelim<ProcessAll> ProcessRangeDelimAll;
+    typedef Visitors::Helpers::PrintRangeDelim<ProcessID> ProcessRangeDelimID;
+    typedef Visitors::Helpers::PrintRangeDelim<ProcessLength> ProcessRangeDelimLength;
+    typedef Visitors::Helpers::PrintRangeDelim<ProcessIntegerLength> ProcessRangeDelimIntersectLength;
     typedef Visitors::BedHelpers::PrintUniqueRangeIDs ProcessUniqueDelimID;
-    typedef Visitors::BedHelpers::PrintSortedRangeDelim<ProcessScore> ProcessRangeDelimScore;
-    typedef Visitors::BedHelpers::PrintSortedRangeDelim<ProcessScorePrecision> ProcessRangeDelimScorePrecision;
+    typedef Visitors::Helpers::PrintRangeDelim<ProcessScore> ProcessRangeDelimScore;
+    typedef Visitors::Helpers::PrintRangeDelim<ProcessScorePrecision> ProcessRangeDelimScorePrecision;
     typedef Visitors::BedHelpers::PrintGenomicRange<ProcessBED3> ProcessMapGenomicRange;
 
     typedef typename BaseClass::mapping_type MapType;
@@ -80,9 +85,11 @@ namespace BedMap {
 
     typedef Visitors::BedSpecific::EchoMapBed<ProcessRangeDelimAll, BaseClass> EchoMapAll;
     typedef Visitors::BedSpecific::EchoMapBed<ProcessRangeDelimID, BaseClass> EchoMapID;
-    typedef Visitors::BedSpecific::EchoMapBed<ProcessUniqueDelimID, BaseClass> EchoMapUniqueID;
+    typedef Visitors::BedSpecific::EchoMapBed<ProcessRangeDelimLength, BaseClass> EchoMapLength;
     typedef Visitors::BedSpecific::EchoMapBed<ProcessMapGenomicRange, BaseClass> EchoMapRange;
     typedef Visitors::BedSpecific::EchoMapBed<ProcessRangeDelimScorePrecision, BaseClass> EchoMapScore;
+    typedef Visitors::BedSpecific::EchoMapBed<ProcessUniqueDelimID, BaseClass> EchoMapUniqueID;
+    typedef Visitors::BedSpecific::EchoMapIntersectLength<ProcessRangeDelimIntersectLength, BaseClass> EchoMapIntersectLength;
     typedef Visitors::Echo<ProcessAll, BaseClass> EchoRefAll;
     typedef Visitors::BedSpecific::OvrAggregate<ProcessScore, BaseClass> OvrAgg;
     typedef Visitors::BedSpecific::OvrUnique<ProcessScore, BaseClass> OvrUniq;

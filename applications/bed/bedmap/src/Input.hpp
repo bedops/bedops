@@ -229,6 +229,10 @@ namespace BedMap {
           hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoMapID>());
         else if ( next == details::name<typename VT::EchoMapUniqueID>() )
           hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoMapUniqueID>());
+        else if ( next == details::name<typename VT::EchoMapLength>() )
+          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoMapLength>());
+        else if ( next == details::name<typename VT::EchoMapIntersectLength>() )
+          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoMapIntersectLength>());
         else if ( next == details::name<typename VT::EchoMapRange>() )
           hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoMapRange>());
         else if ( next == details::name<typename VT::EchoMapScore>() )
@@ -385,8 +389,10 @@ namespace BedMap {
       static unsigned int num(Ext::Type2Type<typename VT::Count>) { return 3; }
       static unsigned int num(Ext::Type2Type<typename VT::EchoMapAll>) { return 3; }
       static unsigned int num(Ext::Type2Type<typename VT::EchoMapID>) { return 4; }
-      static unsigned int num(Ext::Type2Type<typename VT::EchoMapUniqueID>) { return 4; }
+      static unsigned int num(Ext::Type2Type<typename VT::EchoMapIntersectLength>) { return 3; }
+      static unsigned int num(Ext::Type2Type<typename VT::EchoMapLength>) { return 3; }
       static unsigned int num(Ext::Type2Type<typename VT::EchoMapRange>) { return 3; }
+      static unsigned int num(Ext::Type2Type<typename VT::EchoMapUniqueID>) { return 4; }
       static unsigned int num(Ext::Type2Type<typename VT::EchoRefAll>) { return 3; }
       static unsigned int num(Ext::Type2Type<typename VT::Indicator>) { return 3; }
       static unsigned int num(Ext::Type2Type<typename VT::OvrAgg>) { return 3; }
@@ -514,6 +520,8 @@ namespace BedMap {
     usage << "      --" + details::name<VT::EchoMapUniqueID>() +  "  List unique IDs from overlapping <map-file> elements.\n";
     usage << "      --" + details::name<VT::EchoMapRange>() + "    Print genomic range of overlapping elements from <map-file>.\n";
     usage << "      --" + details::name<VT::EchoMapScore>() + "    List scores from overlapping <map-file> elements.\n";
+    usage << "      --" + details::name<VT::EchoMapLength>() + "     List the full length of every overlapping element.\n";
+    usage << "      --" + details::name<VT::EchoMapIntersectLength>() + " List lengths of overlaps.\n";
     usage << "      --" + details::name<VT::Indicator>() + "         Print 1 if there exists an overlapping element in <map-file>, 0 otherwise.\n";
     usage << "\n";
 

@@ -34,7 +34,7 @@
 
 #include "data/measurement/NaN.hpp"
 #include "utility/PrintTypes.hpp"
-
+#include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
 
 namespace Visitors {
 
@@ -76,14 +76,44 @@ namespace Visitors {
       ValueType value_;
     };
 
-  
+    //=========
+    // Print()
+    //=========
+    struct Print {
+      template <typename T>
+      void operator()(T* t) const {
+        PrintTypes::Print(*t);
+      }
+
+      template <typename T>
+      void operator()(const T& t) const {
+        PrintTypes::Print(t);
+      }
+    };
+
+    //===========
+    // Println()
+    //===========
+    struct Println {
+      template <typename T>
+      void operator()(T* t) const {
+        PrintTypes::Println(*t);
+      }
+
+      template <typename T>
+      void operator()(const T& t) const {
+        PrintTypes::Println(t);
+      }
+    };
+
+/*  
     //=========
     // Print()
     //=========
     struct Print {
       Print(std::ostream& os = std::cout, const std::string& fieldSep = "\t")
         : os_(os), fieldSep_(fieldSep)
-        { /* */ }
+        { }
   
       template <typename T>
       void operator()(T* t) {
@@ -117,7 +147,7 @@ namespace Visitors {
     struct Println {
       Println(std::ostream& os = std::cout, const std::string& fieldSep = "\t")
         : os_(os), fieldSep_(fieldSep)
-        { /* */ }
+        { }
 
       template <typename T>
       void operator()(T* t) {
@@ -143,21 +173,74 @@ namespace Visitors {
       std::ostream& os_;
       std::string fieldSep_;
     };
+*/
 
     //============
     // PrintDelim
     //============
     struct PrintDelim {
       explicit PrintDelim(const std::string& delim = "|")
-        : delim_(delim)
-      { /* */ }
+        : delim_(delim), isChar_(false) {
+        bool isaTab = (delim == "\t" || delim == "\\t" || delim == "'\t'");
+        bool isaNewline = (delim == "\n" || delim == "\\n" || delim == "'\n'");
+        if ( isaTab ) {
+          delim_ = "";
+          delim_ += '\t';
+          isChar_ = true;
+        }
+        else if ( isaNewline ) {
+          delim_ = "";
+          delim_ += '\n';
+          isChar_ = true;
+        } else if ( 1 == delim.size() ) {
+          delim_ = "";
+          delim_ += delim[0];
+          isChar_ = true;
+        }
+      }
+
+      explicit PrintDelim(char t) : delim_(""), isChar_(true) {
+        delim_ += t;
+      }
 
       void operator()() const {
-        PrintTypes::Print(delim_.c_str());
+        if ( isChar_ )
+          PrintTypes::Print(delim_[0]);
+        else
+          PrintTypes::Print(delim_.c_str());
       }
 
     private:
       std::string delim_;
+      bool isChar_;
+    };
+
+    //==================
+    // PrintRangeDelim()
+    //===================
+    template <typename PrintType>
+    struct PrintRangeDelim : private PrintDelim {
+      typedef PrintDelim Base;
+      typedef PrintType PType;
+
+      explicit PrintRangeDelim(const PrintType& p = PrintType(),
+                               const std::string& delim = ";")
+          : Base(delim), pt_(p)
+        { /* */ }
+
+      template <typename Iter>
+      void operator()(Iter beg, Iter end) const {
+        if ( beg == end )
+          return;
+        pt_.operator()(*beg);
+        while ( ++beg != end ) {
+          Base::operator()();
+          pt_.operator()(*beg);
+        } // while
+      }
+
+    private:
+      PrintType pt_;
     };
 
   } // namespace Helpers
