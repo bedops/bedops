@@ -40,6 +40,60 @@
 
 using namespace std;
 
+// probably linux-specific.  From
+//   http://stackoverflow.com/questions/63166/how-to-determine-cpu-and-memory-consumption-from-inside-a-process
+// just used them to help debug my overestimates of internal memory allocated
+namespace dbug_help
+{
+    int
+    parseLine(char* line)
+    {
+        int i = strlen(line);
+        while (*line < '0' || *line > '9') line++;
+        line[i-3] = '\0';
+        i = atoi(line);
+        return i;
+    }
+    
+    int
+    getVirtMemValue()
+    { //Note: this value is in KB!
+        FILE* file = fopen("/proc/self/status", "r");
+        int result = -1;
+        char line[128];
+    
+        while (fgets(line, 128, file) != NULL)
+            {
+                if (strncmp(line, "VmSize:", 7) == 0)
+                    {
+                        result = parseLine(line);
+                        break;
+                    }
+            }
+        fclose(file);
+        return result;
+    }
+    
+    int getResMemValue()
+    { //Note: this value is in KB!
+        FILE* file = fopen("/proc/self/status", "r");
+        int result = -1;
+        char line[128];
+    
+        while (fgets(line, 128, file) != NULL)
+            {
+                if (strncmp(line, "VmRSS:", 6) == 0)
+                    {
+                        result = parseLine(line);
+                        break;
+                    }
+            } /* while */
+        fclose(file);
+        return result;
+    }
+} // end namespace dbug_help
+
+
 BedData * 
 initializeBedData(double *bytes) 
 {
@@ -137,7 +191,7 @@ appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::Sig
         {
             //fprintf(stderr, "Reallocating...\n");
             chrom->coords = (BedCoordData*)realloc(chrom->coords, sizeof(BedCoordData) * static_cast<size_t>(index + NUM_BED_ITEMS_EST));
-            *bytes += (sizeof(BedCoordData) * (index + NUM_BED_ITEMS_EST));
+            *bytes += (sizeof(BedCoordData) * NUM_BED_ITEMS_EST); // only increasing by NUM_BED_ITEMS_EST since last time around
             if(chrom->coords == NULL)
                 {
                     fprintf(stderr, "Error: %s, %d: Unable to create BED structure. Out of memory.\n", __FILE__, __LINE__);
@@ -307,7 +361,7 @@ mergeSort(FILE* output, FILE **tmpFiles, unsigned int numFiles)
 }
 
 int
-processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
+processData(const char **bedFileNames, unsigned int numFiles, const double maxMem)
 {
     /* maxMem will be ignored if <= 0 */
 
@@ -343,11 +397,8 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
             return -1;
         }
 
-    /* a guess for general overhead for local vars, function call stacks, etc. */
-    const int overhead = 100000;
     const int chromCrossover = 1000;
     const int maxTmpFiles = 120; // can hit max open file descriptors in extreme cases.  use hierarchial merge-sort
-    double totalBytes = overhead;
     double diffBytes = 0;
     double maxChromBytes = 0;
     bool firstCross = true;
@@ -362,8 +413,10 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
     char tmpArr[BED_LINE_LEN + 1];
     bedLine[0] = '\0';
     chromBuf[0] = '\0';
-    totalBytes += BED_LINE_LEN + 1;
-    totalBytes += CHROM_NAME_LEN + 1;
+
+    /* a guess for general overhead for local vars, function call stacks, etc. */
+    const int overhead = 1000000 + (2 * (BED_LINE_LEN + 1)) + CHROM_NAME_LEN + 1;
+    double totalBytes = overhead;
 
     if(0 != checkfiles(bedFileNames, numFiles))
         {
@@ -684,7 +737,7 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                                     return -1;
                                 }
                             diffBytes = totalBytes - diffBytes;
-                            chromBytes = (double**)realloc(chromBytes, sizeof(double *) * (static_cast<size_t>(beds->numChroms) + 1));
+                            chromBytes = (double**)realloc(chromBytes, sizeof(double*) * (static_cast<size_t>(beds->numChroms) + 1));
                             if(chromBytes == NULL)
                                 {
                                     fprintf(stderr, "Error: %s, %d: Unable to create double* array. Out of memory.\n", __FILE__, __LINE__);
