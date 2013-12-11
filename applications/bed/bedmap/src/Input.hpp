@@ -428,7 +428,7 @@ namespace BedMap {
     std::stringstream usage;
     usage << "                                                                                                    \n";
     usage << " USAGE: bedmap [process-flags] [overlap-option] <operation(s)...> <ref-file> [map-file]             \n";
-    usage << "     All input files must be sorted per the sort-bed utility.                                       \n";
+    usage << "     Any input file must be sorted per the sort-bed utility.                                        \n";
     usage << "     The program accepts BED and starch file formats.                                               \n";
     usage << "     May use '-' for a file to indicate reading from standard input (BED format only).              \n";
     usage << "                                                                                                    \n";

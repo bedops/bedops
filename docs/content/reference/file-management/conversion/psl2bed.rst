@@ -11,7 +11,7 @@ For convenience, we also offer ``psl2starch``, which performs the extra step of 
 Dependencies
 ============
 
-The ``psl2bed`` script requires Python, version 2.5 or greater.
+The ``psl2bed`` script requires Python, version 2.7 or greater (and less than Python3).
 
 This script is also dependent on input that follows the `PSL specification <http://genome.ucsc.edu/FAQ/FAQformat.html#format2>`_. 
 
