@@ -25,7 +25,7 @@
 # Project:      Converts 1-based, closed [a, b] VCF v4 input into 0-based, 
 #               half-open [a-1, b) extended BED
 #
-# Version:      2.3
+# Version:      2.4
 #
 # Notes:        This conversion script relies on the VCF v4 format, with its
 #               specifications outlined here by the 1000 Genomes project:

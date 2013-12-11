@@ -25,7 +25,7 @@
 # Project:      Converts 1-based, closed [a, b] GFF3 input
 #               into 0-based, half-open [a-1, b) six-column extended BED
 #
-# Version:      2.3
+# Version:      2.4
 #
 # Notes:        The GFF3 specification (http://www.sequenceontology.org/gff3.shtml) 
 #               contains columns that do not map directly to common or UCSC BED columns.

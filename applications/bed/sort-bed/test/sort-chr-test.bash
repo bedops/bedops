@@ -14,7 +14,7 @@
 #
 
 CHROM_START=1
-CHROM_END=100000
+CHROM_END=10000
 TEST_FN=.test.bed
 
 rm -f ${TEST_FN}

@@ -3,7 +3,9 @@
 `vcf2bed`
 =========
 
-The ``vcf2bed`` script converts 1-based, closed ``[start, end]`` `Variant Call Format v4 <http://vcftools.sourceforge.net/specs.html>`_ (VCF) to sorted, 0-based, half-open ``[start-1, end)`` extended BED data.
+The ``vcf2bed`` script converts 1-based, closed ``[start, end]`` `Variant Call Format v4 <http://vcftools.sourceforge.net/specs.html>`_ (VCF) to sorted, 0-based, half-open ``[start-1, start)`` extended BED data.
+
+.. note:: Note that this script converts from ``[start, end]`` to ``[start-1, start)``. We perform the equivalent of a *single-base insertion* to make BED output that is guaranteed to work with BEDOPS, **regardless of what the actual variant may be**, to allow operations to be performed. The converted output contains additional columns which allow reconstruction of the original VCF data and associated variant parameters.
 
 For convenience, we also offer ``vcf2starch``, which performs the extra step of creating a :ref:`Starch-formatted <starch_specification>` archive.
 
@@ -11,11 +13,11 @@ For convenience, we also offer ``vcf2starch``, which performs the extra step of 
 Dependencies
 ============
 
-The ``vcf2bed`` script requires Python, version 2.5 or greater.
+The ``vcf2bed`` script requires Python, version 2.7 or greater (and less than Python3).
 
-This script is also dependent on input that follows the VCF specification. 
+This script is also dependent on input that follows the VCF specification.
 
-.. tip:: Conversion of data which are VCF-like, but which do not follow the specification can cause ``IOError`` and other runtime exceptions. If you run into problems, please check that your input follows the VCF specification.
+.. tip:: Conversion of data which are VCF-like, but which do not follow the specification can cause ``IOError`` and other runtime exceptions. If you run into problems, please check that your input follows the VCF specification using validation tools, such as those packaged with `VCFTools <http://vcftools.sourceforge.net/perl_module.html#vcf-validator>`_.
 
 ======
 Source
