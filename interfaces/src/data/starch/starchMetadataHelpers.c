@@ -831,11 +831,13 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
         if (!dynamicBuffer) {
             fprintf(stderr, "ERROR: Could not allocate space for dynamic buffer (v2).\n");
             return STARCH_EXIT_FAILURE;
-        }        
-        STARCH_fseeko(*fp, (off_t) (-(mdLength + STARCH2_MD_FOOTER_LENGTH) + 1), SEEK_END);
+        }
+	/* we must cast (size_t) mdLength to a signed int so that we avoid possibility of subtle overflow error that creates a non-usable offset value */
+        STARCH_fseeko(*fp, (off_t) (-((int64_t) mdLength + STARCH2_MD_FOOTER_LENGTH) + 1), SEEK_END);
         nReadBytes = fread(dynamicBuffer, 1, mdLength, *fp);
         if (nReadBytes != mdLength) {
             fprintf(stderr, "ERROR: Total amount of bytes read not equal to Starch v2 metadata length!\n");
+	    fprintf(stderr, "       Observed file read, in bytes: %zu | Expected metadata length, in bytes: %zu\n", nReadBytes, mdLength);
             return STARCH_EXIT_FAILURE;
         }
         *(dynamicBuffer + mdLength) = '\0';
