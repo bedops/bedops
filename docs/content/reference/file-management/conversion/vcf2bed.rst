@@ -85,6 +85,58 @@ We can convert VCF to sorted BED data in the following manner:
 
 .. note:: Note the conversion from 1- to 0-based coordinate indexing, in the transition from VCF to BED. While BEDOPS supports 0- and 1-based coordinate indexing, the coordinate change made here is believed to be convenient for most end users.
 
+.. _vcf2bed_column_mapping:
+
+==============
+Column mapping
+==============
+
+In this section, we describe how VCF v4 columns are mapped to BED columns. We start with the first five UCSC BED columns as follows:
+
++---------------------------+---------------------+---------------+
+| VCF v4 field              | BED column index    | BED field     |
++===========================+=====================+===============+
+| #CHROM                    | 1                   | chromosome    |
++---------------------------+---------------------+---------------+
+| POS - 1                   | 2                   | start         |
++---------------------------+---------------------+---------------+
+| POS (*)                   | 3                   | stop          |
++---------------------------+---------------------+---------------+
+| ID                        | 4                   | id            |
++---------------------------+---------------------+---------------+
+| QUAL                      | 5                   | score         |
++---------------------------+---------------------+---------------+
+
+The remaining columns are mapped as follows:
+
++---------------------------+---------------------+---------------+
+| VCF v4 field              | BED column index    | BED field     |
++===========================+=====================+===============+
+| REF                       | 6                   |               |
++---------------------------+---------------------+---------------+
+| ALT                       | 7                   |               |
++---------------------------+---------------------+---------------+
+| FILTER                    | 8                   |               |
++---------------------------+---------------------+---------------+
+| INFO                      | 9                   |               |
++---------------------------+---------------------+---------------+
+
+If present in the VCF v4 input, the following columns are also mapped:
+
++---------------------------+---------------------+---------------+
+| VCF v4 field              | BED column index    | BED field     |
++===========================+=====================+===============+
+| FORMAT                    | 10                  |               |
++---------------------------+---------------------+---------------+
+| Sample ID 1               | 11                  |               |
++---------------------------+---------------------+---------------+
+| Sample ID 2               | 12                  |               |
++---------------------------+---------------------+---------------+
+| ...                       | 13, 14, etc.        |               |
++---------------------------+---------------------+---------------+
+
+The "meta-information" (starting with ``##``) and "header" lines (starting with ``#``) are discarded.
+
 .. _vcf2bed_downloads:
 
 =========

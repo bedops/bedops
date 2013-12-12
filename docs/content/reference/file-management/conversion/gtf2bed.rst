@@ -64,6 +64,54 @@ We can convert it to sorted BED data in the following manner:
 
 .. note:: Note the conversion from 1- to 0-based coordinate indexing, in the transition from GTF to BED. *BEDOPS supports operations on input with any coordinate indexing*, but the coordinate change made here is believed to be convenient for most end users.
 
+.. _gtf2bed_column_mapping:
+
+==============
+Column mapping
+==============
+
+In this section, we describe how GTF2.2 columns are mapped to BED columns. We start with the first six UCSC BED columns as follows:
+
++---------------------------+---------------------+---------------+
+| GFF2.2 field              | BED column index    | BED field     |
++===========================+=====================+===============+
+| seqname                   | 1                   | chromosome    |
++---------------------------+---------------------+---------------+
+| start                     | 2                   | start         |
++---------------------------+---------------------+---------------+
+| end                       | 3                   | stop          |
++---------------------------+---------------------+---------------+
+| gene_id                   | 4                   | id            |
++---------------------------+---------------------+---------------+
+| score                     | 5                   | score         |
++---------------------------+---------------------+---------------+
+| strand                    | 6                   | strand        |
++---------------------------+---------------------+---------------+
+
+The remaining columns are mapped as follows:
+
++---------------------------+---------------------+---------------+
+| GFF2.2 field              | BED column index    | BED field     |
++===========================+=====================+===============+
+| source                    | 7                   |               |
++---------------------------+---------------------+---------------+
+| feature                   | 8                   |               |
++---------------------------+---------------------+---------------+
+| frame                     | 9                   |               |
++---------------------------+---------------------+---------------+
+| attributes                | 10                  |               |
++---------------------------+---------------------+---------------+
+
+If present in the GTF2.2 input, the following column is also mapped:
+
++---------------------------+---------------------+---------------+
+| GFF2.2 field              | BED column index    | BED field     |
++===========================+=====================+===============+
+| comments                  | 11                  |               |
++---------------------------+---------------------+---------------+
+
+If we encounter zero-length insertion elements (which are defined where the ``start`` and ``stop`` GFF3 field values are equivalent), the ``start`` coordinate is decremented to convert to 0-based, half-open indexing, and a ``zero_length_insertion`` attribute is added to the ``attributes`` GTF2.2 field value.
+
 .. _gtf2bed_downloads:
 
 =========
