@@ -72,6 +72,24 @@
 
 import getopt, sys, os, stat, subprocess, tempfile
 
+def which(program):
+    import os
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+
+    return None
+
 def printUsage(stream):
     usage = ("Usage:\n"
              "  %s [ --help ] [ --do-not-sort | --max-mem <value> ] [ --starch-format <bzip2|gzip> ] < foo.vcf > sorted-foo.vcf.bed.starch\n\n"
@@ -219,6 +237,14 @@ def main(*args):
                 starchTF.write(convertedLine)
 
     if sortOutput:
+
+        try:
+            if which('sort-bed') is None:
+                raise IOError("The sort-bed binary could not be found in your user PATH -- please locate and install this binary")
+        except IOError, msg:
+            sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
+            return os.EX_OSFILE
+
         sortTF.close()
         sortProcess = subprocess.Popen(['sort-bed', '--max-mem', maxMem, sortTF.name], stdout=starchTF)
         sortProcess.wait()
@@ -226,6 +252,13 @@ def main(*args):
             os.remove(sortTF.name)
         except OSError:
             sys.stderr.write( "[%s] - Warning: Could not delete intermediate sorted file [%s]\n" % (sys.argv[0], sortTF.name) )
+
+    try:
+        if which('starch') is None:
+            raise IOError("The starch binary could not be found in your user PATH -- please locate and install this binary")
+    except IOError, msg:
+        sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
+        return os.EX_OSFILE
 
     starchProcess = subprocess.Popen(["starch", starchFormat, starchTF.name])
     starchProcess.wait()

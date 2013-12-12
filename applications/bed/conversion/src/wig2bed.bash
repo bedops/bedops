@@ -146,6 +146,7 @@ while getopts "$optspec" optchar; do
     esac
 done
 
+command -v wig2bed_bin > /dev/null 2>&1 || { echo "[wig2bed] - Error: Could not find wig2bed_bin binary" >&2; exit -1; }
 if ${convertWithoutSortingFlag}; then
     if ${multisplitFlag}; then
         wig2bed_bin --multisplit ${multisplitBasename} - 
@@ -153,6 +154,7 @@ if ${convertWithoutSortingFlag}; then
         wig2bed_bin -
     fi
 else
+    command -v sort-bed > /dev/null 2>&1 || { echo "[wig2bed] - Error: Could not find sort-bed binary" >&2; exit -1; }
     if ${multisplitFlag}; then
         wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} -
     else

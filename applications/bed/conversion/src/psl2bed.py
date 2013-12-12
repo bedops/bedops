@@ -86,6 +86,24 @@
 
 import getopt, sys, os, stat, subprocess, signal, tempfile
 
+def which(program):
+    import os
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+
+    return None
+
 def printUsage(stream):
     usage = ("Usage:\n"
              "  %s [ --help ] [ --headered ] [ --do-not-sort | --max-mem <value> ] < foo.psl\n\n"
@@ -282,6 +300,14 @@ def main(*args):
             sys.stdout.write(convertedLine)
 
     if sortOutput:
+
+        try:
+            if which('sort-bed') is None:
+                raise IOError("The sort-bed binary could not be found in your user PATH -- please locate and install this binary")
+        except IOError, msg:
+            sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
+            return os.EX_OSFILE
+
         sortTF.close()
         sortProcess = subprocess.Popen(['sort-bed', '--max-mem', maxMem, sortTF.name])
         sortProcess.wait()
