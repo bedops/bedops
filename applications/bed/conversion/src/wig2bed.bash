@@ -107,7 +107,6 @@ while getopts "$optspec" optchar; do
                     convertWithoutSortingFlag=true;
                     ;;
                 max-mem)
-                    echo "[wig2bed] - Warning: --max-mem option currently disabled" >&2
                     maxMemFlag=true;
                     val="${!OPTIND}"; 
                     OPTIND=$(( $OPTIND + 1 ));
@@ -154,13 +153,10 @@ if ${convertWithoutSortingFlag}; then
         wig2bed_bin -
     fi
 else
-    # --max-mem disabled until sort-bed issue is fixed (cf. https://github.com/bedops/bedops/issues/1 )
     if ${multisplitFlag}; then
-        # wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} -
-        wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed -
+        wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} -
     else
-        # wig2bed_bin - | sort-bed --max-mem ${maxMem} -
-        wig2bed_bin - | sort-bed -
+        wig2bed_bin - | sort-bed --max-mem ${maxMem} -
     fi  
 fi
 

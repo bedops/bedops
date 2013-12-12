@@ -117,7 +117,6 @@ while getopts "$optspec" optchar; do
                     convertWithoutSortingFlag=true;
                     ;;
                 max-mem)
-                    echo "[wig2starch] - Warning: --max-mem option currently disabled" >&2
                     maxMemFlag=true;
                     val="${!OPTIND}"; 
                     OPTIND=$(( $OPTIND + 1 ));
@@ -183,22 +182,17 @@ if ${convertWithoutSortingFlag}; then
         fi
     fi
 else
-    # --max-mem disabled until sort-bed issue is fixed (cf. https://github.com/bedops/bedops/issues/1 )
     if ${multisplitFlag}; then
         if ${starchFormatSpecifiedFlag}; then            
-            # wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} - | starch ${starchFormat} -
-            wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed - | starch ${starchFormat} -
+            wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} - | starch ${starchFormat} -
         else
-            # wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} - | starch -
-            wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed - | starch -
+            wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} - | starch -
         fi
     else
         if ${starchFormatSpecifiedFlag}; then
-            # wig2bed_bin - | sort-bed --max-mem ${maxMem} - | starch ${starchFormat} -
-            wig2bed_bin - | sort-bed - | starch ${starchFormat} -
+            wig2bed_bin - | sort-bed --max-mem ${maxMem} - | starch ${starchFormat} -
         else
-            # wig2bed_bin - | sort-bed --max-mem ${maxMem} - | starch -
-            wig2bed_bin - | sort-bed - | starch -
+            wig2bed_bin - | sort-bed --max-mem ${maxMem} - | starch -
         fi
     fi  
 fi

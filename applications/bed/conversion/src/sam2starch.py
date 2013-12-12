@@ -572,9 +572,6 @@ def main(*args):
         elif key in ("--starch-format"):
             starchFormat = str(value)
 
-    if maxMemChanged:
-        sys.stderr.write( "[%s] - Warning: The --max-mem parameter is currently ignored (cf. https://github.com/bedops/bedops/issues/1 )\n" % sys.argv[0] )
-
     if inputNeedsSplitting and not sortOutput:
         sys.stderr.write( "[%s] - Error: Cannot specify both --do-not-sort and --split parameters\n" % sys.argv[0] )
         printUsage("stderr")
@@ -717,7 +714,7 @@ def main(*args):
 
     if sortOutput:
         sortTF.close()
-        sortProcess = subprocess.Popen(['sort-bed', sortTF.name], stdout=starchTF)
+        sortProcess = subprocess.Popen(['sort-bed', '--max-mem', maxMem, sortTF.name], stdout=starchTF)
         sortProcess.wait()
         try:
             os.remove(sortTF.name)

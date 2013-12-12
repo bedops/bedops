@@ -566,9 +566,6 @@ def main(*args):
             maxMem = str(value)
             maxMemChanged = True
 
-    if maxMemChanged:
-        sys.stderr.write( "[%s] - Warning: The --max-mem parameter is currently ignored (cf. https://github.com/bedops/bedops/issues/1 )\n" % sys.argv[0] )
-
     if inputNeedsSplitting and not sortOutput:
         sys.stderr.write( "[%s] - Error: Cannot specify both --do-not-sort and --split parameters\n" % sys.argv[0] )
         printUsage("stderr")
@@ -710,7 +707,7 @@ def main(*args):
 
     if sortOutput:
         sortTF.close()
-        sortProcess = subprocess.Popen(['sort-bed', sortTF.name])
+        sortProcess = subprocess.Popen(['sort-bed', '--max-mem', maxMem, sortTF.name])
         sortProcess.wait()
         try:
             os.remove(sortTF.name)
