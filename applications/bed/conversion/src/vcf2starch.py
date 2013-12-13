@@ -23,7 +23,7 @@
 # Author:       Alex Reynolds
 #
 # Project:      Converts 1-based, closed [a, b] VCF v4 input into 0-based, 
-#               half-open [a-1, b) extended BED and thence compressed into a 
+#               half-open [a-1, b) extended BED and thence compressed into a
 #               BEDOPS Starch archive sent to standard output.
 #
 # Version:      2.4
@@ -70,7 +70,7 @@
 #               $ vcf2starch --do-not-sort < foo.vcf > unsorted-foo.vcf.bed.starch
 #
 
-import getopt, sys, os, stat, subprocess, tempfile
+import getopt, sys, os, stat, subprocess, signal, tempfile, math
 
 def which(program):
     import os
@@ -92,19 +92,21 @@ def which(program):
 
 def printUsage(stream):
     usage = ("Usage:\n"
-             "  %s [ --help ] [ --do-not-sort | --max-mem <value> ] [ --starch-format <bzip2|gzip> ] < foo.vcf > sorted-foo.vcf.bed.starch\n\n"
+             "  %s [ --help ] [ --snvs | --insertions | --deletions ] [ --do-not-sort | --max-mem <value> ] [ --starch-format <bzip2|gzip> ] < foo.vcf > sorted-foo.vcf.bed.starch\n\n"
              "Options:\n"
              "  --help                        Print this help message and exit\n"
+             "  --snvs                        Filter on single nucleotide variants\n"
+             "  --insertions                  Filter on insertion variants\n"
+             "  --deletions                   Filter on deletion variants\n"
              "  --do-not-sort                 Do not sort converted data with BEDOPS sort-bed\n"
-             "  --max-mem <value>             Sets aside <value> memory for sorting BED output.\n"
-             "                                For example, <value> can be 8G, 8000M or 8000000000\n"
-             "                                to specify 8 GB of memory (default: 2G).\n"
+             "  --max-mem <value>             Sets aside <value> memory for sorting BED output. For example,\n"
+             "                                <value> can be 8G, 8000M or 8000000000 to specify 8 GB of memory\n"
+             "                                (default: 2G).\n"
              "  --starch-format <bzip2|gzip>  Specify backend compression format of starch\n"
-             "                                archive (default: bzip2).\n\n"             
+             "                                archive (default: bzip2).\n\n"                          
              "About:\n"
              "  This script converts 1-based, closed [a, b] VCF v4 data from standard input\n"
-             "  into 0-based, half-open [a-1, b) extended BED, sorted and thence made into a BEDOPS\n"
-             "  Starch archive sent to standard output.\n\n"
+             "  into 0-based, half-open [a-1, b) extended BED, sent to standard output.\n\n"
              "  This conversion script relies on the VCF v4 format, with its\n"
              "  specifications outlined here by the 1000 Genomes project:\n\n"
              "  http://www.1000genomes.org/wiki/Analysis/Variant%%20Call%%20Format/vcf-variant-call-format-version-41\n\n"
@@ -128,7 +130,7 @@ def printUsage(stream):
              "  the usage case displayed to pass data to the BEDOPS sort-bed application,\n"
              "  which generates lexicographically-sorted BED data as output.\n\n"
              "  If you want to skip sorting, use the --do-not-sort option:\n\n"
-             "  $ %s --do-not-sort < foo.vcf > unsorted-foo.vcf.bed.starch\n\n"
+             "  $ %s --do-not-sort < foo.vcf > unsorted-foo.vcf.bed\n\n"
              % (sys.argv[0], sys.argv[0], sys.argv[0]) )
     if stream is "stdout":
         sys.stdout.write(usage)
@@ -145,6 +147,31 @@ def checkInstallation(rv):
         sys.exit(os.EX_CONFIG)
     return os.EX_OK
 
+def isId(altAllele):
+    idCharacters = set('<>')
+    return any((idCharacter in idCharacters) for idCharacter in altAllele)
+
+def isSnv(refAllele, altAllele):
+    if isId(altAllele):
+        return False
+    delta = len(refAllele) - len(altAllele)
+    return delta == 0
+
+def isInsertion(refAllele, altAllele):
+    if isId(altAllele):
+        return False
+    delta = len(refAllele) - len(altAllele)
+    return delta < 0
+
+def isDeletion(refAllele, altAllele):
+    if isId(altAllele):
+        return False
+    delta = len(refAllele) - len(altAllele)
+    return delta > 0
+
+def isMixedRecord(altAllele):
+    return ',' in altAllele
+
 def main(*args):
     requiredVersion = (2,7)
     checkInstallation(requiredVersion)
@@ -152,10 +179,17 @@ def main(*args):
     sortOutput = True
     maxMem = "2G"
     maxMemChanged = False
+    filterOnSnvs = False
+    filterOnInsertions = False
+    filterOnDeletions = False
     starchFormat = "bzip2"
 
+    # fixes bug with Python handling of SIGPIPE signal from UNIX head, etc.
+    # http://coding.derkeiler.com/Archive/Python/comp.lang.python/2004-06/3823.html
+    signal.signal(signal.SIGPIPE,signal.SIG_DFL)
+
     optstr = ""
-    longopts = ["help", "do-not-sort", "max-mem=", "starch-format="]
+    longopts = ["help", "do-not-sort", "max-mem=", "snvs", "insertions", "deletions", "starch-format="]
     try:
         (options, args) = getopt.getopt(sys.argv[1:], optstr, longopts)
     except getopt.GetoptError as error:
@@ -171,15 +205,32 @@ def main(*args):
         elif key in ("--max-mem"):
             maxMem = str(value)
             maxMemChanged = True
+        elif key in ("--snvs"):
+            filterOnSnvs = True
+        elif key in ("--insertions"):
+            filterOnInsertions = True
+        elif key in ("--deletions"):
+            filterOnDeletions= True
         elif key in ("--starch-format"):
             starchFormat = str(value)
-
-    starchFormat = "--" + starchFormat            
 
     if maxMemChanged and not sortOutput:
         sys.stderr.write( "[%s] - Error: Cannot specify both --do-not-sort and --max-mem parameters\n" % sys.argv[0] )
         printUsage("stderr")
         return os.EX_USAGE
+
+    filterCount = 0
+    if filterOnSnvs:
+        filterCount += 1
+    if filterOnInsertions:
+        filterCount += 1
+    if filterOnDeletions:
+        filterCount += 1
+
+    if filterCount > 1:
+        sys.stderr.write( "[%s] - Error: Cannot specify more than one filter parameter\n" % sys.argv[0] )
+        printUsage("stderr")
+        return os.EX_USAGE        
 
     mode = os.fstat(0).st_mode
     inputIsNotAvailable = True
@@ -203,12 +254,12 @@ def main(*args):
         else:
             elems = chomped_line.split('\t')
             metadata = dict()
-            try:
-                for columnIdx in range(len(columns)):
+            for columnIdx in range(len(columns)):
+                try:
                     metadata[columns[columnIdx]] = elems[columnIdx];
-            except IndexError:
-                print 'ERROR: Could not map data values to VCF header keys (perhaps missing or bad delimiters in header line?)'
-                return os.EX_DATAERR
+                except IndexError:
+                    print 'ERROR: Could not map data values to VCF header keys (perhaps missing or bad delimiters in header line?)'
+                    return os.EX_DATAERR
             try:
                 elem_chr = metadata['#CHROM']
                 elem_start = str(int(metadata['POS']) - 1)
@@ -222,20 +273,71 @@ def main(*args):
             except KeyError:
                 print 'ERROR: Could not map data value from VCF header key (perhaps missing or bad delimiters in header line or data row?)'
                 return os.EX_DATAERR
+
             try:
                 elem_genotype = '\t'.join(elems[8:])
             except IndexError:
                 pass
-            if not elem_genotype:
-                convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info]) + '\n'
-            else:
-                convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info, elem_genotype]) + '\n'
 
-            if sortOutput:
-                sortTF.write(convertedLine)
-            else:
-                starchTF.write(convertedLine)
+            if isMixedRecord(elem_alt):
+                # write each variant in mixed record to separate BED element
+                alt_alleles = elem_alt.split(",")
+                for alt_allele in alt_alleles:
+                    elem_alt = alt_allele
+                    if filterCount != 0:
+                        elem_stop = str(int(elem_start) + int(math.fabs(len(elem_ref) - len(elem_alt))) + 1)
 
+                    if not elem_genotype:
+                        convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info]) + '\n'
+                    else:
+                        convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info, elem_genotype]) + '\n'
+                    
+                    if sortOutput:
+                        if filterCount == 0:
+                            sortTF.write(convertedLine)
+                        elif filterOnSnvs and isSnv(elem_ref, elem_alt):
+                            sortTF.write(convertedLine)
+                        elif filterOnInsertions and isInsertion(elem_ref, elem_alt):
+                            sortTF.write(convertedLine)
+                        elif filterOnDeletions and isDeletion(elem_ref, elem_alt):
+                            sortTF.write(convertedLine)
+                    else:
+                        if filterCount == 0:
+                            starchTF.write(convertedLine)                
+                        elif filterOnSnvs and isSnv(elem_ref, elem_alt):
+                            starchTF.write(convertedLine)
+                        elif filterOnInsertions and isInsertion(elem_ref, elem_alt):
+                            starchTF.write(convertedLine)
+                        elif filterOnDeletions and isDeletion(elem_ref, elem_alt):
+                            starchTF.write(convertedLine)
+            else:
+                if filterCount != 0:
+                    elem_stop = str(int(elem_start) + int(math.fabs(len(elem_ref) - len(elem_alt))) + 1)
+                    
+                if not elem_genotype:
+                    convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info]) + '\n'
+                else:
+                    convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info, elem_genotype]) + '\n'
+                    
+                if sortOutput:
+                    if filterCount == 0:
+                        sortTF.write(convertedLine)
+                    elif filterOnSnvs and isSnv(elem_ref, elem_alt):
+                        sortTF.write(convertedLine)
+                    elif filterOnInsertions and isInsertion(elem_ref, elem_alt):
+                        sortTF.write(convertedLine)
+                    elif filterOnDeletions and isDeletion(elem_ref, elem_alt):
+                        sortTF.write(convertedLine)
+                else:
+                    if filterCount == 0:
+                        starchTF.write(convertedLine)                
+                    elif filterOnSnvs and isSnv(elem_ref, elem_alt):
+                        starchTF.write(convertedLine)
+                    elif filterOnInsertions and isInsertion(elem_ref, elem_alt):
+                        starchTF.write(convertedLine)
+                    elif filterOnDeletions and isDeletion(elem_ref, elem_alt):
+                        starchTF.write(convertedLine)
+                
     if sortOutput:
 
         try:

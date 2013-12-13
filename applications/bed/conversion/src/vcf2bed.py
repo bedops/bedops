@@ -69,7 +69,7 @@
 #               $ vcf2bed --do-not-sort < foo.vcf > unsorted-foo.vcf.bed
 #
 
-import getopt, sys, os, stat, subprocess, signal, tempfile
+import getopt, sys, os, stat, subprocess, signal, tempfile, math
 
 def which(program):
     import os
@@ -91,9 +91,12 @@ def which(program):
 
 def printUsage(stream):
     usage = ("Usage:\n"
-             "  %s [ --help ] [ --do-not-sort | --max-mem <value> ] < foo.vcf\n\n"
+             "  %s [ --help ] [ --snvs | --insertions | --deletions ] [ --do-not-sort | --max-mem <value> ] < foo.vcf\n\n"
              "Options:\n"
              "  --help              Print this help message and exit\n"
+             "  --snvs              Filter on single nucleotide variants\n"
+             "  --insertions        Filter on insertion variants\n"
+             "  --deletions         Filter on deletion variants\n"
              "  --do-not-sort       Do not sort converted data with BEDOPS sort-bed\n"
              "  --max-mem <value>   Sets aside <value> memory for sorting BED output. For example,\n"
              "                      <value> can be 8G, 8000M or 8000000000 to specify 8 GB of memory\n"
@@ -141,6 +144,31 @@ def checkInstallation(rv):
         sys.exit(os.EX_CONFIG)
     return os.EX_OK
 
+def isId(altAllele):
+    idCharacters = set('<>')
+    return any((idCharacter in idCharacters) for idCharacter in altAllele)
+
+def isSnv(refAllele, altAllele):
+    if isId(altAllele):
+        return False
+    delta = len(refAllele) - len(altAllele)
+    return delta == 0
+
+def isInsertion(refAllele, altAllele):
+    if isId(altAllele):
+        return False
+    delta = len(refAllele) - len(altAllele)
+    return delta < 0
+
+def isDeletion(refAllele, altAllele):
+    if isId(altAllele):
+        return False
+    delta = len(refAllele) - len(altAllele)
+    return delta > 0
+
+def isMixedRecord(altAllele):
+    return ',' in altAllele
+
 def main(*args):
     requiredVersion = (2,7)
     checkInstallation(requiredVersion)
@@ -148,13 +176,16 @@ def main(*args):
     sortOutput = True
     maxMem = "2G"
     maxMemChanged = False
+    filterOnSnvs = False
+    filterOnInsertions = False
+    filterOnDeletions = False
 
     # fixes bug with Python handling of SIGPIPE signal from UNIX head, etc.
     # http://coding.derkeiler.com/Archive/Python/comp.lang.python/2004-06/3823.html
     signal.signal(signal.SIGPIPE,signal.SIG_DFL)
 
     optstr = ""
-    longopts = ["help", "do-not-sort", "max-mem="]
+    longopts = ["help", "do-not-sort", "max-mem=", "snvs", "insertions", "deletions"]
     try:
         (options, args) = getopt.getopt(sys.argv[1:], optstr, longopts)
     except getopt.GetoptError as error:
@@ -170,11 +201,30 @@ def main(*args):
         elif key in ("--max-mem"):
             maxMem = str(value)
             maxMemChanged = True
+        elif key in ("--snvs"):
+            filterOnSnvs = True
+        elif key in ("--insertions"):
+            filterOnInsertions = True
+        elif key in ("--deletions"):
+            filterOnDeletions= True
 
     if maxMemChanged and not sortOutput:
         sys.stderr.write( "[%s] - Error: Cannot specify both --do-not-sort and --max-mem parameters\n" % sys.argv[0] )
         printUsage("stderr")
-        return os.EX_USAGE  
+        return os.EX_USAGE
+
+    filterCount = 0
+    if filterOnSnvs:
+        filterCount += 1
+    if filterOnInsertions:
+        filterCount += 1
+    if filterOnDeletions:
+        filterCount += 1
+
+    if filterCount > 1:
+        sys.stderr.write( "[%s] - Error: Cannot specify more than one filter parameter\n" % sys.argv[0] )
+        printUsage("stderr")
+        return os.EX_USAGE        
 
     mode = os.fstat(0).st_mode
     inputIsNotAvailable = True
@@ -216,19 +266,70 @@ def main(*args):
             except KeyError:
                 print 'ERROR: Could not map data value from VCF header key (perhaps missing or bad delimiters in header line or data row?)'
                 return os.EX_DATAERR
+
             try:
                 elem_genotype = '\t'.join(elems[8:])
             except IndexError:
                 pass
-            if not elem_genotype:
-                convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info]) + '\n'
-            else:
-                convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info, elem_genotype]) + '\n'
 
-            if sortOutput:
-                sortTF.write(convertedLine)
+            if isMixedRecord(elem_alt):
+                # write each variant in mixed record to separate BED element
+                alt_alleles = elem_alt.split(",")
+                for alt_allele in alt_alleles:
+                    elem_alt = alt_allele
+                    if filterCount != 0:
+                        elem_stop = str(int(elem_start) + int(math.fabs(len(elem_ref) - len(elem_alt))) + 1)
+
+                    if not elem_genotype:
+                        convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info]) + '\n'
+                    else:
+                        convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info, elem_genotype]) + '\n'
+                    
+                    if sortOutput:
+                        if filterCount == 0:
+                            sortTF.write(convertedLine)
+                        elif filterOnSnvs and isSnv(elem_ref, elem_alt):
+                            sortTF.write(convertedLine)
+                        elif filterOnInsertions and isInsertion(elem_ref, elem_alt):
+                            sortTF.write(convertedLine)
+                        elif filterOnDeletions and isDeletion(elem_ref, elem_alt):
+                            sortTF.write(convertedLine)
+                    else:
+                        if filterCount == 0:
+                            sys.stdout.write(convertedLine)                
+                        elif filterOnSnvs and isSnv(elem_ref, elem_alt):
+                            sys.stdout.write(convertedLine)
+                        elif filterOnInsertions and isInsertion(elem_ref, elem_alt):
+                            sys.stdout.write(convertedLine)
+                        elif filterOnDeletions and isDeletion(elem_ref, elem_alt):
+                            sys.stdout.write(convertedLine)
             else:
-                sys.stdout.write(convertedLine)
+                if filterCount != 0:
+                    elem_stop = str(int(elem_start) + int(math.fabs(len(elem_ref) - len(elem_alt))) + 1)
+                    
+                if not elem_genotype:
+                    convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info]) + '\n'
+                else:
+                    convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info, elem_genotype]) + '\n'
+                    
+                if sortOutput:
+                    if filterCount == 0:
+                        sortTF.write(convertedLine)
+                    elif filterOnSnvs and isSnv(elem_ref, elem_alt):
+                        sortTF.write(convertedLine)
+                    elif filterOnInsertions and isInsertion(elem_ref, elem_alt):
+                        sortTF.write(convertedLine)
+                    elif filterOnDeletions and isDeletion(elem_ref, elem_alt):
+                        sortTF.write(convertedLine)
+                else:
+                    if filterCount == 0:
+                        sys.stdout.write(convertedLine)                
+                    elif filterOnSnvs and isSnv(elem_ref, elem_alt):
+                        sys.stdout.write(convertedLine)
+                    elif filterOnInsertions and isInsertion(elem_ref, elem_alt):
+                        sys.stdout.write(convertedLine)
+                    elif filterOnDeletions and isDeletion(elem_ref, elem_alt):
+                        sys.stdout.write(convertedLine)
                 
     if sortOutput:
 
