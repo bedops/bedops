@@ -69,11 +69,13 @@ At this time, compilation of BEDOPS requires GCC 4.7 or greater (which includes 
  
    :: 
 
-     $ sudo port install gcc47
+     $ sudo port install gcc47 +universal
      $ sudo port install gcc_select
+     $ sudo port select --list gcc
+     ...
      $ sudo port select --set gcc gcc47
 
-   In the future, we may provide support for OS X compilation via Clang/LLVM, which is the default compiler included with Xcode.
+   In the future, we may provide full support for OS X compilation via Clang/LLVM, which is the default compiler included with Xcode.
 
    For Linux users, use your favorite package manager to install the requisite compiler. For example, in Ubuntu, you might run the following: 
 
@@ -89,14 +91,14 @@ At this time, compilation of BEDOPS requires GCC 4.7 or greater (which includes 
   
      $ git clone https://github.com/bedops/bedops.git
   
-4. (Linux) Run ``make static`` in the top-level of the local copy of the BEDOPS repository: 
+4. (Linux only) Run ``make static`` in the top-level of the local copy of the BEDOPS repository: 
 
    ::
 
      $ cd bedops
      $ make static
 
-5. (Mac OS X) Run ``make build_all_darwin_intel_fat`` in the top-level of the local copy of the BEDOPS repository:
+5. (Mac OS X only) Run ``make build_all_darwin_intel_fat`` in the top-level of the local copy of the BEDOPS repository:
 
    ::
 

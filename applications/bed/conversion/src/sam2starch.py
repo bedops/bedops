@@ -25,7 +25,7 @@
 # Project:      Converts 1-based, closed [a, b] headered or headerless SAM input
 #               into 0-based, half-open [a-1, b) extended BED
 #
-# Version:      2.3
+# Version:      2.4
 #
 # Notes:        The SAM format is Sequence Alignment/Map file that is a 1-based, closed 
 #               [a, b]. This script converts this indexing back to 0-based, half-
@@ -87,48 +87,48 @@ import getopt, sys, os, stat, subprocess, signal, tempfile, re
 # cf. pgs. 6-7, http://samtools.sourceforge.net/SAMv1.pdf
 #
 
-allValidSamTags = ['AM', 
-                   'AS', 
-                   'BC', 
-                   'BQ', 
-                   'CC', 
-                   'CM', 
-                   'CO', 
-                   'CP', 
-                   'CQ', 
-                   'CS', 
-                   'CT', 
-                   'E2', 
-                   'FI', 
-                   'FS', 
-                   'FZ', 
-                   'LB', 
-                   'H0', 
-                   'H1', 
-                   'H2', 
-                   'HI', 
-                   'IH', 
-                   'MD', 
-                   'MQ', 
-                   'NH', 
-                   'NM', 
-                   'OQ', 
-                   'OP', 
-                   'OC', 
-                   'PG', 
-                   'PQ', 
-                   'PT', 
-                   'PU', 
-                   'QT', 
-                   'Q2', 
-                   'R2', 
-                   'RG', 
-                   'RT', 
-                   'SA', 
-                   'SM', 
-                   'TC', 
-                   'U2', 
-                   'UQ']
+allSpecificationSamTags = ['AM', 
+                           'AS', 
+                           'BC', 
+                           'BQ', 
+                           'CC', 
+                           'CM', 
+                           'CO', 
+                           'CP', 
+                           'CQ', 
+                           'CS', 
+                           'CT', 
+                           'E2', 
+                           'FI', 
+                           'FS', 
+                           'FZ', 
+                           'LB', 
+                           'H0', 
+                           'H1', 
+                           'H2', 
+                           'HI', 
+                           'IH', 
+                           'MD', 
+                           'MQ', 
+                           'NH', 
+                           'NM', 
+                           'OQ', 
+                           'OP', 
+                           'OC', 
+                           'PG', 
+                           'PQ', 
+                           'PT', 
+                           'PU', 
+                           'QT', 
+                           'Q2', 
+                           'R2', 
+                           'RG', 
+                           'RT', 
+                           'SA', 
+                           'SM', 
+                           'TC', 
+                           'U2', 
+                           'UQ']
 
 
 class SamTags:
@@ -136,6 +136,7 @@ class SamTags:
         self.tags = []
         self.containsMismatches = False
         self.containsMultipleReads = False
+        self.customTagsAdded = False
 
     def __str__(self):
         res = ""
@@ -148,13 +149,16 @@ class SamTags:
         tagName = tagElems[0]
         tagType = tagElems[1]
         tagValue = tagElems[2]
-        if str(tagName) in allValidSamTags or tagName.startswith('X') or tagName.startswith('Y') or tagName.startswith('Z'):
+        customTags = []
+        if self.customTagsAdded:
+            customTags = customTagsStr.split(",")
+        if str(tagName) in (allSpecificationSamTags + customTags) or tagName.startswith('X') or tagName.startswith('Y') or tagName.startswith('Z'):
             tag = SamTag()
             tag.tag = (tagName, tagValue)
             self.tags.append(tag)
             self.switchFlags(tag)
         else:
-            raise Exception("Appended tag (%s) is not valid per SAMtools specification" % tagName)
+            raise Exception("Appended tag (%s) is not valid per SAMtools specification\nConsider using --custom-tags <value> option (see --help)" % tagName)
 
     def switchFlags(self, tag):
         if tag.key == 'NH':
@@ -452,20 +456,40 @@ class SamRecord(object):
                               self._qual]) + '\n'
             
 
+def which(program):
+    import os
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+
+    return None
+
+
 def printUsage(stream):
     usage = ("Usage:\n"
              "  %s [ --help ] [ --split ] [ --all-reads ] [ --do-not-sort | --max-mem <value> ] [ --starch-format <bzip2|gzip> ] < foo.sam\n\n"
              "Options:                                                                            \n"
-             "  --help              Print this help message and exit                              \n"
-             "  --split             Split reads with 'N' CIGAR operations into separate BED elements\n"
-             "  --all-reads         Include both unmapped and mapped reads in output              \n"
-             "  --do-not-sort       Do not sort converted data with BEDOPS sort-bed               \n"
-             "  --max-mem <value>   Sets aside <value> memory for sorting BED output. For example,\n"
-             "                      <value> can be 8G, 8000M or 8000000000 to specify 8 GB of     \n"
-             "                      memory (default: 2G)                                          \n"
+             "  --help                 Print this help message and exit                           \n"
+             "  --split                Split reads with 'N' CIGAR operations into separate BED elements\n"
+             "  --all-reads            Include both unmapped and mapped reads in output           \n"
+             "  --do-not-sort          Do not sort converted data with BEDOPS sort-bed            \n"
+             "  --custom-tags <value>  Add a comma-separated list of custom SAM tags              \n"
+             "  --max-mem <value>      Sets aside <value> memory for sorting BED output. For example,\n"
+             "                         <value> can be 8G, 8000M or 8000000000 to specify 8 GB of  \n"
+             "                         memory (default: 2G)                                       \n"
              "  --starch-format <bzip2|gzip>                                                      \n"
-             "                      Specify backend compression format of starch archive          \n"
-             "                      (default: bzip2)                                            \n\n"
+             "                         Specify backend compression format of starch archive       \n"
+             "                         (default: bzip2)                                         \n\n"
              "About:                                                                              \n"
              "  This script converts 1-based, closed [a, b] binary SAM data from standard         \n"
              "  input into 0-based, half-open [a-1, b) extended BED, which is sorted, converted   \n"
@@ -534,13 +558,15 @@ def main(*args):
     maxMem = "2G"
     maxMemChanged = False
     starchFormat = "bzip2"
+    customTagsStr = ""
+    customTagsAdded = False
 
     # fixes bug with Python handling of SIGPIPE signal from UNIX head, etc.
     # http://coding.derkeiler.com/Archive/Python/comp.lang.python/2004-06/3823.html
     signal.signal(signal.SIGPIPE,signal.SIG_DFL)
 
     optstr = ""
-    longopts = ["do-not-sort", "split", "all-reads", "help", "max-mem=", "starch-format="]
+    longopts = ["do-not-sort", "split", "all-reads", "help", "custom-tags=", "max-mem=", "starch-format="]
     try:
         (options, args) = getopt.getopt(sys.argv[1:], optstr, longopts)
     except getopt.GetoptError as error:
@@ -557,14 +583,14 @@ def main(*args):
             includeAllReads = True
         elif key in ("--do-not-sort"):
             sortOutput = False
+        elif key in ("--custom-tags"):
+            customTagsStr = str(value)
+            customTagsAdded = True
         elif key in ("--max-mem"):
             maxMem = str(value)
             maxMemChanged = True
         elif key in ("--starch-format"):
             starchFormat = str(value)
-
-    if maxMemChanged:
-        sys.stderr.write( "[%s] - Warning: The --max-mem parameter is currently ignored (cf. https://github.com/bedops/bedops/issues/1 )\n" % sys.argv[0] )
 
     if inputNeedsSplitting and not sortOutput:
         sys.stderr.write( "[%s] - Error: Cannot specify both --do-not-sort and --split parameters\n" % sys.argv[0] )
@@ -593,6 +619,13 @@ def main(*args):
     #
     # read SAM data into samtools process
     #
+
+    try:
+        if which('samtools') is None:
+            raise IOError("The samtools binary could not be found in your user PATH -- please locate and install this binary")
+    except IOError, msg:
+        sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
+        return os.EX_OSFILE
 
     samProcess = subprocess.Popen(['samtools', 'view', '-S', '-'], stdin=subprocess.PIPE, stdout=samTF)
     while True:
@@ -636,6 +669,7 @@ def main(*args):
                 # optional fields are TAG:TYPE:VALUE triplets
                 samTagsList = []
                 samTags = SamTags()
+                samTags.customTagsAdded = customTagsAdded
                 if len(elems) >= 11:
                     for idx in range(11, len(elems)):
                         samTagsList.append(elems[idx])
@@ -707,13 +741,28 @@ def main(*args):
                             starchTF.write(samRecord.asBed())
 
     if sortOutput:
+
+        try:
+            if which('sort-bed') is None:
+                raise IOError("The sort-bed binary could not be found in your user PATH -- please locate and install this binary")
+        except IOError, msg:
+            sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
+            return os.EX_OSFILE
+
         sortTF.close()
-        sortProcess = subprocess.Popen(['sort-bed', sortTF.name], stdout=starchTF)
+        sortProcess = subprocess.Popen(['sort-bed', '--max-mem', maxMem, sortTF.name], stdout=starchTF)
         sortProcess.wait()
         try:
             os.remove(sortTF.name)
         except OSError:
             sys.stderr.write( "[%s] - Warning: Could not delete intermediate sorted file [%s]\n" % (sys.argv[0], sortTF.name) )
+
+    try:
+        if which('starch') is None:
+            raise IOError("The starch binary could not be found in your user PATH -- please locate and install this binary")
+    except IOError, msg:
+        sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
+        return os.EX_OSFILE
 
     starchProcess = subprocess.Popen(["starch", starchFormat, starchTF.name])
     starchProcess.wait()

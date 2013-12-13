@@ -25,7 +25,7 @@
 # Project:      Convert UCSC Wiggle to UCSC BED and thence compressed into a BEDOPS Starch
 #               archive sent to standard output.
 #
-# Version:      2.3
+# Version:      2.4
 #
 # Notes:        The UCSC Wiggle format (http://genome.ucsc.edu/goldenPath/help/wiggle.html)
 #               is 1-based, closed [a, b] and is offered in variable or fixed step varieties.
@@ -117,7 +117,6 @@ while getopts "$optspec" optchar; do
                     convertWithoutSortingFlag=true;
                     ;;
                 max-mem)
-                    echo "[wig2starch] - Warning: --max-mem option currently disabled" >&2
                     maxMemFlag=true;
                     val="${!OPTIND}"; 
                     OPTIND=$(( $OPTIND + 1 ));
@@ -168,6 +167,8 @@ while getopts "$optspec" optchar; do
     esac
 done
 
+command -v wig2bed_bin > /dev/null 2>&1 || { echo "[wig2bed] - Error: Could not find wig2bed_bin binary" >&2; exit -1; }
+command -v starch > /dev/null 2>&1 || { echo "[wig2bed] - Error: Could not find starch binary" >&2; exit -1; }
 if ${convertWithoutSortingFlag}; then
     if ${multisplitFlag}; then
         if ${starchFormatSpecifiedFlag}; then
@@ -183,22 +184,18 @@ if ${convertWithoutSortingFlag}; then
         fi
     fi
 else
-    # --max-mem disabled until sort-bed issue is fixed (cf. https://github.com/bedops/bedops/issues/1 )
+    command -v sort-bed > /dev/null 2>&1 || { echo "[wig2bed] - Error: Could not find sort-bed binary" >&2; exit -1; }
     if ${multisplitFlag}; then
         if ${starchFormatSpecifiedFlag}; then            
-            # wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} - | starch ${starchFormat} -
-            wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed - | starch ${starchFormat} -
+            wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} - | starch ${starchFormat} -
         else
-            # wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} - | starch -
-            wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed - | starch -
+            wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} - | starch -
         fi
     else
         if ${starchFormatSpecifiedFlag}; then
-            # wig2bed_bin - | sort-bed --max-mem ${maxMem} - | starch ${starchFormat} -
-            wig2bed_bin - | sort-bed - | starch ${starchFormat} -
+            wig2bed_bin - | sort-bed --max-mem ${maxMem} - | starch ${starchFormat} -
         else
-            # wig2bed_bin - | sort-bed --max-mem ${maxMem} - | starch -
-            wig2bed_bin - | sort-bed - | starch -
+            wig2bed_bin - | sort-bed --max-mem ${maxMem} - | starch -
         fi
     fi  
 fi
