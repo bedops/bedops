@@ -106,7 +106,8 @@ def printUsage(stream):
              "                                archive (default: bzip2).\n\n"                          
              "About:\n"
              "  This script converts 1-based, closed [a, b] VCF v4 data from standard input\n"
-             "  into 0-based, half-open [a-1, b) extended BED, sent to standard output.\n\n"
+             "  into 0-based, half-open [a-1, b) extended BED, sorted and thence made into a BEDOPS\n"
+             "  Starch archive sent to standard output.\n\n"
              "  This conversion script relies on the VCF v4 format, with its\n"
              "  specifications outlined here by the 1000 Genomes project:\n\n"
              "  http://www.1000genomes.org/wiki/Analysis/Variant%%20Call%%20Format/vcf-variant-call-format-version-41\n\n"
@@ -130,7 +131,7 @@ def printUsage(stream):
              "  the usage case displayed to pass data to the BEDOPS sort-bed application,\n"
              "  which generates lexicographically-sorted BED data as output.\n\n"
              "  If you want to skip sorting, use the --do-not-sort option:\n\n"
-             "  $ %s --do-not-sort < foo.vcf > unsorted-foo.vcf.bed\n\n"
+             "  $ %s --do-not-sort < foo.vcf > unsorted-foo.vcf.bed.starch\n\n"
              % (sys.argv[0], sys.argv[0], sys.argv[0]) )
     if stream is "stdout":
         sys.stdout.write(usage)
