@@ -26,7 +26,7 @@
 #               into 0-based, half-open [a-1, b) extended BED and thence compressed into
 #               a BEDOPS Starch archive sent to standard output.
 #
-# Version:      2.3
+# Version:      2.4
 #
 # Notes:        The PSL specification (http://genome.ucsc.edu/goldenPath/help/blatSpec.html)
 #               contains 21 columns, some which map to UCSC BED columns and some which do not.
@@ -86,6 +86,24 @@
 #
 
 import getopt, sys, os, stat, subprocess, tempfile
+
+def which(program):
+    import os
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+
+    return None
 
 def printUsage(stream):
     usage = ("Usage:\n"
@@ -195,9 +213,6 @@ def main(*args):
 
     starchFormat = "--" + starchFormat
 
-    if maxMemChanged:
-        sys.stderr.write( "[%s] - Warning: The --max-mem parameter is currently ignored (cf. https://github.com/bedops/bedops/issues/1 )\n" % sys.argv[0] )
-
     if maxMemChanged and not sortOutput:
         sys.stderr.write( "[%s] - Error: Cannot specify both --do-not-sort and --max-mem parameters\n" % sys.argv[0] )
         printUsage("stderr")
@@ -290,15 +305,28 @@ def main(*args):
             starchTF.write(convertedLine)
 
     if sortOutput:
+
+        try:
+            if which('sort-bed') is None:
+                raise IOError("The sort-bed binary could not be found in your user PATH -- please locate and install this binary")
+        except IOError, msg:
+            sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
+            return os.EX_OSFILE
+
         sortTF.close()
-        # --max-mem disabled until sort-bed issue is fixed (cf. https://github.com/bedops/bedops/issues/1 )
-        # sortProcess = subprocess.Popen(["sort-bed", "--max-mem", maxMem, sortTF.name], stdout=starchTF)
-        sortProcess = subprocess.Popen(["sort-bed", sortTF.name], stdout=starchTF)
+        sortProcess = subprocess.Popen(['sort-bed', '--max-mem', maxMem, sortTF.name], stdout=starchTF)
         sortProcess.wait()
         try:
             os.remove(sortTF.name)
         except OSError:
             sys.stderr.write( "[%s] - Warning: Could not delete intermediate sorted file [%s]\n" % (sys.argv[0], sortTF.name) )
+
+    try:
+        if which('starch') is None:
+            raise IOError("The starch binary could not be found in your user PATH -- please locate and install this binary")
+    except IOError, msg:
+        sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
+        return os.EX_OSFILE
 
     starchProcess = subprocess.Popen(["starch", starchFormat, starchTF.name])
     starchProcess.wait()

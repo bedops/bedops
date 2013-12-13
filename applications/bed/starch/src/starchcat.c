@@ -3715,10 +3715,11 @@ STARCHCAT2_mergeChromosomeStreams (const ChromosomeSummaries *chrSums, const Com
     char *dynamicMdBufferCopy = NULL;
     unsigned char sha1Digest[STARCH2_MD_FOOTER_SHA1_LENGTH];
     char *base64EncodedSha1Digest = NULL;
-    char footerCumulativeRecordSizeBuffer[STARCH2_MD_FOOTER_CUMULATIVE_RECORD_SIZE_LENGTH] = {0};
-    char footerRemainderBuffer[STARCH2_MD_FOOTER_REMAINDER_LENGTH] = {0};
-    char footerBuffer[STARCH2_MD_FOOTER_LENGTH] = {0};
+    char footerCumulativeRecordSizeBuffer[STARCH2_MD_FOOTER_CUMULATIVE_RECORD_SIZE_LENGTH + 1] = {0};
+    char footerRemainderBuffer[STARCH2_MD_FOOTER_REMAINDER_LENGTH + 1] = {0};
+    char footerBuffer[STARCH2_MD_FOOTER_LENGTH + 1] = {0};
     ArchiveVersion *av120 = NULL;
+    int footerCumulativeRecordSizeBufferCharsCopied = -1;
 
     if (!chrSums) {
         fprintf(stderr, "ERROR: Chromosome summary is empty. Could not merge.\n");
@@ -3858,7 +3859,7 @@ STARCHCAT2_mergeChromosomeStreams (const ChromosomeSummaries *chrSums, const Com
     }
 
     /* stitch up compressed files into one archive, along with metadata header */
-    assert( STARCH_writeJSONMetadata( (const Metadata *) headOutputMd, &dynamicMdBuffer, (CompressionType *) &outputType, (const Boolean) hFlag, (const char *) note) );
+    assert(STARCH_writeJSONMetadata((const Metadata *) headOutputMd, &dynamicMdBuffer, (CompressionType *) &outputType, (const Boolean) hFlag, (const char *) note));
     fwrite(dynamicMdBuffer, 1, strlen(dynamicMdBuffer), stdout);
     fflush(stdout);
 
@@ -3871,7 +3872,10 @@ STARCHCAT2_mergeChromosomeStreams (const ChromosomeSummaries *chrSums, const Com
     STARCH_encodeBase64(&base64EncodedSha1Digest, (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, (const unsigned char *) sha1Digest, (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
 
     /* build footer */
-    sprintf(footerCumulativeRecordSizeBuffer, "%020llu", (unsigned long long) *cumulativeOutputSize); /* we cast this size_t to an unsigned long long in order to allow warning-free compilation with an ISO C++ compiler like g++ */
+    footerCumulativeRecordSizeBufferCharsCopied = sprintf(footerCumulativeRecordSizeBuffer, "%020llu", (unsigned long long) *cumulativeOutputSize); /* we cast this size_t to an unsigned long long in order to allow warning-free compilation with an ISO C++ compiler like g++ */
+
+    /* ensure that we built a correct footer with the right record size */
+    assert(footerCumulativeRecordSizeBufferCharsCopied == STARCH2_MD_FOOTER_CUMULATIVE_RECORD_SIZE_LENGTH);
 
     memcpy(footerBuffer, footerCumulativeRecordSizeBuffer, strlen(footerCumulativeRecordSizeBuffer));
     memcpy(footerBuffer + STARCH2_MD_FOOTER_CUMULATIVE_RECORD_SIZE_LENGTH, base64EncodedSha1Digest, STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH - 1); /* strip trailing null */
