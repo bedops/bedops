@@ -150,11 +150,17 @@ initializeChromBedData(char *chromBuf, double *bytes) {
 
 
 Bed::SignedCoordType
-appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::SignedCoordType endPos, char *data, double *bytes)
+appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::SignedCoordType endPos,
+                    char *data, double *bytes, double maxMem)
 {
 
+    /* can realloc a lot of data in this function
+         need to be mindful of whether we could dynamically get to maxMem.
+       in particular, might get to maxMem upon reallocation and then drop back below it.
+         in such a case, set *bytes to maxMem (when applicable).
+    */
     Bed::LineCountType index;
-    size_t dataBufLen;
+    size_t dataBufLen, newSize;
     char *dataPtr;
 
     if(chrom == NULL)
@@ -169,33 +175,49 @@ appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::Sig
     if (index == 0)
         { // first initialization
             chrom->coords = (BedCoordData*)malloc(sizeof(BedCoordData) * INIT_NUM_BED_ITEMS_EST);
-            *bytes += (sizeof(BedCoordData) * INIT_NUM_BED_ITEMS_EST);
             if(chrom->coords == NULL)
                 {
                     fprintf(stderr, "Error: %s, %d: Unable to create BedCoordData structure. Out of memory.\n", __FILE__, __LINE__);
                     return static_cast<Bed::SignedCoordType>(-1);
                 }
+            *bytes += (sizeof(BedCoordData) * INIT_NUM_BED_ITEMS_EST);
         }
     else if (index == (INIT_NUM_BED_ITEMS_EST-1))
         {
-            chrom->coords = (BedCoordData*)realloc(chrom->coords, sizeof(BedCoordData) * static_cast<size_t>(NUM_BED_ITEMS_EST));
-            *bytes += (sizeof(BedCoordData) * NUM_BED_ITEMS_EST);
-            *bytes -= (sizeof(BedCoordData) * INIT_NUM_BED_ITEMS_EST);
+            newSize = sizeof(BedCoordData) * static_cast<size_t>(NUM_BED_ITEMS_EST);
+            chrom->coords = (BedCoordData*)realloc(chrom->coords, newSize);
             if(chrom->coords == NULL)
                 {
                     fprintf(stderr, "Error: %s, %d: Unable to create BED structure. Out of memory.\n", __FILE__, __LINE__);
                     return static_cast<Bed::SignedCoordType>(-1);
                 }
+            if ((maxMem > 0) && (*bytes + newSize >= maxMem))
+                { // may have temporarily reach maxMem or more
+                    *bytes = maxMem;
+                }
+            else
+                {
+                    *bytes += (sizeof(BedCoordData) * NUM_BED_ITEMS_EST);
+                    *bytes -= (sizeof(BedCoordData) * INIT_NUM_BED_ITEMS_EST);
+                }
         }
     else if((index % (NUM_BED_ITEMS_EST-1)) == 0)
         {
             //fprintf(stderr, "Reallocating...\n");
-            chrom->coords = (BedCoordData*)realloc(chrom->coords, sizeof(BedCoordData) * static_cast<size_t>(index + NUM_BED_ITEMS_EST));
-            *bytes += (sizeof(BedCoordData) * NUM_BED_ITEMS_EST); // only increasing by NUM_BED_ITEMS_EST since last time around
+            newSize = sizeof(BedCoordData) * static_cast<size_t>(index + NUM_BED_ITEMS_EST);
+            chrom->coords = (BedCoordData*)realloc(chrom->coords, newSize);
             if(chrom->coords == NULL)
                 {
                     fprintf(stderr, "Error: %s, %d: Unable to create BED structure. Out of memory.\n", __FILE__, __LINE__);
                     return static_cast<Bed::SignedCoordType>(-1);
+                }
+            if ((maxMem > 0) && (*bytes + newSize >= maxMem))
+                { // may have temporarily reach maxMem or more
+                    *bytes = maxMem;
+                }
+            else
+                { // only increasing by NUM_BED_ITEMS_EST since last time around
+                    *bytes += (sizeof(BedCoordData) * NUM_BED_ITEMS_EST);
                 }
         }
 
@@ -415,7 +437,7 @@ processData(const char **bedFileNames, unsigned int numFiles, const double maxMe
     chromBuf[0] = '\0';
 
     /* a guess for general overhead for local vars, function call stacks, etc. */
-    const int overhead = 1000000 + (2 * (BED_LINE_LEN + 1)) + CHROM_NAME_LEN + 1;
+    const int overhead = 50000000 + (2 * (BED_LINE_LEN + 1)) + CHROM_NAME_LEN + 1;
     double totalBytes = overhead;
 
     if(0 != checkfiles(bedFileNames, numFiles))
@@ -693,11 +715,11 @@ processData(const char **bedFileNames, unsigned int numFiles, const double maxMe
                                             fclose(bedFile);
                                             return -1;
                                         }
-                                    chromEntryCount = appendChromBedEntry(beds->chroms[jidx], startPos, endPos, bedLine, &totalBytes);
+                                    chromEntryCount = appendChromBedEntry(beds->chroms[jidx], startPos, endPos, bedLine, &totalBytes, maxMem);
                                 }
                             else
                                 {
-                                    chromEntryCount = appendChromBedEntry(beds->chroms[jidx], startPos, endPos, NULL, &totalBytes);
+                                    chromEntryCount = appendChromBedEntry(beds->chroms[jidx], startPos, endPos, NULL, &totalBytes, maxMem);
                                 }
 
                             if (static_cast<int>(chromEntryCount) < 0)
@@ -716,8 +738,8 @@ processData(const char **bedFileNames, unsigned int numFiles, const double maxMe
                             if(beds->numChroms >= (double)((NUM_CHROM_EST * chromAllocs)))
                                 {   /* Resize Chrom Structure */
                                     chromAllocs++;
-                                    beds->chroms = (ChromBedData**)realloc(beds->chroms, sizeof(ChromBedData *) * NUM_CHROM_EST * chromAllocs);
-                                    totalBytes += sizeof(ChromBedData *) * NUM_CHROM_EST;
+                                    beds->chroms = (ChromBedData**)realloc(beds->chroms, sizeof(ChromBedData*) * NUM_CHROM_EST * chromAllocs);
+                                    totalBytes += sizeof(ChromBedData*) * NUM_CHROM_EST;
                                     if(beds->chroms == NULL)
                                         {
                                             fprintf(stderr, "Error: %s, %d: Unable to expand Chrom structure: %s. Out of memory.\n", __FILE__, 
@@ -776,11 +798,11 @@ processData(const char **bedFileNames, unsigned int numFiles, const double maxMe
                                             fclose(bedFile);
                                             return -1;
                                         }
-                                    chromEntryCount = appendChromBedEntry(chrom, startPos, endPos, bedLine, &totalBytes);
+                                    chromEntryCount = appendChromBedEntry(chrom, startPos, endPos, bedLine, &totalBytes, maxMem);
                                 }
                             else
                                 {
-                                    chromEntryCount = appendChromBedEntry(chrom, startPos, endPos, NULL, &totalBytes);
+                                    chromEntryCount = appendChromBedEntry(chrom, startPos, endPos, NULL, &totalBytes, maxMem);
                                 }
 
                             if(static_cast<int>(chromEntryCount) < 0) 
