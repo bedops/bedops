@@ -35,6 +35,27 @@ The ``vcf2bed`` script parses VCF from standard input and prints sorted BED to s
 
 .. tip:: If you are sorting data larger than system memory, use the ``--max-mem`` option to limit sort memory usage to a reasonable fraction of available memory, *e.g.*, ``--max-mem 2G`` or similar. See ``--help`` for more details.
 
+.._vcf2bed_custom_variants
+
+===========================
+Customized variant handling
+===========================
+
+By default, the ``vcf2bed`` script translates all variants to single-base positions in the resulting BED output. Depending on the category of variant you are interested in, however, you may want more specific categories handled differently. 
+
+Based on the VCF v4 specification, we also provide three custom options for filtering input for each of the three types of variants listed: ``--snvs``, ``--insertions`` and ``--deletions``. In each case, we use the length of the reference and alternate alleles to determine which type of variant is being handled. 
+
+In addition, using any of these three custom options automatically results in processing of mixed variant records for a microsatellite, where present. For instance, the following record contains a mixture of a deletion and insertion variant (``GTC -> G`` and ``GTC -> GTCT``, respectively):
+
+::
+
+  #CHROM POS     ID        REF    ALT     QUAL FILTER INFO                              FORMAT      NA00001        NA00002        NA00003
+  20     1234567 microsat1 GTC    G,GTCT  50   PASS   NS=3;DP=9;AA=G                    GT:GQ:DP    0/1:35:4       0/2:17:2       1/1:40:3
+
+When using ``--snvs``, ``--insertions`` or ``--deletions``, this record is split into two distinct BED records and filtered depending on which custom option was chosen. The ``--insertions`` option would only export the insertion in this mixed variant, while ``--deletions`` would show the deletion.
+
+In this way, you can control what kinds of variants are translated into BED outputs |---| most importantly, there is also no confusion about what the length of the BED element signifies.
+
 =======
 Example
 =======
