@@ -40,15 +40,22 @@
 
 using namespace std;
 
+int
+mergeSort(FILE* output, FILE **tmpFiles, unsigned int numFiles);
+
 // probably linux-specific.  From
 //   http://stackoverflow.com/questions/63166/how-to-determine-cpu-and-memory-consumption-from-inside-a-process
 // just used them to help debug my overestimates of internal memory allocated
 namespace dbug_help
 {
+    int parseLine(char* line);
+    int getVirtMemValue();
+    int getResMemValue();
+
     int
     parseLine(char* line)
     {
-        int i = strlen(line);
+        std::size_t i = strlen(line);
         while (*line < '0' || *line > '9') line++;
         line[i-3] = '\0';
         i = atoi(line);
@@ -393,9 +400,10 @@ processData(const char **bedFileNames, unsigned int numFiles, const double maxMe
         fields = 0,
         headCheck = 1,
         val = 0;
-    unsigned int iidx, jidx, kidx, tidx, newChrom, lastidx = 0;
+    unsigned int iidx, jidx, kidx, tidx, newChrom;
     unsigned int tmpFileCount = 0U;
     size_t chromAllocs = 1;
+    Bed::SignedCoordType lastidx = 0;
 
     Bed::SignedCoordType startPos = 0, endPos = 0;
     Bed::LineCountType lines = 1;
