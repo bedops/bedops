@@ -113,7 +113,7 @@ STARCH_encodeBase64(char **output, const size_t outputLength, const unsigned cha
     fprintf(stderr, "%s\n", strResult);
 #endif
 
-    *output = strdup(strResult);
+    *output = STARCH_strdup(strResult);
 
     return;
 }

@@ -844,7 +844,7 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
 #endif
     
         /* validate metadata string against hash */        
-        dynamicBufferCopy = strdup(dynamicBuffer);
+        dynamicBufferCopy = STARCH_strdup(dynamicBuffer);
         STARCH_SHA1_All((const unsigned char *) dynamicBufferCopy, strlen(dynamicBufferCopy), testMdHashSha1Buffer);
         free(dynamicBufferCopy);
 
