@@ -216,7 +216,7 @@ main(int argc, char **argv)
             if ( multiout && startWrite )
                 std::fclose(outfile);
         }
-    catch(Wig2Bed::Help h)
+    catch(Wig2Bed::Help)
         {
             std::cout << prognm() << std::endl;
             std::cout << "	citation: " + citation() << std::endl;
