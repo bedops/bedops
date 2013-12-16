@@ -428,7 +428,7 @@ processData(const char **bedFileNames, unsigned int numFiles, const double maxMe
         }
 
     const int chromCrossover = 1000;
-    const int maxTmpFiles = 120; // can hit max open file descriptors in extreme cases.  use hierarchial merge-sort
+    const unsigned int maxTmpFiles = 120; // can hit max open file descriptors in extreme cases.  use hierarchial merge-sort
     double diffBytes = 0;
     double maxChromBytes = 0;
     bool firstCross = true;
