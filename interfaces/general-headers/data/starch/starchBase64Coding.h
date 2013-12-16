@@ -26,6 +26,8 @@
 #ifndef STARCH_BASE64CODING_H
 #define STARCH_BASE64CODING_H
 
+#include "data/starch/starchHelpers.h"
+
 extern const char kStarchBase64EncodingTable[64];
 extern const short kStarchBase64DecodingTable[256];
 

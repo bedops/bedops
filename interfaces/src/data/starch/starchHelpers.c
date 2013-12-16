@@ -44,6 +44,22 @@
 using namespace Bed;
 #endif
 
+char *
+STARCH_strdup(const char *str)
+{
+  /* Cygwin does not include support for strdup so we include our own implementation here */
+  char *dup = NULL;
+  if (str) {
+    dup = (char *) malloc(strlen(str) + 1); /* sizeof(char) = 1, of course */
+    if (!dup) {
+      fprintf(stderr, "ERROR: Out of memory\n");
+      exit(EXIT_FAILURE);
+    }
+    strcpy(dup, str);
+  }
+  return dup;
+}
+
 int 
 STARCH_compressFileWithGzip(const char *inFn, char **outFn, off_t *outFnSize)
 {
@@ -2660,7 +2676,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #ifdef DEBUG
     fprintf(stderr, "\twriting md signature...\n");
 #endif
-    jsonCopy = strdup(json);
+    jsonCopy = STARCH_strdup(json);
     STARCH_SHA1_All((const unsigned char *)jsonCopy, strlen(jsonCopy), sha1Digest);
     free(jsonCopy);
 
