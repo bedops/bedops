@@ -62,18 +62,18 @@ At this time, compilation of BEDOPS requires GCC 4.7 or greater (which includes 
    ::
 
      $ gcc --version
-     gcc (MacPorts gcc47 4.7.3_3+universal) 4.7.3
+     gcc (MacPorts gcc48 4.8.2_0+universal) 4.8.2
      ...
 
    For Mac OS X users, we recommend first installing `Apple Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option within Xcode. Then install GCC 4.7 or greater using `MacPorts <http://www.macports.org>`_, setting GCC to be the default compiler, *e.g.*: 
  
    :: 
 
-     $ sudo port install gcc47 +universal
+     $ sudo port install gcc48 +universal
      $ sudo port install gcc_select
      $ sudo port select --list gcc
      ...
-     $ sudo port select --set gcc gcc47
+     $ sudo port select --set gcc mp-gcc48
 
    In the future, we may provide full support for OS X compilation via Clang/LLVM, which is the default compiler included with Xcode.
 
