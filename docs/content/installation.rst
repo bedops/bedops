@@ -55,9 +55,74 @@ Mac OS X
 Via source code
 ===============
 
-At this time, compilation of BEDOPS requires GCC 4.7 or greater (which includes support for `C++11 <http://en.wikipedia.org/wiki/C%2B%2B11>`_ features required by core BEDOPS tools).
+At this time, compilation of BEDOPS requires GCC (both ``gcc`` and ``g++``) 4.8 or greater, which includes support for `C++11 <http://en.wikipedia.org/wiki/C%2B%2B11>`_ features required by core BEDOPS tools.
 
-1. If you do not have GCC 4.7 or greater installed, first do so. You can check this with ``gcc --version``, *e.g.*: 
+.. _installation_via_source_code_on_linux
+
+-----
+Linux
+-----
+
+1. If you do not have GCC 4.8 or greater installed, first install these tools. You can check this with ``gcc --version``, *e.g.*: 
+
+   ::
+
+     $ gcc --version
+     gcc (GCC) 4.8.0 20130127 (experimental)
+
+   For Linux users, use your favorite package manager to install the requisite compiler. For example, in Ubuntu, you might run the following: 
+
+   ::
+ 
+     $ sudo apt-get install gcc-4.8
+     $ sudo apt-get install g++-4.8
+
+   If you already have ``gcc`` and need to update it, you might run something like:
+
+   ::
+
+     $ sudo apt-get update
+     $ sudo apt-get upgrade -y
+     $ sudo apt-get dist-upgrade
+
+   The specifics will depend on your distribution and what you want to install. You can check with your system administration or support staff if you are unsure what your options are.
+
+2. Install a ``git`` client of your choice, if you do not already have one installed. Github offers an `installation guide <https://help.github.com/articles/set-up-git#platform-all>`_.
+
+3. Clone the BEDOPS Git repository in an appropriate local directory: 
+
+   ::
+  
+     $ git clone https://github.com/bedops/bedops.git
+  
+4. Enter the top-level of the local copy of the BEDOPS repository and run ``make static`` to begin the build process:
+
+   ::
+
+     $ cd bedops
+     $ make static
+
+5. Once the build is complete, install compiled binaries and scripts to a local ``bin`` folder: 
+
+   ::
+
+     $ make install
+
+6. Copy the extracted binaries to a location of your choice that is in your environment's ``PATH``, *e.g.* ``~/opt/bin``: 
+
+   ::
+ 
+     $ cp bin/* ~/opt/bin
+
+   Change this destination folder, as needed.
+
+.. _installation_via_source_code_on_mac_os_x
+
+--------
+Mac OS X
+--------
+
+1. If you do not have GCC 4.8 or greater installed, first do so. You can check this with ``gcc --version``, *e.g.*: 
 
    ::
 
@@ -77,11 +142,6 @@ At this time, compilation of BEDOPS requires GCC 4.7 or greater (which includes 
 
    In the future, we may provide full support for OS X compilation via Clang/LLVM, which is the default compiler included with Xcode.
 
-   For Linux users, use your favorite package manager to install the requisite compiler. For example, in Ubuntu, you might run the following: 
-
-   ::
- 
-     $ sudo apt-get install gcc
 
 2. Install a ``git`` client of your choice, if you do not already have one installed. Github offers an `installation guide <https://help.github.com/articles/set-up-git#platform-all>`_.
 
@@ -91,31 +151,89 @@ At this time, compilation of BEDOPS requires GCC 4.7 or greater (which includes 
   
      $ git clone https://github.com/bedops/bedops.git
   
-4. (Linux only) Run ``make static`` in the top-level of the local copy of the BEDOPS repository: 
-
-   ::
-
-     $ cd bedops
-     $ make static
-
-5. (Mac OS X only) Run ``make build_all_darwin_intel_fat`` in the top-level of the local copy of the BEDOPS repository:
+4. Run ``make build_all_darwin_intel_fat`` in the top-level of the local copy of the BEDOPS repository:
 
    ::
 
      $ cd bedops
      $ make build_all_darwin_intel_fat
 
-6. Install compiled binaries and scripts to a local ``bin`` folder: 
+5. Once the build is complete, install compiled binaries and scripts to a local ``bin`` folder: 
 
    ::
 
      $ make install
 
-7. Copy the extracted binaries to a location of your choice that is in your environment's ``PATH``, *e.g.* ``~/opt/bin``: 
+6. Copy the extracted binaries to a location of your choice that is in your environment's ``PATH``, *e.g.* ``~/opt/bin``: 
 
    ::
  
      $ cp bin/* ~/opt/bin
+
+   Change this destination folder, as needed.
+
+.. _installation_via_source_code_on_cygwin
+
+------
+Cygwin
+------
+
+1. Make sure you are running a 64-bit version of Cygwin. Compilation of BEDOPS on 32-bit versions of Cygwin is not supported.
+
+   To be sure, open up your Cywin installer application (separate from the Cygwin terminal application) and look for the **64-bit** marker:
+
+.. image:: ../assets/installation/bedops_cygwin_installer_screen.png
+
+2. Check that you have GCC 4.8 or greater installed. You can check this by opening the Cygwin terminal window and typing ``gcc --version``, *e.g.*: 
+
+   ::
+
+     $ gcc --version
+     gcc (GCC) 4.8.2
+     ...
+
+   If you do not have ``gcc`` installed, then open the Cygwin (64-bit) installer application, navigate through the usual user and package destination options, and then mark the GCC 4.8.* packages for installation:
+
+.. image:: ../assets/installation/bedops_cygwin_installer_gcc_screen.png
+
+   If it helps, type in ``gcc`` into the search field to filter results to GCC-related packages. Make sure to include the following packages:
+
+   * **gcc-core**
+   * **gcc-debuginfo**
+   * **gcc-g++**
+   * **gcc-tools-xyz**
+   * **libgcc1**
+
+   Click "Next" to follow directives to install those and any other selected package items. Then run ``gcc --version`` as before, to ensure you have a working GCC setup.
+
+3. Install a ``git`` client of your choice. You can compile one or use the precompiled ``git`` package available through the Cygwin (64-bit) installer:
+
+.. image:: ../assets/installation/bedops_cygwin_installer_git_screen.png
+
+4. In a Cygwin terminal window, clone the BEDOPS Git repository to an appropriate local directory:
+
+   ::
+
+     $ git clone https://github.com/bedops/bedops.git
+
+4. Enter the top-level of the local copy of the BEDOPS repository and run ``make static`` to begin the build process:
+
+   ::
+
+     $ cd bedops
+     $ make static
+
+5. Once the build is complete, install compiled binaries and scripts to a local ``bin`` folder: 
+
+   ::
+
+     $ make install
+
+6. Copy the extracted binaries to a location of your choice that is in your environment's ``PATH``, *e.g.* ``/usr/bin``: 
+
+   ::
+ 
+     $ cp bin/* /usr/bin
 
    Change this destination folder, as needed.
 
