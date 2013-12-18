@@ -55,11 +55,11 @@ namespace dbug_help
     int
     parseLine(char* line)
     {
-        std::size_t i = strlen(line);
-        while (*line < '0' || *line > '9') line++;
-        line[i-3] = '\0';
-        i = atoi(line);
-        return i;
+      int i = (int) strlen(line); // perhaps better to cast strlen to an int, in order to fulfill parseline contract
+      while (*line < '0' || *line > '9') line++;
+      line[i-3] = '\0';
+      i = atoi(line);
+      return i;
     }
     
     int
@@ -529,7 +529,7 @@ processData(const char **bedFileNames, unsigned int numFiles, const double maxMe
 
                     // reverse chrom name for faster lookup in common case that everything looks like chrBLAH
                     jidx = 0;
-                    for ( kidx = static_cast<size_t>(cptr-bedLine); kidx > 0; )
+                    for ( kidx = static_cast<unsigned int>(cptr-bedLine); kidx > 0; )
                       chromBuf[jidx++] = bedLine[--kidx];
                     chromBuf[static_cast<size_t>(cptr-bedLine)-1] = bedLine[0];
                     //  memcpy(chromBuf, bedLine, static_cast<size_t>(cptr-bedLine));
@@ -656,7 +656,7 @@ processData(const char **bedFileNames, unsigned int numFiles, const double maxMe
                         {
                             if (beds->numChroms > 0 && (strcmp(beds->chroms[lastidx]->chromName, chromBuf) == 0))
                                 { /* same chr as last row which often happens in practice */
-                                    jidx = lastidx;
+				  jidx = static_cast<unsigned int>(lastidx);
                                     newChrom = 0;
                                 }
                             else /* linear search */
@@ -1019,7 +1019,7 @@ lexSortBedData(BedData *beds)
             k = 0;
             chromBufLen = strlen(beds->chroms[i]->chromName); // we know >= 1
             strncpy(chromBuf, beds->chroms[i]->chromName, chromBufLen);
-            for ( j = chromBufLen; j > 0; )
+            for ( j = static_cast<unsigned int>(chromBufLen); j > 0; )
                 beds->chroms[i]->chromName[k++] = chromBuf[--j];
             /* terminating null is already in correct spot */
         }
