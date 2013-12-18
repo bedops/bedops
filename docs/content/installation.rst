@@ -145,6 +145,12 @@ Mac OS X
 
 2. Install a ``git`` client of your choice, if you do not already have one installed. Github offers an `installation guide <https://help.github.com/articles/set-up-git#platform-all>`_.
 
+   Alternatively, use ``apt-get`` to install one, *e.g.*
+
+   ::
+
+     $ sudo apt-get install git
+
 3. Clone the BEDOPS Git repository in an appropriate local directory: 
 
    ::
@@ -180,11 +186,11 @@ Cygwin
 
 1. Make sure you are running a 64-bit version of Cygwin. Compilation of BEDOPS on 32-bit versions of Cygwin is not supported.
 
-   To be sure, open up your Cywin installer application (separate from the Cygwin terminal application) and look for the **64-bit** marker:
+   To be sure, open up your Cywin installer application (separate from the Cygwin terminal application) and look for the **64 bit** marker next to the setup application version number. For instance, here is a screenshot of the Cygwin installer that is version 2.831 and is 64-bit:
 
-.. image:: ../assets/installation/bedops_cygwin_installer_screen.png
+   .. image:: ../assets/installation/bedops_cygwin_installer_screen.png
 
-2. Check that you have GCC 4.8 or greater installed. You can check this by opening the Cygwin terminal window and typing ``gcc --version``, *e.g.*: 
+2. Check that you have GCC 4.8 or greater installed. You can check this by opening the Cygwin terminal window (note that this is not the same as the Cygwin installer application) and typing ``gcc --version``, *e.g.*: 
 
    ::
 
@@ -192,11 +198,11 @@ Cygwin
      gcc (GCC) 4.8.2
      ...
 
-   If you do not have ``gcc`` installed, then open the Cygwin (64-bit) installer application, navigate through the usual user and package destination options, and then mark the GCC 4.8.* packages for installation:
+   If you do not have ``gcc`` installed, then open the Cygwin (64-bit) installer application again, navigate through the current setup options, and then mark the GCC 4.8.* packages for installation:
 
    .. image:: ../assets/installation/bedops_cygwin_installer_gcc_screen.png
 
-   If it helps, type in ``gcc`` into the search field to filter results to GCC-related packages. Make sure to include the following packages:
+   If it helps, type in ``gcc`` into the search field to filter results to GCC-related packages. Make sure to mark the following packages for installation, at least:
 
    * **gcc-core**
    * **gcc-debuginfo**
@@ -209,6 +215,10 @@ Cygwin
 3. Install a ``git`` client of your choice. You can compile one or use the precompiled ``git`` package available through the Cygwin (64-bit) installer:
 
    .. image:: ../assets/installation/bedops_cygwin_installer_git_screen.png
+
+   If it helps, type in ``git`` into the search field to filter results to Git-related packages. Make sure to install the following package, at least:
+
+   * **git**
 
 4. In a Cygwin terminal window, clone the BEDOPS Git repository to an appropriate local directory:
 
