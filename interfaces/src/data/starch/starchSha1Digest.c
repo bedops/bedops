@@ -231,6 +231,11 @@ sha1_process_bytes (const void *buffer, size_t len, struct sha1_ctx *ctx)
   /* Process available complete blocks.  */
   if (len >= 64)
     {
+
+#ifndef __GLIBC__
+#define _STRING_ARCH_unaligned 0
+#endif
+
 #if !_STRING_ARCH_unaligned
 # define alignof(type) offsetof (offset_test, x)
 # define UNALIGNED_P(p) (((size_t) p) % alignof (sha1_uint32) != 0)
