@@ -238,6 +238,7 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
     Metadata *iter, *inMd = inRec->metadata;
     const ArchiveVersion *av = inRec->av;
     char buffer[STARCHCAT_COPY_BUFFER_MAXSIZE];
+    size_t nBytesRead = 0;
 
     if (!inMd) {
         fprintf(stderr, "ERROR: Could not locate input metadata.\n");
@@ -326,13 +327,21 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
 
     outFileSizeCounter = outFileSize;
     do {
-      if (outFileSizeCounter > STARCHCAT_COPY_BUFFER_MAXSIZE) {
-	(void) fread(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, inRec->fp);
+        if (outFileSizeCounter > STARCHCAT_COPY_BUFFER_MAXSIZE) {
+	nBytesRead = fread(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, inRec->fp);
+        if (nBytesRead != STARCHCAT_COPY_BUFFER_MAXSIZE * sizeof(char)) {
+            fprintf(stderr, "ERROR: Was not able to copy sufficient bytes into buffer (STARCHCAT_COPY_BUFFER_MAXSIZE).\n");
+            return STARCHCAT_EXIT_FAILURE;
+        }
 	fwrite(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, outFnPtr);
 	outFileSizeCounter -= STARCHCAT_COPY_BUFFER_MAXSIZE;
       }
       else {
-	(void) fread(buffer, sizeof(char), (size_t)outFileSizeCounter, inRec->fp);
+	nBytesRead = fread(buffer, sizeof(char), (size_t)outFileSizeCounter, inRec->fp);
+        if (nBytesRead != outFileSizeCounter * sizeof(char)) {
+            fprintf(stderr, "ERROR: Was not able to copy sufficient bytes into buffer (outFileSizeCounter).\n");
+            return STARCHCAT_EXIT_FAILURE;
+        }
 	fwrite(buffer, sizeof(char), (size_t)outFileSizeCounter, outFnPtr);
 	outFileSizeCounter = 0ULL;
       }
@@ -379,6 +388,7 @@ STARCHCAT_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const C
     char buffer[STARCHCAT_COPY_BUFFER_MAXSIZE];
     FILE *outFnPtr = NULL;
     char *outFn = NULL;
+    size_t nBytesRead = 0;
 
     if (!inMd) {
         fprintf(stderr, "ERROR: Could not locate input metadata.\n");
@@ -457,12 +467,20 @@ STARCHCAT_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const C
     fseeko(inRec->fp, (off_t)startOffset, SEEK_SET);
     do {
       if (outFileSizeCounter > STARCHCAT_COPY_BUFFER_MAXSIZE) {
-	(void) fread(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, inRec->fp);
+	nBytesRead = fread(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, inRec->fp);
+        if (nBytesRead != STARCHCAT_COPY_BUFFER_MAXSIZE * sizeof(char)) {
+            fprintf(stderr, "ERROR: Was not able to copy sufficient bytes into buffer (STARCHCAT_COPY_BUFFER_MAXSIZE).\n");
+            return STARCHCAT_EXIT_FAILURE;
+        }
 	fwrite(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, outFnPtr);
 	outFileSizeCounter -= STARCHCAT_COPY_BUFFER_MAXSIZE;
       }
       else {
-	(void) fread(buffer, sizeof(char), (size_t)outFileSizeCounter, inRec->fp);
+	nBytesRead = fread(buffer, sizeof(char), (size_t)outFileSizeCounter, inRec->fp);
+        if (nBytesRead != outFileSizeCounter * sizeof(char)) {
+            fprintf(stderr, "ERROR: Was not able to copy sufficient bytes into buffer (outFileSizeCounter).\n");
+            return STARCHCAT_EXIT_FAILURE;
+        }
 	fwrite(buffer, sizeof(char), (size_t)outFileSizeCounter, outFnPtr);
 	outFileSizeCounter = 0ULL;
       }
