@@ -115,6 +115,9 @@ Set operation and statistical utilities
 | ``--min-element``             | An element with the lowest score from overlapping elements in        | 1                | 2                | 5                |
 |                               | ``map-file``. If no overlapping element exists, ``NAN`` is reported. |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--skip-unmapped``           | Omits printing reference elements which do not associate with any    | 1                | 2                | 3                |
+|                               | mapped elements.                                                     |                  |                  |                  |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--stdev``                   | Reports the square root of the result of ``--variance``.             | 1                | 2                | 5                |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--sum``                     | Reports the accumulated value from scores of overlapping elements in | 1                | 2                | 5                |

@@ -3,6 +3,8 @@
 Data conversion
 ===============
 
+Convert a variety of common genomic data types to BED with no loss of information.
+
 .. toctree::
 
    conversion/bam2bed

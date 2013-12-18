@@ -15,7 +15,7 @@ The ``sam2bed`` script is "non-lossy". Similar tools in the world tend to throw 
 Dependencies
 ============
 
-This ``python`` shell script is dependent upon the installation of `SAMtools <http://samtools.sourceforge.net/>`_ and Python, version 2.7 or greater.
+This ``python`` shell script is dependent upon the installation of `SAMtools <http://samtools.sourceforge.net/>`_ and Python, version 2.7 or greater (and less than Python3).
 
 ======
 Source
@@ -28,6 +28,8 @@ Usage
 =====
 
 The ``sam2bed`` script parses SAM data from standard input and prints :ref:`sorted <sort-bed>` BED to standard output. The ``sam2starch`` script uses an extra step to parse SAM to a compressed BEDOPS :ref:`Starch-formatted <starch_specification>` archive, which is also directed to standard output.
+
+.. note:: If you modify the SAM data such that it includes tags not already in the SAM specification, use the ``--custom-tags <value>`` operator to specify a comma-delimited list of custom tags.
 
 .. tip:: If you work with RNA-seq data, you can use the ``--split`` option to process reads with ``N``-CIGAR operations, splitting them into separate BED elements.
 
@@ -67,6 +69,52 @@ We can convert it to sorted BED data in the following manner (omitting standard 
 .. note:: The provided scripts **strip out unmapped reads** from the SAM file. We believe this makes sense under most circumstances. Add the ``--all-reads`` option if you need unmapped and mapped reads.
 
 .. note:: Note the conversion from 1- to 0-based coordinates. While BEDOPS fully supports 0- and 1-based coordinates, the coordinate change in BED is believed to be convenient to most end users.
+
+.. _sam2bed_column_mapping:
+
+==============
+Column mapping
+==============
+
+In this section, we describe how SAM columns are mapped to BED columns. We start with the first six UCSC BED columns as follows:
+
++---------------------------+---------------------+---------------+
+| SAM field                 | BED column index    | BED field     |
++===========================+=====================+===============+
+| RNAME                     | 1                   | chromosome    |
++---------------------------+---------------------+---------------+
+| POS - 1                   | 2                   | start         |
++---------------------------+---------------------+---------------+
+| POS + length(CIGAR) - 1   | 3                   | stop          |
++---------------------------+---------------------+---------------+
+| QNAME                     | 4                   | id            |
++---------------------------+---------------------+---------------+
+| FLAG                      | 5                   | score         |
++---------------------------+---------------------+---------------+
+| 16 & FLAG                 | 6                   | strand        |
++---------------------------+---------------------+---------------+
+
+The remaining SAM columns are mapped as-is, in same order, to adjacent BED columns:
+
++---------------------------+---------------------+---------------+
+| SAM field                 | BED column index    | BED field     |
++===========================+=====================+===============+
+| MAPQ                      | 7                   |               |
++---------------------------+---------------------+---------------+
+| CIGAR                     | 8                   |               |
++---------------------------+---------------------+---------------+
+| RNEXT                     | 9                   |               |
++---------------------------+---------------------+---------------+
+| PNEXT                     | 10                  |               |
++---------------------------+---------------------+---------------+
+| TLEN                      | 11                  |               |
++---------------------------+---------------------+---------------+
+| SEQ                       | 12                  |               |
++---------------------------+---------------------+---------------+
+| QUAL                      | 13                  |               |
++---------------------------+---------------------+---------------+
+
+Because we have mapped all columns, we can translate converted BED data back to headerless SAM reads with a simple ``awk`` statement (or other script) that reverts back to 1-based coordinates and permutes columns to SAM-based ordering.
 
 .. _sam2bed_downloads:
 
