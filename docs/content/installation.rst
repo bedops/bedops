@@ -55,7 +55,7 @@ Mac OS X
 Via source code
 ===============
 
-At this time, compilation of BEDOPS requires GCC (both ``gcc`` and ``g++``) 4.8 or greater, which includes support for `C++11 <http://en.wikipedia.org/wiki/C%2B%2B11>`_ features required by core BEDOPS tools. Other tools may be required, some which are platform-specific, as described in the installation documentation that follows.
+At this time, compilation of BEDOPS requires GCC 4.8.x (both ``gcc`` and ``g++`` and related components) or greater, which includes support for `C++11 <http://en.wikipedia.org/wiki/C%2B%2B11>`_ features required by core BEDOPS tools. Other tools may be required (some which are platform-specific) as described in the installation documentation that follows.
 
 .. _installation_via_source_code_on_linux
 
