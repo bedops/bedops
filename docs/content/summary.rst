@@ -73,6 +73,12 @@ Set operation and statistical utilities
 | ``--echo-map-score``          | Reports the scores (5th column) from overlapping ``map-file``        | 1                | 2                | 5                |
 |                               | elements.                                                            |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--echo-map-size``           | Calculates difference between start and stop coordinates (or size)   | 1                | 2                | 3                |
+|                               | of each mapped element.                                              |                  |                  |                  |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--echo-overlap-size``       | Calculates size of overlap between each mapped element and its       | 1                | 2                | 3                |
+|                               | reference element.                                                   |                  |                  |                  |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--faster``                  | **(Advanced)** Strong input assumptions are made. Review documents   | 1                | 2                | 5                |
 |                               | before use. Compatible with ``--bp-ovr`` and ``--range`` overlap     |                  |                  |                  |
 |                               | options only.                                                        |                  |                  |                  |
