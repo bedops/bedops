@@ -356,10 +356,10 @@ STARCH_generateJSONMetadata(const Metadata *md, const CompressionType type, cons
     char *creationTimestamp = NULL;
     char *jsonString = NULL;
     size_t creationTimestampLength = STARCH_CREATION_TIMESTAMP_LENGTH;
-    uint64_t filenameSize = 0LLU;
-    Bed::LineCountType filenameLineCount = UINT64_C(0);
-    Bed::BaseCountType totalNonUniqueBases = UINT64_C(0);
-    Bed::BaseCountType totalUniqueBases = UINT64_C(0);
+    uint64_t filenameSize = 0;
+    Bed::LineCountType filenameLineCount = 0;
+    Bed::BaseCountType totalNonUniqueBases = 0;
+    Bed::BaseCountType totalUniqueBases = 0;
     time_t creationTime;
     struct tm *creationTimeInformation = NULL;
 
@@ -600,8 +600,8 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
     char footerBuffer[STARCH2_MD_FOOTER_LENGTH + 1] = {0};
     char currC = '\0';
     char prevC = '\0';
-    uint64_t testMagicOffset = 0ULL;
-    uint64_t mdOffsetIndex = 0ULL;
+    uint64_t testMagicOffset = 0;
+    uint64_t mdOffsetIndex = 0;
     Metadata *firstRec = NULL;
     json_t *streamArchive;
     json_t *streamArchiveVersion = NULL;
@@ -621,7 +621,7 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
     char *streamFn = NULL;
     char *streamCTime = NULL;
     char *streamNote = NULL;
-    uint64_t streamSizeValue = UINT64_C(0);
+    uint64_t streamSizeValue = 0;
     char *testMagicPrecursor = NULL;
     json_error_t jsonParseError;
     const char *jsonObjKey = NULL;

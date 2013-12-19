@@ -141,8 +141,8 @@ namespace starch
                 int _testByte;
                 size_t _testIdx;
                 char _testMagicBuf[STARCH_TEST_BYTE_COUNT] = {0};
-                uint64_t _mdOffset = UINT64_C(0);
-                uint64_t _mdOffsetIdx = UINT64_C(0);
+                uint64_t _mdOffset = 0;
+                uint64_t _mdOffsetIdx = 0;
                 int _testElemSize = sizeof(char);
                 int _testElemCount = STARCH_TEST_BYTE_COUNT;
                 char *_testMagicPrecursor = NULL;
@@ -167,10 +167,10 @@ namespace starch
                 json_t *_mdJSONStreamLineCount = NULL;
                 json_t *_mdJSONStreamNonUniqueBaseCount = NULL;
                 json_t *_mdJSONStreamUniqueBaseCount = NULL;
-                uint64_t _archStreamSize = UINT64_C(0);
-                Bed::LineCountType _archStreamLineCount = UINT64_C(0);
-                Bed::BaseCountType _archStreamNonUniqueBaseCount = UINT64_C(0);
-                Bed::BaseCountType _archStreamUniqueBaseCount = UINT64_C(0);
+                uint64_t _archStreamSize = 0;
+                Bed::LineCountType _archStreamLineCount = 0;
+                Bed::BaseCountType _archStreamNonUniqueBaseCount = 0;
+                Bed::BaseCountType _archStreamUniqueBaseCount = 0;
                 Metadata *_testMd = NULL;
                 Metadata *_firstMd = NULL;
                 unsigned int _recIdx = 0U;
@@ -455,10 +455,10 @@ namespace starch
                 char *_tokenCheck = NULL;
                 char *_recChromosome = NULL;
                 char *_recFilename = NULL;
-                uint64_t _recFileSize = UINT64_C(0);
-                Bed::LineCountType _recLineCountValue = UINT64_C(0);
-                Bed::BaseCountType _recNonUniqueBaseCountValue = UINT64_C(0);
-                Bed::BaseCountType _recUniqueBaseCountValue = UINT64_C(0);
+                uint64_t _recFileSize = 0;
+                Bed::LineCountType _recLineCountValue = 0;
+                Bed::BaseCountType _recNonUniqueBaseCountValue = 0;
+                Bed::BaseCountType _recUniqueBaseCountValue = 0;
 
                 /* read first 8 kilobytes into buffer */
 
@@ -660,9 +660,9 @@ namespace starch
             inline Bed::SignedCoordType     getCurrentStart() { return currentStart; }
             inline Bed::SignedCoordType     getCurrentStop() { return currentStop; }
             inline const char *             getCurrentRemainder() { return currentRemainder; }
-            Bed::LineCountType              getCurrentChromosomeLineCount() { return (archMdIter) ? archMdIter->lineCount : UINT64_C(0); }
-            Bed::BaseCountType              getCurrentChromosomeNonUniqueBaseCount() { return (archMdIter) ? archMdIter->totalNonUniqueBases : UINT64_C(0); }
-            Bed::BaseCountType              getCurrentChromosomeUniqueBaseCount() { return (archMdIter) ? archMdIter->totalUniqueBases : UINT64_C(0); }
+            Bed::LineCountType              getCurrentChromosomeLineCount() { return (archMdIter) ? archMdIter->lineCount : 0; }
+            Bed::BaseCountType              getCurrentChromosomeNonUniqueBaseCount() { return (archMdIter) ? archMdIter->totalNonUniqueBases : 0; }
+            Bed::BaseCountType              getCurrentChromosomeUniqueBaseCount() { return (archMdIter) ? archMdIter->totalUniqueBases : 0; }
             inline bool                     isEOF() { return (!getCurrentChromosome()); }
 
         // ------------        
@@ -1036,14 +1036,14 @@ namespace starch
         archType = STARCH_DEFAULT_COMPRESSION_TYPE;
         archCreationTimestamp = NULL;
         archNote = NULL;
-        archMdOffset = 0ULL;
-        archStreamOffset = 0ULL;
+        archMdOffset = 0;
+        archStreamOffset = 0;
         archHeaderFlag = kStarchFalse;
         archShowNewlineFlag = kStarchTrue;
         archMdIter = NULL;
         inFp = NULL;
         inFn = "";
-        cumulativeSize = UINT64_C(0);
+        cumulativeSize = 0;
         bzFp = NULL;
         bzOutput = NULL;
         zOutput = NULL;
@@ -1060,18 +1060,18 @@ namespace starch
         perLineUsageFlag = false;
         currentChromosome = NULL;
         currentStart = -2LL;
-        currentStop = INT64_C(0);
+        currentStop = 0;
         currentRemainder = NULL;
-        t_start = INT64_C(0);
-        t_pLength = INT64_C(0);
-        t_lastEnd = INT64_C(0);
+        t_start = 0;
+        t_pLength = 0;
+        t_lastEnd = 0;
         t_firstInputToken[0] = '\0';
         t_secondInputToken[0] = '\0';
         archMdJSON = NULL;
         _currChr = NULL;
         _currChrLen = 0;
-        _currStart = INT64_C(0);
-        _currStop = INT64_C(0);
+        _currStart = 0;
+        _currStop = 0;
         _currRemainder = NULL;
         _currRemainderLen = 0;
 
@@ -1299,9 +1299,9 @@ namespace starch
         std::fprintf(stderr, "\n--- Starch::setupTransformationParameters() ---\n");
         std::fprintf(stderr, "\tarchVersion->major -> %d\n", archVersion->major);
 #endif
-        t_start = INT64_C(0);
-        t_pLength = INT64_C(0);
-        t_lastEnd = INT64_C(0);
+        t_start = 0;
+        t_pLength = 0;
+        t_lastEnd = 0;
         t_firstInputToken[0] = '\0';
         t_secondInputToken[0] = '\0';
 
