@@ -136,7 +136,7 @@ Mac OS X
      gcc (MacPorts gcc48 4.8.2_0+universal) 4.8.2
      ...
 
-   For Mac OS X users, we recommend first installing `Apple Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option within Xcode. Then install GCC 4.7 or greater using `MacPorts <http://www.macports.org>`_, setting GCC to be the default compiler, *e.g.*: 
+   For Mac OS X users, we recommend first installing `Apple Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option within Xcode. Then install GCC 4.8 or greater using `MacPorts <http://www.macports.org>`_, setting GCC to be the default compiler, *e.g.*: 
  
    :: 
 
