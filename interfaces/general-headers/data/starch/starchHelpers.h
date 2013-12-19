@@ -29,12 +29,12 @@
 #ifdef __cplusplus
 #include <cinttypes>
 #include <cstdint>
+#include <clocale>
 #else
 #include <inttypes.h>
 #include <stdint.h>
-#endif
-
 #include <locale.h>
+#endif
 
 #include "data/starch/starchMetadataHelpers.h"
 

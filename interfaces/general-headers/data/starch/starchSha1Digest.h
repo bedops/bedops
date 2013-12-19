@@ -26,8 +26,13 @@
 #ifndef SHA1_H
 # define SHA1_H 1
 
+#ifdef __cplusplus
+#include <cstdio>
+#include <climits>
+#else
 #include <stdio.h>
 #include <limits.h>
+#endif
 
 /* The following contortions are an attempt to use the C preprocessor
    to determine an unsigned integral type that is 32 bits wide.  An

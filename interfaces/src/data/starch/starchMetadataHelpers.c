@@ -26,18 +26,23 @@
 #ifdef __cplusplus
 #include <cinttypes>
 #include <cstdint>
+#include <cstdlib>
+#include <cstring>
+#include <climits> /* CHAR_BIT */
+#include <ctime>
 #else
 #include <inttypes.h>
 #include <stdint.h>
-#endif
-
 #include <stdlib.h>
 #include <string.h>
-#include <stdint.h>
 #include <unistd.h>
 #include <sys/utsname.h>
 #include <limits.h> /* CHAR_BIT */
 #include <time.h>
+#endif
+
+#include <unistd.h>
+#include <sys/utsname.h>
 
 #include "data/starch/starchBase64Coding.h"
 #include "data/starch/starchSha1Digest.h"
@@ -45,8 +50,12 @@
 #include "data/starch/starchFileHelpers.h"
 #include "data/starch/starchHelpers.h"
 
+#ifdef __cplusplus
+  using namespace Bed;
+#endif
+
 Metadata * 
-STARCH_createMetadata(char const *chr, char const *fn, uint64_t size, Bed::LineCountType lineCount, Bed::BaseCountType totalNonUniqueBases, Bed::BaseCountType totalUniqueBases)
+STARCH_createMetadata(char const *chr, char const *fn, uint64_t size, LineCountType lineCount, BaseCountType totalNonUniqueBases, BaseCountType totalUniqueBases)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_createMetadata() ---\n");
@@ -92,7 +101,7 @@ STARCH_createMetadata(char const *chr, char const *fn, uint64_t size, Bed::LineC
 }
 
 Metadata * 
-STARCH_addMetadata(Metadata *md, char *chr, char *fn, uint64_t size, Bed::LineCountType lineCount, Bed::BaseCountType totalNonUniqueBases, Bed::BaseCountType totalUniqueBases) 
+STARCH_addMetadata(Metadata *md, char *chr, char *fn, uint64_t size, LineCountType lineCount, BaseCountType totalNonUniqueBases, BaseCountType totalUniqueBases) 
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_addMetadata() ---\n");
@@ -154,7 +163,7 @@ STARCH_copyMetadata(const Metadata *md)
 }
 
 int 
-STARCH_updateMetadataForChromosome(Metadata **md, char *chr, char *fn, uint64_t size, Bed::LineCountType lineCount, Bed::BaseCountType totalNonUniqueBases, Bed::BaseCountType totalUniqueBases) 
+STARCH_updateMetadataForChromosome(Metadata **md, char *chr, char *fn, uint64_t size, LineCountType lineCount, BaseCountType totalNonUniqueBases, BaseCountType totalUniqueBases) 
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_updateMetadataForChromosome() ---\n");
@@ -357,9 +366,9 @@ STARCH_generateJSONMetadata(const Metadata *md, const CompressionType type, cons
     char *jsonString = NULL;
     size_t creationTimestampLength = STARCH_CREATION_TIMESTAMP_LENGTH;
     uint64_t filenameSize = 0;
-    Bed::LineCountType filenameLineCount = 0;
-    Bed::BaseCountType totalNonUniqueBases = 0;
-    Bed::BaseCountType totalUniqueBases = 0;
+    LineCountType filenameLineCount = 0;
+    BaseCountType totalNonUniqueBases = 0;
+    BaseCountType totalUniqueBases = 0;
     time_t creationTime;
     struct tm *creationTimeInformation = NULL;
 
@@ -600,8 +609,13 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
     char footerBuffer[STARCH2_MD_FOOTER_LENGTH + 1] = {0};
     char currC = '\0';
     char prevC = '\0';
+<<<<<<< HEAD
     uint64_t testMagicOffset = 0;
     uint64_t mdOffsetIndex = 0;
+=======
+    uint64_t testMagicOffset = (uint64_t)0;
+    uint64_t mdOffsetIndex = (uint64_t)0;
+>>>>>>> udated INT64_C/UINT64_C things for c++
     Metadata *firstRec = NULL;
     json_t *streamArchive;
     json_t *streamArchiveVersion = NULL;
@@ -621,16 +635,20 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
     char *streamFn = NULL;
     char *streamCTime = NULL;
     char *streamNote = NULL;
+<<<<<<< HEAD
     uint64_t streamSizeValue = 0;
+=======
+    uint64_t streamSizeValue = (uint64_t)0;
+>>>>>>> udated INT64_C/UINT64_C things for c++
     char *testMagicPrecursor = NULL;
     json_error_t jsonParseError;
     const char *jsonObjKey = NULL;
     json_t *jsonObjValue = NULL;
     const char *jsonObjAvKey = NULL;
     json_t *jsonObjAvValue = NULL;
-    Bed::LineCountType streamLineCountValue = STARCH_DEFAULT_LINE_COUNT;
-    Bed::BaseCountType streamTotalNonUniqueBasesValue = STARCH_DEFAULT_NON_UNIQUE_BASE_COUNT;
-    Bed::BaseCountType streamTotalUniqueBasesValue = STARCH_DEFAULT_UNIQUE_BASE_COUNT;
+    LineCountType streamLineCountValue = STARCH_DEFAULT_LINE_COUNT;
+    BaseCountType streamTotalNonUniqueBasesValue = STARCH_DEFAULT_NON_UNIQUE_BASE_COUNT;
+    BaseCountType streamTotalUniqueBasesValue = STARCH_DEFAULT_UNIQUE_BASE_COUNT;
     json_t *mdJSON = NULL;
     size_t mdHashIndex;
     char offsetBuffer[STARCH2_MD_FOOTER_CUMULATIVE_RECORD_SIZE_LENGTH + 1] = {0};
@@ -1049,7 +1067,7 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
                 }
                 else {
                     streamLineCount = json_integer(STARCH_DEFAULT_LINE_COUNT);
-                    streamLineCountValue = (Bed::LineCountType) json_integer_value(streamLineCount);
+                    streamLineCountValue = (LineCountType) json_integer_value(streamLineCount);
                     json_decref(streamLineCount);
                 }
             }
@@ -1065,7 +1083,7 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
                 }
                 else {
                     streamTotalNonUniqueBases = json_integer(STARCH_DEFAULT_NON_UNIQUE_BASE_COUNT);
-                    streamTotalNonUniqueBasesValue = (Bed::BaseCountType) json_integer_value(streamTotalNonUniqueBases);
+                    streamTotalNonUniqueBasesValue = (BaseCountType) json_integer_value(streamTotalNonUniqueBases);
                     json_decref(streamTotalNonUniqueBases);
                 }
             }
@@ -1081,12 +1099,12 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
                 }
                 else {
                     streamTotalUniqueBases = json_integer(STARCH_DEFAULT_UNIQUE_BASE_COUNT);
-                    streamTotalUniqueBasesValue = (Bed::BaseCountType) json_integer_value(streamTotalUniqueBases);
+                    streamTotalUniqueBasesValue = (BaseCountType) json_integer_value(streamTotalUniqueBases);
                     json_decref(streamTotalUniqueBases);
                 }
             }
             else
-                streamTotalUniqueBasesValue = (Bed::BaseCountType) json_integer_value(streamTotalUniqueBases);
+                streamTotalUniqueBasesValue = (BaseCountType) json_integer_value(streamTotalUniqueBases);
             
             strncpy(streamChr, json_string_value(streamChromosome), strlen(json_string_value(streamChromosome)) + 1);
             strncpy(streamFn, json_string_value(streamFilename), strlen(json_string_value(streamFilename)) + 1);
@@ -1229,9 +1247,9 @@ STARCH_readLegacyMetadata(const char *buf, Metadata **rec, CompressionType *type
     char *recChromosome = NULL;
     char *recFilename = NULL;
     unsigned long recFileSize = 0UL;
-    Bed::LineCountType recLineCountValue = STARCH_DEFAULT_LINE_COUNT;
-    Bed::BaseCountType recNonUniqueBaseCountValue = STARCH_DEFAULT_NON_UNIQUE_BASE_COUNT;
-    Bed::BaseCountType recUniqueBaseCountValue = STARCH_DEFAULT_UNIQUE_BASE_COUNT;
+    LineCountType recLineCountValue = STARCH_DEFAULT_LINE_COUNT;
+    BaseCountType recNonUniqueBaseCountValue = STARCH_DEFAULT_NON_UNIQUE_BASE_COUNT;
+    BaseCountType recUniqueBaseCountValue = STARCH_DEFAULT_UNIQUE_BASE_COUNT;
     char tokBuf[STARCH_LEGACY_METADATA_SIZE];
     char recTokBuf[STARCH_LEGACY_METADATA_SIZE];
     size_t bufIdx, tokBufIdx, recTokBufIdx;

@@ -41,6 +41,10 @@
 #include "data/starch/starchConstants.h"
 #include "suite/BEDOPS.Constants.hpp"
 
+#ifdef __cplusplus
+  using namespace Bed;
+#endif
+
 #define STARCHCAT_EXIT_FAILURE 0
 #define STARCHCAT_EXIT_SUCCESS 1
 #define STARCHCAT_FATAL_ERROR -1
@@ -76,30 +80,30 @@ typedef struct metadataRecord {
 */
 
 typedef struct transformState {
-    Bed::LineCountType       t_lineIdx;
-    Bed::SignedCoordType     t_start;
-    Bed::SignedCoordType     t_pLength;
-    Bed::SignedCoordType     t_lastEnd;
+    LineCountType            t_lineIdx;
+    SignedCoordType          t_start;
+    SignedCoordType          t_pLength;
+    SignedCoordType          t_lastEnd;
     char                     t_firstInputToken[UNSTARCH_FIRST_TOKEN_MAX_LENGTH + 1];
     char                     t_secondInputToken[UNSTARCH_SECOND_TOKEN_MAX_LENGTH + 1];
-    char                     t_currentChromosome[Bed::TOKEN_CHR_MAX_LENGTH + 1];
+    char                     t_currentChromosome[TOKEN_CHR_MAX_LENGTH + 1];
     size_t                   t_currentChromosomeLength;
-    Bed::SignedCoordType     t_currentStart;
-    Bed::SignedCoordType     t_currentStop;
+    SignedCoordType          t_currentStart;
+    SignedCoordType          t_currentStop;
     char                     t_currentRemainder[UNSTARCH_SECOND_TOKEN_MAX_LENGTH + 1];
     size_t                   t_currentRemainderLength;
-    Bed::SignedCoordType     t_lastPosition;
-    Bed::SignedCoordType     t_lcDiff;    
+    SignedCoordType          t_lastPosition;
+    SignedCoordType          t_lcDiff;    
     size_t                   t_nExtractionBuffer;
     size_t                   t_nExtractionBufferPos;
-    char                     r_chromosome[Bed::TOKEN_CHR_MAX_LENGTH + 1];
+    char                     r_chromosome[TOKEN_CHR_MAX_LENGTH + 1];
     char                     r_remainder[UNSTARCH_SECOND_TOKEN_MAX_LENGTH + 1];
-    Bed::SignedCoordType     r_start;
-    Bed::SignedCoordType     r_stop;
-    Bed::SignedCoordType     r_coordDiff;
-    Bed::SignedCoordType     r_lcDiff;
-    Bed::SignedCoordType     r_lastPosition;
-    Bed::SignedCoordType     r_previousStop;
+    SignedCoordType          r_start;
+    SignedCoordType          r_stop;
+    SignedCoordType          r_coordDiff;
+    SignedCoordType          r_lcDiff;
+    SignedCoordType          r_lastPosition;
+    SignedCoordType          r_previousStop;
     uint64_t                 r_totalNonUniqueBases;
     uint64_t                 r_totalUniqueBases;
     size_t                   r_nRetransBuf;
@@ -193,18 +197,18 @@ int      STARCHCAT_rewriteInputRecordToOutput (Metadata **outMd,
 
 int      STARCHCAT2_parseCoordinatesFromBedLine(const char *lineBuf, 
                                               const size_t inRecIdx, 
-                                      Bed::SignedCoordType *starts, 
-                                      Bed::SignedCoordType *stops);
+                                           SignedCoordType *starts, 
+                                           SignedCoordType *stops);
 
 int      STARCHCAT2_identifyLowestBedElement(const Boolean *eobFlags,
-                                const Bed::SignedCoordType *starts, 
-                                const Bed::SignedCoordType *stops, 
+                                     const SignedCoordType *starts, 
+                                     const SignedCoordType *stops, 
                                               const size_t numRecords, 
                                                     size_t *lowestIdx);
 
 int      STARCHCAT2_pullNextBedElement (const size_t recIdx,
                                           const char **inLinesBuf,
-                            const Bed::LineCountType *nInLinesBuf,
+                                 const LineCountType *nInLinesBuf,
                                                 char **outLineBuf, 
                                             uint64_t **inBufNewlineOffsets);
 
@@ -315,12 +319,12 @@ int      STARCHCAT2_breakdownGzipOutputStream (z_stream *zStream);
 int      STARCHCAT2_fillExtractionBufferFromBzip2Stream (Boolean *eofFlag, char *recordChromosome, char *extractionBuffer, size_t *nExtractionBuffer, BZFILE **bzStream, size_t *nBzRead, char *bzRemainderBuf, size_t *nBzRemainderBuf, TransformState *t_state);
 int      STARCHCAT2_fillExtractionBufferFromGzipStream (Boolean *eofFlag, FILE **inputFp, char *recordChromosome, char *extractionBuffer, size_t *nExtractionBuffer, z_stream *zStream, size_t *nZRead, char **zRemainderBuf, size_t *nZRemainderBuf, TransformState *t_state);
 int      STARCHCAT2_extractBedLine (Boolean *eobFlag, char *extractionBuffer, int *extractionBufferOffset, char **extractedElement);
-int      STARCHCAT2_parseCoordinatesFromBedLineV2 (Boolean *eobFlag, const char *extractedElement, Bed::SignedCoordType *start, Bed::SignedCoordType *stop);
-int      STARCHCAT2_addLowestBedElementToCompressionBuffer (char *compressionBuffer, const char *extractedElement, Bed::LineCountType *compressionLineCount);
+int      STARCHCAT2_parseCoordinatesFromBedLineV2 (Boolean *eobFlag, const char *extractedElement, SignedCoordType *start, SignedCoordType *stop);
+int      STARCHCAT2_addLowestBedElementToCompressionBuffer (char *compressionBuffer, const char *extractedElement, LineCountType *compressionLineCount);
 int      STARCHCAT2_transformCompressionBuffer (const char *compressionBuffer, char *retransformedOutputBuffer, TransformState *retransState);
 int      STARCHCAT2_squeezeRetransformedOutputBufferToBzip2Stream (BZFILE **bzStream, char *transformedBuffer);
 int      STARCHCAT2_squeezeRetransformedOutputBufferToGzipStream (z_stream *zStream, const Boolean flushZStreamFlag, char *transformedBuffer, uint64_t *finalStreamSize, size_t *cumulativeOutputSize);
-int      STARCHCAT2_resetCompressionBuffer (char *compressionBuffer, Bed::LineCountType *compressionLineCount);
+int      STARCHCAT2_resetCompressionBuffer (char *compressionBuffer, LineCountType *compressionLineCount);
 int      STARCHCAT2_finalizeMetadata (Metadata **outMd, char *finalChromosome, char *finalOutTagFn, uint64_t finalStreamSize, uint64_t finalLineCount, uint64_t finalTotalNonUniqueBases, uint64_t finalTotalUniqueBases);
 
 #endif

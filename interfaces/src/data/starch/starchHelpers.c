@@ -292,14 +292,14 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
             
             /* if line type is of kBedLineCoordinates type, then we test chromosome length */
             if (*lineType == kBedLineCoordinates) {
-                if (strlen(*chr) > Bed::TOKEN_CHR_MAX_LENGTH) {
+                if (strlen(*chr) > TOKEN_CHR_MAX_LENGTH) {
                     fprintf(stderr, "ERROR: Chromosome field length is too long (must be no longer than %ld characters)\n", TOKEN_CHR_MAX_LENGTH);
                     return STARCH_FATAL_ERROR;
                 }
             }
             /* otherwise, we limit the length of a comment line to TOKENS_HEADER_MAX_LENGTH */
             else {
-                if (strlen(*chr) > Bed::TOKENS_HEADER_MAX_LENGTH) {
+                if (strlen(*chr) > TOKENS_HEADER_MAX_LENGTH) {
                     fprintf(stderr, "ERROR: Comment line length is too long (must be no longer than %ld characters)\n", TOKEN_CHR_MAX_LENGTH);
                     return STARCH_FATAL_ERROR;
                 }                
@@ -310,16 +310,16 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
     if (elemCnt > 3) {
         buffer[(charCnt - 1)] = '\0';
         /* test id field length */
-        while ((buffer[idIdx] != delim) && (idIdx++ < Bed::TOKEN_ID_MAX_LENGTH)) {}
-        if (idIdx == Bed::TOKEN_ID_MAX_LENGTH) {
-            fprintf(stderr, "ERROR: Id field is too long (must be less than %ld characters long)\n", Bed::TOKEN_ID_MAX_LENGTH);
+        while ((buffer[idIdx] != delim) && (idIdx++ < TOKEN_ID_MAX_LENGTH)) {}
+        if (idIdx == TOKEN_ID_MAX_LENGTH) {
+            fprintf(stderr, "ERROR: Id field is too long (must be less than %ld characters long)\n", TOKEN_ID_MAX_LENGTH);
             return STARCH_FATAL_ERROR;
         }
         /* test remnant of buffer, if there is more to look at */
         if (charCnt > idIdx) {
-            while ((buffer[idIdx++] != '\0') && (restIdx++ < Bed::TOKEN_REST_MAX_LENGTH)) {}
-            if (restIdx == Bed::TOKEN_REST_MAX_LENGTH) {
-                fprintf(stderr, "ERROR: Remainder of BED input after id field is too long (must be less than %ld characters long)\n", Bed::TOKEN_REST_MAX_LENGTH);
+            while ((buffer[idIdx++] != '\0') && (restIdx++ < TOKEN_REST_MAX_LENGTH)) {}
+            if (restIdx == TOKEN_REST_MAX_LENGTH) {
+                fprintf(stderr, "ERROR: Remainder of BED input after id field is too long (must be less than %ld characters long)\n", TOKEN_REST_MAX_LENGTH);
                 return STARCH_FATAL_ERROR;
             }
         }
@@ -364,8 +364,8 @@ STARCH_createTransformTokensForHeaderlessInput(const char *s, const char delim, 
                     fprintf(stderr, "\tcase 0\n");
 #endif
                     /* test if element string is longer than allowed bounds */
-                    if (strlen(buffer) > Bed::TOKEN_CHR_MAX_LENGTH) {
-                        fprintf(stderr, "ERROR: Chromosome field length is too long (must be no longer than %ld characters)\n", Bed::TOKEN_CHR_MAX_LENGTH);
+                    if (strlen(buffer) > TOKEN_CHR_MAX_LENGTH) {
+                        fprintf(stderr, "ERROR: Chromosome field length is too long (must be no longer than %ld characters)\n", TOKEN_CHR_MAX_LENGTH);
                         return STARCH_FATAL_ERROR;
                     }
                     /* copy element to chromosome variable, if memory is available */
@@ -391,15 +391,15 @@ STARCH_createTransformTokensForHeaderlessInput(const char *s, const char delim, 
                     fprintf(stderr, "\tcase 1\n");
 #endif
                     /* test if element string is longer than allowed bounds */
-                    if (strlen(buffer) > Bed::MAX_DEC_INTEGERS) {
-                        fprintf(stderr, "ERROR: Start coordinate field length is too long ([%s] must be no greater than %ld characters)\n", buffer, Bed::MAX_DEC_INTEGERS);
+                    if (strlen(buffer) > MAX_DEC_INTEGERS) {
+                        fprintf(stderr, "ERROR: Start coordinate field length is too long ([%s] must be no greater than %ld characters)\n", buffer, MAX_DEC_INTEGERS);
                         return STARCH_FATAL_ERROR;
                     }
                     /* convert element string to start coordinate */
                     *start = (int64_t) strtoll((const char *)buffer, NULL, STARCH_RADIX);
                     /* test if start coordinate is larger than allowed bounds */
                     if (*start > (int64_t) MAX_COORD_VALUE) {
-                        fprintf(stderr, "ERROR: Start coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *start, (int64_t) Bed::MAX_COORD_VALUE);
+                        fprintf(stderr, "ERROR: Start coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *start, (int64_t) MAX_COORD_VALUE);
                         return STARCH_FATAL_ERROR;
                     }
                     break;
@@ -409,15 +409,15 @@ STARCH_createTransformTokensForHeaderlessInput(const char *s, const char delim, 
                     fprintf(stderr, "\tcase 2\n");
 #endif
                     /* test if element string is longer than allowed bounds */
-                    if (strlen(buffer) > Bed::MAX_DEC_INTEGERS) {
-                        fprintf(stderr, "ERROR: Stop coordinate field length is too long (must be no greater than %ld characters)\n", Bed::MAX_DEC_INTEGERS);
+                    if (strlen(buffer) > MAX_DEC_INTEGERS) {
+                        fprintf(stderr, "ERROR: Stop coordinate field length is too long (must be no greater than %ld characters)\n", MAX_DEC_INTEGERS);
                         return STARCH_FATAL_ERROR;
                     }
                     /* convert element string to stop coordinate */
                     *stop = (int64_t) strtoll((const char *)buffer, NULL, STARCH_RADIX);
                     /* test if stop coordinate is larger than allowed bounds */
-                    if (*stop > (int64_t) Bed::MAX_COORD_VALUE) {
-                        fprintf(stderr, "ERROR: Stop coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *stop, (int64_t) Bed::MAX_COORD_VALUE);
+                    if (*stop > (int64_t) MAX_COORD_VALUE) {
+                        fprintf(stderr, "ERROR: Stop coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *stop, (int64_t) MAX_COORD_VALUE);
                         return STARCH_FATAL_ERROR;
                     }
                     break;
@@ -438,16 +438,16 @@ STARCH_createTransformTokensForHeaderlessInput(const char *s, const char delim, 
     if (elemCnt > 3) {
         buffer[(charCnt - 1)] = '\0';
         /* test id field length */
-        while ((buffer[idIdx] != delim) && (idIdx++ < Bed::TOKEN_ID_MAX_LENGTH)) {}
-        if (idIdx == Bed::TOKEN_ID_MAX_LENGTH) {
-            fprintf(stderr, "ERROR: Id field is too long (must be less than %ld characters long)\n", Bed::TOKEN_ID_MAX_LENGTH);
+        while ((buffer[idIdx] != delim) && (idIdx++ < TOKEN_ID_MAX_LENGTH)) {}
+        if (idIdx == TOKEN_ID_MAX_LENGTH) {
+            fprintf(stderr, "ERROR: Id field is too long (must be less than %ld characters long)\n", TOKEN_ID_MAX_LENGTH);
             return STARCH_FATAL_ERROR;
         }
         /* test remnant ("rest") of buffer, if there is more to look at */
         if (charCnt > idIdx) {
-            while ((buffer[idIdx++] != '\0') && (restIdx++ < Bed::TOKEN_REST_MAX_LENGTH)) {}
-            if (restIdx == Bed::TOKEN_REST_MAX_LENGTH) {
-                fprintf(stderr, "ERROR: Remainder of BED input after id field is too long (must be less than %ld characters long)\n", Bed::TOKEN_REST_MAX_LENGTH);
+            while ((buffer[idIdx++] != '\0') && (restIdx++ < TOKEN_REST_MAX_LENGTH)) {}
+            if (restIdx == TOKEN_REST_MAX_LENGTH) {
+                fprintf(stderr, "ERROR: Remainder of BED input after id field is too long (must be less than %ld characters long)\n", TOKEN_REST_MAX_LENGTH);
                 return STARCH_FATAL_ERROR;
             }
         }
@@ -516,8 +516,8 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
     BedLineType lineType = kBedLineTypeUndefined;
     char nonCoordLineBuf[STARCH_BUFFER_MAX_LENGTH] = {0};
     Boolean nonCoordLineBufNeedsPrinting = kStarchFalse;
-    Bed::BaseCountType totalNonUniqueBases = 0UL;
-    Bed::BaseCountType totalUniqueBases = 0UL;
+    BaseCountType totalNonUniqueBases = 0;
+    BaseCountType totalUniqueBases = 0;
 
     if (!streamPtr)
         streamPtr = stdin;
@@ -695,11 +695,11 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                         else
                             fprintf( outFnPtr, "%" PRId64 "\n", start );
                     }
-                    totalNonUniqueBases += (Bed::BaseCountType) (stop - start);
+                    totalNonUniqueBases += (BaseCountType) (stop - start);
                     if (previousStop <= start)
-                        totalUniqueBases += (Bed::BaseCountType) (stop - start);
+                        totalUniqueBases += (BaseCountType) (stop - start);
                     else if (previousStop < stop)
-                        totalUniqueBases += (Bed::BaseCountType) (stop - previousStop);
+                        totalUniqueBases += (BaseCountType) (stop - previousStop);
                     lastPosition = stop;
                     previousStop = (stop > previousStop) ? stop : previousStop;
                 }
@@ -841,8 +841,8 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
     int64_t outCompressedFnSize = 0;
     char *legacyMdBuf = NULL; 
     char *dynamicMdBuf = NULL;
-    Bed::BaseCountType totalNonUniqueBases = 0;
-    Bed::BaseCountType totalUniqueBases = 0;
+    BaseCountType totalNonUniqueBases = 0;
+    BaseCountType totalUniqueBases = 0;
 
     if (!streamPtr)
         streamPtr = stdin;
@@ -999,11 +999,11 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
                         fprintf(outFnPtr, "%" PRId64 "\n", start );
                     }
                 }
-                totalNonUniqueBases += (Bed::BaseCountType) (stop - start);
+                totalNonUniqueBases += (BaseCountType) (stop - start);
                 if (previousStop <= start)
-                    totalUniqueBases += (Bed::BaseCountType) (stop - start);
+                    totalUniqueBases += (BaseCountType) (stop - start);
                 else if (previousStop < stop)
-                    totalUniqueBases += (Bed::BaseCountType) (stop - previousStop);
+                    totalUniqueBases += (BaseCountType) (stop - previousStop);
                 lastPosition = stop;
                 previousStop = (stop > previousStop) ? stop : previousStop;
 
@@ -1792,11 +1792,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                     }
 
                     lastPosition = stop;
-                    totalNonUniqueBases += (Bed::BaseCountType) (stop - start);
+                    totalNonUniqueBases += (BaseCountType) (stop - start);
                     if (previousStop <= start)
-                        totalUniqueBases += (Bed::BaseCountType) (stop - start);
+                        totalUniqueBases += (BaseCountType) (stop - start);
                     else if (previousStop < stop)
-                        totalUniqueBases += (Bed::BaseCountType) (stop - previousStop);
+                        totalUniqueBases += (BaseCountType) (stop - previousStop);
                     previousStop = (stop > previousStop) ? stop : previousStop;
                 }
 
@@ -2509,11 +2509,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                 }
 
                 lastPosition = stop;
-                totalNonUniqueBases += (Bed::BaseCountType) (stop - start);
+                totalNonUniqueBases += (BaseCountType) (stop - start);
                 if (previousStop <= start)
-                    totalUniqueBases += (Bed::BaseCountType) (stop - start);
+                    totalUniqueBases += (BaseCountType) (stop - start);
                 else if (previousStop < stop)
-                    totalUniqueBases += (Bed::BaseCountType) (stop - previousStop);
+                    totalUniqueBases += (BaseCountType) (stop - previousStop);
                 previousStop = (stop > previousStop) ? stop : previousStop;                
 
                 if (withinChr == kStarchTrue) 

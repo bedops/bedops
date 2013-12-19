@@ -26,7 +26,11 @@
 #ifndef STARCHMETADATAHELPERS_H
 #define STARCHMETADATAHELPERS_H
 
+#ifdef __cplusplus
+#include <cinttypes>
+#else
 #include <inttypes.h>
+#endif
 
 #include "data/starch/starchConstants.h"
 #include "suite/BEDOPS.Constants.hpp"
@@ -38,6 +42,10 @@
 /* current "dev" binary version:     2.4.0 */
 
 /* current "stable" archive version: 2.0.0 */
+
+#ifdef __cplusplus
+  using namespace Bed;
+#endif
 
 #define STARCH_MAJOR_VERSION 2
 #define STARCH_MINOR_VERSION 0
@@ -58,9 +66,9 @@
 #define STARCH_TAG_MAX_LENGTH 2048
 #define STARCH_STREAM_METADATA_FILENAME_MAX_LENGTH 1024
 #define STARCH_STREAM_METADATA_MAX_LENGTH 1048576
-#define STARCH_DEFAULT_LINE_COUNT UINT64_C(0)
-#define STARCH_DEFAULT_NON_UNIQUE_BASE_COUNT UINT64_C(0)
-#define STARCH_DEFAULT_UNIQUE_BASE_COUNT UINT64_C(0)
+#define STARCH_DEFAULT_LINE_COUNT (uint64_t)0
+#define STARCH_DEFAULT_NON_UNIQUE_BASE_COUNT (uint64_t)0
+#define STARCH_DEFAULT_UNIQUE_BASE_COUNT (uint64_t)0
 #define STARCH_CREATION_TIMESTAMP_LENGTH 80
 #define STARCH_ARCHIVE_VERSION_STRING_LENGTH 80
 
@@ -137,9 +145,9 @@ typedef struct metadata {
     char *chromosome;
     char *filename;
     uint64_t size;
-    Bed::LineCountType lineCount;
-    Bed::BaseCountType totalNonUniqueBases;
-    Bed::BaseCountType totalUniqueBases;
+    LineCountType lineCount;
+    BaseCountType totalNonUniqueBases;
+    BaseCountType totalUniqueBases;
     struct metadata *next;
 } Metadata;
 
@@ -180,18 +188,18 @@ unsigned int HeaderFlag;
 
 Metadata *       STARCH_createMetadata(char const *chr, 
                                        char const *fn, 
-                                   uint64_t size,
-                         Bed::LineCountType lineCount,
-                         Bed::BaseCountType totalNonUniqueBases,
-                         Bed::BaseCountType totalUniqueBases);
+                                         uint64_t size,
+                                    LineCountType lineCount,
+                                    BaseCountType totalNonUniqueBases,
+                                    BaseCountType totalUniqueBases);
 
 Metadata *       STARCH_addMetadata(Metadata *md, 
                                         char *chr, 
                                         char *fn, 
                                     uint64_t size,
-                          Bed::LineCountType lineCount,
-                          Bed::BaseCountType totalNonUniqueBases,
-                          Bed::BaseCountType totalUniqueBases);
+                               LineCountType lineCount,
+                               BaseCountType totalNonUniqueBases,
+                               BaseCountType totalUniqueBases);
 
 Metadata *       STARCH_copyMetadata(const Metadata *md);
 
@@ -199,9 +207,9 @@ int              STARCH_updateMetadataForChromosome(Metadata **md,
                                                         char *chr, 
                                                         char *fn, 
                                                     uint64_t size,
-                                          Bed::LineCountType lineCount,
-                                          Bed::BaseCountType totalNonUniqueBases,
-                                          Bed::BaseCountType totalUniqueBases);
+                                               LineCountType lineCount,
+                                               BaseCountType totalNonUniqueBases,
+                                               BaseCountType totalUniqueBases);
 
 int              STARCH_listMetadata(const Metadata *md,
                                          const char *chr);

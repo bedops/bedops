@@ -26,25 +26,29 @@
 #ifndef STARCH_API_H
 #define STARCH_API_H
 
-#include "starchMetadataHelpers.h"
-#include "starchFileHelpers.h"
-#include "starchHelpers.h"
-#include "unstarchHelpers.h"
-#include "data/starch/starchConstants.h"
-
+#ifdef __cplusplus
 #include <cinttypes>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-
+#else
 #include <inttypes.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#endif
+
 #include <sys/stat.h>
 #include <bzlib.h>
 #include <zlib.h>
+
+#include "starchMetadataHelpers.h"
+#include "starchFileHelpers.h"
+#include "starchHelpers.h"
+#include "unstarchHelpers.h"
+#include "data/starch/starchConstants.h"
 
 namespace starch 
 {
@@ -206,7 +210,7 @@ namespace starch
 #ifdef __cplusplus
                             /* why can't c++ standardize on a format specifier for a simple std::size_t ? */
                             std::fprintf(stderr, "ERROR: Bytes read ( %" PRIu64 " ) not equal to terminator byte length!\n",
-                                         static_cast<uint64_t>(_nReadBytes));
+                                         (uint64_t)(_nReadBytes));
 #else
                             std::fprintf(stderr, "ERROR: Bytes read (%zu) not equal to terminator byte length!\n", _nReadBytes);
 #endif

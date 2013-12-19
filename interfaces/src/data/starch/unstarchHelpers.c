@@ -53,7 +53,7 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
     char *chromosome;
     uint64_t size;	
     uint64_t cumulativeSize = 0;
-    Bed::SignedCoordType start, pLength, lastEnd;
+    SignedCoordType start, pLength, lastEnd;
     char const *all = "all";
     char firstInputToken[UNSTARCH_FIRST_TOKEN_MAX_LENGTH]; 
     char secondInputToken[UNSTARCH_SECOND_TOKEN_MAX_LENGTH];
@@ -120,7 +120,7 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
                         case Z_NEED_DICT:  { fprintf(stderr, "ERROR: Z-stream needs dictionary\n");      return UNSTARCH_FATAL_ERROR; }
                         case Z_DATA_ERROR: { fprintf(stderr, "ERROR: Z-stream suffered data error\n");   return UNSTARCH_FATAL_ERROR; }
                         case Z_MEM_ERROR:  { fprintf(stderr, "ERROR: Z-stream suffered memory error\n"); return UNSTARCH_FATAL_ERROR; }
-                    }
+                    };
                     zHave = STARCH_Z_CHUNK - zStream.avail_out;
                     zOutBuf[zHave] = '\0';
 
@@ -205,7 +205,7 @@ UNSTARCH_extractDataWithBzip2(FILE **inFp, FILE *outFp, const char *whichChr, co
     char *chromosome;
     uint64_t size;	
     uint64_t cumulativeSize = 0;
-    Bed::SignedCoordType start, pLength, lastEnd;
+    SignedCoordType start, pLength, lastEnd;
     char const *all = "all";
     char firstInputToken[UNSTARCH_FIRST_TOKEN_MAX_LENGTH]; 
     char secondInputToken[UNSTARCH_SECOND_TOKEN_MAX_LENGTH];
@@ -335,7 +335,7 @@ UNSTARCH_bzReadLine(BZFILE *input, unsigned char **output)
 }
 
 int 
-UNSTARCH_reverseTransformInput(const char *chr, const unsigned char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, FILE *outFp) 
+UNSTARCH_reverseTransformInput(const char *chr, const unsigned char *str, char delim, SignedCoordType *start, SignedCoordType *pLength, SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, FILE *outFp) 
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_reverseTransformInput() ---\n");
@@ -364,13 +364,13 @@ UNSTARCH_reverseTransformInput(const char *chr, const unsigned char *str, char d
 
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
-                *start = *lastEnd + (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+                *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
                 *lastEnd = *start + *pLength;
-                fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (Bed::SignedCoordType) *start, (Bed::SignedCoordType) *lastEnd, elemTok2);
+                fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (SignedCoordType) *start, (SignedCoordType) *lastEnd, elemTok2);
             }
             else {
-                *lastEnd = (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
-                fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX), (Bed::SignedCoordType) *lastEnd, elemTok2);
+                *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
+                fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX), (SignedCoordType) *lastEnd, elemTok2);
             }
         }
         else {
@@ -382,12 +382,12 @@ UNSTARCH_reverseTransformInput(const char *chr, const unsigned char *str, char d
                 strncpy(pTestChars, elemTok1 + 1, strlen(elemTok1));
                 if (!pTestChars)
                     return UNSTARCH_FATAL_ERROR;
-                *pLength = (Bed::SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
+                *pLength = (SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
                 free(pTestChars); 
                 pTestChars = NULL;
             }
             else {
-                *start = *lastEnd + (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+                *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
                 *lastEnd = *start + *pLength;
                 fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\n", chr, *start, *lastEnd);
             }
@@ -402,7 +402,7 @@ UNSTARCH_reverseTransformInput(const char *chr, const unsigned char *str, char d
 }
 
 int 
-UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, char **currentChr, size_t *currentChrLen, Bed::SignedCoordType *currentStart, Bed::SignedCoordType *currentStop, char **currentRemainder, size_t *currentRemainderLen)
+UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char delim, SignedCoordType *start, SignedCoordType *pLength, SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, char **currentChr, size_t *currentChrLen, SignedCoordType *currentStart, SignedCoordType *currentStop, char **currentRemainder, size_t *currentRemainderLen)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_sReverseTransformInput() ---\n");
@@ -439,7 +439,7 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
 
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
-                *start = *lastEnd + (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+                *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
                 *lastEnd = *start + *pLength;
                 if (! *currentChr) {
                     *currentChr = (char *) malloc(strlen(chr) + 1);
@@ -487,7 +487,7 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
                 }
            }
             else {
-                *lastEnd = (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
+                *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
                 if (! *currentChr) {
                     *currentChr = (char *) malloc(strlen(chr) + 1);
                     *currentChrLen = strlen(chr) + 1;
@@ -537,12 +537,12 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
                 strncpy(pTestChars, elemTok1 + 1, strlen(elemTok1));
                 if (!pTestChars)
                     return UNSTARCH_FATAL_ERROR;
-                *pLength = (Bed::SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
+                *pLength = (SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
                 free(pTestChars); 
                 pTestChars = NULL;
             }
             else {
-                *start = *lastEnd + (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+                *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
                 *lastEnd = *start + *pLength;
                 if (! *currentChr) {
                     *currentChr = (char *) malloc(strlen(chr) + 1);
@@ -576,7 +576,7 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
 }
 
 int 
-UNSTARCH_reverseTransformIgnoringHeaderedInput(const char *chr, const unsigned char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, FILE *outFp) 
+UNSTARCH_reverseTransformIgnoringHeaderedInput(const char *chr, const unsigned char *str, char delim, SignedCoordType *start, SignedCoordType *pLength, SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, FILE *outFp) 
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_reverseTransformIgnoringHeaderedInput() ---\n");
@@ -605,13 +605,13 @@ UNSTARCH_reverseTransformIgnoringHeaderedInput(const char *chr, const unsigned c
 
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
-                *start = *lastEnd + (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+                *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
                 *lastEnd = *start + *pLength;
                 fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, *start, *lastEnd, elemTok2);
             }
             else {
-                *lastEnd = (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
-                fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX), *lastEnd, elemTok2);
+                *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
+                fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX), *lastEnd, elemTok2);
             }
         }
         else {
@@ -623,12 +623,12 @@ UNSTARCH_reverseTransformIgnoringHeaderedInput(const char *chr, const unsigned c
                 strncpy(pTestChars, elemTok1 + 1, strlen(elemTok1));
                 if (!pTestChars)
                     return UNSTARCH_FATAL_ERROR;
-                *pLength = (Bed::SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
+                *pLength = (SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
                 free(pTestChars); 
                 pTestChars = NULL;
             }
             else {
-                *start = *lastEnd + (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+                *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
                 *lastEnd = *start + *pLength;
                 fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\n", chr, *start, *lastEnd);
             }
@@ -643,7 +643,7 @@ UNSTARCH_reverseTransformIgnoringHeaderedInput(const char *chr, const unsigned c
 }
 
 int 
-UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, char **currentChr, size_t *currentChrLen, Bed::SignedCoordType *currentStart, Bed::SignedCoordType *currentStop, char **currentRemainder, size_t *currentRemainderLen)
+UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned char *str, char delim, SignedCoordType *start, SignedCoordType *pLength, SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, char **currentChr, size_t *currentChrLen, SignedCoordType *currentStart, SignedCoordType *currentStop, char **currentRemainder, size_t *currentRemainderLen)
 {
 #ifdef DEBUG
     
@@ -665,7 +665,7 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
     fprintf(stderr, "\tcurrentRemainderLen -> %zu\n", *currentRemainderLen);
     */
 #endif
-    char pTestChars[Bed::MAX_DEC_INTEGERS] = {0};
+    char pTestChars[MAX_DEC_INTEGERS] = {0};
     char *currentChrCopy = NULL;
     char *currentRemainderCopy = NULL;
 
@@ -690,7 +690,7 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
 
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
-                *start = *lastEnd + (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+                *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
                 *lastEnd = *start + *pLength;
 #ifdef DEBUG
                 fprintf(stderr, "A: %s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, *start, *lastEnd, elemTok2);
@@ -751,7 +751,7 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
                 }
             }
             else {
-                *lastEnd = (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
+                *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
 #ifdef DEBUG
                 /* fprintf(stderr, "B: %s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (int64_t) strtoull(elemTok1, NULL, UNSTARCH_RADIX), *lastEnd, elemTok2); */
 #endif
@@ -773,7 +773,7 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
                     fprintf(stderr, "ERROR: Current chromosome name could not be copied\n");
                     return UNSTARCH_FATAL_ERROR;                
                 }
-                *currentStart = (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+                *currentStart = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
                 *currentStop = *lastEnd;
                 if (! *currentRemainder) {
                     *currentRemainder = (char *) malloc(strlen(elemTok2) + 1);
@@ -821,10 +821,10 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
 
             if (elemTok1[0] == 'p') {
                 strncpy(pTestChars, elemTok1 + 1, strlen(elemTok1));
-                *pLength = (Bed::SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
+                *pLength = (SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
             }
             else {
-                *start = *lastEnd + (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+                *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
                 *lastEnd = *start + *pLength;
 #ifdef DEBUG
                 /* fprintf(stderr, "D: %s\t%" PRId64 "\t%" PRId64 "\n", chr, *start, *lastEnd); */
@@ -847,7 +847,7 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
 }
 
 int 
-UNSTARCH_reverseTransformHeaderlessInput(const char *chr, const unsigned char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, FILE *outFp) 
+UNSTARCH_reverseTransformHeaderlessInput(const char *chr, const unsigned char *str, char delim, SignedCoordType *start, SignedCoordType *pLength, SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, FILE *outFp) 
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_reverseTransformHeaderlessInput() ---\n");
@@ -864,13 +864,13 @@ UNSTARCH_reverseTransformHeaderlessInput(const char *chr, const unsigned char *s
     { 
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
-                *start = *lastEnd + (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+                *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
                 *lastEnd = *start + *pLength;
                 fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, *start, *lastEnd, elemTok2);
             }
             else {
-                *lastEnd = (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
-                fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX), *lastEnd, elemTok2);
+                *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
+                fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX), *lastEnd, elemTok2);
             }
         }
         else {
@@ -882,12 +882,12 @@ UNSTARCH_reverseTransformHeaderlessInput(const char *chr, const unsigned char *s
                 strncpy(pTestChars, elemTok1 + 1, strlen(elemTok1));
                 if (!pTestChars)
                     return UNSTARCH_FATAL_ERROR;
-                *pLength = (Bed::SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
+                *pLength = (SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
                 free(pTestChars); 
                 pTestChars = NULL;
             }
             else {
-                *start = *lastEnd + (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+                *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
                 *lastEnd = *start + *pLength;
                 fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\n", chr, *start, *lastEnd);
             }
@@ -902,7 +902,7 @@ UNSTARCH_reverseTransformHeaderlessInput(const char *chr, const unsigned char *s
 }
 
 int
-UNSTARCH_extractRawLine(const char *chr, const unsigned char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, char **currentChr, size_t *currentChrLen, Bed::SignedCoordType *currentStart, Bed::SignedCoordType *currentStop, char **currentRemainder, size_t *currentRemainderLen)
+UNSTARCH_extractRawLine(const char *chr, const unsigned char *str, char delim, SignedCoordType *start, SignedCoordType *pLength, SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, char **currentChr, size_t *currentChrLen, SignedCoordType *currentStart, SignedCoordType *currentStop, char **currentRemainder, size_t *currentRemainderLen)
 {
     /*
         UNSTARCH_extractRawLine() takes in a buffer of post-transform BED data (which
@@ -982,7 +982,7 @@ UNSTARCH_extractRawLine(const char *chr, const unsigned char *str, char delim, B
 }
 
 int 
-UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *str, char delim, Bed::SignedCoordType *start, Bed::SignedCoordType *pLength, Bed::SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, char **currentChr, size_t *currentChrLen, Bed::SignedCoordType *currentStart, Bed::SignedCoordType *currentStop, char **currentRemainder, size_t *currentRemainderLen)
+UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *str, char delim, SignedCoordType *start, SignedCoordType *pLength, SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, char **currentChr, size_t *currentChrLen, SignedCoordType *currentStart, SignedCoordType *currentStop, char **currentRemainder, size_t *currentRemainderLen)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_sReverseTransformHeaderlessInput() ---\n");
@@ -997,7 +997,7 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
     { 
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
-                *start = *lastEnd + (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+                *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
                 *lastEnd = *start + *pLength;
                 //sprintf(out, "%s\t%lld\t%lld\t%s\n", chr, *start, *lastEnd, elemTok2);
                 if (! *currentChr) {
@@ -1040,7 +1040,7 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
                 }
             }
             else {
-                *lastEnd = (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
+                *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
                 //sprintf(out, "%s\t%lld\t%lld\t%s\n", chr, (int64_t) strtoull(elemTok1, NULL, UNSTARCH_RADIX), *lastEnd, elemTok2);
                 if (! *currentChr) {
                     *currentChr = (char *) malloc(strlen(chr) + 1);
@@ -1060,7 +1060,7 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
                     fprintf(stderr, "ERROR: Current chromosome name could not be copied\n");
                     return UNSTARCH_FATAL_ERROR;                
                 }
-                *currentStart = (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+                *currentStart = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
                 *currentStop = *lastEnd;
                 if (! *currentRemainder) {
                     *currentRemainder = (char *) malloc(strlen(elemTok2) + 1);
@@ -1091,12 +1091,12 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
                 strncpy(pTestChars, elemTok1 + 1, strlen(elemTok1));
                 if (!pTestChars)
                     return UNSTARCH_FATAL_ERROR;
-                *pLength = (Bed::SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
+                *pLength = (SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
                 free(pTestChars); 
                 pTestChars = NULL;
             }
             else {
-                *start = *lastEnd + (Bed::SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+                *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
                 *lastEnd = *start + *pLength;
                 //sprintf(out, "%s\t%lld\t%lld\n", chr, *start, *lastEnd);
                 if (! *currentChr) {
@@ -1212,7 +1212,7 @@ UNSTARCH_strndup(const char *s, size_t n)
     return (char *) memcpy (result, s, len);
 }
 
-Bed::LineCountType
+LineCountType
 UNSTARCH_lineCountForChromosome(const Metadata *md, const char *chr)
 {
 #ifdef DEBUG
@@ -1226,7 +1226,7 @@ UNSTARCH_lineCountForChromosome(const Metadata *md, const char *chr)
         }
     }
 
-    return (Bed::LineCountType) 0;
+    return (LineCountType) 0;
 }
 
 void
@@ -1249,7 +1249,7 @@ UNSTARCH_printLineCountForAllChromosomes(const Metadata *md)
     fprintf(stderr, "\n--- UNSTARCH_printLineCountForAllChromosomes() ---\n");
 #endif
     const Metadata *iter;
-    Bed::LineCountType totalLineCount = 0;
+    LineCountType totalLineCount = 0;
 
     for (iter = md; iter != NULL; iter = iter->next)
         totalLineCount += iter->lineCount;
@@ -1257,7 +1257,7 @@ UNSTARCH_printLineCountForAllChromosomes(const Metadata *md)
     fprintf(stdout, "%" PRIu64 "\n", totalLineCount);
 }
 
-Bed::BaseCountType
+BaseCountType
 UNSTARCH_nonUniqueBaseCountForChromosome(const Metadata *md, const char *chr)
 {
 #ifdef DEBUG
@@ -1271,7 +1271,7 @@ UNSTARCH_nonUniqueBaseCountForChromosome(const Metadata *md, const char *chr)
         }
     }
 
-    return (Bed::BaseCountType) 0;
+    return (BaseCountType) 0;
 }
 
 void 
@@ -1294,7 +1294,7 @@ UNSTARCH_printNonUniqueBaseCountForAllChromosomes(const Metadata *md)
     fprintf(stderr, "\n--- UNSTARCH_printNonUniqueBaseCountForAllChromosomes() ---\n");
 #endif
     const Metadata *iter;
-    Bed::BaseCountType totalBaseCount = 0;
+    BaseCountType totalBaseCount = 0;
 
     for (iter = md; iter != NULL; iter = iter->next)
         totalBaseCount += iter->totalNonUniqueBases;
@@ -1302,7 +1302,7 @@ UNSTARCH_printNonUniqueBaseCountForAllChromosomes(const Metadata *md)
     fprintf(stdout, "%" PRIu64 "\n", totalBaseCount);
 }
 
-Bed::BaseCountType
+BaseCountType
 UNSTARCH_uniqueBaseCountForChromosome(const Metadata *md, const char *chr)
 {
 #ifdef DEBUG
@@ -1316,7 +1316,7 @@ UNSTARCH_uniqueBaseCountForChromosome(const Metadata *md, const char *chr)
         }
     }
 
-    return (Bed::BaseCountType) 0;
+    return (BaseCountType) 0;
 }
 
 void 
@@ -1339,7 +1339,7 @@ UNSTARCH_printUniqueBaseCountForAllChromosomes(const Metadata *md)
     fprintf(stderr, "\n--- UNSTARCH_printUniqueBaseCountForChromosome() ---\n");
 #endif
     const Metadata *iter;
-    Bed::BaseCountType totalBaseCount = 0;
+    BaseCountType totalBaseCount = 0;
 
     for (iter = md; iter != NULL; iter = iter->next)
         totalBaseCount += iter->totalUniqueBases;
@@ -1348,12 +1348,12 @@ UNSTARCH_printUniqueBaseCountForAllChromosomes(const Metadata *md)
 }
 
 int
-UNSTARCH_reverseTransformCoordinates(const Bed::LineCountType lineIdx, Bed::SignedCoordType *lastPosition, Bed::SignedCoordType *lcDiff, Bed::SignedCoordType *currStart, Bed::SignedCoordType *currStop, char **currRemainder, unsigned char *lineBuf, int64_t *nLineBuf, int64_t *nLineBufPos)
+UNSTARCH_reverseTransformCoordinates(const LineCountType lineIdx, SignedCoordType *lastPosition, SignedCoordType *lcDiff, SignedCoordType *currStart, SignedCoordType *currStop, char **currRemainder, unsigned char *lineBuf, int64_t *nLineBuf, int64_t *nLineBufPos)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_reverseTransformCoordinates() ---\n");
 #endif
-    Bed::SignedCoordType coordDiff;
+    SignedCoordType coordDiff;
 
     if (*currStop > *currStart)
         coordDiff = *currStop - *currStart;

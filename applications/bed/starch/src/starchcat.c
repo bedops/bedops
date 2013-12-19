@@ -23,18 +23,31 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#include "starchcat.h"
-
+#ifdef __cplusplus
+#include <cstdint>
+#include <ctime>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <clocale>
+#include <cassert>
+#include <climits>
+#include <limits>
+#else
 #include <stdint.h>
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
-#include <sys/stat.h>
 #include <assert.h>
 #include <limits.h>
+#endif
+
 #include <errno.h>
+#include <sys/stat.h>
+
+#include "starchcat.h"
 
 #include "data/starch/starchBase64Coding.h"
 #include "data/starch/starchSha1Digest.h"
@@ -232,9 +245,9 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
     uint64_t endOffset = 0;
     uint64_t outFileSize = 0;
     uint64_t outFileSizeCounter = 0;
-    Bed::LineCountType outFileLineCount = 0;
-    Bed::BaseCountType outFileNonUniqueBases = 0;
-    Bed::BaseCountType outFileUniqueBases = 0;
+    LineCountType outFileLineCount = 0;
+    BaseCountType outFileNonUniqueBases = 0;
+    BaseCountType outFileUniqueBases = 0;
     Metadata *iter, *inMd = inRec->metadata;
     const ArchiveVersion *av = inRec->av;
     char buffer[STARCHCAT_COPY_BUFFER_MAXSIZE];
@@ -380,9 +393,9 @@ STARCHCAT_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const C
     uint64_t endOffset = 0;
     uint64_t outFileSize = 0;
     uint64_t outFileSizeCounter = 0;
-    Bed::LineCountType outFileLineCount = 0;
-    Bed::BaseCountType outFileNonUniqueBases = 0;
-    Bed::BaseCountType outFileUniqueBases = 0;
+    LineCountType outFileLineCount = 0;
+    BaseCountType outFileNonUniqueBases = 0;
+    BaseCountType outFileUniqueBases = 0;
     Metadata *iter, *inMd = inRec->metadata;
     const ArchiveVersion *av = inRec->av;
     char buffer[STARCHCAT_COPY_BUFFER_MAXSIZE];
@@ -525,12 +538,12 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
     FILE *outFp = stdout;
     CompressionType inType = inRec->type;
     char *outTagFn = NULL;
-    Bed::SignedCoordType startOffset = 0;
+    SignedCoordType startOffset = 0;
     Metadata *iter, *inMd = inRec->metadata;
     ArchiveVersion *av = inRec->av;
 
     /* intermediate buffer variaables */
-    unsigned char retransformLineBuf[Bed::TOKENS_MAX_LENGTH] = {0};
+    unsigned char retransformLineBuf[TOKENS_MAX_LENGTH] = {0};
     int64_t nRetransformLineBuf = 0;
     int64_t nRetransformLineBufPos = 0;
     unsigned char retransformBuf[STARCH_BUFFER_MAX_LENGTH] = {0};
@@ -570,23 +583,23 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
     size_t lastNewlineOffset = 0U;
     unsigned char bufChar = '\0';
     size_t bufCharIndex = 0;
-    Bed::SignedCoordType t_start = 0;
-    Bed::SignedCoordType t_pLength = 0;
-    Bed::SignedCoordType t_lastEnd = 0;
+    SignedCoordType t_start = 0;
+    SignedCoordType t_pLength = 0;
+    SignedCoordType t_lastEnd = 0;
     char t_firstInputToken[UNSTARCH_FIRST_TOKEN_MAX_LENGTH] = {0};
     char t_secondInputToken[UNSTARCH_SECOND_TOKEN_MAX_LENGTH] = {0};
     char *t_currChr = NULL;
     size_t t_currChrLen = 0U;
-    Bed::SignedCoordType t_currStart = 0;
-    Bed::SignedCoordType t_currStop = 0;
+    SignedCoordType t_currStart = 0;
+    SignedCoordType t_currStop = 0;
     char *t_currRemainder = NULL;
     size_t t_currRemainderLen = 0U;
-    Bed::LineCountType t_lineIdx = 0;
-    Bed::SignedCoordType t_previousStop = 0;
-    Bed::SignedCoordType t_lastPosition = 0;
-    Bed::SignedCoordType t_lcDiff = 0;
-    Bed::BaseCountType t_totalNonUniqueBases = 0;
-    Bed::BaseCountType t_totalUniqueBases = 0;
+    LineCountType t_lineIdx = 0;
+    SignedCoordType t_previousStop = 0;
+    SignedCoordType t_lastPosition = 0;
+    SignedCoordType t_lcDiff = 0;
+    BaseCountType t_totalNonUniqueBases = 0;
+    BaseCountType t_totalUniqueBases = 0;
     size_t t_fileSize = 0U;
 
     static const char tab = '\t';
@@ -866,23 +879,23 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                                 t_lineIdx++;
 
                                 /* reverse transform */
-                                UNSTARCH_reverseTransformCoordinates((const Bed::LineCountType) t_lineIdx, 
-                                                                                                &t_lastPosition,
-                                                                                                &t_lcDiff,
-                                                                                                &t_currStart,
-                                                                                                &t_currStop,
-                                                                                                &t_currRemainder,
-                                                                                                retransformLineBuf,
-                                                                                                &nRetransformLineBuf,
-                                                                                                &nRetransformLineBufPos);
+                                UNSTARCH_reverseTransformCoordinates((const LineCountType) t_lineIdx, 
+                                                                                          &t_lastPosition,
+                                                                                          &t_lcDiff,
+                                                                                          &t_currStart,
+                                                                                          &t_currStop,
+                                                                                          &t_currRemainder,
+                                                                                           retransformLineBuf,
+                                                                                          &nRetransformLineBuf,
+                                                                                          &nRetransformLineBufPos);
 
                                 /* adjust per-stream statistics */
                                 t_lastPosition = t_currStop;
-                                t_totalNonUniqueBases += (Bed::BaseCountType) (t_currStop - t_currStart);
+                                t_totalNonUniqueBases += (BaseCountType) (t_currStop - t_currStart);
                                 if (t_previousStop <= t_currStart)
-                                    t_totalUniqueBases += (Bed::BaseCountType) (t_currStop - t_currStart);
+                                    t_totalUniqueBases += (BaseCountType) (t_currStop - t_currStart);
                                 else if (t_previousStop < t_currStop)
-                                    t_totalUniqueBases += (Bed::BaseCountType) (t_currStop - t_previousStop);
+                                    t_totalUniqueBases += (BaseCountType) (t_currStop - t_previousStop);
                                 t_previousStop = (t_currStop > t_previousStop) ? t_currStop : t_previousStop;
 
                                 /* collate transformed coordinates with larger buffer */
@@ -1265,22 +1278,22 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                                 t_lineIdx++;
 
                                 /* reverse transform */
-                                UNSTARCH_reverseTransformCoordinates((const Bed::LineCountType) t_lineIdx, 
-                                                                                                &t_lastPosition,
-                                                                                                &t_lcDiff,
-                                                                                                &t_currStart,
-                                                                                                &t_currStop,
-                                                                                                &t_currRemainder,
-                                                                                                retransformLineBuf,
-                                                                                                &nRetransformLineBuf,
-                                                                                                &nRetransformLineBufPos);
+                                UNSTARCH_reverseTransformCoordinates((const LineCountType) t_lineIdx, 
+                                                                                          &t_lastPosition,
+                                                                                          &t_lcDiff,
+                                                                                          &t_currStart,
+                                                                                          &t_currStop,
+                                                                                          &t_currRemainder,
+                                                                                           retransformLineBuf,
+                                                                                          &nRetransformLineBuf,
+                                                                                          &nRetransformLineBufPos);
                                 /* adjust statistics */
                                 t_lastPosition = t_currStop;
-                                t_totalNonUniqueBases += (Bed::BaseCountType) (t_currStop - t_currStart);
+                                t_totalNonUniqueBases += (BaseCountType) (t_currStop - t_currStart);
                                 if (t_previousStop <= t_currStart)
-                                    t_totalUniqueBases += (Bed::BaseCountType) (t_currStop - t_currStart);
+                                    t_totalUniqueBases += (BaseCountType) (t_currStop - t_currStart);
                                 else if (t_previousStop < t_currStop)
-                                    t_totalUniqueBases += (Bed::BaseCountType) (t_currStop - t_previousStop);
+                                    t_totalUniqueBases += (BaseCountType) (t_currStop - t_previousStop);
                                 t_previousStop = (t_currStop > t_previousStop) ? t_currStop : t_previousStop;
 
                                 /* shuffle data into retransformation buffer if we're not yet ready to compress */
@@ -1746,7 +1759,7 @@ STARCHCAT_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, cons
 }
 
 int
-STARCHCAT2_parseCoordinatesFromBedLine(const char *lineBuf, const size_t inRecIdx, Bed::SignedCoordType *starts, Bed::SignedCoordType *stops)
+STARCHCAT2_parseCoordinatesFromBedLine(const char *lineBuf, const size_t inRecIdx, SignedCoordType *starts, SignedCoordType *stops)
 {
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCHCAT2_parseCoordinatesFromBedLine() ---\n");
@@ -1760,7 +1773,7 @@ STARCHCAT2_parseCoordinatesFromBedLine(const char *lineBuf, const size_t inRecId
     char lineBufChar;
     size_t lineBufIdx;
     unsigned int fieldIdx = 0U;
-    char fieldBuf[Bed::MAX_DEC_INTEGERS + 1];
+    char fieldBuf[MAX_DEC_INTEGERS + 1];
     unsigned int fieldBufIdx = 0U;
 
     for (lineBufIdx = 0; lineBufIdx < strlen(lineBuf); lineBufIdx++) {
@@ -1770,12 +1783,12 @@ STARCHCAT2_parseCoordinatesFromBedLine(const char *lineBuf, const size_t inRecId
         else {
             fieldBuf[fieldBufIdx] = '\0';
             switch (fieldIdx) {
-                case Bed::TOKEN_START_FIELD_INDEX: {
-                    starts[inRecIdx] = (Bed::SignedCoordType) strtoll((const char *)fieldBuf, NULL, STARCH_RADIX);
+                case TOKEN_START_FIELD_INDEX: {
+                    starts[inRecIdx] = (SignedCoordType) strtoll((const char *)fieldBuf, NULL, STARCH_RADIX);
                     break;
                 }
-                case Bed::TOKEN_STOP_FIELD_INDEX: {
-                    stops[inRecIdx] = (Bed::SignedCoordType) strtoll((const char *)fieldBuf, NULL, STARCH_RADIX);
+                case TOKEN_STOP_FIELD_INDEX: {
+                    stops[inRecIdx] = (SignedCoordType) strtoll((const char *)fieldBuf, NULL, STARCH_RADIX);
                     break;
                 }
                 default:
@@ -1792,16 +1805,24 @@ STARCHCAT2_parseCoordinatesFromBedLine(const char *lineBuf, const size_t inRecId
 }
 
 int 
-STARCHCAT2_identifyLowestBedElement (const Boolean *eobFlags, const Bed::SignedCoordType *starts, const Bed::SignedCoordType *stops, const size_t numRecords, size_t *lowestIdx) 
+STARCHCAT2_identifyLowestBedElement (const Boolean *eobFlags, const SignedCoordType *starts, const SignedCoordType *stops, const size_t numRecords, size_t *lowestIdx) 
 {
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCHCAT2_identifyLowestBedElement() ---\n");
 #endif    
     size_t recIdx;
-    Bed::SignedCoordType currentStart = INT64_MIN;
-    Bed::SignedCoordType currentStop = INT64_MIN;
-    Bed::SignedCoordType lowestStart = INT64_MAX;
-    Bed::SignedCoordType lowestStop = INT64_MAX;
+
+#ifdef __cplusplus
+    SignedCoordType currentStart = std::numeric_limits<int64_t>::min();
+    SignedCoordType currentStop = std::numeric_limits<int64_t>::min();
+    SignedCoordType lowestStart = std::numeric_limits<int64_t>::max();
+    SignedCoordType lowestStop = std::numeric_limits<int64_t>::max();
+#else
+    SignedCoordType currentStart = INT64_MIN;
+    SignedCoordType currentStop = INT64_MIN;
+    SignedCoordType lowestStart = INT64_MAX;
+    SignedCoordType lowestStop = INT64_MAX;
+#endif
     Boolean checkStopFlag = kStarchFalse;
 
     *lowestIdx = (size_t) -1;
@@ -1851,7 +1872,7 @@ STARCHCAT2_identifyLowestBedElement (const Boolean *eobFlags, const Bed::SignedC
 }
 
 int    
-STARCHCAT2_pullNextBedElement (const size_t recIdx, const char **inLinesBuf, const Bed::LineCountType *nInLinesBuf, char **outLineBuf, uint64_t **inBufNewlineOffsets)
+STARCHCAT2_pullNextBedElement (const size_t recIdx, const char **inLinesBuf, const LineCountType *nInLinesBuf, char **outLineBuf, uint64_t **inBufNewlineOffsets)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCHCAT2_pullNextBedElement() ---\n");
@@ -1862,7 +1883,7 @@ STARCHCAT2_pullNextBedElement (const size_t recIdx, const char **inLinesBuf, con
     char charBuf;
     size_t charBufIdx;
     static const char newline = '\n';
-    char bedLineBuf[Bed::TOKENS_MAX_LENGTH + 1] = {0}; /* zeroing the stack array ensures we don't copy extra junk between iterations */
+    char bedLineBuf[TOKENS_MAX_LENGTH + 1] = {0}; /* zeroing the stack array ensures we don't copy extra junk between iterations */
 
     if (!inLinesBuf) {
         fprintf(stderr, "ERROR: no inLinesBuf in STARCHCAT2_pullNextBedElement()\n");
@@ -1928,11 +1949,11 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
     char **extractionRemainderBufs = NULL; 
     size_t *nExtractionRemainderBufs = NULL;
     char *compressionBuffer = NULL;
-    Bed::LineCountType compressionLineCount = 0;
-    Bed::LineCountType *extractedLineCounts = NULL;
+    LineCountType compressionLineCount = 0;
+    LineCountType *extractedLineCounts = NULL;
     char **extractedElements = NULL;
-    Bed::SignedCoordType *starts = NULL;
-    Bed::SignedCoordType *stops = NULL;
+    SignedCoordType *starts = NULL;
+    SignedCoordType *stops = NULL;
     size_t lowestStartElementIdx = 0U;
     Boolean *eobFlags = NULL;
     Boolean *eofFlags = NULL;
@@ -1948,9 +1969,9 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
     uint64_t bzOutBytesConsumed = 0;
     uint64_t bzOutBytesWritten = 0;
     uint64_t finalStreamSize = 0;
-    Bed::LineCountType finalLineCount = 0;
-    Bed::BaseCountType finalTotalNonUniqueBases = 0;
-    Bed::BaseCountType finalTotalUniqueBases = 0;
+    LineCountType finalLineCount = 0;
+    BaseCountType finalTotalNonUniqueBases = 0;
+    BaseCountType finalTotalUniqueBases = 0;
     char *finalOutTagFn = NULL;
     MetadataRecord *inRecord = NULL;
     size_t *nBzReads = NULL;
@@ -1959,7 +1980,7 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
     char *retransformedOutputBuffer = NULL;
     TransformState *outputRetransformState = NULL;
     Boolean flushZStreamFlag = kStarchFalse;
-    size_t nCompressionBuffer = STARCHCAT_RETRANSFORM_LINE_COUNT_MAX * Bed::TOKENS_MAX_LENGTH + 1;
+    size_t nCompressionBuffer = STARCHCAT_RETRANSFORM_LINE_COUNT_MAX * TOKENS_MAX_LENGTH + 1;
     int lowestElementRes = STARCHCAT_EXIT_SUCCESS;
 
     /* setup */
@@ -1967,12 +1988,12 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
     nExtractionBuffers             = (size_t *)                 malloc(sizeof(size_t)               * summary->numRecords);
     extractionBufferOffsets        = (int *)                    malloc(sizeof(int)                  * summary->numRecords);
     compressionBuffer              = (char *)                   malloc(sizeof(char)                 * nCompressionBuffer);
-    extractedLineCounts            = (Bed::LineCountType *)     malloc(sizeof(Bed::LineCountType)   * summary->numRecords);
+    extractedLineCounts            = (LineCountType *)          malloc(sizeof(LineCountType)        * summary->numRecords);
     extractedElements              = (char **)                  malloc(sizeof(char *)               * summary->numRecords);
     eobFlags                       = (Boolean *)                malloc(sizeof(Boolean)              * summary->numRecords);
     eofFlags                       = (Boolean *)                malloc(sizeof(Boolean)              * summary->numRecords);
-    starts                         = (Bed::SignedCoordType *)   malloc(sizeof(Bed::SignedCoordType) * summary->numRecords);
-    stops                          = (Bed::SignedCoordType *)   malloc(sizeof(Bed::SignedCoordType) * summary->numRecords);
+    starts                         = (SignedCoordType *)        malloc(sizeof(SignedCoordType)      * summary->numRecords);
+    stops                          = (SignedCoordType *)        malloc(sizeof(SignedCoordType)      * summary->numRecords);
     transformStates                = (TransformState **)        malloc(sizeof(TransformState *)     * summary->numRecords);
     extractionRemainderBufs        = (char **)                  malloc(sizeof(char *)               * summary->numRecords); 
     nExtractionRemainderBufs       = (size_t *)                 malloc(sizeof(size_t)               * summary->numRecords);
@@ -1984,7 +2005,7 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
     retransformedOutputBuffer      = (char *)                   malloc(sizeof(char)                 * STARCHCAT_RETRANSFORM_BUFFER_SIZE + 1);
     outputRetransformState         = (TransformState *)         malloc(sizeof(TransformState));
 
-    memset(outputRetransformState->r_chromosome, 0, Bed::TOKEN_CHR_MAX_LENGTH);
+    memset(outputRetransformState->r_chromosome, 0, TOKEN_CHR_MAX_LENGTH);
 
     /* test if we allocated memory - TO-DO */
     if (!compressionBuffer) {
@@ -2038,7 +2059,7 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
         if (inType == kGzip)
             zInFps[inRecIdx] = inFp;
 
-        nExtractionBuffers[inRecIdx]                            = STARCHCAT_RETRANSFORM_LINE_COUNT_MAX * Bed::TOKENS_MAX_LENGTH;
+        nExtractionBuffers[inRecIdx]                            = STARCHCAT_RETRANSFORM_LINE_COUNT_MAX * TOKENS_MAX_LENGTH;
         extractedLineCounts[inRecIdx]                           = 0;
         extractionBuffers[inRecIdx]                             = (char *) malloc(nExtractionBuffers[inRecIdx] + 1); /* max lines per record, essentially */
         if (!extractionBuffers[inRecIdx]) {
@@ -2057,14 +2078,14 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
         transformStates[inRecIdx]->t_lcDiff                     = 0;
         transformStates[inRecIdx]->t_lastPosition               = 0;
         strncpy(transformStates[inRecIdx]->t_currentChromosome, inChr, strlen(inChr) + 1);
-        transformStates[inRecIdx]->t_currentChromosomeLength    = Bed::TOKEN_CHR_MAX_LENGTH + 1; 
+        transformStates[inRecIdx]->t_currentChromosomeLength    = TOKEN_CHR_MAX_LENGTH + 1; 
         memset(transformStates[inRecIdx]->t_firstInputToken, 0, UNSTARCH_FIRST_TOKEN_MAX_LENGTH);
         memset(transformStates[inRecIdx]->t_secondInputToken, 0, UNSTARCH_SECOND_TOKEN_MAX_LENGTH);
         memset(transformStates[inRecIdx]->t_currentRemainder, 0, UNSTARCH_SECOND_TOKEN_MAX_LENGTH);
         transformStates[inRecIdx]->t_currentRemainderLength     = UNSTARCH_SECOND_TOKEN_MAX_LENGTH + 1; 
         transformStates[inRecIdx]->t_nExtractionBuffer          = 0;
         transformStates[inRecIdx]->t_nExtractionBufferPos       = 0;
-        extractionRemainderBufs[inRecIdx]                       = (char *) malloc(Bed::TOKENS_MAX_LENGTH + 1);
+        extractionRemainderBufs[inRecIdx]                       = (char *) malloc(TOKENS_MAX_LENGTH + 1);
         if (!extractionRemainderBufs[inRecIdx]) {
             fprintf(stderr, "ERROR: Could not allocate space for extraction buffer remainder at index [%zu]!\n", inRecIdx);
             return STARCHCAT_EXIT_FAILURE;
@@ -2103,7 +2124,7 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
         }
         extractionBufferOffsets[inRecIdx] = 0; /* point these guys to the first element */
         extractedLineCounts[inRecIdx] = transformStates[inRecIdx]->t_lineIdx;
-        extractedElements[inRecIdx] = (char *) malloc(Bed::TOKENS_MAX_LENGTH + 1);
+        extractedElements[inRecIdx] = (char *) malloc(TOKENS_MAX_LENGTH + 1);
         if (!extractedElements[inRecIdx]) {
             fprintf(stderr, "ERROR: Could not allocate memory for extracted element buffer!\n");
             return STARCHCAT_EXIT_FAILURE;
@@ -2113,7 +2134,7 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
         STARCHCAT2_extractBedLine(&eobFlags[inRecIdx], extractionBuffers[inRecIdx], &extractionBufferOffsets[inRecIdx], &extractedElements[inRecIdx]);
         extractedLineCounts[inRecIdx]--;
         
-        /* memset(outputRetransformState->r_chromosome, 0, Bed::TOKEN_CHR_MAX_LENGTH); */
+        /* memset(outputRetransformState->r_chromosome, 0, TOKEN_CHR_MAX_LENGTH); */
 
         memset(outputRetransformState->r_remainder, 0, UNSTARCH_SECOND_TOKEN_MAX_LENGTH);
         outputRetransformState->r_start                     = 0;
@@ -2154,7 +2175,7 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
         }
 
         /* identify the lowest element, put it into the compression buffer for later processing, and refill from the input stream, if needed */
-        lowestElementRes = STARCHCAT2_identifyLowestBedElement((const Boolean *) eobFlags, (const Bed::SignedCoordType *) starts, (const Bed::SignedCoordType *) stops, (const size_t) summary->numRecords, &lowestStartElementIdx);
+        lowestElementRes = STARCHCAT2_identifyLowestBedElement((const Boolean *) eobFlags, (const SignedCoordType *) starts, (const SignedCoordType *) stops, (const size_t) summary->numRecords, &lowestStartElementIdx);
         if ((eobFlags) && (starts) && (stops) && (lowestElementRes == STARCHCAT_EXIT_SUCCESS))
         {
             STARCHCAT2_addLowestBedElementToCompressionBuffer(compressionBuffer, (const char *) extractedElements[lowestStartElementIdx], &compressionLineCount);
@@ -2174,7 +2195,7 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
                 inType      = inRecord->type;
                 inFp        = inRecord->fp;
 
-                nExtractionBuffers[lowestStartElementIdx] = STARCHCAT_RETRANSFORM_LINE_COUNT_MAX * Bed::TOKENS_MAX_LENGTH;
+                nExtractionBuffers[lowestStartElementIdx] = STARCHCAT_RETRANSFORM_LINE_COUNT_MAX * TOKENS_MAX_LENGTH;
                 memset(extractionBuffers[lowestStartElementIdx], 0, nExtractionBuffers[lowestStartElementIdx]);
                 memset(transformStates[lowestStartElementIdx]->t_firstInputToken, 0, UNSTARCH_FIRST_TOKEN_MAX_LENGTH);
                 memset(transformStates[lowestStartElementIdx]->t_secondInputToken, 0, UNSTARCH_SECOND_TOKEN_MAX_LENGTH);
@@ -2389,12 +2410,12 @@ STARCHCAT_mergeInputRecordsToOutput (Metadata **outMd, const char *outTag, const
     char **lineBuffers = NULL;
     unsigned int bufferIdx;
     int c;
-    Bed::SignedCoordType *starts = NULL;
-    Bed::SignedCoordType *stops = NULL;
+    SignedCoordType *starts = NULL;
+    SignedCoordType *stops = NULL;
     int *lowestStartIdxs = NULL;
     unsigned int lsiIdx, lsiTestIdx;
-    Bed::SignedCoordType lowestStart;
-    Bed::SignedCoordType lowestStop;
+    SignedCoordType lowestStart;
+    SignedCoordType lowestStop;
     unsigned int lowestStopIdx = 0U;
     unsigned long fieldIdx;
     char fieldBuffer[STARCHCAT_FIELD_BUFFER_MAX_LENGTH];
@@ -2489,8 +2510,8 @@ STARCHCAT_mergeInputRecordsToOutput (Metadata **outMd, const char *outTag, const
 #ifdef DEBUG
     fprintf(stderr, "\t\tparsing temporary per-record output files...\n");
 #endif
-    starts = (Bed::SignedCoordType *) malloc(sizeof(Bed::SignedCoordType) * summary->numRecords);
-    stops = (Bed::SignedCoordType *) malloc(sizeof(Bed::SignedCoordType) * summary->numRecords);
+    starts = (SignedCoordType *) malloc(sizeof(SignedCoordType) * summary->numRecords);
+    stops = (SignedCoordType *) malloc(sizeof(SignedCoordType) * summary->numRecords);
     lowestStartIdxs = (int *) malloc(sizeof(int) * summary->numRecords);
     lineBuffers = (char **) malloc(sizeof(char *) * summary->numRecords);
     if ((!starts) || (!stops) || (!lowestStartIdxs) || (!lineBuffers)) {
@@ -2533,8 +2554,13 @@ STARCHCAT_mergeInputRecordsToOutput (Metadata **outMd, const char *outTag, const
             that BED data inputs will have smaller start and stop coordinates, 
             unless the inputs are corrupt or otherwise very, very unusual.
         */
+#ifdef __cplusplus
+        lowestStart = std::numeric_limits<int64_t>::max();
+        lowestStop = std::numeric_limits<int64_t>::max();
+#else
         lowestStart = INT64_MAX;
         lowestStop = INT64_MAX;
+#endif
         /* 
             We parse the start and stop fields out of a buffered line 
             to retrieve their coordinates as sortable numerical values.
@@ -2550,9 +2576,9 @@ STARCHCAT_mergeInputRecordsToOutput (Metadata **outMd, const char *outTag, const
                     fieldBufferIdx = (unsigned int) -1;
                     fieldIdx++;
                     if (fieldIdx == 2)
-                        starts[inRecIdx] = (Bed::SignedCoordType) strtoll(fieldBuffer, NULL, 10);
+                        starts[inRecIdx] = (SignedCoordType) strtoll(fieldBuffer, NULL, 10);
                     else if (fieldIdx == 3)
-                        stops[inRecIdx] = (Bed::SignedCoordType) strtoll(fieldBuffer, NULL, 10);
+                        stops[inRecIdx] = (SignedCoordType) strtoll(fieldBuffer, NULL, 10);
                     else if (fieldIdx > 3)
                         break;
                 }
@@ -4267,20 +4293,20 @@ STARCHCAT2_fillExtractionBufferFromBzip2Stream (Boolean *eofFlag, char *recordCh
     size_t bzCharIndex                          = 0;
     static const char tab                       = '\t';
 
-    Bed::LineCountType *t_lineIdxPtr            = &t_state->t_lineIdx;
-    Bed::SignedCoordType *t_startPtr            = &t_state->t_start;
-    Bed::SignedCoordType *t_pLengthPtr          = &t_state->t_pLength;
-    Bed::SignedCoordType *t_lastEndPtr          = &t_state->t_lastEnd;
+    LineCountType *t_lineIdxPtr                 = &t_state->t_lineIdx;
+    SignedCoordType *t_startPtr                 = &t_state->t_start;
+    SignedCoordType *t_pLengthPtr               = &t_state->t_pLength;
+    SignedCoordType *t_lastEndPtr               = &t_state->t_lastEnd;
     char *t_firstInputToken                     = t_state->t_firstInputToken;
     char *t_secondInputToken                    = t_state->t_secondInputToken;
     char *t_currentChromosome                   = t_state->t_currentChromosome;
     size_t *t_currentChromosomeLengthPtr        = &t_state->t_currentChromosomeLength;
-    Bed::SignedCoordType *t_currentStartPtr     = &t_state->t_currentStart;
-    Bed::SignedCoordType *t_currentStopPtr      = &t_state->t_currentStop;
+    SignedCoordType *t_currentStartPtr          = &t_state->t_currentStart;
+    SignedCoordType *t_currentStopPtr           = &t_state->t_currentStop;
     char *t_currentRemainder                    = t_state->t_currentRemainder;
     size_t *t_currentRemainderLengthPtr         = &t_state->t_currentRemainderLength;
-    Bed::SignedCoordType *t_lastPositionPtr     = &t_state->t_lastPosition;
-    Bed::SignedCoordType *t_lcDiffPtr           = &t_state->t_lcDiff;
+    SignedCoordType *t_lastPositionPtr          = &t_state->t_lastPosition;
+    SignedCoordType *t_lcDiffPtr                = &t_state->t_lcDiff;
     size_t *t_nExtractionBuffer                 = &t_state->t_nExtractionBuffer;
     size_t *t_nExtractionBufferPos              = &t_state->t_nExtractionBufferPos;
 
@@ -4306,7 +4332,7 @@ STARCHCAT2_fillExtractionBufferFromBzip2Stream (Boolean *eofFlag, char *recordCh
         return STARCHCAT_EXIT_FAILURE;
     }
 
-    bzLineBuf = (unsigned char *) malloc(Bed::TOKENS_MAX_LENGTH);
+    bzLineBuf = (unsigned char *) malloc(TOKENS_MAX_LENGTH);
     if (!bzLineBuf) {
         fprintf(stderr, "ERROR: Could not allocate space for bzip2 line buffer data.\n");
         return STARCHCAT_EXIT_FAILURE;
@@ -4399,18 +4425,18 @@ STARCHCAT2_fillExtractionBufferFromBzip2Stream (Boolean *eofFlag, char *recordCh
 
             if (bzLineBuf[0] != 'p') {
                 (*t_lineIdxPtr)++;
-                UNSTARCH_reverseTransformCoordinates((const Bed::LineCountType) *t_lineIdxPtr,
-                                                                                 t_lastPositionPtr,
-                                                                                 t_lcDiffPtr,
-                                                                                 t_currentStartPtr, 
-                                                                                 t_currentStopPtr, 
-                                                                                &t_currentRemainder, 
-                                                                                 retransformedLineBuffer, 
-                                                                                &nRetransformedLineBuffer, 
-                                                                                &nRetransformedLineBufferPosition);
+                UNSTARCH_reverseTransformCoordinates((const LineCountType) *t_lineIdxPtr,
+                                                                            t_lastPositionPtr,
+                                                                            t_lcDiffPtr,
+                                                                            t_currentStartPtr, 
+                                                                            t_currentStopPtr, 
+                                                                           &t_currentRemainder, 
+                                                                            retransformedLineBuffer, 
+                                                                           &nRetransformedLineBuffer, 
+                                                                           &nRetransformedLineBufferPosition);
 
                 /* resize the extraction buffer, if we're getting too close to the maximum size of a line */
-                if ((unsigned int) (*nExtractionBuffer - *t_nExtractionBufferPos) < Bed::TOKENS_MAX_LENGTH) {
+                if ((unsigned int) (*nExtractionBuffer - *t_nExtractionBufferPos) < TOKENS_MAX_LENGTH) {
                     nResizedExtractionBuffer = *nExtractionBuffer * 2;
                     resizedExtractionBuffer = (char *) realloc(extractionBuffer, nResizedExtractionBuffer);
                     if (!resizedExtractionBuffer) {
@@ -4464,20 +4490,20 @@ STARCHCAT2_fillExtractionBufferFromGzipStream (Boolean *eofFlag, FILE **inputFp,
     unsigned char *zLineBuf                     = NULL;
     static const char tab                       = '\t';
 
-    Bed::LineCountType *t_lineIdxPtr            = &t_state->t_lineIdx;
-    Bed::SignedCoordType *t_startPtr            = &t_state->t_start;
-    Bed::SignedCoordType *t_pLengthPtr          = &t_state->t_pLength;
-    Bed::SignedCoordType *t_lastEndPtr          = &t_state->t_lastEnd;
+    LineCountType *t_lineIdxPtr                 = &t_state->t_lineIdx;
+    SignedCoordType *t_startPtr                 = &t_state->t_start;
+    SignedCoordType *t_pLengthPtr               = &t_state->t_pLength;
+    SignedCoordType *t_lastEndPtr               = &t_state->t_lastEnd;
     char *t_firstInputToken                     = t_state->t_firstInputToken;
     char *t_secondInputToken                    = t_state->t_secondInputToken;
     char *t_currentChromosome                   = t_state->t_currentChromosome;
     size_t *t_currentChromosomeLengthPtr        = &t_state->t_currentChromosomeLength;
-    Bed::SignedCoordType *t_currentStartPtr     = &t_state->t_currentStart;
-    Bed::SignedCoordType *t_currentStopPtr      = &t_state->t_currentStop;
+    SignedCoordType *t_currentStartPtr          = &t_state->t_currentStart;
+    SignedCoordType *t_currentStopPtr           = &t_state->t_currentStop;
     char *t_currentRemainder                    = t_state->t_currentRemainder;
     size_t *t_currentRemainderLengthPtr         = &t_state->t_currentRemainderLength;
-    Bed::SignedCoordType *t_lastPositionPtr     = &t_state->t_lastPosition;
-    Bed::SignedCoordType *t_lcDiffPtr           = &t_state->t_lcDiff;
+    SignedCoordType *t_lastPositionPtr          = &t_state->t_lastPosition;
+    SignedCoordType *t_lcDiffPtr                = &t_state->t_lcDiff;
     size_t *t_nExtractionBuffer                 = &t_state->t_nExtractionBuffer;
     size_t *t_nExtractionBufferPos              = &t_state->t_nExtractionBufferPos;
 
@@ -4512,7 +4538,7 @@ STARCHCAT2_fillExtractionBufferFromGzipStream (Boolean *eofFlag, FILE **inputFp,
     fprintf(stderr, "ALLOC'ed zReadBuf\n");
 #endif
 
-    zLineBuf = (unsigned char *) malloc(Bed::TOKENS_MAX_LENGTH);
+    zLineBuf = (unsigned char *) malloc(TOKENS_MAX_LENGTH);
     if (!zLineBuf) {
         fprintf(stderr, "ERROR: Could not allocate space for z-output line buffer!\n");
         return STARCHCAT_EXIT_FAILURE;
@@ -4522,7 +4548,7 @@ STARCHCAT2_fillExtractionBufferFromGzipStream (Boolean *eofFlag, FILE **inputFp,
     fprintf(stderr, "ALLOC'ed zLineBuf\n");
 #endif
 
-    retransformedLineBuffer = (unsigned char *) malloc(sizeof(unsigned char) * (STARCHCAT_RETRANSFORM_LINE_COUNT_MAX * Bed::TOKENS_MAX_LENGTH));
+    retransformedLineBuffer = (unsigned char *) malloc(sizeof(unsigned char) * (STARCHCAT_RETRANSFORM_LINE_COUNT_MAX * TOKENS_MAX_LENGTH));
     if (!retransformedLineBuffer) {
         fprintf(stderr, "ERROR: Could not allocate space for gzip retransformation buffer data.\n");
         return STARCHCAT_EXIT_FAILURE;
@@ -4626,18 +4652,18 @@ STARCHCAT2_fillExtractionBufferFromGzipStream (Boolean *eofFlag, FILE **inputFp,
                                     &t_currentRemainder, t_currentRemainderLengthPtr);
                 if (zLineBuf[0] != 'p') {
                     (*t_lineIdxPtr)++;
-                    UNSTARCH_reverseTransformCoordinates((const Bed::LineCountType) *t_lineIdxPtr,
-                                                                                     t_lastPositionPtr,
-                                                                                     t_lcDiffPtr,
-                                                                                     t_currentStartPtr, 
-                                                                                     t_currentStopPtr, 
-                                                                                    &t_currentRemainder, 
-                                                                                     retransformedLineBuffer, 
-                                                                                    &nRetransformedLineBuffer, 
-                                                                                    &nRetransformedLineBufferPosition);
+                    UNSTARCH_reverseTransformCoordinates((const LineCountType) *t_lineIdxPtr,
+                                                                                t_lastPositionPtr,
+                                                                                t_lcDiffPtr,
+                                                                                t_currentStartPtr, 
+                                                                                t_currentStopPtr, 
+                                                                               &t_currentRemainder, 
+                                                                                retransformedLineBuffer, 
+                                                                               &nRetransformedLineBuffer, 
+                                                                               &nRetransformedLineBufferPosition);
 
                     /* resize the extraction buffer, if we're getting too close to the maximum size of a line */
-                    if ((*nExtractionBuffer - *t_nExtractionBufferPos) < Bed::TOKENS_MAX_LENGTH) {
+                    if ((*nExtractionBuffer - *t_nExtractionBufferPos) < TOKENS_MAX_LENGTH) {
                         nResizedExtractionBuffer = (size_t) *nExtractionBuffer * 2;
                         resizedExtractionBuffer = (char *) realloc(extractionBuffer, nResizedExtractionBuffer);
                         if (!resizedExtractionBuffer) {
@@ -4720,7 +4746,7 @@ STARCHCAT2_extractBedLine (Boolean *eobFlag, char *extractionBuffer, int *extrac
 }
 
 int      
-STARCHCAT2_parseCoordinatesFromBedLineV2 (Boolean *eobFlag, const char *extractedElement, Bed::SignedCoordType *start, Bed::SignedCoordType *stop)
+STARCHCAT2_parseCoordinatesFromBedLineV2 (Boolean *eobFlag, const char *extractedElement, SignedCoordType *start, SignedCoordType *stop)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCHCAT2_parseCoordinatesFromBedLineV2() ---\n");
@@ -4739,9 +4765,9 @@ STARCHCAT2_parseCoordinatesFromBedLineV2 (Boolean *eobFlag, const char *extracte
     int charIdx = 0;
     int withinFieldIdx = 0;
     static const char tab = '\t';
-    char startStr[Bed::MAX_DEC_INTEGERS + 1] = {0};
-    char stopStr[Bed::MAX_DEC_INTEGERS + 1] = {0};
-    Bed::SignedCoordType result = 0;
+    char startStr[MAX_DEC_INTEGERS + 1] = {0};
+    char stopStr[MAX_DEC_INTEGERS + 1] = {0};
+    SignedCoordType result = 0;
 
     while (extractedElement[charIdx] != '\0') {
         if (extractedElement[charIdx] == tab) {
@@ -4766,27 +4792,27 @@ STARCHCAT2_parseCoordinatesFromBedLineV2 (Boolean *eobFlag, const char *extracte
         charIdx++;
     }
 
-    result = (Bed::SignedCoordType) strtoll(startStr, NULL, STARCH_RADIX);
+    result = (SignedCoordType) strtoll(startStr, NULL, STARCH_RADIX);
     switch (errno) {
         case EINVAL: {
             fprintf(stderr, "ERROR: Result from parsing start coordinate is not a valid number!\n");
             return STARCH_EXIT_FAILURE;
         }
         case ERANGE: {
-            fprintf(stderr, "ERROR: Result from parsing start coordinate is not within range of Bed::SignedCoordType (int64_t)!\n");
+            fprintf(stderr, "ERROR: Result from parsing start coordinate is not within range of SignedCoordType (int64_t)!\n");
             return STARCH_EXIT_FAILURE;
         }
     }
     *start = result;
 
-    result = (Bed::SignedCoordType) strtoll(stopStr, NULL, STARCH_RADIX);
+    result = (SignedCoordType) strtoll(stopStr, NULL, STARCH_RADIX);
     switch (errno) {
         case EINVAL: {
             fprintf(stderr, "ERROR: Result from parsing start coordinate is not a valid number!\n");
             return STARCH_EXIT_FAILURE;
         }
         case ERANGE: {
-            fprintf(stderr, "ERROR: Result from parsing start coordinate is not within range of Bed::SignedCoordType (uint64_t)!\n");
+            fprintf(stderr, "ERROR: Result from parsing start coordinate is not within range of SignedCoordType (uint64_t)!\n");
             return STARCH_EXIT_FAILURE;
         }
     }
@@ -4796,7 +4822,7 @@ STARCHCAT2_parseCoordinatesFromBedLineV2 (Boolean *eobFlag, const char *extracte
 }
 
 int      
-STARCHCAT2_addLowestBedElementToCompressionBuffer (char *compressionBuffer, const char *extractedElement, Bed::LineCountType *compressionLineCount)
+STARCHCAT2_addLowestBedElementToCompressionBuffer (char *compressionBuffer, const char *extractedElement, LineCountType *compressionLineCount)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCHCAT2_addLowestBedElementToCompressionBuffer() ---\n");
@@ -4822,30 +4848,30 @@ STARCHCAT2_transformCompressionBuffer (const char *compBuf, char *retransBuf, Tr
     if ((!retransState->r_chromosome) || (strlen(retransState->r_chromosome) == 0))
         return STARCH_EXIT_FAILURE;
 
-    static const char tab                                       = '\t';
-    size_t nCompBuf                                             = strlen(compBuf);
-    size_t compBufIdx                                           = 0U;
-    /* size_t *nRetransBuf                                         = 0U; */
-    size_t *nRetransBuf                                         = &retransState->r_nRetransBuf;
+    static const char tab                                  = '\t';
+    size_t nCompBuf                                        = strlen(compBuf);
+    size_t compBufIdx                                      = 0U;
+    /* size_t *nRetransBuf                                 = 0U; */
+    size_t *nRetransBuf                                    = &retransState->r_nRetransBuf;
 #ifdef DEBUG
-    int nChar                                                   = 0;
+    int nChar                                              = 0;
 #endif
 
-    char retransLineBuf[Bed::TOKENS_MAX_LENGTH + 1]             = {0};
-    size_t retransLineBufIdx                                    = 0U;
-    Bed::LineCountType retransLineIdx                           = 0;
+    char retransLineBuf[TOKENS_MAX_LENGTH + 1]             = {0};
+    size_t retransLineBufIdx                               = 0U;
+    LineCountType retransLineIdx                           = 0;
 
     /* retransform parameters */
-    char *retransChromosome                                     = STARCH_strdup(retransState->r_chromosome);
-    char *retransRemainder                                      = STARCH_strdup(retransState->r_remainder);
-    Bed::SignedCoordType *retransStart                          = &retransState->r_start;
-    Bed::SignedCoordType *retransStop                           = &retransState->r_stop;
-    Bed::SignedCoordType *retransCoordDiff                      = &retransState->r_coordDiff;
-    Bed::SignedCoordType *retransLcDiff                         = &retransState->r_lcDiff;
-    Bed::SignedCoordType *retransLastPosition                   = &retransState->r_lastPosition;
-    Bed::SignedCoordType *retransPreviousStop                   = &retransState->r_previousStop;
-    Bed::BaseCountType   *retransTotalNonUniqueBases            = &retransState->r_totalNonUniqueBases;
-    Bed::BaseCountType   *retransTotalUniqueBases               = &retransState->r_totalUniqueBases;
+    char *retransChromosome                                = STARCH_strdup(retransState->r_chromosome);
+    char *retransRemainder                                 = STARCH_strdup(retransState->r_remainder);
+    SignedCoordType *retransStart                          = &retransState->r_start;
+    SignedCoordType *retransStop                           = &retransState->r_stop;
+    SignedCoordType *retransCoordDiff                      = &retransState->r_coordDiff;
+    SignedCoordType *retransLcDiff                         = &retransState->r_lcDiff;
+    SignedCoordType *retransLastPosition                   = &retransState->r_lastPosition;
+    SignedCoordType *retransPreviousStop                   = &retransState->r_previousStop;
+    BaseCountType   *retransTotalNonUniqueBases            = &retransState->r_totalNonUniqueBases;
+    BaseCountType   *retransTotalUniqueBases               = &retransState->r_totalUniqueBases;
 
 #ifdef DEBUG
     fprintf(stderr, "retransform parameters ->\nretransChromosome - [%s]\nretransRemainder - [%s]\nretransStart - [%" PRId64 "]\nretransStop - [%" PRId64 "]\nretransCoordDiff - [%" PRId64 "]\nretransLcDiff - [%" PRId64 "]\nretransLastPosition - [%" PRId64 "]\nretransPreviousStop - [%" PRId64 "]\nretransTotalNonUniqueBases - [%" PRIu64 "]\nretransTotalUniqueBases - [%" PRIu64 "]\n", retransChromosome, retransRemainder, *retransStart, *retransStop, *retransCoordDiff, *retransLcDiff, *retransLastPosition, *retransPreviousStop, *retransTotalNonUniqueBases, *retransTotalUniqueBases);
@@ -4929,11 +4955,11 @@ STARCHCAT2_transformCompressionBuffer (const char *compBuf, char *retransBuf, Tr
                 
                 /* statistics */
                 *retransLastPosition = *retransStop;
-                *retransTotalNonUniqueBases += (Bed::BaseCountType) (*retransStop - *retransStart);
+                *retransTotalNonUniqueBases += (BaseCountType) (*retransStop - *retransStart);
                 if (*retransPreviousStop <= *retransStart)
-                    *retransTotalUniqueBases += (Bed::BaseCountType) (*retransStop - *retransStart);
+                    *retransTotalUniqueBases += (BaseCountType) (*retransStop - *retransStart);
                 else if (*retransPreviousStop < *retransStop)
-                    *retransTotalUniqueBases += (Bed::BaseCountType) (*retransStop - *retransPreviousStop);
+                    *retransTotalUniqueBases += (BaseCountType) (*retransStop - *retransPreviousStop);
                 *retransPreviousStop = (*retransStop > *retransPreviousStop) ? *retransStop : *retransPreviousStop;
 #ifdef DEBUG
                 fprintf(stderr, "\tretransLineBuf - [%s]\n", retransLineBuf);
@@ -5038,7 +5064,7 @@ STARCHCAT2_squeezeRetransformedOutputBufferToGzipStream (z_stream *zStream, cons
 }
 
 int      
-STARCHCAT2_resetCompressionBuffer (char *compressionBuffer, Bed::LineCountType *compressionLineCount)
+STARCHCAT2_resetCompressionBuffer (char *compressionBuffer, LineCountType *compressionLineCount)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCHCAT2_resetCompressionBuffer() ---\n");
@@ -5051,7 +5077,7 @@ STARCHCAT2_resetCompressionBuffer (char *compressionBuffer, Bed::LineCountType *
 }
 
 int      
-STARCHCAT2_finalizeMetadata (Metadata **outMd, char *finalChromosome, char *finalOutTagFn, uint64_t finalStreamSize, Bed::LineCountType finalLineCount, uint64_t finalTotalNonUniqueBases, uint64_t finalTotalUniqueBases)
+STARCHCAT2_finalizeMetadata (Metadata **outMd, char *finalChromosome, char *finalOutTagFn, uint64_t finalStreamSize, LineCountType finalLineCount, uint64_t finalTotalNonUniqueBases, uint64_t finalTotalUniqueBases)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCHCAT2_finalizeMetadata() ---\n");
