@@ -57,7 +57,7 @@ Via source code
 
 At this time, compilation of BEDOPS requires GCC 4.8.x (both ``gcc`` and ``g++`` and related components) or greater, which includes support for `C++11 <http://en.wikipedia.org/wiki/C%2B%2B11>`_ features required by core BEDOPS tools. Other tools may be required (some which are platform-specific) as described in the installation documentation that follows.
 
-.. _installation_via_source_code_on_linux
+.. _installation_via_source_code_on_linux:
 
 -----
 Linux
@@ -89,6 +89,12 @@ Linux
 
 2. Install a ``git`` client of your choice, if you do not already have one installed. Github offers an `installation guide <https://help.github.com/articles/set-up-git#platform-all>`_.
 
+   Alternatively, use ``apt-get`` to install one, *e.g.*
+
+   ::
+
+     $ sudo apt-get install git
+
 3. Clone the BEDOPS Git repository in an appropriate local directory: 
 
    ::
@@ -116,7 +122,7 @@ Linux
 
    Change this destination folder, as needed.
 
-.. _installation_via_source_code_on_mac_os_x
+.. _installation_via_source_code_on_mac_os_x:
 
 --------
 Mac OS X
@@ -145,12 +151,6 @@ Mac OS X
 
 2. Install a ``git`` client of your choice, if you do not already have one installed. Github offers an `installation guide <https://help.github.com/articles/set-up-git#platform-all>`_.
 
-   Alternatively, use ``apt-get`` to install one, *e.g.*
-
-   ::
-
-     $ sudo apt-get install git
-
 3. Clone the BEDOPS Git repository in an appropriate local directory: 
 
    ::
@@ -178,7 +178,7 @@ Mac OS X
 
    Change this destination folder, as needed.
 
-.. _installation_via_source_code_on_cygwin
+.. _installation_via_source_code_on_cygwin:
 
 ------
 Cygwin
