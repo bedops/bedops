@@ -40,6 +40,67 @@
 
 using namespace std;
 
+int
+mergeSort(FILE* output, FILE **tmpFiles, unsigned int numFiles);
+
+// probably linux-specific.  From
+//   http://stackoverflow.com/questions/63166/how-to-determine-cpu-and-memory-consumption-from-inside-a-process
+// just used them to help debug my overestimates of internal memory allocated
+namespace dbug_help
+{
+    int parseLine(char* line);
+    int getVirtMemValue();
+    int getResMemValue();
+
+    int
+    parseLine(char* line)
+    {
+      int i = (int) strlen(line); // perhaps better to cast strlen to an int, in order to fulfill parseline contract
+      while (*line < '0' || *line > '9') line++;
+      line[i-3] = '\0';
+      i = atoi(line);
+      return i;
+    }
+    
+    int
+    getVirtMemValue()
+    { //Note: this value is in KB!
+        FILE* file = fopen("/proc/self/status", "r");
+        int result = -1;
+        char line[128];
+    
+        while (fgets(line, 128, file) != NULL)
+            {
+                if (strncmp(line, "VmSize:", 7) == 0)
+                    {
+                        result = parseLine(line);
+                        break;
+                    }
+            }
+        fclose(file);
+        return result;
+    }
+    
+    int getResMemValue()
+    { //Note: this value is in KB!
+        FILE* file = fopen("/proc/self/status", "r");
+        int result = -1;
+        char line[128];
+    
+        while (fgets(line, 128, file) != NULL)
+            {
+                if (strncmp(line, "VmRSS:", 6) == 0)
+                    {
+                        result = parseLine(line);
+                        break;
+                    }
+            } /* while */
+        fclose(file);
+        return result;
+    }
+} // end namespace dbug_help
+
+
 BedData * 
 initializeBedData(double *bytes) 
 {
@@ -86,7 +147,7 @@ initializeChromBedData(char *chromBuf, double *bytes) {
     chrom->coords = NULL;
   
     /* Chrom name*/
-    chromBufLen = strlen(chromBuf);
+    chromBufLen = strlen(chromBuf); // we know >= 1
     strncpy(chrom->chromName, chromBuf, chromBufLen);
     chrom->chromName[chromBufLen] = '\0';
     chrom->numCoords = 0;
@@ -96,11 +157,17 @@ initializeChromBedData(char *chromBuf, double *bytes) {
 
 
 Bed::SignedCoordType
-appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::SignedCoordType endPos, char *data, double *bytes)
+appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::SignedCoordType endPos,
+                    char *data, double *bytes, double maxMem)
 {
 
+    /* can realloc a lot of data in this function
+         need to be mindful of whether we could dynamically get to maxMem.
+       in particular, might get to maxMem upon reallocation and then drop back below it.
+         in such a case, set *bytes to maxMem (when applicable).
+    */
     Bed::LineCountType index;
-    size_t dataBufLen;
+    size_t dataBufLen, newSize;
     char *dataPtr;
 
     if(chrom == NULL)
@@ -115,33 +182,49 @@ appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::Sig
     if (index == 0)
         { // first initialization
             chrom->coords = (BedCoordData*)malloc(sizeof(BedCoordData) * INIT_NUM_BED_ITEMS_EST);
-            *bytes += (sizeof(BedCoordData) * INIT_NUM_BED_ITEMS_EST);
             if(chrom->coords == NULL)
                 {
                     fprintf(stderr, "Error: %s, %d: Unable to create BedCoordData structure. Out of memory.\n", __FILE__, __LINE__);
                     return static_cast<Bed::SignedCoordType>(-1);
                 }
+            *bytes += (sizeof(BedCoordData) * INIT_NUM_BED_ITEMS_EST);
         }
     else if (index == (INIT_NUM_BED_ITEMS_EST-1))
         {
-            chrom->coords = (BedCoordData*)realloc(chrom->coords, sizeof(BedCoordData) * static_cast<size_t>(NUM_BED_ITEMS_EST));
-            *bytes += (sizeof(BedCoordData) * NUM_BED_ITEMS_EST);
-            *bytes -= (sizeof(BedCoordData) * INIT_NUM_BED_ITEMS_EST);
+            newSize = sizeof(BedCoordData) * static_cast<size_t>(NUM_BED_ITEMS_EST);
+            chrom->coords = (BedCoordData*)realloc(chrom->coords, newSize);
             if(chrom->coords == NULL)
                 {
                     fprintf(stderr, "Error: %s, %d: Unable to create BED structure. Out of memory.\n", __FILE__, __LINE__);
                     return static_cast<Bed::SignedCoordType>(-1);
                 }
+            if ((maxMem > 0) && (*bytes + newSize >= maxMem))
+                { // may have temporarily reach maxMem or more
+                    *bytes = maxMem;
+                }
+            else
+                {
+                    *bytes += (sizeof(BedCoordData) * NUM_BED_ITEMS_EST);
+                    *bytes -= (sizeof(BedCoordData) * INIT_NUM_BED_ITEMS_EST);
+                }
         }
     else if((index % (NUM_BED_ITEMS_EST-1)) == 0)
         {
             //fprintf(stderr, "Reallocating...\n");
-            chrom->coords = (BedCoordData*)realloc(chrom->coords, sizeof(BedCoordData) * static_cast<size_t>(index + NUM_BED_ITEMS_EST));
-            *bytes += (sizeof(BedCoordData) * (index + NUM_BED_ITEMS_EST));
+            newSize = sizeof(BedCoordData) * static_cast<size_t>(index + NUM_BED_ITEMS_EST);
+            chrom->coords = (BedCoordData*)realloc(chrom->coords, newSize);
             if(chrom->coords == NULL)
                 {
                     fprintf(stderr, "Error: %s, %d: Unable to create BED structure. Out of memory.\n", __FILE__, __LINE__);
                     return static_cast<Bed::SignedCoordType>(-1);
+                }
+            if ((maxMem > 0) && (*bytes + newSize >= maxMem))
+                { // may have temporarily reach maxMem or more
+                    *bytes = maxMem;
+                }
+            else
+                { // only increasing by NUM_BED_ITEMS_EST since last time around
+                    *bytes += (sizeof(BedCoordData) * NUM_BED_ITEMS_EST);
                 }
         }
 
@@ -204,7 +287,7 @@ checkfiles(const char **bedFileNames, unsigned int numFiles)
 }
 
 int
-mergeSort(FILE **tmpFiles, unsigned int numFiles)
+mergeSort(FILE* output, FILE **tmpFiles, unsigned int numFiles)
 {
     /* error checking in processData() has already been performed, headers and empty rows removed, etc. */
     unsigned int i = 0U;
@@ -275,10 +358,10 @@ mergeSort(FILE **tmpFiles, unsigned int numFiles)
                 break;
 
             if(3 == fields[currMin])
-                fprintf(stdout, "%s\t%" PRId64 "\t%" PRId64 "\n", chroms[currMin],
+                fprintf(output, "%s\t%" PRId64 "\t%" PRId64 "\n", chroms[currMin],
                         starts[currMin], ends[currMin]);
             else
-                fprintf(stdout, "%s\t%" PRId64 "\t%" PRId64 "%s\n", chroms[currMin],
+                fprintf(output, "%s\t%" PRId64 "\t%" PRId64 "%s\n", chroms[currMin],
                         starts[currMin], ends[currMin], rests[currMin]);
 
             fields[currMin] = fscanf(tmpFiles[currMin], "%s\t%" SCNd64 "\t%" SCNd64 "%[^\n]s\n",
@@ -307,22 +390,24 @@ mergeSort(FILE **tmpFiles, unsigned int numFiles)
 }
 
 int
-processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
+processData(const char **bedFileNames, unsigned int numFiles, const double maxMem)
 {
     /* maxMem will be ignored if <= 0 */
 
     FILE *bedFile = NULL;
     Bed::SignedCoordType chromEntryCount;
-    int notStdin = 0, newChrom,
+    int notStdin = 0,
         fields = 0,
         headCheck = 1,
         val = 0;
-    unsigned int iidx, jidx, kidx, tidx;
+    unsigned int iidx, jidx, kidx, tidx, newChrom;
     unsigned int tmpFileCount = 0U;
     size_t chromAllocs = 1;
+    Bed::SignedCoordType lastidx = 0;
 
     Bed::SignedCoordType startPos = 0, endPos = 0;
     Bed::LineCountType lines = 1;
+    FILE* tmpX;
 
     BedData *beds;
     ChromBedData *chrom;
@@ -342,11 +427,11 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
             return -1;
         }
 
-    /* a guess for general overhead for local vars, function call stacks, etc. */
-    const int overhead = 100000;
-    double totalBytes = overhead;
+    const int chromCrossover = 1000;
+    const unsigned int maxTmpFiles = 120; // can hit max open file descriptors in extreme cases.  use hierarchial merge-sort
     double diffBytes = 0;
     double maxChromBytes = 0;
+    bool firstCross = true;
     std::map<std::string, unsigned int> chrNames;
     std::map<std::string, unsigned int>::iterator siter;
 
@@ -358,8 +443,10 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
     char tmpArr[BED_LINE_LEN + 1];
     bedLine[0] = '\0';
     chromBuf[0] = '\0';
-    totalBytes += BED_LINE_LEN + 1;
-    totalBytes += CHROM_NAME_LEN + 1;
+
+    /* a guess for general overhead for local vars, function call stacks, etc. */
+    const int overhead = 50000000 + (2 * (BED_LINE_LEN + 1)) + CHROM_NAME_LEN + 1;
+    double totalBytes = overhead;
 
     if(0 != checkfiles(bedFileNames, numFiles))
         {
@@ -439,7 +526,13 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                             fclose(bedFile);
                             return -1;
                         }
-                    memcpy(chromBuf, bedLine, static_cast<size_t>(cptr-bedLine));
+
+                    // reverse chrom name for faster lookup in common case that everything looks like chrBLAH
+                    jidx = 0;
+                    for ( kidx = static_cast<unsigned int>(cptr-bedLine); kidx > 0; )
+                      chromBuf[jidx++] = bedLine[--kidx];
+                    chromBuf[static_cast<size_t>(cptr-bedLine)-1] = bedLine[0];
+                    //  memcpy(chromBuf, bedLine, static_cast<size_t>(cptr-bedLine));
                     chromBuf[cptr-bedLine] = '\0';
 
                     /* start coord check */
@@ -556,21 +649,59 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                             return -1;
                         }
 
+
                     /*Find the chrom*/
                     newChrom = 1;
-                    siter = chrNames.find(std::string(chromBuf));
-                    if ( siter == chrNames.end() )
+                    if (beds->numChroms < chromCrossover)
                         {
-                          chrNames.insert(std::make_pair(std::string(chromBuf), beds->numChroms));
+                            if (beds->numChroms > 0 && (strcmp(beds->chroms[lastidx]->chromName, chromBuf) == 0))
+                                { /* same chr as last row which often happens in practice */
+				  jidx = static_cast<unsigned int>(lastidx);
+                                    newChrom = 0;
+                                }
+                            else /* linear search */
+                                {
+                                    for(jidx = 0; jidx < beds->numChroms; jidx++)
+                                        {
+                                            if(strcmp(beds->chroms[jidx]->chromName, chromBuf) == 0)
+                                                {
+                                                   lastidx = jidx;
+                                                   newChrom = 0;
+                                                   break;
+                                                }
+                                        } /* for */
+                                }
                         }
-                    else
+                    else /* map search since there are a ridiculous # distinct chrom names */
                         {
-                            jidx = siter->second;
-                            // Append data to current chrom
+                            if (firstCross)
+                                { /* copy over what we have up until this point into our map */
+                                    firstCross = false;
+                                    chrNames.clear();
+                                    for(tidx = 0; tidx < beds->numChroms; ++tidx)
+                                       chrNames.insert(std::make_pair(std::string(beds->chroms[tidx]->chromName), tidx));
+                                }
+
+                            /*Find the chrom*/
+                            siter = chrNames.find(std::string(chromBuf));
+                            if ( siter != chrNames.end() )
+                                { /* chrom already exists */
+                                    jidx = siter->second;
+                                    newChrom = 0;
+                                }
+                            else /* Create a new chrom */
+                                {
+                                    chrNames.insert(std::make_pair(std::string(chromBuf), beds->numChroms));
+                                }
+                        }
+
+                    if (!newChrom)
+                        {
+                            /* Append data to current chrom */
                             diffBytes = totalBytes;
                             if(fields > 3)
-                                { // check ID column is <= ID_NAME_LEN for the benefit of downstream programs
-                                    cptr = strpbrk(bedLine, "\t "); // bedops/bedmap do not differentiate these whitespace characters
+                                { /* check ID column is <= ID_NAME_LEN for the benefit of downstream programs */
+                                    cptr = strpbrk(bedLine, "\t "); /* bedops/bedmap do not differentiate these whitespace characters */
                                     if(cptr == NULL)
                                         {
                                             if(strlen(bedLine) > ID_NAME_LEN)
@@ -592,39 +723,31 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                                             fclose(bedFile);
                                             return -1;
                                         }
-                                    chromEntryCount = appendChromBedEntry(beds->chroms[jidx], startPos, endPos, bedLine, &totalBytes);
+                                    chromEntryCount = appendChromBedEntry(beds->chroms[jidx], startPos, endPos, bedLine, &totalBytes, maxMem);
                                 }
                             else
                                 {
-                                    chromEntryCount = appendChromBedEntry(beds->chroms[jidx], startPos, endPos, NULL, &totalBytes);
+                                    chromEntryCount = appendChromBedEntry(beds->chroms[jidx], startPos, endPos, NULL, &totalBytes, maxMem);
                                 }
 
-                            diffBytes = totalBytes - diffBytes;
-                            *chromBytes[jidx] += diffBytes;
-                            maxChromBytes = (*chromBytes[jidx] < maxChromBytes) ? maxChromBytes : *chromBytes[jidx]; 
-
-                            if (chromEntryCount < 0)
+                            if (static_cast<int>(chromEntryCount) < 0)
                                 {
                                     fprintf(stderr, "Error: %s, %d: Unable to create BED structure.\n", __FILE__, __LINE__);
                                     fclose(bedFile);
                                     return -1;
                                 }
-                            newChrom = 0;
+                            diffBytes = totalBytes - diffBytes;
+                            *chromBytes[jidx] += diffBytes;
+                            maxChromBytes = (*chromBytes[jidx] < maxChromBytes) ? maxChromBytes : *chromBytes[jidx]; 
                         }
-
-                    if(newChrom)
+                    else /* new chrom */
                         {
                             errno = 0;
-
-                            /* Create a new chrom */
-
-                            /* Resize Chrom Structure */
                             if(beds->numChroms >= (double)((NUM_CHROM_EST * chromAllocs)))
-                                {
-                                    /* fprintf(stderr, "Reallocating...\n"); */
+                                {   /* Resize Chrom Structure */
                                     chromAllocs++;
-                                    beds->chroms = (ChromBedData**)realloc(beds->chroms, sizeof(ChromBedData *) * NUM_CHROM_EST * chromAllocs);
-                                    totalBytes += sizeof(ChromBedData *) * NUM_CHROM_EST;
+                                    beds->chroms = (ChromBedData**)realloc(beds->chroms, sizeof(ChromBedData*) * NUM_CHROM_EST * chromAllocs);
+                                    totalBytes += sizeof(ChromBedData*) * NUM_CHROM_EST;
                                     if(beds->chroms == NULL)
                                         {
                                             fprintf(stderr, "Error: %s, %d: Unable to expand Chrom structure: %s. Out of memory.\n", __FILE__, 
@@ -644,14 +767,13 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                                     return -1;
                                 }
                             diffBytes = totalBytes - diffBytes;
-                            chromBytes = (double**)realloc(chromBytes, sizeof(double *) * (static_cast<size_t>(beds->numChroms) + 1));
+                            chromBytes = (double**)realloc(chromBytes, sizeof(double*) * (static_cast<size_t>(beds->numChroms) + 1));
                             if(chromBytes == NULL)
                                 {
                                     fprintf(stderr, "Error: %s, %d: Unable to create double* array. Out of memory.\n", __FILE__, __LINE__);
                                     return -1;
                                 }
                             chromBytes[beds->numChroms] = (double*)malloc(sizeof(double));
-
                             if(chromBytes[beds->numChroms] == NULL)
                                 {
                                     fprintf(stderr, "Error: %s, %d: Unable to create double. Out of memory.\n", __FILE__, __LINE__);
@@ -684,82 +806,109 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                                             fclose(bedFile);
                                             return -1;
                                         }
-                                    chromEntryCount = appendChromBedEntry(chrom, startPos, endPos, bedLine, &totalBytes);
+                                    chromEntryCount = appendChromBedEntry(chrom, startPos, endPos, bedLine, &totalBytes, maxMem);
                                 }
                             else
                                 {
-                                    chromEntryCount = appendChromBedEntry(chrom, startPos, endPos, NULL, &totalBytes);
+                                    chromEntryCount = appendChromBedEntry(chrom, startPos, endPos, NULL, &totalBytes, maxMem);
                                 }
 
-                            diffBytes = totalBytes - diffBytes;
-                            *chromBytes[beds->numChroms] += diffBytes;
-                            maxChromBytes = (*chromBytes[beds->numChroms] < maxChromBytes) ? maxChromBytes : *chromBytes[beds->numChroms];
-
-                            if(chromEntryCount < 0) 
+                            if(static_cast<int>(chromEntryCount) < 0) 
                                 {
                                     fprintf(stderr, "Error: %s, %d: Unable to create BED structure.\n", __FILE__, __LINE__);
                                     fclose(bedFile);
                                     return -1;
-                                }
+                                }        
+                            diffBytes = totalBytes - diffBytes;
+                            *chromBytes[beds->numChroms] += diffBytes;
+                            maxChromBytes = (*chromBytes[beds->numChroms] < maxChromBytes) ? maxChromBytes : *chromBytes[beds->numChroms];
+        
                             beds->chroms[beds->numChroms] = chrom;
-                            beds->numChroms++;
+                            lastidx = beds->numChroms++;
                         }
 
-                    /* worst case quicksort memory is O(2*n),
-                       yet we sort by a single chrom at a time and totalBytes already
-                       accounts for 1*n maxChromBytes.  totalBytes is a conservative
-                       measure of memory used.
-                    */
-                    if(maxMem > 0 && (totalBytes + maxChromBytes >= maxMem))
-                        {
-                            chrNames.clear();
-                            errno = 0;
-                            tmpFiles = (FILE**)realloc(tmpFiles, sizeof(FILE*) * (tmpFileCount+1));
-                            if(tmpFiles == NULL)
-                                {
-                                    fprintf(stderr, "Error: %s, %d: Unable to create FILE* array: %s. Out of memory.\n", __FILE__, 
-                                            __LINE__, strerror(errno));
-                                    fclose(bedFile);
-                                    return -1;
-                                }
-                            totalBytes += sizeof(FILE*) * (tmpFileCount+1);
-                            tmpFiles[tmpFileCount] = tmpfile();
-                            lexSortBedData(beds);
-                            printBed(beds, tmpFiles[tmpFileCount]);
-                            ++tmpFileCount;
-                            for(tidx = 0; tidx < beds->numChroms; ++tidx)
-                                free(chromBytes[tidx]);
-                            free(chromBytes);
+                     /* check memory */
+                     if(maxMem > 0 && (totalBytes + maxChromBytes >= maxMem))
+                         {
+                             /* worst case quicksort memory is O(2*n),
+                                yet we sort by a single chrom at a time and totalBytes already
+                                accounts for 1*n maxChromBytes.  totalBytes is a conservative
+                                measure of memory used.
+                             */
 
-                            freeBedData(beds);
-                            chromAllocs = 1;
-                            chromBytes = (double**)malloc(sizeof(double *));
-                            if(chromBytes == NULL)
-                                {
-                                    fprintf(stderr, "Error: %s, %d: Unable to create double* array. Out of memory.\n", __FILE__, __LINE__);
-                                    return -1;
-                                }
-                            maxChromBytes = 0;
+                             errno = 0;
+                             tmpFiles = (FILE**)realloc(tmpFiles, sizeof(FILE*) * (tmpFileCount+1));
+                             if(tmpFiles == NULL)
+                                 {
+                                     fprintf(stderr, "Error: %s, %d: Unable to create FILE* array: %s. Out of memory.\n", __FILE__, 
+                                             __LINE__, strerror(errno));
+                                     fclose(bedFile);
+                                     return -1;
+                                 }
+                             totalBytes += sizeof(FILE*) * (tmpFileCount+1);
+                             tmpFiles[tmpFileCount] = tmpfile();
+                             lexSortBedData(beds);
+                             printBed(tmpFiles[tmpFileCount], beds);
+                             for(tidx = 0; tidx < beds->numChroms; ++tidx)
+                                 free(chromBytes[tidx]);
+                             free(chromBytes);
 
-                            totalBytes = overhead; /* already includes chromBytes array */
-                            beds = initializeBedData(&totalBytes);
-                            if(beds == NULL) 
-                                {
-                                    fprintf(stderr, "Error: %s, %d: Unable to create BED structure. Out of memory.\n", __FILE__, __LINE__);
-                                    return -1;
-                                }
-                        }
-                    bedLine[BED_LINE_LEN] = '1';
-                    lines++;
-                } /* while */
-      
-            if(notStdin)
-                {
-                    fclose(bedFile);
-                }
-        } /* for */
+                             freeBedData(beds);
+                             chromAllocs = 1;
+                             chrNames.clear();
+                             firstCross = true;
+                             chromBytes = (double**)malloc(sizeof(double *));
+                             if(chromBytes == NULL)
+                                 {
+                                     fprintf(stderr, "Error: %s, %d: Unable to create double* array. Out of memory.\n", __FILE__, __LINE__);
+                                     return -1;
+                                 }
+                             maxChromBytes = 0;
+                             totalBytes = overhead; /* already includes chromBytes array */
+                             if ( ++tmpFileCount == maxTmpFiles )
+                                 { /* hierarchial merge sort to keep # open file descriptors low */
+                                     tmpX = tmpfile();
+                                     if(0 != mergeSort(tmpX, tmpFiles, tmpFileCount))
+                                         {
+                                             fprintf(stderr, "Error: %s, %d.  Out of memory.\n", __FILE__, __LINE__);
+                                             fclose(bedFile);
+                                             return -1;
+                                         }
 
-    if(tmpFileCount > 0)
+                                     for (tidx = 0; tidx < tmpFileCount; ++tidx)
+                                         fclose(tmpFiles[tidx]); /* deletes temporary files for us */
+                                     free(tmpFiles);
+                                     tmpFiles = (FILE**)malloc(sizeof(FILE *));
+                                     if(tmpFiles == NULL)
+                                         {
+                                             fprintf(stderr, "Error: %s, %d: Unable to create FILE* array. Out of memory.\n", __FILE__, __LINE__);
+                                             return -1;
+                                         }
+                                     totalBytes += sizeof(FILE*);
+                                     tmpFileCount = 1U;
+                                     tmpFiles[0] = tmpX;
+                                     tmpX = NULL;
+                                 }
+
+                             beds = initializeBedData(&totalBytes);
+                             if(beds == NULL) 
+                                 {
+                                     fprintf(stderr, "Error: %s, %d: Unable to create BED structure. Out of memory.\n", __FILE__, __LINE__);
+                                     return -1;
+                                 }
+                         }
+
+                     bedLine[BED_LINE_LEN] = '1';
+                     lines++;
+                 } /* while */
+
+             if(notStdin)
+                 {
+                     fclose(bedFile);
+                 }
+         } /* for */
+
+     if(tmpFileCount > 0)
         {
             if(beds->numChroms > 0)
                 { /* sort and spit out what's in memory */
@@ -775,14 +924,14 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                         }
                     tmpFiles[tmpFileCount] = tmpfile();
                     lexSortBedData(beds);
-                    printBed(beds, tmpFiles[tmpFileCount]);
+                    printBed(tmpFiles[tmpFileCount], beds);
                     ++tmpFileCount;
                     for(tidx = 0; tidx < beds->numChroms; ++tidx)
                         free(chromBytes[tidx]);
                     free(chromBytes);
                     freeBedData(beds);
                 }
-            if(0 != mergeSort(tmpFiles, tmpFileCount))
+            if(0 != mergeSort(stdout, tmpFiles, tmpFileCount))
                 {
                     fprintf(stderr, "Error: %s, %d.  Out of memory.\n", __FILE__, __LINE__);
                     fclose(bedFile);
@@ -790,22 +939,22 @@ processData(const char **bedFileNames, unsigned int numFiles, double maxMem)
                 }
             for (tidx = 0; tidx < tmpFileCount; ++tidx)
                 fclose(tmpFiles[tidx]); /* deletes temporary files for us */
+            free(tmpFiles);
         }
     else
         {
             lexSortBedData(beds);
-            printBed(beds, stdout);
+            printBed(stdout, beds);
             for(tidx = 0; tidx < beds->numChroms; ++tidx)
                 free(chromBytes[tidx]);
             free(chromBytes);
             /* freeBedData(beds); let the OS clean up - takes significant time to do this step manually */
         }
-    free(tmpFiles);
     return 0;
 }
 
 void 
-printBed(BedData *beds, FILE *out) 
+printBed(FILE *out, BedData *beds)
 {
     unsigned int i = 0U;
     Bed::LineCountType j = 0;
@@ -854,15 +1003,29 @@ freeBedData(BedData *beds)
 void
 lexSortBedData(BedData *beds)
 {
-    unsigned int i;
+    unsigned int i, j, k;
+    char chromBuf[CHROM_NAME_LEN + 1];
+    chromBuf[0] = '\0';
+    size_t chromBufLen;
 
     if(beds == NULL) 
         {
             return;
         }
 
+    /* reverse chromosome names (back to correct names) before comparisons */
+    for(i = 0; i < beds->numChroms; ++i)
+        {
+            k = 0;
+            chromBufLen = strlen(beds->chroms[i]->chromName); // we know >= 1
+            strncpy(chromBuf, beds->chroms[i]->chromName, chromBufLen);
+            for ( j = static_cast<unsigned int>(chromBufLen); j > 0; )
+                beds->chroms[i]->chromName[k++] = chromBuf[--j];
+            /* terminating null is already in correct spot */
+        }
+
     /* sort coords */
-    for(i = 0; i < beds->numChroms; i++) 
+    for(i = 0; i < beds->numChroms; ++i) 
         {            
             qsort(beds->chroms[i]->coords, static_cast<size_t>(beds->chroms[i]->numCoords), sizeof(BedCoordData), numCompareBedData);
         }
@@ -870,7 +1033,6 @@ lexSortBedData(BedData *beds)
     /* sort chroms */
     qsort(beds->chroms, static_cast<size_t>(beds->numChroms), sizeof(ChromBedData *), lexCompareBedData); 
     return;
-
 }
 
 int

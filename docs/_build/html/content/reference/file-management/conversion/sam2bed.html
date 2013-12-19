@@ -67,7 +67,7 @@
 </div>
 <div class="section" id="dependencies">
 <h2>6.3.3.5.1. Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
-<p>This <tt class="docutils literal"><span class="pre">python</span></tt> shell script is dependent upon the installation of <a class="reference external" href="http://samtools.sourceforge.net/">SAMtools</a> and Python, version 2.7 or greater.</p>
+<p>This <tt class="docutils literal"><span class="pre">python</span></tt> shell script is dependent upon the installation of <a class="reference external" href="http://samtools.sourceforge.net/">SAMtools</a> and Python, version 2.7 or greater (and less than Python3).</p>
 </div>
 <div class="section" id="source">
 <h2>6.3.3.5.2. Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h2>
@@ -76,6 +76,10 @@
 <div class="section" id="usage">
 <h2>6.3.3.5.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>The <tt class="docutils literal"><span class="pre">sam2bed</span></tt> script parses SAM data from standard input and prints <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED to standard output. The <tt class="docutils literal"><span class="pre">sam2starch</span></tt> script uses an extra step to parse SAM to a compressed BEDOPS <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive, which is also directed to standard output.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you modify the SAM data such that it includes tags not already in the SAM specification, use the <tt class="docutils literal"><span class="pre">--custom-tags</span> <span class="pre">&lt;value&gt;</span></tt> operator to specify a comma-delimited list of custom tags.</p>
+</div>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
 <p class="last">If you work with RNA-seq data, you can use the <tt class="docutils literal"><span class="pre">--split</span></tt> option to process reads with <tt class="docutils literal"><span class="pre">N</span></tt>-CIGAR operations, splitting them into separate BED elements.</p>
@@ -118,8 +122,96 @@ seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     
 <p class="last">Note the conversion from 1- to 0-based coordinates. While BEDOPS fully supports 0- and 1-based coordinates, the coordinate change in BED is believed to be convenient to most end users.</p>
 </div>
 </div>
+<div class="section" id="column-mapping">
+<span id="sam2bed-column-mapping"></span><h2>6.3.3.5.5. Column mapping<a class="headerlink" href="#column-mapping" title="Permalink to this headline">¶</a></h2>
+<p>In this section, we describe how SAM columns are mapped to BED columns. We start with the first six UCSC BED columns as follows:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="43%" />
+<col width="33%" />
+<col width="24%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">SAM field</th>
+<th class="head">BED column index</th>
+<th class="head">BED field</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>RNAME</td>
+<td>1</td>
+<td>chromosome</td>
+</tr>
+<tr class="row-odd"><td>POS - 1</td>
+<td>2</td>
+<td>start</td>
+</tr>
+<tr class="row-even"><td>POS + length(CIGAR) - 1</td>
+<td>3</td>
+<td>stop</td>
+</tr>
+<tr class="row-odd"><td>QNAME</td>
+<td>4</td>
+<td>id</td>
+</tr>
+<tr class="row-even"><td>FLAG</td>
+<td>5</td>
+<td>score</td>
+</tr>
+<tr class="row-odd"><td>16 &amp; FLAG</td>
+<td>6</td>
+<td>strand</td>
+</tr>
+</tbody>
+</table>
+<p>The remaining SAM columns are mapped as-is, in same order, to adjacent BED columns:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="43%" />
+<col width="33%" />
+<col width="24%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">SAM field</th>
+<th class="head">BED column index</th>
+<th class="head">BED field</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>MAPQ</td>
+<td>7</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>CIGAR</td>
+<td>8</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>RNEXT</td>
+<td>9</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>PNEXT</td>
+<td>10</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>TLEN</td>
+<td>11</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>SEQ</td>
+<td>12</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>QUAL</td>
+<td>13</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>Because we have mapped all columns, we can translate converted BED data back to headerless SAM reads with a simple <tt class="docutils literal"><span class="pre">awk</span></tt> statement (or other script) that reverts back to 1-based coordinates and permutes columns to SAM-based ordering.</p>
+</div>
 <div class="section" id="downloads">
-<span id="sam2bed-downloads"></span><h2>6.3.3.5.5. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
+<span id="sam2bed-downloads"></span><h2>6.3.3.5.6. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Sample SAM dataset: <a class="reference download internal" href="../../../../_downloads/reference_sam2bed_foo.sam"><tt class="xref download docutils literal"><span class="pre">foo.sam</span></tt></a></li>
 </ul>
@@ -142,7 +234,8 @@ seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     
 <li><a class="reference internal" href="#source">6.3.3.5.2. Source</a></li>
 <li><a class="reference internal" href="#usage">6.3.3.5.3. Usage</a></li>
 <li><a class="reference internal" href="#example">6.3.3.5.4. Example</a></li>
-<li><a class="reference internal" href="#downloads">6.3.3.5.5. Downloads</a></li>
+<li><a class="reference internal" href="#column-mapping">6.3.3.5.5. Column mapping</a></li>
+<li><a class="reference internal" href="#downloads">6.3.3.5.6. Downloads</a></li>
 </ul>
 </li>
 </ul>
@@ -195,7 +288,7 @@ seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     
     </div>
     <div class="footer">
         &copy; Copyright 2013, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

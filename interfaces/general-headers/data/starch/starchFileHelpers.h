@@ -46,6 +46,21 @@
 #define fseeko64 fseeko
 #endif
 
+/*
+   In Cygwin, there is no support for fseeko(). We can use fseek() on a 64-bit 
+   distribution of Cygwin, because a signed long int has sufficient bits to store 
+   an offset for a file greater than 2 GB. For 32-bit distributions of Cygwin, we
+   do not yet have support for this arrangement.
+*/
+
+#ifdef __CYGWIN__
+#define fseeko fseek
+#endif
+
+#ifdef __CYGWIN32__
+#error 32-bit Cygwin compilation is unsupported due to lack of fseeko() support
+#endif
+
 FILE*   STARCH_fopen(const char *filename, 
                      const char *type);
 

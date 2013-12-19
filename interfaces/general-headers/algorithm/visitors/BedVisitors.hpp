@@ -30,6 +30,7 @@
 
 // Files included
 #include "NumericalVisitors.hpp"
+#include "bed/EchoMapIntersectLengthVisitor.hpp"
 #include "bed/OvrAggregateVisitor.hpp"
 #include "bed/OvrUniqueVisitor.hpp"
 #include "bed/OvrUniqueFractionVisitor.hpp"

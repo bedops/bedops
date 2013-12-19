@@ -318,7 +318,11 @@ namespace starch
                             std::fseek(_inFp, 0, SEEK_SET);
                             return false;
                         }
+#ifdef __CYGWIN__
+                        _archStreamSize = static_cast<unsigned long long>(std::strtoul(json_string_value(_mdJSONStreamSize), NULL, STARCH_RADIX));
+#else
                         _archStreamSize = std::strtoull(json_string_value(_mdJSONStreamSize), NULL, STARCH_RADIX);
+#endif
                         _mdJSONStreamLineCount = json_object_get(_mdJSONStream, STARCH_METADATA_STREAM_LINECOUNT_KEY);
                         if (!_mdJSONStreamLineCount) {
                             if ((_archVersion->major >= 1) && (_archVersion->minor >= 3)) {
@@ -503,7 +507,11 @@ namespace starch
                                     break;
                                 }
                                 case 1: {
+#ifdef __CYGWIN__
+                                    _recFileSize = static_cast<unsigned long long>(std::strtoul(_token, NULL, STARCH_RADIX));
+#else
                                     _recFileSize = std::strtoull(_token, NULL, STARCH_RADIX);
+#endif
                                     break;
                                 }
                             }

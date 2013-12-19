@@ -238,6 +238,7 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
     Metadata *iter, *inMd = inRec->metadata;
     const ArchiveVersion *av = inRec->av;
     char buffer[STARCHCAT_COPY_BUFFER_MAXSIZE];
+    size_t nBytesRead = 0;
 
     if (!inMd) {
         fprintf(stderr, "ERROR: Could not locate input metadata.\n");
@@ -326,13 +327,21 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
 
     outFileSizeCounter = outFileSize;
     do {
-      if (outFileSizeCounter > STARCHCAT_COPY_BUFFER_MAXSIZE) {
-	(void) fread(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, inRec->fp);
+        if (outFileSizeCounter > STARCHCAT_COPY_BUFFER_MAXSIZE) {
+	nBytesRead = fread(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, inRec->fp);
+        if (nBytesRead != STARCHCAT_COPY_BUFFER_MAXSIZE * sizeof(char)) {
+            fprintf(stderr, "ERROR: Was not able to copy sufficient bytes into buffer (STARCHCAT_COPY_BUFFER_MAXSIZE).\n");
+            return STARCHCAT_EXIT_FAILURE;
+        }
 	fwrite(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, outFnPtr);
 	outFileSizeCounter -= STARCHCAT_COPY_BUFFER_MAXSIZE;
       }
       else {
-	(void) fread(buffer, sizeof(char), (size_t)outFileSizeCounter, inRec->fp);
+	nBytesRead = fread(buffer, sizeof(char), (size_t)outFileSizeCounter, inRec->fp);
+        if (nBytesRead != outFileSizeCounter * sizeof(char)) {
+            fprintf(stderr, "ERROR: Was not able to copy sufficient bytes into buffer (outFileSizeCounter).\n");
+            return STARCHCAT_EXIT_FAILURE;
+        }
 	fwrite(buffer, sizeof(char), (size_t)outFileSizeCounter, outFnPtr);
 	outFileSizeCounter = 0ULL;
       }
@@ -379,6 +388,7 @@ STARCHCAT_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const C
     char buffer[STARCHCAT_COPY_BUFFER_MAXSIZE];
     FILE *outFnPtr = NULL;
     char *outFn = NULL;
+    size_t nBytesRead = 0;
 
     if (!inMd) {
         fprintf(stderr, "ERROR: Could not locate input metadata.\n");
@@ -457,12 +467,20 @@ STARCHCAT_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const C
     fseeko(inRec->fp, (off_t)startOffset, SEEK_SET);
     do {
       if (outFileSizeCounter > STARCHCAT_COPY_BUFFER_MAXSIZE) {
-	(void) fread(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, inRec->fp);
+	nBytesRead = fread(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, inRec->fp);
+        if (nBytesRead != STARCHCAT_COPY_BUFFER_MAXSIZE * sizeof(char)) {
+            fprintf(stderr, "ERROR: Was not able to copy sufficient bytes into buffer (STARCHCAT_COPY_BUFFER_MAXSIZE).\n");
+            return STARCHCAT_EXIT_FAILURE;
+        }
 	fwrite(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, outFnPtr);
 	outFileSizeCounter -= STARCHCAT_COPY_BUFFER_MAXSIZE;
       }
       else {
-	(void) fread(buffer, sizeof(char), (size_t)outFileSizeCounter, inRec->fp);
+	nBytesRead = fread(buffer, sizeof(char), (size_t)outFileSizeCounter, inRec->fp);
+        if (nBytesRead != outFileSizeCounter * sizeof(char)) {
+            fprintf(stderr, "ERROR: Was not able to copy sufficient bytes into buffer (outFileSizeCounter).\n");
+            return STARCHCAT_EXIT_FAILURE;
+        }
 	fwrite(buffer, sizeof(char), (size_t)outFileSizeCounter, outFnPtr);
 	outFileSizeCounter = 0ULL;
       }
@@ -2404,7 +2422,7 @@ STARCHCAT_mergeInputRecordsToOutput (Metadata **outMd, const char *outTag, const
             return STARCHCAT_EXIT_FAILURE;
         }
         sprintf(tempOutFn, "%s.%s.uncompressed.%04u", summary->chromosome, outTag, inRecIdx);
-        tempOutFns[inRecIdx] = strdup(tempOutFn);
+        tempOutFns[inRecIdx] = STARCH_strdup(tempOutFn);
         /* 
             Set up the out-bound file streams to allow reading and writing
             modes, which will allow extraction, rewinding and subsequent 
@@ -3060,7 +3078,7 @@ STARCHCAT_buildChromosomeSummary (ChromosomeSummary **summary, const MetadataRec
 #ifdef DEBUG
         fprintf(stderr, "\tworking on chr %u (of %u) [%s]...\n", (chrIdx + 1), numChromosomes, *(chromosomes + chrIdx));
 #endif
-        instance->chromosome = strdup( *(chromosomes + chrIdx) );
+        instance->chromosome = STARCH_strdup( *(chromosomes + chrIdx) );
         for (recIdx = 0U; recIdx < numRecords; recIdx++) {
             md = (mdRecords + recIdx)->metadata;
             for (iter = md; iter != NULL; iter = iter->next) {
@@ -3120,7 +3138,7 @@ STARCHCAT_copyMetadataRecord (const MetadataRecord *mdRec)
 #ifdef DEBUG
     fprintf(stderr, "\tcopying filename from mdRec to copy: %s\n", mdRec->filename);
 #endif
-    copy->filename = strdup(mdRec->filename);
+    copy->filename = STARCH_strdup(mdRec->filename);
     copy->fp = mdRec->fp;
     copy->type = mdRec->type;
     copy->hFlag = mdRec->hFlag;
@@ -3168,7 +3186,7 @@ STARCHCAT_buildUniqueChromosomeList (char ***chromosomes, unsigned int *numChr, 
 #ifdef DEBUG
             fprintf(stderr, "\t\t(%zu | %zu) %-25s\n", totalChr, currChr, iter->chromosome);
 #endif
-            *(chr + currChr - 1) = strdup(iter->chromosome);
+            *(chr + currChr - 1) = STARCH_strdup(iter->chromosome);
         }
     }
 
@@ -3199,9 +3217,9 @@ STARCHCAT_buildUniqueChromosomeList (char ***chromosomes, unsigned int *numChr, 
     }
     for (idx = 0U, uninitIdx = 0U; idx < currChr - 1; idx++) {
         if ( strcmp(*(sortedChr + idx), *(sortedChr + idx + 1)) != 0 )
-            *(sortedUniqChr + uninitIdx++) = strdup(*(sortedChr + idx));
+            *(sortedUniqChr + uninitIdx++) = STARCH_strdup(*(sortedChr + idx));
     }
-    *(sortedUniqChr + uninitIdx) = strdup(*(sortedChr + idx)); /* copy last remaining element in sorted array */
+    *(sortedUniqChr + uninitIdx) = STARCH_strdup(*(sortedChr + idx)); /* copy last remaining element in sorted array */
 
     *chromosomes = sortedUniqChr;
     *numChr = allSortedChr;
@@ -3391,7 +3409,7 @@ STARCHCAT_buildMetadataRecords (json_t ***metadataJSONs, MetadataRecord **mdReco
         }
 
         /* assignment */
-        mdRecord->filename = strdup(inFile);
+        mdRecord->filename = STARCH_strdup(inFile);
         mdRecord->metadata = STARCH_copyMetadata((const Metadata *)md);
         mdRecord->fp = inFilePtr;
         mdRecord->type = inType;
@@ -3864,7 +3882,7 @@ STARCHCAT2_mergeChromosomeStreams (const ChromosomeSummaries *chrSums, const Com
     fflush(stdout);
 
     /* write metadata signature */
-    dynamicMdBufferCopy = strdup(dynamicMdBuffer);
+    dynamicMdBufferCopy = STARCH_strdup(dynamicMdBuffer);
     STARCH_SHA1_All((const unsigned char *)dynamicMdBuffer, strlen(dynamicMdBuffer), sha1Digest);
     free(dynamicMdBufferCopy);
 
@@ -4818,8 +4836,8 @@ STARCHCAT2_transformCompressionBuffer (const char *compBuf, char *retransBuf, Tr
     Bed::LineCountType retransLineIdx                           = 0;
 
     /* retransform parameters */
-    char *retransChromosome                                     = strdup(retransState->r_chromosome);
-    char *retransRemainder                                      = strdup(retransState->r_remainder);
+    char *retransChromosome                                     = STARCH_strdup(retransState->r_chromosome);
+    char *retransRemainder                                      = STARCH_strdup(retransState->r_remainder);
     Bed::SignedCoordType *retransStart                          = &retransState->r_start;
     Bed::SignedCoordType *retransStop                           = &retransState->r_stop;
     Bed::SignedCoordType *retransCoordDiff                      = &retransState->r_coordDiff;

@@ -3,7 +3,6 @@
   AUTHOR: Scott Kuehn
     MODS: Shane Neph
   CREATE DATE: Thu Sep  7 08:48:35 PDT 2006
-  ID: $Id: sort.c,v 1.6 2010/08/20 05:05:32 sjn Exp $
 */
 
 //
@@ -38,8 +37,8 @@ using namespace std;
 #define MAX_INFILES 10000
 
 static const char *name = "sort-bed";
-static const char *authors = "Scott Kuehn & Shane Neph";
-static const char *usage = "\nUSAGE: sort-bed [--help] [--version] [--max-mem <val>] <file1.bed> <file2.bed> <...>\n        Sort BED file(s).\n        May use '-' to indicate stdin.\n        Results are sent to stdout.\n\n        <val> for --max-mem may be 8G, 8000M, or 8000000000 to specify 8 GB of memory, for example.\n\n";
+static const char *authors = "Scott Kuehn";
+static const char *usage = "\nUSAGE: sort-bed [--help] [--version] [--max-mem <val>] <file1.bed> <file2.bed> <...>\n        Sort BED file(s).\n        May use '-' to indicate stdin.\n        Results are sent to stdout.\n\n        <val> for --max-mem may be 8G, 8000M, or 8000000000 to specify 8 GB of memory.\n\n";
 
 
 static void 

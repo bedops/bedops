@@ -79,6 +79,46 @@ We can convert it to sorted BED data in the following manner:
 
 .. note:: Note the conversion from 1- to 0-based coordinate indexing, in the transition from GFF3 to BED. *BEDOPS supports operations on input with any coordinate indexing*, but the coordinate change made here is believed to be convenient for most end users.
 
+.. _gff2bed_column_mapping:
+
+==============
+Column mapping
+==============
+
+In this section, we describe how GFF3 columns are mapped to BED columns. We start with the first six UCSC BED columns as follows:
+
++---------------------------+---------------------+---------------+
+| GFF3 field                | BED column index    | BED field     |
++===========================+=====================+===============+
+| seqid                     | 1                   | chromosome    |
++---------------------------+---------------------+---------------+
+| start                     | 2                   | start         |
++---------------------------+---------------------+---------------+
+| end                       | 3                   | stop          |
++---------------------------+---------------------+---------------+
+| ID (via attributes)       | 4                   | id            |
++---------------------------+---------------------+---------------+
+| score                     | 5                   | score         |
++---------------------------+---------------------+---------------+
+| strand                    | 6                   | strand        |
++---------------------------+---------------------+---------------+
+
+The remaining columns are mapped as follows:
+
++---------------------------+---------------------+---------------+
+| GFF3 field                | BED column index    | BED field     |
++===========================+=====================+===============+
+| source                    | 7                   |               |
++---------------------------+---------------------+---------------+
+| type                      | 8                   |               |
++---------------------------+---------------------+---------------+
+| phase                     | 9                   |               |
++---------------------------+---------------------+---------------+
+| attributes                | 10                  |               |
++---------------------------+---------------------+---------------+
+
+If we encounter zero-length insertion elements (which are defined where the ``start`` and ``stop`` GFF3 field values are equivalent), the ``start`` coordinate is decremented to convert to 0-based, half-open indexing, and a ``zero_length_insertion`` attribute is added to the ``attributes`` GFF3 field value.
+
 .. _gff2bed_downloads:
 
 =========

@@ -136,6 +136,7 @@ class SamTags:
         self.tags = []
         self.containsMismatches = False
         self.containsMultipleReads = False
+        self.customTagsAdded = False
 
     def __str__(self):
         res = ""
@@ -149,7 +150,7 @@ class SamTags:
         tagType = tagElems[1]
         tagValue = tagElems[2]
         customTags = []
-        if customTagsAdded:
+        if self.customTagsAdded:
             customTags = customTagsStr.split(",")
         if str(tagName) in (allSpecificationSamTags + customTags) or tagName.startswith('X') or tagName.startswith('Y') or tagName.startswith('Z'):
             tag = SamTag()
@@ -455,6 +456,25 @@ class SamRecord(object):
                               self._qual]) + '\n'
             
 
+def which(program):
+    import os
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+
+    return None
+
+
 def printUsage(stream):
     usage = ("Usage:\n"
              "  %s [ --help ] [ --split ] [ --all-reads ] [ --do-not-sort | --max-mem <value> ] [ --starch-format <bzip2|gzip> ] < foo.sam\n\n"
@@ -572,9 +592,6 @@ def main(*args):
         elif key in ("--starch-format"):
             starchFormat = str(value)
 
-    if maxMemChanged:
-        sys.stderr.write( "[%s] - Warning: The --max-mem parameter is currently ignored (cf. https://github.com/bedops/bedops/issues/1 )\n" % sys.argv[0] )
-
     if inputNeedsSplitting and not sortOutput:
         sys.stderr.write( "[%s] - Error: Cannot specify both --do-not-sort and --split parameters\n" % sys.argv[0] )
         printUsage("stderr")
@@ -602,6 +619,13 @@ def main(*args):
     #
     # read SAM data into samtools process
     #
+
+    try:
+        if which('samtools') is None:
+            raise IOError("The samtools binary could not be found in your user PATH -- please locate and install this binary")
+    except IOError, msg:
+        sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
+        return os.EX_OSFILE
 
     samProcess = subprocess.Popen(['samtools', 'view', '-S', '-'], stdin=subprocess.PIPE, stdout=samTF)
     while True:
@@ -645,6 +669,7 @@ def main(*args):
                 # optional fields are TAG:TYPE:VALUE triplets
                 samTagsList = []
                 samTags = SamTags()
+                samTags.customTagsAdded = customTagsAdded
                 if len(elems) >= 11:
                     for idx in range(11, len(elems)):
                         samTagsList.append(elems[idx])
@@ -716,13 +741,28 @@ def main(*args):
                             starchTF.write(samRecord.asBed())
 
     if sortOutput:
+
+        try:
+            if which('sort-bed') is None:
+                raise IOError("The sort-bed binary could not be found in your user PATH -- please locate and install this binary")
+        except IOError, msg:
+            sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
+            return os.EX_OSFILE
+
         sortTF.close()
-        sortProcess = subprocess.Popen(['sort-bed', sortTF.name], stdout=starchTF)
+        sortProcess = subprocess.Popen(['sort-bed', '--max-mem', maxMem, sortTF.name], stdout=starchTF)
         sortProcess.wait()
         try:
             os.remove(sortTF.name)
         except OSError:
             sys.stderr.write( "[%s] - Warning: Could not delete intermediate sorted file [%s]\n" % (sys.argv[0], sortTF.name) )
+
+    try:
+        if which('starch') is None:
+            raise IOError("The starch binary could not be found in your user PATH -- please locate and install this binary")
+    except IOError, msg:
+        sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
+        return os.EX_OSFILE
 
     starchProcess = subprocess.Popen(["starch", starchFormat, starchTF.name])
     starchProcess.wait()

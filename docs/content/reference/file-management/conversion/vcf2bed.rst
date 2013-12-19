@@ -35,6 +35,27 @@ The ``vcf2bed`` script parses VCF from standard input and prints sorted BED to s
 
 .. tip:: If you are sorting data larger than system memory, use the ``--max-mem`` option to limit sort memory usage to a reasonable fraction of available memory, *e.g.*, ``--max-mem 2G`` or similar. See ``--help`` for more details.
 
+.._vcf2bed_custom_variants
+
+===========================
+Customized variant handling
+===========================
+
+By default, the ``vcf2bed`` script translates all variants to single-base positions in the resulting BED output. Depending on the category of variant you are interested in, however, you may want more specific categories handled differently. 
+
+Based on the VCF v4 specification, we also provide three custom options for filtering input for each of the three types of variants listed: ``--snvs``, ``--insertions`` and ``--deletions``. In each case, we use the length of the reference and alternate alleles to determine which type of variant is being handled. 
+
+In addition, using any of these three custom options automatically results in processing of mixed variant records for a microsatellite, where present. For instance, the following record contains a mixture of a deletion and insertion variant (``GTC -> G`` and ``GTC -> GTCT``, respectively):
+
+::
+
+  #CHROM POS     ID        REF    ALT     QUAL FILTER INFO                              FORMAT      NA00001        NA00002        NA00003
+  20     1234567 microsat1 GTC    G,GTCT  50   PASS   NS=3;DP=9;AA=G                    GT:GQ:DP    0/1:35:4       0/2:17:2       1/1:40:3
+
+When using ``--snvs``, ``--insertions`` or ``--deletions``, this record is split into two distinct BED records and filtered depending on which custom option was chosen. The ``--insertions`` option would only export the insertion in this mixed variant, while ``--deletions`` would show the deletion.
+
+In this way, you can control what kinds of variants are translated into BED outputs |---| most importantly, there is also no confusion about what the length of the BED element signifies.
+
 =======
 Example
 =======
@@ -84,6 +105,58 @@ We can convert VCF to sorted BED data in the following manner:
   chr1    974164  974165  rs9442391       29.84   T       C       LowQual AC=1;AF=0.50;AN=2;DB;DP=18;Dels=0.00;HRun=1;HaplotypeScore=0.16;MQ=95.26;MQ0=0;QD=1.66;SB=-0.98 GT:AD:DP:GQ:PL  0/1:14,4:14:60.91:61,0,255
 
 .. note:: Note the conversion from 1- to 0-based coordinate indexing, in the transition from VCF to BED. While BEDOPS supports 0- and 1-based coordinate indexing, the coordinate change made here is believed to be convenient for most end users.
+
+.. _vcf2bed_column_mapping:
+
+==============
+Column mapping
+==============
+
+In this section, we describe how VCF v4 columns are mapped to BED columns. We start with the first five UCSC BED columns as follows:
+
++---------------------------+---------------------+---------------+
+| VCF v4 field              | BED column index    | BED field     |
++===========================+=====================+===============+
+| #CHROM                    | 1                   | chromosome    |
++---------------------------+---------------------+---------------+
+| POS - 1                   | 2                   | start         |
++---------------------------+---------------------+---------------+
+| POS (*)                   | 3                   | stop          |
++---------------------------+---------------------+---------------+
+| ID                        | 4                   | id            |
++---------------------------+---------------------+---------------+
+| QUAL                      | 5                   | score         |
++---------------------------+---------------------+---------------+
+
+The remaining columns are mapped as follows:
+
++---------------------------+---------------------+---------------+
+| VCF v4 field              | BED column index    | BED field     |
++===========================+=====================+===============+
+| REF                       | 6                   |               |
++---------------------------+---------------------+---------------+
+| ALT                       | 7                   |               |
++---------------------------+---------------------+---------------+
+| FILTER                    | 8                   |               |
++---------------------------+---------------------+---------------+
+| INFO                      | 9                   |               |
++---------------------------+---------------------+---------------+
+
+If present in the VCF v4 input, the following columns are also mapped:
+
++---------------------------+---------------------+---------------+
+| VCF v4 field              | BED column index    | BED field     |
++===========================+=====================+===============+
+| FORMAT                    | 10                  |               |
++---------------------------+---------------------+---------------+
+| Sample ID 1               | 11                  |               |
++---------------------------+---------------------+---------------+
+| Sample ID 2               | 12                  |               |
++---------------------------+---------------------+---------------+
+| ...                       | 13, 14, etc.        |               |
++---------------------------+---------------------+---------------+
+
+The "meta-information" (starting with ``##``) and "header" lines (starting with ``#``) are discarded.
 
 .. _vcf2bed_downloads:
 

@@ -1,9 +1,8 @@
 /*
   FILE: Bed.h
   AUTHOR: Scott Kuehn
-    MODS: Shane Neph
+   MODS: Shane Neph
   CREATE DATE: Tue May 16 09:15:54 PDT 2006
-  PROJECT: CompBio
 */
 
 //
@@ -61,19 +60,45 @@ typedef struct {
 } BedData;
 
 /* Function Prototypes */
-int checkfiles(const char **bedFileNames, unsigned int numFiles);
-int mergeSort(FILE **tmpFiles, unsigned int numFiles);
-int processData(const char **bedFileNames, unsigned int numFiles, double maxMem);
-void printBed(BedData *beds, FILE* out);
-void freeBedData(BedData *beds);
-void sortBedData(BedData *beds);
-void numSortBedData(BedData *beds);
-void lexSortBedData(BedData *beds);
-Bed::SignedCoordType appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::SignedCoordType endPos, char *data, double* bytes);
-ChromBedData * initializeChromBedData(char * chromName, double* bytes);
-BedData * initializeBedData(double* bytes);
-int numCompareBedData(const void *pos1, const void *pos2);
-int lexCompareBedData(const void *pos1, const void *pos2);
+int
+checkfiles(const char **bedFileNames, unsigned int numFiles);
+
+int
+mergeSort(FILE **tmpFiles, unsigned int numFiles);
+
+int
+processData(const char **bedFileNames, unsigned int numFiles, double maxMem);
+
+void
+printBed(FILE *out, BedData *beds);
+
+void
+freeBedData(BedData *beds);
+
+void
+sortBedData(BedData *beds);
+
+void
+numSortBedData(BedData *beds);
+
+void
+lexSortBedData(BedData *beds);
+
+Bed::SignedCoordType
+appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::SignedCoordType endPos,
+                    char *data, double* bytes, double maxMem);
+
+ChromBedData*
+initializeChromBedData(char * chromName, double* bytes);
+
+BedData*
+initializeBedData(double* bytes);
+
+int
+numCompareBedData(const void *pos1, const void *pos2);
+
+int
+lexCompareBedData(const void *pos1, const void *pos2);
 
 
 

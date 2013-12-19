@@ -39,6 +39,7 @@
 #include "algorithm/visitors/Visitors.hpp"
 #include "algorithm/visitors/bed/BedBaseVisitor.hpp"
 #include "algorithm/visitors/helpers/NamedVisitors.hpp"
+#include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
 #include "algorithm/WindowSweep.hpp"
 #include "data/bed/AllocateIterator_BED_starch.hpp"
 #include "data/bed/BedCheckIterator.hpp"
@@ -201,7 +202,7 @@ namespace BedMap {
                 std::vector<BaseClass*>& visitorGroup) {
 
     typedef typename BaseClass::reference_type RefType;
-    typedef Visitors::BedHelpers::PrintDelim PrintType;
+    typedef Visitors::Helpers::PrintDelim PrintType;
 
     // Set up visitors
     PrintType processFields(columnSep);
@@ -263,7 +264,7 @@ namespace BedMap {
 
     typedef typename BaseClass::reference_type RefType;
     typedef typename BaseClass::mapping_type MapType;
-    typedef Visitors::BedHelpers::PrintDelim PrintType;
+    typedef Visitors::Helpers::PrintDelim PrintType;
 
     // Set up visitors
     PrintType processFields(columnSep);
@@ -380,6 +381,10 @@ namespace BedMap {
         typedef typename PT::PType PType;
         rtn = new typename VTypes::EchoMapAll(PT(PType(), multivalColSep));
       }
+      else if ( nm == visName<typename VTypes::EchoMapLength>() )
+        rtn = new typename VTypes::EchoMapLength;
+      else if ( nm == visName<typename VTypes::EchoMapIntersectLength>() )
+        rtn = new typename VTypes::EchoMapIntersectLength;
       else if ( nm == visName<typename VTypes::EchoMapRange>() )
         rtn = new typename VTypes::EchoMapRange;
       else if ( nm == visName<typename VTypes::EchoRefAll>() )

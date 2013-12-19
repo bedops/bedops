@@ -315,20 +315,27 @@ calculation, where <tt class="docutils literal"><span class="pre">--kth</span> <
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--stdev</span></tt></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--skip-unmapped</span></tt></td>
+<td>Omits printing reference elements which do not associate with any
+mapped elements.</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--stdev</span></tt></td>
 <td>Reports the square root of the result of <tt class="docutils literal"><span class="pre">--variance</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--sum</span></tt></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--sum</span></tt></td>
 <td>Reports the accumulated value from scores of overlapping elements in
 <tt class="docutils literal"><span class="pre">map-file</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--tmean</span> <span class="pre">&lt;low&gt;</span> <span class="pre">&lt;hi&gt;</span></tt></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--tmean</span> <span class="pre">&lt;low&gt;</span> <span class="pre">&lt;hi&gt;</span></tt></td>
 <td>Reports the mean score from overlapping elements in <tt class="docutils literal"><span class="pre">map-file</span></tt>,
 after ignoring the bottom <tt class="docutils literal"><span class="pre">&lt;low&gt;</span></tt> and top <tt class="docutils literal"><span class="pre">&lt;hi&gt;</span></tt> fractions of
 those scores. (<tt class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">low</span> <span class="pre">&lt;=</span> <span class="pre">1</span></tt>, <tt class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">hi</span> <span class="pre">&lt;=</span> <span class="pre">1</span></tt>, <tt class="docutils literal"><span class="pre">low</span> <span class="pre">+</span> <span class="pre">hi</span> <span class="pre">&lt;=</span>
@@ -337,7 +344,7 @@ those scores. (<tt class="docutils literal"><span class="pre">0</span> <span cla
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--variance</span></tt></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--variance</span></tt></td>
 <td>Reports the variance of scores from overlapping elements in
 <tt class="docutils literal"><span class="pre">map-file</span></tt>.</td>
 <td>1</td>
@@ -858,7 +865,7 @@ extraction time performance.</td>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

@@ -36,6 +36,7 @@
 #include "data/starch/starchSha1Digest.h"
 #include "data/starch/unstarchHelpers.h"
 #include "data/starch/starchFileHelpers.h"
+#include "data/starch/starchHelpers.h"
 #include "suite/BEDOPS.Version.hpp"
 
 int 
@@ -542,15 +543,15 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
             free(hdr1);
             ftr1 = UNSTARCH_strndup(argv[1] + 2, strlen(argv[1]) - 2);
             if (strcmp(ftr1, "help") == 0) {
-                *optn = strdup(ftr1);
-                *chr = strdup("all");
+                *optn = STARCH_strdup(ftr1);
+                *chr = STARCH_strdup("all");
                 free(ftr1);
                 *pval = UNSTARCH_HELP_ERROR;
                 return UNSTARCH_HELP_ERROR;
             }
             else if (strcmp(ftr1, "version") == 0) {
-                *optn = strdup(ftr1);
-                *chr = strdup("all");
+                *optn = STARCH_strdup(ftr1);
+                *chr = STARCH_strdup("all");
                 free(ftr1);
                 *pval = UNSTARCH_VERSION_ERROR;
                 return UNSTARCH_VERSION_ERROR;
@@ -562,8 +563,8 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
         }
         else {
             free(hdr1);
-            *chr = strdup("all");
-            *fn = strdup(argv[1]);
+            *chr = STARCH_strdup("all");
+            *fn = STARCH_strdup(argv[1]);
         }
     }
 
@@ -589,8 +590,8 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
                 return UNSTARCH_FATAL_ERROR;
             }
             ftr1 = UNSTARCH_strndup(argv[1] + 2, strlen(argv[1]) - 2);
-            *chr = strdup("all");
-            *fn = strdup(argv[2]);
+            *chr = STARCH_strdup("all");
+            *fn = STARCH_strdup(argv[2]);
         }
         else {
             if (strlen(argv[2]) > 1) {
@@ -602,8 +603,8 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
                 }
                 free(hdr2);
             }
-            *chr = strdup(argv[1]);
-            *fn = strdup(argv[2]);
+            *chr = STARCH_strdup(argv[1]);
+            *fn = STARCH_strdup(argv[2]);
         }
         free(hdr1);
     }
@@ -644,8 +645,8 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
             fprintf(stderr, "ERROR: Must place option after chromosome name\n");
             return UNSTARCH_FATAL_ERROR;
         }
-        *chr = strdup(argv[1]);
-        *fn = strdup(argv[3]);
+        *chr = STARCH_strdup(argv[1]);
+        *fn = STARCH_strdup(argv[3]);
     }
 
 #ifdef DEBUG 
@@ -677,7 +678,7 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
         return UNSTARCH_FATAL_ERROR;
     }
 
-    *optn = (ftr1) ? strdup(ftr1) : ((ftr2) ? strdup(ftr2) : NULL);
+    *optn = (ftr1) ? STARCH_strdup(ftr1) : ((ftr2) ? STARCH_strdup(ftr2) : NULL);
 
     if (*optn) {        
         if (strcmp(*optn, "help") == 0) {

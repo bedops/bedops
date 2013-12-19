@@ -62,7 +62,7 @@
 <p>For convenience, we also offer <tt class="docutils literal"><span class="pre">psl2starch</span></tt>, which performs the extra step of creating a Starch-formatted archive.</p>
 <div class="section" id="dependencies">
 <h2>6.3.3.4.1. Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">psl2bed</span></tt> script requires Python, version 2.5 or greater.</p>
+<p>The <tt class="docutils literal"><span class="pre">psl2bed</span></tt> script requires Python, version 2.7 or greater (and less than Python3).</p>
 <p>This script is also dependent on input that follows the <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format2">PSL specification</a>.</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
@@ -122,8 +122,130 @@ chr16   8149657 8149694 foo     50      +       36      1       0       0       
 <p class="last">By default, the <tt class="docutils literal"><span class="pre">psl2bed</span></tt> and <tt class="docutils literal"><span class="pre">psl2starch</span></tt> scripts work with headerless PSL data. If you have headered PSL output, use the <tt class="docutils literal"><span class="pre">--headered</span></tt> operator with either conversion script, as shown in the example above.</p>
 </div>
 </div>
+<div class="section" id="column-mapping">
+<span id="psl2bed-column-mapping"></span><h2>6.3.3.4.5. Column mapping<a class="headerlink" href="#column-mapping" title="Permalink to this headline">¶</a></h2>
+<p>In this section, we describe how PSL columns are mapped to BED columns. We start with the first six UCSC BED columns as follows:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="43%" />
+<col width="33%" />
+<col width="24%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">PSL field</th>
+<th class="head">BED column index</th>
+<th class="head">BED field</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>tName</td>
+<td>1</td>
+<td>chromosome</td>
+</tr>
+<tr class="row-odd"><td>tStart</td>
+<td>2</td>
+<td>start</td>
+</tr>
+<tr class="row-even"><td>tEnd</td>
+<td>3</td>
+<td>stop</td>
+</tr>
+<tr class="row-odd"><td>qName</td>
+<td>4</td>
+<td>id</td>
+</tr>
+<tr class="row-even"><td>qSize</td>
+<td>5</td>
+<td>score</td>
+</tr>
+<tr class="row-odd"><td>strand</td>
+<td>6</td>
+<td>strand</td>
+</tr>
+</tbody>
+</table>
+<p>The remaining PSL columns are mapped, in order, to the remaining columns of the BED output:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="43%" />
+<col width="33%" />
+<col width="24%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">PSL field</th>
+<th class="head">BED column index</th>
+<th class="head">BED field</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>matches</td>
+<td>7</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>misMatches</td>
+<td>8</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>repMatches</td>
+<td>9</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>nCount</td>
+<td>10</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>qNumInsert</td>
+<td>11</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>qBaseInsert</td>
+<td>12</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>tNumInsert</td>
+<td>13</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>tBaseInsert</td>
+<td>14</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>qStart</td>
+<td>15</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>qEnd</td>
+<td>16</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>tSize</td>
+<td>17</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>blockCount</td>
+<td>18</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>blockSizes</td>
+<td>19</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>qStarts</td>
+<td>20</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>tStarts</td>
+<td>21</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>This is a lossless mapping. Because we have mapped all columns, we can translate converted BED data back to headerless PSL with a simple <tt class="docutils literal"><span class="pre">awk</span></tt> statement that permutes columns to PSL-based ordering:</p>
+<div class="highlight-python"><pre>$ awk 'BEGIN { OFS = "\t" } { print $7" "$8" "$9" "$10" "$11" "$12" "$13" "$14" "$6" "$4" "$5" "$15" "$16" "$1" "$17" "$2" "$3" "$18" "$19" "$20" "$21 }' converted.bed &gt; original.psl</pre>
+</div>
+</div>
 <div class="section" id="downloads">
-<span id="psl2bed-downloads"></span><h2>6.3.3.4.5. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
+<span id="psl2bed-downloads"></span><h2>6.3.3.4.6. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Sample PSL dataset: <a class="reference download internal" href="../../../../_downloads/reference_psl2bed_foo.psl"><tt class="xref download docutils literal"><span class="pre">foo.psl</span></tt></a></li>
 </ul>
@@ -146,7 +268,8 @@ chr16   8149657 8149694 foo     50      +       36      1       0       0       
 <li><a class="reference internal" href="#source">6.3.3.4.2. Source</a></li>
 <li><a class="reference internal" href="#usage">6.3.3.4.3. Usage</a></li>
 <li><a class="reference internal" href="#example">6.3.3.4.4. Example</a></li>
-<li><a class="reference internal" href="#downloads">6.3.3.4.5. Downloads</a></li>
+<li><a class="reference internal" href="#column-mapping">6.3.3.4.5. Column mapping</a></li>
+<li><a class="reference internal" href="#downloads">6.3.3.4.6. Downloads</a></li>
 </ul>
 </li>
 </ul>
@@ -199,7 +322,7 @@ chr16   8149657 8149694 foo     50      +       36      1       0       0       
     </div>
     <div class="footer">
         &copy; Copyright 2013, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

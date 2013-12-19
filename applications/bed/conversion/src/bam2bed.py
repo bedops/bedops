@@ -138,6 +138,7 @@ class SamTags:
         self.tags = []
         self.containsMismatches = False
         self.containsMultipleReads = False
+        self.customTagsAdded = False
 
     def __str__(self):
         res = ""
@@ -151,7 +152,7 @@ class SamTags:
         tagType = tagElems[1]
         tagValue = tagElems[2]
         customTags = []
-        if customTagsAdded:
+        if self.customTagsAdded:
             customTags = customTagsStr.split(",")
         if str(tagName) in (allSpecificationSamTags + customTags) or tagName.startswith('X') or tagName.startswith('Y') or tagName.startswith('Z'):
             tag = SamTag()
@@ -455,6 +456,25 @@ class SamRecord(object):
                               str(self._tlen),
                               self._seq,
                               self._qual]) + '\n'
+
+
+def which(program):
+    import os
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+
+    return None
             
 
 def printUsage(stream):
@@ -568,9 +588,6 @@ def main(*args):
             maxMem = str(value)
             maxMemChanged = True
 
-    if maxMemChanged:
-        sys.stderr.write( "[%s] - Warning: The --max-mem parameter is currently ignored (cf. https://github.com/bedops/bedops/issues/1 )\n" % sys.argv[0] )
-
     if inputNeedsSplitting and not sortOutput:
         sys.stderr.write( "[%s] - Error: Cannot specify both --do-not-sort and --split parameters\n" % sys.argv[0] )
         printUsage("stderr")
@@ -598,6 +615,13 @@ def main(*args):
     # read BAM data into samtools process
     #
 
+    try:
+        if which('samtools') is None:
+            raise IOError("The samtools binary could not be found in your user PATH -- please locate and install this binary")
+    except IOError, msg:
+        sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
+        return os.EX_OSFILE
+
     samProcess = subprocess.Popen(['samtools', 'view', '-'], stdin=subprocess.PIPE, stdout=samTF)
     while True:
         bamByte = sys.stdin.read()
@@ -605,6 +629,7 @@ def main(*args):
             break
         samProcess.stdin.write(bamByte)
         samProcess.stdin.flush()
+    samProcess.wait()
 
     samTF.seek(0)
     with open(samTF.name) as samData:
@@ -612,7 +637,7 @@ def main(*args):
         samRecord = SamRecord()
 
         for line in samData:
-
+            
             chomped_line = line.rstrip(os.linesep)            
             elems = chomped_line.split('\t')
 
@@ -640,6 +665,7 @@ def main(*args):
                 # optional fields are TAG:TYPE:VALUE triplets
                 samTagsList = []
                 samTags = SamTags()
+                samTags.customTagsAdded = customTagsAdded
                 if len(elems) >= 11:
                     for idx in range(11, len(elems)):
                         samTagsList.append(elems[idx])
@@ -711,8 +737,16 @@ def main(*args):
                             sys.stdout.write(samRecord.asBed())
 
     if sortOutput:
+
+        try:
+            if which('sort-bed') is None:
+                raise IOError("The sort-bed binary could not be found in your user PATH -- please locate and install this binary")
+        except IOError, msg:
+            sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
+            return os.EX_OSFILE
+
         sortTF.close()
-        sortProcess = subprocess.Popen(['sort-bed', sortTF.name])
+        sortProcess = subprocess.Popen(['sort-bed', '--max-mem', maxMem, sortTF.name])
         sortProcess.wait()
         try:
             os.remove(sortTF.name)

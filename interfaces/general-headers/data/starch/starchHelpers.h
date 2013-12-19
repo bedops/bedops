@@ -58,6 +58,8 @@
 #define STARCH_HELP_ERROR 2
 #define STARCH_VERSION_ERROR 3
 
+char *  STARCH_strdup(const char *str);
+
 int     STARCH_compressFileWithGzip(const char *inFn, 
                                           char **outFn, 
                                          off_t *outFnSize);

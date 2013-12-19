@@ -34,7 +34,7 @@
 
 #include <boost/type_traits.hpp>
 
-#include "data/bed/Bed.hpp"
+#include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
 #include "data/bed/BedCompare.hpp"
 #include "data/measurement/NaN.hpp"
 #include "utility/Formats.hpp"
@@ -264,79 +264,36 @@ namespace Visitors {
       }
     };
 
-    //============
-    // PrintDelim
-    //============
-    struct PrintDelim {
-      explicit PrintDelim(const std::string& delim = "|")
-        : delim_(delim), isChar_(false) {
-        bool isaTab = (delim == "\t" || delim == "\\t" || delim == "'\t'");
-        bool isaNewline = (delim == "\n" || delim == "\\n" || delim == "'\n'");
-        if ( isaTab ) {
-          delim_ = "";
-          delim_ += '\t';
-          isChar_ = true;
-        }
-        else if ( isaNewline ) {
-          delim_ = "";
-          delim_ += '\n';
-          isChar_ = true;
-        } else if ( 1 == delim.size() ) {
-          delim_ = "";
-          delim_ += delim[0];
-          isChar_ = true;
-        }
-      }
+    //===============
+    // PrintLength()
+    //===============
+    struct PrintLength {
+      typedef std::string Type;
 
-      explicit PrintDelim(char t) : delim_(""), isChar_(true) {
-        delim_ += t;
+      template <typename T>
+      void operator()(T* t) const {
+        PrintTypes::Print(t->length());
       }
-
-      void operator()() const {
-        if ( isChar_ )
-          PrintTypes::Print(delim_[0]);
-        else
-          PrintTypes::Print(delim_.c_str());
-      }
-
-    private:
-      std::string delim_;
-      bool isChar_;
     };
 
-    //==================
-    // PrintRangeDelim()
-    //===================
-    template <typename PrintType>
-    struct PrintRangeDelim : private PrintDelim {
-      typedef PrintDelim Base;
+    //=================
+    // PrintlnLength()
+    //=================
+    struct PrintlnLength {
+      typedef std::string Type;
 
-      explicit PrintRangeDelim(const PrintType& p = PrintType(),
-                               const std::string& delim = ";")
-          : Base(delim), pt_(p)
-        { /* */ }
-
-      template <typename Iter>
-      void operator()(Iter beg, Iter end) const {
-        if ( beg == end )
-          return;
-        pt_.operator()(*beg);
-        while ( ++beg != end ) {
-          Base::operator()();
-          pt_.operator()(*beg);
-        } // while
+      template <typename T>
+      void operator()(T* t) const {
+        PrintTypes::Println(t->length());
       }
-
-    private:
-      PrintType pt_;
     };
 
     //=======================
     // PrintUniqueRangeIDs()
     //  : sorting and uniquing -> will not be in genomic order
     //=======================
-    struct PrintUniqueRangeIDs : private PrintDelim {
-      typedef PrintDelim Base;
+    struct PrintUniqueRangeIDs : private Visitors::Helpers::PrintDelim {
+      typedef Visitors::Helpers::PrintDelim Base;
 
       explicit PrintUniqueRangeIDs(const std::string& delim = ";")
           : Base(delim)
@@ -366,8 +323,8 @@ namespace Visitors {
     // PrintSortedRangeDelim()
     //=========================
     template <typename PrintType>
-    struct PrintSortedRangeDelim : private PrintDelim {
-      typedef PrintDelim Base;
+    struct PrintSortedRangeDelim : private Visitors::Helpers::PrintDelim {
+      typedef Visitors::Helpers::PrintDelim Base;
       typedef PrintType PType;
 
       explicit PrintSortedRangeDelim(const PrintType& p = PrintType(),
@@ -377,10 +334,9 @@ namespace Visitors {
 
       template <typename Iter>
       void operator()(Iter beg, Iter end) const {
-        // It is often possible/likely that beg->end is not in an order
-        //  of the original input file (sorted by sort-bed), due to
-        //  issues of BED types (see BedBaseVisitor.hpp).  Put things
-        //  back here.
+        // It is possible that beg->end is not in an order of the
+        //  original input file (sorted by sort-bed), due to issue of
+        //  BED types (see BedBaseVisitor.hpp).  Put things back here.
         typedef std::set<
                       typename Iter::value_type,
                       Bed::GenomicAddressCompare<
@@ -390,9 +346,7 @@ namespace Visitors {
                         > SortType; // will be consistent with sort-bed
         if ( beg == end )
           return;
-        SortType srt;
-        while ( beg != end )
-          srt.insert(*beg++);
+        SortType srt(beg, end);
 
         typename SortType::iterator i = srt.begin();
         pt_.operator()(*i);

@@ -85,11 +85,11 @@
 <p>The <tt class="docutils literal"><span class="pre">--help</span></tt> option describes the various mapping and analytical operations and other options available to the end user:</p>
 <div class="highlight-python"><pre>bedmap
   citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-  version:  2.3.0
+  version:  2.4.0
   authors:  Shane Neph &amp; Scott Kuehn
 
  USAGE: bedmap [process-flags] [overlap-option] &lt;operation(s)...&gt; &lt;ref-file&gt; [map-file]
-     All input files must be sorted per the sort-bed utility.
+     Any input files must be sorted per the sort-bed utility.
      The program accepts BED and starch file formats.
      May use '-' for a file to indicate reading from standard input (BED format only).
 
@@ -316,14 +316,18 @@ chr21   1000    2000    foo-1|NAN</pre>
 <div class="highlight-python"><pre>$ echo -e "chr21\t1000\t2000\tfoo-1" | bedmap --echo --mean --skip-unmapped - map.bed
 $</pre>
 </div>
-<div class="admonition tip">
-<p class="first admonition-title">Tip</p>
-<p>The <tt class="docutils literal"><span class="pre">--skip-unmapped</span></tt> option is functionally equivalent to the following <tt class="docutils literal"><span class="pre">awk</span></tt> script:</p>
-<div class="highlight-python"><pre>$ echo -e "chr21\t1000\t2000\tfoo-1" \
-  | bedmap --echo --mean - map.bed \
-  | awk -F"|" '{ if ($2 != "NAN") print $0 }'</pre>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Some operations may yield a reference element with one or more mapped elements, which still return a <tt class="docutils literal"><span class="pre">NAN</span></tt> value by virtue of the calculation result. The <tt class="docutils literal"><span class="pre">--skip-unmapped</span></tt> operand will still allow these reference elements to be printed out!</p>
+<p>For instance, consider the <tt class="docutils literal"><span class="pre">--variance</span></tt> operator, which requires two or more map elements to calculate a variance. Where there is only one mapped element associated with the reference element, a <tt class="docutils literal"><span class="pre">--variance</span></tt> calculation will return a <tt class="docutils literal"><span class="pre">NAN</span></tt>. In this case, <tt class="docutils literal"><span class="pre">--skip-unmapped</span></tt> will still print this element, even though the result is <tt class="docutils literal"><span class="pre">NAN</span></tt>.</p>
+<p>Given the following statement:</p>
+<div class="highlight-python"><pre>$ bedmap --skip-unmapped --variance file1 file2</pre>
 </div>
-<p class="last">It should be more convenient to use <tt class="docutils literal"><span class="pre">--skip-unmapped</span></tt> where unmapped results are not needed.</p>
+<p>This is functionally equivalent to the following statement:</p>
+<div class="highlight-python"><pre>$ bedmap --indicator --variance --delim "\t" file1 file2 | awk '($1==1) {print $2}'</pre>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">--indicator</span></tt> operand calculates whether there are any mapped elements (or none)—see the <a class="reference internal" href="#bedmap-indicator"><em>indicator</em></a> section for more detail. The <tt class="docutils literal"><span class="pre">awk</span></tt> statement then prints results which have one or more mapped elements, effectively filtering unmapped references.</p>
+<p class="last">It should therefore be more convenient to use <tt class="docutils literal"><span class="pre">--skip-unmapped</span></tt> where unmapped reference elements are not needed.</p>
 </div>
 <p>Another option is to retrieve the mapping element with the highest or lowest score within the reference region, using the <tt class="docutils literal"><span class="pre">--max-element</span></tt> or <tt class="docutils literal"><span class="pre">--min-element</span></tt> operators, respectively.</p>
 <p>Going back to our sample <tt class="docutils literal"><span class="pre">Reference</span></tt> and <tt class="docutils literal"><span class="pre">Map</span></tt> data, we can search for the highest scoring mapping elements across the three reference elements:</p>
@@ -706,7 +710,7 @@ chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01</pre>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>
