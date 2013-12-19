@@ -5,9 +5,63 @@ Revision history
 
 This page summarizes some of the more important changes between releases.
 
+.. _revision_history_of_current_version:
+
 ===============
 Current version
 ===============
+
+------
+v2.4.0
+------
+
+Released: **TBD**
+
+* :ref:`bedmap`
+
+  * Added new ``--echo-map-size`` and ``--echo-overlap-size`` options to calculate sizes of mapped elements and overlaps between mapped and reference elements.
+
+  * Improved performance for all ``--echo-map-*`` operations.
+
+  * Updated documentation.
+
+* Major enhancements and fixes to :ref:`sort-bed`:
+
+  * Improved performance.
+
+  * Fixed memory leak.
+
+  * Added support for millions of distinct chromosomes.
+
+  * Improved internal estimation of memory usage with ``--max-mem`` option.
+
+* Added support for compilation on Cygwin (64-bit). Refer to the :ref:`installation documentation <installation_via_source_code_on_cygwin>` for build instructions.
+
+* :ref:`starchcat`
+
+  * Fixed buffer overflow condition that caused segmentation faults on Ubuntu 13.
+
+* All :ref:`conversion scripts <conversion_scripts>`
+
+  * We now test for ability to locate ``starch``, ``sort-bed``, ``wig2bed_bin`` and ``samtools`` in user environment, quitting with the appropriate error state if the dependencies cannot be found.
+
+  * Added descriptive tables to each script's documentation page which describe how columns map from original data input to BED output.
+
+  * :ref:`bam2bed` and :ref:`sam2bed`
+
+    * Added ``--custom-tags <value>`` command-line option to support a comma-separated list of custom tags (cf. `Biostars discussion <http://www.biostars.org/p/87062/>`_), *i.e.*, tags which are not part of the original SAMtools specification.
+
+  * :ref:`vcf2bed`
+
+    * Added new ``--snvs``, ``--insertions`` and ``--deletions`` options that filter VCF variants into three separate subcategories.
+
+* Added OS X uninstaller project to allow end user to more easily remove BEDOPS tools.
+
+* Cleaned up compilation warnings.
+
+=================
+Previous versions
+=================
 
 ------
 v2.3.0
@@ -90,10 +144,6 @@ Released: **October 2, 2013**
     This change means that we require Mac OS X 10.7 ("Lion") or greater |---| we do not support 10.6 at this time.
 
     Compilation is faster and simpler, and we can reduce the size and complexity of Mac OS X builds and installer packages. By using Apple's C++ library, we also reduce the likelihood of missing library errors. When this process is completed for the remaining binaries, it will no longer be necessary to install GCC 4.7+ (by way of MacPorts or other package managers) in order to build BEDOPS on OS X, nor will we have to bundle ``libstdc++`` with the installer.
-
-=================
-Previous versions
-=================
 
 -------
 v2.2.0b
