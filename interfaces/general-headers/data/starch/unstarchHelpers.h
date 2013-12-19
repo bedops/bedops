@@ -31,6 +31,10 @@
 #include "data/starch/starchMetadataHelpers.h"
 #include "suite/BEDOPS.Constants.hpp"
 
+#ifdef __cplusplus
+  using namespace Bed;
+#endif
+
 #define UNSTARCH_COMPRESSED_BUFFER_MAX_LENGTH 8192
 #define UNSTARCH_UNCOMPRESSED_BUFFER_MAX_LENGTH 2097152
 #define UNSTARCH_BUFFER_MAX_LENGTH INT_TOKEN_REST_MAX_LENGTH + 1
@@ -59,9 +63,9 @@
 int                UNSTARCH_reverseTransformInput(const char *chr,
                                          const unsigned char *str,
                                                         char delim,
-                                        Bed::SignedCoordType *start,
-                                        Bed::SignedCoordType *pLength,
-                                        Bed::SignedCoordType *lastEnd,
+                                             SignedCoordType *start,
+                                             SignedCoordType *pLength,
+                                             SignedCoordType *lastEnd,
                                                         char elemTok1[],
                                                         char elemTok2[],
                                                         FILE *outFp);
@@ -69,24 +73,24 @@ int                UNSTARCH_reverseTransformInput(const char *chr,
 int                UNSTARCH_sReverseTransformInput(const char *chr,
                                           const unsigned char *str,
                                                          char delim,
-                                         Bed::SignedCoordType *start,
-                                         Bed::SignedCoordType *pLength,
-                                         Bed::SignedCoordType *lastEnd,
+                                              SignedCoordType *start,
+                                              SignedCoordType *pLength,
+                                              SignedCoordType *lastEnd,
                                                          char *elemTok1,
                                                          char *elemTok2,
                                                          char **currentChr,
                                                        size_t *currentChrLen,
-                                         Bed::SignedCoordType *currentStart,
-                                         Bed::SignedCoordType *currentStop,
+                                              SignedCoordType *currentStart,
+                                              SignedCoordType *currentStop,
                                                          char **currentRemainder,
                                                        size_t *currentRemainderLen);
 
 int                UNSTARCH_reverseTransformIgnoringHeaderedInput(const char *chr, 
                                                          const unsigned char *str, 
                                                                         char delim, 
-                                                        Bed::SignedCoordType *start, 
-                                                        Bed::SignedCoordType *pLength, 
-                                                        Bed::SignedCoordType *lastEnd, 
+                                                             SignedCoordType *start, 
+                                                             SignedCoordType *pLength, 
+                                                             SignedCoordType *lastEnd, 
                                                                         char elemTok1[], 
                                                                         char elemTok2[], 
                                                                         FILE *outFp);
@@ -94,24 +98,24 @@ int                UNSTARCH_reverseTransformIgnoringHeaderedInput(const char *ch
 int                UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, 
                                                           const unsigned char *str, 
                                                                          char delim, 
-                                                         Bed::SignedCoordType *start, 
-                                                         Bed::SignedCoordType *pLength, 
-                                                         Bed::SignedCoordType *lastEnd, 
+                                                              SignedCoordType *start, 
+                                                              SignedCoordType *pLength, 
+                                                              SignedCoordType *lastEnd, 
                                                                          char *elemTok1,
                                                                          char *elemTok2,
                                                                          char **currentChr,
                                                                        size_t *currentChrLen,
-                                                         Bed::SignedCoordType *currentStart,
-                                                         Bed::SignedCoordType *currentLong,
+                                                              SignedCoordType *currentStart,
+                                                              SignedCoordType *currentLong,
                                                                          char **currentRemainder,
                                                                        size_t *currentRemainderLen);
 
 int                UNSTARCH_reverseTransformHeaderlessInput(const char *chr, 
                                                    const unsigned char *str, 
                                                                   char delim, 
-                                                  Bed::SignedCoordType *start, 
-                                                  Bed::SignedCoordType *pLength, 
-                                                  Bed::SignedCoordType *lastEnd, 
+                                                       SignedCoordType *start, 
+                                                       SignedCoordType *pLength, 
+                                                       SignedCoordType *lastEnd, 
                                                                   char elemTok1[], 
                                                                   char elemTok2[], 
                                                                   FILE *outFp);
@@ -119,30 +123,30 @@ int                UNSTARCH_reverseTransformHeaderlessInput(const char *chr,
 int                UNSTARCH_extractRawLine(const char *chr,
                                   const unsigned char *str,
                                                  char delim,
-                                 Bed::SignedCoordType *start,
-                                 Bed::SignedCoordType *pLength,
-                                 Bed::SignedCoordType *lastEnd,
+                                      SignedCoordType *start,
+                                      SignedCoordType *pLength,
+                                      SignedCoordType *lastEnd,
                                                  char *elemTok1,
                                                  char *elemTok2,
                                                  char **currentChr,
                                                size_t *currentChrLen,
-                                 Bed::SignedCoordType *currentStart,
-                                 Bed::SignedCoordType *currentLong,
+                                      SignedCoordType *currentStart,
+                                      SignedCoordType *currentLong,
                                                  char **currentRemainder,
                                                size_t *currentRemainderLen);
 
 int                UNSTARCH_sReverseTransformHeaderlessInput(const char *chr,
                                                     const unsigned char *str,
                                                                    char delim,
-                                                   Bed::SignedCoordType *start,
-                                                   Bed::SignedCoordType *pLength,
-                                                   Bed::SignedCoordType *lastEnd,
+                                                        SignedCoordType *start,
+                                                        SignedCoordType *pLength,
+                                                        SignedCoordType *lastEnd,
                                                                    char *elemTok1,
                                                                    char *elemTok2,
                                                                    char **currentChr,
                                                                  size_t *currentChrLen,
-                                                   Bed::SignedCoordType *currentStart,
-                                                   Bed::SignedCoordType *currentLong,
+                                                        SignedCoordType *currentStart,
+                                                        SignedCoordType *currentLong,
                                                                    char **currentRemainder,
                                                                  size_t *currentRemainderLen);
 
@@ -169,44 +173,44 @@ char *             UNSTARCH_strnstr(const char *haystack,
                                     const char *needle, 
                                         size_t haystackLen);
 
-char *             UNSTARCH_strndup(const char *s, 
+char *             UNSTARCH_strndup(const char *s,
                                         size_t n);
 
 void               UNSTARCH_bzReadLine(BZFILE *input, 
                                 unsigned char **output);
 
-Bed::LineCountType UNSTARCH_lineCountForChromosome(const Metadata *md, 
-                                                       const char *chr);
+LineCountType UNSTARCH_lineCountForChromosome(const Metadata *md, 
+                                                  const char *chr);
 
 void               UNSTARCH_printLineCountForChromosome(const Metadata *md,
                                                             const char *chr);
 
 void               UNSTARCH_printLineCountForAllChromosomes(const Metadata *md);
 
-Bed::BaseCountType UNSTARCH_nonUniqueBaseCountForChromosome(const Metadata *md, 
-                                                                const char *chr);
+BaseCountType UNSTARCH_nonUniqueBaseCountForChromosome(const Metadata *md, 
+                                                           const char *chr);
 
 void               UNSTARCH_printNonUniqueBaseCountForChromosome(const Metadata *md,
                                                                      const char *chr);
 
 void               UNSTARCH_printNonUniqueBaseCountForAllChromosomes(const Metadata *md);
 
-Bed::BaseCountType UNSTARCH_uniqueBaseCountForChromosome(const Metadata *md, 
-                                                             const char *chr);
+BaseCountType UNSTARCH_uniqueBaseCountForChromosome(const Metadata *md, 
+                                                        const char *chr);
 
 void               UNSTARCH_printUniqueBaseCountForChromosome(const Metadata *md,
                                                                   const char *chr);
 
 void               UNSTARCH_printUniqueBaseCountForAllChromosomes(const Metadata *md);
 
-int                UNSTARCH_reverseTransformCoordinates(const Bed::LineCountType lineIdx,
-                                                            Bed::SignedCoordType *lastPosition,
-                                                            Bed::SignedCoordType *lcDiff,
-                                                            Bed::SignedCoordType *currStart, 
-                                                            Bed::SignedCoordType *currStop,
-                                                                            char **currRemainder, 
-                                                                   unsigned char *lineBuf, 
-                                                                         int64_t *nLineBuf,
-                                                                         int64_t *nLineBufPos);
+int                UNSTARCH_reverseTransformCoordinates(const LineCountType lineIdx,
+                                                            SignedCoordType *lastPosition,
+                                                            SignedCoordType *lcDiff,
+                                                            SignedCoordType *currStart, 
+                                                            SignedCoordType *currStop,
+                                                                       char **currRemainder, 
+                                                              unsigned char *lineBuf, 
+                                                                    int64_t *nLineBuf,
+                                                                    int64_t *nLineBufPos);
 
 #endif

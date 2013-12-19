@@ -23,9 +23,15 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
+#ifdef __cplusplus
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#else
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#endif
 
 #include "data/starch/starchBase64Coding.h"
 

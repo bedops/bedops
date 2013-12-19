@@ -23,11 +23,16 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
+#ifdef __cplusplus
+#include <cassert>
+#include <cstdlib>
+#else
+#include <assert.h>
 #include <stdlib.h>
+#endif
 #include <stdio.h>
 #include <sys/types.h>
 #include <errno.h>
-#include <assert.h>
 #include <zlib.h>
 
 #include "data/starch/starchFileHelpers.h"

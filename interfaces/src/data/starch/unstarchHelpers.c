@@ -26,15 +26,19 @@
 #ifdef __cplusplus
 #include <cinttypes>
 #include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <clocale>
 #else
 #include <inttypes.h>
 #include <stdint.h>
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
+#endif
+
 #include <zlib.h>
 
 #include "data/starch/starchFileHelpers.h"

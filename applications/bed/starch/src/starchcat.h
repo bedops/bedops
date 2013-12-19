@@ -197,18 +197,31 @@ int      STARCHCAT_rewriteInputRecordToOutput (Metadata **outMd,
 
 int      STARCHCAT2_parseCoordinatesFromBedLine(const char *lineBuf, 
                                               const size_t inRecIdx, 
+<<<<<<< HEAD
                                            SignedCoordType *starts, 
                                            SignedCoordType *stops);
 
 int      STARCHCAT2_identifyLowestBedElement(const Boolean *eobFlags,
                                      const SignedCoordType *starts, 
                                      const SignedCoordType *stops, 
+=======
+                                      SignedCoordType *starts, 
+                                      SignedCoordType *stops);
+
+int      STARCHCAT2_identifyLowestBedElement(const Boolean *eobFlags,
+                                const SignedCoordType *starts, 
+                                const SignedCoordType *stops, 
+>>>>>>> updating INT64_C/UINT64_C to work reliably with c++
                                               const size_t numRecords, 
                                                     size_t *lowestIdx);
 
 int      STARCHCAT2_pullNextBedElement (const size_t recIdx,
                                           const char **inLinesBuf,
+<<<<<<< HEAD
                                  const LineCountType *nInLinesBuf,
+=======
+                            const LineCountType *nInLinesBuf,
+>>>>>>> updating INT64_C/UINT64_C to work reliably with c++
                                                 char **outLineBuf, 
                                             uint64_t **inBufNewlineOffsets);
 

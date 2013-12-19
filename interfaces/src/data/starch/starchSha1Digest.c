@@ -29,8 +29,13 @@
       Robert Klep <robert@ilse.nl>  -- Expansion function fix
 */
 
+#ifdef __cplusplus
+#include <cstddef>
+#include <cstring>
+#else
 #include <stddef.h>
 #include <string.h>
+#endif
 
 #include "data/starch/starchSha1Digest.h"
 

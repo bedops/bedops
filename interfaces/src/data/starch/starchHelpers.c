@@ -23,15 +23,23 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
+#ifdef __cplusplus
+#include <cassert>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#else
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
+#endif
+
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <bzlib.h>
 #include <zlib.h>
-#include <assert.h>
 
 #include "data/starch/starchSha1Digest.h"
 #include "data/starch/starchBase64Coding.h"
