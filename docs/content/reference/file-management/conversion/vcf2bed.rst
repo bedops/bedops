@@ -35,7 +35,7 @@ The ``vcf2bed`` script parses VCF from standard input and prints sorted BED to s
 
 .. tip:: If you are sorting data larger than system memory, use the ``--max-mem`` option to limit sort memory usage to a reasonable fraction of available memory, *e.g.*, ``--max-mem 2G`` or similar. See ``--help`` for more details.
 
-.._vcf2bed_custom_variants
+.. _vcf2bed_custom_variants:
 
 ===========================
 Customized variant handling
