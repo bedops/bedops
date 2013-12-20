@@ -63,33 +63,28 @@ At this time, compilation of BEDOPS requires GCC 4.8.x (both ``gcc`` and ``g++``
 Linux
 -----
 
-1. If you do not have GCC 4.8 or greater installed, first install these tools. You can check this with ``gcc --version``, *e.g.*: 
+1. If you do not have GCC 4.8 or greater installed (both ``gcc`` and ``g++``), first install these tools. You can check the state of your GCC installation with ``gcc --version`` and ``g++ --version``, *e.g.*: 
 
    ::
 
      $ gcc --version
      gcc (GCC) 4.8.0 20130127 (experimental)
+     ...
 
-   For Linux users, use your favorite package manager to install the requisite compiler. For example, in Ubuntu, you might run the following: 
+   If you lack a compiler or have a compiler that is older than 4.8, use your favorite package manager to install or upgrade the newer package. For example, in Ubuntu, you might run the following: 
 
    ::
  
      $ sudo apt-get install gcc-4.8
      $ sudo apt-get install g++-4.8
+     $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50
+     $ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50
 
-   If you already have ``gcc`` and need to update it, you might run something like:
-
-   ::
-
-     $ sudo apt-get update
-     $ sudo apt-get upgrade -y
-     $ sudo apt-get dist-upgrade
-
-   The specifics will depend on your distribution and what you want to install. You can check with your system administration or support staff if you are unsure what your options are.
+   The specifics of this process will depend on your distribution and what you want to install. Please check with your system administration or support staff if you are unsure what your options are.
 
 2. Install a ``git`` client of your choice, if you do not already have one installed. Github offers an `installation guide <https://help.github.com/articles/set-up-git#platform-all>`_.
 
-   Alternatively, use ``apt-get`` to install one, *e.g.*
+   Alternatively, use ``apt-get`` or another package manager to install one, *e.g.*
 
    ::
 
