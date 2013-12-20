@@ -12,8 +12,8 @@ BED_INPUT      = ${ORIGINAL_DIR}/data/random.bed
 FIMO_INPUT     = ${ORIGINAL_DIR}/data/fimo.combined.xfac.1e-5.parsed.1M.starch
 PLATFORM       = ${shell uname}
 BIN_DIR        = ${THIS_DIR}/../binaries
-LINUX_BINDIR   = ${BIN_DIR}/linux_x64
-OSX_BINDIR     = ${BIN_DIR}/osx_x64
+LINUX_BINDIR   = ${BIN_DIR}/linux
+OSX_BINDIR     = ${BIN_DIR}/osx
 
 all: archives tests
 

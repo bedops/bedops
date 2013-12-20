@@ -35,8 +35,9 @@ Binaries
 The "binaries" folder contains platform-specific starch binaries. The archive-v1.2 binaries 
 are sourced from our Google Code site. The archive-v1.5 binaries were compiled from a 
 private source repository through version edits to starchMetadataHelpers.h. The 
-archive-v2.0 binaries are sourced from our Google Code site (generally the latest version
-that creates a v2.0 Starch archive -- on May 21 2013 this would be a v2.2 binary release).
+archive-v2.0 binaries were sourced from our Google Code site (generally the latest version
+that creates a v2.0 Starch archive -- on May 21 2013 this would be a v2.2 binary release) and
+are now sourced from the Github site. As of December 19, 2013 this would be a v2.4 binary.
 
 
 
@@ -64,7 +65,7 @@ Compression and Extraction
 To ensure backwards compatibility, this tests whether data compressed with (at this 
 time, May 21 2013, archive version v1.2, v1.5 and v2.0) starch binaries can each be 
 extracted with the two versions of unstarch: the version that created the archive, and 
-the current version of unstarch (binary v2.2). Finally, we use 'diff' to ensure that 
+the current version of unstarch (binary v2.4). Finally, we use 'diff' to ensure that 
 the BED input and extracted output are identical.
 
 To run these tests directly:

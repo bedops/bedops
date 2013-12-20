@@ -7,8 +7,8 @@ RESULTS      = ${THIS_DIR}/results
 ORIGINAL_DIR = ${THIS_DIR}/../original_data
 BED_INPUT    = ${ORIGINAL_DIR}/data/random.bed
 PLATFORM     = ${shell uname}
-LINUX_BINDIR = ${THIS_DIR}/../binaries/linux_x64
-OSX_BINDIR   = ${THIS_DIR}/../binaries/osx_x64
+LINUX_BINDIR = ${THIS_DIR}/../binaries/linux
+OSX_BINDIR   = ${THIS_DIR}/../binaries/osx
 
 all: archives tests
 
