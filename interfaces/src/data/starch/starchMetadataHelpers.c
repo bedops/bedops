@@ -609,13 +609,8 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
     char footerBuffer[STARCH2_MD_FOOTER_LENGTH + 1] = {0};
     char currC = '\0';
     char prevC = '\0';
-<<<<<<< HEAD
     uint64_t testMagicOffset = 0;
     uint64_t mdOffsetIndex = 0;
-=======
-    uint64_t testMagicOffset = (uint64_t)0;
-    uint64_t mdOffsetIndex = (uint64_t)0;
->>>>>>> udated INT64_C/UINT64_C things for c++
     Metadata *firstRec = NULL;
     json_t *streamArchive;
     json_t *streamArchiveVersion = NULL;
@@ -635,11 +630,7 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
     char *streamFn = NULL;
     char *streamCTime = NULL;
     char *streamNote = NULL;
-<<<<<<< HEAD
     uint64_t streamSizeValue = 0;
-=======
-    uint64_t streamSizeValue = (uint64_t)0;
->>>>>>> udated INT64_C/UINT64_C things for c++
     char *testMagicPrecursor = NULL;
     json_error_t jsonParseError;
     const char *jsonObjKey = NULL;
