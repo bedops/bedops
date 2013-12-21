@@ -61,6 +61,10 @@ static const char *usage = "\n" \
 #define off64_t off_t
 #endif
 
+#ifdef __cplusplus
+namespace starch {
+#endif
+
 int                  UNSTARCH_parseCommandLineInputs(int argc, 
                                                     char **argv, 
                                                     char **chr, 
@@ -80,5 +84,9 @@ void                 UNSTARCH_printNote(const char *note);
 void                 UNSTARCH_printCompressionType(const CompressionType t);
 
 void                 UNSTARCH_printMetadataSha1Signature(unsigned char *sha1Buffer);
+
+#ifdef __cplusplus
+} // namespace starch
+#endif
 
 #endif

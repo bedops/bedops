@@ -48,6 +48,12 @@
 #include "data/starch/starchHelpers.h"
 #include "suite/BEDOPS.Version.hpp"
 
+#ifdef __cplusplus
+namespace {
+  using namespace starch;
+} //  unnamed
+#endif
+
 int 
 main(int argc, char **argv) 
 {
@@ -517,6 +523,10 @@ main(int argc, char **argv)
     return resultValue;
 }
 
+#ifdef __cplusplus
+namespace starch {
+#endif
+
 int
 UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, char **optn, int *pval)
 {
@@ -856,3 +866,7 @@ UNSTARCH_printMetadataSha1Signature(unsigned char *sha1Buffer)
     fprintf(stdout, "%s\n", jsonBase64String);
     free(jsonBase64String), jsonBase64String = NULL;
 }
+
+#ifdef __cplusplus
+} // namespace starch
+#endif

@@ -47,6 +47,10 @@
 #include "data/starch/starchConstants.h"
 #include "suite/BEDOPS.Constants.hpp"
 
+#ifdef __cplusplus
+namespace starch {
+#endif
+
 int 
 UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, const Metadata *md, const uint64_t mdOffset, const Boolean headerFlag) 
 {
@@ -1406,3 +1410,7 @@ UNSTARCH_reverseTransformCoordinates(const LineCountType lineIdx, SignedCoordTyp
 
     return 0;
 }
+
+#ifdef __cplusplus
+} // namespace starch
+#endif

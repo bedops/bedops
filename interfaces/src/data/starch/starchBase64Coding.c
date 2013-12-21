@@ -35,6 +35,10 @@
 
 #include "data/starch/starchBase64Coding.h"
 
+#ifdef __cplusplus
+namespace starch {
+#endif
+
 const char kStarchBase64EncodingTable[64] = {
   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
   'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
@@ -203,3 +207,7 @@ STARCH_decodeBase64(char *input, unsigned char **output, size_t *outputLength)
     memcpy(*output, objResult, *outputLength);
     free(objResult);
 }
+
+#ifdef __cplusplus
+} // namespace starch
+#endif

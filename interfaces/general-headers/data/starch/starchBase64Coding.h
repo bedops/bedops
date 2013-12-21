@@ -28,6 +28,10 @@
 
 #include "data/starch/starchHelpers.h"
 
+#ifdef __cplusplus
+namespace starch {
+#endif
+
 extern const char kStarchBase64EncodingTable[64];
 extern const short kStarchBase64DecodingTable[256];
 
@@ -39,5 +43,8 @@ void      STARCH_encodeBase64(char **output,
 void      STARCH_decodeBase64(char *input, 
                      unsigned char **output, 
                             size_t *outputLength);
+#ifdef __cplusplus
+} // namespace starch
+#endif
 
 #endif

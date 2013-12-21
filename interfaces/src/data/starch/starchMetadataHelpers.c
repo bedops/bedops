@@ -51,6 +51,7 @@
 #include "data/starch/starchHelpers.h"
 
 #ifdef __cplusplus
+namespace starch {
   using namespace Bed;
 #endif
 
@@ -1391,3 +1392,7 @@ STARCH_chromosomeInMetadataRecords(const Metadata *md, const char *chr) {
     
     return STARCH_EXIT_FAILURE;
 }
+
+#ifdef __cplusplus
+} // namespace starch
+#endif

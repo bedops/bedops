@@ -44,6 +44,7 @@
 /* current "stable" archive version: 2.0.0 */
 
 #ifdef __cplusplus
+  namespace starch {
   using namespace Bed;
 #endif
 
@@ -280,5 +281,9 @@ ArchiveVersion * STARCH_copyArchiveVersion(const ArchiveVersion *oav);
 
 int              STARCH_chromosomeInMetadataRecords(const Metadata *md, 
                                                         const char *chr);
+
+#ifdef __cplusplus
+} // namespace starch
+#endif
 
 #endif

@@ -57,7 +57,10 @@
 #include "suite/BEDOPS.Version.hpp"
 
 #ifdef __cplusplus
-using namespace Bed;
+namespace {
+  using namespace Bed;
+  using namespace starch;
+} // unnamed namespace
 #endif
 
 int 
@@ -173,6 +176,10 @@ main (int argc, char **argv)
 
     return EXIT_SUCCESS;
 }
+
+#ifdef __cplusplus
+namespace starch {
+#endif
 
 void   
 STARCHCAT_initializeGlobals() 
@@ -5090,3 +5097,7 @@ STARCHCAT2_finalizeMetadata (Metadata **outMd, char *finalChromosome, char *fina
 
     return STARCH_EXIT_SUCCESS;
 }
+
+#ifdef __cplusplus
+} // namespace starch
+#endif

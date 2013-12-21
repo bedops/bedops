@@ -30,6 +30,12 @@
 
 #include "data/starch/starchMetadataHelpers.h"
 
+#ifdef __cplusplus
+namespace {
+  using namespace starch;
+} // unnamed namespace
+#endif
+
 static const char *name = "starch";
 static const char *authors = "Alex Reynolds and Shane Neph";
 static const char *usage = "\n" \
@@ -80,6 +86,10 @@ static const char *starch_client_opt_string = "n:bgevh?";
 #define off64_t off_t
 #endif
 
+#ifdef __cplusplus
+namespace starch {
+#endif
+
 void          STARCH_initializeGlobals();
 
 int           STARCH_parseCommandLineOptions(int argc, 
@@ -88,5 +98,9 @@ int           STARCH_parseCommandLineOptions(int argc,
 void          STARCH_printUsage(int t);
 
 void          STARCH_printRevision();
+
+#ifdef __cplusplus
+} // namespace starch
+#endif
 
 #endif

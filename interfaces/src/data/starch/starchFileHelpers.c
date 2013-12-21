@@ -38,6 +38,10 @@
 #include "data/starch/starchFileHelpers.h"
 #include "data/starch/starchHelpers.h"
 
+#ifdef __cplusplus
+namespace starch {
+#endif
+
 int 
 STARCH_fseeko(FILE *stream, off_t offset, int whence) 
 {
@@ -203,3 +207,7 @@ STARCH_gzip_deflate(FILE *source, FILE *dest, int level)
     (void) deflateEnd(&strm);
     return Z_OK;
 }
+
+#ifdef __cplusplus
+} // namespace starch
+#endif

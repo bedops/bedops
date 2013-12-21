@@ -26,6 +26,10 @@
 #ifndef STARCH_CONSTANTS_H
 #define STARCH_CONSTANTS_H
 
+#ifdef __cplusplus
+namespace starch {
+#endif
+
 typedef int Boolean;
 
 /* 
@@ -54,5 +58,9 @@ extern const unsigned int kStarchFinalizeTransformFalse;
 extern const Boolean      kStarchTrue;
 extern const Boolean      kStarchFalse;
 extern const char *       kStarchNullChromosome;
+
+#ifdef __cplusplus
+} // namespace starch
+#endif
 
 #endif

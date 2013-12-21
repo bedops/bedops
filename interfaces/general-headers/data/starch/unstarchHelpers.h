@@ -32,6 +32,7 @@
 #include "suite/BEDOPS.Constants.hpp"
 
 #ifdef __cplusplus
+  namespace starch {
   using namespace Bed;
 #endif
 
@@ -212,5 +213,9 @@ int                UNSTARCH_reverseTransformCoordinates(const LineCountType line
                                                               unsigned char *lineBuf, 
                                                                     int64_t *nLineBuf,
                                                                     int64_t *nLineBufPos);
+
+#ifdef __cplusplus
+} // namespace starch
+#endif
 
 #endif

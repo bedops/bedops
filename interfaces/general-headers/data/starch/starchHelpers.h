@@ -38,6 +38,10 @@
 
 #include "data/starch/starchMetadataHelpers.h"
 
+#ifdef __cplusplus
+namespace starch {
+#endif
+
 #define STARCH_BUFFER_MAX_LENGTH 1024*1024
 #define STARCH_Z_CHUNK STARCH_BUFFER_MAX_LENGTH
 #define STARCH_Z_BUFFER_MAX_LENGTH STARCH_BUFFER_MAX_LENGTH
@@ -131,5 +135,9 @@ int     STARCH2_writeStarchHeaderToOutputFp(const unsigned char *header,
 int     STARCH2_initializeStarchHeader(unsigned char **header);
 
 void    STARCH2_printStarchHeader(const unsigned char *header);
+
+#ifdef __cplusplus
+} // namespace starch
+#endif
 
 #endif

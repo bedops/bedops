@@ -25,6 +25,10 @@
 
 #include "data/starch/starchConstants.h"
 
+#ifdef __cplusplus
+namespace starch {
+#endif
+
 const char * kStarchBedHeaderTrack = "track";
 const char * kStarchBedHeaderBrowser = "browser";
 const char * kStarchBedHeaderSAM = "@";
@@ -35,3 +39,7 @@ const unsigned int kStarchFinalizeTransformFalse = 0;
 const Boolean kStarchTrue = 1;
 const Boolean kStarchFalse = 0;
 const char * kStarchNullChromosome = "null";
+
+#ifdef __cplusplus
+} // namespace starch
+#endif

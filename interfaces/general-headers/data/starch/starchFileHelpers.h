@@ -61,6 +61,10 @@
 #error 32-bit Cygwin compilation is unsupported due to lack of fseeko() support
 #endif
 
+#ifdef __cplusplus
+namespace starch {
+#endif
+
 FILE*   STARCH_fopen(const char *filename, 
                      const char *type);
 
@@ -71,5 +75,9 @@ int     STARCH_fseeko(FILE *stream,
 int     STARCH_gzip_deflate(FILE *source, 
                             FILE *dest, 
                              int level);
+
+#ifdef __cplusplus
+} // namespace starch
+#endif
 
 #endif

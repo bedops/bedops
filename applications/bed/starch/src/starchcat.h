@@ -42,6 +42,7 @@
 #include "suite/BEDOPS.Constants.hpp"
 
 #ifdef __cplusplus
+namespace starch {
   using namespace Bed;
 #endif
 
@@ -326,5 +327,9 @@ int      STARCHCAT2_squeezeRetransformedOutputBufferToBzip2Stream (BZFILE **bzSt
 int      STARCHCAT2_squeezeRetransformedOutputBufferToGzipStream (z_stream *zStream, const Boolean flushZStreamFlag, char *transformedBuffer, uint64_t *finalStreamSize, size_t *cumulativeOutputSize);
 int      STARCHCAT2_resetCompressionBuffer (char *compressionBuffer, LineCountType *compressionLineCount);
 int      STARCHCAT2_finalizeMetadata (Metadata **outMd, char *finalChromosome, char *finalOutTagFn, uint64_t finalStreamSize, uint64_t finalLineCount, uint64_t finalTotalNonUniqueBases, uint64_t finalTotalUniqueBases);
+
+#ifdef __cplusplus
+} // namespace starch
+#endif
 
 #endif

@@ -34,6 +34,12 @@
 #include "data/starch/starchFileHelpers.h"
 #include "suite/BEDOPS.Version.hpp"
 
+#ifdef __cplusplus
+namespace {
+  using namespace starch;
+} // unnamed namespace
+#endif
+
 int
 main (int argc, char **argv)
 {
@@ -163,6 +169,10 @@ main (int argc, char **argv)
     return EXIT_SUCCESS;
 }
 
+#ifdef __cplusplus
+namespace starch {
+#endif
+
 void
 STARCH_initializeGlobals ()
 {
@@ -287,3 +297,7 @@ STARCH_printRevision ()
         free (avStr);
     }
 }
+
+#ifdef __cplusplus
+} // unnamed namespace
+#endif

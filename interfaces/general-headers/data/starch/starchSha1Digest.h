@@ -143,7 +143,7 @@ extern void *sha1_buffer (const char *buffer, size_t len, void *resblock);
 extern void STARCH_SHA1_All(const unsigned char *input, size_t inputLength, unsigned char output[20]);
 
 #ifdef __cplusplus
-}
+} // extern "C"
 #endif
 
 #endif

@@ -49,7 +49,8 @@
 #include "suite/BEDOPS.Constants.hpp"
 
 #ifdef __cplusplus
-using namespace Bed;
+namespace starch {
+  using namespace Bed;
 #endif
 
 char *
@@ -2787,3 +2788,7 @@ STARCH2_printStarchHeader(const unsigned char *header)
     }
     fprintf(stderr, "\n");
 }
+
+#ifdef __cplusplus
+} // namespace starch
+#endif
