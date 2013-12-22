@@ -39,6 +39,10 @@
 
 #include "data/starch/starchSha1Digest.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct offset_test { char c; sha1_uint32 x; };
 
 #ifdef WORDS_BIGENDIAN
@@ -433,3 +437,7 @@ STARCH_SHA1_All(const unsigned char *input, size_t inputLength, unsigned char *o
 {
     sha1_buffer((const char *)input, inputLength, output);
 }
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
