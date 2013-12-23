@@ -28,6 +28,8 @@ my @gzip_fns = qw(random_1p2p0_gzip.starch
 
 my $fragment_size = 100000;
 my $max_size = 1000000;
+my $username = (getpwuid($<))[0];
+my $tempDir = "/tmp/$username/starch_regression_test/results/concatenation";
 
 # this script will randomly pick three archives from the bzip2- and gzip-based starch archive pool
 # and pull disjoint sets of 100K elements from each, spanning across the 1M element set
@@ -41,7 +43,7 @@ foreach my $archive_type (@archive_types) {
             foreach my $index (0..($set_count - 1)) {
                 my $start = ($index * $fragment_size) + 1;
                 my $stop = (($index + 1) * $fragment_size);
-                my $out_fn = "/tmp/fixed_".$bzip2_fn."_".$start."_".$stop.".starch";
+                my $out_fn = "$tempDir/fixed_".$bzip2_fn."_".$start."_".$stop.".starch";
                 #print Dumper $out_fn;
                 my $cmd = "$binaries_dir/v2.0/bin/unstarch $compr_extr_results_dir/$bzip2_fn | sed -n ".$start.",".$stop."p | $binaries_dir/v2.0/bin/starch - > $out_fn";
                 #print STDERR "CMD -> $cmd\n";
@@ -50,7 +52,7 @@ foreach my $archive_type (@archive_types) {
             }
             my $out_str = join(" ", @out_fns);
             #print STDERR "CAT - $out_str\n";
-            my $out_final_fn = "/tmp/merged_fixed_size_".$bzip2_fn;
+            my $out_final_fn = "$tempDir/merged_fixed_size_".$bzip2_fn;
             my $concat_cmd = "$binaries_dir/v2.0/bin/starchcat $out_str > $out_final_fn";
             `$concat_cmd`;
             system ("mv $out_final_fn $concat_results_dir/fixed_merged_".basename($out_final_fn));
@@ -64,7 +66,7 @@ foreach my $archive_type (@archive_types) {
             foreach my $index (0..($set_count - 1)) {
                 my $start = ($index * $fragment_size) + 1;
                 my $stop = (($index + 1) * $fragment_size);
-                my $out_fn = "/tmp/fixed_".$gzip_fn."_".$start."_".$stop.".starch";
+                my $out_fn = "$tempDir/fixed_".$gzip_fn."_".$start."_".$stop.".starch";
 		#print Dumper $out_fn;
                 my $cmd = "$binaries_dir/v2.0/bin/unstarch $compr_extr_results_dir/$gzip_fn | sed -n ".$start.",".$stop."p | $binaries_dir/v2.0/bin/starch - > $out_fn";
                 #print STDERR "CMD -> $cmd\n";
@@ -72,7 +74,7 @@ foreach my $archive_type (@archive_types) {
                 push @out_fns, $out_fn;
             }
             my $out_str = join(" ", @out_fns);
-            my $out_final_fn = "/tmp/merged_fixed_size_".$gzip_fn;
+            my $out_final_fn = "$tempDir/merged_fixed_size_".$gzip_fn;
             my $concat_cmd = "$binaries_dir/v2.0/bin/starchcat $out_str > $out_final_fn";
             `$concat_cmd`;
             system ("mv $out_final_fn $concat_results_dir/fixed_merged_".basename($out_final_fn));

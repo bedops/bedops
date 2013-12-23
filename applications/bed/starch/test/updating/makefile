@@ -2,18 +2,21 @@
 # makefile
 #
 
-THIS_DIR       = ${shell pwd}
-RESULTS        = ${THIS_DIR}/results
-SRC            = ${THIS_DIR}/src
-COMPEXT_DIR    = ${THIS_DIR}/../compression_and_extraction
-COMPEXTRES_DIR = ${COMPEXT_DIR}/results
-ORIGINAL_DIR   = ${THIS_DIR}/../original_data
-BED_INPUT      = ${ORIGINAL_DIR}/data/random.bed
-FIMO_INPUT     = ${ORIGINAL_DIR}/data/fimo.combined.xfac.1e-5.parsed.1M.starch
-PLATFORM       = ${shell uname}
-BIN_DIR        = ${THIS_DIR}/../binaries
-LINUX_BINDIR   = ${BIN_DIR}/linux
-OSX_BINDIR     = ${BIN_DIR}/osx
+TMP             = /tmp
+USER           := $(shell whoami)
+THIS_DIR       := ${shell pwd}
+RESULTS         = ${TMP}/${USER}/starch_regression_test/results/updating
+SRC             = ${THIS_DIR}/src
+COMPEXT_DIR     = ${THIS_DIR}/../compression_and_extraction
+COMPEXTRES_DIR  = ${TMP}/${USER}/starch_regression_test/results/compression_and_extraction
+ORIGINAL_DIR    = ${THIS_DIR}/../original_data
+ORIGINAL_DATA   = ${TMP}/${USER}/starch_regression_test/data
+BED_INPUT       = ${ORIGINAL_DATA}/data/random.bed
+FIMO_INPUT      = ${ORIGINAL_DIR}/data/fimo.combined.xfac.1e-5.parsed.1M.starch
+PLATFORM       := ${shell uname}
+BIN_DIR         = ${THIS_DIR}/../binaries
+LINUX_BINDIR    = ${BIN_DIR}/linux
+OSX_BINDIR      = ${BIN_DIR}/osx
 
 all: archives tests
 
@@ -171,5 +174,5 @@ endif
 
 clean:
 	@echo "[STARCH] cleaning up intermediate starch archives..."
-	@rm -rf ${RESULTS}/* && rm -Rf ${RESULTS}
+	@rm -rf ${RESULTS}
 	@echo "[STARCH] all clean!"

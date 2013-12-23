@@ -39,6 +39,9 @@ archive-v2.0 binaries were sourced from our Google Code site (generally the late
 that creates a v2.0 Starch archive -- on May 21 2013 this would be a v2.2 binary release) and
 are now sourced from the Github site. As of December 19, 2013 this would be a v2.4 binary.
 
+For architecture, we currently offer tests of 64-bit binaries for Linux and OS X platforms. 
+We will work in tests for 32-bit binaries at a later time, as well as Cygwin-based tests. 
+
 
 
 Original Data
@@ -53,8 +56,8 @@ To create a sorted, random BED input file only, without running tests, run:
 
   $ make random_bed_file
 
-Results are in "original_data/data/random.bed". See the 
-"original_data/src/make_unsorted_random_bed_file.sh" script for more details. 
+Results are in "/tmp/${username}/starch_regression_test/data/random.bed". See the 
+"./original_data/src/make_unsorted_random_bed_file.sh" script for more details. 
 
 The remaining folders are described below and represent test categories.
 
@@ -84,13 +87,14 @@ use cases:
  * joining two or more Starch files with mixed chromosome streams
 
 For the first test, we start with the different versions of archives created in the
-compression and extraction test category. The original BED file has 1M elements, so
-we take, say, 250K elements from the first archive and recompress them. We take the next
-250K elements from the next archive and recompress those. We take the remaining 500K 
-elements from the third and final archive and recompress them. If we concatenate these
-three smaller archives, we expect that the final archive will contain all 1M original
-elements and in the same sorted order. (If there are more, fewer or different elements, 
-or if elements are out of order, then this test fails.)
+"compression-and-extraction" test category. The original BED file has 1M elements, so
+we take, say, 250K elements from the first v1.2 archive and recompress them. We take 
+the next 250K elements from the next v1.5 archive and recompress those. We take the 
+remaining 500K elements from the third and final v2.0 archive and recompress them. 
+
+If we concatenate these three smaller archives, we expect that the final archive will 
+contain all 1M original elements and in the same sort order. (If there are more, fewer 
+or different elements, or if elements are out of order, then this test fails.)
 
 For the second test, we take the random bed file and split it by chromosome into
 separate BED files. We then compress these disjoint BED files into Starch archives
@@ -100,7 +104,8 @@ result with the random bed file.
 The third test is similar to the first, except that we work within one version of an
 archive. We split the original file into 100K-element subfiles, compress them, and
 attempt to concatenate them. We expect that the final archive will have all 1M original
-elements in preserved order.
+elements in preserved order. This test shows that starch files that span multiple
+chromosomes can be reconstituted correctly when concatenated with starchcat.
 
 To run these tests directly:
 

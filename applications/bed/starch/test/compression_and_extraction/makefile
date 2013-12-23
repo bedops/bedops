@@ -2,15 +2,22 @@
 # makefile
 #
 
-THIS_DIR     = ${shell pwd}
-RESULTS      = ${THIS_DIR}/results
-ORIGINAL_DIR = ${THIS_DIR}/../original_data
-BED_INPUT    = ${ORIGINAL_DIR}/data/random.bed
-PLATFORM     = ${shell uname}
-LINUX_BINDIR = ${THIS_DIR}/../binaries/linux
-OSX_BINDIR   = ${THIS_DIR}/../binaries/osx
+TMP           =  /tmp
+USER          := $(shell whoami)
+THIS_DIR      := $(shell pwd)
+RESULTS       =  ${TMP}/${USER}/starch_regression_test/results/compression_and_extraction
+ORIGINAL_DIR  =  ${THIS_DIR}/../original_data
+ORIGINAL_DATA =  ${TMP}/${USER}/starch_regression_test
+BED_INPUT     =  ${ORIGINAL_DATA}/data/random.bed
+PLATFORM      := $(shell uname)
+LINUX_BINDIR  =  ${THIS_DIR}/../binaries/linux
+OSX_BINDIR    =  ${THIS_DIR}/../binaries/osx
 
-all: archives tests
+all: results archives tests
+
+results:
+	@echo "[STARCH] making results directory..."
+	@mkdir -p ${RESULTS}
 
 current_archives: random_2p0p0_bzip2.starch random_2p0p0_gzip.starch
 	@echo "[STARCH] finished making current archives!"
@@ -25,16 +32,12 @@ concurrent_tests: diff_random_1p2p0_bzip2_concurrent diff_random_1p2p0_gzip_conc
 
 current_tests: diff_random_1p2p0_bzip2_current diff_random_1p2p0_gzip_current diff_random_1p5p0_bzip2_current diff_random_1p5p0_gzip_current diff_random_2p0p0_bzip2_current diff_random_2p0p0_gzip_current
 
-results_dir:
-	@echo "[STARCH] making results directory..."
-	@mkdir -p ${RESULTS}
-
 bed_input:
 	@test -s ${BED_INPUT} || make -C ${ORIGINAL_DIR} -f makefile random.bed
 
 # ---------------------------------------------
 
-random_1p2p0_bzip2.starch: results_dir bed_input
+random_1p2p0_bzip2.starch: results bed_input
 	@echo "[STARCH] creating v1.2 bzip2-based starch file from random BED input..."
 ifeq (${PLATFORM},Linux)
 	test -s ${RESULTS}/$@ || ${LINUX_BINDIR}/v1.2/bin/starch --bzip2 ${BED_INPUT} > ${RESULTS}/$@
@@ -65,7 +68,7 @@ endif
 
 # ---------------------------------------------
 
-random_1p2p0_gzip.starch: results_dir bed_input
+random_1p2p0_gzip.starch: results bed_input
 	@echo "[STARCH] creating v1.2 gzip-based starch file from random BED input..."
 ifeq (${PLATFORM},Linux)
 	test -s ${RESULTS}/$@ || ${LINUX_BINDIR}/v1.2/bin/starch --gzip ${BED_INPUT} > ${RESULTS}/$@
@@ -96,7 +99,7 @@ endif
 
 # ---------------------------------------------
 
-random_1p5p0_bzip2.starch: results_dir bed_input
+random_1p5p0_bzip2.starch: results bed_input
 	@echo "[STARCH] creating v1.5 bzip2-based starch file from random BED input..."
 ifeq (${PLATFORM},Linux)
 	test -s ${RESULTS}/$@ || ${LINUX_BINDIR}/v1.5/bin/starch --bzip2 ${BED_INPUT} > ${RESULTS}/$@
@@ -127,7 +130,7 @@ endif
 
 # ---------------------------------------------
 
-random_1p5p0_gzip.starch: results_dir bed_input
+random_1p5p0_gzip.starch: results bed_input
 	@echo "[STARCH] creating v1.5 gzip-based starch file from random BED input..."
 ifeq (${PLATFORM},Linux)
 	test -s ${RESULTS}/$@ || ${LINUX_BINDIR}/v1.5/bin/starch --gzip ${BED_INPUT} > ${RESULTS}/$@
@@ -158,7 +161,7 @@ endif
 
 # ---------------------------------------------
 
-random_2p0p0_bzip2.starch: results_dir bed_input
+random_2p0p0_bzip2.starch: results bed_input
 	@echo "[STARCH] creating v2.0 bzip2-based starch file from random BED input..."
 ifeq (${PLATFORM},Linux)
 	test -s ${RESULTS}/$@ || ${LINUX_BINDIR}/v2.0/bin/starch --bzip2 ${BED_INPUT} > ${RESULTS}/$@
@@ -179,7 +182,7 @@ endif
 
 # ---------------------------------------------
 
-random_2p0p0_gzip.starch: results_dir bed_input
+random_2p0p0_gzip.starch: results bed_input
 	@echo "[STARCH] creating v2.0 gzip-based starch file from random BED input..."
 ifeq (${PLATFORM},Linux)
 	test -s ${RESULTS}/$@ || ${LINUX_BINDIR}/v2.0/bin/starch --gzip ${BED_INPUT} > ${RESULTS}/$@

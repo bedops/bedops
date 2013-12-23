@@ -8,7 +8,8 @@ my $argc = @ARGV;
 my $unstarchBin = $ARGV[0];
 my $mergedFn = $ARGV[1];
 my @disjointFns = @ARGV[2..($argc - 1)];
-my $tempDir = "/tmp";
+my $username = (getpwuid($<))[0];
+my $tempDir = "/tmp/$username/starch_regression_test/results/concatenation";
 my $observedElementsFn = "$tempDir/observedSplitByChromosomeElements.bed";
 
 system("$unstarchBin $mergedFn > $observedElementsFn") == 0 or die "ERROR: could not extract merged archive data\n";

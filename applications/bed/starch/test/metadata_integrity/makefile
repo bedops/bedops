@@ -2,13 +2,16 @@
 # makefile
 #
 
-THIS_DIR       = $(shell pwd)
-RESULTS        = $(THIS_DIR)/results
+TMP            = /tmp
+USER          := $(shell whoami)
+THIS_DIR      := $(shell pwd)
+RESULTS        = ${TMP}/${USER}/starch_regression_test/results/metadata_integrity
 SRC            = $(THIS_DIR)/src
 COMPEXT_DIR    = $(THIS_DIR)/../compression_and_extraction
-COMPEXTRES_DIR = $(COMPEXT_DIR)/results
+COMPEXTRES_DIR = ${TMP}/${USER}/starch_regression_test/results/compression_and_extraction
 ORIGINAL_DIR   = $(THIS_DIR)/../original_data
-BED_INPUT      = $(ORIGINAL_DIR)/data/random.bed
+ORIGINAL_DATA  = ${TMP}/${USER}/starch_regression_test
+BED_INPUT      = $(ORIGINAL_DATA)/data/random.bed
 PLATFORM       = $(shell uname)
 BIN_DIR        = $(THIS_DIR)/../binaries
 LINUX_BINDIR   = $(BIN_DIR)/linux
@@ -324,5 +327,5 @@ endif
 
 clean:
 	@echo "[STARCH] cleaning up intermediate starch archives..."
-	@rm -rf $(RESULTS)/* && rm -Rf $(RESULTS)
+	@rm -rf $(RESULTS)
 	@echo "[STARCH] all clean!"

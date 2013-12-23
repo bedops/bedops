@@ -8,7 +8,8 @@ my $argc = @ARGV;
 my $unstarchBin = $ARGV[0];
 my $mergedFn = $ARGV[1];
 my @disjointFns = @ARGV[2..($argc - 1)];
-my $tempDir = "/tmp";
+my $username = (getpwuid($<))[0];
+my $tempDir = "/tmp/$username/starch_regression_test/results/concatenation";
 my $observedElementsFn = "$tempDir/observedElements.bed";
 
 my $observedElementsCmd = "$unstarchBin $mergedFn > $observedElementsFn";
