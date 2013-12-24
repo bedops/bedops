@@ -66,8 +66,13 @@ Original Data
 The "original_data" folder contains the "original" BED data that goes into testing the 
 functionality of starch, unstarch and starchcat. This consists of a 1M-element BED file
 created from randomly-selected hg19 chromosomes from data obtained via the UCSC Genome 
-Browser MySQL service. This file is roughly 45 Mb in size and should do a decent job 
-in testing how we handle buffers and streaming input on a typical workstation.
+Browser MySQL service. 
+
+This file is roughly 45 Mb in size and should do a decent job in testing how we handle 
+streaming input on a typical workstation, because that file size will easily cut across 
+the size of the buffers used when handling input, compressing, and extracting data (the
+intermediate buffers used in starch, unstarch and starchcat are delicate areas where 
+compression, extraction and concatenation can easily go wrong).
 
 To create a sorted, random BED input file only, without running tests, run:
 
