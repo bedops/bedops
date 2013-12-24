@@ -14,6 +14,23 @@ To run all tests, type:
 
 Names of individual tests refer to specific test categories and are described below.
 
+NOTE! The /tmp folder is used to store intermediate results. If you are running all 
+the tests, please have ~1.7 GB of free space available in your /tmp folder (there 
+are several tests performed here, with variations on version and compression formats 
+that will result in many copies of the same data -- further, some tests are 
+dependent on intermediate results of other tests).
+
+
+
+Clean-up
+====================================================================================
+To clean the results of all tests, type:
+
+  $ make clean
+
+This calls each individual test's clean-up process and removes the parent folder
+that stores test results.
+
 
 
 Overview
@@ -48,9 +65,9 @@ Original Data
 ====================================================================================
 The "original_data" folder contains the "original" BED data that goes into testing the 
 functionality of starch, unstarch and starchcat. This consists of a 1M-element BED file
-created from randomly-selected hg19 chromosomes from data on the UCSC Genome Browser 
-MySQL service. This file is roughly 45 Mb in size and should do a decent job in testing 
-how we handle buffers and streaming input on a typical workstation.
+created from randomly-selected hg19 chromosomes from data obtained via the UCSC Genome 
+Browser MySQL service. This file is roughly 45 Mb in size and should do a decent job 
+in testing how we handle buffers and streaming input on a typical workstation.
 
 To create a sorted, random BED input file only, without running tests, run:
 
@@ -104,8 +121,8 @@ result with the random bed file.
 The third test is similar to the first, except that we work within one version of an
 archive. We split the original file into 100K-element subfiles, compress them, and
 attempt to concatenate them. We expect that the final archive will have all 1M original
-elements in preserved order. This test shows that starch files that span multiple
-chromosomes can be reconstituted correctly when concatenated with starchcat.
+elements in preserved order. This test shows that a set of starch files that contain 
+records that span multiple chromosomes can be reconstituted correctly.
 
 To run these tests directly:
 
