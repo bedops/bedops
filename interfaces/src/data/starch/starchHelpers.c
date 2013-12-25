@@ -50,23 +50,23 @@
 
 #ifdef __cplusplus
 namespace starch {
-  using namespace Bed;
+    using namespace Bed;
 #endif
-
+    
 char *
 STARCH_strdup(const char *str)
 {
-  /* Cygwin does not include support for strdup so we include our own implementation here */
-  char *dup = NULL;
-  if (str) {
-    dup = (char *) malloc(strlen(str) + 1); /* sizeof(char) = 1, of course */
-    if (!dup) {
-      fprintf(stderr, "ERROR: Out of memory\n");
-      exit(EXIT_FAILURE);
+  /* Cygwin does not include support for strdup() so we include our own implementation here */
+    char *dup = NULL;
+    if (str) {
+        dup = (char *) malloc(strlen(str) + 1); /* sizeof(char) = 1, of course */
+        if (!dup) {
+            fprintf(stderr, "ERROR: Out of memory\n");
+            exit(EXIT_FAILURE);
+        }
+        strcpy(dup, str);
     }
-    strcpy(dup, str);
-  }
-  return dup;
+    return dup;
 }
 
 int 
@@ -510,13 +510,13 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
     char *prevChromosome = NULL;
     char *chromosome = NULL;
     Metadata *firstRecord = NULL;
-    int64_t start = 0LL;
-    int64_t stop = 0LL;
-    int64_t previousStop = 0LL;
-    int64_t lastPosition = 0LL;
-    int64_t lcDiff = 0LL;
-    int64_t coordDiff = 0ULL;
-    uint64_t outFnSize = 0ULL;
+    int64_t start = 0;
+    int64_t stop = 0;
+    int64_t previousStop = 0;
+    int64_t lastPosition = 0;
+    int64_t lcDiff = 0;
+    int64_t coordDiff = 0;
+    uint64_t outFnSize = 0;
     Boolean withinChr = kStarchFalse;
     unsigned long lineIdx = 0UL;
     int64_t outCompressedFnSize = 0;
@@ -642,9 +642,9 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
 
                     /* reset flag, lastPosition and lcDiff, increment record index */
                     withinChr = kStarchFalse;
-                    lastPosition = 0LL;
-                    previousStop = 0LL;
-                    lcDiff = 0LL;
+                    lastPosition = 0;
+                    previousStop = 0;
+                    lcDiff = 0;
                     lineIdx = 0UL;
                     totalNonUniqueBases = 0UL;
                     totalUniqueBases = 0UL;
@@ -838,13 +838,13 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
     char *prevChromosome = NULL;
     char *chromosome = NULL;
     Metadata *firstRecord = NULL;
-    int64_t start = 0LL;
-    int64_t stop = 0LL;
-    int64_t previousStop = 0LL;
-    int64_t lastPosition = 0LL;
-    int64_t lcDiff = 0LL;
-    int64_t coordDiff = 0LL;
-    uint64_t outFnSize = 0ULL;
+    int64_t start = 0;
+    int64_t stop = 0;
+    int64_t previousStop = 0;
+    int64_t lastPosition = 0;
+    int64_t lcDiff = 0;
+    int64_t coordDiff = 0;
+    uint64_t outFnSize = 0;
     Boolean withinChr = kStarchFalse;
     unsigned long lineIdx = 0UL;
     int64_t outCompressedFnSize = 0;
@@ -955,9 +955,9 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
 
                     /* reset flag, lastPosition and lcDiff, increment record index */
                     withinChr = kStarchFalse;
-                    lastPosition = 0LL;
-                    previousStop = 0LL;
-                    lcDiff = 0LL;
+                    lastPosition = 0;
+                    previousStop = 0;
+                    lcDiff = 0;
                     lineIdx = 0UL;
                     totalNonUniqueBases = 0UL;
                     totalUniqueBases = 0UL;
@@ -1290,12 +1290,12 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     char intermediateBuffer[STARCH_BUFFER_MAX_LENGTH];
     char transformedBuffer[STARCH_BUFFER_MAX_LENGTH];
     unsigned long lineIdx = 0UL;
-    int64_t start = 0LL;
-    int64_t stop = 0LL;
-    int64_t previousStop = 0LL;
-    int64_t lastPosition = 0LL;
-    int64_t lcDiff = 0LL;
-    int64_t coordDiff = 0LL;
+    int64_t start = 0;
+    int64_t stop = 0;
+    int64_t previousStop = 0;
+    int64_t lastPosition = 0;
+    int64_t lcDiff = 0;
+    int64_t coordDiff = 0;
     char *prevChromosome = NULL;
     char *chromosome = NULL;
     char *remainder = NULL;
@@ -1618,7 +1618,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 #endif
                     if (recIdx == 0) {
                         *md = NULL;
-                        *md = STARCH_createMetadata(chromosome, compressedFn, 0ULL, 0UL, 0UL, 0UL);
+                        *md = STARCH_createMetadata(chromosome, compressedFn, 0, 0UL, 0UL, 0UL);
                         if (!*md) { 
                             fprintf(stderr, "ERROR: Not enough memory is available\n");
                             return STARCH_EXIT_FAILURE;
@@ -1626,7 +1626,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                         firstRecord = *md;
                     }
                     else {
-                        *md = STARCH_addMetadata(*md, chromosome, compressedFn, 0ULL, 0UL, 0UL, 0UL);
+                        *md = STARCH_addMetadata(*md, chromosome, compressedFn, 0, 0UL, 0UL, 0UL);
                     }
 
                     /* make previous chromosome the current chromosome */
@@ -1646,9 +1646,9 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                     fprintf(stderr, "\t(final-between-chromosome) resetting per-chromosome stream transformation parameters...\n");
 #endif
                     withinChr = kStarchFalse;
-                    lastPosition = 0LL;
-                    previousStop = 0LL;
-                    lcDiff = 0LL;
+                    lastPosition = 0;
+                    previousStop = 0;
+                    lcDiff = 0;
                     lineIdx = 0UL;
                     totalNonUniqueBases = 0UL;
                     totalUniqueBases = 0UL;
@@ -1944,7 +1944,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
            If the stream or input file contains no BED records, then the Metadata pointer md will
            be NULL, as will the char pointer prevChromosome. So we put in a stub metadata record.
         */
-        lineIdx = 0ULL;
+        lineIdx = 0;
         *md = NULL;
         *md = STARCH_createMetadata(nullChr, nullCompressedFn, currentRecSize, lineIdx, 0UL, 0UL);
         if (!*md) {
@@ -2023,12 +2023,12 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     char intermediateBuffer[STARCH_BUFFER_MAX_LENGTH + 1] = {0};
     char transformedBuffer[STARCH_BUFFER_MAX_LENGTH + 1] = {0};
     unsigned long lineIdx = 0UL;
-    int64_t start = 0LL;
-    int64_t stop = 0LL;
-    int64_t previousStop = 0LL;
-    int64_t lastPosition = 0LL;
-    int64_t lcDiff = 0LL;
-    int64_t coordDiff = 0LL;
+    int64_t start = 0;
+    int64_t stop = 0;
+    int64_t previousStop = 0;
+    int64_t lastPosition = 0;
+    int64_t lcDiff = 0;
+    int64_t coordDiff = 0;
     char *prevChromosome = NULL;
     char *chromosome = NULL;
     char *remainder = NULL;
@@ -2347,7 +2347,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #endif
                     if (recIdx == 0) {
                         *md = NULL;
-                        *md = STARCH_createMetadata(chromosome, compressedFn, 0ULL, 0UL, 0UL, 0UL);
+                        *md = STARCH_createMetadata(chromosome, compressedFn, 0, 0UL, 0UL, 0UL);
                         if (!*md) { 
                             fprintf(stderr, "ERROR: Not enough memory is available\n");
                             return STARCH_EXIT_FAILURE;
@@ -2355,7 +2355,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                         firstRecord = *md;
                     }
                     else {
-                        *md = STARCH_addMetadata(*md, chromosome, compressedFn, 0ULL, 0UL, 0UL, 0UL);
+                        *md = STARCH_addMetadata(*md, chromosome, compressedFn, 0, 0UL, 0UL, 0UL);
                     }
 
                     /* make previous chromosome the current chromosome */
@@ -2375,9 +2375,9 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                     fprintf(stderr, "\t(final-between-chromosome) resetting per-chromosome stream transformation parameters...\n");
 #endif
                     withinChr = kStarchFalse;
-                    lastPosition = 0LL;
-                    previousStop = 0LL;
-                    lcDiff = 0LL;
+                    lastPosition = 0;
+                    previousStop = 0;
+                    lcDiff = 0;
                     lineIdx = 0UL;
                     totalNonUniqueBases = 0UL;
                     totalUniqueBases = 0UL;
@@ -2660,7 +2660,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
            If the stream or input file contains no BED records, then the Metadata pointer md will
            be NULL, as will the char pointer prevChromosome. So we put in a stub metadata record.
         */
-        lineIdx = 0ULL;
+        lineIdx = 0;
         *md = NULL;
         *md = STARCH_createMetadata(nullChr, nullCompressedFn, currentRecSize, lineIdx, 0UL, 0UL);
         if (!*md) { 
