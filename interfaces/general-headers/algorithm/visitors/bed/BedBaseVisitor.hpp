@@ -227,14 +227,13 @@ namespace Visitors {
   
        // Are any items in the window really out of range of 't'?  See problem 2.
        static std::list<typename OrderWin::value_type> lst;
-       typename OrderWin::iterator winIter = win_.begin(), wtmp;
+       typename OrderWin::iterator winIter = win_.begin();
        while ( winIter != win_.end() ) {
          if ( dist_.Map2Ref(*winIter, ref_) != 0 ) {
            Delete(*winIter);
 //           cache_.insert(*winIter);
            lst.push_back(*winIter);
-           wtmp = winIter++;
-           win_.erase(wtmp);
+           win_.erase(winIter++);
          } else {
            ++winIter;
          }
