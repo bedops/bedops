@@ -240,13 +240,12 @@ namespace Visitors {
          }
        } // while
   
-       typename OrderCache::iterator cacheIter = cache_.begin(), ctmp;
+       typename OrderCache::iterator cacheIter = cache_.begin();
        while ( cacheIter != cache_.end() ) {
          if ( 0 == dist_.Map2Ref(*cacheIter, ref_) ) {
            Add(*cacheIter);
            win_.insert(*cacheIter);
-           ctmp = cacheIter++;
-           cache_.erase(ctmp);
+           cache_.erase(cacheIter++);
          } else {
            ++cacheIter;
          }
