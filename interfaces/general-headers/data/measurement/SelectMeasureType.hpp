@@ -42,7 +42,7 @@ namespace Signal {
 
     // built-ins
     template <typename BuiltIn>
-    struct SelectMeasureImpl<BuiltIn, typename boost::enable_if< boost::is_arithmetic<BuiltIn>, BuiltIn>::type> {
+    struct SelectMeasureImpl<BuiltIn, typename boost::enable_if<boost::is_arithmetic<BuiltIn>, BuiltIn>::type> {
       typedef BuiltIn MeasureType;
     };
 
