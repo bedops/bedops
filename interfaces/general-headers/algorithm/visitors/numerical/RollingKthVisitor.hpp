@@ -37,7 +37,7 @@
 #include <string>
 
 // Files included
-#include "data/measurement/AssayMeasurement.hpp"
+#include "data/measurement/SelectMeasureType.hpp"
 #include "data/measurement/NaN.hpp"
 #include "utility/Assertion.hpp"
 #include "utility/Exception.hpp"
@@ -106,7 +106,7 @@ namespace Visitors {
     //====================================
     inline void DoneReference() {
       // guaranteed: 0 < kthValue <= 1
-      typedef typename Signal::AssayMeasurement<T2>::value_type VT;
+      typedef typename Signal::SelectMeasure<T2>::MeasureType MT;
       std::size_t size = scoresBuf_.size();
       std::size_t kthPos = static_cast<std::size_t>(iround(kthValue_ * size));
       if ( kthPos > 0 ) // make zero based
@@ -123,7 +123,7 @@ namespace Visitors {
       } // while decrementing
 
       if ( size )
-        pt_.operator()(static_cast<VT>(**currentMarker_));
+        pt_.operator()(static_cast<MT>(**currentMarker_));
       else {
         static const Signal::NaN nan = Signal::NaN();
         pt_.operator()(nan);

@@ -35,8 +35,10 @@
 #include <limits>
 #include <string>
 
-#include "data/measurement/AssayMeasurement.hpp"
+#include <boost/type_traits.hpp>
+
 #include "suite/BEDOPS.Constants.hpp"
+#include "utility/Formats.hpp"
 
 /*
   sjn
@@ -73,7 +75,7 @@ namespace Bed {
     ChromInfo() : chrom_(new char[1]) { chrom_[0] = '\0'; }
     ChromInfo(const ChromInfo& c)
         : chrom_(new char[(c.chrom_ != NULL) ? (std::strlen(c.chrom_) + 1) : 1])
-      { *chrom_ = '\0'; if ( c != NULL ) std::strcpy(chrom_, c.chrom_); }
+      { *chrom_ = '\0'; if ( c.chrom_ != NULL ) std::strcpy(chrom_, c.chrom_); }
     explicit ChromInfo(char const* c)
         : chrom_(new char[(c != NULL) ? (std::strlen(c)+1) : 1])
       { *chrom_ = '\0'; if ( c != NULL ) std::strcpy(chrom_, c); }
@@ -253,7 +255,7 @@ namespace Bed {
       int numScan = std::fscanf(inputFile,
                                 format, chrBuf, 
                                 &start_, &end_);
-      std::fgetc(inputFile); //chomp newline
+      std::fgetc(inputFile); // chomp newline
       this->chrom(chrBuf);
       return numScan;
     }
@@ -353,7 +355,7 @@ namespace Bed {
       int numScan = std::fscanf(inputFile, format,
                                 chrBuf, &start_,
                                 &end_, restBuf);
-      std::fgetc(inputFile); //chomp newline
+      std::fgetc(inputFile); // chomp newline
       this->chrom(chrBuf);
       if ( rest_ )
         delete [] rest_;
@@ -634,23 +636,24 @@ namespace Bed {
   // Bed5 specialization 1: vanilla (default) information
   template <typename U, bool Bed4HasRest, typename MeasureType>
   struct Bed5<Bed4<U, Bed4HasRest>, MeasureType, false>
-    : public Bed4<U, false>,
-      public Signal::AssayMeasurement<MeasureType> {
+    : public Bed4<U, false> {
 
-    Bed5() : BaseClass(), Base2Class() {}
-    Bed5(const Bed5& c) : BaseClass(c), Base2Class(c.measurement_) {}
+    Bed5() : BaseClass() {}
+    Bed5(const Bed5& c) : BaseClass(c), measurement_(0) {}
     Bed5(char const* chrom, CoordType start, CoordType end, char const* id, MeasureType measurement)
-        : BaseClass(chrom, start, end, id), Base2Class(measurement) {}
-    explicit Bed5(const std::string& inS) : BaseClass(), Base2Class()
+        : BaseClass(chrom, start, end, id), measurement_(measurement) {}
+    explicit Bed5(const std::string& inS) : BaseClass(), measurement_(0)
       { this->readline(inS); }
-    explicit Bed5(FILE* inF) : BaseClass(), Base2Class()
+    explicit Bed5(FILE* inF) : BaseClass(), measurement_(0)
       { this->readline(inF); }
 
     // Parameters
     typedef MeasureType MeasurementType;
-    typedef MeasureType MEASURETYPE;
     static const int NumFields = 5;
     static const bool UseRest = false;
+
+    // Properties
+    inline MeasurementType measurement() const { return measurement_; }
 
     // IO
     inline int readline(const std::string& inputLine) {
@@ -702,18 +705,19 @@ namespace Bed {
       this->measurement_ = c.measurement_;
       return *this;
     }
+    inline operator MeasurementType() const { return measurement_; }
 
   protected:
     typedef Bed4<U, false> BaseClass;
-    typedef Signal::AssayMeasurement<MeasureType> Base2Class;
     using BaseClass::chrom_;
     using BaseClass::start_;
     using BaseClass::end_;
     using BaseClass::id_;
-    using Signal::AssayMeasurement<MeasureType>::measurement_;
+    MeasureType measurement_;
 
     static std::string outFormatter() {
-      return(BaseClass::outFormatter() + "\t" + Signal::AssayMeasurement<MeasureType>::formatter());
+      typedef typename boost::remove_cv<MeasureType>::type MType;
+      return(BaseClass::outFormatter() + "\t" + Formats::Format(MType()));
     }
 
     static std::string inFormatter() {

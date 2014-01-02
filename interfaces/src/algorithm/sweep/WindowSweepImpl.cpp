@@ -87,7 +87,7 @@ namespace WindowSweep {
     typedef std::deque<TypePtr> WindowType;
 
     // Local variables
-    const bool cleanHere = !visitor.ManagesOwnMemory();
+    // const bool cleanHere = !visitor.ManagesOwnMemory(); no longer useful with multivisitor
     const TypePtr zero = static_cast<TypePtr>(0);
     TypePtr bPtr = zero;
     std::size_t index = 0;
@@ -99,15 +99,20 @@ namespace WindowSweep {
     // Loop through inputs
     while ( start != end || cache || !win.empty() ) {
 
-      if ( reset ) { // last item in windowed buffer, reset buffer
+      if ( !reset ) { // Check items falling out of range 'to the left'
+        visitor.OnStart(win[index]);
+        while ( !win.empty() && inRange.Map2Ref(win[0], win[index]) < 0 ) {
+          visitor.OnDelete(win[0]);
+          delete win[0];
+          win.pop_front(), --index;
+        } // while
+      } else { // last item in windowed buffer, reset buffer
         if ( start == end && !cache ) { // stopping condition
           visitor.OnEnd();
-          if ( cleanHere ) {
-            while ( !win.empty() ) { // deletions belonging to NO ref
-              delete win[0];
-              win.pop_front();
-            } // while
-          }
+          while ( !win.empty() ) { // deletions belonging to NO ref
+            delete win[0];
+            win.pop_front();
+          } // while
           break;
         }
         // we cannot call another vistor action until we add something
@@ -119,14 +124,6 @@ namespace WindowSweep {
         // 'win' stores items that need visitor.OnDelete() calls, but
         //  logically belong to the next, currently undeclared,
         //  reference.  So, we must wait a bit.
-      } else { // Check items falling out of range 'to the left'
-        visitor.OnStart(win[index]);
-        while ( !win.empty() && inRange.Map2Ref(win[0], win[index]) < 0 ) {
-          visitor.OnDelete(win[0]);
-          if ( cleanHere )
-            delete win[0];
-          win.pop_front(), --index;
-        } // while
       }
 
       // Check for items to be included in current windowed range
@@ -136,7 +133,7 @@ namespace WindowSweep {
           cache = zero;
         }
         else {
-          bPtr = Details::get(start);
+          bPtr = Details::get(start); // don't do get(start++); in case allocate_iterator
           ++start;
         }
 
@@ -151,8 +148,7 @@ namespace WindowSweep {
 
             while ( !win.empty() ) { // deletions on behalf of new ref
               visitor.OnDelete(win[0]);
-              if ( cleanHere )
-                delete win[0];
+              delete win[0];
               win.pop_front();
             } // while
           }
@@ -171,7 +167,7 @@ namespace WindowSweep {
     } // while !done
 
     if ( cache )
-      delete cache; // even if cleanHere is false - never given to visitor
+      delete cache; // never given to visitor
 
   } // sweep() overload1
 
@@ -198,7 +194,7 @@ namespace WindowSweep {
     typedef RefType* RefTypePtr;
 
     // Local variables
-    const bool cleanHere = !visitor.ManagesOwnMemory();
+    // const bool cleanHere = !visitor.ManagesOwnMemory(); no longer useful with multivisitor
     const MapTypePtr zero = static_cast<MapTypePtr>(0);
     RefTypePtr rPtr;
     MapTypePtr mPtr = zero, cache = zero;
@@ -209,7 +205,7 @@ namespace WindowSweep {
     // Loop through inputs
     while ( refStart != refEnd ) {
 
-      rPtr = Details::get(refStart);
+      rPtr = Details::get(refStart); // don't do get(refStart++); in case allocate_iterator
       ++refStart;
       visitor.OnStart(rPtr);
 
@@ -221,8 +217,7 @@ namespace WindowSweep {
       // Pop off items falling out of range 'to the left'
       while ( !win.empty() && inRange.Map2Ref(win[0], rPtr) < 0 ) {
         visitor.OnDelete(win[0]);
-        if ( cleanHere )
-          delete win[0];
+        delete win[0];
         win.pop_front();
       } // while
 
@@ -233,7 +228,7 @@ namespace WindowSweep {
           cache = zero;
         }
         else {
-          mPtr = Details::get(mapFromStart);
+          mPtr = Details::get(mapFromStart); // don't do get(mapFromStart++); in case allocate_iterator
           ++mapFromStart;
         }
 
@@ -249,28 +244,23 @@ namespace WindowSweep {
           delete mPtr;
       } // while
       visitor.OnDone(); // done processing current ref item
-
-      if ( cleanHere ) {
-        delete rPtr;
-      }
+      delete rPtr;
     } // while more ref data
 
     visitor.OnEnd();
-    if ( cleanHere ) {
-      while ( !win.empty() ) { // deletions belonging to NO ref
-        delete win[0];
-        win.pop_front();
-      } // while
-    }
+    while ( !win.empty() ) { // deletions belonging to NO ref
+      delete win[0];
+      win.pop_front();
+    } // while
 
-    if ( cache ) // even if cleanHere is false since never given to visitor
+    if ( cache ) // never given to visitor
       delete cache;
 
     if ( sweepMapAll ) { // read and clean remainder of map file
       while ( mapFromStart != mapFromEnd ) {
-        mPtr = Details::get(mapFromStart);
+        mPtr = Details::get(mapFromStart); // don't do get(mapFromStart); in case allocate_iterator
         ++mapFromStart;
-        delete mPtr; // even if cleanHere is false since never given to visitor
+        delete mPtr; // never given to visitor
       } // while
     }
 

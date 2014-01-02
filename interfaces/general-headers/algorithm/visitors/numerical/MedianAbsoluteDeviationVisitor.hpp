@@ -37,8 +37,8 @@
 #include <vector>
 
 #include "algorithm/visitors/numerical/RollingKthAverageVisitor.hpp"
-#include "data/measurement/AssayMeasurement.hpp"
 #include "data/measurement/NaN.hpp"
+#include "data/measurement/SelectMeasureType.hpp"
 #include "utility/Exception.hpp"
 
 
@@ -67,11 +67,11 @@ namespace Visitors {
             typename ExceptionType = Ext::ArgumentError
            >
   struct MedianAbsoluteDeviation : RollingKthAverage<
-             Helpers::Keep<typename Signal::AssayMeasurement<typename BaseVisitor::mapping_type>::value_type>,
+             Helpers::Keep<typename Signal::SelectMeasure<typename BaseVisitor::mapping_type>::MeasureType>,
              BaseVisitor, ExceptionType> {
 
-    typedef typename Signal::AssayMeasurement<typename BaseVisitor::mapping_type>::value_type VT;
-    typedef RollingKthAverage<Helpers::Keep<VT>, BaseVisitor, ExceptionType> BaseClass;
+    typedef typename Signal::SelectMeasure<typename BaseVisitor::mapping_type>::MeasureType MT;
+    typedef RollingKthAverage<Helpers::Keep<MT>, BaseVisitor, ExceptionType> BaseClass;
     typedef Process ProcessType;
     typedef typename BaseClass::reference_type RefType;
     typedef typename BaseClass::mapping_type MapType;
@@ -79,7 +79,7 @@ namespace Visitors {
 
     // Using default multiplier == 1 // see wikipedia
     explicit MedianAbsoluteDeviation(const ProcessType& pt = ProcessType(), double mult = 1)
-       : BaseClass(0.5, Helpers::Keep<VT>()), pt_(pt), mult_(mult)
+       : BaseClass(0.5, Helpers::Keep<MT>()), pt_(pt), mult_(mult)
       { /* */ }
 
 
@@ -91,28 +91,28 @@ namespace Visitors {
       }
 
       BaseClass::DoneReference();
-      VT median = BaseClass::pt_.value_;
+      MT median = BaseClass::pt_.value_;
       if ( BaseClass::pt_.isNan_ ) {
         pt_.operator()(nan);
         return;
       }
 
-      std::vector<VT> vec;
-      typename std::vector<VT>::iterator n = vec.begin();
+      std::vector<MT> vec;
+      typename std::vector<MT>::iterator n = vec.begin();
       typedef typename BaseClass::ScoreTypeContainer::iterator IterType;
       for ( IterType i = BaseClass::scoresBuf_.begin(); i != BaseClass::scoresBuf_.end(); ++i )
-        vec.push_back(static_cast<VT>(**i));
+        vec.push_back(static_cast<MT>(**i));
 
-      std::transform(vec.begin(), vec.end(), vec.begin(), std::bind2nd(details::abs_diff<VT>(), median));
+      std::transform(vec.begin(), vec.end(), vec.begin(), std::bind2nd(details::abs_diff<MT>(), median));
       std::size_t sz = vec.size();
-      VT mad = 0;
+      MT mad = 0;
       if ( sz % 2 == 0 ) {
         n = vec.begin() + static_cast<std::size_t>(sz / 2.0 - 1);
         std::nth_element(vec.begin(), n, vec.end());
-        mad = static_cast<VT>(*n);
+        mad = static_cast<MT>(*n);
         n = vec.begin() + static_cast<std::size_t>(sz / 2.0);
         std::nth_element(vec.begin(), n, vec.end());
-        mad += static_cast<VT>(*n);
+        mad += static_cast<MT>(*n);
         mad /= 2.0;
       } else {
         n = vec.begin() + static_cast<std::size_t>(std::floor(sz / 2.0));

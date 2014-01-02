@@ -31,7 +31,7 @@
 
 
 // Files included
-#include "data/measurement/AssayMeasurement.hpp"
+#include "data/measurement/SelectMeasureType.hpp"
 #include "data/measurement/NaN.hpp"
 
 
@@ -74,7 +74,7 @@ namespace Visitors {
 
   protected:
     ProcessType pt_;
-    typename Signal::AssayMeasurement<T2>::value_type sum_;
+    typename Signal::SelectMeasure<T2>::MeasureType sum_;
     int counter_;
   };
 

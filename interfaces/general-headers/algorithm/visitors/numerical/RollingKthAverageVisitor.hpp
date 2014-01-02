@@ -39,9 +39,8 @@
 // Files included
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
 #include "algorithm/visitors/numerical/RollingKthVisitor.hpp"
-#include "data/measurement/AssayMeasurement.hpp"
 #include "data/measurement/NaN.hpp"
-
+#include "data/measurement/SelectMeasureType.hpp"
 
 namespace Visitors {
 
@@ -72,7 +71,7 @@ namespace Visitors {
 
       // The calculations below are based upon suggestions from wikipedia.
       //   They are different from the base class' implementation
-      typedef typename Signal::AssayMeasurement<T2>::value_type VT;
+      typedef typename Signal::SelectMeasure<T2>::MeasureType MT;
       std::size_t size = BaseClass::scoresBuf_.size();
       std::size_t kthPosUp = static_cast<std::size_t>(std::ceil(static_cast<double>(BaseClass::kthValue_ * size)));
       std::size_t kthPosDown = static_cast<std::size_t>(std::floor(static_cast<double>(BaseClass::kthValue_ * size)));
@@ -88,13 +87,13 @@ namespace Visitors {
           double two = **++next;
           pt_.operator()((one + two)/2.0);
         } else if ( BaseClass::currentAtPos_ == kthPosUp ) {
-          pt_.operator()(static_cast<VT>(**BaseClass::currentMarker_));
+          pt_.operator()(static_cast<MT>(**BaseClass::currentMarker_));
         } else { // BaseClass::currentAtPos_ == kthPosDown; round up to kthPosUp per wikipedia
           typename BaseClass::ScoreTypeContainer::iterator next = BaseClass::currentMarker_;
-          pt_.operator()(static_cast<VT>(**++next));
+          pt_.operator()(static_cast<MT>(**++next));
         }
       } else if ( 1 == size ) {
-        pt_.operator()(static_cast<VT>(**BaseClass::currentMarker_));
+        pt_.operator()(static_cast<MT>(**BaseClass::currentMarker_));
       } else {
         static const Signal::NaN nan = Signal::NaN();
         pt_.operator()(nan);
