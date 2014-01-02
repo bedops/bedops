@@ -47,7 +47,7 @@ namespace Signal {
     };
 
     // user-defined : requires MeasurementType typedef
-    //   as used by SelectMeasure: UserDefined==U always, and T is not a built-in
+    //   as used by SelectMeasure: UserDefined==U always, and is not a built-in
     template <typename UserDefined, typename U>
     struct SelectMeasureImpl {
       typedef typename UserDefined::MeasurementType MeasureType;
