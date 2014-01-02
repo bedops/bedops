@@ -139,7 +139,7 @@ namespace Signal
     friend bool operator>=(const AssayMeasurement& a, const AssayMeasurement& b)
       { return(a.measurement_ >= b.measurement_); }
     friend bool operator==(const AssayMeasurement& a, const AssayMeasurement& b)
-      { return(a.measurement_ == b.measurmeent_); }
+      { return(a.measurement_ == b.measurement_); }
     friend bool operator!=(const AssayMeasurement& a, const AssayMeasurement& b)
       { return(a.measurement_ != b.measurement_); }
     friend AssayMeasurement operator-(const AssayMeasurement& a, const AssayMeasurement& b)
