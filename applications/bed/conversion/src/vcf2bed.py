@@ -35,6 +35,11 @@
 #               -- The "meta-information" (starting with '##') and "header"
 #                  lines (starting with '#') are discarded.
 #
+#                  To preserve metadata and header as BED elements, use the 
+#                  --keep-header option, which munges these data into pseudo-elements 
+#                  that should sort to the top (when chromosomes follow UCSC naming
+#                  conventions) by using the "_header" chromosome name.
+#
 #               -- The header line must be tab-delimited. The eight, fixed mandatory
 #                  columns are converted to BED data as follows:
 #
@@ -91,9 +96,10 @@ def which(program):
 
 def printUsage(stream):
     usage = ("Usage:\n"
-             "  %s [ --help ] [ --snvs | --insertions | --deletions ] [ --do-not-sort | --max-mem <value> ] < foo.vcf\n\n"
+             "  %s [ --help ] [ --keep-header ] [ --snvs | --insertions | --deletions ] [ --do-not-sort | --max-mem <value> ] < foo.vcf\n\n"
              "Options:\n"
              "  --help              Print this help message and exit\n"
+             "  --keep-header       Preserve metadata and header information as pseudo-BED elements\n"
              "  --snvs              Filter on single nucleotide variants\n"
              "  --insertions        Filter on insertion variants\n"
              "  --deletions         Filter on deletion variants\n"
@@ -108,7 +114,7 @@ def printUsage(stream):
              "  specifications outlined here by the 1000 Genomes project:\n\n"
              "  http://www.1000genomes.org/wiki/Analysis/Variant%%20Call%%20Format/vcf-variant-call-format-version-41\n\n"
              "  -- The 'meta-information' (starting with '##') and 'header'\n"
-             "     lines (starting with '#') are discarded.\n\n"
+             "     lines (starting with '#') are discarded, unless --keep-header is specified.\n\n"
              "  -- The header line must be tab-delimited. The eight, fixed mandatory\n"
              "     columns are converted to BED data as follows:\n\n"
              "     - Data in the #CHROM column are mapped to the first column of the BED output\n"
@@ -173,6 +179,9 @@ def main(*args):
     requiredVersion = (2,7)
     checkInstallation(requiredVersion)
 
+    keepHeader = False
+    keepHeaderIdx = 0
+    keepHeaderChr = "_header"
     sortOutput = True
     maxMem = "2G"
     maxMemChanged = False
@@ -185,7 +194,7 @@ def main(*args):
     signal.signal(signal.SIGPIPE,signal.SIG_DFL)
 
     optstr = ""
-    longopts = ["help", "do-not-sort", "max-mem=", "snvs", "insertions", "deletions"]
+    longopts = ["help", "keep-header", "do-not-sort", "max-mem=", "snvs", "insertions", "deletions"]
     try:
         (options, args) = getopt.getopt(sys.argv[1:], optstr, longopts)
     except getopt.GetoptError as error:
@@ -196,6 +205,8 @@ def main(*args):
         if key in ("--help"):
             printUsage("stdout")
             return os.EX_OK
+        elif key in ("--keep-header"):
+            keepHeader = True
         elif key in ("--do-not-sort"):
             sortOutput = False
         elif key in ("--max-mem"):
@@ -240,10 +251,32 @@ def main(*args):
             
     for line in sys.stdin:
         chomped_line = line.rstrip(os.linesep)
-        if chomped_line.startswith('##'):
+        if chomped_line.startswith('##') and not keepHeader:
             pass
+        elif chomped_line.startswith('##') and keepHeader:
+            elem_chr = keepHeaderChr
+            elem_start = str(keepHeaderIdx)
+            elem_stop = str(keepHeaderIdx + 1)
+            elem_id = chomped_line
+            convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id]) + '\n'
+            keepHeaderIdx += 1
+            if sortOutput:
+                sortTF.write(convertedLine)
+            else:
+                sys.stdout.write(convertedLine)
         elif chomped_line.startswith('#'):
             columns = chomped_line.split('\t')
+            if keepHeader:
+                elem_chr = keepHeaderChr
+                elem_start = str(keepHeaderIdx)
+                elem_stop = str(keepHeaderIdx + 1)
+                elem_id = chomped_line
+                convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id]) + '\n'
+                keepHeaderIdx += 1
+                if sortOutput:
+                    sortTF.write(convertedLine)
+                else:
+                    sys.stdout.write(convertedLine)
         else:
             elems = chomped_line.split('\t')
             metadata = dict()

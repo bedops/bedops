@@ -32,7 +32,12 @@
 #
 #               PSL input can contain a header or be headerless, if the BLAT search was
 #               performed with the -noHead option. By default, we assume the PSL input is headerless.
-#               If your PSL data contains a header, use the --headered option with this script.
+#               If your PSL data contains a header, use the --headered option with this script. 
+#
+#               If you use --headered, you can use the --keep-header option to preserve the header
+#               data as pseudo-BED elements that use the "_header" chromosome name. We expect this
+#               should not cause any collision problems since PSL data should use the UCSC chromosome
+#               naming convention.
 #
 #               We describe below how we map columns to BED, so that BLAT results can be losslessly
 #               transformed back into PSL format with a simple awk statement or other similar
@@ -106,9 +111,10 @@ def which(program):
 
 def printUsage(stream):
     usage = ("Usage:\n"
-             "  %s [ --help ] [ --headered ] [ --do-not-sort | --max-mem <value> ] < foo.psl\n\n"
+             "  %s [ --help ] [ --keep-header ] [ --headered ] [ --do-not-sort | --max-mem <value> ] < foo.psl\n\n"
              "Options:\n"
              "  --help              Print this help message and exit\n"
+             "  --keep-header       Preserve header information as pseudo-BED elements (requires --headered)\n"
              "  --headered          Convert headered PSL input to BED (default is headerless)\n"
              "  --do-not-sort       Do not sort converted data with BEDOPS sort-bed\n"
              "  --max-mem <value>   Sets aside <value> memory for sorting BED output. For example,\n"
@@ -180,6 +186,9 @@ def main(*args):
     requiredVersion = (2,7)
     checkInstallation(requiredVersion)
 
+    keepHeader = False
+    keepHeaderIdx = 0
+    keepHeaderChr = "_header"
     sortOutput = True
     inputIsHeadered = False
     maxMem = "2G"
@@ -190,7 +199,7 @@ def main(*args):
     signal.signal(signal.SIGPIPE,signal.SIG_DFL)
 
     optstr = ""
-    longopts = ["do-not-sort", "headered", "help", "max-mem="]
+    longopts = ["do-not-sort", "keep-header", "headered", "help", "max-mem="]
     try:
         (options, args) = getopt.getopt(sys.argv[1:], optstr, longopts)
     except getopt.GetoptError as error:
@@ -201,6 +210,8 @@ def main(*args):
         if key in ("--help"):
             printUsage("stdout")
             return os.EX_OK
+        elif key in ("--keep-header"):
+            keepHeader = True
         elif key in ("--headered"):
             inputIsHeadered = True
         elif key in ("--do-not-sort"):
@@ -208,6 +219,11 @@ def main(*args):
         elif key in ("--max-mem"):
             maxMem = str(value)
             maxMemChanged = True
+
+    if keepHeader and not inputIsHeadered:
+        sys.stderr.write( "[%s] - Error: Cannot specify --keep-header without --headered\n" % sys.argv[0] )
+        printUsage("stderr")
+        return os.EX_USAGE
 
     if maxMemChanged and not sortOutput:
         sys.stderr.write( "[%s] - Error: Cannot specify both --do-not-sort and --max-mem parameters\n" % sys.argv[0] )
@@ -231,6 +247,17 @@ def main(*args):
     if inputIsHeadered:
         headerLineCounter = 0
         for line in sys.stdin:
+            if keepHeader:
+                elem_chr = keepHeaderChr
+                elem_start = str(keepHeaderIdx)
+                elem_stop = str(keepHeaderIdx + 1)
+                elem_id = line
+                convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id]) + '\n'
+                keepHeaderIdx += 1
+                if sortOutput:
+                    sortTF.write(convertedLine)
+                else:
+                    sys.stdout.write(convertedLine)
             if (headerLineCounter == 4):
                 break
             headerLineCounter += 1

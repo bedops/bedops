@@ -23,8 +23,8 @@
 # Author:       Alex Reynolds and Eric Haugen
 #
 # Project:      Converts 0-based, half-open [a-1,b) headered or headerless BAM input
-#               into 0-based, half-open [a-1,b) extended BED, which is passed to BEDOPS Starch
-#               to create the archive.
+#               into 0-based, half-open [a-1,b) extended BED that is subsequently
+#               compressed into a Starch v2 archive.
 #
 # Version:      2.4
 #
@@ -66,6 +66,10 @@
 #               In the case of RNA-seq data with skipped regions ('N' components in the
 #               read's CIGAR string), the --split option will split the read into two or more 
 #               separate BED elements. 
+#
+#               The header section is normally stripped from the output. You can use the
+#               --keep-header option to preserve the header data from the SAM input as
+#               pseudo-BED elements.
 #
 #               This script also validates the CIGAR strings in a sequencing dataset, in the
 #               course of converting to BED.
@@ -480,16 +484,17 @@ def which(program):
 
 def printUsage(stream):
     usage = ("Usage:\n"
-             "  %s [ --help ] [ --split ] [ --all-reads ] [ --do-not-sort | --max-mem <value> ] [ --starch-format <bzip2|gzip> ] < foo.bam\n\n"
+             "  %s [ --help ] [ --keep-header ] [ --split ] [ --all-reads ] [ --do-not-sort | --max-mem <value> ] [ --starch-format <bzip2|gzip> ] < foo.bam\n\n"
              "Options:                                                                            \n"
-             "  --help                 Print this help message and exit\n"
+             "  --help                 Print this help message and exit                           \n"
+             "  --keep-header          Preserve header section as pseudo-BED elements             \n"
              "  --split                Split reads with 'N' CIGAR operations into separate BED elements\n"
-             "  --all-reads            Include both unmapped and mapped reads in output\n"
-             "  --do-not-sort          Do not sort converted data with BEDOPS sort-bed\n"
-             "  --custom-tags <value>  Add a comma-separated list of custom SAM tags\n"
+             "  --all-reads            Include both unmapped and mapped reads in output           \n"
+             "  --do-not-sort          Do not sort converted data with BEDOPS sort-bed            \n"
+             "  --custom-tags <value>  Add a comma-separated list of custom SAM tags              \n"
              "  --max-mem <value>      Sets aside <value> memory for sorting BED output. For example,\n"
              "                         <value> can be 8G, 8000M or 8000000000 to specify 8 GB of memory\n"
-             "                         (default: 2G)\n\n"
+             "                         (default: 2G)                                            \n\n"
              "About:                                                                              \n"
              "  This script converts 0-based, half-open [a-1, b) binary BAM data from standard    \n"
              "  input into 0-based, half-open [a-1, b) extended BED, which is sorted, converted   \n"
@@ -511,6 +516,8 @@ def printUsage(stream):
              "  - TLEN                                                                            \n"
              "  - SEQ                                                                             \n"
              "  - QUAL                                                                          \n\n"
+             "  Use the --keep-header option is you would like to preserve the SAM header section \n"
+             "  as pseudo-BED elements; otherwise, these are stripped from output.              \n\n"
              "  Because we have mapped all columns, we can translate converted BED data back to   \n"
              "  headerless SAM reads with a simple awk statement or other script that calculates  \n"
              "  1-based coordinates and permutes columns.                                       \n\n"
@@ -561,12 +568,19 @@ def main(*args):
     customTagsStr = ""
     customTagsAdded = False
 
-    # fixes bug with Python handling of SIGPIPE signal from UNIX head, etc.
+    #
+    # Fixes bug with Python handling of SIGPIPE signal from UNIX head, etc.
     # http://coding.derkeiler.com/Archive/Python/comp.lang.python/2004-06/3823.html
+    #
+
     signal.signal(signal.SIGPIPE,signal.SIG_DFL)
 
+    #
+    # Read in options
+    #
+
     optstr = ""
-    longopts = ["do-not-sort", "split", "all-reads", "help", "custom-tags=", "max-mem=", "starch-format="]
+    longopts = ["do-not-sort", "keep-header", "split", "all-reads", "help", "custom-tags=", "max-mem=", "starch-format="]
     try:
         (options, args) = getopt.getopt(sys.argv[1:], optstr, longopts)
     except getopt.GetoptError as error:
@@ -577,6 +591,8 @@ def main(*args):
         if key in ("--help"):
             printUsage("stdout")
             return os.EX_OK
+        elif key in ("--keep-header"):
+            keepHeader = True
         elif key in ("--split"):
             inputNeedsSplitting = True
         elif key in ("--all-reads"):
@@ -611,8 +627,8 @@ def main(*args):
         printUsage("stderr")
         return os.EX_NOINPUT
 
-    starchTF = tempfile.NamedTemporaryFile(mode='wb')
-    samTF = tempfile.NamedTemporaryFile(mode='wb')
+    starchTF = tempfile.NamedTemporaryFile(mode='wb', delete=False)
+    samTF = tempfile.NamedTemporaryFile(mode='wb', delete=False)
     if sortOutput:
         sortTF = tempfile.NamedTemporaryFile(mode='wb', delete=False)
 
@@ -627,21 +643,35 @@ def main(*args):
         sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
         return os.EX_OSFILE
 
-    samProcess = subprocess.Popen(['samtools', 'view', '-'], stdin=subprocess.PIPE, stdout=samTF)
+    samProcess = subprocess.Popen(['samtools', 'view', '-h', '-'], stdin=subprocess.PIPE, stdout=samTF)
     while True:
         bamByte = sys.stdin.read()
-        if not bamByte:
+        if bamByte:
+            samProcess.stdin.write(bamByte)
+            samProcess.stdin.flush()
+        else:
+            samProcess.communicate()
+            samTF.file.close()
             break
-        samProcess.stdin.write(bamByte)
-        samProcess.stdin.flush()
-    samProcess.wait()
 
-    samTF.seek(0)
     with open(samTF.name) as samData:
-
         samRecord = SamRecord()
-
         for line in samData:
+
+            if line.startswith('@') and keepHeader:
+                elem_chr = keepHeaderChr
+                elem_start = str(keepHeaderIdx)
+                elem_stop = str(keepHeaderIdx + 1)
+                elem_id = line
+                convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id]) + '\n'
+                keepHeaderIdx += 1
+                if sortOutput:
+                    sortTF.write(convertedLine)
+                else:
+                    starchTF.write(convertedLine)
+                continue
+            elif line.startswith('@') and not keepHeader:
+                continue
 
             chomped_line = line.rstrip(os.linesep)            
             elems = chomped_line.split('\t')
@@ -741,8 +771,22 @@ def main(*args):
                         else:
                             starchTF.write(samRecord.asBed())
 
-    if sortOutput:
+    #
+    # Clean up intermediate data
+    #
 
+    try:
+        os.remove(samTF.name)
+    except OSError:
+        msg = "The intermediate SAM output file could not be deleted"
+        sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
+        return os.EX_OSFILE
+
+    # 
+    # Attempt to sort converted data
+    #
+
+    if sortOutput:
         try:
             if which('sort-bed') is None:
                 raise IOError("The sort-bed binary could not be found in your user PATH -- please locate and install this binary")
@@ -766,7 +810,18 @@ def main(*args):
         return os.EX_OSFILE
 
     starchProcess = subprocess.Popen(["starch", starchFormat, starchTF.name])
-    starchProcess.wait()
+    starchProcess.communicate()
+
+    #
+    # Clean up intermediate data
+    #
+
+    try:
+        os.remove(starchTF.name)
+    except OSError:
+        msg = "The intermediate Starch output file could not be deleted"
+        sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
+        return os.EX_OSFILE
 
     return os.EX_OK
 

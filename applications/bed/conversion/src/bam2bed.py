@@ -66,6 +66,10 @@
 #               read's CIGAR string), the --split option will split the read into two or more 
 #               separate BED elements. 
 #
+#               The header section is normally stripped from the output. You can use the
+#               --keep-header option to preserve the header data from the SAM input as
+#               pseudo-BED elements.
+#
 #               This script also validates the CIGAR strings in a sequencing dataset, in the
 #               course of converting to BED.
 #
@@ -479,9 +483,10 @@ def which(program):
 
 def printUsage(stream):
     usage = ("Usage:\n"
-             "  %s [ --help ] [ --split ] [ --all-reads ] [ --do-not-sort | --max-mem <value> ] < foo.bam\n\n"
+             "  %s [ --help ] [ --keep-header ] [ --split ] [ --all-reads ] [ --do-not-sort | --max-mem <value> ] < foo.bam\n\n"
              "Options:\n"
              "  --help                 Print this help message and exit\n"
+             "  --keep-header          Preserve header section as pseudo-BED elements\n"
              "  --split                Split reads with 'N' CIGAR operations into separate BED elements\n"
              "  --all-reads            Include both unmapped and mapped reads in output\n"
              "  --do-not-sort          Do not sort converted data with BEDOPS sort-bed\n"
@@ -510,6 +515,8 @@ def printUsage(stream):
              "  - TLEN                                                                            \n"
              "  - SEQ                                                                             \n"
              "  - QUAL                                                                          \n\n"
+             "  Use the --keep-header option is you would like to preserve the SAM header section \n"
+             "  as pseudo-BED elements; otherwise, these are stripped from output.              \n\n"
              "  Because we have mapped all columns, we can translate converted BED data back to   \n"
              "  headerless SAM reads with a simple awk statement or other script that calculates  \n"
              "  1-based coordinates and permutes columns.                                       \n\n"
@@ -551,6 +558,9 @@ def main(*args):
     requiredVersion = (2,7)
     checkInstallation(requiredVersion)
 
+    keepHeader = False
+    keepHeaderIdx = 0
+    keepHeaderChr = "_header"
     sortOutput = True
     inputNeedsSplitting = False
     includeAllReads = False
@@ -559,12 +569,19 @@ def main(*args):
     customTagsStr = ""
     customTagsAdded = False
 
-    # fixes bug with Python handling of SIGPIPE signal from UNIX head, etc.
+    #
+    # Fixes bug with Python handling of SIGPIPE signal from UNIX head, etc.
     # http://coding.derkeiler.com/Archive/Python/comp.lang.python/2004-06/3823.html
+    #
+
     signal.signal(signal.SIGPIPE,signal.SIG_DFL)
 
+    #
+    # Read in options
+    #
+
     optstr = ""
-    longopts = ["do-not-sort", "split", "all-reads", "help", "custom-tags=", "max-mem="]
+    longopts = ["do-not-sort", "keep-header", "split", "all-reads", "help", "custom-tags=", "max-mem="]
     try:
         (options, args) = getopt.getopt(sys.argv[1:], optstr, longopts)
     except getopt.GetoptError as error:
@@ -575,6 +592,8 @@ def main(*args):
         if key in ("--help"):
             printUsage("stdout")
             return os.EX_OK
+        elif key in ("--keep-header"):
+            keepHeader = True
         elif key in ("--split"):
             inputNeedsSplitting = True
         elif key in ("--all-reads"):
@@ -607,7 +626,7 @@ def main(*args):
         printUsage("stderr")
         return os.EX_NOINPUT
 
-    samTF = tempfile.NamedTemporaryFile(mode='wb')
+    samTF = tempfile.NamedTemporaryFile(mode='wb', delete=False)
     if sortOutput:
         sortTF = tempfile.NamedTemporaryFile(mode='wb', delete=False)
 
@@ -622,21 +641,35 @@ def main(*args):
         sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
         return os.EX_OSFILE
 
-    samProcess = subprocess.Popen(['samtools', 'view', '-'], stdin=subprocess.PIPE, stdout=samTF)
+    samProcess = subprocess.Popen(['samtools', 'view', '-h', '-'], stdin=subprocess.PIPE, stdout=samTF)
     while True:
         bamByte = sys.stdin.read()
-        if not bamByte:
+        if bamByte:
+            samProcess.stdin.write(bamByte)
+            samProcess.stdin.flush()
+        else:
+            samProcess.communicate()
+            samTF.file.close()
             break
-        samProcess.stdin.write(bamByte)
-        samProcess.stdin.flush()
-    samProcess.wait()
 
-    samTF.seek(0)
     with open(samTF.name) as samData:
-
         samRecord = SamRecord()
-
         for line in samData:
+
+            if line.startswith('@') and keepHeader:
+                elem_chr = keepHeaderChr
+                elem_start = str(keepHeaderIdx)
+                elem_stop = str(keepHeaderIdx + 1)
+                elem_id = line
+                convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id]) + '\n'
+                keepHeaderIdx += 1
+                if sortOutput:
+                    sortTF.write(convertedLine)
+                else:
+                    sys.stdout.write(convertedLine)
+                continue
+            elif line.startswith('@') and not keepHeader:
+                continue
             
             chomped_line = line.rstrip(os.linesep)            
             elems = chomped_line.split('\t')
@@ -736,8 +769,22 @@ def main(*args):
                         else:
                             sys.stdout.write(samRecord.asBed())
 
-    if sortOutput:
+    #
+    # Clean up intermediate data
+    #
 
+    try:
+        os.remove(samTF.name)
+    except OSError:
+        msg = "The intermediate SAM output file could not be deleted"
+        sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
+        return os.EX_OSFILE
+
+    # 
+    # Attempt to sort converted data
+    #
+
+    if sortOutput:
         try:
             if which('sort-bed') is None:
                 raise IOError("The sort-bed binary could not be found in your user PATH -- please locate and install this binary")

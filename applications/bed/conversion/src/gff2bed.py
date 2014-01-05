@@ -52,6 +52,10 @@
 #               and a 'zero_length_insertion' attribute is added to the 'attributes' GFF 
 #               column data.
 #
+#               Metadata and header fields are usually stripped. Use the --keep-header
+#               option to preserve these data as pseudo-BED elements that use the "_header"
+#               chromosome name.
+#
 #               Example usage:
 #
 #               $ gff2bed < foo.gff > sorted-foo.gff.bed
@@ -87,9 +91,10 @@ def which(program):
 
 def printUsage(stream):
     usage = ("Usage:\n"
-             "  %s [ --help ] [ --do-not-sort | --max-mem <value> ] < foo.gff\n\n"
+             "  %s [ --help ] [ --keep-header ] [ --do-not-sort | --max-mem <value> ] < foo.gff\n\n"
              "Options:\n"
              "  --help              Print this help message and exit\n"
+             "  --keep-header       Preserve metadata and header fields as pseudo-BED elements\n"
              "  --do-not-sort       Do not sort converted data with BEDOPS sort-bed\n"
              "  --max-mem <value>   Sets aside <value> memory for sorting BED output. For example,\n"
              "                      <value> can be 8G, 8000M or 8000000000 to specify 8 GB of memory\n"
@@ -113,6 +118,8 @@ def printUsage(stream):
              "    the element ID (4th BED column)\n"
              "  - The 'score' and 'strand' GFF columns (if present) are mapped to the\n"
              "    5th and 6th BED columns, respectively\n\n"
+             "  The metadata and header fields are usually stripped. If you want to keep them,\n"
+             "  use the --keep-header option.\n\n"
              "  If we encounter zero-length insertion elements (which are defined\n"
              "  where the start and stop GFF column data values are equivalent), the\n"
              "  start coordinate is decremented to convert to 0-based, half-open indexing,\n"
@@ -145,6 +152,9 @@ def main(*args):
     requiredVersion = (2,7)
     checkInstallation(requiredVersion)
 
+    keepHeader = False
+    keepHeaderIdx = 0
+    keepHeaderChr = "_header"
     sortOutput = True
     maxMem = "2G"
     maxMemChanged = False    
@@ -154,7 +164,7 @@ def main(*args):
     signal.signal(signal.SIGPIPE,signal.SIG_DFL)
 
     optstr = ""
-    longopts = ["help", "do-not-sort", "max-mem="]
+    longopts = ["help", "keep-header", "do-not-sort", "max-mem="]
     try:
         (options, args) = getopt.getopt(sys.argv[1:], optstr, longopts)
     except getopt.GetoptError as error:
@@ -165,6 +175,8 @@ def main(*args):
         if key in ("--help"):
             printUsage("stdout")
             return os.EX_OK
+        elif key in ("--keep-header"):
+            keepHeader = True
         elif key in ("--do-not-sort"):
             sortOutput = False
         elif key in ("--max-mem"):
@@ -191,7 +203,19 @@ def main(*args):
     for line in sys.stdin:
         chomped_line = line.rstrip(os.linesep)
         if chomped_line.startswith('##') or chomped_line.startswith('#'):
-            pass
+            if keepHeader:
+                elem_chr = keepHeaderChr
+                elem_start = str(keepHeaderIdx)
+                elem_stop = str(keepHeaderIdx + 1)
+                elem_id = chomped_line
+                convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id]) + '\n'
+                keepHeaderIdx += 1
+                if sortOutput:
+                    sortTF.write(convertedLine)
+                else:
+                    sys.stdout.write(convertedLine)
+            else:
+                pass
         else:
             elems = chomped_line.split('\t')
             cols = dict()
