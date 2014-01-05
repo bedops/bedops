@@ -7,7 +7,7 @@ The ``bam2bed`` script converts 0-based, half-open ``[start-1, end)`` `Binary (S
 
 For convenience, we also offer ``bam2starch``, which performs the extra step of creating a :ref:`Starch-formatted <starch_specification>` archive.
 
-The ``bam2bed`` script is "non-lossy". Similar tools in the world tend to throw out information from the original BAM input upon conversion; ``bam2bed`` retains everything, facilitating reuse of converted data and conversion to other formats.
+The ``bam2bed`` script is "non-lossy". Similar tools in the world tend to throw out information from the original BAM input upon conversion; ``bam2bed`` can retain everything, facilitating reuse of converted data and conversion to other formats.
 
 .. tip:: Doing the extra step of creating a :ref:`Starch-formatted <starch_specification>` archive can save a lot of space relative to the original BAM format, up to 33% of the original BAM dataset, while offering per-chromosome random access.
 
@@ -28,6 +28,8 @@ Usage
 =====
 
 The ``bam2bed`` script parses BAM data from standard input and prints :ref:`sorted <sort-bed>` BED to standard output. The ``bam2starch`` script uses an extra step to parse BAM to a compressed BEDOPS :ref:`Starch-formatted <starch_specification>` archive, which is also directed to standard output.
+
+The header data of a BAM file is usually discarded, unless you add the ``--keep-header`` option. In this case, BED elements are created from these data, using the chromosome name ``_header`` to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field).
 
 .. note:: If you modify the BAM data such that it includes tags not already in the SAM specification, use the ``--custom-tags <value>`` operator to specify a comma-delimited list of custom tags.
 
@@ -53,6 +55,8 @@ We can convert it to sorted BED data in the following manner (omitting standard 
   seq1    4       39      EAS51_64:8:5:734:57     137     +       99      35M     *       0       0       AGTGGCTCATTGTAAATGTGTGGTTTAACTCGTCC     <<<<<<<<<<<7;71<<;<;;<7;<<3;);3*8/5     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
   seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     *       0       0       GTGGCTCATTGTAATTTTTTGTTTTAACTCTTCTCT    (-&----,----)-)-),'--)---',+-,),''*,    MF:i:130        Aq:i:63 NM:i:5  UQ:i:38 H0:i:0  H1:i:0
   ...
+
+As you see here, we strip all header elements. However, the use of the ``--keep-header`` option will preserve the BAM file's header as BED elements that use ``_header`` as a chromosome name.
 
 .. note:: The provided scripts **strip out unmapped reads** from the BAM file. We believe this makes sense under most circumstances. Add the ``--all-reads`` option if you need unmapped and mapped reads.
 

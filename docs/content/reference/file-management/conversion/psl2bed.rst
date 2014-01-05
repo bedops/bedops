@@ -29,6 +29,8 @@ Usage
 
 The ``psl2bed`` script parses PSL from standard input and prints sorted BED to standard output. The ``psl2starch`` script uses an extra step to parse GFF to a compressed BEDOPS :ref:`Starch-formatted <starch_specification>` archive, which is also directed to standard output.
 
+The header data of a headered PSL file is usually discarded, unless you add the ``--keep-header`` option. In this case, BED elements are created from these data, using the chromosome name ``_header`` to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field).
+
 .. tip:: By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the ``--do-not-sort`` option. Run the script with the ``--help`` option for more details.
 
 .. tip:: If you are sorting data larger than system memory, use the ``--max-mem`` option to limit sort memory usage to a reasonable fraction of available memory, *e.g.*, ``--max-mem 2G`` or similar. See ``--help`` for more details.
@@ -72,6 +74,8 @@ We can convert it to sorted BED data in the following manner:
   chr13   111391852       111391888       foo     50      +       34      2       0       0       0       0       0       0       14      50      115169878       1       36,     14,     111391852,
   chr16   8149657 8149694 foo     50      +       36      1       0       0       0       0       0       0       13      50      90354753        1       37,     13,     8149657,
   ...
+
+As you see here, the header data of a headered PSL file is discarded, unless you add the ``--keep-header`` option. In this case, BED elements are created from these data, using the chromosome name ``_header`` to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field).
 
 .. note:: By default, the ``psl2bed`` and ``psl2starch`` scripts work with headerless PSL data. If you have headered PSL output, use the ``--headered`` operator with either conversion script, as shown in the example above.
 

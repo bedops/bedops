@@ -29,6 +29,8 @@ Usage
 
 The ``sam2bed`` script parses SAM data from standard input and prints :ref:`sorted <sort-bed>` BED to standard output. The ``sam2starch`` script uses an extra step to parse SAM to a compressed BEDOPS :ref:`Starch-formatted <starch_specification>` archive, which is also directed to standard output.
 
+The header data of a SAM file is usually discarded, unless you add the ``--keep-header`` option. In this case, BED elements are created from these data, using the chromosome name ``_header`` to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field).
+
 .. note:: If you modify the SAM data such that it includes tags not already in the SAM specification, use the ``--custom-tags <value>`` operator to specify a comma-delimited list of custom tags.
 
 .. tip:: If you work with RNA-seq data, you can use the ``--split`` option to process reads with ``N``-CIGAR operations, splitting them into separate BED elements.
@@ -65,6 +67,8 @@ We can convert it to sorted BED data in the following manner (omitting standard 
   seq1    4       39      EAS51_64:8:5:734:57     137     +       99      35M     *       0       0       AGTGGCTCATTGTAAATGTGTGGTTTAACTCGTCC     <<<<<<<<<<<7;71<<;<;;<7;<<3;);3*8/5     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
   seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     *       0       0       GTGGCTCATTGTAATTTTTTGTTTTAACTCTTCTCT    (-&----,----)-)-),'--)---',+-,),''*,    MF:i:130        Aq:i:63 NM:i:5  UQ:i:38 H0:i:0  H1:i:0
   ...
+
+As you see here, we strip all header elements. However, the use of the ``--keep-header`` option will preserve the SAM file's header as BED elements that use ``_header`` as a chromosome name.
 
 .. note:: The provided scripts **strip out unmapped reads** from the SAM file. We believe this makes sense under most circumstances. Add the ``--all-reads`` option if you need unmapped and mapped reads.
 
