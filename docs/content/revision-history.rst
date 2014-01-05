@@ -15,7 +15,7 @@ Current version
 v2.4.0
 ------
 
-Released: **TBD**
+Released: **January 6, 2014**
 
 * :ref:`bedmap`
 
@@ -39,7 +39,7 @@ Released: **TBD**
 
 * :ref:`starchcat`
 
-  * Fixed buffer overflow condition that caused segmentation faults on Ubuntu 13.
+  * Fixed buffer overflow condition that caused segmentation faults on Ubuntu 13. 
 
 * All :ref:`conversion scripts <conversion_scripts>`
 
@@ -51,9 +51,21 @@ Released: **TBD**
 
     * Added ``--custom-tags <value>`` command-line option to support a comma-separated list of custom tags (cf. `Biostars discussion <http://www.biostars.org/p/87062/>`_), *i.e.*, tags which are not part of the original SAMtools specification.
 
+    * Added ``--keep-header`` option to preserve header and metadata as BED elements that use ``_header`` as the chromosome name.
+
   * :ref:`vcf2bed`
 
     * Added new ``--snvs``, ``--insertions`` and ``--deletions`` options that filter VCF variants into three separate subcategories.
+
+    * Added ``--keep-header`` option to preserve header and metadata as BED elements that use ``_header`` as the chromosome name.
+
+  * :ref:`gff2bed`
+
+    * Added ``--keep-header`` option to preserve header and metadata as BED elements that use ``_header`` as the chromosome name.
+
+  * :ref:`psl2bed`
+
+    * Added ``--keep-header`` option to preserve header and metadata as BED elements that use ``_header`` as the chromosome name.
 
 * Added OS X uninstaller project to allow end user to more easily remove BEDOPS tools.
 
