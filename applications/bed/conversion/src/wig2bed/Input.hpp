@@ -55,6 +55,7 @@ namespace Wig2Bed {
             usage << "        May use '-' to indicate reading from stdin.                                         \n";
             usage << "        Options:                                                                            \n";
             usage << "          --help:                   Print this message and exit successfully.               \n";
+            usage << "          --keep-header:            Preserve header information as BED elements.            \n";
             usage << "          --multisplit <basename>:  A single input file may have multiple wig sections, a   \n";
             usage << "                                     user may pass in more than one file, or both may occur.\n";
             usage << "                                     With this option, every separate input goes to a       \n";
@@ -73,17 +74,19 @@ namespace Wig2Bed {
                 if ( next == "--help" )
                     throw(Help());
                 else if ( next == "--multisplit" ) {
-                    if ( ++i == argc )
+                    std::string afterNext = argv[++i];
+                    if (( i == argc ) || ( (i + 1) == argc ) || ( afterNext.find("--") == 0 ))
                         throw(std::string("No argument given for --multisplit <basename>"));
                     basename_ = argv[i];
                 }
+                else if ( next == "--keep-header" )
+                    keepHeader_ = true;
                 else if ( next.find("--") == 0 )
                     throw(std::string("Unknown arg: " + next));
                 else
                     break;
             } // for
-            
-            
+
             // The rest are, presumably, input files
             int numFiles = argc - i;
             if ( numFiles <= 0 )
@@ -119,6 +122,7 @@ namespace Wig2Bed {
         typedef std::vector< std::istream *>::const_iterator InFileIterator;
         std::string basename_;
         std::vector< std::istream* > inFiles_;
+        bool keepHeader_;
     };
     
 } // namespace Wig2Bed

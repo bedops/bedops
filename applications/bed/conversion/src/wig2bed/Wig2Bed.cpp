@@ -68,6 +68,8 @@ main(int argc, char **argv)
             int cntr = 1;
             bool startWrite = false;
             FILE* outfile = stdout;
+            static const char* keepHeaderChrom = "_header";
+            bool keepHeader = progInput.keepHeader_;
 
             for(Wig2Bed::Input::InFileIterator i = progInput.inFiles_.begin(); i != progInput.inFiles_.end(); i++)	  
                 {
@@ -88,6 +90,7 @@ main(int argc, char **argv)
                     bool isFixedStep = false;
                     std::string currLine;
                     startWrite = false;
+                    int keepHeaderPos = 0;
                     
                     while(std::getline(**i, currLine))
                         {
@@ -101,8 +104,13 @@ main(int argc, char **argv)
                                     std::fclose(outfile);
                                     std::stringstream con;
                                     con << progInput.basename_ << "." << cntr++;
+                                    keepHeaderPos = 0;
                                     std::string s = con.str();
                                     outfile = std::fopen(s.c_str(), "w");
+                                }
+                                if ( keepHeader ) {
+                                    std::fprintf(outfile, "%s\t%d\t%d\t%s\n", keepHeaderChrom, keepHeaderPos, (keepHeaderPos + 1), currLine.c_str());
+                                    keepHeaderPos++;
                                 }
                                 continue;
                             }
@@ -115,8 +123,13 @@ main(int argc, char **argv)
                                     std::fclose(outfile);
                                     std::stringstream con;
                                     con << progInput.basename_ << "." << cntr++;
+                                    keepHeaderPos = 0;
                                     std::string s = con.str();
                                     outfile = std::fopen(s.c_str(), "w");
+                                }
+                                if ( keepHeader ) {
+                                    std::fprintf(outfile, "%s\t%d\t%d\t%s\n", keepHeaderChrom, keepHeaderPos, (keepHeaderPos + 1), currLine.c_str());
+                                    keepHeaderPos++;
                                 }
                                 continue;
                             }
@@ -137,8 +150,13 @@ main(int argc, char **argv)
                                         std::fclose(outfile);
                                         std::stringstream con;
                                         con << progInput.basename_ << "." << cntr++;
+                                        keepHeaderPos = 0;
                                         std::string s = con.str();
                                         outfile = std::fopen(s.c_str(), "w");
+                                    }
+                                    if ( keepHeader ) {
+                                        std::fprintf(outfile, "%s\t%d\t%d\t%s\n", keepHeaderChrom, keepHeaderPos, (keepHeaderPos + 1), currLine.c_str());
+                                        keepHeaderPos++;
                                     }
                                 }
                             else if (std::strncmp(currLine.c_str(), "fixedStep", 9) == 0) 
@@ -159,8 +177,13 @@ main(int argc, char **argv)
                                         std::fclose(outfile);
                                         std::stringstream con;
                                         con << progInput.basename_ << "." << cntr++;
+                                        keepHeaderPos = 0;
                                         std::string s = con.str();
                                         outfile = std::fopen(s.c_str(), "w");
+                                    }
+                                    if ( keepHeader ) {
+                                        std::fprintf(outfile, "%s\t%d\t%d\t%s\n", keepHeaderChrom, keepHeaderPos, (keepHeaderPos + 1), currLine.c_str());
+                                        keepHeaderPos++;
                                     }
                                 }
                             else if (std::strncmp(currLine.c_str(), "chr", 3) == 0) 
