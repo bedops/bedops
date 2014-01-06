@@ -516,7 +516,7 @@ def printUsage(stream):
              "  - TLEN                                                                            \n"
              "  - SEQ                                                                             \n"
              "  - QUAL                                                                          \n\n"
-             "  Use the --keep-header option is you would like to preserve the SAM header section \n"
+             "  Use the --keep-header option if you would like to preserve the SAM header section \n"
              "  as pseudo-BED elements; otherwise, these are stripped from output.              \n\n"
              "  Because we have mapped all columns, we can translate converted BED data back to   \n"
              "  headerless SAM reads with a simple awk statement or other script that calculates  \n"
