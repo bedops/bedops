@@ -77,6 +77,30 @@ We can convert it to sorted BED data in the following manner:
 
 As you see here, the header data of a headered PSL file is discarded, unless you add the ``--keep-header`` option. In this case, BED elements are created from these data, using the chromosome name ``_header`` to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field).
 
+Here is a demonstration of conversion of the same headered input, adding the ``--keep-header`` option:
+
+::
+
+  $ psl2bed --headered --keep-header < foo.psl
+  _header 0       1       psLayout version 3
+  _header 1       2
+  _header 2       3       match   mis-    rep.    N's     Q gap   Q gap   T gap   T gap   strand  Q               Q       Q       Q       T               T       T       T       block   blockSizes      qStarts  tStarts
+  _header 3       4       match   match           count   bases   count   bases           name            size    start   end     name            size    start   end     count
+  _header 4       5       ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+  chr1    30571100        30571135        foo     50      -       35      0       0       0       0       0       0       0       15      50      249250621       1       35,     0,      30571100,
+  chr1    69592160        69592195        foo     50      -       34      1       0       0       0       0       0       0       15      50      249250621       1       35,     0,      69592160,
+  chr1    107200050       107200100       foo     50      +       50      0       0       0       0       0       0       0       0       50      249250621       1       50,     0,      107200050,
+  chr11   12618347        12618389        foo     50      +       39      3       0       0       0       0       0       0       8       50      135006516       1       42,     8,      12618347,
+  chr11   32933028        32933063        foo     50      +       35      0       0       0       1       1       0       0       8       44      135006516       2       4,31,   8,13,   32933028,32933032,
+  chr11   80116421        80116457        foo     50      +       35      1       0       0       0       0       0       0       14      50      135006516       1       36,     14,     80116421,
+  chr11   133952291       133952327       foo     50      +       34      2       0       0       0       0       0       0       14      50      135006516       1       36,     14,     133952291,
+  chr13   99729482        99729523        foo     50      +       39      2       0       0       0       0       0       0       8       49      115169878       1       41,     8,      99729482,
+  chr13   111391852       111391888       foo     50      +       34      2       0       0       0       0       0       0       14      50      115169878       1       36,     14,     111391852,
+  chr16   8149657 8149694 foo     50      +       36      1       0       0       0       0       0       0       13      50      90354753        1       37,     13,     8149657,
+  ...
+
+With this option, the ``psl2bed`` and ``psl2starch`` scripts are completely "non-lossy". Use of ``awk`` or other scripting tools can munge these data back into a PSL-formatted file.
+
 .. note:: By default, the ``psl2bed`` and ``psl2starch`` scripts work with headerless PSL data. If you have headered PSL output, use the ``--headered`` operator with either conversion script, as shown in the example above.
 
 .. _psl2bed_column_mapping:
