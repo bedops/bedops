@@ -3,7 +3,9 @@
 Data conversion
 ===============
 
-These scripts convert a variety of common genomic data types to BED with no loss of information. In using these tools, you can easily prepare data from these formats for use with core BEDOPS tools, whether bigWig, VCF, GFF/GTF, BAM/SAM etc.
+These scripts convert a variety of common genomic data types to BED with no loss of information. In using these tools, you can easily prepare data from these formats for use with core BEDOPS tools, whether VCF, GFF/GTF, BAM/SAM etc.
+
+Some other formats not covered here can be converted with, for instance, the `UCSC Kent toolset <http://genomewiki.ucsc.edu/index.php/Kent_source_utilities>`_ (*e.g.*, altGraphX, axt, bigWig, bigBed, etc.).
 
 .. toctree::
 
