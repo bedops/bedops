@@ -69,11 +69,14 @@ namespace Wig2Bed {
                 throw(std::string("No input file argument given."));
             
             int i = 1;
+            for ( ; i < argc; ++i ) { // look for --help
+              std::string next = argv[i];
+              if ( next == "--help" )
+                  throw(Help());
+            } // for
             for ( ; i < argc; ++i ) {
                 std::string next = argv[i];
-                if ( next == "--help" )
-                    throw(Help());
-                else if ( next == "--multisplit" ) {
+                if ( next == "--multisplit" ) {
                     std::string afterNext = argv[++i];
                     if (( i == argc ) || ( (i + 1) == argc ) || ( afterNext.find("--") == 0 ))
                         throw(std::string("No argument given for --multisplit <basename>"));
