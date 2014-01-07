@@ -44,13 +44,13 @@ To demonstrate these scripts, we use a sample multi-section WIG input called ``f
   chr1    147971222       147971272       id-4    -0.760000
   ...
 
-We can omit ``--multisplit``, because conversion and sorting puts everything into one sorted BED file. However, the header data of the WIG file is discarded. 
+.. note:: Even though our WIG input ``foo.wig`` has multiple sections, we can omit the use of ``--multisplit``, because conversion and sorting puts everything into one sorted BED file. However, the header data of the WIG file is discarded. 
 
-We can add the ``--keep-header`` option. In this case, BED elements are created from these data, using the chromosome name ``_header`` to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field). 
+If we want to preserve the header data, we can add the ``--keep-header`` option. In this case, BED elements are created from these data, using the chromosome name ``_header`` to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field). 
 
-We will also need to add the ``--multisplit`` option, as header BED elements will otherwise be merged in a non-sensical way.
+In the case of the sample input ``foo.wig``, we will also need to add the ``--multisplit`` option, as header BED elements from each section will otherwise be collated in a non-sensical way. Adding ``--multisplit`` ensures that header data are converted and stored in separate BED files.
 
-We repeat the above conversion, adding the ``--keep-header`` and ``--multisplit`` options:
+To demonstrate, we next repeat the above conversion, adding the ``--keep-header`` and ``--multisplit`` options:
 
 ::
 
@@ -75,6 +75,8 @@ Conversion of this two-section WIG input results in two files called ``bar.1`` a
   chrX    119     124     id-13   -0.100000
   chrX    129     134     id-14   1.100000
   chrX    139     144     id-15   4.100000
+
+.. note:: If we had not used ``--multisplit``, the ``_header`` elements would be pushed together and would not be associated with their original WIG section.
 
 .. note:: Note the conversion from 1- to 0-based coordinate indexing, in the transition from WIG to BED. While BEDOPS supports 0- and 1-based coordinate indexing, the coordinate change made here is believed to be convenient for most end users.
 
