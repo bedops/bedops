@@ -44,7 +44,7 @@ To demonstrate these scripts, we use a sample multi-section WIG input called ``f
   chr1    147971222       147971272       id-4    -0.760000
   ...
 
-We can omit --multisplit, because we want everything in one BED file. However, the header data of the WIG file is discarded. 
+We can omit ``--multisplit``, because conversion and sorting puts everything into one sorted BED file. However, the header data of the WIG file is discarded. 
 
 We can add the ``--keep-header`` option. In this case, BED elements are created from these data, using the chromosome name ``_header`` to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field). 
 
