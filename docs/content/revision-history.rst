@@ -39,37 +39,43 @@ Released: **January 6, 2014**
 
 * :ref:`starchcat`
 
-  * Fixed buffer overflow condition that caused segmentation faults on Ubuntu 13. 
+  * Fixed embarassing buffer overflow condition that caused segmentation faults on Ubuntu 13. 
 
 * All :ref:`conversion scripts <conversion_scripts>`
 
   * We now test for ability to locate ``starch``, ``sort-bed``, ``wig2bed_bin`` and ``samtools`` in user environment, quitting with the appropriate error state if the dependencies cannot be found.
 
-  * Added descriptive tables to each script's documentation page which describe how columns map from original data input to BED output.
+  * Improved documentation. In particular, we have added descriptive tables to each script's documentation page which describe how columns map from original data input to BED output.
 
   * :ref:`bam2bed` and :ref:`sam2bed`
 
     * Added ``--custom-tags <value>`` command-line option to support a comma-separated list of custom tags (cf. `Biostars discussion <http://www.biostars.org/p/87062/>`_), *i.e.*, tags which are not part of the original SAMtools specification.
 
-    * Added ``--keep-header`` option to preserve header and metadata as BED elements that use ``_header`` as the chromosome name.
+    * Added ``--keep-header`` option to preserve header and metadata as BED elements that use ``_header`` as the chromosome name. This now makes these conversion scripts fully "non-lossy".
+
+    * Improved I/O handling routines to reduce likelihood of Python not being able to open intermediate, temporary files.
 
   * :ref:`vcf2bed`
 
     * Added new ``--snvs``, ``--insertions`` and ``--deletions`` options that filter VCF variants into three separate subcategories.
 
-    * Added ``--keep-header`` option to preserve header and metadata as BED elements that use ``_header`` as the chromosome name.
+    * Added ``--keep-header`` option to preserve header and metadata as BED elements that use ``_header`` as the chromosome name. This now makes these conversion scripts fully "non-lossy".
 
   * :ref:`gff2bed`
 
-    * Added ``--keep-header`` option to preserve header and metadata as BED elements that use ``_header`` as the chromosome name.
+    * Added ``--keep-header`` option to preserve header and metadata as BED elements that use ``_header`` as the chromosome name. This now makes these conversion scripts fully "non-lossy".
 
   * :ref:`psl2bed`
 
-    * Added ``--keep-header`` option to preserve header and metadata as BED elements that use ``_header`` as the chromosome name.
+    * Added ``--keep-header`` option to preserve header and metadata as BED elements that use ``_header`` as the chromosome name. This now makes these conversion scripts fully "non-lossy".
 
-* Added OS X uninstaller project to allow end user to more easily remove BEDOPS tools.
+  * :ref:`wig2bed`
 
-* Cleaned up compilation warnings.
+    * Added ``--keep-header`` option to :ref:`wig2bed` binary and ``wig2bed``/``wig2starch`` wrapper scripts, to preserve header and metadata as BED elements that use ``_header`` as the chromosome name. This now makes these conversion scripts fully "non-lossy".
+
+* Added OS X uninstaller project to allow end user to more easily remove BEDOPS tools from this platform.
+
+* Cleaned up various compilation warnings found with ``clang``/``clang++`` and GCC kits.
 
 =================
 Previous versions
