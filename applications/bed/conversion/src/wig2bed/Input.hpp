@@ -64,7 +64,7 @@ namespace Wig2Bed {
             return(usage.str());
         }
         
-        Input(int argc, char **argv) : basename_("") {
+        Input(int argc, char **argv) : basename_(""), keepHeader_(false) {
             if ( argc < 2 )
                 throw(std::string("No input file argument given."));
             
