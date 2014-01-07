@@ -87,8 +87,12 @@ Example:
 
   $ wig2bed --do-not-sort < foo.wig > unsorted-foo.wig.bed
 
-  We strongly advise against using this option unless you know the sort order of your WIG input
-  with complete certainty.
+  We strongly advise against using the --do-not-sort option unless you know the sort order of 
+  your WIG input with complete certainty.
+
+  You can also pipe data into wig2bed, using the hyphen ("-") to denote standard input:
+
+  $ someProcessThatMakesWigData | wig2bed - > someData.bed
 
 EOF
 }
@@ -106,7 +110,7 @@ maxMemFlag=false
 keepHeaderFlag=false
 
 # cf. http://stackoverflow.com/a/7680682/19410
-optspec=":hm-:"
+optspec="hkm-:"
 while getopts "$optspec" optchar; do
     case "${optchar}" in
         -)
@@ -144,7 +148,7 @@ while getopts "$optspec" optchar; do
                     multisplitBasename="${val}";
                     ;;
                 *)
-                    if [ "$OPTERR" = 1 ] && [ "${optspec:0:1}" != ":" ]; then
+                    if [ "$OPTERR" == 1 ] && [ "${optspec:0:1}" != ":" ]; then
                         echo "[wig2bed] - Error: Unknown option --${OPTARG}" >&2
                         printUsage;
                         exit -1;
@@ -160,6 +164,12 @@ while getopts "$optspec" optchar; do
             ;;
     esac
 done
+
+if [ -t 0 ]; then
+    echo "[wig2bed] - Error: Must send file or pipe in data via standard input -- see usage:" >&2
+    printUsage;
+    exit -1;
+fi
 
 command -v wig2bed_bin > /dev/null 2>&1 || { echo "[wig2bed] - Error: Could not find wig2bed_bin binary" >&2; exit -1; }
 if ${convertWithoutSortingFlag}; then
