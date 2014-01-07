@@ -50,7 +50,7 @@
 printUsage () {
     cat <<EOF
 Usage:
-  wig2bed [ --help ] [ --do-not-sort | --max-mem <value> ] < foo.wig
+  wig2bed [ --help ] [ --keep-header ] [ --do-not-sort | --max-mem <value> ] [ --multisplit <basename> ] < foo.wig
 
 Options:
   --help                   Print this help message and exit
@@ -58,6 +58,8 @@ Options:
   --max-mem <value>        Sets aside <value> memory for sorting BED output. For example,
                            <value> can be 8G, 8000M or 8000000000 to specify 8 GB of memory
                            (default: 2G).
+  --keep-header            Preserve header and metadata as BED elements (also works well with 
+                           --multisplit <basename> option)
   --multisplit <basename>  A single input file may have multiple wig sections, a user may
                            pass in more than one file, or both may occur. With this option, 
                            every separate input goes to a separate output, starting with 
@@ -67,6 +69,12 @@ About:
   This script converts UCSC WIG data to lexicographically-sorted BED. The WIG format is a  
   1-based, closed [a, b] file. We convert this indexing back to 0-based, half-open when creating 
   BED output.
+
+  If you use the --keep-header option, any header fields are retained as BED elements that use
+  the chromosome name "_header". Otherwise, these are stripped from the output. 
+
+  If your data have multiple WIG sections, be sure to use the --multisplit <basename> option. You
+  can use the --keep-header option with --multisplit.
 
 Example:
   $ wig2bed < foo.wig > sorted-foo.wig.bed
@@ -78,6 +86,9 @@ Example:
   If you want to skip sorting, use the --do-not-sort option:
 
   $ wig2bed --do-not-sort < foo.wig > unsorted-foo.wig.bed
+
+  We strongly advise against using this option unless you know the sort order of your WIG input
+  with complete certainty.
 
 EOF
 }
@@ -92,6 +103,7 @@ multisplitBasename="foo"
 convertWithoutSortingFlag=false
 multisplitFlag=false
 maxMemFlag=false
+keepHeaderFlag=false
 
 # cf. http://stackoverflow.com/a/7680682/19410
 optspec=":hm-:"
@@ -102,6 +114,9 @@ while getopts "$optspec" optchar; do
                 help)
                     printUsage;
                     exit 0;
+                    ;;
+                keep-header)
+                    keepHeaderFlag=true;
                     ;;
                 do-not-sort)
                     convertWithoutSortingFlag=true;
@@ -149,16 +164,32 @@ done
 command -v wig2bed_bin > /dev/null 2>&1 || { echo "[wig2bed] - Error: Could not find wig2bed_bin binary" >&2; exit -1; }
 if ${convertWithoutSortingFlag}; then
     if ${multisplitFlag}; then
-        wig2bed_bin --multisplit ${multisplitBasename} - 
+        if ${keepHeaderFlag}; then
+            wig2bed_bin --keep-header --multisplit ${multisplitBasename} - 
+        else 
+            wig2bed_bin --multisplit ${multisplitBasename} -            
+        fi
     else
-        wig2bed_bin -
+        if ${keepHeaderFlag}; then
+            wig2bed_bin --keep-header -
+        else
+            wig2bed_bin -
+        fi
     fi
 else
     command -v sort-bed > /dev/null 2>&1 || { echo "[wig2bed] - Error: Could not find sort-bed binary" >&2; exit -1; }
     if ${multisplitFlag}; then
-        wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} -
+        if ${keepHeaderFlag}; then
+            wig2bed_bin --keep-header --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} -
+        else
+            wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} -
+        fi
     else
-        wig2bed_bin - | sort-bed --max-mem ${maxMem} -
+        if ${keepHeaderFlag}; then
+            wig2bed_bin --keep-header - | sort-bed --max-mem ${maxMem} -
+        else
+            wig2bed_bin - | sort-bed --max-mem ${maxMem} -    
+        fi
     fi  
 fi
 
