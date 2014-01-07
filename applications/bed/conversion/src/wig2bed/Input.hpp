@@ -74,7 +74,7 @@ namespace Wig2Bed {
               if ( next == "--help" )
                   throw(Help());
             } // for
-            for ( ; i < argc; ++i ) {
+            for ( i=1 ; i < argc; ++i ) {
                 std::string next = argv[i];
                 if ( next == "--multisplit" ) {
                     std::string afterNext = argv[++i];
