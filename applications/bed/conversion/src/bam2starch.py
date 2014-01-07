@@ -144,6 +144,7 @@ class SamTags:
         self.containsMismatches = False
         self.containsMultipleReads = False
         self.customTagsAdded = False
+        self.customTagsStr = ""
 
     def __str__(self):
         res = ""
@@ -158,7 +159,7 @@ class SamTags:
         tagValue = tagElems[2]
         customTags = []
         if self.customTagsAdded:
-            customTags = customTagsStr.split(",")
+            customTags = self.customTagsStr.split(",")
         if str(tagName) in (allSpecificationSamTags + customTags) or tagName.startswith('X') or tagName.startswith('Y') or tagName.startswith('Z'):
             tag = SamTag()
             tag.tag = (tagName, tagValue)
@@ -700,7 +701,9 @@ def main(*args):
                 # optional fields are TAG:TYPE:VALUE triplets
                 samTagsList = []
                 samTags = SamTags()
-                samTags.customTagsAdded = customTagsAdded
+                if customTagsAdded:
+                    samTags.customTagsAdded = customTagsAdded
+                    samTags.customTagsStr = customTagsStr
                 if len(elems) >= 11:
                     for idx in range(11, len(elems)):
                         samTagsList.append(elems[idx])
