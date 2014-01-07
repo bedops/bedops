@@ -106,7 +106,42 @@ We can convert VCF to sorted BED data in the following manner:
   chr1    899281  899282  rs28548431      71.77   C       T       PASS    AC=1;AF=0.50;AN=2;DB;DP=4;Dels=0.00;HRun=0;HaplotypeScore=0.00;MQ=99.00;MQ0=0;QD=17.94;SB=-46.55;VQSLOD=-1.9148 GT:AD:DP:GQ:PL  0/1:1,3:4:25.92:103,0,26
   chr1    974164  974165  rs9442391       29.84   T       C       LowQual AC=1;AF=0.50;AN=2;DB;DP=18;Dels=0.00;HRun=1;HaplotypeScore=0.16;MQ=95.26;MQ0=0;QD=1.66;SB=-0.98 GT:AD:DP:GQ:PL  0/1:14,4:14:60.91:61,0,255
 
-As you see here, the header data of the VCF file is discarded, unless you add the ``--keep-header`` option. In this case, BED elements are created from these data, using the chromosome name ``_header`` to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field).
+As you see here, the header data of the VCF file is discarded, unless you add the ``--keep-header`` option. In this case, BED elements are created from these data, using the chromosome name ``_header`` to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field). 
+
+Here we use ``--keep-header`` with our example dataset:
+
+::
+
+  $ vcf2bed --keep-header < foo.vcf
+  _header 0       1       ##fileformat=VCFv4.0
+  _header 1       2       ##FILTER=<ID=LowQual,Description="QUAL < 50.0">
+  _header 2       3       ##FORMAT=<ID=AD,Number=.,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed">
+  _header 3       4       ##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read Depth (only filtered reads used for calling)">
+  _header 4       5       ##FORMAT=<ID=GQ,Number=1,Type=Float,Description="Genotype Quality">
+  _header 5       6       ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+  _header 6       7       ##FORMAT=<ID=PL,Number=3,Type=Float,Description="Normalized, Phred-scaled likelihoods for AA,AB,BB genotypes where A=ref and B=alt; not applicable if site is not biallelic">
+  _header 7       8       ##INFO=<ID=AC,Number=.,Type=Integer,Description="Allele count in genotypes, for each ALT allele, in the same order as listed">
+  _header 8       9       ##INFO=<ID=AF,Number=.,Type=Float,Description="Allele Frequency, for each ALT allele, in the same order as listed">
+  _header 9       10      ##INFO=<ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes">
+  _header 10      11      ##INFO=<ID=DB,Number=0,Type=Flag,Description="dbSNP Membership">
+  _header 11      12      ##INFO=<ID=DP,Number=1,Type=Integer,Description="Total Depth">
+  _header 12      13      ##INFO=<ID=DS,Number=0,Type=Flag,Description="Were any of the samples downsampled?">
+  _header 13      14      ##INFO=<ID=Dels,Number=1,Type=Float,Description="Fraction of Reads Containing Spanning Deletions">
+  _header 14      15      ##INFO=<ID=HRun,Number=1,Type=Integer,Description="Largest Contiguous Homopolymer Run of Variant Allele In Either Direction">
+  _header 15      16      ##INFO=<ID=HaplotypeScore,Number=1,Type=Float,Description="Consistency of the site with two (and only two) segregating haplotypes">
+  _header 16      17      ##INFO=<ID=MQ,Number=1,Type=Float,Description="RMS Mapping Quality">
+  _header 17      18      ##INFO=<ID=MQ0,Number=1,Type=Integer,Description="Total Mapping Quality Zero Reads">
+  _header 18      19      ##INFO=<ID=QD,Number=1,Type=Float,Description="Variant Confidence/Quality by Depth">
+  _header 19      20      ##INFO=<ID=SB,Number=1,Type=Float,Description="Strand Bias">
+  _header 20      21      ##INFO=<ID=VQSLOD,Number=1,Type=Float,Description="log10-scaled probability of variant being true under the trained gaussian mixture model">
+  _header 21      22      ##UnifiedGenotyperV2="analysis_type=UnifiedGenotyperV2 input_file=[TEXT CLIPPED FOR CLARITY]"
+  _header 22      23      #CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO    FORMAT  NA12878
+  chr1    873761  873762  .       5231.78 T       G       PASS    AC=1;AF=0.50;AN=2;DP=315;Dels=0.00;HRun=2;HaplotypeScore=15.11;MQ=91.05;MQ0=15;QD=16.61;SB=-1533.02;VQSLOD=-1.5473      GT:AD:DP:GQ:PL  0/1:173,141:282:99:255,0,255
+  chr1    877663  877664  rs3828047       3931.66 A       G       PASS    AC=2;AF=1.00;AN=2;DB;DP=105;Dels=0.00;HRun=1;HaplotypeScore=1.59;MQ=92.52;MQ0=4;QD=37.44;SB=-1152.13;VQSLOD=0.1185      GT:AD:DP:GQ:PL  1/1:0,105:94:99:255,255,0
+  chr1    899281  899282  rs28548431      71.77   C       T       PASS    AC=1;AF=0.50;AN=2;DB;DP=4;Dels=0.00;HRun=0;HaplotypeScore=0.00;MQ=99.00;MQ0=0;QD=17.94;SB=-46.55;VQSLOD=-1.9148 GT:AD:DP:GQ:PL  0/1:1,3:4:25.92:103,0,26
+  chr1    974164  974165  rs9442391       29.84   T       C       LowQual AC=1;AF=0.50;AN=2;DB;DP=18;Dels=0.00;HRun=1;HaplotypeScore=0.16;MQ=95.26;MQ0=0;QD=1.66;SB=-0.98 GT:AD:DP:GQ:PL  0/1:14,4:14:60.91:61,0,255
+
+With this option, the ``vcf2*`` scripts are completely "non-lossy". Use of ``awk`` or other scripting tools can munge these data back into a VCF-formatted file.
 
 .. note:: Note the conversion from 1- to 0-based coordinate indexing, in the transition from VCF to BED. While BEDOPS supports 0- and 1-based coordinate indexing, the coordinate change made here is believed to be convenient for most end users.
 
