@@ -75,7 +75,7 @@
 #               $ vcf2starch --do-not-sort < foo.vcf > unsorted-foo.vcf.bed.starch
 #
 
-import getopt, sys, os, stat, subprocess, signal, tempfile, math
+import getopt, sys, os, stat, subprocess, signal, threading, math
 
 def which(program):
     import os
@@ -179,24 +179,238 @@ def isDeletion(refAllele, altAllele):
 def isMixedRecord(altAllele):
     return ',' in altAllele
 
+def consumeVCF(from_stream, to_stream, params):
+    while True:
+        vcf_line = from_stream.readline()
+        if not vcf_line:
+            from_stream.close()
+            to_stream.close()
+            break
+        bed_line = convertVCFToBed(vcf_line, params)
+        if bed_line:
+            to_stream.write(bed_line)
+            to_stream.flush()
+
+def consumeBED(from_stream, to_stream, params):
+    while True:
+        bed_line = from_stream.readline()
+        if not bed_line:
+            from_stream.close()
+            to_stream.close()
+            break
+        to_stream.write(bed_line)
+        to_stream.flush()
+
+def convertVCFToBed(line, params):
+    convertedLine = None
+
+    chomped_line = line.rstrip(os.linesep)
+    if chomped_line.startswith('##') and not params.keepHeader:
+        pass
+    elif chomped_line.startswith('##') and params.keepHeader:
+        elem_chr = params.keepHeaderChr
+        elem_start = str(params.keepHeaderIdx)
+        elem_stop = str(params.keepHeaderIdx + 1)
+        elem_id = chomped_line
+        convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id]) + '\n'
+        params.keepHeaderIdx += 1
+    elif chomped_line.startswith('#'):
+        params.columns = chomped_line.split('\t')
+        if params.keepHeader:
+            elem_chr = params.keepHeaderChr
+            elem_start = str(params.keepHeaderIdx)
+            elem_stop = str(params.keepHeaderIdx + 1)
+            elem_id = chomped_line
+            convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id]) + '\n'
+            params.keepHeaderIdx += 1
+    else:
+        elems = chomped_line.split('\t')
+        metadata = dict()
+        for columnIdx in range(len(params.columns)):
+            try:
+                metadata[params.columns[columnIdx]] = elems[columnIdx];
+            except IndexError:
+                print 'ERROR: Could not map data values to VCF header keys (perhaps missing or bad delimiters in header line?)'
+                return os.EX_DATAERR
+        try:
+            elem_chr = metadata['#CHROM']
+            elem_start = str(int(metadata['POS']) - 1)
+            elem_stop = str(metadata['POS'])
+            elem_id = metadata['ID']
+            elem_score = str(metadata['QUAL'])
+            elem_ref = metadata['REF']
+            elem_alt = metadata['ALT']
+            elem_filter = metadata['FILTER']
+            elem_info = metadata['INFO']
+        except KeyError:
+            print 'ERROR: Could not map data value from VCF header key (perhaps missing or bad delimiters in header line or data row?)'
+            return os.EX_DATAERR
+
+        try:
+            elem_genotype = '\t'.join(elems[8:])
+        except IndexError:
+            pass
+
+        if isMixedRecord(elem_alt):
+            # write each variant in mixed record to separate BED element
+            alt_alleles = elem_alt.split(",")
+            for alt_allele in alt_alleles:
+                elem_alt = alt_allele
+                if params.filterCount != 0:
+                    elem_stop = str(int(elem_start) + int(math.fabs(len(elem_ref) - len(elem_alt))) + 1)
+
+                if not elem_genotype:
+                    convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info]) + '\n'
+                else:
+                    convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info, elem_genotype]) + '\n'
+                    
+                if params.filterCount == 0:
+                    pass
+                elif params.filterOnSnvs and isSnv(elem_ref, elem_alt):
+                    pass
+                elif params.filterOnInsertions and isInsertion(elem_ref, elem_alt):
+                    pass
+                elif params.filterOnDeletions and isDeletion(elem_ref, elem_alt):
+                    pass
+                else:
+                    convertedLine = None
+        else:
+            if params.filterCount != 0:
+                elem_stop = str(int(elem_start) + int(math.fabs(len(elem_ref) - len(elem_alt))) + 1)
+                    
+            if not elem_genotype:
+                convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info]) + '\n'
+            else:
+                convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info, elem_genotype]) + '\n'
+                    
+            if params.filterCount == 0:
+                pass
+            elif params.filterOnSnvs and isSnv(elem_ref, elem_alt):
+                pass
+            elif params.filterOnInsertions and isInsertion(elem_ref, elem_alt):
+                pass
+            elif params.filterOnDeletions and isDeletion(elem_ref, elem_alt):
+                pass
+            else:
+                convertedLine = None
+
+    return convertedLine
+
+class Parameters:
+    def __init__(self):
+        self._columns = None
+        self._keepHeader = False
+        self._keepHeaderIdx = 0
+        self._keepHeaderChr = "_header"
+        self._sortOutput = True
+        self._maxMem = "2G"
+        self._maxMemChanged = False
+        self._starchFormat = "--bzip2"
+        self._filterOnSnvs = False
+        self._filterOnInsertions = False
+        self._filterOnDeletions = False
+        self._filterCount = 0
+
+    @property
+    def columns(self):
+        return self._columns
+    @columns.setter
+    def columns(self, val):
+        self._columns = val
+
+    @property
+    def keepHeader(self):
+        return self._keepHeader
+    @keepHeader.setter
+    def keepHeader(self, flag):
+        self._keepHeader = flag
+
+    @property
+    def keepHeaderIdx(self):
+        return self._keepHeaderIdx
+    @keepHeaderIdx.setter
+    def keepHeaderIdx(self, val):
+        self._keepHeaderIdx = val
+
+    @property
+    def keepHeaderChr(self):
+        return self._keepHeaderChr
+    @keepHeaderChr.setter
+    def keepHeaderChr(self, val):
+        self._keepHeaderChr = val
+
+    @property
+    def sortOutput(self):
+        return self._sortOutput
+    @sortOutput.setter
+    def sortOutput(self, flag):
+        self._sortOutput = flag
+
+    @property
+    def maxMem(self):
+        return self._maxMem
+    @maxMem.setter
+    def maxMem(self, val):
+        self._maxMem = val
+
+    @property
+    def maxMemChanged(self):
+        return self._maxMemChanged
+    @maxMemChanged.setter
+    def maxMemChanged(self, flag):
+        self._maxMemChanged = flag
+
+    @property
+    def starchFormat(self):
+        return self._starchFormat
+    @starchFormat.setter
+    def starchFormat(self, val):
+        self._starchFormat = val
+
+    @property
+    def filterOnSnvs(self):
+        return self._filterOnSnvs
+    @filterOnSnvs.setter
+    def filterOnSnvs(self, flag):
+        self._filterOnSnvs = flag
+
+    @property
+    def filterOnInsertions(self):
+        return self._filterOnInsertions
+    @filterOnInsertions.setter
+    def filterOnInsertions(self, flag):
+        self._filterOnInsertions = flag
+
+    @property
+    def filterOnDeletions(self):
+        return self._filterOnDeletions
+    @filterOnDeletions.setter
+    def filterOnDeletions(self, flag):
+        self._filterOnDeletions = flag
+
+    @property
+    def filterCount(self):
+        return self._filterCount
+    @filterCount.setter
+    def filterCount(self, val):
+        self._filterCount = val
+
 def main(*args):
     requiredVersion = (2,7)
     checkInstallation(requiredVersion)
 
-    keepHeader = False
-    keepHeaderIdx = 0
-    keepHeaderChr = "_header"
-    sortOutput = True
-    maxMem = "2G"
-    maxMemChanged = False
-    filterOnSnvs = False
-    filterOnInsertions = False
-    filterOnDeletions = False
-    starchFormat = "bzip2"
+    params = Parameters()
 
-    # fixes bug with Python handling of SIGPIPE signal from UNIX head, etc.
+    #
+    # Fixes bug with Python handling of SIGPIPE signal from UNIX head, etc.
     # http://coding.derkeiler.com/Archive/Python/comp.lang.python/2004-06/3823.html
+    #
+
     signal.signal(signal.SIGPIPE,signal.SIG_DFL)
+
+    #
+    # Read in options
+    #
 
     optstr = ""
     longopts = ["help", "keep-header", "do-not-sort", "max-mem=", "snvs", "insertions", "deletions", "starch-format="]
@@ -211,35 +425,35 @@ def main(*args):
             printUsage("stdout")
             return os.EX_OK
         elif key in ("--keep-header"):
-            keepHeader = True
+            params.keepHeader = True
         elif key in ("--do-not-sort"):
-            sortOutput = False
+            params.sortOutput = False
         elif key in ("--max-mem"):
-            maxMem = str(value)
-            maxMemChanged = True
+            params.maxMem = str(value)
+            params.maxMemChanged = True
         elif key in ("--snvs"):
-            filterOnSnvs = True
+            params.filterOnSnvs = True
         elif key in ("--insertions"):
-            filterOnInsertions = True
+            params.filterOnInsertions = True
         elif key in ("--deletions"):
-            filterOnDeletions= True
+            params.filterOnDeletions= True
         elif key in ("--starch-format"):
-            starchFormat = str(value)
+            params.starchFormat = "--" + str(value)
 
-    if maxMemChanged and not sortOutput:
+    if params.maxMemChanged and not params.sortOutput:
         sys.stderr.write( "[%s] - Error: Cannot specify both --do-not-sort and --max-mem parameters\n" % sys.argv[0] )
         printUsage("stderr")
         return os.EX_USAGE
 
-    filterCount = 0
-    if filterOnSnvs:
-        filterCount += 1
-    if filterOnInsertions:
-        filterCount += 1
-    if filterOnDeletions:
-        filterCount += 1
+    params.filterCount = 0
+    if params.filterOnSnvs:
+        params.filterCount += 1
+    if params.filterOnInsertions:
+        params.filterCount += 1
+    if params.filterOnDeletions:
+        params.filterCount += 1
 
-    if filterCount > 1:
+    if params.filterCount > 1:
         sys.stderr.write( "[%s] - Error: Cannot specify more than one filter parameter\n" % sys.argv[0] )
         printUsage("stderr")
         return os.EX_USAGE        
@@ -253,151 +467,43 @@ def main(*args):
         printUsage("stderr")
         return os.EX_NOINPUT
 
-    starchTF = tempfile.NamedTemporaryFile(mode='wb')
-    if sortOutput:
-        sortTF = tempfile.NamedTemporaryFile(mode='wb', delete=False)
-            
-    for line in sys.stdin:
-        chomped_line = line.rstrip(os.linesep)
-        if chomped_line.startswith('##'):
-            pass
-        elif chomped_line.startswith('##') and keepHeader:
-            elem_chr = keepHeaderChr
-            elem_start = str(keepHeaderIdx)
-            elem_stop = str(keepHeaderIdx + 1)
-            elem_id = chomped_line
-            convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id]) + '\n'
-            keepHeaderIdx += 1
-            if sortOutput:
-                sortTF.write(convertedLine)
-            else:
-                starchTF.write(convertedLine)
-        elif chomped_line.startswith('#'):
-            columns = chomped_line.split('\t')
-            if keepHeader:
-                elem_chr = keepHeaderChr
-                elem_start = str(keepHeaderIdx)
-                elem_stop = str(keepHeaderIdx + 1)
-                elem_id = chomped_line
-                convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id]) + '\n'
-                keepHeaderIdx += 1
-                if sortOutput:
-                    sortTF.write(convertedLine)
-                else:
-                    starchTF.write(convertedLine)            
-        else:
-            elems = chomped_line.split('\t')
-            metadata = dict()
-            for columnIdx in range(len(columns)):
-                try:
-                    metadata[columns[columnIdx]] = elems[columnIdx];
-                except IndexError:
-                    print 'ERROR: Could not map data values to VCF header keys (perhaps missing or bad delimiters in header line?)'
-                    return os.EX_DATAERR
-            try:
-                elem_chr = metadata['#CHROM']
-                elem_start = str(int(metadata['POS']) - 1)
-                elem_stop = str(metadata['POS'])
-                elem_id = metadata['ID']
-                elem_score = str(metadata['QUAL'])
-                elem_ref = metadata['REF']
-                elem_alt = metadata['ALT']
-                elem_filter = metadata['FILTER']
-                elem_info = metadata['INFO']
-            except KeyError:
-                print 'ERROR: Could not map data value from VCF header key (perhaps missing or bad delimiters in header line or data row?)'
-                return os.EX_DATAERR
-
-            try:
-                elem_genotype = '\t'.join(elems[8:])
-            except IndexError:
-                pass
-
-            if isMixedRecord(elem_alt):
-                # write each variant in mixed record to separate BED element
-                alt_alleles = elem_alt.split(",")
-                for alt_allele in alt_alleles:
-                    elem_alt = alt_allele
-                    if filterCount != 0:
-                        elem_stop = str(int(elem_start) + int(math.fabs(len(elem_ref) - len(elem_alt))) + 1)
-
-                    if not elem_genotype:
-                        convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info]) + '\n'
-                    else:
-                        convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info, elem_genotype]) + '\n'
-                    
-                    if sortOutput:
-                        if filterCount == 0:
-                            sortTF.write(convertedLine)
-                        elif filterOnSnvs and isSnv(elem_ref, elem_alt):
-                            sortTF.write(convertedLine)
-                        elif filterOnInsertions and isInsertion(elem_ref, elem_alt):
-                            sortTF.write(convertedLine)
-                        elif filterOnDeletions and isDeletion(elem_ref, elem_alt):
-                            sortTF.write(convertedLine)
-                    else:
-                        if filterCount == 0:
-                            starchTF.write(convertedLine)                
-                        elif filterOnSnvs and isSnv(elem_ref, elem_alt):
-                            starchTF.write(convertedLine)
-                        elif filterOnInsertions and isInsertion(elem_ref, elem_alt):
-                            starchTF.write(convertedLine)
-                        elif filterOnDeletions and isDeletion(elem_ref, elem_alt):
-                            starchTF.write(convertedLine)
-            else:
-                if filterCount != 0:
-                    elem_stop = str(int(elem_start) + int(math.fabs(len(elem_ref) - len(elem_alt))) + 1)
-                    
-                if not elem_genotype:
-                    convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info]) + '\n'
-                else:
-                    convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info, elem_genotype]) + '\n'
-                    
-                if sortOutput:
-                    if filterCount == 0:
-                        sortTF.write(convertedLine)
-                    elif filterOnSnvs and isSnv(elem_ref, elem_alt):
-                        sortTF.write(convertedLine)
-                    elif filterOnInsertions and isInsertion(elem_ref, elem_alt):
-                        sortTF.write(convertedLine)
-                    elif filterOnDeletions and isDeletion(elem_ref, elem_alt):
-                        sortTF.write(convertedLine)
-                else:
-                    if filterCount == 0:
-                        starchTF.write(convertedLine)                
-                    elif filterOnSnvs and isSnv(elem_ref, elem_alt):
-                        starchTF.write(convertedLine)
-                    elif filterOnInsertions and isInsertion(elem_ref, elem_alt):
-                        starchTF.write(convertedLine)
-                    elif filterOnDeletions and isDeletion(elem_ref, elem_alt):
-                        starchTF.write(convertedLine)
-                
-    if sortOutput:
-
-        try:
-            if which('sort-bed') is None:
-                raise IOError("The sort-bed binary could not be found in your user PATH -- please locate and install this binary")
-        except IOError, msg:
-            sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
-            return os.EX_OSFILE
-
-        sortTF.close()
-        sortProcess = subprocess.Popen(['sort-bed', '--max-mem', maxMem, sortTF.name], stdout=starchTF)
-        sortProcess.wait()
-        try:
-            os.remove(sortTF.name)
-        except OSError:
-            sys.stderr.write( "[%s] - Warning: Could not delete intermediate sorted file [%s]\n" % (sys.argv[0], sortTF.name) )
-
     try:
+        if which('sort-bed') is None:
+            raise IOError("The sort-bed binary could not be found in your user PATH -- please locate and install this binary")
         if which('starch') is None:
             raise IOError("The starch binary could not be found in your user PATH -- please locate and install this binary")
     except IOError, msg:
         sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
         return os.EX_OSFILE
 
-    starchProcess = subprocess.Popen(["starch", starchFormat, starchTF.name])
-    starchProcess.wait()
+    sortbed_process = subprocess.Popen(['sort-bed', '--max-mem', params.maxMem, '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    starch_process = subprocess.Popen(['starch', params.starchFormat, '-'], stdin=subprocess.PIPE)
+
+    if params.sortOutput:
+        convert_vcf_to_bed_thread = threading.Thread(target=consumeVCF, args=(sys.stdin, sortbed_process.stdin, params))
+        pass_bed_to_starch_thread = threading.Thread(target=consumeBED, args=(sortbed_process.stdout, starch_process.stdin, params))
+    else:
+        convert_vcf_to_bed_thread = threading.Thread(target=consumeVCF, args=(sys.stdin, starch_process.stdin, params))
+
+    convert_vcf_to_bed_thread.start()
+    convert_vcf_to_bed_thread.join()
+
+    if params.sortOutput:
+        pass_bed_to_starch_thread.start()
+        pass_bed_to_starch_thread.join()
+        sortbed_process.wait()
+
+    starch_process.wait()
+    
+    #
+    # Test for error exit from sort-bed process
+    #
+
+    if params.sortOutput and int(sortbed_process.returncode) != 0:
+        return os.EX_IOERR
+
+    if int(starch_process.returncode) != 0:
+        return os.EX_IOERR
 
     return os.EX_OK
 

@@ -20,7 +20,7 @@
 #
 
 #
-# Author:       Alex Reynolds and Eric Haugen
+# Author:       Alex Reynolds
 #
 # Project:      Converts 1-based, closed [a, b] headered or headerless SAM input
 #               into 0-based, half-open [a-1, b) extended BED that is subsequently 
@@ -85,7 +85,7 @@
 #               $ sam2starch --do-not-sort < foo.sam > unsorted-foo.sam.bed
 #
 
-import getopt, sys, os, stat, subprocess, signal, tempfile, re
+import getopt, sys, os, stat, subprocess, signal, re, threading
 
 #
 # Optional field tag names
@@ -460,7 +460,7 @@ class SamRecord(object):
                               str(self._tlen),
                               self._seq,
                               self._qual]) + '\n'
-            
+
 
 def which(program):
     import os
@@ -479,7 +479,6 @@ def which(program):
                 return exe_file
 
     return None
-
 
 def printUsage(stream):
     usage = ("Usage:\n"
@@ -554,24 +553,238 @@ def checkInstallation(rv):
         sys.exit(os.EX_CONFIG)
     return os.EX_OK
 
-def printRecord():
-    pass
+def produceSAM(from_stream, to_stream):
+    while True:
+        sam_line = from_stream.readline()
+        if not sam_line:
+            from_stream.close()
+            to_stream.close()
+            break
+        to_stream.write(sam_line)
+        to_stream.flush()
+
+def consumeSAM(from_stream, to_stream, params):
+    while True:
+        sam_line = from_stream.readline()
+        if not sam_line:
+            from_stream.close()
+            to_stream.close()
+            break
+        bed_line = convertSAMToBED(sam_line, params)
+        to_stream.write(bed_line)
+        to_stream.flush()
+
+def consumeBED(from_stream, to_stream, params):
+    while True:
+        bed_line = from_stream.readline()
+        if not bed_line:
+            from_stream.close()
+            to_stream.close()
+            break
+        to_stream.write(bed_line)
+        to_stream.flush()
+
+def convertSAMToBED(line, params):
+
+    convertedLine = ""
+    samRecord = SamRecord()
+
+    if line.startswith('@') and params.keepHeader:
+        elem_chr = params.keepHeaderChr
+        elem_start = str(params.keepHeaderIdx)
+        elem_stop = str(params.keepHeaderIdx + 1)
+        elem_id = line
+        convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id])
+        params.keepHeaderIdx += 1
+
+    elif line.startswith('@') and not params.keepHeader:
+        pass
+
+    else:
+        chomped_line = line.rstrip(os.linesep)
+        elems = chomped_line.split('\t')
+    
+        # parse CIGAR string into operations and do validation; bring in flag and set strand value
+    
+        samRecord.cigar = str(elems[5])
+        samRecord.flag = int(elems[1])
+    
+        # if read is mappable (as determined by FLAG value) or we use the --all-reads option, then process the read
+        
+        if params.includeAllReads or samRecord.isMappedRead():
+        
+            samRecord.rname = elems[2]
+            samRecord.start = int(elems[3]) - 1
+            samRecord.qname = elems[0]
+            samRecord.mapq = elems[4]
+            samRecord.rnext = elems[6]
+            samRecord.pnext = int(elems[7])
+            samRecord.tlen = int(elems[8])
+            samRecord.seq = elems[9]
+            samRecord.qual = elems[10]
+
+            # optional fields are TAG:TYPE:VALUE triplets
+            samTagsList = []
+            samTags = SamTags()
+            if params.customTagsAdded:
+                samTags.customTagsAdded = params.customTagsAdded
+                samTags.customTagsStr = params.customTagsStr
+                if len(elems) >= 11:
+                    for idx in range(11, len(elems)):
+                        samTagsList.append(elems[idx])
+                        samTags.append(elems[idx])
+                samRecord.tags = str('\t'.join(samTagsList))
+
+            # if we don't need to split the read, or even if we do, but the
+            # read does not have a split operation in its CIGAR string, then
+            # we set the stop coordinate and print out the converted read
+        
+            if not params.inputNeedsSplitting:
+                samRecord.stop = samRecord.start + samRecord.cigarOps.readLength()
+                convertedLine = samRecord.asBed()
+
+                # otherwise, if we need to split reads, then we write two converted
+                # strings with adjusted coordinates and qname/ID value
+
+            elif inputNeedsSplitting:
+                samRecordBlockIdx = 1
+                samRecordPreviousOp = ""
+                samRecord.originalQname = samRecord.qname
+            
+                # loop through ops, one op at a time
+                for op in samRecord.cigarOps.operations:
+                    if op.key == 'M':
+                        samRecord.stop = samRecord.start + op.value
+                        if samRecordPreviousOp:
+                            if samRecordPreviousOp == 'D' or samRecordPreviousOp == 'N':
+                                # print record
+                                samRecord.qname += '/' + str(samRecordBlockIdx)
+                                convertedLine += samRecord.asBed()
+                                # set new coordinates, reset ID and increment block index
+                                samRecord.start = samRecord.stop
+                                samRecord.qname = samRecord.originalQname
+                                samRecordBlockIdx += 1
+                    elif op.key == 'N':
+                        # print record
+                        samRecord.qname += '/' + str(samRecordBlockIdx)
+                        convertedLine += samRecord.asBed()
+                        # set new coordinates, reset ID and increment block index
+                        samRecord.stop += op.value
+                        samRecord.start = samRecord.stop
+                        samRecord.qname = samRecord.originalQname
+                        samRecordBlockIdx += 1
+                    elif op.key == 'D':
+                        # set new coordinates
+                        samRecord.stop += op.value
+                        samRecord.start = samRecord.stop                            
+                    elif op.key == 'H' or op.key == 'I' or op.key == 'P' or op.key == 'S':
+                        pass
+                    samRecordPreviousOp = op.key
+                        
+                # if the CIGAR string does not contain a split or deletion 
+                # op ('N', 'D') then just print out the record
+                if samRecordBlockIdx == 1:
+                    convertedLine = samRecord.asBed()
+
+    return convertedLine
+
+class Parameters:
+    def __init__(self):
+        self._keepHeader = False
+        self._keepHeaderIdx = 0
+        self._keepHeaderChr = "_header"
+        self._sortOutput = True
+        self._inputNeedsSplitting = False
+        self._includeAllReads = False
+        self._maxMem = "2G"
+        self._maxMemChanged = False
+        self._customTagsStr = ""
+        self._customTagsAdded = False
+        self._starchFormat = "--bzip2"
+
+    @property
+    def keepHeader(self):
+        return self._keepHeader
+    @keepHeader.setter
+    def keepHeader(self, flag):
+        self._keepHeader = flag
+
+    @property
+    def keepHeaderIdx(self):
+        return self._keepHeaderIdx
+    @keepHeaderIdx.setter
+    def keepHeaderIdx(self, val):
+        self._keepHeaderIdx = val
+
+    @property
+    def keepHeaderChr(self):
+        return self._keepHeaderChr
+    @keepHeaderChr.setter
+    def keepHeaderChr(self, val):
+        self._keepHeaderChr = val
+
+    @property
+    def sortOutput(self):
+        return self._sortOutput
+    @sortOutput.setter
+    def sortOutput(self, flag):
+        self._sortOutput = flag
+
+    @property
+    def inputNeedsSplitting(self):
+        return self._inputNeedsSplitting
+    @inputNeedsSplitting.setter
+    def inputNeedsSplitting(self, flag):
+        self._inputNeedsSplitting = flag
+
+    @property
+    def includeAllReads(self):
+        return self._includeAllReads
+    @includeAllReads.setter
+    def includeAllReads(self, flag):
+        self._includeAllReads = flag
+
+    @property
+    def maxMem(self):
+        return self._maxMem
+    @maxMem.setter
+    def maxMem(self, val):
+        self._maxMem = val
+
+    @property
+    def maxMemChanged(self):
+        return self._maxMemChanged
+    @maxMemChanged.setter
+    def maxMemChanged(self, flag):
+        self._maxMemChanged = flag
+
+    @property
+    def customTagsStr(self):
+        return self._customTagsStr
+    @customTagsStr.setter
+    def customTagsStr(self, val):
+        self._customTagsStr = val
+
+    @property
+    def customTagsAdded(self):
+        return self._customTagsAdded
+    @customTagsAdded.setter
+    def customTagsAdded(self, flag):
+        self._customTagsAdded = flag
+
+    @property
+    def starchFormat(self):
+        return self._starchFormat
+    @starchFormat.setter
+    def starchFormat(self, val):
+        self._starchFormat = val
 
 def main(*args):
+
     requiredVersion = (2,7)
     checkInstallation(requiredVersion)
 
-    keepHeader = False
-    keepHeaderIdx = 0
-    keepHeaderChr = "_header"
-    sortOutput = True
-    inputNeedsSplitting = False
-    includeAllReads = False
-    maxMem = "2G"
-    maxMemChanged = False
-    starchFormat = "bzip2"
-    customTagsStr = ""
-    customTagsAdded = False
+    params = Parameters()
 
     #
     # Fixes bug with Python handling of SIGPIPE signal from UNIX head, etc.
@@ -585,7 +798,7 @@ def main(*args):
     #
 
     optstr = ""
-    longopts = ["do-not-sort", "keep-header", "split", "all-reads", "help", "custom-tags=", "max-mem=", "starch-format="]
+    longopts = ["do-not-sort", "keep-header", "split", "all-reads", "help", "custom-tags=", "max-mem="]
     try:
         (options, args) = getopt.getopt(sys.argv[1:], optstr, longopts)
     except getopt.GetoptError as error:
@@ -597,28 +810,26 @@ def main(*args):
             printUsage("stdout")
             return os.EX_OK
         elif key in ("--keep-header"):
-            keepHeader = True
+            params.keepHeader = True
         elif key in ("--split"):
-            inputNeedsSplitting = True
+            params.inputNeedsSplitting = True
         elif key in ("--all-reads"):
-            includeAllReads = True
+            params.includeAllReads = True
         elif key in ("--do-not-sort"):
-            sortOutput = False
+            params.sortOutput = False
         elif key in ("--custom-tags"):
-            customTagsStr = str(value)
-            customTagsAdded = True
+            params.customTagsStr = str(value)
+            params.customTagsAdded = True
         elif key in ("--max-mem"):
-            maxMem = str(value)
-            maxMemChanged = True
-        elif key in ("--starch-format"):
-            starchFormat = str(value)
+            params.maxMem = str(value)
+            params.maxMemChanged = True
 
-    if inputNeedsSplitting and not sortOutput:
+    if params.inputNeedsSplitting and not params.sortOutput:
         sys.stderr.write( "[%s] - Error: Cannot specify both --do-not-sort and --split parameters\n" % sys.argv[0] )
         printUsage("stderr")
         return os.EX_USAGE 
 
-    if maxMemChanged and not sortOutput:
+    if params.maxMemChanged and not params.sortOutput:
         sys.stderr.write( "[%s] - Error: Cannot specify both --do-not-sort and --max-mem parameters\n" % sys.argv[0] )
         printUsage("stderr")
         return os.EX_USAGE 
@@ -628,207 +839,56 @@ def main(*args):
     if stat.S_ISFIFO(mode) or stat.S_ISREG(mode):
         inputIsNotAvailable = False
     if inputIsNotAvailable:
-        sys.stderr.write( "[%s] - Error: Please redirect or pipe in SAM-formatted data\n" % sys.argv[0] )
+        sys.stderr.write( "[%s] - Error: Please redirect or pipe in BAM-formatted data\n" % sys.argv[0] )
         printUsage("stderr")
         return os.EX_NOINPUT
-
-    starchTF = tempfile.NamedTemporaryFile(mode='wb', delete=False)
-    samTF = tempfile.NamedTemporaryFile(mode='wb', delete=False)
-    if sortOutput:
-        sortTF = tempfile.NamedTemporaryFile(mode='wb', delete=False)
-
-    #
-    # read SAM data into samtools process
-    #
 
     try:
         if which('samtools') is None:
             raise IOError("The samtools binary could not be found in your user PATH -- please locate and install this binary")
-    except IOError, msg:
-        sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
-        return os.EX_OSFILE
-
-    samProcess = subprocess.Popen(['samtools', 'view', '-h', '-S', '-'], stdin=subprocess.PIPE, stdout=samTF)
-    while True:
-        samByte = sys.stdin.read()
-        if samByte:
-            samProcess.stdin.write(samByte)
-            samProcess.stdin.flush()
-        else:
-            samProcess.communicate()
-            samTF.file.close()
-            break
-
-    with open(samTF.name) as samData:
-        samRecord = SamRecord()
-        for line in samData:
-
-            if line.startswith('@') and keepHeader:
-                elem_chr = keepHeaderChr
-                elem_start = str(keepHeaderIdx)
-                elem_stop = str(keepHeaderIdx + 1)
-                elem_id = line
-                convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id]) + '\n'
-                keepHeaderIdx += 1
-                if sortOutput:
-                    sortTF.write(convertedLine)
-                else:
-                    starchTF.write(convertedLine)
-                continue
-            elif line.startswith('@') and not keepHeader:
-                continue
-
-            chomped_line = line.rstrip(os.linesep)            
-            elems = chomped_line.split('\t')
-
-            # parse CIGAR string into operations and do validation
-            # bring in flag and set strand value
-
-            samRecord.cigar = str(elems[5])
-            samRecord.flag = int(elems[1])
-
-            # if read is mappable (as determined by FLAG value) or we 
-            # use the --all-reads option, then process the read
-
-            if includeAllReads or samRecord.isMappedRead():
-
-                samRecord.rname = elems[2]
-                samRecord.start = int(elems[3]) - 1
-                samRecord.qname = elems[0]
-                samRecord.mapq = elems[4]
-                samRecord.rnext = elems[6]
-                samRecord.pnext = int(elems[7])
-                samRecord.tlen = int(elems[8])
-                samRecord.seq = elems[9]
-                samRecord.qual = elems[10]
-
-                # optional fields are TAG:TYPE:VALUE triplets
-                samTagsList = []
-                samTags = SamTags()
-                if customTagsAdded:
-                    samTags.customTagsAdded = customTagsAdded
-                    samTags.customTagsStr = customTagsStr
-                if len(elems) >= 11:
-                    for idx in range(11, len(elems)):
-                        samTagsList.append(elems[idx])
-                        samTags.append(elems[idx])
-                samRecord.tags = str('\t'.join(samTagsList))
-
-                # if we don't need to split the read, or even if we do, but the
-                # read does not have a split operation in its CIGAR string, then
-                # we set the stop coordinate and print out the converted read
-
-                if not inputNeedsSplitting:
-                    samRecord.stop = samRecord.start + samRecord.cigarOps.readLength()
-                    # write output
-                    if sortOutput:
-                        sortTF.write(samRecord.asBed())
-                    else:
-                        starchTF.write(samRecord.asBed())
-
-                # otherwise, if we need to split reads, then we write two converted
-                # strings with adjusted coordinates and qname/ID value
-
-                elif inputNeedsSplitting:
-                    samRecordBlockIdx = 1
-                    samRecordPreviousOp = ""
-                    samRecord.originalQname = samRecord.qname
-
-                    # loop through ops, one op at a time
-                    for op in samRecord.cigarOps.operations:
-                        if op.key == 'M':
-                            samRecord.stop = samRecord.start + op.value
-                            if samRecordPreviousOp:
-                                if samRecordPreviousOp == 'D' or samRecordPreviousOp == 'N':
-                                    # print record
-                                    samRecord.qname += '/' + str(samRecordBlockIdx)
-                                    if sortOutput:
-                                        sortTF.write(samRecord.asBed())
-                                    else:
-                                        starchTF.write(samRecord.asBed())
-                                    # set new coordinates, reset ID and increment block index
-                                    samRecord.start = samRecord.stop
-                                    samRecord.qname = samRecord.originalQname
-                                    samRecordBlockIdx += 1
-                        elif op.key == 'N':
-                            # print record
-                            samRecord.qname += '/' + str(samRecordBlockIdx)
-                            if sortOutput:
-                                sortTF.write(samRecord.asBed())
-                            else:
-                                starchTF.write(samRecord.asBed())
-                            # set new coordinates, reset ID and increment block index
-                            samRecord.stop += op.value
-                            samRecord.start = samRecord.stop
-                            samRecord.qname = samRecord.originalQname
-                            samRecordBlockIdx += 1
-                        elif op.key == 'D':
-                            # set new coordinates
-                            samRecord.stop += op.value
-                            samRecord.start = samRecord.stop                            
-                        elif op.key == 'H' or op.key == 'I' or op.key == 'P' or op.key == 'S':
-                            pass
-                        samRecordPreviousOp = op.key
-                        
-                    # if the CIGAR string does not contain a split or deletion 
-                    # op ('N', 'D') then just print out the record
-                    if samRecordBlockIdx == 1:
-                        if sortOutput:
-                            sortTF.write(samRecord.asBed())
-                        else:
-                            starchTF.write(samRecord.asBed())
-
-    #
-    # Clean up intermediate data
-    #
-
-    try:
-        os.remove(samTF.name)
-    except OSError:
-        msg = "The intermediate SAM output file could not be deleted"
-        sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
-        return os.EX_OSFILE
-
-    # 
-    # Attempt to sort converted data
-    #
-
-    if sortOutput:
-        try:
-            if which('sort-bed') is None:
-                raise IOError("The sort-bed binary could not be found in your user PATH -- please locate and install this binary")
-        except IOError, msg:
-            sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
-            return os.EX_OSFILE
-
-        sortTF.close()
-        sortProcess = subprocess.Popen(['sort-bed', '--max-mem', maxMem, sortTF.name], stdout=starchTF)
-        sortProcess.wait()
-        try:
-            os.remove(sortTF.name)
-        except OSError:
-            sys.stderr.write( "[%s] - Warning: Could not delete intermediate sorted file [%s]\n" % (sys.argv[0], sortTF.name) )
-
-    try:
+        if which('sort-bed') is None:
+            raise IOError("The sort-bed binary could not be found in your user PATH -- please locate and install this binary")
         if which('starch') is None:
             raise IOError("The starch binary could not be found in your user PATH -- please locate and install this binary")
     except IOError, msg:
         sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
         return os.EX_OSFILE
 
-    starchProcess = subprocess.Popen(["starch", starchFormat, starchTF.name])
-    starchProcess.communicate()
+    sam_process = subprocess.Popen(['samtools', 'view', '-h', '-S', '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    sortbed_process = subprocess.Popen(['sort-bed', '--max-mem', params.maxMem, '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    starch_process = subprocess.Popen(['starch', params.starchFormat, '-'], stdin=subprocess.PIPE)
+
+    produce_sam_thread = threading.Thread(target=produceSAM, args=(sys.stdin, sam_process.stdin))
+    if params.sortOutput:
+        convert_to_bed_thread = threading.Thread(target=consumeSAM, args=(sam_process.stdout, sortbed_process.stdin, params))
+        pass_bed_to_starch_thread = threading.Thread(target=consumeBED, args=(sortbed_process.stdout, starch_process.stdin, params))
+    else:
+        convert_to_bed_thread = threading.Thread(target=consumeSAM, args=(sam_process.stdout, starch_process.stdin, params))
+        
+    produce_sam_thread.start()
+    convert_to_bed_thread.start()
+    if params.sortOutput:
+        pass_bed_to_starch_thread.start()
+
+    produce_sam_thread.join()
+    convert_to_bed_thread.join()
+    if params.sortOutput:
+        pass_bed_to_starch_thread.join()
+
+    sam_process.wait()
+    if params.sortOutput:
+        sortbed_process.wait()
+    starch_process.wait()
 
     #
-    # Clean up intermediate data
+    # This helps ensure that an early error-bsaed exit from samtools or sort-bed will result in an error exit status code
     #
 
-    try:
-        os.remove(starchTF.name)
-    except OSError:
-        msg = "The intermediate Starch output file could not be deleted"
-        sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
-        return os.EX_OSFILE
+    if params.sortOutput and int(sortbed_process.returncode) != 0:
+        return os.EX_IOERR
+
+    if int(starch_process.returncode) != 0 or int(sam_process.returncode) != 0:
+        return os.EX_IOERR
 
     return os.EX_OK
 
