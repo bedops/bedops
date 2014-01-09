@@ -6,8 +6,8 @@
 # PROJECT: BEDOPS 2
 
 binDir=../../src
-bam2BedBin=${binDir}/bam2bed.bash
-bam2StarchBin=${binDir}/bam2starch.bash
+bam2BedBin=${binDir}/bam2bed.py
+bam2StarchBin=${binDir}/bam2starch.py
 resultsDir=results
 
 mkdir -p ${resultsDir}
@@ -35,17 +35,17 @@ fi
 #
 # test unsorted bowtie-sourced BAM output, without sorting, compressed (Starch bzip2) against unsorted, compressed BED (Starch bzip2)
 #
-${bam2StarchBin} --do-not-sort --starch-format bzip2 \
-    < via_bowtie.bam \
-    > results/via_bowtie.unsorted.bzip2.compressed.out \
-    2> /dev/null
+#${bam2StarchBin} --do-not-sort --starch-format bzip2 \
+#    < via_bowtie.bam \
+#    > results/via_bowtie.unsorted.bzip2.compressed.out \
+#    2> /dev/null
 #unstarch results/via_bowtie.unsorted.bzip2.compressed.out \
 #    > results/via_bowtie.unsorted.bzip2.compressed.out.uncompressed
-unstarch via_bowtie.unsorted.bzip2.compressed.out \
-    | diff -q - results/via_bowtie.unsorted.bzip2.compressed.out.uncompressed
-if [ $? != 0 ]; then
-    echo "[warning] this should fail as the input bam is unsorted, and unstarch will fail to extract unsorted input"
-fi
+#unstarch via_bowtie.unsorted.bzip2.compressed.out \
+#    | diff -q - results/via_bowtie.unsorted.bzip2.compressed.out.uncompressed
+#if [ $? != 0 ]; then
+#    echo "[warning] this should fail as the input bam is unsorted, and unstarch will fail to extract unsorted input"
+#fi
 
 #
 # test sorted bowtie-sourced BAM output, compressed (Starch bzip2) against sorted, compressed BED (Starch bzip2)
@@ -65,17 +65,17 @@ fi
 #
 # test unsorted bowtie-sourced BAM output, without sorting, compressed (Starch gzip) against unsorted, compressed BED (Starch gzip)
 #
-${bam2StarchBin} --do-not-sort --starch-format gzip \
-    < via_bowtie.bam \
-    > results/via_bowtie.unsorted.gzip.compressed.out \
-    2> /dev/null
+#${bam2StarchBin} --do-not-sort --starch-format gzip \
+#    < via_bowtie.bam \
+#    > results/via_bowtie.unsorted.gzip.compressed.out \
+#    2> /dev/null
 #unstarch results/via_bowtie.unsorted.gzip.compressed.out \
 #    > results/via_bowtie.unsorted.gzip.compressed.out.uncompressed
-unstarch via_bowtie.unsorted.gzip.compressed.out \
-    | diff -q - results/via_bowtie.unsorted.gzip.compressed.out.uncompressed
-if [ $? != 0 ]; then
-    echo "[warning] this should fail as the input bam is unsorted, and unstarch will fail to extract unsorted input"
-fi
+#unstarch via_bowtie.unsorted.gzip.compressed.out \
+#    | diff -q - results/via_bowtie.unsorted.gzip.compressed.out.uncompressed
+#if [ $? != 0 ]; then
+#    echo "[warning] this should fail as the input bam is unsorted, and unstarch will fail to extract unsorted input"
+#fi
 
 #
 # test sorted bowtie-sourced BAM output, compressed (Starch gzip) against sorted, compressed BED (Starch gzip)

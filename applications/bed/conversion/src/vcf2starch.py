@@ -254,26 +254,27 @@ def convertVCFToBed(line, params):
         if isMixedRecord(elem_alt):
             # write each variant in mixed record to separate BED element
             alt_alleles = elem_alt.split(",")
+            convertedLine = ""
             for alt_allele in alt_alleles:
                 elem_alt = alt_allele
                 if params.filterCount != 0:
                     elem_stop = str(int(elem_start) + int(math.fabs(len(elem_ref) - len(elem_alt))) + 1)
 
                 if not elem_genotype:
-                    convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info]) + '\n'
+                    alleleLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info]) + '\n'
                 else:
-                    convertedLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info, elem_genotype]) + '\n'
+                    alleleLine = '\t'.join([elem_chr, elem_start, elem_stop, elem_id, elem_score, elem_ref, elem_alt, elem_filter, elem_info, elem_genotype]) + '\n'
                     
                 if params.filterCount == 0:
-                    pass
+                    convertedLine += alleleLine
                 elif params.filterOnSnvs and isSnv(elem_ref, elem_alt):
-                    pass
+                    convertedLine += alleleLine
                 elif params.filterOnInsertions and isInsertion(elem_ref, elem_alt):
-                    pass
+                    convertedLine += alleleLine
                 elif params.filterOnDeletions and isDeletion(elem_ref, elem_alt):
-                    pass
-                else:
-                    convertedLine = None
+                    convertedLine += alleleLine
+            if not convertedLine:
+                convertedLine = None
         else:
             if params.filterCount != 0:
                 elem_stop = str(int(elem_start) + int(math.fabs(len(elem_ref) - len(elem_alt))) + 1)

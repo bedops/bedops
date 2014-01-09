@@ -621,11 +621,11 @@ def convertSAMToBED(line, params):
             if params.customTagsAdded:
                 samTags.customTagsAdded = params.customTagsAdded
                 samTags.customTagsStr = params.customTagsStr
-                if len(elems) >= 11:
-                    for idx in range(11, len(elems)):
-                        samTagsList.append(elems[idx])
-                        samTags.append(elems[idx])
-                samRecord.tags = str('\t'.join(samTagsList))
+            if len(elems) >= 11:
+                for idx in range(11, len(elems)):
+                    samTagsList.append(elems[idx])
+                    samTags.append(elems[idx])
+            samRecord.tags = str('\t'.join(samTagsList))
 
             # if we don't need to split the read, or even if we do, but the
             # read does not have a split operation in its CIGAR string, then
