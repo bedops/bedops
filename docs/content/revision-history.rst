@@ -15,7 +15,7 @@ Current version
 v2.4.0
 ------
 
-Released: **January 6, 2014**
+Released: **January 9, 2014**
 
 * :ref:`bedmap`
 
@@ -43,6 +43,8 @@ Released: **January 6, 2014**
 
 * All :ref:`conversion scripts <conversion_scripts>`
 
+  * Python-based scripts no longer use temporary files, which reduces file I/O and improves performance. This change also reduces the need for large amounts of free space in a user's ``/tmp`` folder, particularly relevant for users converting multi-GB BAM files.
+
   * We now test for ability to locate ``starch``, ``sort-bed``, ``wig2bed_bin`` and ``samtools`` in user environment, quitting with the appropriate error state if the dependencies cannot be found.
 
   * Improved documentation. In particular, we have added descriptive tables to each script's documentation page which describe how columns map from original data input to BED output.
@@ -52,8 +54,6 @@ Released: **January 6, 2014**
     * Added ``--custom-tags <value>`` command-line option to support a comma-separated list of custom tags (cf. `Biostars discussion <http://www.biostars.org/p/87062/>`_), *i.e.*, tags which are not part of the original SAMtools specification.
 
     * Added ``--keep-header`` option to preserve header and metadata as BED elements that use ``_header`` as the chromosome name. This now makes these conversion scripts fully "non-lossy".
-
-    * Improved I/O handling routines to reduce likelihood of Python not being able to open intermediate, temporary files.
 
   * :ref:`vcf2bed`
 
