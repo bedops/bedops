@@ -1,12 +1,12 @@
-## BEDOPS: high-performance genomic feature operations ##
+## BEDOPS v2.4: high-performance genomic feature operations ##
 
 <!-- <img src="http://bedops.readthedocs.org/en/latest/_static/logo_with_label_v2.png" align="right" style="max-width:33%" /> -->
 
 ### About ###
 
-**BEDOPS** is a suite of tools to address common questions raised in genomic studies — mostly with regard to overlap and proximity relationships between data sets. It aims to be scalable and flexible, facilitating the efficient and accurate analysis and management of large-scale genomic data. 
+**BEDOPS v2.4** is a suite of tools to address common questions raised in genomic studies — mostly with regard to overlap and proximity relationships between data sets. It aims to be scalable and flexible, facilitating the efficient and accurate analysis and management of large-scale genomic data. 
 
-The <a href="https://bedops.readthedocs.org/en/latest/content/overview.html#overview">overview</a> section of the **BEDOPS** documentation summarizes the toolkit, functionality and performance enhancements. The <a href="https://bedops.readthedocs.org/en/latest/index.html#reference">reference</a> table offers documentation for all applications and scripts.
+The <a href="https://bedops.readthedocs.org/en/latest/content/overview.html#overview">overview</a> section of the **BEDOPS v2.4** documentation summarizes the toolkit, functionality and performance enhancements. The <a href="https://bedops.readthedocs.org/en/latest/index.html#reference">reference</a> table offers documentation for all applications and scripts.
 
 ### Downloads ###
 
@@ -42,11 +42,11 @@ The <a href="https://bedops.readthedocs.org/en/latest/content/overview.html#over
 
 ### Documentation ###
 
-Complete documentation for **BEDOPS** tools is available at: <a href="https://bedops.readthedocs.org/en/latest/index.html">https://bedops.readthedocs.org/</a>
+Complete documentation for **BEDOPS v2.4** tools is available at: <a href="https://bedops.readthedocs.org/en/latest/index.html">https://bedops.readthedocs.org/</a>
 
 ### Citation ###
 
-If you use **BEDOPS** in your research, please cite the following manuscript:
+If you use **BEDOPS v2.4** in your research, please cite the following manuscript:
 
 > Shane Neph, M. Scott Kuehn, Alex P. Reynolds, et al.  
 > [**BEDOPS: high-performance genomic feature operations**  
@@ -54,7 +54,7 @@ If you use **BEDOPS** in your research, please cite the following manuscript:
 
 ### Copyright ###
 
-> Copyright (C) 2011, 2012, 2013 Shane J. Neph, M. Scott Kuehn and Alex P. Reynolds
+> Copyright (C) 2011, 2012, 2013, 2014 Shane J. Neph, M. Scott Kuehn and Alex P. Reynolds
 >
 > Source code, documentation and media assets released under <a href="https://github.com/bedops/bedops/blob/master/LICENSE">GNU Public License Version 2</a> (GPL v2).
 
