@@ -1,9 +1,9 @@
 /*
   FILE: SelectMeasureType.hpp
   AUTHOR: Shane Neph, Scott Kuen
-  CREATE DATE: Fri Jul 27 11:49:03 PDT 2007
+  CREATE DATE: Dec.2013
   PROJECT: data/measurement
-  ID: $Id: AssayMeasurement.hpp 1745 2010-09-13 23:39:13Z sjn $
+  ID: $Id: SelectMeasureType.hpp $
 */
 
 //
