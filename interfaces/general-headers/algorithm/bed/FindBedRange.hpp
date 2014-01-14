@@ -47,7 +47,7 @@ namespace Bed {
   namespace extract_details {
     template <typename BedType>
     struct CompBed {
-      bool operator()(const BedType& b1, const BedType& b2) {
+      bool operator()(const BedType& b1, const BedType& b2) const {
         static Bed::GenomicCompare<BedType, BedType> gc;
         return(gc(&b1,&b2));
       }
