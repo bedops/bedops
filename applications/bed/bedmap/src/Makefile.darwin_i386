@@ -1,4 +1,4 @@
-MIN_OSX_VERSION      = 10.6
+MIN_OSX_VERSION      = 10.7
 ARCH                 = i386
 
 MAIN                 = ../../../..
@@ -28,9 +28,7 @@ LOCALZLIBLIBPATH     = ${LOCALZLIBLIBDIR}/${LIBZLIB}
 LOCALZLIBINCDIR      = ${LOCALZLIBDIR}
 INCLUDES             = -iquote$(HEAD) -I$(BOOSTLIBDIR) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 
-CC                   = gcc
-CXX                  = g++
-NONSTATICFLAGS       = -Wall -pedantic -O3 ${INCLUDES} -std=c++11
+NONSTATICFLAGS       = -Wall -pedantic -O3 ${INCLUDES} -std=c++11 -stdlib=libc++
 
 ifeq ($(wildcard .forcestatic),)
 	SFLAGS	= -I$(HEAD) 

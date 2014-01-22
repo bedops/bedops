@@ -12,9 +12,6 @@ WARNINGS                = -Weverything
 MAIN                    = ../../../..
 HEAD                    = ${MAIN}/interfaces/general-headers
 
-CC                      = clang
-CXX                     = clang++
-
 ifneq ($(wildcard .forcestatic),)
 	SFLAGS	= -static
 endif

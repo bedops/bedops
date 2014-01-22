@@ -39,8 +39,6 @@ BIN_VERSION               = v2.4
 TEST                      = ../test
 TEST_OSX_BINDIR           = ${TEST}/binaries/osx/${ARCH_VERSION}/bin
 
-CC                        = clang
-CXX                       = clang++
 CFLAGS                    = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 ${WARNINGS} ${SFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -x c++ -v -stdlib=libc++ -std=c++11
 CXXFLAGS                  = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 ${WARNINGS} -std=c++11 -stdlib=libc++ ${SFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH)
 CDFLAGS                   = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g ${WARNINGS} -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -x c++ -v -stdlib=libc++ -std=c++11

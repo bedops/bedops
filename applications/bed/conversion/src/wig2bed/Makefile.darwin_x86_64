@@ -1,6 +1,5 @@
 MIN_OSX_VERSION     = 10.7
 ARCH                = x86_64
-CC                  = clang++
 WARNINGS            = -Weverything
 NONSTATICFLAGS	    = ${WARNINGS} -O3 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH)
 
@@ -19,16 +18,16 @@ SOURCE1	            = Wig2Bed.cpp
 BIN                 = ../../bin
 PROG                = wig2bed_bin_$(ARCH)
 
-.cpp.o:; $(CC) -c $(FLAGS) $<
+.cpp.o:; $(CXX) -c $(FLAGS) $<
 
 run: dependencies
-	mkdir -p $(BIN) && $(CC) -o $(BIN)/$(PROG) $(FLAGS) $(SOURCE1) -iquote${HEAD} -lc++
+	mkdir -p $(BIN) && $(CXX) -o $(BIN)/$(PROG) $(FLAGS) $(SOURCE1) -iquote${HEAD} -lc++
 
 gprof: dependencies
-	mkdir -p $(BIN) && $(CC) -o $(BIN)/gprof.$(PROG) $(GPROFFLAGS) $(SOURCE1) -iquote${HEAD} -lc++
+	mkdir -p $(BIN) && $(CPP) -o $(BIN)/gprof.$(PROG) $(GPROFFLAGS) $(SOURCE1) -iquote${HEAD} -lc++
 
 debug: dependencies
-	mkdir -p $(BIN) && $(CC) -o $(BIN)/debug.$(PROG) $(DFLAGS) $(SOURCE1) -iquote${HEAD} -lc++
+	mkdir -p $(BIN) && $(CPP) -o $(BIN)/debug.$(PROG) $(DFLAGS) $(SOURCE1) -iquote${HEAD} -lc++
 
 dependencies:
 ifneq ($(wildcard .forcestatic),)
