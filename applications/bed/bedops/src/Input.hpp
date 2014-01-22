@@ -229,7 +229,7 @@ struct Input {
         else {
           Ext::Assert<UE>(std::string(argv[i])[0] != '-', "Bad option: " + std::string(argv[i]));
           std::ifstream check(argv[i]);
-          Ext::Assert<UE>(check, "Cannot find " + std::string(argv[i]));
+          Ext::Assert<UE>(static_cast<bool>(check), "Cannot find " + std::string(argv[i]));
           check.close();
           allFiles_.push_back(argv[i]);
         }
