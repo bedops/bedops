@@ -44,6 +44,7 @@ namespace Wig2Bed {
     extern const std::string& authors();
     
     struct Help { /* */ };
+    struct Version { /* */ };
     
     struct Input {
 
@@ -61,6 +62,7 @@ namespace Wig2Bed {
             usage << "                                     With this option, every separate input goes to a       \n";
             usage << "                                     separate output, starting with <basename>.1, then      \n";
             usage << "                                     <basename>.2, and so on.                               \n";
+            usage << "          --version                 Print program information and exit successfully.        \n";
             return(usage.str());
         }
         
@@ -69,10 +71,12 @@ namespace Wig2Bed {
                 throw(std::string("No input file argument given."));
             
             int i = 1;
-            for ( ; i < argc; ++i ) { // look for --help
-              std::string next = argv[i];
-              if ( next == "--help" )
+            for ( ; i < argc; ++i ) { // look for --help/--version
+                std::string next = argv[i];
+                if ( next == "--help" )
                   throw(Help());
+                if ( next == "--version" )
+                  throw(Version());
             } // for
             for ( i=1 ; i < argc; ++i ) {
                 std::string next = argv[i];

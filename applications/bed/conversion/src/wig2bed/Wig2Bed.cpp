@@ -248,6 +248,14 @@ main(int argc, char **argv)
             std::cout << std::endl << Wig2Bed::Input::Usage() << std::endl << std::endl;
             iserror = false;
         }
+    catch(Wig2Bed::Version)
+        {
+            std::cout << prognm() << std::endl;
+            std::cout << "  citation: " << citation() << std::endl;
+            std::cout << "  version:	" + version() << std::endl;
+            std::cout << "  authors:	" + authors() << std::endl;
+            iserror = false;
+        }
     catch(const std::string& msg)
         {
             std::cerr << prognm() << std::endl;
@@ -256,7 +264,6 @@ main(int argc, char **argv)
             std::cerr << "  authors:	" + authors() << std::endl;
             std::cerr << std::endl << Wig2Bed::Input::Usage() << std::endl << std::endl;
             std::cerr << "  " << msg << std::endl;
-            iserror = true;
         }
     catch(const std::exception& ex)
         {
