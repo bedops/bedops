@@ -19,8 +19,7 @@ SNPs are in a BED-formatted file called ``SNPs.bed`` sorted lexicographically wi
 
 ::
 
-  bedmap --indicator --echo --echo-map SNPs.bed DHSs.bed \
-    | awk -F"|" '(int($1) == 1) { print $2"|"$3; }' \
+  bedmap --skip-unmapped --echo --echo-map SNPs.bed DHSs.bed \
     > subsetOfSNPsWithinAssociatedDHS.bed
 
 ==========
