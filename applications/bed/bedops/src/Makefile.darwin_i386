@@ -28,7 +28,7 @@ LOCALZLIBLIBPATH     = ${LOCALZLIBLIBDIR}/${LIBZLIB}
 LOCALZLIBINCDIR      = ${LOCALZLIBDIR}
 INCLUDES             = -iquote$(HEAD) -I$(BOOSTLIBDIR) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 
-NONSTATICFLAGS       = -Wall -pedantic -O3 ${INCLUDES} -std=c++11
+NONSTATICFLAGS       = -Wall -pedantic -O3 ${INCLUDES} -std=c++11 -stdlib=libc++
 
 ifeq ($(wildcard .forcestatic),)
 	SFLAGS = -I$(HEAD)
