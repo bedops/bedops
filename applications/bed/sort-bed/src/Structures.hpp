@@ -67,7 +67,7 @@ int
 mergeSort(FILE **tmpFiles, unsigned int numFiles);
 
 int
-processData(const char **bedFileNames, unsigned int numFiles, double maxMem);
+processData(char const **bedFileNames, unsigned int numFiles, double maxMem, char const* tmpPath);
 
 void
 printBed(FILE *out, BedData *beds);

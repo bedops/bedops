@@ -29,6 +29,8 @@
 #include <cstdio>
 #include <cstring>
 
+#include <sys/stat.h>
+
 #include "Structures.hpp"
 #include "suite/BEDOPS.Version.hpp"
 
@@ -38,13 +40,13 @@ using namespace std;
 
 static const char *name = "sort-bed";
 static const char *authors = "Scott Kuehn";
-static const char *usage = "\nUSAGE: sort-bed [--help] [--version] [--max-mem <val>] <file1.bed> <file2.bed> <...>\n        Sort BED file(s).\n        May use '-' to indicate stdin.\n        Results are sent to stdout.\n\n        <val> for --max-mem may be 8G, 8000M, or 8000000000 to specify 8 GB of memory.\n\n";
+static const char *usage = "\nUSAGE: sort-bed [--help] [--version] [--max-mem <val>] [--tmpdir <path>] <file1.bed> <file2.bed> <...>\n        Sort BED file(s).\n        May use '-' to indicate stdin.\n        Results are sent to stdout.\n\n        <val> for --max-mem may be 8G, 8000M, or 8000000000 to specify 8 GB of memory.\n        --tmpdir is useful only with --max-mem.\n";
 
 
 static void 
-getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, double* maxMem)
+getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, double* maxMem, char *tmpPath)
 {
-    int numFiles, i, j, stdincnt = 0, changeMem = 0, units = 0;
+    int numFiles, i, j, stdincnt = 0, changeMem = 0, units = 0, changeTDir = 0;
     size_t k;
     size_t lng = 0U;
     double factor = 1;
@@ -75,7 +77,7 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, d
                         }
                     else if (strcmp(argv[i], "--version") == 0)
                         {
-                            fprintf(stderr, "%s\n  citation: %s\n  version:  %s\n  authors:  %s\n",
+                            fprintf(stdout, "%s\n  citation: %s\n  version:  %s\n  authors:  %s\n",
                                     name, BEDOPS::citation(), BEDOPS::revision(), authors);
                             exit(EXIT_SUCCESS);
                         }
@@ -142,6 +144,25 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, d
                             numFiles -= 2;
                             continue;
                         }
+                    else if(strcmp(argv[i], "--tmpdir") == 0)
+                        {
+                            if(changeTDir != 0)
+                                {
+                                    fprintf(stderr, "Specify --tmpdir at most one time!\n");
+                                    exit(EXIT_FAILURE);
+                                }
+                            changeTDir = 1;
+                            if(++i == argc)
+                                {
+                                    fprintf(stderr, "No value given for --tmpdir.\n");
+                                    exit(EXIT_FAILURE);
+                                }
+                            tmpPath = (char*)malloc(strlen(argv[i])+1);
+                            strcpy(tmpPath, argv[i]);
+                            --j;
+                            numFiles -= 2;
+                            continue;
+                        }
                     // Check for stdin
                     else if(strcmp(argv[i], "-") == 0) 
                         {
@@ -173,9 +194,25 @@ main(int argc, char **argv)
     unsigned int numInFiles = 0U;
     double maxMemory = -1;
     const char *inFiles[MAX_INFILES];
-    getArgs(argc, argv, inFiles, &numInFiles, &maxMemory);
+    char* tmpPath = NULL;
+    getArgs(argc, argv, inFiles, &numInFiles, &maxMemory, tmpPath);
+    if ( tmpPath == NULL )
+        tmpPath = getenv("TMPDIR");
 
-    if(0 == processData(inFiles, numInFiles, maxMemory))
-        return(EXIT_SUCCESS);
+// sjn : still need to make sure this isn't already a file -> error; see if dir already exists -> no mkdir; etc.
+//  need to valgrind memory leaks.  double check tmpFiles vs tmpFileNames - alloc/free/remove
+//  need to look at strategy for deleting tmp files on errors, including BED errors that we catch
+    if((tmpPath != NULL) && (maxMemory > 0))
+        mkdir(tmpPath, 0700);
+
+    if(0 == processData(inFiles, numInFiles, maxMemory, tmpPath))
+        {
+            if (tmpPath != NULL)
+                free(tmpPath);
+            return(EXIT_SUCCESS);
+        }
+
+    if (tmpPath != NULL)
+        free(tmpPath);
     return(EXIT_FAILURE);
 }

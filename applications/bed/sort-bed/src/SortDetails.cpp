@@ -33,6 +33,7 @@
 #include <map>
 #include <string>
 
+#include <unistd.h>
 
 #include "suite/BEDOPS.Constants.hpp"
 
@@ -42,6 +43,12 @@ using namespace std;
 
 int
 mergeSort(FILE* output, FILE **tmpFiles, unsigned int numFiles);
+
+FILE *
+create_tmpfile(char const* path, char** fileName);
+
+void
+free_tmpfiles(unsigned int fcount, FILE **tmpFiles, char **tmpFileNames);
 
 // probably linux-specific.  From
 //   http://stackoverflow.com/questions/63166/how-to-determine-cpu-and-memory-consumption-from-inside-a-process
@@ -99,6 +106,36 @@ namespace dbug_help
         return result;
     }
 } // end namespace dbug_help
+
+
+FILE *
+create_tmpfile(char const* path, char** fileName)
+{
+  FILE* fp;
+  int fd;
+  char* tmpl;
+
+  if ( path == NULL )
+      {
+          fileName = NULL;
+          return tmpfile();
+      }
+
+  tmpl = (char*)malloc(1 + strlen(path) + L_tmpnam);
+  strcpy(tmpl, path);
+  strcpy(tmpl+strlen(path), "/sb.XXXXXX");
+  fd = mkstemp(tmpl);
+  if(fd == -1)
+      {
+          fprintf(stderr, "unable to create temp file!\n");
+          return NULL;
+      }
+  fp = fdopen(fd, "wb+");
+  *fileName = (char*)malloc(strlen(tmpl) + 1);
+  strcpy(*fileName, tmpl);
+  free(tmpl);
+  return fp;
+}
 
 
 BedData * 
@@ -389,8 +426,29 @@ mergeSort(FILE* output, FILE **tmpFiles, unsigned int numFiles)
     return 0;
 }
 
+void
+free_tmpfiles(unsigned int fcount, FILE **tmpFiles, char **tmpFileNames) {
+    if ( fcount )
+        {
+            unsigned int i = 0;
+            while ( i < fcount )
+                {
+                    /* tmpFileNames[i] will be NULL if temp file was created through C's tmpfile() */
+                    fclose(tmpFiles[i]);
+                    if ( tmpFileNames[i] != NULL )
+                        {
+                            remove(tmpFileNames[i]);
+                            free(tmpFileNames[i]);
+                        }
+                    ++i;
+                } /* while */
+            free(tmpFileNames);
+            free(tmpFiles);
+        }
+}
+
 int
-processData(const char **bedFileNames, unsigned int numFiles, const double maxMem)
+processData(char const **bedFileNames, unsigned int numFiles, const double maxMem, char const *tmpPath)
 {
     /* maxMem will be ignored if <= 0 */
 
@@ -412,12 +470,9 @@ processData(const char **bedFileNames, unsigned int numFiles, const double maxMe
     BedData *beds;
     ChromBedData *chrom;
 
-    FILE **tmpFiles = (FILE**)malloc(sizeof(FILE *));
-    if(tmpFiles == NULL)
-        {
-            fprintf(stderr, "Error: %s, %d: Unable to create FILE* array. Out of memory.\n", __FILE__, __LINE__);
-            return -1;
-        }
+    char **tmpFileNames = NULL;
+    FILE **tmpFiles = NULL;
+    char *tfile = NULL;
 
     double **chromBytes = (double**)malloc(sizeof(double *));
 
@@ -656,7 +711,7 @@ processData(const char **bedFileNames, unsigned int numFiles, const double maxMe
                         {
                             if (beds->numChroms > 0 && (strcmp(beds->chroms[lastidx]->chromName, chromBuf) == 0))
                                 { /* same chr as last row which often happens in practice */
-				  jidx = static_cast<unsigned int>(lastidx);
+                                    jidx = static_cast<unsigned int>(lastidx);
                                     newChrom = 0;
                                 }
                             else /* linear search */
@@ -845,8 +900,27 @@ processData(const char **bedFileNames, unsigned int numFiles, const double maxMe
                                      fclose(bedFile);
                                      return -1;
                                  }
+                             errno = 0;
+                             tmpFileNames = (char**)realloc(tmpFileNames, sizeof(char*) * (tmpFileCount+1));
+                             if(tmpFileNames == NULL)
+                                 {
+                                     fprintf(stderr, "Error: %s, %d: Unable to create char* array: %s. Out of memory.\n", __FILE__, 
+                                             __LINE__, strerror(errno));
+                                     fclose(bedFile);
+                                     return -1;
+                                 }
                              totalBytes += sizeof(FILE*) * (tmpFileCount+1);
-                             tmpFiles[tmpFileCount] = tmpfile();
+                             totalBytes += sizeof(char*) * (tmpFileCount+1);
+                             tfile = NULL;
+                             tmpFiles[tmpFileCount] = create_tmpfile(tmpPath, &tfile);
+                             if(tmpFiles[tmpFileCount] == NULL)
+                                 {
+                                     fprintf(stderr, "Error: %s, %d: Unable to create FILE* for temp file: %s. Out of memory.\n", __FILE__, 
+                                             __LINE__, strerror(errno));
+                                     return -1;
+                                 }
+                             totalBytes += strlen(tfile)+1;
+                             tmpFileNames[tmpFileCount] = tfile;
                              lexSortBedData(beds);
                              printBed(tmpFiles[tmpFileCount], beds);
                              for(tidx = 0; tidx < beds->numChroms; ++tidx)
@@ -867,7 +941,15 @@ processData(const char **bedFileNames, unsigned int numFiles, const double maxMe
                              totalBytes = overhead; /* already includes chromBytes array */
                              if ( ++tmpFileCount == maxTmpFiles )
                                  { /* hierarchial merge sort to keep # open file descriptors low */
-                                     tmpX = tmpfile();
+                                     tfile = NULL;
+                                     tmpX = create_tmpfile(tmpPath, &tfile);
+                                     if(tmpX == NULL)
+                                         {
+                                             fprintf(stderr, "Error: %s, %d: Unable to create FILE* for temp file: %s. Out of memory.\n", __FILE__, 
+                                                     __LINE__, strerror(errno));
+                                             return -1;
+                                         }
+
                                      if(0 != mergeSort(tmpX, tmpFiles, tmpFileCount))
                                          {
                                              fprintf(stderr, "Error: %s, %d.  Out of memory.\n", __FILE__, __LINE__);
@@ -875,18 +957,24 @@ processData(const char **bedFileNames, unsigned int numFiles, const double maxMe
                                              return -1;
                                          }
 
-                                     for (tidx = 0; tidx < tmpFileCount; ++tidx)
-                                         fclose(tmpFiles[tidx]); /* deletes temporary files for us */
-                                     free(tmpFiles);
+                                     free_tmpfiles(tmpFileCount, tmpFiles, tmpFileNames);
                                      tmpFiles = (FILE**)malloc(sizeof(FILE *));
                                      if(tmpFiles == NULL)
                                          {
                                              fprintf(stderr, "Error: %s, %d: Unable to create FILE* array. Out of memory.\n", __FILE__, __LINE__);
                                              return -1;
                                          }
+                                     tmpFileNames = (char**)malloc(sizeof(char *));
+                                     if(tmpFileNames == NULL)
+                                         {
+                                             fprintf(stderr, "Error: %s, %d: Unable to create char* array. Out of memory.\n", __FILE__, __LINE__);
+                                             return -1;
+                                         }
                                      totalBytes += sizeof(FILE*);
+                                     totalBytes += strlen(tfile)+1;
                                      tmpFileCount = 1U;
                                      tmpFiles[0] = tmpX;
+                                     tmpFileNames[0] = tfile;
                                      tmpX = NULL;
                                  }
 
@@ -914,7 +1002,6 @@ processData(const char **bedFileNames, unsigned int numFiles, const double maxMe
                 { /* sort and spit out what's in memory */
                     errno = 0;
                     tmpFiles = (FILE**)realloc(tmpFiles, sizeof(FILE*) * (tmpFileCount+1));
-                    totalBytes += sizeof(FILE*) * (tmpFileCount+1);
                     if(tmpFiles == NULL)
                         {
                             fprintf(stderr, "Error: %s, %d: Unable to expand Chrom structure: %s. Out of memory.\n", __FILE__, 
@@ -922,7 +1009,17 @@ processData(const char **bedFileNames, unsigned int numFiles, const double maxMe
                             fclose(bedFile);
                             return -1;
                         }
-                    tmpFiles[tmpFileCount] = tmpfile();
+                    totalBytes += sizeof(FILE*) * (tmpFileCount+1);
+                    tfile = NULL;
+                    tmpFiles[tmpFileCount] = create_tmpfile(tmpPath, &tfile);
+                    if(tmpFiles[tmpFileCount] == NULL)
+                        {
+                            fprintf(stderr, "Error: %s, %d: Unable to create FILE* for temp file: %s. Out of memory.\n", __FILE__, 
+                                    __LINE__, strerror(errno));
+                            return -1;
+                        }
+                    totalBytes += strlen(tfile)+1;
+                    tmpFileNames[tmpFileCount] = tfile;
                     lexSortBedData(beds);
                     printBed(tmpFiles[tmpFileCount], beds);
                     ++tmpFileCount;
@@ -937,9 +1034,7 @@ processData(const char **bedFileNames, unsigned int numFiles, const double maxMe
                     fclose(bedFile);
                     return -1;
                 }
-            for (tidx = 0; tidx < tmpFileCount; ++tidx)
-                fclose(tmpFiles[tidx]); /* deletes temporary files for us */
-            free(tmpFiles);
+            free_tmpfiles(tmpFileCount, tmpFiles, tmpFileNames);
         }
     else
         {
