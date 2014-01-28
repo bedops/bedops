@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3. Revision history &mdash; BEDOPS 2.3 documentation</title>
+    <title>3. Revision history &mdash; BEDOPS 2.4.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2.3',
+        VERSION:     '2.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.3 documentation" href="../index.html" />
+    <link rel="top" title="BEDOPS 2.4.0 documentation" href="../index.html" />
     <link rel="next" title="4. Usage examples" href="usage-examples.html" />
     <link rel="prev" title="2. Installation" href="installation.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="installation.html" title="2. Installation"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,9 +56,66 @@
 <span id="id1"></span><h1>3. Revision history<a class="headerlink" href="#revision-history" title="Permalink to this headline">¶</a></h1>
 <p>This page summarizes some of the more important changes between releases.</p>
 <div class="section" id="current-version">
-<h2>3.1. Current version<a class="headerlink" href="#current-version" title="Permalink to this headline">¶</a></h2>
+<span id="revision-history-of-current-version"></span><h2>3.1. Current version<a class="headerlink" href="#current-version" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="v2-4-0">
+<h3>3.1.1. v2.4.0<a class="headerlink" href="#v2-4-0" title="Permalink to this headline">¶</a></h3>
+<p>Released: <strong>January 9, 2014</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a><ul>
+<li>Added new <tt class="docutils literal"><span class="pre">--echo-map-size</span></tt> and <tt class="docutils literal"><span class="pre">--echo-overlap-size</span></tt> options to calculate sizes of mapped elements and overlaps between mapped and reference elements.</li>
+<li>Improved performance for all <tt class="docutils literal"><span class="pre">--echo-map-*</span></tt> operations.</li>
+<li>Updated documentation.</li>
+</ul>
+</li>
+<li>Major enhancements and fixes to <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a>:<ul>
+<li>Improved performance.</li>
+<li>Fixed memory leak.</li>
+<li>Added support for millions of distinct chromosomes.</li>
+<li>Improved internal estimation of memory usage with <tt class="docutils literal"><span class="pre">--max-mem</span></tt> option.</li>
+</ul>
+</li>
+<li>Added support for compilation on Cygwin (64-bit). Refer to the <a class="reference internal" href="installation.html#installation-via-source-code-on-cygwin"><em>installation documentation</em></a> for build instructions.</li>
+<li><a class="reference internal" href="reference/file-management/compression/starchcat.html#starchcat"><em>starchcat</em></a><ul>
+<li>Fixed embarassing buffer overflow condition that caused segmentation faults on Ubuntu 13.</li>
+</ul>
+</li>
+<li>All <a class="reference internal" href="reference/file-management/conversion.html#conversion-scripts"><em>conversion scripts</em></a><ul>
+<li>Python-based scripts no longer use temporary files, which reduces file I/O and improves performance. This change also reduces the need for large amounts of free space in a user&#8217;s <tt class="docutils literal"><span class="pre">/tmp</span></tt> folder, particularly relevant for users converting multi-GB BAM files.</li>
+<li>We now test for ability to locate <tt class="docutils literal"><span class="pre">starch</span></tt>, <tt class="docutils literal"><span class="pre">sort-bed</span></tt>, <tt class="docutils literal"><span class="pre">wig2bed_bin</span></tt> and <tt class="docutils literal"><span class="pre">samtools</span></tt> in user environment, quitting with the appropriate error state if the dependencies cannot be found.</li>
+<li>Improved documentation. In particular, we have added descriptive tables to each script&#8217;s documentation page which describe how columns map from original data input to BED output.</li>
+<li><a class="reference internal" href="reference/file-management/conversion/bam2bed.html#bam2bed"><em>bam2bed</em></a> and <a class="reference internal" href="reference/file-management/conversion/sam2bed.html#sam2bed"><em>sam2bed</em></a><ul>
+<li>Added <tt class="docutils literal"><span class="pre">--custom-tags</span> <span class="pre">&lt;value&gt;</span></tt> command-line option to support a comma-separated list of custom tags (cf. <a class="reference external" href="http://www.biostars.org/p/87062/">Biostars discussion</a>), <em>i.e.</em>, tags which are not part of the original SAMtools specification.</li>
+<li>Added <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option to preserve header and metadata as BED elements that use <tt class="docutils literal"><span class="pre">_header</span></tt> as the chromosome name. This now makes these conversion scripts fully &#8220;non-lossy&#8221;.</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/file-management/conversion/vcf2bed.html#vcf2bed"><em>vcf2bed</em></a><ul>
+<li>Added new <tt class="docutils literal"><span class="pre">--snvs</span></tt>, <tt class="docutils literal"><span class="pre">--insertions</span></tt> and <tt class="docutils literal"><span class="pre">--deletions</span></tt> options that filter VCF variants into three separate subcategories.</li>
+<li>Added <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option to preserve header and metadata as BED elements that use <tt class="docutils literal"><span class="pre">_header</span></tt> as the chromosome name. This now makes these conversion scripts fully &#8220;non-lossy&#8221;.</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/file-management/conversion/gff2bed.html#gff2bed"><em>gff2bed</em></a><ul>
+<li>Added <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option to preserve header and metadata as BED elements that use <tt class="docutils literal"><span class="pre">_header</span></tt> as the chromosome name. This now makes these conversion scripts fully &#8220;non-lossy&#8221;.</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/file-management/conversion/psl2bed.html#psl2bed"><em>psl2bed</em></a><ul>
+<li>Added <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option to preserve header and metadata as BED elements that use <tt class="docutils literal"><span class="pre">_header</span></tt> as the chromosome name. This now makes these conversion scripts fully &#8220;non-lossy&#8221;.</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/file-management/conversion/wig2bed.html#wig2bed"><em>wig2bed</em></a><ul>
+<li>Added <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option to <a class="reference internal" href="reference/file-management/conversion/wig2bed.html#wig2bed"><em>wig2bed</em></a> binary and <tt class="docutils literal"><span class="pre">wig2bed</span></tt>/<tt class="docutils literal"><span class="pre">wig2starch</span></tt> wrapper scripts, to preserve header and metadata as BED elements that use <tt class="docutils literal"><span class="pre">_header</span></tt> as the chromosome name. This now makes these conversion scripts fully &#8220;non-lossy&#8221;.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Added OS X uninstaller project to allow end user to more easily remove BEDOPS tools from this platform.</li>
+<li>Cleaned up various compilation warnings found with <tt class="docutils literal"><span class="pre">clang</span></tt>/<tt class="docutils literal"><span class="pre">clang++</span></tt> and GCC kits.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="previous-versions">
+<h2>3.2. Previous versions<a class="headerlink" href="#previous-versions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="v2-3-0">
-<h3>3.1.1. v2.3.0<a class="headerlink" href="#v2-3-0" title="Permalink to this headline">¶</a></h3>
+<h3>3.2.1. v2.3.0<a class="headerlink" href="#v2-3-0" title="Permalink to this headline">¶</a></h3>
 <p>Released: <strong>October 2, 2013</strong></p>
 <ul>
 <li><p class="first">Migration of BEDOPS code and documentation from Google Code to Github.</p>
@@ -139,17 +196,14 @@
 </li>
 </ul>
 </div>
-</div>
-<div class="section" id="previous-versions">
-<h2>3.2. Previous versions<a class="headerlink" href="#previous-versions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="v2-2-0b">
-<h3>3.2.1. v2.2.0b<a class="headerlink" href="#v2-2-0b" title="Permalink to this headline">¶</a></h3>
+<h3>3.2.2. v2.2.0b<a class="headerlink" href="#v2-2-0b" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Fixed bug with OS X installer&#8217;s post-installation scripts.</li>
 </ul>
 </div>
 <div class="section" id="v2-2-0">
-<h3>3.2.2. v2.2.0<a class="headerlink" href="#v2-2-0" title="Permalink to this headline">¶</a></h3>
+<h3>3.2.3. v2.2.0<a class="headerlink" href="#v2-2-0" title="Permalink to this headline">¶</a></h3>
 <p>Released: <strong>May 22, 2013</strong></p>
 <ul class="simple">
 <li>Updated packages<ul>
@@ -175,7 +229,7 @@
 </ul>
 </div>
 <div class="section" id="v2-1-1">
-<h3>3.2.3. v2.1.1<a class="headerlink" href="#v2-1-1" title="Permalink to this headline">¶</a></h3>
+<h3>3.2.4. v2.1.1<a class="headerlink" href="#v2-1-1" title="Permalink to this headline">¶</a></h3>
 <p>Released: <strong>May 3, 2013</strong></p>
 <ul class="simple">
 <li><a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a><ul>
@@ -202,7 +256,7 @@
 </ul>
 </div>
 <div class="section" id="v2-1-0">
-<h3>3.2.4. v2.1.0<a class="headerlink" href="#v2-1-0" title="Permalink to this headline">¶</a></h3>
+<h3>3.2.5. v2.1.0<a class="headerlink" href="#v2-1-0" title="Permalink to this headline">¶</a></h3>
 <p>Released: <strong>April 22, 2013</strong></p>
 <ul class="simple">
 <li><a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a><ul>
@@ -232,7 +286,7 @@
 </ul>
 </div>
 <div class="section" id="v2-0-0b">
-<h3>3.2.5. v2.0.0b<a class="headerlink" href="#v2-0-0b" title="Permalink to this headline">¶</a></h3>
+<h3>3.2.6. v2.0.0b<a class="headerlink" href="#v2-0-0b" title="Permalink to this headline">¶</a></h3>
 <p>Released: <strong>February 19, 2013</strong></p>
 <ul class="simple">
 <li>Added <a class="reference internal" href="usage-examples/starchcluster.html#starchcluster"><em>Efficiently creating Starch-formatted archives with a cluster</em></a> script variant which supports task distribution with <a class="reference external" href="http://www.gnu.org/software/parallel/">GNU Parallel</a>.</li>
@@ -240,7 +294,7 @@
 </ul>
 </div>
 <div class="section" id="v2-0-0a">
-<h3>3.2.6. v2.0.0a<a class="headerlink" href="#v2-0-0a" title="Permalink to this headline">¶</a></h3>
+<h3>3.2.7. v2.0.0a<a class="headerlink" href="#v2-0-0a" title="Permalink to this headline">¶</a></h3>
 <p>Released: <strong>February 7, 2013</strong></p>
 <ul class="simple">
 <li><a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a><ul>
@@ -279,7 +333,7 @@
 </ul>
 </div>
 <div class="section" id="v1-2-5b">
-<h3>3.2.7. v1.2.5b<a class="headerlink" href="#v1-2-5b" title="Permalink to this headline">¶</a></h3>
+<h3>3.2.8. v1.2.5b<a class="headerlink" href="#v1-2-5b" title="Permalink to this headline">¶</a></h3>
 <p>Released: <strong>January 14, 2013</strong></p>
 <ul class="simple">
 <li>Adds support for Apple 32- and 64-bit Intel hardware running OS X 10.5 through 10.8.</li>
@@ -288,7 +342,7 @@
 </ul>
 </div>
 <div class="section" id="v1-2-5">
-<h3>3.2.8. v1.2.5<a class="headerlink" href="#v1-2-5" title="Permalink to this headline">¶</a></h3>
+<h3>3.2.9. v1.2.5<a class="headerlink" href="#v1-2-5" title="Permalink to this headline">¶</a></h3>
 <p>Released: <strong>October 13, 2012</strong></p>
 <ul class="simple">
 <li>Fixed unusual bug with <a class="reference internal" href="reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a>, where an extra (and incorrect) line of BED data can potentially be extracted from an archive.</li>
@@ -296,7 +350,7 @@
 </ul>
 </div>
 <div class="section" id="v1-2-3">
-<h3>3.2.9. v1.2.3<a class="headerlink" href="#v1-2-3" title="Permalink to this headline">¶</a></h3>
+<h3>3.2.10. v1.2.3<a class="headerlink" href="#v1-2-3" title="Permalink to this headline">¶</a></h3>
 <p>Released: <strong>August 17, 2012</strong></p>
 <ul class="simple">
 <li>Added <tt class="docutils literal"><span class="pre">--indicator</span></tt> option to <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a>.</li>
@@ -319,19 +373,20 @@
   <ul>
 <li><a class="reference internal" href="#">3. Revision history</a><ul>
 <li><a class="reference internal" href="#current-version">3.1. Current version</a><ul>
-<li><a class="reference internal" href="#v2-3-0">3.1.1. v2.3.0</a></li>
+<li><a class="reference internal" href="#v2-4-0">3.1.1. v2.4.0</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#previous-versions">3.2. Previous versions</a><ul>
-<li><a class="reference internal" href="#v2-2-0b">3.2.1. v2.2.0b</a></li>
-<li><a class="reference internal" href="#v2-2-0">3.2.2. v2.2.0</a></li>
-<li><a class="reference internal" href="#v2-1-1">3.2.3. v2.1.1</a></li>
-<li><a class="reference internal" href="#v2-1-0">3.2.4. v2.1.0</a></li>
-<li><a class="reference internal" href="#v2-0-0b">3.2.5. v2.0.0b</a></li>
-<li><a class="reference internal" href="#v2-0-0a">3.2.6. v2.0.0a</a></li>
-<li><a class="reference internal" href="#v1-2-5b">3.2.7. v1.2.5b</a></li>
-<li><a class="reference internal" href="#v1-2-5">3.2.8. v1.2.5</a></li>
-<li><a class="reference internal" href="#v1-2-3">3.2.9. v1.2.3</a></li>
+<li><a class="reference internal" href="#v2-3-0">3.2.1. v2.3.0</a></li>
+<li><a class="reference internal" href="#v2-2-0b">3.2.2. v2.2.0b</a></li>
+<li><a class="reference internal" href="#v2-2-0">3.2.3. v2.2.0</a></li>
+<li><a class="reference internal" href="#v2-1-1">3.2.4. v2.1.1</a></li>
+<li><a class="reference internal" href="#v2-1-0">3.2.5. v2.1.0</a></li>
+<li><a class="reference internal" href="#v2-0-0b">3.2.6. v2.0.0b</a></li>
+<li><a class="reference internal" href="#v2-0-0a">3.2.7. v2.0.0a</a></li>
+<li><a class="reference internal" href="#v1-2-5b">3.2.8. v1.2.5b</a></li>
+<li><a class="reference internal" href="#v1-2-5">3.2.9. v1.2.5</a></li>
+<li><a class="reference internal" href="#v1-2-3">3.2.10. v1.2.3</a></li>
 </ul>
 </li>
 </ul>
@@ -378,11 +433,11 @@
         <li class="right" >
           <a href="installation.html" title="2. Installation"
              >previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2013, Shane Neph, Alex Reynolds.
+        &copy; Copyright 2014, Shane Neph, Alex Reynolds.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>2. Installation &mdash; BEDOPS 2.3 documentation</title>
+    <title>2. Installation &mdash; BEDOPS 2.4.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2.3',
+        VERSION:     '2.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.3 documentation" href="../index.html" />
+    <link rel="top" title="BEDOPS 2.4.0 documentation" href="../index.html" />
     <link rel="next" title="3. Revision history" href="revision-history.html" />
     <link rel="prev" title="1. Overview" href="overview.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="overview.html" title="1. Overview"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -97,26 +97,27 @@ In the case of 32-bit Linux:</p>
 </div>
 <div class="section" id="via-source-code">
 <span id="installation-via-source-code"></span><h2>2.2. Via source code<a class="headerlink" href="#via-source-code" title="Permalink to this headline">¶</a></h2>
-<p>At this time, compilation of BEDOPS requires GCC (both <tt class="docutils literal"><span class="pre">gcc</span></tt> and <tt class="docutils literal"><span class="pre">g++</span></tt>) 4.8 or greater, which includes support for <a class="reference external" href="http://en.wikipedia.org/wiki/C%2B%2B11">C++11</a> features required by core BEDOPS tools.</p>
-<div class="section" id="id3">
-<h3>2.2.1. Linux<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>At this time, compilation of BEDOPS requires GCC 4.8.x (both <tt class="docutils literal"><span class="pre">gcc</span></tt> and <tt class="docutils literal"><span class="pre">g++</span></tt> and related components) or greater, which includes support for <a class="reference external" href="http://en.wikipedia.org/wiki/C%2B%2B11">C++11</a> features required by core BEDOPS tools. Other tools may be required (some which are platform-specific) as described in the installation documentation that follows.</p>
+<div class="section" id="installation-via-source-code-on-linux">
+<span id="id3"></span><h3>2.2.1. Linux<a class="headerlink" href="#installation-via-source-code-on-linux" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic">
-<li><p class="first">If you do not have GCC 4.8 or greater installed, first install these tools. You can check this with <tt class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></tt>, <em>e.g.</em>:</p>
+<li><p class="first">If you do not have GCC 4.8 or greater installed (both <tt class="docutils literal"><span class="pre">gcc</span></tt> and <tt class="docutils literal"><span class="pre">g++</span></tt>), first install these tools. You can check the state of your GCC installation with <tt class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></tt> and <tt class="docutils literal"><span class="pre">g++</span> <span class="pre">--version</span></tt>, <em>e.g.</em>:</p>
 <div class="highlight-python"><pre>$ gcc --version
-gcc (GCC) 4.8.0 20130127 (experimental)</pre>
+gcc (GCC) 4.8.0 20130127 (experimental)
+...</pre>
 </div>
-<p>For Linux users, use your favorite package manager to install the requisite compiler. For example, in Ubuntu, you might run the following:</p>
+<p>If you lack a compiler or have a compiler that is older than 4.8, use your favorite package manager to install or upgrade the newer package. For example, in Ubuntu, you might run the following:</p>
 <div class="highlight-python"><pre>$ sudo apt-get install gcc-4.8
-$ sudo apt-get install g++-4.8</pre>
+$ sudo apt-get install g++-4.8
+$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50
+$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50</pre>
 </div>
-<p>If you already have <tt class="docutils literal"><span class="pre">gcc</span></tt> and need to update it, you might run something like:</p>
-<div class="highlight-python"><pre>$ sudo apt-get update
-$ sudo apt-get upgrade -y
-$ sudo apt-get dist-upgrade</pre>
-</div>
-<p>The specifics will depend on your distribution and what you want to install. You can check with your system administration or support staff if you are unsure what your options are.</p>
+<p>The specifics of this process will depend on your distribution and what you want to install. Please check with your system administration or support staff if you are unsure what your options are.</p>
 </li>
 <li><p class="first">Install a <tt class="docutils literal"><span class="pre">git</span></tt> client of your choice, if you do not already have one installed. Github offers an <a class="reference external" href="https://help.github.com/articles/set-up-git#platform-all">installation guide</a>.</p>
+<p>Alternatively, use <tt class="docutils literal"><span class="pre">apt-get</span></tt> or another package manager to install one, <em>e.g.</em></p>
+<div class="highlight-python"><pre>$ sudo apt-get install git</pre>
+</div>
 </li>
 <li><p class="first">Clone the BEDOPS Git repository in an appropriate local directory:</p>
 <div class="highlight-python"><pre>$ git clone https://github.com/bedops/bedops.git</pre>
@@ -138,15 +139,15 @@ $ make static</pre>
 </li>
 </ol>
 </div>
-<div class="section" id="id4">
-<h3>2.2.2. Mac OS X<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="installation-via-source-code-on-mac-os-x">
+<span id="id4"></span><h3>2.2.2. Mac OS X<a class="headerlink" href="#installation-via-source-code-on-mac-os-x" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic">
 <li><p class="first">If you do not have GCC 4.8 or greater installed, first do so. You can check this with <tt class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></tt>, <em>e.g.</em>:</p>
 <div class="highlight-python"><pre>$ gcc --version
 gcc (MacPorts gcc48 4.8.2_0+universal) 4.8.2
 ...</pre>
 </div>
-<p>For Mac OS X users, we recommend first installing <a class="reference external" href="https://developer.apple.com/xcode/">Apple Xcode</a> and its Command Line Tools, via the <tt class="docutils literal"><span class="pre">Preferences</span> <span class="pre">&gt;</span> <span class="pre">Downloads</span></tt> option within Xcode. Then install GCC 4.7 or greater using <a class="reference external" href="http://www.macports.org">MacPorts</a>, setting GCC to be the default compiler, <em>e.g.</em>:</p>
+<p>For Mac OS X users, we recommend first installing <a class="reference external" href="https://developer.apple.com/xcode/">Apple Xcode</a> and its Command Line Tools, via the <tt class="docutils literal"><span class="pre">Preferences</span> <span class="pre">&gt;</span> <span class="pre">Downloads</span></tt> option within Xcode. Then install GCC 4.8 or greater using <a class="reference external" href="http://www.macports.org">MacPorts</a>, setting GCC to be the default compiler, <em>e.g.</em>:</p>
 <div class="highlight-python"><pre>$ sudo port install gcc48 +universal
 $ sudo port install gcc_select
 $ sudo port select --list gcc
@@ -178,27 +179,36 @@ $ make build_all_darwin_intel_fat</pre>
 </ol>
 </div>
 <div class="section" id="cygwin">
-<h3>2.2.3. Cygwin<a class="headerlink" href="#cygwin" title="Permalink to this headline">¶</a></h3>
+<span id="installation-via-source-code-on-cygwin"></span><h3>2.2.3. Cygwin<a class="headerlink" href="#cygwin" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic">
 <li><p class="first">Make sure you are running a 64-bit version of Cygwin. Compilation of BEDOPS on 32-bit versions of Cygwin is not supported.</p>
-<p>To be sure, open up your Cywin installer application (separate from the Cygwin terminal application) and look for the <strong>64-bit</strong> marker:</p>
-</li>
-</ol>
+<p>To be sure, open up your Cywin installer application (separate from the Cygwin terminal application) and look for the <strong>64 bit</strong> marker next to the setup application version number. For instance, here is a screenshot of the Cygwin installer that is version 2.831 and is 64-bit:</p>
 <img alt="../_images/bedops_cygwin_installer_screen.png" src="../_images/bedops_cygwin_installer_screen.png" />
-<ol class="arabic" start="2">
-<li><p class="first">Check that you have GCC 4.8 or greater installed. You can check this by opening the Cygwin terminal window and typing <tt class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></tt>, <em>e.g.</em>:</p>
+</li>
+<li><p class="first">Check that you have GCC 4.8 or greater installed. You can check this by opening the Cygwin terminal window (note that this is not the same as the Cygwin installer application) and typing <tt class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></tt>, <em>e.g.</em>:</p>
 <div class="highlight-python"><pre>$ gcc --version
 gcc (GCC) 4.8.2
 ...</pre>
 </div>
-<p>If you do not have <tt class="docutils literal"><span class="pre">gcc</span></tt> installed, then open the Cygwin (64-bit) installer application, navigate through the usual user and package destination options, and then mark the GCC 4.8.* packages for installation:</p>
+<p>If you do not have <tt class="docutils literal"><span class="pre">gcc</span></tt> installed, then open the Cygwin (64-bit) installer application again, navigate through the current setup options, and then mark the GCC 4.8.* packages for installation:</p>
+<img alt="../_images/bedops_cygwin_installer_gcc_screen.png" src="../_images/bedops_cygwin_installer_gcc_screen.png" />
+<p>If it helps, type in <tt class="docutils literal"><span class="pre">gcc</span></tt> into the search field to filter results to GCC-related packages. Make sure to mark the following packages for installation, at least:</p>
+<ul class="simple">
+<li><strong>gcc-core</strong></li>
+<li><strong>gcc-debuginfo</strong></li>
+<li><strong>gcc-g++</strong></li>
+<li><strong>gcc-tools-xyz</strong></li>
+<li><strong>libgcc1</strong></li>
+</ul>
+<p>Click &#8220;Next&#8221; to follow directives to install those and any other selected package items. Then run <tt class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></tt> as before, to ensure you have a working GCC setup.</p>
 </li>
-</ol>
-<ol class="arabic simple" start="3">
-<li>Install a <tt class="docutils literal"><span class="pre">git</span></tt> client of your choice. You can compile one or use the precompiled <tt class="docutils literal"><span class="pre">git</span></tt> package available through the Cygwin (64-bit) installer:</li>
-</ol>
+<li><p class="first">Install a <tt class="docutils literal"><span class="pre">git</span></tt> client of your choice. You can compile one or use the precompiled <tt class="docutils literal"><span class="pre">git</span></tt> package available through the Cygwin (64-bit) installer:</p>
 <img alt="../_images/bedops_cygwin_installer_git_screen.png" src="../_images/bedops_cygwin_installer_git_screen.png" />
-<ol class="arabic" start="4">
+<p>If it helps, type in <tt class="docutils literal"><span class="pre">git</span></tt> into the search field to filter results to Git-related packages. Make sure to install the following package, at least:</p>
+<ul class="simple">
+<li><strong>git</strong></li>
+</ul>
+</li>
 <li><p class="first">In a Cygwin terminal window, clone the BEDOPS Git repository to an appropriate local directory:</p>
 <div class="highlight-python"><pre>$ git clone https://github.com/bedops/bedops.git</pre>
 </div>
@@ -264,8 +274,8 @@ $ make static</pre>
 </ul>
 </li>
 <li><a class="reference internal" href="#via-source-code">2.2. Via source code</a><ul>
-<li><a class="reference internal" href="#id3">2.2.1. Linux</a></li>
-<li><a class="reference internal" href="#id4">2.2.2. Mac OS X</a></li>
+<li><a class="reference internal" href="#installation-via-source-code-on-linux">2.2.1. Linux</a></li>
+<li><a class="reference internal" href="#installation-via-source-code-on-mac-os-x">2.2.2. Mac OS X</a></li>
 <li><a class="reference internal" href="#cygwin">2.2.3. Cygwin</a></li>
 </ul>
 </li>
@@ -314,11 +324,11 @@ $ make static</pre>
         <li class="right" >
           <a href="overview.html" title="1. Overview"
              >previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.3 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2013, Shane Neph, Alex Reynolds.
+        &copy; Copyright 2014, Shane Neph, Alex Reynolds.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>

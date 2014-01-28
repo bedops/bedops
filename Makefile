@@ -37,7 +37,7 @@ build_all: boost_support_c bzip2_support_c jansson_support_c zlib_support_c sort
 build_all_gprof: boost_support_c bzip2_support_c jansson_support_c zlib_support_c sort_c_gprof bedops_c_gprof closestfeatures_c_gprof bedmap_c_gprof bedextract_c_gprof starch_c_gprof wig2bed_c_gprof
 
 #
-# Darwin fat - 10.6-10.8, i386 (32-bit) and x86-64 (64-bit) support
+# Darwin fat - 10.6-10.9, i386 (32-bit) and x86-64 (64-bit) support
 #
 
 build_all_darwin_intel_fat: boost_support_c sort_c_darwin_intel_fat bedops_c_darwin_intel_fat closestfeatures_c_darwin_intel_fat bedmap_c_darwin_intel_fat bedextract_c_darwin_intel_fat starch_c_darwin_intel_fat wig2bed_c_darwin_intel_fat

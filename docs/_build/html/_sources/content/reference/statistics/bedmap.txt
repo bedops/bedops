@@ -139,6 +139,8 @@ The ``--help`` option describes the various mapping and analytical operations an
         --echo-map-id-uniq  List unique IDs from overlapping <map-file> elements.
         --echo-map-range    Print genomic range of overlapping elements from <map-file>.
         --echo-map-score    List scores from overlapping <map-file> elements.
+        --echo-map-size     List the full length of every overlapping element.
+        --echo-overlap-size List lengths of overlaps.
         --indicator         Print 1 if there exists an overlapping element in <map-file>, 0 otherwise.
 
 .. _bedmap_operations:
@@ -399,7 +401,7 @@ Echo
 
 The ID, score and coordinate columns of the reference and map files are very useful for reading and debugging results, or reporting a more detailed mapping.
 
-We can use the ``--echo``, ``--echo-map``, ``--echo-map-id``, ``--echo-map-id-uniq``, ``--echo-map-score`` and ``--echo-map-range`` flags to tell :ref:`bedmap` to report additional details about the reference and map elements.
+We can use the ``--echo``, ``--echo-map``, ``--echo-map-id``, ``--echo-map-id-uniq``, ``--echo-map-score``, ``--echo-map-range``, ``--echo-map-size`` and ``--echo-overlap-size`` flags to tell :ref:`bedmap` to report additional details about the reference and map elements.
 
 The ``--echo`` flag reports each reference element. We have already seen the application of ``--echo`` in earlier examples. The option helps to clearly associate results from other chosen operations with specific reference elements. Additionally, ``--echo`` enables the output from :ref:`bedmap` to be used as input to additional BEDOPS utilities, including :ref:`bedmap` itself.
 
@@ -447,7 +449,7 @@ The ``--echo-map-score`` flag works in a similar fashion to ``--echo-map-id``, r
 
 .. note:: Both the ``--echo-map-id`` and ``--echo-map-score`` flags use the semi-colon (``;``) as a default delimiter, which may be changed with the ``--multidelim`` option (see the :ref:`Delimiters <bedmap_delimiters>` section for more information on this and other modifier operators).
 
-Finally, the ``--echo-map-range`` flag tells :ref:`bedmap` to report the genomic range of overlapping mapped elements. If we apply this flag to the ``Reference`` and ``Map`` datasets (see :ref:`Downloads <bedmap_downloads>`), we get the following result:
+The ``--echo-map-range`` flag tells :ref:`bedmap` to report the genomic range of overlapping mapped elements. If we apply this flag to the ``Reference`` and ``Map`` datasets (see :ref:`Downloads <bedmap_downloads>`), we get the following result:
 
 ::
 
@@ -457,6 +459,8 @@ Finally, the ``--echo-map-range`` flag tells :ref:`bedmap` to report the genomic
   chr21   33031900    33032000    ref-3|chr21 33031885    33032005
 
 .. note:: The ``--echo-map-range`` option produces three-column BED results that are not always guaranteed to be sorted. The ``--echo`` operation is independent, and it produces reference elements in proper BEDOPS order, as shown. If the results of the ``--echo-map-range`` option will be used directly as BED coordinates in downstream BEDOPS analyses (*i.e.*, no ``--echo`` operator), first pipe them to :ref:`sort-bed` to ensure proper sort order.
+
+Finally, the ``--echo-map-size`` flag reports the difference of the start and stop coordinates of each mapped element, while the ``--echo-overlap-size`` flag reports the length of the overlap between the reference element and each mapped element. 
 
 .. _bedmap_element_and_overlap_statistics:
 
@@ -571,6 +575,49 @@ And here is the mean density across the padded ``ref-3``:
 Looking at the visualizations above, we would expect the mean density to be lower, as the expanded reference region includes map elements with lower tag density, which pushes down the overall mean.
 
 .. note:: The ``--range`` option is classified as an overlap option (like ``--fraction-map`` or ``--exact``) that implicitly uses ``--bp-ovr 1`` after padding reference elements. As shown above, the extended padding is an internal operation and it is not reflected in the output with the ``--echo`` option. Real padding can be added by using ``bedops --range 100 --everything reference.bed`` and piping results to :ref:`bedmap`.
+
+.. note:: Because ``--range`` is an internal operation, some statistical operations like ``--bases`` and ``--bases-uniq`` do not work as one might expect. 
+
+   As an example, we might want to count the number of overlapping, unique bases between a 1000-base window around a reference element and a set of mapped elements. The following command will not work:
+
+   ::
+
+     $ bedmap --echo --range 1000 --bases-uniq reference.bed map.bed
+
+   Instead, use :ref:`bedops` to build the window, piping it into a downstream :ref:`bedmap` command. The result of this operation can be piped into the core utility ``paste`` with the original reference set, in order to associate reference elements with the windowed operation result:
+
+   ::
+
+     $ bedops --range 1000 --everything reference.bed \
+         | bedmap --bases-uniq - map.bed \
+         | paste reference.bed -
+
+   To extend this demonstration even further, let's say we are interested in calculations of unique base counts across 1, 2.5 and 5 kilobase windows around reference elements. We can build a matrix-like result through a judicious use of UNIX pipes that progressively expand windows:
+
+   ::
+
+     $ bedops --range 1000 --everything reference.bed \
+       | bedmap --echo --bases-uniq - map.bed \
+       | bedops --range 1500 --everything - \
+       | bedmap --echo --bases-uniq - map.bed \
+       | bedops --range 2500 --everything - \
+       | bedmap --echo --bases-uniq - map.bed \
+       | cut -f2- -d'|' \
+       | paste reference.bed - \
+       | tr '|' '\t'
+
+   To explain how this works, we first build a 1 kilobase window around reference elements with :ref:`bedops` and pipe these windows to :ref:`bedmap`, which does two things:
+
+   1. Use ``--echo`` to print the windowed element.
+   2. Use ``--bases-uniq`` to print the number of uniquely-mapped bases across the window.
+
+   In turn, this result is passed to the second :ref:`bedops` operation, which expands the 1-kilobase window from :ref:`bedmap` by another 1.5 kilobases. This creates a window that is now 2.5 kilobases around the original reference element. We pipe this to the second :ref:`bedmap` operation, which prints the 2.5 kb window and the number of bases across *that* window.
+
+   In the third and last round of operations, we expand the 2.5 kb window by another 2.5 kb, creating a 5000-base window around the original reference element. We repeat the same mapping operation.
+
+   At this point, each line of the output consists of a windowed reference element, and pipe characters (the default :ref:`bedmap` delimiter) which separate the unique base counts across the 1, 2.5 and 5 kilobase windows. The final ``cut``, ``paste`` and ``tr`` operations strip out the windows, paste in the original reference elements and replace default delimiters with tab characters, creating a matrix-like output.
+
+   To make this analysis run quickly, use the ``--faster`` modifier on each of the :ref:`bedmap`, if the data allow it. See the following section for more details on where and how ``--faster`` can be used.
 
 .. _bedmap_using_faster_with_range:
 

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.2.1. bedmap &mdash; BEDOPS 2.3 documentation</title>
+    <title>6.2.1. bedmap &mdash; BEDOPS 2.4.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '2.3',
+        VERSION:     '2.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.3 documentation" href="../../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.0 documentation" href="../../../index.html" />
     <link rel="up" title="6.2. Statistics" href="../statistics.html" />
     <link rel="next" title="6.3. File management" href="../file-management.html" />
     <link rel="prev" title="6.2. Statistics" href="../statistics.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="../statistics.html" title="6.2. Statistics"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
           <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../statistics.html" accesskey="U">6.2. Statistics</a> &raquo;</li> 
       </ul>
@@ -176,6 +176,8 @@
       --echo-map-id-uniq  List unique IDs from overlapping &lt;map-file&gt; elements.
       --echo-map-range    Print genomic range of overlapping elements from &lt;map-file&gt;.
       --echo-map-score    List scores from overlapping &lt;map-file&gt; elements.
+      --echo-map-size     List the full length of every overlapping element.
+      --echo-overlap-size List lengths of overlaps.
       --indicator         Print 1 if there exists an overlapping element in &lt;map-file&gt;, 0 otherwise.</pre>
 </div>
 </div>
@@ -365,7 +367,7 @@ chr21   33031900    33032000    ref-3|154.500000|9.311283|138.000000|165.000000<
 <div class="section" id="echo">
 <span id="bedmap-echo"></span><h4>6.2.1.3.3.1. Echo<a class="headerlink" href="#echo" title="Permalink to this headline">¶</a></h4>
 <p>The ID, score and coordinate columns of the reference and map files are very useful for reading and debugging results, or reporting a more detailed mapping.</p>
-<p>We can use the <tt class="docutils literal"><span class="pre">--echo</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-id</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-id-uniq</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-score</span></tt> and <tt class="docutils literal"><span class="pre">--echo-map-range</span></tt> flags to tell <a class="reference internal" href="#bedmap"><em>bedmap</em></a> to report additional details about the reference and map elements.</p>
+<p>We can use the <tt class="docutils literal"><span class="pre">--echo</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-id</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-id-uniq</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-score</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-range</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-size</span></tt> and <tt class="docutils literal"><span class="pre">--echo-overlap-size</span></tt> flags to tell <a class="reference internal" href="#bedmap"><em>bedmap</em></a> to report additional details about the reference and map elements.</p>
 <p>The <tt class="docutils literal"><span class="pre">--echo</span></tt> flag reports each reference element. We have already seen the application of <tt class="docutils literal"><span class="pre">--echo</span></tt> in earlier examples. The option helps to clearly associate results from other chosen operations with specific reference elements. Additionally, <tt class="docutils literal"><span class="pre">--echo</span></tt> enables the output from <a class="reference internal" href="#bedmap"><em>bedmap</em></a> to be used as input to additional BEDOPS utilities, including <a class="reference internal" href="#bedmap"><em>bedmap</em></a> itself.</p>
 <p>The <tt class="docutils literal"><span class="pre">--echo-map</span></tt> flag gathers overlapping mapped elements for every reference element. The option is useful for debugging and detailed downstream processing needs. This is the most general operation in <a class="reference internal" href="#bedmap"><em>bedmap</em></a> in that overlapping elements are returned in full detail, for every reference element. While results are well-defined and easily parsed, the output can be very large and difficult to read.</p>
 <p>As an example of using the <tt class="docutils literal"><span class="pre">--echo-map-id</span></tt> operator in a biological context, we examine a <a class="reference external" href="http://meme.nbcr.net/meme/fimo-intro.html">FIMO</a> analysis that returns a subset of transcription factor binding sites in BED format, with <a class="reference external" href="http://en.wikipedia.org/wiki/TRANSFAC">TRANSFAC</a> motif names listed in the ID column:</p>
@@ -399,7 +401,7 @@ chr2    1000    10000000        ref-1|+V_DMRT1_01;+V_EGR1_01;+V_EGR_Q6;+V_IRF_Q6
 <p class="first admonition-title">Note</p>
 <p class="last">Both the <tt class="docutils literal"><span class="pre">--echo-map-id</span></tt> and <tt class="docutils literal"><span class="pre">--echo-map-score</span></tt> flags use the semi-colon (<tt class="docutils literal"><span class="pre">;</span></tt>) as a default delimiter, which may be changed with the <tt class="docutils literal"><span class="pre">--multidelim</span></tt> option (see the <a class="reference internal" href="#bedmap-delimiters"><em>Delimiters</em></a> section for more information on this and other modifier operators).</p>
 </div>
-<p>Finally, the <tt class="docutils literal"><span class="pre">--echo-map-range</span></tt> flag tells <a class="reference internal" href="#bedmap"><em>bedmap</em></a> to report the genomic range of overlapping mapped elements. If we apply this flag to the <tt class="docutils literal"><span class="pre">Reference</span></tt> and <tt class="docutils literal"><span class="pre">Map</span></tt> datasets (see <a class="reference internal" href="#bedmap-downloads"><em>Downloads</em></a>), we get the following result:</p>
+<p>The <tt class="docutils literal"><span class="pre">--echo-map-range</span></tt> flag tells <a class="reference internal" href="#bedmap"><em>bedmap</em></a> to report the genomic range of overlapping mapped elements. If we apply this flag to the <tt class="docutils literal"><span class="pre">Reference</span></tt> and <tt class="docutils literal"><span class="pre">Map</span></tt> datasets (see <a class="reference internal" href="#bedmap-downloads"><em>Downloads</em></a>), we get the following result:</p>
 <div class="highlight-python"><pre>$ bedmap --echo --echo-map-range reference.bed map.bed
 chr21   33031200    33032400    ref-1|chr21 33031185    33032405
 chr21   33031400    33031800    ref-2|chr21 33031385    33031805
@@ -409,6 +411,7 @@ chr21   33031900    33032000    ref-3|chr21 33031885    33032005</pre>
 <p class="first admonition-title">Note</p>
 <p class="last">The <tt class="docutils literal"><span class="pre">--echo-map-range</span></tt> option produces three-column BED results that are not always guaranteed to be sorted. The <tt class="docutils literal"><span class="pre">--echo</span></tt> operation is independent, and it produces reference elements in proper BEDOPS order, as shown. If the results of the <tt class="docutils literal"><span class="pre">--echo-map-range</span></tt> option will be used directly as BED coordinates in downstream BEDOPS analyses (<em>i.e.</em>, no <tt class="docutils literal"><span class="pre">--echo</span></tt> operator), first pipe them to <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> to ensure proper sort order.</p>
 </div>
+<p>Finally, the <tt class="docutils literal"><span class="pre">--echo-map-size</span></tt> flag reports the difference of the start and stop coordinates of each mapped element, while the <tt class="docutils literal"><span class="pre">--echo-overlap-size</span></tt> flag reports the length of the overlap between the reference element and each mapped element.</p>
 </div>
 <div class="section" id="element-and-overlap-statistics">
 <span id="bedmap-element-and-overlap-statistics"></span><h4>6.2.1.3.3.2. Element and overlap statistics<a class="headerlink" href="#element-and-overlap-statistics" title="Permalink to this headline">¶</a></h4>
@@ -479,6 +482,38 @@ chr21   33031900    33032000    ref-3|117.750000</pre>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The <tt class="docutils literal"><span class="pre">--range</span></tt> option is classified as an overlap option (like <tt class="docutils literal"><span class="pre">--fraction-map</span></tt> or <tt class="docutils literal"><span class="pre">--exact</span></tt>) that implicitly uses <tt class="docutils literal"><span class="pre">--bp-ovr</span> <span class="pre">1</span></tt> after padding reference elements. As shown above, the extended padding is an internal operation and it is not reflected in the output with the <tt class="docutils literal"><span class="pre">--echo</span></tt> option. Real padding can be added by using <tt class="docutils literal"><span class="pre">bedops</span> <span class="pre">--range</span> <span class="pre">100</span> <span class="pre">--everything</span> <span class="pre">reference.bed</span></tt> and piping results to <a class="reference internal" href="#bedmap"><em>bedmap</em></a>.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Because <tt class="docutils literal"><span class="pre">--range</span></tt> is an internal operation, some statistical operations like <tt class="docutils literal"><span class="pre">--bases</span></tt> and <tt class="docutils literal"><span class="pre">--bases-uniq</span></tt> do not work as one might expect.</p>
+<p>As an example, we might want to count the number of overlapping, unique bases between a 1000-base window around a reference element and a set of mapped elements. The following command will not work:</p>
+<div class="highlight-python"><pre>$ bedmap --echo --range 1000 --bases-uniq reference.bed map.bed</pre>
+</div>
+<p>Instead, use <a class="reference internal" href="../set-operations/bedops.html#bedops"><em>bedops</em></a> to build the window, piping it into a downstream <a class="reference internal" href="#bedmap"><em>bedmap</em></a> command. The result of this operation can be piped into the core utility <tt class="docutils literal"><span class="pre">paste</span></tt> with the original reference set, in order to associate reference elements with the windowed operation result:</p>
+<div class="highlight-python"><pre>$ bedops --range 1000 --everything reference.bed \
+    | bedmap --bases-uniq - map.bed \
+    | paste reference.bed -</pre>
+</div>
+<p>To extend this demonstration even further, let&#8217;s say we are interested in calculations of unique base counts across 1, 2.5 and 5 kilobase windows around reference elements. We can build a matrix-like result through a judicious use of UNIX pipes that progressively expand windows:</p>
+<div class="highlight-python"><pre>$ bedops --range 1000 --everything reference.bed \
+  | bedmap --echo --bases-uniq - map.bed \
+  | bedops --range 1500 --everything - \
+  | bedmap --echo --bases-uniq - map.bed \
+  | bedops --range 2500 --everything - \
+  | bedmap --echo --bases-uniq - map.bed \
+  | cut -f2- -d'|' \
+  | paste reference.bed - \
+  | tr '|' '\t'</pre>
+</div>
+<p>To explain how this works, we first build a 1 kilobase window around reference elements with <a class="reference internal" href="../set-operations/bedops.html#bedops"><em>bedops</em></a> and pipe these windows to <a class="reference internal" href="#bedmap"><em>bedmap</em></a>, which does two things:</p>
+<ol class="arabic simple">
+<li>Use <tt class="docutils literal"><span class="pre">--echo</span></tt> to print the windowed element.</li>
+<li>Use <tt class="docutils literal"><span class="pre">--bases-uniq</span></tt> to print the number of uniquely-mapped bases across the window.</li>
+</ol>
+<p>In turn, this result is passed to the second <a class="reference internal" href="../set-operations/bedops.html#bedops"><em>bedops</em></a> operation, which expands the 1-kilobase window from <a class="reference internal" href="#bedmap"><em>bedmap</em></a> by another 1.5 kilobases. This creates a window that is now 2.5 kilobases around the original reference element. We pipe this to the second <a class="reference internal" href="#bedmap"><em>bedmap</em></a> operation, which prints the 2.5 kb window and the number of bases across <em>that</em> window.</p>
+<p>In the third and last round of operations, we expand the 2.5 kb window by another 2.5 kb, creating a 5000-base window around the original reference element. We repeat the same mapping operation.</p>
+<p>At this point, each line of the output consists of a windowed reference element, and pipe characters (the default <a class="reference internal" href="#bedmap"><em>bedmap</em></a> delimiter) which separate the unique base counts across the 1, 2.5 and 5 kilobase windows. The final <tt class="docutils literal"><span class="pre">cut</span></tt>, <tt class="docutils literal"><span class="pre">paste</span></tt> and <tt class="docutils literal"><span class="pre">tr</span></tt> operations strip out the windows, paste in the original reference elements and replace default delimiters with tab characters, creating a matrix-like output.</p>
+<p class="last">To make this analysis run quickly, use the <tt class="docutils literal"><span class="pre">--faster</span></tt> modifier on each of the <a class="reference internal" href="#bedmap"><em>bedmap</em></a>, if the data allow it. See the following section for more details on where and how <tt class="docutils literal"><span class="pre">--faster</span></tt> can be used.</p>
 </div>
 </div>
 <div class="section" id="using-faster-with-range">
@@ -703,13 +738,13 @@ chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01</pre>
         <li class="right" >
           <a href="../statistics.html" title="6.2. Statistics"
              >previous</a> |</li>
-        <li><a href="../../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
           <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../statistics.html" >6.2. Statistics</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2013, Shane Neph, Alex Reynolds.
+        &copy; Copyright 2014, Shane Neph, Alex Reynolds.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>

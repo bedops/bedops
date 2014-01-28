@@ -26,7 +26,7 @@
 #               half-open [a-1, b) extended BED and thence compressed into a
 #               BEDOPS Starch archive sent to standard output.
 #
-# Version:      2.4
+# Version:      2.4.1
 #
 # Notes:        This conversion script relies on the VCF v4 format, with its
 #               specifications outlined here by the 1000 Genomes project:

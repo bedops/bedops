@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.3.3.2. gff2bed &mdash; BEDOPS 2.3 documentation</title>
+    <title>6.3.3.2. gff2bed &mdash; BEDOPS 2.4.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.3',
+        VERSION:     '2.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.3 documentation" href="../../../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.0 documentation" href="../../../../index.html" />
     <link rel="up" title="6.3.3. Data conversion" href="../conversion.html" />
     <link rel="next" title="6.3.3.3. gtf2bed" href="gtf2bed.html" />
     <link rel="prev" title="6.3.3.1. bam2bed" href="bam2bed.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="bam2bed.html" title="6.3.3.1. bam2bed"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../conversion.html" accesskey="U">6.3.3. Data conversion</a> &raquo;</li> 
@@ -76,6 +76,7 @@
 <div class="section" id="usage">
 <h2>6.3.3.2.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>The <tt class="docutils literal"><span class="pre">gff2bed</span></tt> script parses GFF3 from standard input and prints sorted BED to standard output. The <tt class="docutils literal"><span class="pre">gff2starch</span></tt> script uses an extra step to parse GFF to a compressed BEDOPS <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive, which is also directed to standard output.</p>
+<p>The header data of a GFF file is usually discarded, unless you add the <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option. In this case, BED elements are created from these data, using the chromosome name <tt class="docutils literal"><span class="pre">_header</span></tt> to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field).</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
 <p class="last">By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the <tt class="docutils literal"><span class="pre">--do-not-sort</span></tt> option. Run the script with the <tt class="docutils literal"><span class="pre">--help</span></tt> option for more details.</p>
@@ -99,6 +100,15 @@ chr1    .       exon    7000    9000    10      +       1       ID=exon00005;Dbx
 <div class="highlight-python"><pre>$ gff2bed &lt; foo.gff3
 chr1    1049    1500    exon00002       .       -       USA     exon    0       ID=exon00002;Ontology_term="GO:0046703";Ontology_term="GO:0046704"
 chr1    1299    1300    exon00001       .       +       Canada  exon    .       ID=exon00001;score=1;zeroLengthInsertion=True
+chr1    2999    3902    exon00003       .       ?       Canada  exon    2       ID=exon00003;score=4;Name=foo
+chr1    4999    5500    exon00004       .       .       .       exon    .       ID=exon00004;Gap=M8 D3 M6 I1 M6
+chr1    6999    9000    exon00005       10      +       .       exon    1       ID=exon00005;Dbxref="NCBI_gi:10727410"</pre>
+</div>
+<p>As you see here, we strip the header element (<tt class="docutils literal"><span class="pre">##gff-version</span> <span class="pre">3</span></tt>), but adding the <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option will preserve this header as a BED element that uses <tt class="docutils literal"><span class="pre">_header</span></tt> as a chromosome name:</p>
+<div class="highlight-python"><pre>$ gff2bed --keep-header &lt; foo.gff3
+_header 0       1       ##gff-version 3
+chr1    1049    1500    exon00002       .       -       USA     exon    0       ID=exon00002;Ontology_term="GO:0046703";Ontology_term="GO:0046704"
+chr1    1299    1300    exon00001       .       +       Canada  exon    .       ID=exon00001;score=1;zero_length_insertion=True
 chr1    2999    3902    exon00003       .       ?       Canada  exon    2       ID=exon00003;score=4;Name=foo
 chr1    4999    5500    exon00004       .       .       .       exon    .       ID=exon00004;Gap=M8 D3 M6 I1 M6
 chr1    6999    9000    exon00005       10      +       .       exon    1       ID=exon00005;Dbxref="NCBI_gi:10727410"</pre>
@@ -269,14 +279,14 @@ chr1    6999    9000    exon00005       10      +       .       exon    1       
         <li class="right" >
           <a href="bam2bed.html" title="6.3.3.1. bam2bed"
              >previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.3 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../conversion.html" >6.3.3. Data conversion</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2013, Shane Neph, Alex Reynolds.
+        &copy; Copyright 2014, Shane Neph, Alex Reynolds.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>

@@ -26,7 +26,7 @@
 #               into 0-based, half-open [a-1,b) extended BED that is subsequently
 #               compressed into a Starch v2 archive.
 #
-# Version:      2.4
+# Version:      2.4.1
 #
 # Notes:        The BAM format is an indexed, binary representation of a SAM (Sequence
 #               Alignment/Map) file. Internally, it is a 0-based, half-open [a-1,b)

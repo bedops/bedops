@@ -26,7 +26,7 @@
 #               into 0-based, half-open [a-1, b) extended BED that is subsequently 
 #               compressed into a Starch v2 archive.
 #
-# Version:      2.4
+# Version:      2.4.1
 #
 # Notes:        The SAM format is Sequence Alignment/Map file that is a 1-based, closed 
 #               [a, b]. This script converts this indexing back to 0-based, half-
