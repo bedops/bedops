@@ -919,7 +919,7 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                                              __LINE__, strerror(errno));
                                      return -1;
                                  }
-                             totalBytes += strlen(tfile)+1;
+                             totalBytes += (tfile == NULL) ? 0 : (strlen(tfile)+1);
                              tmpFileNames[tmpFileCount] = tfile;
                              lexSortBedData(beds);
                              printBed(tmpFiles[tmpFileCount], beds);
@@ -970,8 +970,9 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                                              fprintf(stderr, "Error: %s, %d: Unable to create char* array. Out of memory.\n", __FILE__, __LINE__);
                                              return -1;
                                          }
-                                     totalBytes += sizeof(FILE*);
-                                     totalBytes += strlen(tfile)+1;
+                                     totalBytes += sizeof(FILE *);
+                                     totalBytes += sizeof(char *);
+                                     totalBytes += (tfile == NULL) ? 0 : (strlen(tfile)+1);
                                      tmpFileCount = 1U;
                                      tmpFiles[0] = tmpX;
                                      tmpFileNames[0] = tfile;
@@ -1001,7 +1002,7 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
             if(beds->numChroms > 0)
                 { /* sort and spit out what's in memory */
                     errno = 0;
-                    tmpFiles = (FILE**)realloc(tmpFiles, sizeof(FILE*) * (tmpFileCount+1));
+                    tmpFiles = (FILE **)realloc(tmpFiles, sizeof(FILE*) * (tmpFileCount+1));
                     if(tmpFiles == NULL)
                         {
                             fprintf(stderr, "Error: %s, %d: Unable to expand Chrom structure: %s. Out of memory.\n", __FILE__, 
@@ -1009,7 +1010,6 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                             fclose(bedFile);
                             return -1;
                         }
-                    totalBytes += sizeof(FILE*) * (tmpFileCount+1);
                     tfile = NULL;
                     tmpFiles[tmpFileCount] = create_tmpfile(tmpPath, &tfile);
                     if(tmpFiles[tmpFileCount] == NULL)
@@ -1018,7 +1018,6 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                                     __LINE__, strerror(errno));
                             return -1;
                         }
-                    totalBytes += strlen(tfile)+1;
                     tmpFileNames[tmpFileCount] = tfile;
                     lexSortBedData(beds);
                     printBed(tmpFiles[tmpFileCount], beds);
