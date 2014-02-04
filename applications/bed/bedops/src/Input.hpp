@@ -586,7 +586,7 @@ private:
     msg += "          May use '-' for a file to indicate reading from standard input (BED format only).\n";
     msg += "\n";
     msg += "      Process Flags:\n";
-    msg += "          --chrom <chromosome> Process data for given <chromosome> only.\n";
+    msg += "          --chrom <chromosome> Jump to and process data for given <chromosome> only.\n";
     msg += "          --ec                 Error check input files (slower).\n";
     msg += "          --header             Accept headers (VCF, GFF, SAM, BED, WIG) in any input file.\n";
     msg += "          --help               Print this message and exit successfully.\n";

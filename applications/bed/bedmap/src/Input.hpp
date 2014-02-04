@@ -447,7 +447,7 @@ namespace BedMap {
     usage << "                                                                                                    \n";
     usage << "    Process Flags:                                                                                  \n";
     usage << "     --------                                                                                       \n";
-    usage << "      --chrom <chromosome>  Process data for given <chromosome> only.                               \n";
+    usage << "      --chrom <chromosome>  Jump to and process data for given <chromosome> only.                   \n";
     usage << "      --delim <delim>       Change output delimiter from '|' to <delim> between columns (e.g. \'\\t\').\n";
     usage << "      --ec                  Error check all input files (slower).                                   \n";
     usage << "      --faster              (advanced) Strong input assumptions are made.  Review docs before use.  \n";
