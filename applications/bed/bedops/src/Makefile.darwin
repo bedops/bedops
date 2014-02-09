@@ -1,5 +1,4 @@
 MIN_OSX_VERSION      = 10.7
-ARCH                 = x86_64
 
 MAIN                 = ../../../..
 MAINAPPDIR           = ../..
@@ -91,13 +90,13 @@ dependencies: jansson bzip2 zlib boost
 	mkdir -p $(OBJDIR)
 	$(CXX) -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB1)/NaN.cpp -o $(OBJDIR)/NaN.o -iquote${HEAD}
 	$(CXX) -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB2)/Formats.cpp -o $(OBJDIR)/Formats.o -iquote${HEAD}
-	$(CXX) -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchConstants.c -o $(OBJDIR)/starchConstants.o ${INCLUDES}
-	$(CXX) -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchFileHelpers.c -o $(OBJDIR)/starchFileHelpers.o ${INCLUDES}
-	$(CXX) -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchHelpers.c -o $(OBJDIR)/starchHelpers.o ${INCLUDES}
-	$(CXX) -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchMetadataHelpers.c -o $(OBJDIR)/starchMetadataHelpers.o ${INCLUDES}
-	$(CXX) -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/unstarchHelpers.c -o $(OBJDIR)/unstarchHelpers.o ${INCLUDES}
-	${CXX} -c ${NONSTATICFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIB3}/starchSha1Digest.c -o  ${OBJDIR}/starchSha1Digest.o ${INCLUDES}
-	${CXX} -c ${NONSTATICFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIB3}/starchBase64Coding.c -o  ${OBJDIR}/starchBase64Coding.o ${INCLUDES}
+	$(CXX) -x c++ -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchConstants.c -o $(OBJDIR)/starchConstants.o ${INCLUDES}
+	$(CXX) -x c++ -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchFileHelpers.c -o $(OBJDIR)/starchFileHelpers.o ${INCLUDES}
+	$(CXX) -x c++ -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchHelpers.c -o $(OBJDIR)/starchHelpers.o ${INCLUDES}
+	$(CXX) -x c++ -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchMetadataHelpers.c -o $(OBJDIR)/starchMetadataHelpers.o ${INCLUDES}
+	$(CXX) -x c++ -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/unstarchHelpers.c -o $(OBJDIR)/unstarchHelpers.o ${INCLUDES}
+	${CXX} -x c++ -c ${NONSTATICFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIB3}/starchSha1Digest.c -o  ${OBJDIR}/starchSha1Digest.o ${INCLUDES}
+	${CXX} -x c++ -c ${NONSTATICFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIB3}/starchBase64Coding.c -o  ${OBJDIR}/starchBase64Coding.o ${INCLUDES}
 
 test:
 	mkdir -p $(TMPTESTDIR)

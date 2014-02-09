@@ -1,5 +1,4 @@
 MIN_OSX_VERSION     = 10.7
-ARCH                = i386
 WARNINGS            = -Weverything
 NONSTATICFLAGS	    = ${WARNINGS} -O3 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -lc++ 
 
@@ -24,10 +23,10 @@ run: dependencies
 	mkdir -p $(BIN) && $(CXX) -o $(BIN)/$(PROG) $(FLAGS) $(SOURCE1) -iquote${HEAD}
 
 gprof: dependencies
-	mkdir -p $(BIN) && $(CPP) -o $(BIN)/gprof.$(PROG) $(GPROFFLAGS) $(SOURCE1) -iquote${HEAD}
+	mkdir -p $(BIN) && $(CXX) -o $(BIN)/gprof.$(PROG) $(GPROFFLAGS) $(SOURCE1) -iquote${HEAD}
 
 debug: dependencies
-	mkdir -p $(BIN) && $(CPP) -o $(BIN)/debug.$(PROG) $(DFLAGS) $(SOURCE1) -iquote${HEAD}
+	mkdir -p $(BIN) && $(CXX) -o $(BIN)/debug.$(PROG) $(DFLAGS) $(SOURCE1) -iquote${HEAD}
 
 dependencies:
 ifneq ($(wildcard .forcestatic),)

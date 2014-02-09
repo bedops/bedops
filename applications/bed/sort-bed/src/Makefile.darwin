@@ -1,5 +1,4 @@
 MIN_OSX_VERSION         = 10.7
-ARCH                    = i386
 
 MAIN                    = ../../../..
 MAINAPPDIR              = ../..
@@ -11,9 +10,6 @@ OPTIMIZE                = -O3 -std=c++11 -stdlib=libc++
 WARNINGS                = -Weverything
 MAIN                    = ../../../..
 HEAD                    = ${MAIN}/interfaces/general-headers
-
-CC                      = clang
-CXX                     = clang++
 
 ifneq ($(wildcard .forcestatic),)
 	SFLAGS	= -static
@@ -45,11 +41,11 @@ nonstatic: sortbuild
 	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${WARNINGS} ${OPTIMIZE} -lc++ ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -o ${DIST_DIR}/${PROG}.nonstatic_${ARCH}
 
 debug: prep
-	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -g -O0 -std=c++11 -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
-	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -g -O0 -std=c++11 -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
+	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -g -O0 -std=c++11 -stdlib=libc++ -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
+	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -g -O0 -std=c++11 -stdlib=libc++ -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
 	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -g -lc++ ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -o ${DIST_DIR}/debug.${PROG}_${ARCH}
 
 gprof: prep
-	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -pg -O -std=c++11 -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
-	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -pg -O -std=c++11 -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
+	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -pg -O -std=c++11 -stdlib=libc++ -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
+	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -pg -O -std=c++11 -stdlib=libc++ -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
 	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -lc++ ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -o ${DIST_DIR}/gprof.${PROG}_${ARCH}
