@@ -236,55 +236,55 @@ sort_c_darwin_intel_fat: sort_c_darwin_intel_i386 sort_c_darwin_intel_x86_64
 	lipo -create ${APPDIR}/sort-bed/bin/sort-bed_i386 ${APPDIR}/sort-bed/bin/sort-bed_x86_64 -output ${APPDIR}/sort-bed/bin/sort-bed
 
 sort_c_darwin_intel_i386:
-	CC=clang CXX=clang++ make -C ${APPDIR}/sort-bed/src -f Makefile.darwin_i386
+	ARCH=i386 CC=clang CXX=clang++ make -C ${APPDIR}/sort-bed/src -f Makefile.darwin
 
 sort_c_darwin_intel_x86_64:
-	CC=clang CXX=clang++ make -C ${APPDIR}/sort-bed/src -f Makefile.darwin_x86_64
+	ARCH=x86_64 CC=clang CXX=clang++ make -C ${APPDIR}/sort-bed/src -f Makefile.darwin
 
 bedops_c_darwin_intel_fat: bedops_c_darwin_intel_i386 bedops_c_darwin_intel_x86_64
 	lipo -create ${APPDIR}/bedops/bin/bedops_i386 ${APPDIR}/bedops/bin/bedops_x86_64 -output ${APPDIR}/bedops/bin/bedops
 
 bedops_c_darwin_intel_i386:
-	CC=clang CXX=clang++ make -C ${APPDIR}/bedops/src -f Makefile.darwin_i386
+	ARCH=i386 CC=clang CXX=clang++ make -C ${APPDIR}/bedops/src -f Makefile.darwin
 
 bedops_c_darwin_intel_x86_64:
-	CC=clang CXX=clang++ make -C ${APPDIR}/bedops/src -f Makefile.darwin_x86_64
+	ARCH=x86_64 CC=clang CXX=clang++ make -C ${APPDIR}/bedops/src -f Makefile.darwin
 
 closestfeatures_c_darwin_intel_fat: closestfeatures_c_darwin_intel_i386 closestfeatures_c_darwin_intel_x86_64
 	lipo -create ${APPDIR}/closestfeats/bin/closest-features_i386 ${APPDIR}/closestfeats/bin/closest-features_x86_64 -output ${APPDIR}/closestfeats/bin/closest-features
 
 closestfeatures_c_darwin_intel_i386:
-	CC=clang CXX=clang++ make -C ${APPDIR}/closestfeats/src -f Makefile.darwin_i386
+	ARCH=i386 CC=clang CXX=clang++ make -C ${APPDIR}/closestfeats/src -f Makefile.darwin
 
 closestfeatures_c_darwin_intel_x86_64:
-	CC=clang CXX=clang++ make -C ${APPDIR}/closestfeats/src -f Makefile.darwin_x86_64
+	ARCH=x86_64 CC=clang CXX=clang++ make -C ${APPDIR}/closestfeats/src -f Makefile.darwin
 
 bedmap_c_darwin_intel_fat: bedmap_c_darwin_intel_i386 bedmap_c_darwin_intel_x86_64
 	lipo -create ${APPDIR}/bedmap/bin/bedmap_i386 ${APPDIR}/bedmap/bin/bedmap_x86_64 -output ${APPDIR}/bedmap/bin/bedmap
 
 bedmap_c_darwin_intel_i386:
-	CC=clang CXX=clang++ make -C ${APPDIR}/bedmap/src -f Makefile.darwin_i386
+	ARCH=i386 CC=clang CXX=clang++ make -C ${APPDIR}/bedmap/src -f Makefile.darwin
 
 bedmap_c_darwin_intel_x86_64:
-	CC=clang CXX=clang++ make -C ${APPDIR}/bedmap/src -f Makefile.darwin_x86_64
+	ARCH=x86_64 CC=clang CXX=clang++ make -C ${APPDIR}/bedmap/src -f Makefile.darwin
 
 bedextract_c_darwin_intel_fat: bedextract_c_darwin_intel_i386 bedextract_c_darwin_intel_x86_64
 	lipo -create ${APPDIR}/bedextract/bin/bedextract_i386 ${APPDIR}/bedextract/bin/bedextract_x86_64 -output ${APPDIR}/bedextract/bin/bedextract
 
 bedextract_c_darwin_intel_i386:
-	CC=clang CXX=clang++ make -C ${APPDIR}/bedextract/src -f Makefile.darwin_i386
+	ARCH=i386 CC=clang CXX=clang++ make -C ${APPDIR}/bedextract/src -f Makefile.darwin
 
 bedextract_c_darwin_intel_x86_64:
-	CC=clang CXX=clang++ make -C ${APPDIR}/bedextract/src -f Makefile.darwin_x86_64
+	ARCH=x86_64 CC=clang CXX=clang++ make -C ${APPDIR}/bedextract/src -f Makefile.darwin
 
 wig2bed_c_darwin_intel_fat: wig2bed_c_darwin_intel_i386 wig2bed_c_darwin_intel_x86_64
 	lipo -create ${APPDIR}/conversion/bin/wig2bed_bin_i386 ${APPDIR}/conversion/bin/wig2bed_bin_x86_64 -output ${APPDIR}/conversion/bin/wig2bed_bin
 
 wig2bed_c_darwin_intel_i386:
-	CC=clang CXX=clang++ make -C ${APPDIR}/conversion/src/wig2bed -f Makefile.darwin_i386
+	ARCH=i386 CC=clang CXX=clang++ make -C ${APPDIR}/conversion/src/wig2bed -f Makefile.darwin
 
 wig2bed_c_darwin_intel_x86_64:
-	CC=clang CXX=clang++ make -C ${APPDIR}/conversion/src/wig2bed -f Makefile.darwin_x86_64
+	ARCH=x86_64 CC=clang CXX=clang++ make -C ${APPDIR}/conversion/src/wig2bed -f Makefile.darwin
 
 starch_c_darwin_intel_fat: starchcluster starch_c_darwin_intel_i386 starch_c_darwin_intel_x86_64
 	lipo -create ${APPDIR}/starch/bin/starch_i386 ${APPDIR}/starch/bin/starch_x86_64 -output ${APPDIR}/starch/bin/starch
@@ -292,10 +292,10 @@ starch_c_darwin_intel_fat: starchcluster starch_c_darwin_intel_i386 starch_c_dar
 	lipo -create ${APPDIR}/starch/bin/starchcat_i386 ${APPDIR}/starch/bin/starchcat_x86_64 -output ${APPDIR}/starch/bin/starchcat
 
 starch_c_darwin_intel_i386: starchcluster
-	CC=clang CXX=clang++ make -C ${APPDIR}/starch/src -f Makefile.darwin_i386
+	ARCH=i386 CC=clang CXX=clang++ make -C ${APPDIR}/starch/src -f Makefile.darwin
 
 starch_c_darwin_intel_x86_64: starchcluster
-	CC=clang CXX=clang++ make -C ${APPDIR}/starch/src -f Makefile.darwin_x86_64
+	ARCH=x86_64 CC=clang CXX=clang++ make -C ${APPDIR}/starch/src -f Makefile.darwin
 
 starchcluster:
 	mkdir -p ${APPDIR}/starch/bin
