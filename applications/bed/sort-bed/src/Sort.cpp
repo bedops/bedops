@@ -44,7 +44,7 @@ static const char *usage = "\nUSAGE: sort-bed [--help] [--version] [--max-mem <v
 
 
 static void 
-getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, double* maxMem, char *tmpPath)
+getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, double* maxMem, char **tmpPath)
 {
     int numFiles, i, j, stdincnt = 0, changeMem = 0, units = 0, changeTDir = 0;
     size_t k;
@@ -157,8 +157,8 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, d
                                     fprintf(stderr, "No value given for --tmpdir.\n");
                                     exit(EXIT_FAILURE);
                                 }
-                            tmpPath = (char*)malloc(strlen(argv[i])+1);
-                            strcpy(tmpPath, argv[i]);
+                            *tmpPath = (char*)malloc(strlen(argv[i])+1);
+                            strcpy(*tmpPath, argv[i]);
                             --j;
                             numFiles -= 2;
                             continue;
@@ -170,7 +170,7 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, d
                         }
                     inFiles[j] = argv[i];
                     (*numInFiles)++;
-                }
+                } /* for */
         }
 
     if(stdincnt > 1)
@@ -195,24 +195,36 @@ main(int argc, char **argv)
     double maxMemory = -1;
     const char *inFiles[MAX_INFILES];
     char* tmpPath = NULL;
-    getArgs(argc, argv, inFiles, &numInFiles, &maxMemory, tmpPath);
-    if ( tmpPath == NULL )
-        tmpPath = getenv("TMPDIR");
+    bool clean = false;
+    int rval = EXIT_FAILURE;
+    getArgs(argc, argv, inFiles, &numInFiles, &maxMemory, &tmpPath);
 
-// sjn : still need to make sure this isn't already a file -> error; see if dir already exists -> no mkdir; etc.
+// sjn : still need to make sure path isn't already a file -> error; see if dir already exists -> no mkdir; etc.
 //  need to valgrind memory leaks.  double check tmpFiles vs tmpFileNames - alloc/free/remove
 //  need to look at strategy for deleting tmp files on errors, including BED errors that we catch
-    if((tmpPath != NULL) && (maxMemory > 0))
-        mkdir(tmpPath, 0700);
-
-    if(0 == processData(inFiles, numInFiles, maxMemory, tmpPath))
+//  if dir dne, then create it.  not going to remove it though in case things are done in parallel
+    if(tmpPath != NULL)
         {
-            if (tmpPath != NULL)
-                free(tmpPath);
-            return(EXIT_SUCCESS);
+          if(maxMemory > 0)
+              {
+                  mkdir(tmpPath, 0700);
+                  clean = true;
+              }
+          else // tmpPath only useful when --max-mem is used
+              {
+                  free(tmpPath);
+                  tmpPath = NULL;
+              }
+        }
+    else if (maxMemory > 0)
+        {
+            tmpPath = getenv("TMPDIR");
+            mkdir(tmpPath, 0700);
         }
 
-    if (tmpPath != NULL)
+    // sort
+    rval = processData(inFiles, numInFiles, maxMemory, tmpPath);
+    if(clean)
         free(tmpPath);
-    return(EXIT_FAILURE);
+    return rval;
 }
