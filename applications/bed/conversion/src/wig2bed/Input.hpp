@@ -128,8 +128,8 @@ namespace Wig2Bed {
         
         typedef std::vector< std::istream *>::const_iterator InFileIterator;
         std::string basename_;
-        std::vector< std::istream* > inFiles_;
         bool keepHeader_;
+        std::vector< std::istream* > inFiles_;
     };
     
 } // namespace Wig2Bed

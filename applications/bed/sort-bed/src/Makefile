@@ -4,14 +4,14 @@ CC              = g++
 PROG            = sort-bed
 DIST_DIR        = ../bin
 OBJ_DIR         = objects
-OPTIMIZE        = -O3 -std=c++11 -s
-GPROFFLAGS      = -O -std=c++11 -s -pg
+OPTIMIZE        = -O3 -std=c++11
+GPROFFLAGS      = -O -std=c++11 -pg
 WARNINGS        = -Wall -Wextra -ansi -pedantic
 MAIN            = ../../../..
 HEAD            = ${MAIN}/interfaces/general-headers
 
 ifneq ($(wildcard .forcestatic),)
-	SFLAGS	= -static
+	SFLAGS	= -static -s
 endif
 
 all: sort

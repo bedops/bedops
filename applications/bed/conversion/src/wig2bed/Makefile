@@ -1,10 +1,10 @@
 CC               = g++
 WARNINGS         = -Wall -Wextra -pedantic
-NONSTATICFLAGS   = -ansi ${WARNINGS} -O3 -s
+NONSTATICFLAGS   = -ansi ${WARNINGS} -O3
 ifeq ($(wildcard .forcestatic),)
 	SFLAGS = $(NONSTATICFLAGS)
 else
-	SFLAGS = -static $(NONSTATICFLAGS)
+	SFLAGS = -static -s $(NONSTATICFLAGS)
 endif
 FLAGS	         = $(SFLAGS) -std=c++11
 DFLAGS	         = ${WARNINGS} -O0 -g -std=c++11
