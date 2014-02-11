@@ -24,12 +24,20 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#include <cinttypes>
+#if defined(__CYGWIN__) && !defined(_WIN32)
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
+#else
 #include <cerrno>
-#include <cstdio>
 #include <cstdlib>
+#include <cstdio>
 #include <cstring>
+#endif
+
 #include <cctype>
+#include <cinttypes>
 #include <map>
 #include <string>
 
@@ -112,7 +120,6 @@ FILE *
 create_tmpfile(char const* path, char** fileName)
 {
   FILE* fp;
-  int fd;
   char* tmpl;
 
   if ( path == NULL )
@@ -121,16 +128,29 @@ create_tmpfile(char const* path, char** fileName)
           return tmpfile();
       }
 
+#if defined(__CYGWIN__) && !defined(_WIN32)
+  const char *cygwinPrefix = "/sb.";
+  const char *cygwinTmpDir = "/tmp";
+  char *cygwinTmplSuffix = (char *)malloc(1 + L_tmpnam);
+  tmpnam(cygwinTmplSuffix);
+  tmpl = (char *)malloc(1 + strlen(path) + strlen(cygwinPrefix) + strlen(cygwinTmplSuffix + strlen(cygwinTmpDir) + 1));
+  strcpy(tmpl, path);
+  strcpy(tmpl+strlen(path), cygwinPrefix);
+  strcpy(tmpl+strlen(path)+strlen(cygwinPrefix), cygwinTmplSuffix + strlen(cygwinTmpDir) + 1);
+  fp = fopen(tmpl, "wbx+"); /* we add the 'x' extension to apply the O_EXCL flag, to avoid a security hole described in the GNU C library docs */
+  free(cygwinTmplSuffix);
+#else
   tmpl = (char*)malloc(1 + strlen(path) + L_tmpnam);
   strcpy(tmpl, path);
   strcpy(tmpl+strlen(path), "/sb.XXXXXX");
-  fd = mkstemp(tmpl);
+  int fd = mkstemp(tmpl);
   if(fd == -1)
       {
           fprintf(stderr, "unable to create temp file!\n");
           return NULL;
       }
   fp = fdopen(fd, "wb+");
+#endif		
   *fileName = (char*)malloc(strlen(tmpl) + 1);
   strcpy(*fileName, tmpl);
   free(tmpl);
