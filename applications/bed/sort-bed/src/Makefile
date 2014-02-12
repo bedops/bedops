@@ -14,8 +14,11 @@ ifneq ($(wildcard .forcestatic),)
 	SFLAGS	= -static -s
 endif
 
-ifneq ($(OSTYPE),cygwin)
+ifneq ($(shell uname -s),CYGWIN_NT-6.1)
 	WARNINGS += -ansi
+else
+	WARNINGS += --verbose
+endif
 
 all: sort
 
