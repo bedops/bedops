@@ -154,7 +154,7 @@ def consumeGTF(from_stream, to_stream, params):
             from_stream.close()
             to_stream.close()
             break
-        bed_line = convertGTFToBed(gtf_line, params)
+        bed_line = convertGTFToBed(gtf_line, params, to_stream)
         to_stream.write(bed_line)
         to_stream.flush()
 
@@ -180,18 +180,24 @@ def convertGTFToBed(line, params):
     else:
         elems = chomped_line.split('\t')
         cols = dict()
-        cols['seqname'] = elems[0].lstrip(' ') # strip leading whitespace
-        cols['source'] = elems[1]
-        cols['feature'] = elems[2]
-        cols['start'] = int(elems[3])
-        cols['end'] = int(elems[4])
-        cols['score'] = elems[5]
-        cols['strand'] = elems[6]
-        cols['frame'] = elems[7]
-        cols['attributes'] = elems[8].rstrip(' ') # strip trailing whitespace
+        try:
+            cols['seqname'] = elems[0].lstrip(' ') # strip leading whitespace
+            cols['source'] = elems[1]
+            cols['feature'] = elems[2]
+            cols['start'] = int(elems[3])
+            cols['end'] = int(elems[4])
+            cols['score'] = elems[5]
+            cols['strand'] = elems[6]
+            cols['frame'] = elems[7]
+            cols['attributes'] = elems[8].rstrip(' ') # strip trailing whitespace
+        except IndexError as ie:
+            sys.stderr.write("[%s] - Error: Input appears to be missing GTF-specific fields (check that your input data is GTF-formatted)\n" % (sys.argv[0]))
+            stream.close()
+            sys.exit(os.EX_DATAERR)
+
         try:
             cols['comments'] = elems[9]
-        except IndexError:
+        except IndexError as ie:
             cols['comments'] = None
 
         attrd = dict()

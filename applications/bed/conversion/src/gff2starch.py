@@ -159,7 +159,7 @@ def consumeGFF(from_stream, to_stream, params):
             from_stream.close()
             to_stream.close()
             break
-        bed_line = convertGFFToBed(gff_line, params)
+        bed_line = convertGFFToBed(gff_line, params, to_stream)
         to_stream.write(bed_line)
         to_stream.flush()
 
@@ -173,7 +173,7 @@ def consumeBED(from_stream, to_stream, params):
         to_stream.write(bed_line)
         to_stream.flush()
 
-def convertGFFToBed(line, params):
+def convertGFFToBed(line, params, stream):
 
     convertedLine = ""
 
@@ -191,15 +191,20 @@ def convertGFFToBed(line, params):
     else:
         elems = chomped_line.split('\t')
         cols = dict()
-        cols['seqid'] = elems[0].lstrip(' ') # strip leading whitespace
-        cols['source'] = elems[1]
-        cols['type'] = elems[2]
-        cols['start'] = int(elems[3])
-        cols['end'] = int(elems[4])
-        cols['score'] = elems[5]
-        cols['strand'] = elems[6]
-        cols['phase'] = elems[7]
-        cols['attributes'] = elems[8].rstrip(' ') # strip trailing whitespace
+        try:
+            cols['seqid'] = elems[0].lstrip(' ') # strip leading whitespace
+            cols['source'] = elems[1]
+            cols['type'] = elems[2]
+            cols['start'] = int(elems[3])
+            cols['end'] = int(elems[4])
+            cols['score'] = elems[5]
+            cols['strand'] = elems[6]
+            cols['phase'] = elems[7]
+            cols['attributes'] = elems[8].rstrip(' ') # strip trailing whitespace
+        except IndexError as ie:
+            sys.stderr.write( "[%s] - Error: Could not import GFF data (ensure input is GFF-formatted)\n" % (sys.argv[0]))
+            stream.close()
+            sys.exit(os.EX_DATAERR)            
         
         attrd = dict()
         attrs = map(lambda s: s.split('='), cols['attributes'].split(';'))
