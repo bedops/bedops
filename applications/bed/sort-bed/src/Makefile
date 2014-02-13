@@ -17,7 +17,7 @@ endif
 ifneq ($(shell uname -s),CYGWIN_NT-6.1)
 	WARNINGS += -ansi
 else
-	WARNINGS += --verbose
+	WARNINGS += -U__STRICT_ANSI__
 endif
 
 all: sort
