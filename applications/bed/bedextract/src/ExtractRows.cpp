@@ -185,9 +185,9 @@ namespace {
   std::string usage() {
      std::string msg = "\n    Every input file must be sorted per sort-bed.\n\n";
      msg += " USAGE:\n";
-     msg += "   0) --help or --version           Print requested info and exit successfully.\n";
-     msg += "   1) --list-chr <input.bed>        Print all unique chromosome names found in <input.bed>.\n";
-     msg += "   2) <chromosome> <input.bed>      Retrieve all rows for chr8 with:  bedextract chr8 <input.bed>.\n";
+     msg += "   0) --help or --version           Print requested info and exit successfully\n";
+     msg += "   1) --list-chr <input.bed>        Print all unique chromosome names found in <input.bed>\n";
+     msg += "   2) <chromosome> <input.bed>      Retrieve all rows for chr8 with:  bedextract chr8 <input.bed>\n";
      msg += "   3) <query.bed> <target>          Grab elements from the <query.bed> that overlap elements in <target>. Same as\n";
      msg += "                                     `bedops -e -1 <query.bed> <target>`, except that this option fails silently\n";
      msg += "                                      if <query.bed> contains fully-nested BED elements.  If no fully-nested\n";
