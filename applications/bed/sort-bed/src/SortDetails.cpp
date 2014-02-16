@@ -115,7 +115,7 @@ create_tmpfile(char const* path, char** fileName)
   int fd;
   char* tmpl;
 
-  if ( path == NULL )
+  if (path == NULL)
       {
           fileName = NULL;
           return tmpfile();

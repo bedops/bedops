@@ -219,7 +219,8 @@ main(int argc, char **argv)
     else if (maxMemory > 0)
         {
             tmpPath = getenv("TMPDIR");
-            mkdir(tmpPath, 0700);
+            if (tmpPath != NULL)
+                mkdir(tmpPath, 0700);
         }
 
     // sort
