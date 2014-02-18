@@ -428,10 +428,10 @@ mergeSort(FILE* output, FILE **tmpFiles, unsigned int numFiles)
 
 void
 free_tmpfiles(unsigned int fcount, FILE **tmpFiles, char **tmpFileNames) {
-    if ( fcount )
+    if (fcount)
         {
             unsigned int i = 0;
-            while ( i < fcount )
+            while (i < fcount)
                 {
                     /* tmpFileNames[i] will be NULL if temp file was created through C's tmpfile() */
                     fclose(tmpFiles[i]);
@@ -1006,6 +1006,14 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                     if(tmpFiles == NULL)
                         {
                             fprintf(stderr, "Error: %s, %d: Unable to expand Chrom structure: %s. Out of memory.\n", __FILE__, 
+                                    __LINE__, strerror(errno));
+                            fclose(bedFile);
+                            return EXIT_FAILURE;
+                        }
+                    tmpFileNames = (char**)realloc(tmpFileNames, sizeof(char*) * (tmpFileCount+1));
+                    if(tmpFileNames == NULL)
+                        {
+                            fprintf(stderr, "Error: %s, %d: Unable to create char* array: %s. Out of memory.\n", __FILE__, 
                                     __LINE__, strerror(errno));
                             fclose(bedFile);
                             return EXIT_FAILURE;
