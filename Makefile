@@ -8,6 +8,8 @@ JANSSONVERSION   = jansson-2.4
 WHICHJANSSON    := ${PARTY3}/${JANSSONVERSION}
 ZLIBVERSION      = zlib-1.2.7
 WHICHZLIB       := ${PARTY3}/${ZLIBVERSION}
+USORTVERSION     = usort-1.0
+WHICHUSORT      := ${PARTY3}/${USORTVERSION}
 APPDIR           = applications/bed
 BINDIR           = bin
 OSXPKGROOT       = packaging/os_x
@@ -116,16 +118,6 @@ install_osx_packaging_bins: prep_c
 	cp ${APPDIR}/conversion/src/vcf2starch.py ${OSXPKGDIR}/vcf2starch
 	cp ${APPDIR}/conversion/src/wig2starch.bash ${OSXPKGDIR}/wig2starch
 	mkdir -p ${OSXLIBDIR}
-	cp /opt/local/lib/libgcc/libstdc++.6.dylib ${OSXLIBDIR}
-	cp /opt/local/lib/libgcc/libgcc_s.1.dylib ${OSXLIBDIR}
-	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libstdc++.6.dylib /Library/Application\ Support/BEDOPS/libstdc++.6.dylib ${OSXPKGDIR}/bedops
-	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libgcc_s.1.dylib /Library/Application\ Support/BEDOPS/libgcc_s.1.dylib ${OSXPKGDIR}/bedops
-	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libstdc++.6.dylib /Library/Application\ Support/BEDOPS/libstdc++.6.dylib ${OSXPKGDIR}/closest-features
-	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libgcc_s.1.dylib /Library/Application\ Support/BEDOPS/libgcc_s.1.dylib ${OSXPKGDIR}/closest-features
-	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libstdc++.6.dylib /Library/Application\ Support/BEDOPS/libstdc++.6.dylib ${OSXPKGDIR}/bedmap
-	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libgcc_s.1.dylib /Library/Application\ Support/BEDOPS/libgcc_s.1.dylib ${OSXPKGDIR}/bedmap
-	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libstdc++.6.dylib /Library/Application\ Support/BEDOPS/libstdc++.6.dylib ${OSXPKGDIR}/bedextract
-	/usr/bin/install_name_tool -change /opt/local/lib/libgcc/libgcc_s.1.dylib /Library/Application\ Support/BEDOPS/libgcc_s.1.dylib ${OSXPKGDIR}/bedextract
 
 prep_partial_nondarwin_static:
 ifneq (${KERNEL}, Darwin)
@@ -190,11 +182,17 @@ zlib_support_c:
 ZLIBDONE=1
 	export ZLIBDONE
 
+usort_support_c:
+	test -s ${WHICHUSORT} || { bzcat ${WHICHUSORT}.tar.bz2 | tar -x -C ${PARTY3}; }
+	ln -sf ${USORTVERSION} ${PARTY3}/usort
+USORTDONE=1
+	export USORTDONE
+
 #
 # Generic build targets
 #
 
-sort_c:
+sort_c: usort_support_c
 	make -C ${APPDIR}/sort-bed/src
 bedops_c:
 	make -C ${APPDIR}/bedops/src
@@ -359,6 +357,8 @@ very_clean: clean clean_force_static
 	rm -f ${PARTY3}/jansson
 	rm -rf ${WHICHZLIB}
 	rm -f ${PARTY3}/zlib
+	rm -rf ${WHICHUSORT}
+	rm -f ${PARTY3}/usort
 	rm -f ${OSXPKGDIR}/*
 	rm -f ${OSXLIBDIR}/*
 	rm -Rf ${OSXBUILDDIR}/*
