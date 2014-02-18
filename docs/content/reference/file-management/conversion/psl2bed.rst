@@ -3,7 +3,7 @@
 `psl2bed`
 =========
 
-The ``psl2bed`` script converts 0-based, half-open ``[start-1, end)`` `Pattern Space Layout <http://genome.ucsc.edu/FAQ/FAQformat.html#format2>`_ (PSL) to unsorted, 0-based, half-open ``[start-1, end)`` extended BED-formatted data.
+The ``psl2bed`` script converts 0-based, half-open ``[start-1, end)`` `Pattern Space Layout <http://genome.ucsc.edu/FAQ/FAQformat.html#format2>`_ (PSL) to sorted, 0-based, half-open ``[start-1, end)`` extended BED-formatted data.
 
 For convenience, we also offer ``psl2starch``, which performs the extra step of creating a Starch-formatted archive.
 
