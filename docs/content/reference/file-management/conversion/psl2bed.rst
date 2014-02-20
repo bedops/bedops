@@ -39,7 +39,7 @@ The header data of a headered PSL file is usually discarded, unless you add the 
 Example
 =======
 
-To demonstrate these scripts, we use a sample GFF input called ``foo.gff`` (see the :ref:`Downloads <gff2bed_downloads>` section to grab this file). 
+To demonstrate these scripts, we use a sample PSL input called ``foo.psl`` (see the :ref:`Downloads <psl2bed_downloads>` section to grab this file). 
 
 ::
 
