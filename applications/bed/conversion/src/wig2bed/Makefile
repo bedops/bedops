@@ -1,4 +1,5 @@
-CC               = g++
+CC               = gcc
+CXX              = g++
 WARNINGS         = -Wall -Wextra -pedantic
 NONSTATICFLAGS   = -ansi ${WARNINGS} -O3
 ifeq ($(wildcard .forcestatic),)
@@ -15,16 +16,16 @@ SOURCE1	         = Wig2Bed.cpp
 BIN              = ../../bin
 PROG             = wig2bed_bin
 
-.cpp.o:; $(CC) -c $(FLAGS) $<
+.cpp.o:; $(CXX) -c $(FLAGS) $<
 
 run: dependencies
-	mkdir -p $(BIN) && $(CC) -o $(BIN)/$(PROG) $(FLAGS) $(SOURCE1) -iquote${HEAD}
+	mkdir -p $(BIN) && $(CXX) -o $(BIN)/$(PROG) $(FLAGS) $(SOURCE1) -iquote${HEAD}
 
 gprof: dependencies
-	mkdir -p $(BIN) && $(CC) -o $(BIN)/gprof.$(PROG) $(GPROFFLAGS) $(SOURCE1) -iquote${HEAD}
+	mkdir -p $(BIN) && $(CXX) -o $(BIN)/gprof.$(PROG) $(GPROFFLAGS) $(SOURCE1) -iquote${HEAD}
 
 debug: dependencies
-	mkdir -p $(BIN) && $(CC) -o $(BIN)/debug.$(PROG) $(DFLAGS) $(SOURCE1) -iquote${HEAD}
+	mkdir -p $(BIN) && $(CXX) -o $(BIN)/debug.$(PROG) $(DFLAGS) $(SOURCE1) -iquote${HEAD}
 
 dependencies:
 ifneq ($(wildcard .forcestatic),)

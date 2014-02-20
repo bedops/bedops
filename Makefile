@@ -211,7 +211,7 @@ wig2bed_c:
 # GNU gprof targets
 #
 
-sort_c_gprof:
+sort_c_gprof: usort_support_c
 	make -C ${APPDIR}/sort-bed/src gprof
 bedops_c_gprof:
 	make -C ${APPDIR}/bedops/src gprof
@@ -233,10 +233,10 @@ wig2bed_c_gprof:
 sort_c_darwin_intel_fat: sort_c_darwin_intel_i386 sort_c_darwin_intel_x86_64
 	lipo -create ${APPDIR}/sort-bed/bin/sort-bed_i386 ${APPDIR}/sort-bed/bin/sort-bed_x86_64 -output ${APPDIR}/sort-bed/bin/sort-bed
 
-sort_c_darwin_intel_i386:
+sort_c_darwin_intel_i386: usort_support_c
 	ARCH=i386 CC=clang CXX=clang++ make -C ${APPDIR}/sort-bed/src -f Makefile.darwin
 
-sort_c_darwin_intel_x86_64:
+sort_c_darwin_intel_x86_64: usort_support_c
 	ARCH=x86_64 CC=clang CXX=clang++ make -C ${APPDIR}/sort-bed/src -f Makefile.darwin
 
 bedops_c_darwin_intel_fat: bedops_c_darwin_intel_i386 bedops_c_darwin_intel_x86_64
