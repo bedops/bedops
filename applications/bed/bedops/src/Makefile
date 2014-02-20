@@ -1,6 +1,7 @@
 MAIN                = ../../../..
 HEAD                = $(MAIN)/interfaces/general-headers
-CC                  = g++
+CC                  = gcc
+CXX                 = g++
 LIB1                = $(MAIN)/interfaces/src/data/measurement
 LIB2                = $(MAIN)/interfaces/src/utility
 LIB3                = $(MAIN)/interfaces/src/data/starch
@@ -41,16 +42,16 @@ SOURCE1	            = Bedops.cpp
 BIN                 = ../bin
 PROG                = bedops
 
-.cpp.o:; $(CC) -c $(FLAGS) $<
+.cpp.o:; $(CXX) -c $(FLAGS) $<
 
 run: dependencies
-	mkdir -p $(BIN) && $(CC) -o $(BIN)/$(PROG) $(FLAGS) ${LOCALJANSSONLIBPATH} ${LOCALBZIP2LIBPATH} ${LOCALZLIBLIBPATH} $(SOURCE1) 
+	mkdir -p $(BIN) && $(CXX) -o $(BIN)/$(PROG) $(FLAGS) ${LOCALJANSSONLIBPATH} ${LOCALBZIP2LIBPATH} ${LOCALZLIBLIBPATH} $(SOURCE1) 
 
 gprof: dependencies
-	mkdir -p $(BIN) && $(CC) -o $(BIN)/gprof.$(PROG) $(GPROFFLAGS) ${LOCALJANSSONLIBPATH} ${LOCALBZIP2LIBPATH} ${LOCALZLIBLIBPATH} $(SOURCE1) 
+	mkdir -p $(BIN) && $(CXX) -o $(BIN)/gprof.$(PROG) $(GPROFFLAGS) ${LOCALJANSSONLIBPATH} ${LOCALBZIP2LIBPATH} ${LOCALZLIBLIBPATH} $(SOURCE1) 
 
 nonstatic: dependencies
-	mkdir -p $(BIN) && $(CC) -o $(BIN)/nonstatic.$(PROG) $(NONSTATICFLAGS) $(SOURCE1) $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o
+	mkdir -p $(BIN) && $(CXX) -o $(BIN)/nonstatic.$(PROG) $(NONSTATICFLAGS) $(SOURCE1) $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o
 
 jansson:
 	test -s ${LOCALJANSSONLIBPATH} || { cd ${MAIN} && make jansson_support_c && cd ${LOCALJANSSONDIR} && ${LOCALJANSSONDIR}/configure --prefix=${LOCALJANSSONDIR} && make && make install && cd ${THISDIR}; }
@@ -69,18 +70,18 @@ ifneq ($(wildcard .forcestatic),)
 	rm -rf .forcestatic
 endif
 	mkdir -p $(OBJDIR)
-	$(CC) -c $(NONSTATICFLAGS) $(LIB1)/NaN.cpp -o $(OBJDIR)/NaN.o -iquote${HEAD}
-	$(CC) -c $(NONSTATICFLAGS) $(LIB2)/Formats.cpp -o $(OBJDIR)/Formats.o -iquote${HEAD}
-	$(CC) -c $(NONSTATICFLAGS) $(LIB3)/starchConstants.c -o $(OBJDIR)/starchConstants.o -iquote${HEAD} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	$(CC) -c $(NONSTATICFLAGS) $(LIB3)/starchFileHelpers.c -o $(OBJDIR)/starchFileHelpers.o -iquote${HEAD} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	$(CC) -c $(NONSTATICFLAGS) $(LIB3)/starchHelpers.c -o $(OBJDIR)/starchHelpers.o -iquote${HEAD} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	$(CC) -c $(NONSTATICFLAGS) $(LIB3)/starchMetadataHelpers.c -o $(OBJDIR)/starchMetadataHelpers.o -iquote${HEAD} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	$(CC) -c $(NONSTATICFLAGS) $(LIB3)/unstarchHelpers.c -o $(OBJDIR)/unstarchHelpers.o -iquote${HEAD} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CC} -c ${NONSTATICFLAGS} ${LIB3}/starchSha1Digest.c -o  ${OBJDIR}/starchSha1Digest.o -iquote${HEAD} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CC} -c ${NONSTATICFLAGS} ${LIB3}/starchBase64Coding.c -o  ${OBJDIR}/starchBase64Coding.o -iquote${HEAD} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
+	$(CXX) -c $(NONSTATICFLAGS) $(LIB1)/NaN.cpp -o $(OBJDIR)/NaN.o -iquote${HEAD}
+	$(CXX) -c $(NONSTATICFLAGS) $(LIB2)/Formats.cpp -o $(OBJDIR)/Formats.o -iquote${HEAD}
+	$(CXX) -c $(NONSTATICFLAGS) $(LIB3)/starchConstants.c -o $(OBJDIR)/starchConstants.o -iquote${HEAD} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
+	$(CXX) -c $(NONSTATICFLAGS) $(LIB3)/starchFileHelpers.c -o $(OBJDIR)/starchFileHelpers.o -iquote${HEAD} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
+	$(CXX) -c $(NONSTATICFLAGS) $(LIB3)/starchHelpers.c -o $(OBJDIR)/starchHelpers.o -iquote${HEAD} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
+	$(CXX) -c $(NONSTATICFLAGS) $(LIB3)/starchMetadataHelpers.c -o $(OBJDIR)/starchMetadataHelpers.o -iquote${HEAD} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
+	$(CXX) -c $(NONSTATICFLAGS) $(LIB3)/unstarchHelpers.c -o $(OBJDIR)/unstarchHelpers.o -iquote${HEAD} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
+	$(CXX) -c ${NONSTATICFLAGS} ${LIB3}/starchSha1Digest.c -o  ${OBJDIR}/starchSha1Digest.o -iquote${HEAD} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
+	$(CXX) -c ${NONSTATICFLAGS} ${LIB3}/starchBase64Coding.c -o  ${OBJDIR}/starchBase64Coding.o -iquote${HEAD} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 
 debug: dependencies
-	mkdir -p $(BIN) && $(CC) -o $(BIN)/debug.$(PROG) $(DFLAGS) ${LOCALJANSSONLIBPATH} ${LOCALBZIP2LIBPATH} ${LOCALZLIBLIBPATH} $(SOURCE1)
+	mkdir -p $(BIN) && $(CXX) -o $(BIN)/debug.$(PROG) $(DFLAGS) ${LOCALJANSSONLIBPATH} ${LOCALBZIP2LIBPATH} ${LOCALZLIBLIBPATH} $(SOURCE1)
 
 test:
 	mkdir -p $(TMPTESTDIR)

@@ -8,6 +8,8 @@ JANSSONVERSION   = jansson-2.4
 WHICHJANSSON    := ${PARTY3}/${JANSSONVERSION}
 ZLIBVERSION      = zlib-1.2.7
 WHICHZLIB       := ${PARTY3}/${ZLIBVERSION}
+USORTVERSION     = usort-1.0
+WHICHUSORT      := ${PARTY3}/${USORTVERSION}
 APPDIR           = applications/bed
 BINDIR           = bin
 OSXPKGROOT       = packaging/os_x
@@ -180,11 +182,17 @@ zlib_support_c:
 ZLIBDONE=1
 	export ZLIBDONE
 
+usort_support_c:
+	test -s ${WHICHUSORT} || { bzcat ${WHICHUSORT}.tar.bz2 | tar -x -C ${PARTY3}; }
+	ln -sf ${USORTVERSION} ${PARTY3}/usort
+USORTDONE=1
+	export USORTDONE
+
 #
 # Generic build targets
 #
 
-sort_c:
+sort_c: usort_support_c
 	make -C ${APPDIR}/sort-bed/src
 bedops_c:
 	make -C ${APPDIR}/bedops/src
@@ -203,7 +211,7 @@ wig2bed_c:
 # GNU gprof targets
 #
 
-sort_c_gprof:
+sort_c_gprof: usort_support_c
 	make -C ${APPDIR}/sort-bed/src gprof
 bedops_c_gprof:
 	make -C ${APPDIR}/bedops/src gprof
@@ -225,10 +233,10 @@ wig2bed_c_gprof:
 sort_c_darwin_intel_fat: sort_c_darwin_intel_i386 sort_c_darwin_intel_x86_64
 	lipo -create ${APPDIR}/sort-bed/bin/sort-bed_i386 ${APPDIR}/sort-bed/bin/sort-bed_x86_64 -output ${APPDIR}/sort-bed/bin/sort-bed
 
-sort_c_darwin_intel_i386:
+sort_c_darwin_intel_i386: usort_support_c
 	ARCH=i386 CC=clang CXX=clang++ make -C ${APPDIR}/sort-bed/src -f Makefile.darwin
 
-sort_c_darwin_intel_x86_64:
+sort_c_darwin_intel_x86_64: usort_support_c
 	ARCH=x86_64 CC=clang CXX=clang++ make -C ${APPDIR}/sort-bed/src -f Makefile.darwin
 
 bedops_c_darwin_intel_fat: bedops_c_darwin_intel_i386 bedops_c_darwin_intel_x86_64
@@ -349,6 +357,8 @@ very_clean: clean clean_force_static
 	rm -f ${PARTY3}/jansson
 	rm -rf ${WHICHZLIB}
 	rm -f ${PARTY3}/zlib
+	rm -rf ${WHICHUSORT}
+	rm -f ${PARTY3}/usort
 	rm -f ${OSXPKGDIR}/*
 	rm -f ${OSXLIBDIR}/*
 	rm -Rf ${OSXBUILDDIR}/*
