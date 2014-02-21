@@ -30,9 +30,11 @@
 #define _BEDMAP_INPUT_HPP
 
 #include <algorithm>
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <exception>
+#include <limits>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -201,7 +203,7 @@ namespace BedMap {
           Ext::Assert<ArgError>(percOvr_ > 0 && percOvr_ <= 1, "--fraction-either value must be: >0-1.0");
           isPercEither_ = true;
         } else if ( next == "fraction-both" ) {
-          Ext::Assert<ArgError>(!isPercBoth_, "multiple --fraction-both's detected");
+          Ext::Assert<ArgError>(!isPercBoth_, "multiple --fraction-both/--exact's detected");
           Ext::Assert<ArgError>(argcntr < argc, "No arg for --fraction-both");
           std::string sval = argv[argcntr++];
           Ext::Assert<ArgError>(sval.find_first_not_of(reals) == std::string::npos,
@@ -334,7 +336,11 @@ namespace BedMap {
       Ext::Assert<ArgError>(0 <= argc - argcntr, "No files");
       Ext::Assert<ArgError>(3 == minRefFields_, "Program error: Input.hpp::minRefFields_");
       Ext::Assert<ArgError>(3 <= minMapFields_ && 5 >= minMapFields_, "Program error: Input.hpp::minMapFields_");
-      Ext::Assert<ArgError>(!fastMode_ || isOverlapBP_ || isRangeBP_, "--faster compatible with --range or --bp-ovr only");
+      Ext::Assert<ArgError>(!fastMode_ || isOverlapBP_ || isRangeBP_ || isPercBoth_, "--faster compatible with --range, --bp-ovr, and --exact (--fraction-both 1.0) only");
+      if ( fastMode_ )
+        if ( isPercBoth_ )
+          Ext::Assert<ArgError>(std::abs(percOvr_ - 1) <= std::numeric_limits<double>::epsilon(),
+                                "--faster compatible with --range, --bp-ovr, and --exact (--fraction-both 1.0) only");
 
       // Process files inputs
       Ext::Assert<ArgError>(2 >= argc - argcntr, "Need [one or] two input files");
@@ -450,8 +456,8 @@ namespace BedMap {
     usage << "      --chrom <chromosome>  Jump to and process data for given <chromosome> only.                   \n";
     usage << "      --delim <delim>       Change output delimiter from '|' to <delim> between columns (e.g. \'\\t\').\n";
     usage << "      --ec                  Error check all input files (slower).                                   \n";
-    usage << "      --faster              (advanced) Strong input assumptions are made.  Review docs before use.  \n";
-    usage << "                              Compatible with --bp-ovr and --range overlap options only.            \n";
+    usage << "      --faster              (advanced) Strong input assumptions are made.  Compatible with:         \n";
+    usage << "                              --bp-ovr, --range, and --exact overlap options only.                  \n";
     usage << "      --header              Accept headers (VCF, GFF, SAM, BED, WIG) in any input file.             \n";
     usage << "      --help                Print this message and exit successfully.                               \n";
     usage << "      --multidelim <delim>  Change delimiter of multi-value output columns from ';' to <delim>.     \n";

@@ -44,7 +44,7 @@ namespace Bed {
   // RangedDist
   //============
   struct RangedDist {
-    enum { PercentBased = false };
+    enum { PercentBased = false, Symmetric = true };
 
     explicit RangedDist(std::size_t maxDist = 0)
       : maxDist_(maxDist) { /* */ }
@@ -111,7 +111,7 @@ namespace Bed {
   // Overlapping
   //=============
   struct Overlapping {
-    enum { PercentBased = false };
+    enum { PercentBased = false, Symmetric = true };
 
     explicit Overlapping(std::size_t ovrRequired = 0)
       : ovrRequired_(ovrRequired) {
@@ -159,7 +159,7 @@ namespace Bed {
   //   (think signalmap)
   //========================
   struct PercentOverlapMapping {
-    enum { PercentBased = true };
+    enum { PercentBased = true, Symmetric = false };
 
     explicit PercentOverlapMapping(double perc = 1.0)
       : perc_(perc) {
@@ -233,7 +233,7 @@ namespace Bed {
   //   (think setops -e)
   //==========================
   struct PercentOverlapReference : public PercentOverlapMapping {
-    enum { PercentBased = true };
+    enum { PercentBased = true, Symmetric = false };
 
     explicit PercentOverlapReference(double perc = 1.0)
       : BaseClass(perc) { }
@@ -261,7 +261,7 @@ namespace Bed {
   // PercentOverlapEither: looking at % overlap relative to refType's OR mapType's size
   //==========================
   struct PercentOverlapEither : public PercentOverlapMapping {
-    enum { PercentBased = true };
+    enum { PercentBased = true, Symmetric = false };
 
     explicit PercentOverlapEither(double perc = 1.0)
       : BaseClass(perc) { }
@@ -297,7 +297,7 @@ namespace Bed {
   // PercentOverlapBoth: looking at % overlap relative to refType's AND mapType's size
   //==========================
   struct PercentOverlapBoth : public PercentOverlapMapping {
-    enum { PercentBased = true };
+    enum { PercentBased = true, Symmetric = true };
 
     explicit PercentOverlapBoth(double perc = 1.0)
       : BaseClass(perc) { }

@@ -701,6 +701,8 @@ namespace BedMap {
 
     const bool SpecialMode = true;
     const bool GeneralMode = false;
+    if ( fastMode && !st.Symmetric ) // symmetry is a neccessary but insufficient condition
+      throw(Ext::ProgramError("Symmetric distance required for fast mode!"));
 
     if ( mapFileName.empty() ) { // single-file mode
       if ( fastMode )
