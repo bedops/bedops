@@ -175,7 +175,7 @@ namespace Visitors {
      }
   
    public:
-     explicit BedBaseVisitor(const dist_type& d = dist_type()) : dist_(d), first_(true)
+     explicit BedBaseVisitor(const dist_type& d = dist_type()) : dist_(d)
        { /* */ }
   
      virtual ~BedBaseVisitor() { /* */ }
@@ -229,7 +229,6 @@ namespace Visitors {
      reference_type* ref_;
      OrderCache cache_;
      OrderWin win_;
-     bool first_;
   };
 
 } // namespace Visitors
