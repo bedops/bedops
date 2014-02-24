@@ -151,11 +151,13 @@ namespace Visitors {
      }
   
      inline void OnDelete(mapping_type* u) {
-       if ( win_.find(u) == win_.end() )
-         cache_.erase(u);
-       else { // update
+       static typename OrderWin::iterator winIter;
+       winIter = win_.find(u);
+       if ( winIter != win_.end() ) { // update
          Delete(u);
-         win_.erase(u);
+         win_.erase(winIter);
+       } else {
+         cache_.erase(u);
        }
      }
   

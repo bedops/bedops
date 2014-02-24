@@ -123,7 +123,7 @@ namespace Visitors {
     GroupType& t_;
     ProcessFields pFields_;
     ProcessRows pRows_;
-    bool pAll_;
+    const bool pAll_;
     long cnt_;
   };
 

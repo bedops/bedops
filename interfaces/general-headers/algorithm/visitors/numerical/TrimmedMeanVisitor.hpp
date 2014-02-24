@@ -208,7 +208,8 @@ namespace Visitors {
     }
 
   protected:
-    double lowerKth_, upperKth_;
+    const double lowerKth_;
+    const double upperKth_;
     double lowerSum_, upperSum_;
     std::size_t currentAtPosLower_, currentAtPosUpper_;
     bool doKth_, symmetric_;
