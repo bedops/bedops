@@ -33,7 +33,7 @@ Released: **February 26, 2014**
 
   * Improvements to error handling in Python-based conversion scripts, in the case where no input is specified.
 
-  * Fixed typos in :ref:``gff2bed`` and :ref:``psl2bed`` documentation (cf. `commit a091e18 <https://github.com/bedops/bedops/commit/a091e18>`_).
+  * Fixed typos in :ref:`gff2bed` and :ref:`psl2bed` documentation (cf. `commit a091e18 <https://github.com/bedops/bedops/commit/a091e18>`_).
 
 * OS X compilation improvements
 

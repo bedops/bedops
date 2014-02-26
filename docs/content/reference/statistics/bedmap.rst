@@ -48,59 +48,59 @@ The ``--help`` option describes the various mapping and analytical operations an
 
   bedmap
     citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-    version:  2.4.0
+    version:  2.4.1
     authors:  Shane Neph & Scott Kuehn
-
-   USAGE: bedmap [process-flags] [overlap-option] <operation(s)...> <ref-file> [map-file]
-       Any input files must be sorted per the sort-bed utility.
-       The program accepts BED and starch file formats.
-       May use '-' for a file to indicate reading from standard input (BED format only).
-
-       Traverse <ref-file>, while applying <operation(s)> on qualified, overlapping elements from
-         <map-file>.  Output is one line for each line in <ref-file>, sent to standard output.  There
-         is no limit on the number of operations you can specify to compute in one bedmap call.
-       If <map-file> is omitted, the given file is treated as both the <ref-file> and <map-file>.
-         This usage is more efficient than specifying the same file twice.
-       Arguments may be given in any order before the input file(s).
-
-      Process Flags:
-       --------
-        --chrom <chromosome>  Process data for given <chromosome> only.
+                                                                                                      
+   USAGE: bedmap [process-flags] [overlap-option] <operation(s)...> <ref-file> [map-file]             
+       Any input file must be sorted per the sort-bed utility.                                        
+       The program accepts BED and starch file formats.                                               
+       May use '-' for a file to indicate reading from standard input (BED format only).              
+                                                                                                    
+       Traverse <ref-file>, while applying <operation(s)> on qualified, overlapping elements from     
+         <map-file>.  Output is one line for each line in <ref-file>, sent to standard output.  There 
+         is no limit on the number of operations you can specify to compute in one bedmap call.       
+       If <map-file> is omitted, the given file is treated as both the <ref-file> and <map-file>.     
+         This usage is more efficient than specifying the same file twice.                            
+       Arguments may be given in any order before the input file(s).                                  
+                                                                                                    
+      Process Flags:                                                                                  
+       --------                                                                                       
+        --chrom <chromosome>  Jump to and process data for given <chromosome> only.                   
         --delim <delim>       Change output delimiter from '|' to <delim> between columns (e.g. '\t').
-        --ec                  Error check all input files (slower).
-        --faster              (advanced) Strong input assumptions are made.  Review docs before use.
-                                Compatible with --bp-ovr and --range overlap options only.
-        --header              Accept headers (VCF, GFF, SAM, BED, WIG) in any input file.
-        --help                Print this message and exit successfully.
-        --multidelim <delim>  Change delimiter of multi-value output columns from ';' to <delim>.
-        --prec <int>          Change the post-decimal precision of scores to <int>.  0 <= <int>.
-        --sci                 Use scientific notation for score outputs.
-        --skip-unmapped       Print no output for a row with no mapped elements.
-        --version             Print program information.
-  
-  
-      Overlap Options (At most, one may be selected.  By default, --bp-ovr 1 is used):
-       --------
-        --bp-ovr <int>           Require <int> bp overlap between elements of input files.
-        --range <int>            Grab <map-file> elements within <int> bp of <ref-file>'s element,
-                                   where 0 <= int.  --range 0 is an alias for --bp-ovr 1.
-        --fraction-ref <val>     The fraction of the element's size from <ref-file> that must overlap
-                                   the element in <map-file>.  Expect 0 < val <= 1.
-        --fraction-map <val>     The fraction of the element's size from <map-file> that must overlap
-                                   the element in <ref-file>.  Expect 0 < val <= 1.
-        --fraction-both <val>    Both --fraction-ref <val> and --fraction-map <val> must be true to
-                                   qualify as overlapping.  Expect 0 < val <= 1.
-        --fraction-either <val>  Either --fraction-ref <val> or --fraction-map <val> must be true to
-                                   qualify as overlapping.  Expect 0 < val <= 1.
+        --ec                  Error check all input files (slower).                                   
+        --faster              (advanced) Strong input assumptions are made.  Compatible with:         
+                                --bp-ovr, --range, --fraction-both, and --exact overlap options only. 
+        --header              Accept headers (VCF, GFF, SAM, BED, WIG) in any input file.             
+        --help                Print this message and exit successfully.                               
+        --multidelim <delim>  Change delimiter of multi-value output columns from ';' to <delim>.     
+        --prec <int>          Change the post-decimal precision of scores to <int>.  0 <= <int>.      
+        --sci                 Use scientific notation for score outputs.                              
+        --skip-unmapped       Print no output for a row with no mapped elements.                      
+        --version             Print program information.                                              
+                                                                                                    
+                                                                                                    
+      Overlap Options (At most, one may be selected.  By default, --bp-ovr 1 is used):                
+       --------                                                                                       
+        --bp-ovr <int>           Require <int> bp overlap between elements of input files.            
+        --range <int>            Grab <map-file> elements within <int> bp of <ref-file>'s element,    
+                                   where 0 <= int.  --range 0 is an alias for --bp-ovr 1.             
+        --fraction-ref <val>     The fraction of the element's size from <ref-file> that must overlap 
+                                   the element in <map-file>.  Expect 0 < val <= 1.                   
+        --fraction-map <val>     The fraction of the element's size from <map-file> that must overlap 
+                                   the element in <ref-file>.  Expect 0 < val <= 1.                   
+        --fraction-both <val>    Both --fraction-ref <val> and --fraction-map <val> must be true to   
+                                   qualify as overlapping.  Expect 0 < val <= 1.                      
+        --fraction-either <val>  Either --fraction-ref <val> or --fraction-map <val> must be true to  
+                                   qualify as overlapping.  Expect 0 < val <= 1.                      
         --exact                  Shorthand for --fraction-both 1.  First 3 fields from <map-file> must
-                                   be identical to <ref-file>'s element.
-  
-  
-      Operations:  (Any number of operations may be used any number of times.)
-       ----------
-        SCORE:
-         <ref-file> must have at least 3 columns and <map-file> 5 columns.
-  
+                                   be identical to <ref-file>'s element.                              
+                                                                                                    
+                                                                                                    
+      Operations:  (Any number of operations may be used any number of times.)                        
+       ----------                                                                                     
+        SCORE:                                                                                        
+         <ref-file> must have at least 3 columns and <map-file> 5 columns.                            
+                                                                                                    
         --cv                The result of --stdev divided by the result of --mean.
         --kth <val>         Generalized median. Report the value, x, such that the fraction <val>
                               of overlapping elements' scores from <map-file> is less than x,
@@ -119,14 +119,14 @@ The ``--help`` option describes the various mapping and analytical operations an
                               ignoring the bottom <low> and top <hi> fractions of those scores.
                               0 <= low <= 1.  0 <= hi <= 1.  low+hi <= 1.
         --variance          The variance of scores from overlapping elements in <map-file>.
-  
+     
        ----------
         NON-SCORE:
          <ref-file> must have at least 3 columns.
          For --echo-map-id/echo-map-id-uniq, <map-file> must have at least 4 columns.
          For --echo-map-score, <map-file> must have at least 5 columns.
          For all others, <map-file> requires at least 3 columns.
-  
+
         --bases             The total number of overlapping bases from <map-file>.
         --bases-uniq        The number of distinct bases from <ref-file>'s element covered by
                               overlapping elements in <map-file>.
@@ -225,11 +225,11 @@ Finally, the ``--exact`` flag enforces exact matches between reference and mappi
 
 .. note:: The ``--exact`` option is an alias for ``--fraction-both 1``.
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Using ``--faster`` with ``--bp-ovr`` and ``--range``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Using ``--faster`` with ``--bp-ovr``, ``--exact`` or ``--range``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``--faster`` modifier works with the ``--bp-ovr`` overlap and ``--range`` specifiers to dramatically increase the performance of :ref:`bedmap`, when the following input restriction is met:
+The ``--faster`` modifier works with the ``--bp-ovr`` and ``--exact`` (``--fraction-both 1``) overlap and ``--range`` specifiers to dramatically increase the performance of :ref:`bedmap`, when the following input restriction is met:
 
 * No fully-nested elements in any input mapping file (duplicate elements and other overlapping elements are okay).
 
@@ -243,7 +243,7 @@ This option also works with the ``--ec`` error checking flag, which indicates if
 
    An example of a research application for our lab which benefits from this flag is where we perform statistical analysis of large numbers of small sequence tags that fall in hotspot regions.
 
-   If your data meet the :ref:`non-nesting criteria <bedextract_nested_elements>`, using ``--faster`` with ``--bp-ovr`` or ``--range`` is highly recommended.
+   If your data meet the :ref:`non-nesting criteria <bedextract_nested_elements>`, using ``--faster`` with ``--bp-ovr``, ``--exact`` or ``--range`` is highly recommended.
 
 .. note:: Our lab works with BED data of various types: cut-counts, hotspots, peaks, footprints, etc. These data generally do not contain nested elements and so are amenable to use with :ref:`bedmap's <bedmap>` ``--faster`` flag for extracting overlapping elements.
 
@@ -625,7 +625,7 @@ Looking at the visualizations above, we would expect the mean density to be lowe
 Using ``--faster`` with ``--range``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``--faster`` modifier works with the ``--bp-ovr`` overlap and ``--range`` specifiers to dramatically increase the performance of :ref:`bedmap`, where the following input restriction is met:
+The ``--faster`` modifier works with the ``--bp-ovr`` and ``--exact`` overlap and ``--range`` specifiers to dramatically increase the performance of :ref:`bedmap`, where the following input restriction is met:
 
 * No fully-nested elements in any input mapping file (duplicate elements and other overlapping elements are okay).
 
@@ -639,7 +639,7 @@ This option also works with the ``--ec`` error checking flag, which indicates if
 
    An example of a research application for our lab which benefits from this flag is where we perform statistical analysis of large numbers of small sequence tags that fall in hotspot regions.
 
-   If your data meet the :ref:`non-nesting criteria <bedextract_nested_elements>`, using ``--faster`` with ``--bp-ovr`` or ``--range`` is highly recommended.
+   If your data meet the :ref:`non-nesting criteria <bedextract_nested_elements>`, using ``--faster`` with ``--bp-ovr``, ``--exact`` or ``--range`` is highly recommended.
 
 .. note:: Our lab works with BED data of various types: cut-counts, hotspots, peaks, footprints, etc. These data generally do not contain nested elements and so are amenable to use with :ref:`bedmap's <bedmap>` ``--faster`` flag for extracting overlapping elements.
 
