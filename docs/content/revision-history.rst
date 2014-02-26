@@ -27,7 +27,7 @@ Released: **February 26, 2014**
 
 * :ref:`sort-bed`
 
-  * Added ``--tmpdir`` option to allow specification of an alternative temporary directory, when used in conjunction with ``--max-mem`` option. (This is useful if the host operating system's standard temporary directory (e.g., ``/tmp`` on Linux or OS X) does not have sufficient space to hold intermediate results.)
+  * Added ``--tmpdir`` option to allow specification of an alternative temporary directory, when used in conjunction with ``--max-mem`` option. This is useful if the host operating system's standard temporary directory (*e.g.*, ``/tmp`` on Linux or OS X) does not have sufficient space to hold intermediate results.
 
 * All :ref:`conversion scripts <conversion_scripts>`
 
