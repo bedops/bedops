@@ -28,9 +28,9 @@ Linux
        $ tar jxvf bedops_linux_x86_64-vx.y.z.tar.bz2
 
    Replace ``x``, ``y`` and ``z`` with the version number of BEDOPS you have downloaded.
-3. Copy the extracted binaries to a location of your choice which is in your environment's ``PATH``, *e.g.* ``~/opt/bin``: ::
+3. Copy the extracted binaries to a location of your choice which is in your environment's ``PATH``, *e.g.* ``/usr/local/bin``: ::
 
-       $ cp bin/* ~/opt/bin
+       $ cp bin/* /usr/local/bin
 
    Change this destination folder, as needed.
 
