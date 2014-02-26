@@ -2,7 +2,7 @@
 
 #
 #    BEDOPS
-#    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+#    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 # Project:      Convert UCSC Wiggle to UCSC BED and thence compressed into a BEDOPS Starch
 #               archive sent to standard output.
 #
-# Version:      2.4.1
+# Version:      2.4.2
 #
 # Notes:        The UCSC Wiggle format (http://genome.ucsc.edu/goldenPath/help/wiggle.html)
 #               is 1-based, closed [a, b] and is offered in variable or fixed step varieties.

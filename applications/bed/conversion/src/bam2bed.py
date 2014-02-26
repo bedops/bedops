@@ -2,7 +2,7 @@
 
 #
 #    BEDOPS
-#    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+#    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 # Project:      Converts 0-based, half-open [a-1,b) headered or headerless BAM input
 #               into 0-based, half-open [a-1,b) extended BED
 #
-# Version:      2.4.1
+# Version:      2.4.2
 #
 # Notes:        The BAM format is an indexed, binary representation of a SAM (Sequence
 #               Alignment/Map) file. Internally, it is a 0-based, half-open [a-1,b)

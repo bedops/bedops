@@ -2,7 +2,7 @@
 
 #
 #    BEDOPS
-#    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+#    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 #               into 0-based, half-open [a-1, b) extended BED that is subsequently 
 #               compressed into a Starch v2 archive.
 #
-# Version:      2.4.1
+# Version:      2.4.2
 #
 # Notes:        The SAM format is Sequence Alignment/Map file that is a 1-based, closed 
 #               [a, b]. This script converts this indexing back to 0-based, half-
