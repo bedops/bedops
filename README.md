@@ -1,12 +1,12 @@
-## BEDOPS v2.4: high-performance genomic feature operations ##
+## BEDOPS v2.4.1: high-performance genomic feature operations ##
 
 <!-- <img src="http://bedops.readthedocs.org/en/latest/_static/logo_with_label_v2.png" align="right" style="max-width:33%" /> -->
 
 ### About ###
 
-**BEDOPS v2.4** is a suite of tools to address common questions raised in genomic studies — mostly with regard to overlap and proximity relationships between data sets. It aims to be scalable and flexible, facilitating the efficient and accurate analysis and management of large-scale genomic data. 
+**BEDOPS v2.4.1** is a suite of tools to address common questions raised in genomic studies — mostly with regard to overlap and proximity relationships between data sets. It aims to be scalable and flexible, facilitating the efficient and accurate analysis and management of large-scale genomic data. 
 
-The <a href="https://bedops.readthedocs.org/en/latest/content/overview.html#overview">overview</a> section of the **BEDOPS v2.4** documentation summarizes the toolkit, functionality and performance enhancements. The <a href="https://bedops.readthedocs.org/en/latest/index.html#reference">reference</a> table offers documentation for all applications and scripts.
+The <a href="https://bedops.readthedocs.org/en/latest/content/overview.html#overview">overview</a> section of the **BEDOPS v2.4.1** documentation summarizes the toolkit, functionality and performance enhancements. The <a href="https://bedops.readthedocs.org/en/latest/index.html#reference">reference</a> table offers documentation for all applications and scripts.
 
 ### Downloads ###
 
