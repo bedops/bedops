@@ -202,10 +202,12 @@ Cygwin
 
 1. Make sure you are running a 64-bit version of Cygwin. Compilation of BEDOPS on 32-bit versions of Cygwin is not supported.
 
-   To be sure, open up your Cywin installer application (separate from the Cygwin terminal application) and look for the **64 bit** marker next to the setup application version number. For instance, here is a screenshot of the Cygwin installer that is version 2.831 and is 64-bit:
+   To be sure, open up your Cywin installer application (separate from the Cygwin terminal application) and look for the **64 bit** marker next to the setup application version number: 
 
    .. image:: ../assets/installation/bedops_cygwin_installer_screen.png
       :width: 99%
+
+   For instance, this Cygwin installer is version 2.831 and is 64-bit.
 
 2. Check that you have GCC 4.8 or greater installed. You can check this by opening the Cygwin terminal window (note that this is not the same as the Cygwin installer application) and typing ``gcc --version``, *e.g.*: 
 
@@ -218,6 +220,7 @@ Cygwin
    If you do not have ``gcc`` installed, then open the Cygwin (64-bit) installer application again, navigate through the current setup options, and then mark the GCC 4.8.* packages for installation:
 
    .. image:: ../assets/installation/bedops_cygwin_installer_gcc_screen.png
+      :width: 99%
 
    If it helps, type in ``gcc`` into the search field to filter results to GCC-related packages. Make sure to mark the following packages for installation, at least:
 
