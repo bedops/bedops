@@ -21,7 +21,7 @@ Released: **February 26, 2014**
 
   * Added ``--fraction-both`` and ``--exact`` (``--fraction-both 1``) to list of compatible overlap options with ``--faster``.
 
-  * Minor performance improvements with `bedmap` operations without ``--faster``.
+  * Added 5% performance improvement with `bedmap` operations without ``--faster``.
 
   * Fixed scenario that can yield incorrect results (cf. `Issue 43 <https://github.com/bedops/bedops/issues/43>`_).
 
