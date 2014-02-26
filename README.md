@@ -23,17 +23,17 @@ The <a href="https://bedops.readthedocs.org/en/latest/content/overview.html#over
 <td><img alt="source_png" src="https://bedops.readthedocs.org/en/latest/_images/source.png"></td>
 </tr>
 <tr class="row-even"><td><ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.0/bedops_linux_x86_64-v2.4.0.tar.bz2">x86-64 (64-bit)</a> binaries</li>
-<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.0/bedops_linux_i386-v2.4.0.tar.bz2">i386 (32-bit)</a> binaries</li>
+<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.1/bedops_linux_x86_64-v2.4.1.tar.bz2">x86-64 (64-bit)</a> binaries</li>
+<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.1/bedops_linux_i386-v2.4.1.tar.bz2">i386 (32-bit)</a> binaries</li>
 <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#linux">Installation instructions</a></li>
 </ul></td>
 <td><ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.0/BEDOPS.2.4.0.mpkg.zip">Intel (32-/64-bit)</a> installer</li>
+<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.1/BEDOPS.2.4.1.mpkg.zip">Intel (32-/64-bit)</a> installer</li>
 <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#mac-os-x">Installation instructions</a></li>
 </ul></td>
 <td><ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-<li><a href="https://github.com/bedops/bedops/archive/v2.4.0.tar.gz">Source code</a> (tar.gz)</li>
-<li><a href="https://github.com/bedops/bedops/archive/v2.4.0.zip">Source code</a> (zip)</li>
+<li><a href="https://github.com/bedops/bedops/archive/v2.4.1.tar.gz">Source code</a> (tar.gz)</li>
+<li><a href="https://github.com/bedops/bedops/archive/v2.4.1.zip">Source code</a> (zip)</li>
 <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#installation-via-source-code">Compilation instructions</a></li>
 </ul></td>
 </tr>
@@ -42,11 +42,11 @@ The <a href="https://bedops.readthedocs.org/en/latest/content/overview.html#over
 
 ### Documentation ###
 
-Complete documentation for **BEDOPS v2.4** tools is available at: <a href="https://bedops.readthedocs.org/en/latest/index.html">https://bedops.readthedocs.org/</a>
+Complete documentation for **BEDOPS v2.4.1** tools is available at: <a href="https://bedops.readthedocs.org/en/latest/index.html">https://bedops.readthedocs.org/</a>
 
 ### Citation ###
 
-If you use **BEDOPS v2.4** in your research, please cite the following manuscript:
+If you use **BEDOPS v2.4.1** in your research, please cite the following manuscript:
 
 > Shane Neph, M. Scott Kuehn, Alex P. Reynolds, et al.  
 > [**BEDOPS: high-performance genomic feature operations**  
