@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.3.3.3. gtf2bed &mdash; BEDOPS 2.4.0 documentation</title>
+    <title>6.3.3.3. gtf2bed &mdash; BEDOPS 2.4.1 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.4.0',
+        VERSION:     '2.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../../../index.html" />
     <link rel="up" title="6.3.3. Data conversion" href="../conversion.html" />
     <link rel="next" title="6.3.3.4. psl2bed" href="psl2bed.html" />
     <link rel="prev" title="6.3.3.2. gff2bed" href="gff2bed.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="gff2bed.html" title="6.3.3.2. gff2bed"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../conversion.html" accesskey="U">6.3.3. Data conversion</a> &raquo;</li> 
@@ -88,20 +88,23 @@
 <div class="section" id="example">
 <h2>6.3.3.3.4. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>To demonstrate these scripts, we use a sample GTF input called <tt class="docutils literal"><span class="pre">foo.gtf</span></tt> (see the <a class="reference internal" href="#gtf2bed-downloads"><em>Downloads</em></a> section to grab this file).</p>
-<div class="highlight-python"><pre>chr20      protein_coding  exon    9874841 9874841 .       +       .       gene_id "ENSBTAG00000020601"; transcript_id "ENSBTAT00000027448"; gene_name "ZNF366";
-chr20      protein_coding  CDS     9873504 9874841 .       +       0       gene_id "ENSBTAG00000020601"; transcript_id "ENSBTAT00000027448"; gene_name "ZNF366";
-chr20      protein_coding  exon    9877488 9877679 .       +       .       gene_id "ENSBTAG00000020601"; transcript_id "ENSBTAT00000027448";</pre>
+<div class="highlight-python"><div class="highlight"><pre>chr20      protein_coding  exon    9874841 9874841 .       +       .       gene_id &quot;ENSBTAG00000020601&quot;; transcript_id &quot;ENSBTAT00000027448&quot;; gene_name &quot;ZNF366&quot;;
+chr20      protein_coding  CDS     9873504 9874841 .       +       0       gene_id &quot;ENSBTAG00000020601&quot;; transcript_id &quot;ENSBTAT00000027448&quot;; gene_name &quot;ZNF366&quot;;
+chr20      protein_coding  exon    9877488 9877679 .       +       .       gene_id &quot;ENSBTAG00000020601&quot;; transcript_id &quot;ENSBTAT00000027448&quot;;
+</pre></div>
 </div>
 <p>We can convert it to sorted BED data in the following manner:</p>
-<div class="highlight-python"><pre>$ gtf2bed &lt; foo.gtf
-chr20   9874840 9874841 ZNF366  .       +       protein_coding  exon    .       gene_id "ENSBTAG00000020601"; transcript_id "ENSBTAT00000027448"; gene_name "ZNF366"; zero_length_insertion "True";
-chr20   9873503 9874841 ZNF366  .       +       protein_coding  CDS     0       gene_id "ENSBTAG00000020601"; transcript_id "ENSBTAT00000027448"; gene_name "ZNF366";
-chr20   9877487 9877679 ENSBTAG00000020601      .       +       protein_coding  exon    .       gene_id "ENSBTAG00000020601"; transcript_id "ENSBTAT00000027448";</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ gtf2bed &lt; foo.gtf
+chr20   9874840 9874841 ZNF366  .       +       protein_coding  exon    .       gene_id &quot;ENSBTAG00000020601&quot;; transcript_id &quot;ENSBTAT00000027448&quot;; gene_name &quot;ZNF366&quot;; zero_length_insertion &quot;True&quot;;
+chr20   9873503 9874841 ZNF366  .       +       protein_coding  CDS     0       gene_id &quot;ENSBTAG00000020601&quot;; transcript_id &quot;ENSBTAT00000027448&quot;; gene_name &quot;ZNF366&quot;;
+chr20   9877487 9877679 ENSBTAG00000020601      .       +       protein_coding  exon    .       gene_id &quot;ENSBTAG00000020601&quot;; transcript_id &quot;ENSBTAT00000027448&quot;;
+</pre></div>
 </div>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
 <p>After, say, performing set or statistical operations with <a class="reference internal" href="../../set-operations/bedops.html#bedops"><em>bedops</em></a>, <a class="reference internal" href="../../statistics/bedmap.html#bedmap"><em>bedmap</em></a> etc., converting data back to GTF is accomplished through an <tt class="docutils literal"><span class="pre">awk</span></tt> statement that re-orders columns and shifts the coordinate index:</p>
-<div class="last highlight-python"><pre>$ awk '{print $1"\t"$7"\t"$8"\t"($2+1)"\t"$3"\t"$5"\t"$6"\t"$9"\t"(substr($0, index($0,$10)))}' foo_subset.bed &gt; foo_subset.gtf</pre>
+<div class="last highlight-python"><div class="highlight"><pre>$ awk &#39;{print $1&quot;\t&quot;$7&quot;\t&quot;$8&quot;\t&quot;($2+1)&quot;\t&quot;$3&quot;\t&quot;$5&quot;\t&quot;$6&quot;\t&quot;$9&quot;\t&quot;(substr($0, index($0,$10)))}&#39; foo_subset.bed &gt; foo_subset.gtf
+</pre></div>
 </div>
 </div>
 <div class="admonition note">
@@ -279,7 +282,7 @@ chr20   9877487 9877679 ENSBTAG00000020601      .       +       protein_coding  
         <li class="right" >
           <a href="gff2bed.html" title="6.3.3.2. gff2bed"
              >previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../conversion.html" >6.3.3. Data conversion</a> &raquo;</li> 
@@ -287,7 +290,7 @@ chr20   9877487 9877679 ENSBTAG00000020601      .       +       protein_coding  
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

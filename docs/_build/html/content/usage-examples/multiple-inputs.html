@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.7. Working with many input files at once with bedops and bedmap &mdash; BEDOPS 2.4.0 documentation</title>
+    <title>4.7. Working with many input files at once with bedops and bedmap &mdash; BEDOPS 2.4.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '2.4.0',
+        VERSION:     '2.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.0 documentation" href="../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../index.html" />
     <link rel="up" title="4. Usage examples" href="../usage-examples.html" />
     <link rel="next" title="5. Performance" href="../performance.html" />
     <link rel="prev" title="4.6. Efficiently creating Starch-formatted archives with a cluster" href="starchcluster.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="starchcluster.html" title="4.6. Efficiently creating Starch-formatted archives with a cluster"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../usage-examples.html" accesskey="U">4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>  
@@ -63,26 +63,30 @@
 <p>One concrete application may be where we have multiple biological replicates, and we take any repeatable result (in two or more inputs, in this case) as true signal. Similarly, we might be interested in a problem like this if we have multiple related (or even unrelated) cell type samples and we want to be confident in peak calls for DNaseI sequencing of ChIP-seq experiments.</p>
 <p>These sorts of problems often have efficient solutions in BEDOPS. Here, the solution is independent of how many inputs we start with, what overlap criteria we use, and whether the requirement calls for two or more files of overlap (or whether it is 4 or more files in the overlap, or 9, or whatever).</p>
 <p>Consider a case study of one such problem that utilizes both <a class="reference internal" href="../reference/set-operations/bedops.html#bedops"><em>bedops</em></a> and <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> together to create an efficient solution:</p>
-<div class="highlight-python"><pre>$ bedops -u file1.bed file2.bed ... fileN.bed \
+<div class="highlight-python"><div class="highlight"><pre>$ bedops -u file1.bed file2.bed ... fileN.bed \
     | bedmap --echo --echo-map-id-uniq --fraction-both 0.5 - \
-    | awk -F"|" '(split($2, a, ";") &gt; 1)' \
-    &gt; answer.bed</pre>
+    | awk -F&quot;|&quot; &#39;(split($2, a, &quot;;&quot;) &gt; 1)&#39; \
+    &gt; answer.bed
+</pre></div>
 </div>
 <p>Here, we pass in as many files as we have to <a class="reference internal" href="../reference/set-operations/bedops.html#bedops"><em>bedops</em></a>. The requirement of elements overlapping reciprocally is met by using <tt class="docutils literal"><span class="pre">--fraction-both</span></tt>, and the requirement that overlapping elements must come from two or more (distinct) files is satisfied by checking how many elements there are via the <tt class="docutils literal"><span class="pre">--echo-map-id-uniq</span></tt> operator.</p>
 <p>The requirements for <tt class="docutils literal"><span class="pre">file1.bed</span></tt> through <tt class="docutils literal"><span class="pre">fileN.bed</span></tt> are that each is properly <a class="reference internal" href="../reference/file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a> (as expected for any BEDOPS input) and that their respective fourth-column ID fields identify the file. For example:</p>
-<div class="highlight-python"><pre>$ head -2 file1.bed
+<div class="highlight-python"><div class="highlight"><pre>$ head -2 file1.bed
 chr1 1   50   1  anything-else
 chr1 230 400  1  whatever-you-like
 
 $ head -2 file2.bed
 chr1 23  78  2  other-fields
-chr1 56  98  2  5.678  +  peak-2</pre>
+chr1 56  98  2  5.678  +  peak-2
+</pre></div>
 </div>
 <p>As a nice side-effect, <tt class="docutils literal"><span class="pre">answer.bed</span></tt> will show from which file each entry originated. If we don&#8217;t want that extra information, we simply cut it out:</p>
-<div class="highlight-python"><pre>cut -f1-3,5- answer.bed &gt;! my-final-answer.bed</pre>
+<div class="highlight-python"><div class="highlight"><pre>cut -f1-3,5- answer.bed &gt;! my-final-answer.bed
+</pre></div>
 </div>
 <p>There is also a column that shows exactly which files are part of the per-row intersection. If we don&#8217;t want that information, then we just cut that:</p>
-<div class="highlight-python"><pre>cut -f1 -d'|' my-final-answer.bed</pre>
+<div class="highlight-python"><div class="highlight"><pre>cut -f1 -d&#39;|&#39; my-final-answer.bed
+</pre></div>
 </div>
 <p>While this is just one example of how the tools can be used together to answer complicated questions efficiently, it demonstrates why it is worthwhile to learn about the relatively few core programs in BEDOPS.</p>
 <p>If we look at what is required to answer this kind of question using other tool suites, we will quickly find that solutions do not scale to the number of files, nor with the requirement that overlaps must come from <em>k</em> or more distinct input files. Even in the simplest case of just requiring the regions overlap in 2 of <em>n</em> inputs, we must build on the order of <em>n</em><sup>2</sup>/2 intermediate files (and sweep through the <em>n</em> original inputs <em>n</em><sup>2</sup> times as well). If our requirement is 3 of <em>n</em> inputs, the polynomials increase accordingly.</p>
@@ -147,13 +151,13 @@ chr1 56  98  2  5.678  +  peak-2</pre>
         <li class="right" >
           <a href="starchcluster.html" title="4.6. Efficiently creating Starch-formatted archives with a cluster"
              >previous</a> |</li>
-        <li><a href="../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../usage-examples.html" >4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

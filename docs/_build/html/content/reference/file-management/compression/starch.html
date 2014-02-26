@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.3.2.1. starch &mdash; BEDOPS 2.4.0 documentation</title>
+    <title>6.3.2.1. starch &mdash; BEDOPS 2.4.1 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.4.0',
+        VERSION:     '2.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../../../index.html" />
     <link rel="up" title="6.3.2. Compression" href="../compression.html" />
     <link rel="next" title="6.3.2.2. unstarch" href="unstarch.html" />
     <link rel="prev" title="6.3.2. Compression" href="../compression.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="../compression.html" title="6.3.2. Compression"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../compression.html" accesskey="U">6.3.2. Compression</a> &raquo;</li> 
@@ -85,26 +85,27 @@
 <div class="section" id="usage">
 <h2>6.3.2.1.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>Use the <tt class="docutils literal"><span class="pre">--help</span></tt> option to list all options:</p>
-<div class="highlight-python"><pre>starch
+<div class="highlight-python"><div class="highlight"><pre>starch
  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
  binary version: 2.4.0 (creates archive version: 2.0.0)
  authors:  Alex Reynolds and Shane Neph
 
-USAGE: starch [--note="foo bar..."] [--bzip2 | --gzip] [--header] [&lt;unique-tag&gt;] &lt;bed-file&gt;
+USAGE: starch [--note=&quot;foo bar...&quot;] [--bzip2 | --gzip] [--header] [&lt;unique-tag&gt;] &lt;bed-file&gt;
 
     * BED input must be sorted lexicographically (e.g., using BEDOPS sort-bed).
-    * Please use '-' to indicate reading BED data from standard input.
+    * Please use &#39;-&#39; to indicate reading BED data from standard input.
     * Output must be directed to a regular file.
     * The bzip2 compression type makes smaller archives, while gzip extracts faster.
 
     Process Flags:
 
-    --note="foo bar..."   Append note to output archive metadata (optional)
+    --note=&quot;foo bar...&quot;   Append note to output archive metadata (optional)
     --bzip2 | --gzip      Specify backend compression type (optional, default is bzip2)
     --header              Support BED input with custom UCSC track, SAM or VCF headers, or generic comments (optional)
     &lt;unique-tag&gt;          Specify unique identifier for transformed data (optional)
     --help                Show this usage message
-    --version             Show binary version</pre>
+    --version             Show binary version
+</pre></div>
 </div>
 </div>
 <div class="section" id="options">
@@ -145,7 +146,8 @@ USAGE: starch [--note="foo bar..."] [--bzip2 | --gzip] [--header] [&lt;unique-ta
 <div class="section" id="example">
 <h2>6.3.2.1.5. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>To compress unsorted BED data (or data of unknown sort order), we feed <a class="reference internal" href="#starch"><em>starch</em></a> a <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sorted</em></a> stream, using the hyphen (<tt class="docutils literal"><span class="pre">-</span></tt>) to specify standard input:</p>
-<div class="highlight-python"><pre>$ sort-bed unsorted.bed | starch - &gt; sorted.starch</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ sort-bed unsorted.bed | starch - &gt; sorted.starch
+</pre></div>
 </div>
 <p>This creates the file <tt class="docutils literal"><span class="pre">sorted.starch</span></tt>, which uses the <tt class="docutils literal"><span class="pre">bzip2</span></tt> algorithm to compress transformed BED data from a sorted permutation of data in <tt class="docutils literal"><span class="pre">unsorted.bed</span></tt>. No note or custom tag data is added.</p>
 <p>It is possible to speed up the compression of a BED file by using a cluster. Start by reviewing our <a class="reference internal" href="../../../usage-examples/starchcluster.html#starchcluster"><em>starchcluster</em></a> script.</p>
@@ -223,7 +225,7 @@ USAGE: starch [--note="foo bar..."] [--bzip2 | --gzip] [--header] [&lt;unique-ta
         <li class="right" >
           <a href="../compression.html" title="6.3.2. Compression"
              >previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../compression.html" >6.3.2. Compression</a> &raquo;</li> 
@@ -231,7 +233,7 @@ USAGE: starch [--note="foo bar..."] [--bzip2 | --gzip] [--header] [&lt;unique-ta
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

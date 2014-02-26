@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.3.1.1. sort-bed &mdash; BEDOPS 2.4.0 documentation</title>
+    <title>6.3.1.1. sort-bed &mdash; BEDOPS 2.4.1 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.4.0',
+        VERSION:     '2.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../../../index.html" />
     <link rel="up" title="6.3.1. Sorting" href="../sorting.html" />
     <link rel="next" title="6.3.2. Compression" href="../compression.html" />
     <link rel="prev" title="6.3.1. Sorting" href="../sorting.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="../sorting.html" title="6.3.1. Sorting"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../sorting.html" accesskey="U">6.3.1. Sorting</a> &raquo;</li> 
@@ -75,23 +75,26 @@
 <div class="section" id="usage">
 <h2>6.3.1.1.2. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>The <tt class="docutils literal"><span class="pre">--help</span></tt> option is fairly basic, but describes the usage:</p>
-<div class="highlight-python"><pre>sort-bed
+<div class="highlight-python"><div class="highlight"><pre>sort-bed
   citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
   version:  2.4.0
   authors:  Scott Kuehn &amp; Shane Neph
 
 USAGE: sort-bed [--help] [--version] [--max-mem &lt;val&gt;] &lt;file1.bed&gt; &lt;file2.bed&gt; &lt;...&gt;
         Sort BED file(s).
-        May use '-' to indicate stdin.
+        May use &#39;-&#39; to indicate stdin.
         Results are sent to stdout.
 
-        &lt;val&gt; for --max-mem may be 8G, 8000M, or 8000000000 to specify 8 GB of memory, for example.</pre>
+        &lt;val&gt; for --max-mem may be 8G, 8000M, or 8000000000 to specify 8 GB of memory, for example.
+</pre></div>
 </div>
 <p>A simple example of using <a class="reference internal" href="#sort-bed"><em>sort-bed</em></a> would be:</p>
-<div class="highlight-python"><pre>$ sort-bed unsortedData.bed &gt; sortedData.bed</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ sort-bed unsortedData.bed &gt; sortedData.bed
+</pre></div>
 </div>
 <p>The <a class="reference internal" href="#sort-bed"><em>sort-bed</em></a> program efficiently sorts BED inputs. By default, all input records are read into system memory and sorted. If your BED dataset is larger than available system memory, use the <tt class="docutils literal"><span class="pre">--max-mem</span></tt> option to limit the amount of memory <a class="reference internal" href="#sort-bed"><em>sort-bed</em></a> uses to do its work:</p>
-<div class="highlight-python"><pre>$ sort-bed --max-mem 2G reallyHugeUnsortedData.bed &gt; reallyHugeSortedData.bed</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ sort-bed --max-mem 2G reallyHugeUnsortedData.bed &gt; reallyHugeSortedData.bed
+</pre></div>
 </div>
 <p>This option allows <a class="reference internal" href="#sort-bed"><em>sort-bed</em></a> to scale to input of any size.</p>
 </div>
@@ -159,7 +162,7 @@ USAGE: sort-bed [--help] [--version] [--max-mem &lt;val&gt;] &lt;file1.bed&gt; &
         <li class="right" >
           <a href="../sorting.html" title="6.3.1. Sorting"
              >previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../sorting.html" >6.3.1. Sorting</a> &raquo;</li> 
@@ -167,7 +170,7 @@ USAGE: sort-bed [--help] [--version] [--max-mem &lt;val&gt;] &lt;file1.bed&gt; &
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

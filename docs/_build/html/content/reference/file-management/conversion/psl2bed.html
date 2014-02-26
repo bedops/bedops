@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.3.3.4. psl2bed &mdash; BEDOPS 2.4.0 documentation</title>
+    <title>6.3.3.4. psl2bed &mdash; BEDOPS 2.4.1 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.4.0',
+        VERSION:     '2.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../../../index.html" />
     <link rel="up" title="6.3.3. Data conversion" href="../conversion.html" />
     <link rel="next" title="6.3.3.5. sam2bed" href="sam2bed.html" />
     <link rel="prev" title="6.3.3.3. gtf2bed" href="gtf2bed.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="gtf2bed.html" title="6.3.3.3. gtf2bed"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../conversion.html" accesskey="U">6.3.3. Data conversion</a> &raquo;</li> 
@@ -58,7 +58,7 @@
             
   <div class="section" id="psl2bed">
 <span id="id1"></span><h1>6.3.3.4. <cite>psl2bed</cite><a class="headerlink" href="#psl2bed" title="Permalink to this headline">¶</a></h1>
-<p>The <tt class="docutils literal"><span class="pre">psl2bed</span></tt> script converts 0-based, half-open <tt class="docutils literal"><span class="pre">[start-1,</span> <span class="pre">end)</span></tt> <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format2">Pattern Space Layout</a> (PSL) to unsorted, 0-based, half-open <tt class="docutils literal"><span class="pre">[start-1,</span> <span class="pre">end)</span></tt> extended BED-formatted data.</p>
+<p>The <tt class="docutils literal"><span class="pre">psl2bed</span></tt> script converts 0-based, half-open <tt class="docutils literal"><span class="pre">[start-1,</span> <span class="pre">end)</span></tt> <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format2">Pattern Space Layout</a> (PSL) to sorted, 0-based, half-open <tt class="docutils literal"><span class="pre">[start-1,</span> <span class="pre">end)</span></tt> extended BED-formatted data.</p>
 <p>For convenience, we also offer <tt class="docutils literal"><span class="pre">psl2starch</span></tt>, which performs the extra step of creating a Starch-formatted archive.</p>
 <div class="section" id="dependencies">
 <h2>6.3.3.4.1. Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
@@ -88,10 +88,10 @@
 </div>
 <div class="section" id="example">
 <h2>6.3.3.4.4. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<p>To demonstrate these scripts, we use a sample GFF input called <tt class="docutils literal"><span class="pre">foo.gff</span></tt> (see the <a class="reference internal" href="gff2bed.html#gff2bed-downloads"><em>Downloads</em></a> section to grab this file).</p>
-<div class="highlight-python"><pre>psLayout version 3
+<p>To demonstrate these scripts, we use a sample PSL input called <tt class="docutils literal"><span class="pre">foo.psl</span></tt> (see the <a class="reference internal" href="#psl2bed-downloads"><em>Downloads</em></a> section to grab this file).</p>
+<div class="highlight-python"><div class="highlight"><pre>psLayout version 3
 
-match   mis-    rep.    N's     Q gap   Q gap   T gap   T gap   strand  Q               Q       Q       Q       T               T       T       T       block   blockSizes      qStarts  tStarts
+match   mis-    rep.    N&#39;s     Q gap   Q gap   T gap   T gap   strand  Q               Q       Q       Q       T               T       T       T       block   blockSizes      qStarts  tStarts
         match   match           count   bases   count   bases           name            size    start   end     name            size    start   end     count
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 35      0       0       0       0       0       0       0       +       foo     50      15      50      chrX    155270560       40535836        40535871        1       35,     15,     40535836,
@@ -102,10 +102,11 @@ match   mis-    rep.    N's     Q gap   Q gap   T gap   T gap   strand  Q       
 30      0       0       0       0       0       0       0       +       foo     50      14      44      chr6    171115067       93161871        93161901        1       30,     14,     93161871,
 31      0       0       0       0       0       0       0       +       foo     50      13      44      chr5    180915260       119897315       119897346       1       31,     13,     119897315,
 30      0       0       0       0       0       0       0       +       foo     50      14      44      chr5    180915260       123254725       123254755       1       30,     14,     123254725,
-...</pre>
+...
+</pre></div>
 </div>
 <p>We can convert it to sorted BED data in the following manner:</p>
-<div class="highlight-python"><pre>$ psl2bed --headered &lt; foo.psl
+<div class="highlight-python"><div class="highlight"><pre>$ psl2bed --headered &lt; foo.psl
 chr1    30571100        30571135        foo     50      -       35      0       0       0       0       0       0       0       15      50      249250621       1       35,     0,      30571100,
 chr1    69592160        69592195        foo     50      -       34      1       0       0       0       0       0       0       15      50      249250621       1       35,     0,      69592160,
 chr1    107200050       107200100       foo     50      +       50      0       0       0       0       0       0       0       0       50      249250621       1       50,     0,      107200050,
@@ -116,14 +117,15 @@ chr11   133952291       133952327       foo     50      +       34      2       
 chr13   99729482        99729523        foo     50      +       39      2       0       0       0       0       0       0       8       49      115169878       1       41,     8,      99729482,
 chr13   111391852       111391888       foo     50      +       34      2       0       0       0       0       0       0       14      50      115169878       1       36,     14,     111391852,
 chr16   8149657 8149694 foo     50      +       36      1       0       0       0       0       0       0       13      50      90354753        1       37,     13,     8149657,
-...</pre>
+...
+</pre></div>
 </div>
 <p>As you see here, the header data of a headered PSL file is discarded, unless you add the <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option. In this case, BED elements are created from these data, using the chromosome name <tt class="docutils literal"><span class="pre">_header</span></tt> to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field).</p>
 <p>Here is a demonstration of conversion of the same headered input, adding the <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option:</p>
-<div class="highlight-python"><pre>$ psl2bed --headered --keep-header &lt; foo.psl
+<div class="highlight-python"><div class="highlight"><pre>$ psl2bed --headered --keep-header &lt; foo.psl
 _header 0       1       psLayout version 3
 _header 1       2
-_header 2       3       match   mis-    rep.    N's     Q gap   Q gap   T gap   T gap   strand  Q               Q       Q       Q       T               T       T       T       block   blockSizes      qStarts  tStarts
+_header 2       3       match   mis-    rep.    N&#39;s     Q gap   Q gap   T gap   T gap   strand  Q               Q       Q       Q       T               T       T       T       block   blockSizes      qStarts  tStarts
 _header 3       4       match   match           count   bases   count   bases           name            size    start   end     name            size    start   end     count
 _header 4       5       ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 chr1    30571100        30571135        foo     50      -       35      0       0       0       0       0       0       0       15      50      249250621       1       35,     0,      30571100,
@@ -136,7 +138,8 @@ chr11   133952291       133952327       foo     50      +       34      2       
 chr13   99729482        99729523        foo     50      +       39      2       0       0       0       0       0       0       8       49      115169878       1       41,     8,      99729482,
 chr13   111391852       111391888       foo     50      +       34      2       0       0       0       0       0       0       14      50      115169878       1       36,     14,     111391852,
 chr16   8149657 8149694 foo     50      +       36      1       0       0       0       0       0       0       13      50      90354753        1       37,     13,     8149657,
-...</pre>
+...
+</pre></div>
 </div>
 <p>With this option, the <tt class="docutils literal"><span class="pre">psl2bed</span></tt> and <tt class="docutils literal"><span class="pre">psl2starch</span></tt> scripts are completely &#8220;non-lossy&#8221;. Use of <tt class="docutils literal"><span class="pre">awk</span></tt> or other scripting tools can munge these data back into a PSL-formatted file.</p>
 <div class="admonition note">
@@ -263,7 +266,8 @@ chr16   8149657 8149694 foo     50      +       36      1       0       0       
 </tbody>
 </table>
 <p>This is a lossless mapping. Because we have mapped all columns, we can translate converted BED data back to headerless PSL with a simple <tt class="docutils literal"><span class="pre">awk</span></tt> statement that permutes columns to PSL-based ordering:</p>
-<div class="highlight-python"><pre>$ awk 'BEGIN { OFS = "\t" } { print $7" "$8" "$9" "$10" "$11" "$12" "$13" "$14" "$6" "$4" "$5" "$15" "$16" "$1" "$17" "$2" "$3" "$18" "$19" "$20" "$21 }' converted.bed &gt; original.psl</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ awk &#39;BEGIN { OFS = &quot;\t&quot; } { print $7&quot; &quot;$8&quot; &quot;$9&quot; &quot;$10&quot; &quot;$11&quot; &quot;$12&quot; &quot;$13&quot; &quot;$14&quot; &quot;$6&quot; &quot;$4&quot; &quot;$5&quot; &quot;$15&quot; &quot;$16&quot; &quot;$1&quot; &quot;$17&quot; &quot;$2&quot; &quot;$3&quot; &quot;$18&quot; &quot;$19&quot; &quot;$20&quot; &quot;$21 }&#39; converted.bed &gt; original.psl
+</pre></div>
 </div>
 </div>
 <div class="section" id="downloads">
@@ -336,7 +340,7 @@ chr16   8149657 8149694 foo     50      +       36      1       0       0       
         <li class="right" >
           <a href="gtf2bed.html" title="6.3.3.3. gtf2bed"
              >previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../conversion.html" >6.3.3. Data conversion</a> &raquo;</li> 
@@ -344,7 +348,7 @@ chr16   8149657 8149694 foo     50      +       36      1       0       0       
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>
