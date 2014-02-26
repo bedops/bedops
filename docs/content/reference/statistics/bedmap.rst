@@ -225,11 +225,11 @@ Finally, the ``--exact`` flag enforces exact matches between reference and mappi
 
 .. note:: The ``--exact`` option is an alias for ``--fraction-both 1``.
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Using ``--faster`` with ``--bp-ovr``, ``--exact`` or ``--range``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Using ``--faster`` with ``--bp-ovr``, ``--fraction-both``, ``--exact`` or ``--range``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``--faster`` modifier works with the ``--bp-ovr`` and ``--exact`` (``--fraction-both 1``) overlap and ``--range`` specifiers to dramatically increase the performance of :ref:`bedmap`, when the following input restriction is met:
+The ``--faster`` modifier works with the ``--bp-ovr``, ``--fraction-both`` and ``--exact`` (``--fraction-both 1``) overlap and ``--range`` specifiers to dramatically increase the performance of :ref:`bedmap`, when the following input restriction is met:
 
 * No fully-nested elements in any input mapping file (duplicate elements and other overlapping elements are okay).
 
@@ -243,7 +243,7 @@ This option also works with the ``--ec`` error checking flag, which indicates if
 
    An example of a research application for our lab which benefits from this flag is where we perform statistical analysis of large numbers of small sequence tags that fall in hotspot regions.
 
-   If your data meet the :ref:`non-nesting criteria <bedextract_nested_elements>`, using ``--faster`` with ``--bp-ovr``, ``--exact`` or ``--range`` is highly recommended.
+   If your data meet the :ref:`non-nesting criteria <bedextract_nested_elements>`, using ``--faster`` with ``--bp-ovr``, ``--fraction-both``, ``--exact`` or ``--range`` is *highly recommended*.
 
 .. note:: Our lab works with BED data of various types: cut-counts, hotspots, peaks, footprints, etc. These data generally do not contain nested elements and so are amenable to use with :ref:`bedmap's <bedmap>` ``--faster`` flag for extracting overlapping elements.
 
@@ -625,7 +625,7 @@ Looking at the visualizations above, we would expect the mean density to be lowe
 Using ``--faster`` with ``--range``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``--faster`` modifier works with the ``--bp-ovr`` and ``--exact`` overlap and ``--range`` specifiers to dramatically increase the performance of :ref:`bedmap`, where the following input restriction is met:
+The ``--faster`` modifier works with the ``--bp-ovr``, ``--fraction-both`` and ``--exact`` (``--fraction-both 1``) overlap and ``--range`` specifiers to dramatically increase the performance of :ref:`bedmap`, when the following input restriction is met:
 
 * No fully-nested elements in any input mapping file (duplicate elements and other overlapping elements are okay).
 
