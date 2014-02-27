@@ -50,7 +50,7 @@
 printUsage () {
     cat <<EOF
 Usage:
-  wig2bed [ --help ] [ --keep-header ] [ --do-not-sort | --max-mem <value> ] [ --multisplit <basename> ] < foo.wig
+  wig2bed [ --help ] [ --keep-header ] [ --do-not-sort | --max-mem <value> (--sort-tmpdir <dir>) ] [ --multisplit <basename> ] < foo.wig
 
 Options:
   --help                   Print this help message and exit
@@ -58,8 +58,13 @@ Options:
   --max-mem <value>        Sets aside <value> memory for sorting BED output. For example,
                            <value> can be 8G, 8000M or 8000000000 to specify 8 GB of memory
                            (default: 2G).
+  --sort-tmpdir <dir>      Optionally sets <dir> as temporary directory for sort data, when
+                           used in conjunction with --max-mem <value>. For example, <dir> can
+                           be $PWD to store intermediate sort data in the current working
+                           directory, in place of the host operating system default
+                           temporary directory.
   --keep-header            Preserve header and metadata as BED elements (also works well with 
-                           --multisplit <basename> option)
+                           --multisplit <basename> option).
   --multisplit <basename>  A single input file may have multiple wig sections, a user may
                            pass in more than one file, or both may occur. With this option, 
                            every separate input goes to a separate output, starting with 
@@ -100,6 +105,9 @@ EOF
 # default sort-bed memory usage
 maxMem="2G"
 
+# default temporary sort data directory
+sortTmpdir="/tmp"
+
 # default multisplit basename
 multisplitBasename="foo"
 
@@ -108,6 +116,7 @@ convertWithoutSortingFlag=false
 multisplitFlag=false
 maxMemFlag=false
 keepHeaderFlag=false
+sortTmpdirFlag=false
 
 # cf. http://stackoverflow.com/a/7680682/19410
 optspec="hkm-:"
@@ -135,6 +144,17 @@ while getopts "$optspec" optchar; do
                         exit -1;
                     fi
                     maxMem="${val}";
+                    ;;
+                sort-tmpdir)
+                    sortTmpdirFlag=true;
+                    val="${!OPTIND}"; 
+                    OPTIND=$(( $OPTIND + 1 ));
+                    if [[ ! ${val} ]]; then
+                        echo "[wig2bed] - Error: Must specify value for --sort-tmpdir" >&2
+                        printUsage;
+                        exit -1;
+                    fi
+                    sortTmpdir="${val}";
                     ;;
                 multisplit)
                     multisplitFlag=true;
@@ -171,6 +191,20 @@ if [ -t 0 ]; then
     exit -1;
 fi
 
+if ${sortTmpdirFlag} && ! ${maxMemFlag}; then
+    echo "[wig2bed] - Error: Must specify --max-mem when using --sort-tmpdir -- see usage:" >&2
+    printUsage;
+    exit -1;
+fi
+
+if ${sortTmpdirFlag}; then
+    if [ ! -d ${sortTmpdir} ] || [ ! -w ${sortTmpdir} ]; then 
+        echo "[wig2bed] - Error: Temporary sort data directory specified with --sort-tmpdir is a file, is non-existent, or its permissions do not allow access -- see usage:" >&2
+        printUsage;
+        exit -1;
+    fi
+fi
+
 command -v wig2bed_bin > /dev/null 2>&1 || { echo "[wig2bed] - Error: Could not find wig2bed_bin binary" >&2; exit -1; }
 if ${convertWithoutSortingFlag}; then
     if ${multisplitFlag}; then
@@ -188,17 +222,21 @@ if ${convertWithoutSortingFlag}; then
     fi
 else
     command -v sort-bed > /dev/null 2>&1 || { echo "[wig2bed] - Error: Could not find sort-bed binary" >&2; exit -1; }
+    sortTmpdirStr=""
+    if ${sortTmpdirFlag}; then
+        sortTmpdirStr="--tmpdir ${sortTmpdir}"
+    fi
     if ${multisplitFlag}; then
         if ${keepHeaderFlag}; then
-            wig2bed_bin --keep-header --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} -
+            wig2bed_bin --keep-header --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} ${sortTmpdirStr} -
         else
-            wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} -
+            wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} ${sortTmpdirStr} -
         fi
     else
         if ${keepHeaderFlag}; then
-            wig2bed_bin --keep-header - | sort-bed --max-mem ${maxMem} -
+            wig2bed_bin --keep-header - | sort-bed --max-mem ${maxMem} ${sortTmpdirStr} -
         else
-            wig2bed_bin - | sort-bed --max-mem ${maxMem} -    
+            wig2bed_bin - | sort-bed --max-mem ${maxMem} ${sortTmpdirStr} -
         fi
     fi  
 fi
