@@ -8,7 +8,7 @@ About BEDOPS
 ============
 BEDOPS is an open-source command-line toolkit that performs highly efficient and scalable Boolean and other set operations, statistical calculations, archiving, conversion and other management of genomic data of arbitrary scale.
 
-The suite includes tools for set and statistical operations (:ref:`bedops`, :ref:`bedmap` and :ref:`closest-features`) and compression of large inputs into a novel lossless format (:ref:`starch`) that can provide greater space savings and faster data extractions than current alternatives. We offer native support for this compression format to these and other BEDOPS tools.
+The suite includes tools for set and statistical operations (:ref:`bedops`, :ref:`bedmap` and :ref:`closest-features`) and compression of large inputs into a novel lossless format (:ref:`starch`) that can provide greater space savings and faster data extractions than current alternatives. BEDOPS offers native support for this deep compression format, in addition to BED.
 
 BEDOPS also offers logarithmic time search to per-chromosome regions in sorted BED data (in :ref:`bedextract` and core BEDOPS tools). This feature makes whole-genome analyses "embarassingly parallel", in that per-chromosome computations can be distributed onto separate work nodes, with results collated at the end in `map-reduce <http://en.wikipedia.org/wiki/MapReduce>`_ fashion.
 
