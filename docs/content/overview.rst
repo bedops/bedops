@@ -56,7 +56,7 @@ BEDOPS tools take advantage of the information in a sorted BED file to use only 
 
 BEDOPS also introduces a novel and **lossless** compression format called :ref:`Starch <starch_specification>` that reduces whole-genome BED datasets to **~5%** of their original size (and BAM datasets to roughly 35% of their original size), while adding useful metadata and random access, allowing instantaneous retrieval of any compressed chromosome:
 
-.. image:: ../assets/overview/BEDOPS_Presentation_10_small.png
+.. image:: ../assets/overview/BEDOPS_Presentation_starch_efficiency.png
    :width: 99%
 
 --------------------------------------------------------------
