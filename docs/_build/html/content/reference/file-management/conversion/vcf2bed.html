@@ -95,9 +95,8 @@
 <p>By default, the <tt class="docutils literal"><span class="pre">vcf2bed</span></tt> script translates all variants to single-base positions in the resulting BED output. Depending on the category of variant you are interested in, however, you may want more specific categories handled differently.</p>
 <p>Based on the VCF v4 specification, we also provide three custom options for filtering input for each of the three types of variants listed: <tt class="docutils literal"><span class="pre">--snvs</span></tt>, <tt class="docutils literal"><span class="pre">--insertions</span></tt> and <tt class="docutils literal"><span class="pre">--deletions</span></tt>. In each case, we use the length of the reference and alternate alleles to determine which type of variant is being handled.</p>
 <p>In addition, using any of these three custom options automatically results in processing of mixed variant records for a microsatellite, where present. For instance, the following record contains a mixture of a deletion and insertion variant (<tt class="docutils literal"><span class="pre">GTC</span> <span class="pre">-&gt;</span> <span class="pre">G</span></tt> and <tt class="docutils literal"><span class="pre">GTC</span> <span class="pre">-&gt;</span> <span class="pre">GTCT</span></tt>, respectively):</p>
-<div class="highlight-python"><div class="highlight"><pre>#CHROM POS     ID        REF    ALT     QUAL FILTER INFO                              FORMAT      NA00001        NA00002        NA00003
-20     1234567 microsat1 GTC    G,GTCT  50   PASS   NS=3;DP=9;AA=G                    GT:GQ:DP    0/1:35:4       0/2:17:2       1/1:40:3
-</pre></div>
+<div class="highlight-python"><pre>#CHROM POS     ID        REF    ALT     QUAL FILTER INFO                              FORMAT      NA00001        NA00002        NA00003
+20     1234567 microsat1 GTC    G,GTCT  50   PASS   NS=3;DP=9;AA=G                    GT:GQ:DP    0/1:35:4       0/2:17:2       1/1:40:3</pre>
 </div>
 <p>When using <tt class="docutils literal"><span class="pre">--snvs</span></tt>, <tt class="docutils literal"><span class="pre">--insertions</span></tt> or <tt class="docutils literal"><span class="pre">--deletions</span></tt>, this record is split into two distinct BED records and filtered depending on which custom option was chosen. The <tt class="docutils literal"><span class="pre">--insertions</span></tt> option would only export the insertion in this mixed variant, while <tt class="docutils literal"><span class="pre">--deletions</span></tt> would show the deletion.</p>
 <p>In this way, you can control what kinds of variants are translated into BED outputs—most importantly, there is also no confusion about what the length of the BED element signifies.</p>
@@ -109,74 +108,71 @@
 <p class="first admonition-title">Note</p>
 <p class="last">This data is also publicly available from the <a class="reference external" href="http://www.broadinstitute.org/gsa/wiki/index.php/Understanding_the_Unified_Genotyper's_VCF_files">Broad Institute</a>.</p>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>##fileformat=VCFv4.0
-##FILTER=&lt;ID=LowQual,Description=&quot;QUAL &lt; 50.0&quot;&gt;
-##FORMAT=&lt;ID=AD,Number=.,Type=Integer,Description=&quot;Allelic depths for the ref and alt alleles in the order listed&quot;&gt;
-##FORMAT=&lt;ID=DP,Number=1,Type=Integer,Description=&quot;Read Depth (only filtered reads used for calling)&quot;&gt;
-##FORMAT=&lt;ID=GQ,Number=1,Type=Float,Description=&quot;Genotype Quality&quot;&gt;
-##FORMAT=&lt;ID=GT,Number=1,Type=String,Description=&quot;Genotype&quot;&gt;
-##FORMAT=&lt;ID=PL,Number=3,Type=Float,Description=&quot;Normalized, Phred-scaled likelihoods for AA,AB,BB genotypes where A=ref and B=alt; not applicable if site is not biallelic&quot;&gt;
-##INFO=&lt;ID=AC,Number=.,Type=Integer,Description=&quot;Allele count in genotypes, for each ALT allele, in the same order as listed&quot;&gt;
-##INFO=&lt;ID=AF,Number=.,Type=Float,Description=&quot;Allele Frequency, for each ALT allele, in the same order as listed&quot;&gt;
-##INFO=&lt;ID=AN,Number=1,Type=Integer,Description=&quot;Total number of alleles in called genotypes&quot;&gt;
-##INFO=&lt;ID=DB,Number=0,Type=Flag,Description=&quot;dbSNP Membership&quot;&gt;
-##INFO=&lt;ID=DP,Number=1,Type=Integer,Description=&quot;Total Depth&quot;&gt;
-##INFO=&lt;ID=DS,Number=0,Type=Flag,Description=&quot;Were any of the samples downsampled?&quot;&gt;
-##INFO=&lt;ID=Dels,Number=1,Type=Float,Description=&quot;Fraction of Reads Containing Spanning Deletions&quot;&gt;
-##INFO=&lt;ID=HRun,Number=1,Type=Integer,Description=&quot;Largest Contiguous Homopolymer Run of Variant Allele In Either Direction&quot;&gt;
-##INFO=&lt;ID=HaplotypeScore,Number=1,Type=Float,Description=&quot;Consistency of the site with two (and only two) segregating haplotypes&quot;&gt;
-##INFO=&lt;ID=MQ,Number=1,Type=Float,Description=&quot;RMS Mapping Quality&quot;&gt;
-##INFO=&lt;ID=MQ0,Number=1,Type=Integer,Description=&quot;Total Mapping Quality Zero Reads&quot;&gt;
-##INFO=&lt;ID=QD,Number=1,Type=Float,Description=&quot;Variant Confidence/Quality by Depth&quot;&gt;
-##INFO=&lt;ID=SB,Number=1,Type=Float,Description=&quot;Strand Bias&quot;&gt;
-##INFO=&lt;ID=VQSLOD,Number=1,Type=Float,Description=&quot;log10-scaled probability of variant being true under the trained gaussian mixture model&quot;&gt;
-##UnifiedGenotyperV2=&quot;analysis_type=UnifiedGenotyperV2 input_file=[TEXT CLIPPED FOR CLARITY]&quot;
+<div class="highlight-python"><pre>##fileformat=VCFv4.0
+##FILTER=&lt;ID=LowQual,Description="QUAL &lt; 50.0"&gt;
+##FORMAT=&lt;ID=AD,Number=.,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed"&gt;
+##FORMAT=&lt;ID=DP,Number=1,Type=Integer,Description="Read Depth (only filtered reads used for calling)"&gt;
+##FORMAT=&lt;ID=GQ,Number=1,Type=Float,Description="Genotype Quality"&gt;
+##FORMAT=&lt;ID=GT,Number=1,Type=String,Description="Genotype"&gt;
+##FORMAT=&lt;ID=PL,Number=3,Type=Float,Description="Normalized, Phred-scaled likelihoods for AA,AB,BB genotypes where A=ref and B=alt; not applicable if site is not biallelic"&gt;
+##INFO=&lt;ID=AC,Number=.,Type=Integer,Description="Allele count in genotypes, for each ALT allele, in the same order as listed"&gt;
+##INFO=&lt;ID=AF,Number=.,Type=Float,Description="Allele Frequency, for each ALT allele, in the same order as listed"&gt;
+##INFO=&lt;ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes"&gt;
+##INFO=&lt;ID=DB,Number=0,Type=Flag,Description="dbSNP Membership"&gt;
+##INFO=&lt;ID=DP,Number=1,Type=Integer,Description="Total Depth"&gt;
+##INFO=&lt;ID=DS,Number=0,Type=Flag,Description="Were any of the samples downsampled?"&gt;
+##INFO=&lt;ID=Dels,Number=1,Type=Float,Description="Fraction of Reads Containing Spanning Deletions"&gt;
+##INFO=&lt;ID=HRun,Number=1,Type=Integer,Description="Largest Contiguous Homopolymer Run of Variant Allele In Either Direction"&gt;
+##INFO=&lt;ID=HaplotypeScore,Number=1,Type=Float,Description="Consistency of the site with two (and only two) segregating haplotypes"&gt;
+##INFO=&lt;ID=MQ,Number=1,Type=Float,Description="RMS Mapping Quality"&gt;
+##INFO=&lt;ID=MQ0,Number=1,Type=Integer,Description="Total Mapping Quality Zero Reads"&gt;
+##INFO=&lt;ID=QD,Number=1,Type=Float,Description="Variant Confidence/Quality by Depth"&gt;
+##INFO=&lt;ID=SB,Number=1,Type=Float,Description="Strand Bias"&gt;
+##INFO=&lt;ID=VQSLOD,Number=1,Type=Float,Description="log10-scaled probability of variant being true under the trained gaussian mixture model"&gt;
+##UnifiedGenotyperV2="analysis_type=UnifiedGenotyperV2 input_file=[TEXT CLIPPED FOR CLARITY]"
 #CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO    FORMAT  NA12878
 chr1    873762  .       T       G       5231.78 PASS    AC=1;AF=0.50;AN=2;DP=315;Dels=0.00;HRun=2;HaplotypeScore=15.11;MQ=91.05;MQ0=15;QD=16.61;SB=-1533.02;VQSLOD=-1.5473      GT:AD:DP:GQ:PL  0/1:173,141:282:99:255,0,255
 chr1    877664  rs3828047       A       G       3931.66 PASS    AC=2;AF=1.00;AN=2;DB;DP=105;Dels=0.00;HRun=1;HaplotypeScore=1.59;MQ=92.52;MQ0=4;QD=37.44;SB=-1152.13;VQSLOD=0.1185      GT:AD:DP:GQ:PL  1/1:0,105:94:99:255,255,0
 chr1    899282  rs28548431      C       T       71.77   PASS    AC=1;AF=0.50;AN=2;DB;DP=4;Dels=0.00;HRun=0;HaplotypeScore=0.00;MQ=99.00;MQ0=0;QD=17.94;SB=-46.55;VQSLOD=-1.9148 GT:AD:DP:GQ:PL  0/1:1,3:4:25.92:103,0,26
-chr1    974165  rs9442391       T       C       29.84   LowQual AC=1;AF=0.50;AN=2;DB;DP=18;Dels=0.00;HRun=1;HaplotypeScore=0.16;MQ=95.26;MQ0=0;QD=1.66;SB=-0.98 GT:AD:DP:GQ:PL  0/1:14,4:14:60.91:61,0,255
-</pre></div>
+chr1    974165  rs9442391       T       C       29.84   LowQual AC=1;AF=0.50;AN=2;DB;DP=18;Dels=0.00;HRun=1;HaplotypeScore=0.16;MQ=95.26;MQ0=0;QD=1.66;SB=-0.98 GT:AD:DP:GQ:PL  0/1:14,4:14:60.91:61,0,255</pre>
 </div>
 <p>We can convert VCF to sorted BED data in the following manner:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ vcf2bed &lt; foo.vcf
+<div class="highlight-python"><pre>$ vcf2bed &lt; foo.vcf
 chr1    873761  873762  .       5231.78 T       G       PASS    AC=1;AF=0.50;AN=2;DP=315;Dels=0.00;HRun=2;HaplotypeScore=15.11;MQ=91.05;MQ0=15;QD=16.61;SB=-1533.02;VQSLOD=-1.5473      GT:AD:DP:GQ:PL  0/1:173,141:282:99:255,0,255
 chr1    877663  877664  rs3828047       3931.66 A       G       PASS    AC=2;AF=1.00;AN=2;DB;DP=105;Dels=0.00;HRun=1;HaplotypeScore=1.59;MQ=92.52;MQ0=4;QD=37.44;SB=-1152.13;VQSLOD=0.1185      GT:AD:DP:GQ:PL  1/1:0,105:94:99:255,255,0
 chr1    899281  899282  rs28548431      71.77   C       T       PASS    AC=1;AF=0.50;AN=2;DB;DP=4;Dels=0.00;HRun=0;HaplotypeScore=0.00;MQ=99.00;MQ0=0;QD=17.94;SB=-46.55;VQSLOD=-1.9148 GT:AD:DP:GQ:PL  0/1:1,3:4:25.92:103,0,26
-chr1    974164  974165  rs9442391       29.84   T       C       LowQual AC=1;AF=0.50;AN=2;DB;DP=18;Dels=0.00;HRun=1;HaplotypeScore=0.16;MQ=95.26;MQ0=0;QD=1.66;SB=-0.98 GT:AD:DP:GQ:PL  0/1:14,4:14:60.91:61,0,255
-</pre></div>
+chr1    974164  974165  rs9442391       29.84   T       C       LowQual AC=1;AF=0.50;AN=2;DB;DP=18;Dels=0.00;HRun=1;HaplotypeScore=0.16;MQ=95.26;MQ0=0;QD=1.66;SB=-0.98 GT:AD:DP:GQ:PL  0/1:14,4:14:60.91:61,0,255</pre>
 </div>
 <p>As you see here, the header data of the VCF file is discarded, unless you add the <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option. In this case, BED elements are created from these data, using the chromosome name <tt class="docutils literal"><span class="pre">_header</span></tt> to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field).</p>
 <p>Here we use <tt class="docutils literal"><span class="pre">--keep-header</span></tt> with our example dataset:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ vcf2bed --keep-header &lt; foo.vcf
+<div class="highlight-python"><pre>$ vcf2bed --keep-header &lt; foo.vcf
 _header 0       1       ##fileformat=VCFv4.0
-_header 1       2       ##FILTER=&lt;ID=LowQual,Description=&quot;QUAL &lt; 50.0&quot;&gt;
-_header 2       3       ##FORMAT=&lt;ID=AD,Number=.,Type=Integer,Description=&quot;Allelic depths for the ref and alt alleles in the order listed&quot;&gt;
-_header 3       4       ##FORMAT=&lt;ID=DP,Number=1,Type=Integer,Description=&quot;Read Depth (only filtered reads used for calling)&quot;&gt;
-_header 4       5       ##FORMAT=&lt;ID=GQ,Number=1,Type=Float,Description=&quot;Genotype Quality&quot;&gt;
-_header 5       6       ##FORMAT=&lt;ID=GT,Number=1,Type=String,Description=&quot;Genotype&quot;&gt;
-_header 6       7       ##FORMAT=&lt;ID=PL,Number=3,Type=Float,Description=&quot;Normalized, Phred-scaled likelihoods for AA,AB,BB genotypes where A=ref and B=alt; not applicable if site is not biallelic&quot;&gt;
-_header 7       8       ##INFO=&lt;ID=AC,Number=.,Type=Integer,Description=&quot;Allele count in genotypes, for each ALT allele, in the same order as listed&quot;&gt;
-_header 8       9       ##INFO=&lt;ID=AF,Number=.,Type=Float,Description=&quot;Allele Frequency, for each ALT allele, in the same order as listed&quot;&gt;
-_header 9       10      ##INFO=&lt;ID=AN,Number=1,Type=Integer,Description=&quot;Total number of alleles in called genotypes&quot;&gt;
-_header 10      11      ##INFO=&lt;ID=DB,Number=0,Type=Flag,Description=&quot;dbSNP Membership&quot;&gt;
-_header 11      12      ##INFO=&lt;ID=DP,Number=1,Type=Integer,Description=&quot;Total Depth&quot;&gt;
-_header 12      13      ##INFO=&lt;ID=DS,Number=0,Type=Flag,Description=&quot;Were any of the samples downsampled?&quot;&gt;
-_header 13      14      ##INFO=&lt;ID=Dels,Number=1,Type=Float,Description=&quot;Fraction of Reads Containing Spanning Deletions&quot;&gt;
-_header 14      15      ##INFO=&lt;ID=HRun,Number=1,Type=Integer,Description=&quot;Largest Contiguous Homopolymer Run of Variant Allele In Either Direction&quot;&gt;
-_header 15      16      ##INFO=&lt;ID=HaplotypeScore,Number=1,Type=Float,Description=&quot;Consistency of the site with two (and only two) segregating haplotypes&quot;&gt;
-_header 16      17      ##INFO=&lt;ID=MQ,Number=1,Type=Float,Description=&quot;RMS Mapping Quality&quot;&gt;
-_header 17      18      ##INFO=&lt;ID=MQ0,Number=1,Type=Integer,Description=&quot;Total Mapping Quality Zero Reads&quot;&gt;
-_header 18      19      ##INFO=&lt;ID=QD,Number=1,Type=Float,Description=&quot;Variant Confidence/Quality by Depth&quot;&gt;
-_header 19      20      ##INFO=&lt;ID=SB,Number=1,Type=Float,Description=&quot;Strand Bias&quot;&gt;
-_header 20      21      ##INFO=&lt;ID=VQSLOD,Number=1,Type=Float,Description=&quot;log10-scaled probability of variant being true under the trained gaussian mixture model&quot;&gt;
-_header 21      22      ##UnifiedGenotyperV2=&quot;analysis_type=UnifiedGenotyperV2 input_file=[TEXT CLIPPED FOR CLARITY]&quot;
+_header 1       2       ##FILTER=&lt;ID=LowQual,Description="QUAL &lt; 50.0"&gt;
+_header 2       3       ##FORMAT=&lt;ID=AD,Number=.,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed"&gt;
+_header 3       4       ##FORMAT=&lt;ID=DP,Number=1,Type=Integer,Description="Read Depth (only filtered reads used for calling)"&gt;
+_header 4       5       ##FORMAT=&lt;ID=GQ,Number=1,Type=Float,Description="Genotype Quality"&gt;
+_header 5       6       ##FORMAT=&lt;ID=GT,Number=1,Type=String,Description="Genotype"&gt;
+_header 6       7       ##FORMAT=&lt;ID=PL,Number=3,Type=Float,Description="Normalized, Phred-scaled likelihoods for AA,AB,BB genotypes where A=ref and B=alt; not applicable if site is not biallelic"&gt;
+_header 7       8       ##INFO=&lt;ID=AC,Number=.,Type=Integer,Description="Allele count in genotypes, for each ALT allele, in the same order as listed"&gt;
+_header 8       9       ##INFO=&lt;ID=AF,Number=.,Type=Float,Description="Allele Frequency, for each ALT allele, in the same order as listed"&gt;
+_header 9       10      ##INFO=&lt;ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes"&gt;
+_header 10      11      ##INFO=&lt;ID=DB,Number=0,Type=Flag,Description="dbSNP Membership"&gt;
+_header 11      12      ##INFO=&lt;ID=DP,Number=1,Type=Integer,Description="Total Depth"&gt;
+_header 12      13      ##INFO=&lt;ID=DS,Number=0,Type=Flag,Description="Were any of the samples downsampled?"&gt;
+_header 13      14      ##INFO=&lt;ID=Dels,Number=1,Type=Float,Description="Fraction of Reads Containing Spanning Deletions"&gt;
+_header 14      15      ##INFO=&lt;ID=HRun,Number=1,Type=Integer,Description="Largest Contiguous Homopolymer Run of Variant Allele In Either Direction"&gt;
+_header 15      16      ##INFO=&lt;ID=HaplotypeScore,Number=1,Type=Float,Description="Consistency of the site with two (and only two) segregating haplotypes"&gt;
+_header 16      17      ##INFO=&lt;ID=MQ,Number=1,Type=Float,Description="RMS Mapping Quality"&gt;
+_header 17      18      ##INFO=&lt;ID=MQ0,Number=1,Type=Integer,Description="Total Mapping Quality Zero Reads"&gt;
+_header 18      19      ##INFO=&lt;ID=QD,Number=1,Type=Float,Description="Variant Confidence/Quality by Depth"&gt;
+_header 19      20      ##INFO=&lt;ID=SB,Number=1,Type=Float,Description="Strand Bias"&gt;
+_header 20      21      ##INFO=&lt;ID=VQSLOD,Number=1,Type=Float,Description="log10-scaled probability of variant being true under the trained gaussian mixture model"&gt;
+_header 21      22      ##UnifiedGenotyperV2="analysis_type=UnifiedGenotyperV2 input_file=[TEXT CLIPPED FOR CLARITY]"
 _header 22      23      #CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO    FORMAT  NA12878
 chr1    873761  873762  .       5231.78 T       G       PASS    AC=1;AF=0.50;AN=2;DP=315;Dels=0.00;HRun=2;HaplotypeScore=15.11;MQ=91.05;MQ0=15;QD=16.61;SB=-1533.02;VQSLOD=-1.5473      GT:AD:DP:GQ:PL  0/1:173,141:282:99:255,0,255
 chr1    877663  877664  rs3828047       3931.66 A       G       PASS    AC=2;AF=1.00;AN=2;DB;DP=105;Dels=0.00;HRun=1;HaplotypeScore=1.59;MQ=92.52;MQ0=4;QD=37.44;SB=-1152.13;VQSLOD=0.1185      GT:AD:DP:GQ:PL  1/1:0,105:94:99:255,255,0
 chr1    899281  899282  rs28548431      71.77   C       T       PASS    AC=1;AF=0.50;AN=2;DB;DP=4;Dels=0.00;HRun=0;HaplotypeScore=0.00;MQ=99.00;MQ0=0;QD=17.94;SB=-46.55;VQSLOD=-1.9148 GT:AD:DP:GQ:PL  0/1:1,3:4:25.92:103,0,26
-chr1    974164  974165  rs9442391       29.84   T       C       LowQual AC=1;AF=0.50;AN=2;DB;DP=18;Dels=0.00;HRun=1;HaplotypeScore=0.16;MQ=95.26;MQ0=0;QD=1.66;SB=-0.98 GT:AD:DP:GQ:PL  0/1:14,4:14:60.91:61,0,255
-</pre></div>
+chr1    974164  974165  rs9442391       29.84   T       C       LowQual AC=1;AF=0.50;AN=2;DB;DP=18;Dels=0.00;HRun=1;HaplotypeScore=0.16;MQ=95.26;MQ0=0;QD=1.66;SB=-0.98 GT:AD:DP:GQ:PL  0/1:14,4:14:60.91:61,0,255</pre>
 </div>
 <p>With this option, the <tt class="docutils literal"><span class="pre">vcf2*</span></tt> scripts are completely &#8220;non-lossy&#8221;. Use of <tt class="docutils literal"><span class="pre">awk</span></tt> or other scripting tools can munge these data back into a VCF-formatted file.</p>
 <div class="admonition note">
@@ -367,7 +363,7 @@ chr1    974164  974165  rs9442391       29.84   T       C       LowQual AC=1;AF=
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

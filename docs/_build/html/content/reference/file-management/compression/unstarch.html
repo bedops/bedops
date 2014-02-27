@@ -80,9 +80,9 @@
 <div class="section" id="usage">
 <h2>6.3.2.2.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>Use the <tt class="docutils literal"><span class="pre">--help</span></tt> option to list all options:</p>
-<div class="highlight-python"><div class="highlight"><pre>unstarch
+<div class="highlight-python"><pre>unstarch
  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
- binary version: 2.4.0 (extracts archive version: 2.0.0 or older)
+ binary version: 2.4.1 (extracts archive version: 2.0.0 or older)
  authors: Alex Reynolds and Shane Neph
 
 USAGE: unstarch [ &lt;chromosome&gt; ]  [ --elements | --bases | --bases-uniq | --list | --list-json | --list-chromosomes | --archive-timestamp | --note | --archive-version ] &lt;starch-file&gt;
@@ -96,7 +96,7 @@ USAGE: unstarch [ &lt;chromosome&gt; ]  [ --elements | --bases | --bases-uniq | 
     --list                           List archive metadata (output is in text format). If chromosome is specified, the attributes of the given chromosome are shown.
     --list-json,                     List archive metadata (output is in JSON format)
     --list-json-no-trailing-newline
-    --list-chr,                      List all or specified chromosome in starch archive (similar to &quot;bedextract --list-chr&quot;). If &lt;chromosome&gt; is specified but is not in the output list, nothing is returned.
+    --list-chr,                      List all or specified chromosome in starch archive (similar to "bedextract --list-chr"). If &lt;chromosome&gt; is specified but is not in the output list, nothing is returned.
     --list-chromosomes
     --note                           Show descriptive note, if available.
     --sha1-signature                 Show SHA1 signature of JSON-formatted metadata (Base64-encoded).
@@ -104,15 +104,13 @@ USAGE: unstarch [ &lt;chromosome&gt; ]  [ --elements | --bases | --bases-uniq | 
     --archive-type                   Show archive compression type.
     --archive-version                Show archive version.
     --version                        Show binary version.
-    --help                           Show this usage message.
-</pre></div>
+    --help                           Show this usage message.</pre>
 </div>
 <div class="section" id="extraction">
 <h3>6.3.2.2.3.1. Extraction<a class="headerlink" href="#extraction" title="Permalink to this headline">¶</a></h3>
 <p>Specify a specific chromosome to extract data only from that chromosome. This is optional; if a chromosome is not specified, data are extracted from all chromosomes in the archive.</p>
-<div class="highlight-python"><div class="highlight"><pre>$ unstarch chr12 example.starch
-...
-</pre></div>
+<div class="highlight-python"><pre>$ unstarch chr12 example.starch
+...</pre>
 </div>
 </div>
 <div class="section" id="archive-attributes">
@@ -121,32 +119,31 @@ USAGE: unstarch [ &lt;chromosome&gt; ]  [ --elements | --bases | --bases-uniq | 
 <div class="section" id="metadata">
 <h4>6.3.2.2.3.2.1. Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h4>
 <p>Use the <tt class="docutils literal"><span class="pre">--list-json</span></tt> or <tt class="docutils literal"><span class="pre">--list</span></tt> options to export the archive metadata as a JSON- or table-formatted text string, sent to standard output:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ unstarch --list-json example.starch
+<div class="highlight-python"><pre>$ unstarch --list-json example.starch
 {
-  &quot;archive&quot;: {
-    &quot;type&quot;: &quot;starch&quot;,
-    &quot;customUCSCHeaders&quot;: false,
-    &quot;creationTimestamp&quot;: &quot;2013-01-17T13:44:54-0800&quot;,
-    &quot;version&quot;: {
-      &quot;major&quot;: 2,
-      &quot;minor&quot;: 0,
-      &quot;revision&quot;: 0
+  "archive": {
+    "type": "starch",
+    "customUCSCHeaders": false,
+    "creationTimestamp": "2013-01-17T13:44:54-0800",
+    "version": {
+      "major": 2,
+      "minor": 0,
+      "revision": 0
     },
-    &quot;compressionFormat&quot;: 0
+    "compressionFormat": 0
   },
-  &quot;streams&quot;: [
+  "streams": [
     {
-      &quot;chromosome&quot;: &quot;chr1&quot;,
-      &quot;filename&quot;: &quot;chr1.pid31740.fiddlehead.regulomecorp.com&quot;,
-      &quot;size&quot;: &quot;88330&quot;,
-      &quot;uncompressedLineCount&quot;: 10753,
-      &quot;nonUniqueBaseCount&quot;: 549829,
-      &quot;uniqueBaseCount&quot;: 548452
+      "chromosome": "chr1",
+      "filename": "chr1.pid31740.fiddlehead.regulomecorp.com",
+      "size": "88330",
+      "uncompressedLineCount": 10753,
+      "nonUniqueBaseCount": 549829,
+      "uniqueBaseCount": 548452
     },
     ...
   ]
-}
-</pre></div>
+}</pre>
 </div>
 <p>The <tt class="docutils literal"><span class="pre">--list-chr</span></tt> (or <tt class="docutils literal"><span class="pre">--list-chromosomes</span></tt>) option exports a list of chromosomes stored in the Starch archive.</p>
 </div>
@@ -165,10 +162,9 @@ USAGE: unstarch [ &lt;chromosome&gt; ]  [ --elements | --bases | --bases-uniq | 
 <div class="section" id="compression-type">
 <h4>6.3.2.2.3.2.4. Compression type<a class="headerlink" href="#compression-type" title="Permalink to this headline">¶</a></h4>
 <p>The <tt class="docutils literal"><span class="pre">--archive-type</span></tt> option will report the compression type of the archive, either <tt class="docutils literal"><span class="pre">bzip2</span></tt> or <tt class="docutils literal"><span class="pre">gzip</span></tt>:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ unstarch --archive-type example.starch
+<div class="highlight-python"><pre>$ unstarch --archive-type example.starch
 unstarch
- archive compression type: bzip2
-</pre></div>
+ archive compression type: bzip2</pre>
 </div>
 </div>
 <div class="section" id="version">
@@ -195,12 +191,11 @@ unstarch
 <div class="section" id="example">
 <h2>6.3.2.2.4. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>To extract a generic Starch file input to a BED file:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ unstarch example.starch &gt; example.bed
-</pre></div>
+<div class="highlight-python"><pre>$ unstarch example.starch &gt; example.bed</pre>
 </div>
 <p>This creates the <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sorted</em></a> file <tt class="docutils literal"><span class="pre">example.bed</span></tt>, containing BED data from extracting <tt class="docutils literal"><span class="pre">example.starch</span></tt>. This can be a <tt class="docutils literal"><span class="pre">bzip2</span></tt> or <tt class="docutils literal"><span class="pre">gzip</span></tt> -formatted Starch archive—<a class="reference internal" href="#unstarch"><em>unstarch</em></a> knows how to extract either type transparently.</p>
 <p>To list the chromosomes in a Starch v2 archive, use the <tt class="docutils literal"><span class="pre">--list-chr</span></tt> (or <tt class="docutils literal"><span class="pre">--list-chromosomes</span></tt>) option:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ unstarch --list-chr example.starch
+<div class="highlight-python"><pre>$ unstarch --list-chr example.starch
 chr1
 chr10
 chr11
@@ -211,23 +206,19 @@ chr14
 chr15
 chr16
 chr17
-...
-</pre></div>
+...</pre>
 </div>
 <p>To show the number of BED elements in chromosome <tt class="docutils literal"><span class="pre">chr13</span></tt>, use the <tt class="docutils literal"><span class="pre">--elements</span></tt> operator:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ unstarch chr13 --elements example.starch
-10753
-</pre></div>
+<div class="highlight-python"><pre>$ unstarch chr13 --elements example.starch
+10753</pre>
 </div>
 <p>To find the number of unique bases in chromosome <tt class="docutils literal"><span class="pre">chr8</span></tt>:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ unstarch chr8 --bases-uniq example.starch
-545822
-</pre></div>
+<div class="highlight-python"><pre>$ unstarch chr8 --bases-uniq example.starch
+545822</pre>
 </div>
 <p>To show when the archive was created:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ unstarch --archive-timestamp example.starch
-2013-01-17T13:44:54-0800
-</pre></div>
+<div class="highlight-python"><pre>$ unstarch --archive-timestamp example.starch
+2013-01-17T13:44:54-0800</pre>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -324,7 +315,7 @@ chr17
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

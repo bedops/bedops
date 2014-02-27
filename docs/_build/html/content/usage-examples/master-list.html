@@ -63,7 +63,7 @@
 </div>
 <div class="section" id="script">
 <h2>4.2.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python"><div class="highlight"><pre>#!/bin/bash
+<div class="highlight-python"><pre>#!/bin/bash
 # author : Bob Thurman
 
 beds=(fAdrenal-DS12528.dhs.bed
@@ -78,10 +78,10 @@ tmpd=/tmp/tmp$$
 mkdir -p $tmpd
 
 ## First, union all the peaks together into a single file.
-bedlist=&quot;&quot;
+bedlist=""
 for bed in ${beds[*]}
 do
-    bedlist=&quot;$bedlist $bed&quot;
+    bedlist="$bedlist $bed"
 done
 
 bedops -u $bedlist &gt; $tmpd/tmp.bed
@@ -94,14 +94,14 @@ bedops -u $bedlist &gt; $tmpd/tmp.bed
 ## Anything that overlaps the selected element is thrown out, and the
 ## process then repeats.
 iters=1
-solns=&quot;&quot;
+solns=""
 stop=0
 while [ $stop == 0 ]
 do
-    echo &quot;merge steps...&quot;
+    echo "merge steps..."
 
     ## Condense the union into merged intervals. This klugey bit
-    ## before and after the merging is because we don&#39;t want to merge
+    ## before and after the merging is because we don't want to merge
     ## regions that are simply adjacent but not overlapping
     bedops -m --range 0:-1 $tmpd/tmp.bed \
         | bedops -u --range 0:1 - \
@@ -109,16 +109,16 @@ do
 
     ## Grab the element with the highest score among all elements forming each interval.
     ## If multiple elements tie for the highest score, just grab one of them.
-    ## Result is the current master list.  Probably don&#39;t need to sort, but do it anyway
-    ## to be safe since we&#39;re not using --echo with bedmap call.
+    ## Result is the current master list.  Probably don't need to sort, but do it anyway
+    ## to be safe since we're not using --echo with bedmap call.
     bedmap --max-element $tmpd/tmpm.bed $tmpd/tmp.bed \
         | sort-bed - \
         &gt; $tmpd/$iters.bed
-    solns=&quot;$solns $tmpd/$iters.bed&quot;
-    echo &quot;Adding `awk &#39;END { print NR }&#39; $tmpd/$iters.bed` elements&quot;
+    solns="$solns $tmpd/$iters.bed"
+    echo "Adding `awk 'END { print NR }' $tmpd/$iters.bed` elements"
 
-    ## Are there any elements that don&#39;t overlap the current master
-    ## list?  If so, add those in, and repeat.  If not, we&#39;re done.
+    ## Are there any elements that don't overlap the current master
+    ## list?  If so, add those in, and repeat.  If not, we're done.
     bedops -n -1 $tmpd/tmp.bed $tmpd/$iters.bed \
        &gt; $tmpd/tmp2.bed
 
@@ -139,8 +139,7 @@ bedops -u $solns \
 ## Clean up
 rm -r $tmpd
 
-exit 0
-</pre></div>
+exit 0</pre>
 </div>
 </div>
 <div class="section" id="discussion">
@@ -218,7 +217,7 @@ exit 0
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

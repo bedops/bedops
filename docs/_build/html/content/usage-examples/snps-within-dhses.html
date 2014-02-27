@@ -64,16 +64,14 @@
 <div class="section" id="script">
 <h2>4.4.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
 <p>SNPs are in a BED-formatted file called <tt class="docutils literal"><span class="pre">SNPs.bed</span></tt> sorted lexicographically with <a class="reference internal" href="../reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a>. The DNase-hypersensitive sites are stored in a sorted BED-formatted file called <tt class="docutils literal"><span class="pre">DHSs.bed</span></tt>. These two files are available in the <a class="reference internal" href="#snps-within-dhses-downloads"><em>Downloads</em></a> section.</p>
-<div class="highlight-python"><div class="highlight"><pre>bedmap --skip-unmapped --echo --echo-map SNPs.bed DHSs.bed \
-  &gt; subsetOfSNPsWithinAssociatedDHS.bed
-</pre></div>
+<div class="highlight-python"><pre>bedmap --skip-unmapped --echo --echo-map SNPs.bed DHSs.bed \
+  &gt; subsetOfSNPsWithinAssociatedDHS.bed</pre>
 </div>
 </div>
 <div class="section" id="discussion">
 <h2>4.4.3. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
 <p>The output of this <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> statement might look something like this:</p>
-<div class="highlight-python"><div class="highlight"><pre>chr1    10799576    10799577    rs12046278  Systolic_blood_pressure Cardiovascular|chr1 10799460    10799610    MCV-1   9.18063
-</pre></div>
+<div class="highlight-python"><pre>chr1    10799576    10799577    rs12046278  Systolic_blood_pressure Cardiovascular|chr1 10799460    10799610    MCV-1   9.18063</pre>
 </div>
 <p>The output is delimited by pipe symbols (<tt class="docutils literal"><span class="pre">|</span></tt>), showing the reference element (SNP) and the mapped element (DHS).</p>
 <p>If multiple elements are mapped onto a single reference element, the mapped elements are further separated by semicolons, by default.</p>
@@ -154,7 +152,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

@@ -82,13 +82,12 @@
 <div class="section" id="example">
 <h2>6.3.3.7.3. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>To demonstrate these scripts, we use a sample multi-section WIG input called <tt class="docutils literal"><span class="pre">foo.wig</span></tt> (see the <a class="reference internal" href="#wig2bed-downloads"><em>Downloads</em></a> section to grab this file). We can convert WIG to sorted BED data in the following manner:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ wig2bed &lt; foo.wig
+<div class="highlight-python"><pre>$ wig2bed &lt; foo.wig
 chr1    147971108       147971158       id-1    -0.590000
 chr1    147971146       147971196       id-2    0.120000
 chr1    147971184       147971234       id-3    0.110000
 chr1    147971222       147971272       id-4    -0.760000
-...
-</pre></div>
+...</pre>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -97,11 +96,10 @@ chr1    147971222       147971272       id-4    -0.760000
 <p>If we want to preserve the header data, we can add the <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option. In this case, BED elements are created from these data, using the chromosome name <tt class="docutils literal"><span class="pre">_header</span></tt> to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field).</p>
 <p>In the case of the sample input <tt class="docutils literal"><span class="pre">foo.wig</span></tt>, we will also need to add the <tt class="docutils literal"><span class="pre">--multisplit</span></tt> option, as header BED elements from each section will otherwise be collated in a non-sensical way. Adding <tt class="docutils literal"><span class="pre">--multisplit</span></tt> ensures that header data are converted and stored in separate BED files.</p>
 <p>To demonstrate, we next repeat the above conversion, adding the <tt class="docutils literal"><span class="pre">--keep-header</span></tt> and <tt class="docutils literal"><span class="pre">--multisplit</span></tt> options:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ wig2bed --multisplit bar --keep-header &lt; foo.wig
-</pre></div>
+<div class="highlight-python"><pre>$ wig2bed --multisplit bar --keep-header &lt; foo.wig</pre>
 </div>
 <p>Conversion of this two-section WIG input results in two files called <tt class="docutils literal"><span class="pre">bar.1</span></tt> and <tt class="docutils literal"><span class="pre">bar.2</span></tt>, each with their own unique set of <tt class="docutils literal"><span class="pre">_header</span></tt> elements:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ more bar.1
+<div class="highlight-python"><pre>$ more bar.1
 _header 0       1       track type=wiggle_0 name=foo description=foo
 chr1    147971108       147971158       id-1    -0.590000
 chr1    147971146       147971196       id-2    0.120000
@@ -115,8 +113,7 @@ chrX    99      104     id-11   1.900000
 chrX    109     114     id-12   2.300000
 chrX    119     124     id-13   -0.100000
 chrX    129     134     id-14   1.100000
-chrX    139     144     id-15   4.100000
-</pre></div>
+chrX    139     144     id-15   4.100000</pre>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -207,7 +204,7 @@ chrX    139     144     id-15   4.100000
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

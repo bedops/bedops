@@ -65,33 +65,33 @@
 </div>
 <div class="section" id="script">
 <h2>4.1.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python"><div class="highlight"><pre>#!/bin/tcsh -efx
+<div class="highlight-python"><pre>#!/bin/tcsh -efx
 
 sort-bed GWAS_SNPs.bed &gt; GWAS_SNPs.sorted.bed
-bedmap --ec --delim &quot;\t&quot; --bp-ovr 1 --echo --count GWAS_SNPs.sorted.bed LNCaP_DHS.bed &gt; SNP_DHS_matrix.bed
+bedmap --ec --delim "\t" --bp-ovr 1 --echo --count GWAS_SNPs.sorted.bed LNCaP_DHS.bed &gt; SNP_DHS_matrix.bed
 
 # add PrEC DHS overlap counts to matrix
-bedmap --ec --delim &quot;\t&quot; --bp-ovr 1 --count GWAS_SNPs.sorted.bed PrEC_DHS.bed &gt; counts.txt
+bedmap --ec --delim "\t" --bp-ovr 1 --count GWAS_SNPs.sorted.bed PrEC_DHS.bed &gt; counts.txt
 paste SNP_DHS_matrix.bed counts.txt &gt; new_SNP_DHS_matrix.bed
 mv new_SNP_DHS_matrix.bed SNP_DHS_matrix.bed
 
 # add CACO2 DHS overlap counts to matrix
-bedmap --ec --delim &quot;\t&quot; --bp-ovr 1 --count GWAS_SNPs.sorted.bed CACO2_DHS.bed &gt; counts.txt
+bedmap --ec --delim "\t" --bp-ovr 1 --count GWAS_SNPs.sorted.bed CACO2_DHS.bed &gt; counts.txt
 paste SNP_DHS_matrix.bed counts.txt &gt; new_SNP_DHS_matrix.bed
 mv new_SNP_DHS_matrix.bed SNP_DHS_matrix.bed
 
 # add HEPG2 DHS overlap counts to matrix
-bedmap --ec --delim &quot;\t&quot; --bp-ovr 1 --count GWAS_SNPs.sorted.bed HEPG2_DHS.bed &gt; counts.txt
+bedmap --ec --delim "\t" --bp-ovr 1 --count GWAS_SNPs.sorted.bed HEPG2_DHS.bed &gt; counts.txt
 paste SNP_DHS_matrix.bed counts.txt &gt; new_SNP_DHS_matrix.bed
 mv new_SNP_DHS_matrix.bed SNP_DHS_matrix.bed
 
 # add K562 DHS overlap counts to matrix
-bedmap --ec --delim &quot;\t&quot; --bp-ovr 1 --count GWAS_SNPs.sorted.bed K562_DHS.bed &gt; counts.txt
+bedmap --ec --delim "\t" --bp-ovr 1 --count GWAS_SNPs.sorted.bed K562_DHS.bed &gt; counts.txt
 paste SNP_DHS_matrix.bed counts.txt &gt; new_SNP_DHS_matrix.bed
 mv new_SNP_DHS_matrix.bed SNP_DHS_matrix.bed
 
 # add MCF7 DHS overlap counts to matrix
-bedmap --ec --delim &quot;\t&quot; --bp-ovr 1 --count GWAS_SNPs.sorted.bed MCF7_DHS.bed &gt; counts.txt
+bedmap --ec --delim "\t" --bp-ovr 1 --count GWAS_SNPs.sorted.bed MCF7_DHS.bed &gt; counts.txt
 paste SNP_DHS_matrix.bed counts.txt &gt; new_SNP_DHS_matrix.bed
 mv new_SNP_DHS_matrix.bed SNP_DHS_matrix.bed
 
@@ -101,16 +101,15 @@ sort -k5d SNP_DHS_matrix.bed &gt; new_SNP_DHS_matrix.bed
 mv new_SNP_DHS_matrix.bed SNP_DHS_matrix.bed
 
 # condense data fields into matrix2png form
-awk &#39;{print $1&quot;:&quot;$2&quot;-&quot;$3&quot;_&quot;$4&quot;_&quot;$5&quot;_&quot;$6&quot;\t&quot;$7&quot;\t&quot;$8&quot;\t&quot;$9&quot;\t&quot;$10&quot;\t&quot;$11&quot;\t&quot;$12}&#39; SNP_DHS_matrix.bed &gt; new_SNP_DHS_matrix.txt
+awk '{print $1":"$2"-"$3"_"$4"_"$5"_"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12}' SNP_DHS_matrix.bed &gt; new_SNP_DHS_matrix.txt
 mv new_SNP_DHS_matrix.txt SNP_DHS_matrix.txt
 
 # add header
-echo -e &quot;0\tLNCaP\tPrEC\tCACO\tHEPG2\tK562\tMCF7&quot; | cat - SNP_DHS_matrix.txt &gt; new_SNP_DHS_matrix.txt
+echo -e "0\tLNCaP\tPrEC\tCACO\tHEPG2\tK562\tMCF7" | cat - SNP_DHS_matrix.txt &gt; new_SNP_DHS_matrix.txt
 mv new_SNP_DHS_matrix.txt SNP_DHS_matrix.txt
 
 # make heatmap
-matrix2png -r -c -g -size 16:16 -mincolor yellow -midcolor black -maxcolor red -data SNP_DHS_matrix.txt &gt; SNP_DHS_matrix.png
-</pre></div>
+matrix2png -r -c -g -size 16:16 -mincolor yellow -midcolor black -maxcolor red -data SNP_DHS_matrix.txt &gt; SNP_DHS_matrix.png</pre>
 </div>
 </div>
 <div class="section" id="discussion">
@@ -206,7 +205,7 @@ matrix2png -r -c -g -size 16:16 -mincolor yellow -midcolor black -maxcolor red -
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

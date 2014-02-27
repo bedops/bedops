@@ -89,43 +89,38 @@
 <div class="section" id="example">
 <h2>6.3.3.2.4. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>To demonstrate these scripts, we use a sample GFF input called <tt class="docutils literal"><span class="pre">foo.gff</span></tt> (see the <a class="reference internal" href="#gff2bed-downloads"><em>Downloads</em></a> section to grab this file).</p>
-<div class="highlight-python"><div class="highlight"><pre>##gff-version 3
+<div class="highlight-python"><pre>##gff-version 3
 chr1    Canada  exon    1300    1300    .       +       .       ID=exon00001;score=1
-chr1    USA     exon    1050    1500    .       -       0       ID=exon00002;Ontology_term=&quot;GO:0046703&quot;;Ontology_term=&quot;GO:0046704&quot;
+chr1    USA     exon    1050    1500    .       -       0       ID=exon00002;Ontology_term="GO:0046703";Ontology_term="GO:0046704"
 chr1    Canada  exon    3000    3902    .       ?       2       ID=exon00003;score=4;Name=foo
 chr1    .       exon    5000    5500    .       .       .       ID=exon00004;Gap=M8 D3 M6 I1 M6
-chr1    .       exon    7000    9000    10      +       1       ID=exon00005;Dbxref=&quot;NCBI_gi:10727410&quot;
-</pre></div>
+chr1    .       exon    7000    9000    10      +       1       ID=exon00005;Dbxref="NCBI_gi:10727410"</pre>
 </div>
 <p>We can convert it to sorted BED data in the following manner:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ gff2bed &lt; foo.gff3
-chr1    1049    1500    exon00002       .       -       USA     exon    0       ID=exon00002;Ontology_term=&quot;GO:0046703&quot;;Ontology_term=&quot;GO:0046704&quot;
+<div class="highlight-python"><pre>$ gff2bed &lt; foo.gff3
+chr1    1049    1500    exon00002       .       -       USA     exon    0       ID=exon00002;Ontology_term="GO:0046703";Ontology_term="GO:0046704"
 chr1    1299    1300    exon00001       .       +       Canada  exon    .       ID=exon00001;score=1;zeroLengthInsertion=True
 chr1    2999    3902    exon00003       .       ?       Canada  exon    2       ID=exon00003;score=4;Name=foo
 chr1    4999    5500    exon00004       .       .       .       exon    .       ID=exon00004;Gap=M8 D3 M6 I1 M6
-chr1    6999    9000    exon00005       10      +       .       exon    1       ID=exon00005;Dbxref=&quot;NCBI_gi:10727410&quot;
-</pre></div>
+chr1    6999    9000    exon00005       10      +       .       exon    1       ID=exon00005;Dbxref="NCBI_gi:10727410"</pre>
 </div>
 <p>As you see here, we strip the header element (<tt class="docutils literal"><span class="pre">##gff-version</span> <span class="pre">3</span></tt>), but adding the <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option will preserve this header as a BED element that uses <tt class="docutils literal"><span class="pre">_header</span></tt> as a chromosome name:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ gff2bed --keep-header &lt; foo.gff3
+<div class="highlight-python"><pre>$ gff2bed --keep-header &lt; foo.gff3
 _header 0       1       ##gff-version 3
-chr1    1049    1500    exon00002       .       -       USA     exon    0       ID=exon00002;Ontology_term=&quot;GO:0046703&quot;;Ontology_term=&quot;GO:0046704&quot;
+chr1    1049    1500    exon00002       .       -       USA     exon    0       ID=exon00002;Ontology_term="GO:0046703";Ontology_term="GO:0046704"
 chr1    1299    1300    exon00001       .       +       Canada  exon    .       ID=exon00001;score=1;zero_length_insertion=True
 chr1    2999    3902    exon00003       .       ?       Canada  exon    2       ID=exon00003;score=4;Name=foo
 chr1    4999    5500    exon00004       .       .       .       exon    .       ID=exon00004;Gap=M8 D3 M6 I1 M6
-chr1    6999    9000    exon00005       10      +       .       exon    1       ID=exon00005;Dbxref=&quot;NCBI_gi:10727410&quot;
-</pre></div>
+chr1    6999    9000    exon00005       10      +       .       exon    1       ID=exon00005;Dbxref="NCBI_gi:10727410"</pre>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>GFF3 data that have trailing semi-colons on attributes, <em>e.g.</em>:</p>
-<div class="highlight-python"><div class="highlight"><pre>Parent=ATMG00060.1,ATMG00060.1-Protein;
-</pre></div>
+<div class="highlight-python"><pre>Parent=ATMG00060.1,ATMG00060.1-Protein;</pre>
 </div>
 <p>will cause <tt class="docutils literal"><span class="pre">IndexError:</span> <span class="pre">list</span> <span class="pre">index</span> <span class="pre">out</span> <span class="pre">of</span> <span class="pre">range</span></tt> errors when used with this conversion script.</p>
 <p>The easiest fix is to use <tt class="docutils literal"><span class="pre">awk</span></tt> to strip the trailing delimiter and pipe the fixed results to the conversion script, <em>i.e.</em>:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ awk &#39;{gsub(/;$/,&quot;&quot;);print}&#39; badFoo.gff | gff2bed - &gt; goodFoo.bed
-</pre></div>
+<div class="highlight-python"><pre>$ awk '{gsub(/;$/,"");print}' badFoo.gff | gff2bed - &gt; goodFoo.bed</pre>
 </div>
 <p class="last">This issue is also discussed on the <a class="reference external" href="http://bedops.uwencode.org/forum/index.php?topic=34.0">BEDOPS User Forum</a>.</p>
 </div>
@@ -292,7 +287,7 @@ chr1    6999    9000    exon00005       10      +       .       exon    1       
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>
