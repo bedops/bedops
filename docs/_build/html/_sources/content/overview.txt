@@ -33,7 +33,7 @@ Our tools fit easily into analysis pipelines, allow practically unlimited inputs
 
 Our :ref:`bedops` and :ref:`bedmap` core tools offer numerous operations of all kinds, including those in the slide below:
 
-.. image:: ../assets/overview/BEDOPS_Presentation_5_small.png
+.. image:: ../assets/overview/BEDOPS_Presentation_bedops_ops.png
    :width: 99%
 
 .. image:: ../assets/overview/BEDOPS_Presentation_6_small.png
