@@ -31,12 +31,14 @@ Our tools fit easily into analysis pipelines, allow practically unlimited inputs
       | ... \
       > Answer.bed
 
-Our :ref:`bedops` and :ref:`bedmap` core tools offer numerous operations of all kinds, including those in the slide below:
+Our :ref:`bedops` core tool offers numerous set operations of all kinds, including those in the slide below:
 
 .. image:: ../assets/overview/BEDOPS_Presentation_bedops_ops.png
    :width: 99%
 
-.. image:: ../assets/overview/BEDOPS_Presentation_6_small.png
+The :ref:`bedmap` core tool applies a wide variety of statistical and mapping operations to genomic inputs:
+
+.. image:: ../assets/overview/BEDOPS_Presentation_bedmap_ops.png
    :width: 99%
 
 -----------------------------------
