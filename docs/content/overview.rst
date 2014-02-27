@@ -41,6 +41,8 @@ The :ref:`bedmap` core tool applies a wide variety of statistical and mapping op
 .. image:: ../assets/overview/BEDOPS_Presentation_bedmap_ops.png
    :width: 99%
 
+These and other tools send their results to the output stream, ready for consumption by processes downstream along your pipeline.
+
 -----------------------------------
 BEDOPS tools are fast and efficient
 -----------------------------------
@@ -49,7 +51,7 @@ BEDOPS tools take advantage of the information in a sorted BED file to use only 
 
 `Independent tests <http://www.ncbi.nlm.nih.gov/pubmed/23277498>`_ comparing various kits show that BEDOPS offers the fastest operations with the lowest memory overhead:
 
-.. image:: ../assets/overview/BEDOPS_Presentation_9_small.png
+.. image:: ../assets/overview/BEDOPS_Presentation_grok_tests.png
    :width: 99%
 
 BEDOPS also introduces a novel and **lossless** compression format called :ref:`Starch <starch_specification>` that reduces whole-genome BED datasets to **~5%** of their original size (and BAM datasets to roughly 35% of their original size), while adding useful metadata and random access, allowing instantaneous retrieval of any compressed chromosome:
