@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.2. Collapsing multiple BED files into a master list by signal &mdash; BEDOPS 2.4.0 documentation</title>
+    <title>4.2. Collapsing multiple BED files into a master list by signal &mdash; BEDOPS 2.4.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '2.4.0',
+        VERSION:     '2.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.0 documentation" href="../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../index.html" />
     <link rel="up" title="4. Usage examples" href="../usage-examples.html" />
     <link rel="next" title="4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes" href="distance-frequencies.html" />
     <link rel="prev" title="4.1. Visualizing the relationship of SNPs and generic genomic features" href="snp-visualization.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="snp-visualization.html" title="4.1. Visualizing the relationship of SNPs and generic genomic features"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../usage-examples.html" accesskey="U">4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>  
@@ -63,7 +63,7 @@
 </div>
 <div class="section" id="script">
 <h2>4.2.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python"><pre>#!/bin/bash
+<div class="highlight-python"><div class="highlight"><pre>#!/bin/bash
 # author : Bob Thurman
 
 beds=(fAdrenal-DS12528.dhs.bed
@@ -78,10 +78,10 @@ tmpd=/tmp/tmp$$
 mkdir -p $tmpd
 
 ## First, union all the peaks together into a single file.
-bedlist=""
+bedlist=&quot;&quot;
 for bed in ${beds[*]}
 do
-    bedlist="$bedlist $bed"
+    bedlist=&quot;$bedlist $bed&quot;
 done
 
 bedops -u $bedlist &gt; $tmpd/tmp.bed
@@ -94,14 +94,14 @@ bedops -u $bedlist &gt; $tmpd/tmp.bed
 ## Anything that overlaps the selected element is thrown out, and the
 ## process then repeats.
 iters=1
-solns=""
+solns=&quot;&quot;
 stop=0
 while [ $stop == 0 ]
 do
-    echo "merge steps..."
+    echo &quot;merge steps...&quot;
 
     ## Condense the union into merged intervals. This klugey bit
-    ## before and after the merging is because we don't want to merge
+    ## before and after the merging is because we don&#39;t want to merge
     ## regions that are simply adjacent but not overlapping
     bedops -m --range 0:-1 $tmpd/tmp.bed \
         | bedops -u --range 0:1 - \
@@ -109,16 +109,16 @@ do
 
     ## Grab the element with the highest score among all elements forming each interval.
     ## If multiple elements tie for the highest score, just grab one of them.
-    ## Result is the current master list.  Probably don't need to sort, but do it anyway
-    ## to be safe since we're not using --echo with bedmap call.
+    ## Result is the current master list.  Probably don&#39;t need to sort, but do it anyway
+    ## to be safe since we&#39;re not using --echo with bedmap call.
     bedmap --max-element $tmpd/tmpm.bed $tmpd/tmp.bed \
         | sort-bed - \
         &gt; $tmpd/$iters.bed
-    solns="$solns $tmpd/$iters.bed"
-    echo "Adding `awk 'END { print NR }' $tmpd/$iters.bed` elements"
+    solns=&quot;$solns $tmpd/$iters.bed&quot;
+    echo &quot;Adding `awk &#39;END { print NR }&#39; $tmpd/$iters.bed` elements&quot;
 
-    ## Are there any elements that don't overlap the current master
-    ## list?  If so, add those in, and repeat.  If not, we're done.
+    ## Are there any elements that don&#39;t overlap the current master
+    ## list?  If so, add those in, and repeat.  If not, we&#39;re done.
     bedops -n -1 $tmpd/tmp.bed $tmpd/$iters.bed \
        &gt; $tmpd/tmp2.bed
 
@@ -139,7 +139,8 @@ bedops -u $solns \
 ## Clean up
 rm -r $tmpd
 
-exit 0</pre>
+exit 0
+</pre></div>
 </div>
 </div>
 <div class="section" id="discussion">
@@ -211,13 +212,13 @@ exit 0</pre>
         <li class="right" >
           <a href="snp-visualization.html" title="4.1. Visualizing the relationship of SNPs and generic genomic features"
              >previous</a> |</li>
-        <li><a href="../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../usage-examples.html" >4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

@@ -126,7 +126,7 @@ namespace Visitors {
 
   protected:
     ProcessType pt_;
-    double mult_;
+    const double mult_;
   };
 
 } // namespace Visitors

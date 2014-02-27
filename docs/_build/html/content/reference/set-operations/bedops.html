@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.1.1. bedops &mdash; BEDOPS 2.4.0 documentation</title>
+    <title>6.1.1. bedops &mdash; BEDOPS 2.4.1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '2.4.0',
+        VERSION:     '2.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.0 documentation" href="../../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../../index.html" />
     <link rel="up" title="6.1. Set operations" href="../set-operations.html" />
     <link rel="next" title="6.1.2. bedextract" href="bedextract.html" />
     <link rel="prev" title="6.1. Set operations" href="../set-operations.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="../set-operations.html" title="6.1. Set operations"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../set-operations.html" accesskey="U">6.1. Set operations</a> &raquo;</li> 
       </ul>
@@ -86,7 +86,7 @@
 <p>If your data are unsorted, use BEDOPS <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> to prepare data for <a class="reference internal" href="#bedops"><em>bedops</em></a>. You only need to sort once, as all BEDOPS tools read and write sorted BED data.</p>
 <p>Because memory usage is very low, one can use sorted inputs of any size. Processing times generally follow a simple linear relationship with input sizes (<em>e.g.</em>, as the input size doubles, the processing time doubles accordingly).</p>
 <p>The <tt class="docutils literal"><span class="pre">--help</span></tt> option describes the set operation and other options available to the end user:</p>
-<div class="highlight-python"><pre>bedops
+<div class="highlight-python"><div class="highlight"><pre>bedops
   citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
   version:  2.4.0
   authors:  Shane Neph &amp; Scott Kuehn
@@ -98,7 +98,7 @@
             There is no fixed maximum number of files that may be used.
           Input files must have at least the first 3 columns of the BED specification.
           The program accepts BED and starch file formats.
-          May use '-' for a file to indicate reading from standard input (BED format only).
+          May use &#39;-&#39; for a file to indicate reading from standard input (BED format only).
 
       Process Flags:
           --chrom &lt;chromosome&gt; Process data for given &lt;chromosome&gt; only.
@@ -107,7 +107,7 @@
           --help               Print this message and exit successfully.
           --help-&lt;operation&gt;   Detailed help on &lt;operation&gt;.
                                  An example is --help-c or --help-complement
-          --range L:R          Add 'L' bp to all start coordinates and 'R' bp to end
+          --range L:R          Add &#39;L&#39; bp to all start coordinates and &#39;R&#39; bp to end
                                  coordinates. Either value may be + or - to grow or
                                  shrink regions.  With the -e/-n operations, the first
                                  (reference) file is not padded, unlike all other files.
@@ -129,7 +129,8 @@
           -u, --everything File1 [File]*
 
       Example: bedops --range 10 -u file1.bed
-      NOTE: Only operations -e|n|u preserve all columns (no flattening)</pre>
+      NOTE: Only operations -e|n|u preserve all columns (no flattening)
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -259,10 +260,12 @@
 <p>When used with one value (<tt class="docutils literal"><span class="pre">--range</span> <span class="pre">S</span></tt>), this operation <strong>symmetrically</strong> pads all elements of input sets by the specified integral value <tt class="docutils literal"><span class="pre">S</span></tt>. When the specified value is positive, every genomic segment grows in size. An element will grow asymmetrically to prevent growth beyond base position 0, if needed. Otherwise, when negative, elements shrink, and any element with zero (or less) length is discarded.</p>
 <p>Alternatively, when used with two values (<tt class="docutils literal"><span class="pre">--range</span> <span class="pre">L:R</span></tt>), this operation <strong>asymmetrically</strong> pads elements, adding <tt class="docutils literal"><span class="pre">L</span></tt> to each start coordinate, and adding <tt class="docutils literal"><span class="pre">R</span></tt> to each stop coordinate. Negative values may be specified to grow or shrink the region, accordingly.</p>
 <p id="bed-index-shifting">This option is immediately useful for adjusting the coordinate index of BED files. For example, to shift from 1-based to 0-based coordinate indexing:</p>
-<div class="highlight-python"><pre>$ bedops --range -1:-1 --everything my1BasedCoordinates.bed &gt; my0BasedCoordinates.bed</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ bedops --range -1:-1 --everything my1BasedCoordinates.bed &gt; my0BasedCoordinates.bed
+</pre></div>
 </div>
 <p>And, likewise, for 0-based to 1-based indexing:</p>
-<div class="highlight-python"><pre>$ bedops --range 1:1 --everything my0BasedCoordinates.bed &gt; my1BasedCoordinates.bed</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ bedops --range 1:1 --everything my0BasedCoordinates.bed &gt; my1BasedCoordinates.bed
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -284,12 +287,13 @@
 <h2>6.1.1.5. Error checking (&#8211;ec)<a class="headerlink" href="#error-checking-ec" title="Permalink to this headline">¶</a></h2>
 <p>Use the <tt class="docutils literal"><span class="pre">--ec</span></tt> option in conjunction with any aforementioned operation to do more stringent checking of the inputs&#8217; compliance to <a class="reference internal" href="#bedops"><em>bedops</em></a> requirements, including sorting checks, delimiter checks, among others.</p>
 <p>To demonstrate, we can deliberately introduce a typo in dataset <cite>A</cite>, using the <tt class="docutils literal"><span class="pre">--ec</span></tt> option to try to catch it:</p>
-<div class="highlight-python"><pre>$ bedops --ec --everything BEDFileA
+<div class="highlight-python"><div class="highlight"><pre>$ bedops --ec --everything BEDFileA
 May use bedops --help for more help.
 
 Error: in BEDFileA
-First column should not have spaces.  Consider 'chr1' vs. 'chr1 '.  These are different names.
-See row: 3</pre>
+First column should not have spaces.  Consider &#39;chr1&#39; vs. &#39;chr1 &#39;.  These are different names.
+See row: 3
+</pre></div>
 </div>
 <p>The typo introduced was the addition of a space within the third line of dataset <tt class="docutils literal"><span class="pre">A</span></tt>.</p>
 <div class="admonition note">
@@ -302,7 +306,8 @@ See row: 3</pre>
 <div class="section" id="chaining-operations">
 <h3>6.1.1.6.1. Chaining operations<a class="headerlink" href="#chaining-operations" title="Permalink to this headline">¶</a></h3>
 <p>You can efficiently chain operations together, <em>e.g.</em>:</p>
-<div class="highlight-python"><pre>$ bedops --range 50 --merge A | bedops --intersect - B &gt; answer.bed</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ bedops --range 50 --merge A | bedops --intersect - B &gt; answer.bed
+</pre></div>
 </div>
 <p>In this example, elements from <tt class="docutils literal"><span class="pre">A</span></tt> are padded 50 bases up- and downstream and merged, before intersecting with coordinates in <tt class="docutils literal"><span class="pre">B</span></tt>.</p>
 </div>
@@ -400,14 +405,14 @@ See row: 3</pre>
         <li class="right" >
           <a href="../set-operations.html" title="6.1. Set operations"
              >previous</a> |</li>
-        <li><a href="../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../set-operations.html" >6.1. Set operations</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

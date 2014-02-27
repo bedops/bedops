@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/Usr/bin/env python
 
 #
 #    BEDOPS
@@ -192,8 +192,13 @@ def consumePSL(from_stream, to_stream, params):
         bed_line = convertPSLToBed(psl_line, params)
         # bed_line could be None if --headered but not --keep-header, so we only print to output stream if it is not None
         if bed_line: 
-            to_stream.write(bed_line)
-            to_stream.flush()
+            try:
+                to_stream.write(bed_line)
+                to_stream.flush()
+            except TypeError as te:
+                sys.stderr.write( "[%s] - Error: Could not import PSL data (ensure input is PSL-formatted)\n" % (sys.argv[0]))
+                to_stream.close()
+                sys.exit(os.EX_DATAERR)
 
 def convertPSLToBed(line, params):
     convertedLine = None

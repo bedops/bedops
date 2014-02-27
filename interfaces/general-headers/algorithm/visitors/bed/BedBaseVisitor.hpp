@@ -143,9 +143,6 @@ namespace Visitors {
        // Give derived class the new reference
        SetReference(t);
        ref_ = t;
-       if ( !first_ )
-         checkPurge();
-       first_ = false;
      }
   
      inline void OnAdd(mapping_type* u) {
@@ -154,11 +151,13 @@ namespace Visitors {
      }
   
      inline void OnDelete(mapping_type* u) {
-       if ( win_.find(u) == win_.end() )
-         cache_.erase(u);
-       else { // update
+       static typename OrderWin::iterator winIter;
+       winIter = win_.find(u);
+       if ( winIter != win_.end() ) { // update
          Delete(u);
-         win_.erase(u);
+         win_.erase(winIter);
+       } else {
+         cache_.erase(u);
        }
      }
   
@@ -174,39 +173,11 @@ namespace Visitors {
      }
 
      inline void OnPurge() {
-       // bed types can violate sweep's OnPurge() checks -> see checkPurge() below
-       // Checked elsewhere -> do nothing here
-     }
-
-    private:
-     inline void checkPurge() {
-       // Are ALL items in the window out of range of 'ref_'?
-       if ( win_.empty() )
-         return;
-       typename OrderCache::iterator i = cache_.begin();
-       while ( i != cache_.end() && dist_.Map2Ref(*i, ref_) < 0 )
-         ++i;
-
-       if ( i == cache_.end() ) {
-         typename OrderWin::iterator j = win_.begin();
-         while ( j != win_.end() && dist_.Map2Ref(*j, ref_) < 0 )
-           ++j;
-         if ( j == win_.end() ) {
-           Purge();
-           for ( typename OrderWin::iterator i = win_.begin(); i != win_.end(); ++i )
-             Delete(*i);
-           win_.clear();
-           cache_.clear();
-           // do not reset rest_ since the last OnStart() set the new window's start point
-           //  rest_ is legite.  If user is using the single iterator version of sweep()
-           //  then OnAdd() will still get called and rest_ added to the appropriate
-           //  containers.
-         }
-       }
+       // bed types can violate sweep's OnPurge() checks and they aren't really needed
      }
   
    public:
-     explicit BedBaseVisitor(const dist_type& d = dist_type()) : dist_(d), first_(true)
+     explicit BedBaseVisitor(const dist_type& d = dist_type()) : dist_(d)
        { /* */ }
   
      virtual ~BedBaseVisitor() { /* */ }
@@ -217,7 +188,6 @@ namespace Visitors {
      virtual void DoneReference() = 0;
      virtual inline void SetReference(reference_type*) { /* */ }
      virtual inline void End() { /* */ }
-     virtual inline void Purge() { /* */ }
   
    private:
      void fixWindow() {
@@ -231,7 +201,6 @@ namespace Visitors {
        while ( winIter != win_.end() ) {
          if ( dist_.Map2Ref(*winIter, ref_) != 0 ) {
            Delete(*winIter);
-//           cache_.insert(*winIter);
            lst.push_back(*winIter);
            win_.erase(winIter++);
          } else {
@@ -262,7 +231,6 @@ namespace Visitors {
      reference_type* ref_;
      OrderCache cache_;
      OrderWin win_;
-     bool first_;
   };
 
 } // namespace Visitors

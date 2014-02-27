@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>2. Installation &mdash; BEDOPS 2.4.0 documentation</title>
+    <title>2. Installation &mdash; BEDOPS 2.4.1 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2.4.0',
+        VERSION:     '2.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.0 documentation" href="../index.html" />
+    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../index.html" />
     <link rel="next" title="3. Revision history" href="revision-history.html" />
     <link rel="prev" title="1. Overview" href="overview.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="overview.html" title="1. Overview"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -65,15 +65,18 @@
 </li>
 <li><p class="first">Extract the package to a location of your choice.
 In the case of 32-bit Linux:</p>
-<div class="highlight-python"><pre>$ tar jxvf bedops_linux_i386-vx.y.z.tar.bz2</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ tar jxvf bedops_linux_i386-vx.y.z.tar.bz2
+</pre></div>
 </div>
 <p>In the case of 64-bit Linux:</p>
-<div class="highlight-python"><pre>$ tar jxvf bedops_linux_x86_64-vx.y.z.tar.bz2</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ tar jxvf bedops_linux_x86_64-vx.y.z.tar.bz2
+</pre></div>
 </div>
 <p>Replace <tt class="docutils literal"><span class="pre">x</span></tt>, <tt class="docutils literal"><span class="pre">y</span></tt> and <tt class="docutils literal"><span class="pre">z</span></tt> with the version number of BEDOPS you have downloaded.</p>
 </li>
 <li><p class="first">Copy the extracted binaries to a location of your choice which is in your environment&#8217;s <tt class="docutils literal"><span class="pre">PATH</span></tt>, <em>e.g.</em> <tt class="docutils literal"><span class="pre">~/opt/bin</span></tt>:</p>
-<div class="highlight-python"><pre>$ cp bin/* ~/opt/bin</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ cp bin/* ~/opt/bin
+</pre></div>
 </div>
 <p>Change this destination folder, as needed.</p>
 </li>
@@ -102,38 +105,45 @@ In the case of 32-bit Linux:</p>
 <span id="id3"></span><h3>2.2.1. Linux<a class="headerlink" href="#installation-via-source-code-on-linux" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic">
 <li><p class="first">If you do not have GCC 4.8 or greater installed (both <tt class="docutils literal"><span class="pre">gcc</span></tt> and <tt class="docutils literal"><span class="pre">g++</span></tt>), first install these tools. You can check the state of your GCC installation with <tt class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></tt> and <tt class="docutils literal"><span class="pre">g++</span> <span class="pre">--version</span></tt>, <em>e.g.</em>:</p>
-<div class="highlight-python"><pre>$ gcc --version
+<div class="highlight-python"><div class="highlight"><pre>$ gcc --version
 gcc (GCC) 4.8.0 20130127 (experimental)
-...</pre>
+...
+</pre></div>
 </div>
 <p>If you lack a compiler or have a compiler that is older than 4.8, use your favorite package manager to install or upgrade the newer package. For example, in Ubuntu, you might run the following:</p>
-<div class="highlight-python"><pre>$ sudo apt-get install gcc-4.8
+<div class="highlight-python"><div class="highlight"><pre>$ sudo apt-get install gcc-4.8
 $ sudo apt-get install g++-4.8
 $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50</pre>
+$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50
+</pre></div>
 </div>
 <p>The specifics of this process will depend on your distribution and what you want to install. Please check with your system administration or support staff if you are unsure what your options are.</p>
 </li>
 <li><p class="first">Install a <tt class="docutils literal"><span class="pre">git</span></tt> client of your choice, if you do not already have one installed. Github offers an <a class="reference external" href="https://help.github.com/articles/set-up-git#platform-all">installation guide</a>.</p>
 <p>Alternatively, use <tt class="docutils literal"><span class="pre">apt-get</span></tt> or another package manager to install one, <em>e.g.</em></p>
-<div class="highlight-python"><pre>$ sudo apt-get install git</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ sudo apt-get install git
+</pre></div>
 </div>
 </li>
 <li><p class="first">Clone the BEDOPS Git repository in an appropriate local directory:</p>
-<div class="highlight-python"><pre>$ git clone https://github.com/bedops/bedops.git</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ git clone https://github.com/bedops/bedops.git
+</pre></div>
 </div>
 </li>
 <li><p class="first">Enter the top-level of the local copy of the BEDOPS repository and run <tt class="docutils literal"><span class="pre">make</span> <span class="pre">static</span></tt> to begin the build process:</p>
-<div class="highlight-python"><pre>$ cd bedops
-$ make static</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ cd bedops
+$ make static
+</pre></div>
 </div>
 </li>
 <li><p class="first">Once the build is complete, install compiled binaries and scripts to a local <tt class="docutils literal"><span class="pre">bin</span></tt> folder:</p>
-<div class="highlight-python"><pre>$ make install</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ make install
+</pre></div>
 </div>
 </li>
 <li><p class="first">Copy the extracted binaries to a location of your choice that is in your environment&#8217;s <tt class="docutils literal"><span class="pre">PATH</span></tt>, <em>e.g.</em> <tt class="docutils literal"><span class="pre">~/opt/bin</span></tt>:</p>
-<div class="highlight-python"><pre>$ cp bin/* ~/opt/bin</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ cp bin/* ~/opt/bin
+</pre></div>
 </div>
 <p>Change this destination folder, as needed.</p>
 </li>
@@ -143,36 +153,42 @@ $ make static</pre>
 <span id="id4"></span><h3>2.2.2. Mac OS X<a class="headerlink" href="#installation-via-source-code-on-mac-os-x" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic">
 <li><p class="first">If you do not have GCC 4.8 or greater installed, first do so. You can check this with <tt class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></tt>, <em>e.g.</em>:</p>
-<div class="highlight-python"><pre>$ gcc --version
+<div class="highlight-python"><div class="highlight"><pre>$ gcc --version
 gcc (MacPorts gcc48 4.8.2_0+universal) 4.8.2
-...</pre>
+...
+</pre></div>
 </div>
 <p>For Mac OS X users, we recommend first installing <a class="reference external" href="https://developer.apple.com/xcode/">Apple Xcode</a> and its Command Line Tools, via the <tt class="docutils literal"><span class="pre">Preferences</span> <span class="pre">&gt;</span> <span class="pre">Downloads</span></tt> option within Xcode. Then install GCC 4.8 or greater using <a class="reference external" href="http://www.macports.org">MacPorts</a>, setting GCC to be the default compiler, <em>e.g.</em>:</p>
-<div class="highlight-python"><pre>$ sudo port install gcc48 +universal
+<div class="highlight-python"><div class="highlight"><pre>$ sudo port install gcc48 +universal
 $ sudo port install gcc_select
 $ sudo port select --list gcc
 ...
-$ sudo port select --set gcc mp-gcc48</pre>
+$ sudo port select --set gcc mp-gcc48
+</pre></div>
 </div>
 <p>In the future, we may provide full support for OS X compilation via Clang/LLVM, which is the default compiler included with Xcode.</p>
 </li>
 <li><p class="first">Install a <tt class="docutils literal"><span class="pre">git</span></tt> client of your choice, if you do not already have one installed. Github offers an <a class="reference external" href="https://help.github.com/articles/set-up-git#platform-all">installation guide</a>.</p>
 </li>
 <li><p class="first">Clone the BEDOPS Git repository in an appropriate local directory:</p>
-<div class="highlight-python"><pre>$ git clone https://github.com/bedops/bedops.git</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ git clone https://github.com/bedops/bedops.git
+</pre></div>
 </div>
 </li>
 <li><p class="first">Run <tt class="docutils literal"><span class="pre">make</span> <span class="pre">build_all_darwin_intel_fat</span></tt> in the top-level of the local copy of the BEDOPS repository:</p>
-<div class="highlight-python"><pre>$ cd bedops
-$ make build_all_darwin_intel_fat</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ cd bedops
+$ make build_all_darwin_intel_fat
+</pre></div>
 </div>
 </li>
 <li><p class="first">Once the build is complete, install compiled binaries and scripts to a local <tt class="docutils literal"><span class="pre">bin</span></tt> folder:</p>
-<div class="highlight-python"><pre>$ make install</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ make install
+</pre></div>
 </div>
 </li>
 <li><p class="first">Copy the extracted binaries to a location of your choice that is in your environment&#8217;s <tt class="docutils literal"><span class="pre">PATH</span></tt>, <em>e.g.</em> <tt class="docutils literal"><span class="pre">~/opt/bin</span></tt>:</p>
-<div class="highlight-python"><pre>$ cp bin/* ~/opt/bin</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ cp bin/* ~/opt/bin
+</pre></div>
 </div>
 <p>Change this destination folder, as needed.</p>
 </li>
@@ -186,9 +202,10 @@ $ make build_all_darwin_intel_fat</pre>
 <img alt="../_images/bedops_cygwin_installer_screen.png" src="../_images/bedops_cygwin_installer_screen.png" />
 </li>
 <li><p class="first">Check that you have GCC 4.8 or greater installed. You can check this by opening the Cygwin terminal window (note that this is not the same as the Cygwin installer application) and typing <tt class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></tt>, <em>e.g.</em>:</p>
-<div class="highlight-python"><pre>$ gcc --version
+<div class="highlight-python"><div class="highlight"><pre>$ gcc --version
 gcc (GCC) 4.8.2
-...</pre>
+...
+</pre></div>
 </div>
 <p>If you do not have <tt class="docutils literal"><span class="pre">gcc</span></tt> installed, then open the Cygwin (64-bit) installer application again, navigate through the current setup options, and then mark the GCC 4.8.* packages for installation:</p>
 <img alt="../_images/bedops_cygwin_installer_gcc_screen.png" src="../_images/bedops_cygwin_installer_gcc_screen.png" />
@@ -210,22 +227,26 @@ gcc (GCC) 4.8.2
 </ul>
 </li>
 <li><p class="first">In a Cygwin terminal window, clone the BEDOPS Git repository to an appropriate local directory:</p>
-<div class="highlight-python"><pre>$ git clone https://github.com/bedops/bedops.git</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ git clone https://github.com/bedops/bedops.git
+</pre></div>
 </div>
 </li>
 </ol>
 <ol class="arabic" start="4">
 <li><p class="first">Enter the top-level of the local copy of the BEDOPS repository and run <tt class="docutils literal"><span class="pre">make</span> <span class="pre">static</span></tt> to begin the build process:</p>
-<div class="highlight-python"><pre>$ cd bedops
-$ make static</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ cd bedops
+$ make static
+</pre></div>
 </div>
 </li>
 <li><p class="first">Once the build is complete, install compiled binaries and scripts to a local <tt class="docutils literal"><span class="pre">bin</span></tt> folder:</p>
-<div class="highlight-python"><pre>$ make install</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ make install
+</pre></div>
 </div>
 </li>
 <li><p class="first">Copy the extracted binaries to a location of your choice that is in your environment&#8217;s <tt class="docutils literal"><span class="pre">PATH</span></tt>, <em>e.g.</em> <tt class="docutils literal"><span class="pre">/usr/bin</span></tt>:</p>
-<div class="highlight-python"><pre>$ cp bin/* /usr/bin</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ cp bin/* /usr/bin
+</pre></div>
 </div>
 <p>Change this destination folder, as needed.</p>
 </li>
@@ -238,13 +259,15 @@ $ make static</pre>
 <li><p class="first">Follow steps 1-3 and step 5 from the <a class="reference internal" href="#installation-via-source-code"><em>Via Source Code</em></a> documentation.</p>
 </li>
 <li><p class="first">Run <tt class="docutils literal"><span class="pre">make</span> <span class="pre">install_osx_packaging_bins</span></tt> in the top-level of the local copy of the BEDOPS repository:</p>
-<div class="highlight-python"><pre>$ make install_osx_packaging_bins</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ make install_osx_packaging_bins
+</pre></div>
 </div>
 </li>
 <li><p class="first">Install <a class="reference external" href="http://s.sudre.free.fr/Software/Packages/about.html">WhiteBox Packages.app</a>, an application for building OS X installers, if not already installed.</p>
 </li>
 <li><p class="first">Create a <tt class="docutils literal"><span class="pre">build</span></tt> directory to store the installer and open the <tt class="docutils literal"><span class="pre">BEDOPS.pkgproj</span></tt> file in the top-level of the local copy of the BEDOPS repository, in order to open the BEDOPS installer project, <em>e.g.</em>:</p>
-<div class="highlight-python"><pre>$ mkdir packaging/os_x/build &amp;&amp; open packaging/os_x/BEDOPS.pkgproj</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ mkdir packaging/os_x/build &amp;&amp; open packaging/os_x/BEDOPS.pkgproj
+</pre></div>
 </div>
 <p>This will open up the installer project with the <tt class="docutils literal"><span class="pre">Packages.app</span></tt> application.</p>
 </li>
@@ -324,12 +347,12 @@ $ make static</pre>
         <li class="right" >
           <a href="overview.html" title="1. Overview"
              >previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

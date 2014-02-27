@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.3.2.4. Starch (v2) specification &mdash; BEDOPS 2.4.0 documentation</title>
+    <title>6.3.2.4. Starch (v2) specification &mdash; BEDOPS 2.4.1 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.4.0',
+        VERSION:     '2.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../../../index.html" />
     <link rel="up" title="6.3.2. Compression" href="../compression.html" />
     <link rel="next" title="6.3.3. Data conversion" href="../conversion.html" />
     <link rel="prev" title="6.3.2.3. starchcat" href="starchcat.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="starchcat.html" title="6.3.2.3. starchcat"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../compression.html" accesskey="U">6.3.2. Compression</a> &raquo;</li> 
@@ -89,17 +89,18 @@
 <div class="section" id="archive">
 <span id="starch-archive-metadata-archive"></span><h4>6.3.2.4.4.1.1. Archive<a class="headerlink" href="#archive" title="Permalink to this headline">¶</a></h4>
 <p>The archive key scheme is described below:</p>
-<div class="highlight-python"><pre>{
-  "archive": {
-    "type": "starch",
-    "customUCSCHeaders": (Boolean),
-    "creationTimestamp": (string),
-    "version": { "major": 2, "minor": 0, "revision": 0 },
-    "compressionFormat": (unsigned integer),
-    "note": (string, optional)
+<div class="highlight-python"><div class="highlight"><pre>{
+  &quot;archive&quot;: {
+    &quot;type&quot;: &quot;starch&quot;,
+    &quot;customUCSCHeaders&quot;: (Boolean),
+    &quot;creationTimestamp&quot;: (string),
+    &quot;version&quot;: { &quot;major&quot;: 2, &quot;minor&quot;: 0, &quot;revision&quot;: 0 },
+    &quot;compressionFormat&quot;: (unsigned integer),
+    &quot;note&quot;: (string, optional)
   },
   ...
-}</pre>
+}
+</pre></div>
 </div>
 <p>At this time, the <tt class="docutils literal"><span class="pre">type</span></tt> key will specify <tt class="docutils literal"><span class="pre">starch</span></tt>.</p>
 <p>The <tt class="docutils literal"><span class="pre">customUCSCHeaders</span></tt> value is either <tt class="docutils literal"><span class="pre">true</span></tt> or <tt class="docutils literal"><span class="pre">false</span></tt>. If <tt class="docutils literal"><span class="pre">true</span></tt>, the <tt class="docutils literal"><span class="pre">--header</span></tt> option was provided to <a class="reference internal" href="starch.html#starch"><em>starch</em></a> when the archive was created, and the archive may likely contain <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1.7">UCSC headers</a> commonly encountered with UCSC Genome Browser data downloads. Archives created with <a class="reference internal" href="starchcat.html#starchcat"><em>starchcat</em></a> do not support UCSC headers (<em>i.e.</em>, this value is false in archives created with <a class="reference internal" href="starchcat.html#starchcat"><em>starchcat</em></a>).</p>
@@ -111,20 +112,21 @@
 <div class="section" id="streams">
 <span id="starch-archive-metadata-stream"></span><h4>6.3.2.4.4.1.2. Streams<a class="headerlink" href="#streams" title="Permalink to this headline">¶</a></h4>
 <p>The <tt class="docutils literal"><span class="pre">streams</span></tt> key scheme contains an array of objects, each describing the attributes of an individually-compressed chromosome stream, sorted on chromosome name:</p>
-<div class="highlight-python"><pre>{
+<div class="highlight-python"><div class="highlight"><pre>{
   ...,
-  "streams": [
+  &quot;streams&quot;: [
     {
-      "chromosome": (string),
-      "filename": (string),
-      "size": (unsigned integer),
-      "uncompressedLineCount": (unsigned integer),
-      "nonUniqueBaseCount": (unsigned integer),
-      "uniqueBaseCount": (unsigned integer)
+      &quot;chromosome&quot;: (string),
+      &quot;filename&quot;: (string),
+      &quot;size&quot;: (unsigned integer),
+      &quot;uncompressedLineCount&quot;: (unsigned integer),
+      &quot;nonUniqueBaseCount&quot;: (unsigned integer),
+      &quot;uniqueBaseCount&quot;: (unsigned integer)
     },
     ...
   ]
-}</pre>
+}
+</pre></div>
 </div>
 <p>The <tt class="docutils literal"><span class="pre">chromosome</span></tt> key specifies the name of the chromosome associated with the compressed regions. For example, this might be <tt class="docutils literal"><span class="pre">chr1</span></tt>, <tt class="docutils literal"><span class="pre">chrX</span></tt>, etc.</p>
 <p>The <tt class="docutils literal"><span class="pre">filename</span></tt> key is a string that concatenates the chromosome name, process ID and host strings (unless a <tt class="docutils literal"><span class="pre">unique-tag</span></tt> value is given to <a class="reference internal" href="starch.html#starch"><em>starch</em></a> when creating an archive, which would replace the process ID and host values). It is a holdover from a procedure for creating legacy archives and exists for backwards-compatibility.</p>
@@ -224,7 +226,7 @@
         <li class="right" >
           <a href="starchcat.html" title="6.3.2.3. starchcat"
              >previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../compression.html" >6.3.2. Compression</a> &raquo;</li> 
@@ -232,7 +234,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

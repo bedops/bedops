@@ -182,12 +182,12 @@ def consumeVCF(from_stream, to_stream, params):
             from_stream.close()
             to_stream.close()
             break
-        bed_line = convertVCFToBed(vcf_line, params)
+        bed_line = convertVCFToBed(vcf_line, params, to_stream)
         if bed_line:
             to_stream.write(bed_line)
             to_stream.flush()
 
-def convertVCFToBed(line, params):
+def convertVCFToBed(line, params, stream):
     convertedLine = None
 
     chomped_line = line.rstrip(os.linesep)
@@ -215,9 +215,10 @@ def convertVCFToBed(line, params):
         for columnIdx in range(len(params.columns)):
             try:
                 metadata[params.columns[columnIdx]] = elems[columnIdx];
-            except IndexError:
-                print 'ERROR: Could not map data values to VCF header keys (perhaps missing or bad delimiters in header line?)'
-                return os.EX_DATAERR
+            except IndexError as ie:
+                sys.stderr.write( "[%s] Error: Could not map data values to VCF header keys (perhaps missing or bad delimiters in header line?)" % (sys.argv[0]))
+                stream.close()
+                sys.exit(os.EX_DATAERR)
         try:
             elem_chr = metadata['#CHROM']
             elem_start = str(int(metadata['POS']) - 1)
@@ -228,9 +229,10 @@ def convertVCFToBed(line, params):
             elem_alt = metadata['ALT']
             elem_filter = metadata['FILTER']
             elem_info = metadata['INFO']
-        except KeyError:
-            print 'ERROR: Could not map data value from VCF header key (perhaps missing or bad delimiters in header line or data row?)'
-            return os.EX_DATAERR
+        except KeyError as ke:
+            sys.stderr.write( '[%s] Error: Could not map data value from VCF header key (perhaps missing or bad delimiters in header line or data row?)' % (sys.argv[0]))
+            stream.close()
+            sys.exit(os.EX_DATAERR)
 
         try:
             elem_genotype = '\t'.join(elems[8:])

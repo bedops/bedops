@@ -102,9 +102,12 @@ namespace Visitors {
       std::for_each(t_.begin(), t_.end(), std::bind2nd(std::mem_fun(memberFuncPtr), t));
     }
 
+    /* not used by BED visitors to date.  Pain if it is with nested elements. */
+    /*
     void Purge() {
       std::for_each(t_.begin(), t_.end(), std::mem_fun(&BaseClass::Purge));
     }
+    */
 
     void End() {
       std::for_each(t_.begin(), t_.end(), std::mem_fun(&BaseClass::End));
@@ -116,13 +119,11 @@ namespace Visitors {
     }
 
   protected:
-    typedef typename std::vector<std::string>::const_iterator inputI;
-    typedef typename GroupType::iterator gtI;
     typedef typename GroupType::const_iterator cGtI;
     GroupType& t_;
     ProcessFields pFields_;
     ProcessRows pRows_;
-    bool pAll_;
+    const bool pAll_;
     long cnt_;
   };
 

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes &mdash; BEDOPS 2.4.0 documentation</title>
+    <title>4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes &mdash; BEDOPS 2.4.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '2.4.0',
+        VERSION:     '2.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.0 documentation" href="../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../index.html" />
     <link rel="up" title="4. Usage examples" href="../usage-examples.html" />
     <link rel="next" title="4.4. Finding the subset of SNPs within DHSes" href="snps-within-dhses.html" />
     <link rel="prev" title="4.2. Collapsing multiple BED files into a master list by signal" href="master-list.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="master-list.html" title="4.2. Collapsing multiple BED files into a master list by signal"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../usage-examples.html" accesskey="U">4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>  
@@ -64,18 +64,20 @@
 <div class="section" id="script">
 <h2>4.3.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
 <p>SNPs are in a BED-formatted file called <tt class="docutils literal"><span class="pre">SNPs.bed</span></tt> sorted lexicographically with <a class="reference internal" href="../reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a>. The DNase-hypersensitive sites are stored in a sorted BED-formatted file called <tt class="docutils literal"><span class="pre">DHSs.bed</span></tt>. These two files are available in the <a class="reference internal" href="#distance-frequencies-downloads"><em>Downloads</em></a> section.</p>
-<div class="highlight-python"><pre># author : Eric Rynes
+<div class="highlight-python"><div class="highlight"><pre># author : Eric Rynes
 closest-features --dist --closest --no-ref SNPs.bed DHSs.bed \
-    | cut -f2 -d '|' \
-    | grep -w -F -v -e "NA" \
-    &gt; answer.bed</pre>
+    | cut -f2 -d &#39;|&#39; \
+    | grep -w -F -v -e &quot;NA&quot; \
+    &gt; answer.bed
+</pre></div>
 </div>
 </div>
 <div class="section" id="discussion">
 <h2>4.3.3. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
 <p>The <tt class="docutils literal"><span class="pre">--dist</span></tt> option returns signed distances between input elements and reference elements, <tt class="docutils literal"><span class="pre">--closest</span></tt> chooses the single closest element, and <tt class="docutils literal"><span class="pre">--no-ref</span></tt> keeps SNP coordinates from being printed out.</p>
 <p>The output from <a class="reference internal" href="../reference/set-operations/closest-features.html#closest-features"><em>closest-features</em></a> contains coordinates and the signed distance to the closest DHS, separated by the pipe (<tt class="docutils literal"><span class="pre">|</span></tt>) character. Such output might look something like this:</p>
-<div class="highlight-python"><pre>chr1    2513240 2513390 MCV-11  97.201400|25</pre>
+<div class="highlight-python"><div class="highlight"><pre>chr1    2513240 2513390 MCV-11  97.201400|25
+</pre></div>
 </div>
 <p>This type of result is chopped up with the standard UNIX utility <tt class="docutils literal"><span class="pre">cut</span></tt> to get at the distances to the closest elements. Finally, we use <tt class="docutils literal"><span class="pre">grep</span> <span class="pre">-v</span></tt> to throw out any non-distance, denoted by <tt class="docutils literal"><span class="pre">NA</span></tt>. This can occur if there exists some chromosome in the SNP dataset that does not exist in the DHSs.</p>
 <p>Thus, for every SNP, we have a corresponding distance to nearest DHS. As an example, from this data we could build a histogram showing the frequencies of distances-to-nearest-DHS.</p>
@@ -150,13 +152,13 @@ closest-features --dist --closest --no-ref SNPs.bed DHSs.bed \
         <li class="right" >
           <a href="master-list.html" title="4.2. Collapsing multiple BED files into a master list by signal"
              >previous</a> |</li>
-        <li><a href="../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../usage-examples.html" >4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

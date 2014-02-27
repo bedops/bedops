@@ -35,15 +35,16 @@ The ``--help`` option is fairly basic, but describes the usage:
 
   sort-bed
     citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-    version:  2.4.0
-    authors:  Scott Kuehn & Shane Neph
+    version:  2.4.1
+    authors:  Scott Kuehn
 
-  USAGE: sort-bed [--help] [--version] [--max-mem <val>] <file1.bed> <file2.bed> <...>
+  USAGE: sort-bed [--help] [--version] [--max-mem <val>] [--tmpdir <path>] <file1.bed> <file2.bed> <...>
           Sort BED file(s).
           May use '-' to indicate stdin.
           Results are sent to stdout.
 
-          <val> for --max-mem may be 8G, 8000M, or 8000000000 to specify 8 GB of memory, for example.
+          <val> for --max-mem may be 8G, 8000M, or 8000000000 to specify 8 GB of memory.
+          --tmpdir is useful only with --max-mem.
 
 A simple example of using :ref:`sort-bed` would be:
 
@@ -58,6 +59,14 @@ The :ref:`sort-bed` program efficiently sorts BED inputs. By default, all input 
   $ sort-bed --max-mem 2G reallyHugeUnsortedData.bed > reallyHugeSortedData.bed
 
 This option allows :ref:`sort-bed` to scale to input of any size.
+
+The ``--tmpdir`` option allows specification of an alternative temporary directory, when used in conjunction with ``--max-mem`` option. This is useful if the host operating system’s standard temporary directory (*e.g.*, ``/tmp`` on Linux or OS X) does not have sufficient space to hold intermediate results.
+
+For example, to use the current working directory to store temporary data, one could use the ``$PWD`` environment variable:
+
+::
+
+  $ sort-bed --max-mem 2G --tmpdir $PWD reallyHugeUnsortedData.bed > reallyHugeSortedData.bed
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace

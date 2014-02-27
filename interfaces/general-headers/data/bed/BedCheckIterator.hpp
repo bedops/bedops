@@ -235,7 +235,7 @@ public:
             std::stringstream s;
             s << cnt_;
             throw(Exception("in " + fn_ + "\nHeader found but should be at top of file.\nSee row: " + s.str()));
-          } else if ( !all_ && (_M_value->chrom() != chr_ ) ) {
+          } else if ( !all_ && (_M_value->chrom() != chr_) ) {
             delete _M_value;
             _M_value = static_cast<BedType*>(0);
             _M_ok = false;

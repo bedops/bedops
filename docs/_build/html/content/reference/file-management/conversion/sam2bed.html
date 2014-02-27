@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.3.3.5. sam2bed &mdash; BEDOPS 2.4.0 documentation</title>
+    <title>6.3.3.5. sam2bed &mdash; BEDOPS 2.4.1 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.4.0',
+        VERSION:     '2.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../../../index.html" />
     <link rel="up" title="6.3.3. Data conversion" href="../conversion.html" />
     <link rel="next" title="6.3.3.6. vcf2bed" href="vcf2bed.html" />
     <link rel="prev" title="6.3.3.4. psl2bed" href="psl2bed.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="psl2bed.html" title="6.3.3.4. psl2bed"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../conversion.html" accesskey="U">6.3.3. Data conversion</a> &raquo;</li> 
@@ -97,22 +97,24 @@
 <div class="section" id="example">
 <h2>6.3.3.5.4. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>To demonstrate these scripts, we use a sample binary input called <tt class="docutils literal"><span class="pre">foo.sam</span></tt> (see the <a class="reference internal" href="#sam2bed-downloads"><em>Downloads</em></a> section to grab this file).</p>
-<div class="highlight-python"><pre>@HD     VN:1.0 SO:coordinate
+<div class="highlight-python"><div class="highlight"><pre>@HD     VN:1.0 SO:coordinate
 @SQ     SN:seq1 LN:5000
 @SQ     SN:seq2 LN:5000
 @CO     Example of SAM/BAM file format.
 B7_591:4:96:693:509     73      seq1    1       99      36M     *       0       0       CACTAGTGGCTCATTGTAAATGTGTGGTTTAACTCG    &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;5&lt;&lt;&lt;&lt;&lt;;:&lt;;7    MF:i:18 Aq:i:73 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
 EAS54_65:7:152:368:113  73      seq1    3       99      35M     *       0       0       CTAGTGGCTCATTGTAAATGTGTGGTTTAACTCGT     &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;0&lt;&lt;&lt;&lt;655&lt;&lt;7&lt;&lt;&lt;:9&lt;&lt;3/:&lt;6):     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
 EAS51_64:8:5:734:57     137     seq1    5       99      35M     *       0       0       AGTGGCTCATTGTAAATGTGTGGTTTAACTCGTCC     &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;7;71&lt;&lt;;&lt;;;&lt;7;&lt;&lt;3;);3*8/5     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
-...</pre>
+...
+</pre></div>
 </div>
 <p>We can convert it to sorted BED data in the following manner (omitting standard error messages):</p>
-<div class="highlight-python"><pre>$ sam2bed &lt; foo.sam
+<div class="highlight-python"><div class="highlight"><pre>$ sam2bed &lt; foo.sam
 seq1    0       36      B7_591:4:96:693:509     73      +       99      36M     *       0       0       CACTAGTGGCTCATTGTAAATGTGTGGTTTAACTCG    &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;5&lt;&lt;&lt;&lt;&lt;;:&lt;;7    MF:i:18 Aq:i:73 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
 seq1    2       37      EAS54_65:7:152:368:113  73      +       99      35M     *       0       0       CTAGTGGCTCATTGTAAATGTGTGGTTTAACTCGT     &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;0&lt;&lt;&lt;&lt;655&lt;&lt;7&lt;&lt;&lt;:9&lt;&lt;3/:&lt;6):     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
 seq1    4       39      EAS51_64:8:5:734:57     137     +       99      35M     *       0       0       AGTGGCTCATTGTAAATGTGTGGTTTAACTCGTCC     &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;7;71&lt;&lt;;&lt;;;&lt;7;&lt;&lt;3;);3*8/5     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
-seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     *       0       0       GTGGCTCATTGTAATTTTTTGTTTTAACTCTTCTCT    (-&amp;----,----)-)-),'--)---',+-,),''*,    MF:i:130        Aq:i:63 NM:i:5  UQ:i:38 H0:i:0  H1:i:0
-...</pre>
+seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     *       0       0       GTGGCTCATTGTAATTTTTTGTTTTAACTCTTCTCT    (-&amp;----,----)-)-),&#39;--)---&#39;,+-,),&#39;&#39;*,    MF:i:130        Aq:i:63 NM:i:5  UQ:i:38 H0:i:0  H1:i:0
+...
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -120,7 +122,7 @@ seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     
 </div>
 <p>Note also that we strip the header section from the output. If we want to keep this, the use of the <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option will preserve the BAM file&#8217;s header, turning it into BED elements that use <tt class="docutils literal"><span class="pre">_header</span></tt> as a chromosome name.</p>
 <p>Here&#8217;s an example:</p>
-<div class="highlight-python"><pre>$ sam2bed --custom-tags MF,Aq --keep-header &lt; foo.sam
+<div class="highlight-python"><div class="highlight"><pre>$ sam2bed --custom-tags MF,Aq --keep-header &lt; foo.sam
 _header 0       1       @HD     VN:1.0 SO:coordinate
 _header 1       2       @SQ     SN:seq1 LN:5000
 _header 2       3       @SQ     SN:seq2 LN:5000
@@ -128,8 +130,9 @@ _header 3       4       @CO     Example of SAM/BAM file format.
 seq1    0       36      B7_591:4:96:693:509     73      +       99      36M     *       0       0       CACTAGTGGCTCATTGTAAATGTGTGGTTTAACTCG    &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;5&lt;&lt;&lt;&lt;&lt;;:&lt;;7    MF:i:18 Aq:i:73 NM:i:0  UQ:i:0      H0:i:1  H1:i:0
 seq1    2       37      EAS54_65:7:152:368:113  73      +       99      35M     *       0       0       CTAGTGGCTCATTGTAAATGTGTGGTTTAACTCGT     &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;0&lt;&lt;&lt;&lt;655&lt;&lt;7&lt;&lt;&lt;:9&lt;&lt;3/:&lt;6):     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0      H0:i:1  H1:i:0
 seq1    4       39      EAS51_64:8:5:734:57     137     +       99      35M     *       0       0       AGTGGCTCATTGTAAATGTGTGGTTTAACTCGTCC     &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;7;71&lt;&lt;;&lt;;;&lt;7;&lt;&lt;3;);3*8/5     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0      H0:i:1  H1:i:0
-seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     *       0       0       GTGGCTCATTGTAATTTTTTGTTTTAACTCTTCTCT    (-&amp;----,----)-)-),'--)---',+-,),''*,    MF:i:130        Aq:i:63 NM:i:5      UQ:i:38 H0:i:0  H1:i:0
-...</pre>
+seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     *       0       0       GTGGCTCATTGTAATTTTTTGTTTTAACTCTTCTCT    (-&amp;----,----)-)-),&#39;--)---&#39;,+-,),&#39;&#39;*,    MF:i:130        Aq:i:63 NM:i:5      UQ:i:38 H0:i:0  H1:i:0
+...
+</pre></div>
 </div>
 <p>With this option, the <tt class="docutils literal"><span class="pre">sam2bed</span></tt> and <tt class="docutils literal"><span class="pre">sam2starch</span></tt> scripts are completely &#8220;non-lossy&#8221;. Use of <tt class="docutils literal"><span class="pre">awk</span></tt> or other scripting tools can munge these data back into a SAM-formatted file.</p>
 <div class="admonition note">
@@ -299,7 +302,7 @@ seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     
         <li class="right" >
           <a href="psl2bed.html" title="6.3.3.4. psl2bed"
              >previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../conversion.html" >6.3.3. Data conversion</a> &raquo;</li> 
@@ -307,7 +310,7 @@ seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>
