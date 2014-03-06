@@ -12,6 +12,46 @@ Current version
 ===============
 
 ------
+v2.4.1
+------
+
+Released: **February 26, 2014**
+
+* :ref:`bedmap`
+
+  * Added ``--fraction-both`` and ``--exact`` (``--fraction-both 1``) to list of compatible overlap options with ``--faster``.
+
+  * Added 5% performance improvement with `bedmap` operations without ``--faster``.
+
+  * Fixed scenario that can yield incorrect results (cf. `Issue 43 <https://github.com/bedops/bedops/issues/43>`_).
+
+* :ref:`sort-bed`
+
+  * Added ``--tmpdir`` option to allow specification of an alternative temporary directory, when used in conjunction with ``--max-mem`` option. This is useful if the host operating system's standard temporary directory (*e.g.*, ``/tmp`` on Linux or OS X) does not have sufficient space to hold intermediate results.
+
+* All :ref:`conversion scripts <conversion_scripts>`
+
+  * Improvements to error handling in Python-based conversion scripts, in the case where no input is specified.
+
+  * Fixed typos in :ref:`gff2bed` and :ref:`psl2bed` documentation (cf. `commit a091e18 <https://github.com/bedops/bedops/commit/a091e18>`_).
+
+* OS X compilation improvements
+
+  * We have completed changes to the OS X build process for the remaining half of the BEDOPS binaries, which now allows direct, full compilation with Clang/LLVM (part of the Apple Xcode distribution). 
+
+    All OS X BEDOPS binaries now use Apple's system-level C++ library, instead of GNU's ``libstdc++``. It is no longer required (or recommended) to use GNU gcc to compile BEDOPS on OS X.
+
+    Compilation is faster and simpler, and we can reduce the size and complexity of Mac OS X builds and installer packages. By using Apple's C++ library, we also eliminate the likelihood of missing library errors. 
+
+    In the longer term, this gets us closer to moving BEDOPS to using the CMake build system, to further abstract and simplify the build process.
+
+* Cleaned up various compilation warnings found with ``clang``/``clang++`` and GCC kits.
+
+=================
+Previous versions
+=================
+
+------
 v2.4.0
 ------
 
@@ -76,10 +116,6 @@ Released: **January 9, 2014**
 * Added OS X uninstaller project to allow end user to more easily remove BEDOPS tools from this platform.
 
 * Cleaned up various compilation warnings found with ``clang``/``clang++`` and GCC kits.
-
-=================
-Previous versions
-=================
 
 ------
 v2.3.0

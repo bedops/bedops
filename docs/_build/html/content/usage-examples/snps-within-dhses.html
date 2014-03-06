@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.4. Finding the subset of SNPs within DHSes &mdash; BEDOPS 2.4.0 documentation</title>
+    <title>4.4. Finding the subset of SNPs within DHSes &mdash; BEDOPS 2.4.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '2.4.0',
+        VERSION:     '2.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.0 documentation" href="../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../index.html" />
     <link rel="up" title="4. Usage examples" href="../usage-examples.html" />
     <link rel="next" title="4.5. Smoothing raw tag count data across the genome" href="smoothing-tags.html" />
     <link rel="prev" title="4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes" href="distance-frequencies.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="distance-frequencies.html" title="4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../usage-examples.html" accesskey="U">4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>  
@@ -64,8 +64,7 @@
 <div class="section" id="script">
 <h2>4.4.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
 <p>SNPs are in a BED-formatted file called <tt class="docutils literal"><span class="pre">SNPs.bed</span></tt> sorted lexicographically with <a class="reference internal" href="../reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a>. The DNase-hypersensitive sites are stored in a sorted BED-formatted file called <tt class="docutils literal"><span class="pre">DHSs.bed</span></tt>. These two files are available in the <a class="reference internal" href="#snps-within-dhses-downloads"><em>Downloads</em></a> section.</p>
-<div class="highlight-python"><pre>bedmap --indicator --echo --echo-map SNPs.bed DHSs.bed \
-  | awk -F"|" '(int($1) == 1) { print $2"|"$3; }' \
+<div class="highlight-python"><pre>bedmap --skip-unmapped --echo --echo-map SNPs.bed DHSs.bed \
   &gt; subsetOfSNPsWithinAssociatedDHS.bed</pre>
 </div>
 </div>
@@ -147,7 +146,7 @@
         <li class="right" >
           <a href="distance-frequencies.html" title="4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes"
              >previous</a> |</li>
-        <li><a href="../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../usage-examples.html" >4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>

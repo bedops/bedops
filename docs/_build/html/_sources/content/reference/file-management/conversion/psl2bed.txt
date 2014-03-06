@@ -3,7 +3,7 @@
 `psl2bed`
 =========
 
-The ``psl2bed`` script converts 0-based, half-open ``[start-1, end)`` `Pattern Space Layout <http://genome.ucsc.edu/FAQ/FAQformat.html#format2>`_ (PSL) to unsorted, 0-based, half-open ``[start-1, end)`` extended BED-formatted data.
+The ``psl2bed`` script converts 0-based, half-open ``[start-1, end)`` `Pattern Space Layout <http://genome.ucsc.edu/FAQ/FAQformat.html#format2>`_ (PSL) to sorted, 0-based, half-open ``[start-1, end)`` extended BED-formatted data.
 
 For convenience, we also offer ``psl2starch``, which performs the extra step of creating a Starch-formatted archive.
 
@@ -39,7 +39,7 @@ The header data of a headered PSL file is usually discarded, unless you add the 
 Example
 =======
 
-To demonstrate these scripts, we use a sample GFF input called ``foo.gff`` (see the :ref:`Downloads <gff2bed_downloads>` section to grab this file). 
+To demonstrate these scripts, we use a sample PSL input called ``foo.psl`` (see the :ref:`Downloads <psl2bed_downloads>` section to grab this file). 
 
 ::
 
