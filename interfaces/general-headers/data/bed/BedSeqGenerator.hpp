@@ -50,8 +50,8 @@ namespace Bed {
     // typedef std::ptrdiff_t difference_type;
     typedef BedType* pointer;
     typedef BedType& reference;
-    
-    BedSeqGenerator() : validSeq_(false){ /* */}
+
+    BedSeqGenerator() : validSeq_(false) { /* */ }
     BedSeqGenerator(Ext::allocate_iterator< BedType* > seqData, 
                     unsigned int size = 20, unsigned int gap = 0, bool cap = true)
       : seqData_(seqData), size_(size), gap_(gap), cap_(cap),
@@ -67,8 +67,9 @@ namespace Bed {
     }
 
     BedSeqGenerator operator++(int) {
+      BedSeqGenerator prev = *this;
       fetchBedSeq();
-      return *this;
+      return prev;
     }
 
     bool equal(const BedSeqGenerator& __x) const { return (validSeq_ == __x.validSeq_); }
@@ -85,17 +86,17 @@ namespace Bed {
     // Increment file ptr and update BedSeq cache
     void fetchBedSeq() {
       if( !generatedVal_ ) {
-        generatedVal_ = new BedType(**seqData_);
+        generatedVal_ = new BedType(**seqData_); // is new necessary since we're using allocate_iterator<BedType*>?
         currSeq_ = new BedType(**seqData_);
-        seqData_++;
-      } else if( (generatedVal_->end() >= currSeq_->end()) || 
-          (std::string(generatedVal_->chrom()).compare(currSeq_->chrom()) > 0) ) {
+        ++seqData_;
+      } else if( (generatedVal_->end() >= currSeq_->end()) ||
+                 (std::strcmp(generatedVal_->chrom(), currSeq_->chrom) > 0) ) {
         if(seqData_ == seqDataEnd_) 
           validSeq_ = false;      
         else {
           *generatedVal_ = **seqData_;          
           *currSeq_  = **seqData_;
-          seqData_++;
+          ++seqData_;
         }
       }
       else
@@ -132,4 +133,3 @@ namespace Bed {
 
 
 #endif // BED_SEQ_GENERATOR_HPP
-

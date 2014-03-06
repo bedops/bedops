@@ -141,7 +141,7 @@ namespace Visitors {
     typedef std::set<PtrType, Comp> ScoreTypeContainer;
 
   protected:
-    double kthValue_;
+    const double kthValue_;
     std::size_t currentAtPos_;
     ProcessType pt_;
     ScoreTypeContainer scoresBuf_;

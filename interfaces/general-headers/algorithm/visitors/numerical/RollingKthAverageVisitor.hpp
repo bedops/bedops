@@ -61,7 +61,7 @@ namespace Visitors {
     // Construction
     //==============
     explicit RollingKthAverage(double kth = 0.8, const ProcessType& pt = ProcessType())
-        : BaseClass(kth, Visitors::Helpers::DoNothing()), currentAtPos_(0), pt_(pt) { /* */ }
+        : BaseClass(kth, Visitors::Helpers::DoNothing()), pt_(pt) { /* */ }
 
     //====================================
     // Repositioning and Reporting Phases
@@ -111,10 +111,7 @@ namespace Visitors {
     typedef std::set<PtrType, Comp> ScoreTypeContainer;
 
   protected:
-    double kthValue_;
-    std::size_t currentAtPos_;
     ProcessType pt_;
-    typename ScoreTypeContainer::iterator currentMarker_;
   };
 
 } // namespace Visitors
