@@ -8,7 +8,7 @@ else
 	SFLAGS = -static -s $(NONSTATICFLAGS)
 endif
 FLAGS	         = $(SFLAGS) -std=c++11
-DFLAGS	         = ${WARNINGS} -O0 -g -std=c++11
+DFLAGS	         = ${WARNINGS} -O0 -g -fno-inline -std=c++11
 GPROFFLAGS       = ${WARNINGS} -O -pg -std=c++11
 MAIN             = ../../../../..
 HEAD             = ${MAIN}/interfaces/general-headers
