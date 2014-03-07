@@ -78,10 +78,10 @@ jansson:
 
 bzip2:
 	rm -rf ${LOCALBZIP2LIBPATH}
-	test -s ${LOCALBZIP2LIBPATH} || { cd ${MAIN} && make bzip2_support_c && cd ${LOCALBZIP2DIR} && make clean && export CC=${CC} && export CPP=${CC} && export CXX=${CXX} && export ARCH=${ARCH} && make -f Makefile.darwin_${ARCH} libbz2.a && cd ${THISDIR}; }
+	test -s ${LOCALBZIP2LIBPATH} || { cd ${MAIN} && make bzip2_support_c && cd ${LOCALBZIP2DIR} && make clean && export CC=${CC} && export CPP=${CXX} && export CXX=${CXX} && export ARCH=${ARCH} && make -f Makefile.darwin_${ARCH} libbz2.a && cd ${THISDIR}; }
 
 zlib:
-	test -s ${LOCALZLIBLIBPATH} || { cd ${MAIN} && make zlib_support_c && cd ${LOCALZLIBDIR} && echo ${PWD} && make -f ${LOCALZLIBDIR}/Makefile.in clean && CC=${CC} CPP=${CC} CXX=${CXX} ${LOCALZLIBDIR}/configure --static --archs="-arch ${ARCH}" && make && cd ${THISDIR}; }
+	test -s ${LOCALZLIBLIBPATH} || { cd ${MAIN} && make zlib_support_c && cd ${LOCALZLIBDIR} && echo ${PWD} && make -f ${LOCALZLIBDIR}/Makefile.in clean && CC=${CC} CPP=${CXX} CXX=${CXX} ${LOCALZLIBDIR}/configure --static --archs="-arch ${ARCH}" && make && cd ${THISDIR}; }
 
 boost:
 	test -d ${BOOSTLIBDIR} || { cd ${MAIN} && export CC=${CC} && export CXX=${CXX} && make boost_support_c && cd ${THISDIR}; }
