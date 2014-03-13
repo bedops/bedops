@@ -34,7 +34,7 @@ WARNINGS                  = -Weverything -Wno-c++98-compat-pedantic -Wno-padded
 
 PLATFORM                  = ${shell uname}
 ARCH_VERSION              = v2.0
-BIN_VERSION               = v2.4.1
+BIN_VERSION               = v2.4.2
 TEST                      = ../test
 TEST_OSX_BINDIR           = ${TEST}/binaries/osx/${ARCH_VERSION}/bin
 
