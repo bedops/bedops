@@ -1,5 +1,5 @@
 /*
-  FILE: Bed.h
+  FILE: Structures.hpp
   AUTHOR: Scott Kuehn
    MODS: Shane Neph
   CREATE DATE: Tue May 16 09:15:54 PDT 2006

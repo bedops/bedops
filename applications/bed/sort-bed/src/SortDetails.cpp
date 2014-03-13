@@ -1,5 +1,5 @@
 /*
-  File: Bed.c
+  File: SortDetails.cpp
   AUTHOR: Scott Kuehn
     MODS: Shane Neph
   CREATE DATE: Tue May 16 10:06:58 PDT 2006
