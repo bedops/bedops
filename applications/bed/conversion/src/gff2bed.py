@@ -156,7 +156,7 @@ def checkInstallation(rv):
 def consumeGFF(from_stream, to_stream, params):
     while True:
         gff_line = from_stream.readline()
-        if not gff_line:
+        if not gff_line or gff_line.startswith("##FASTA"):
             from_stream.close()
             to_stream.close()
             break

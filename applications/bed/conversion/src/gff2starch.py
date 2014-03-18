@@ -160,7 +160,7 @@ def checkInstallation(rv):
 def consumeGFF(from_stream, to_stream, params):
     while True:
         gff_line = from_stream.readline()
-        if not gff_line:
+        if not gff_line or gff_line.startswith("##FASTA"):
             from_stream.close()
             to_stream.close()
             break
@@ -170,13 +170,17 @@ def consumeGFF(from_stream, to_stream, params):
 
 def consumeBED(from_stream, to_stream, params):
     while True:
-        bed_line = from_stream.readline()
-        if not bed_line:
-            from_stream.close()
+        try:
+            bed_line = from_stream.readline()
+            if not bed_line:
+                from_stream.close()
+                to_stream.close()
+                break
+            to_stream.write(bed_line)
+            to_stream.flush()
+        except AttributeError as e:
             to_stream.close()
             break
-        to_stream.write(bed_line)
-        to_stream.flush()
 
 def convertGFFToBed(line, params, stream):
 
@@ -401,7 +405,7 @@ def main(*args):
         if params.sortTmpdirSet:
             sortbed_process = subprocess.Popen(['sort-bed', '--max-mem', params.maxMem, '--tmpdir', params.sortTmpdir, '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         else:
-            sortbed_process = subprocess.Popen(['sort-bed', '--max-mem', params.maxMem, '-'], stdin=subprocess.PIPE, stdout=sys.stdout)
+            sortbed_process = subprocess.Popen(['sort-bed', '--max-mem', params.maxMem, '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         convert_gff_to_bed_thread = threading.Thread(target=consumeGFF, args=(sys.stdin, sortbed_process.stdin, params))
         pass_bed_to_starch_thread = threading.Thread(target=consumeBED, args=(sortbed_process.stdout, starch_process.stdin, params))
     else:
