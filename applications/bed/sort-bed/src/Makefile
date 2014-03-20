@@ -17,6 +17,7 @@ LOCALLIBMTDIR      = ${THISDIR}/${PARTY3}/libmt
 LOCALLIBMTLIBDIR   = ${LOCALLIBMTDIR}/lib
 LOCALLIBMTLIBPATH  = ${LOCALLIBMTLIBDIR}/${LIBLIBMT}
 LOCALLIBMTINCDIR   = ${LOCALLIBMTDIR}/include
+PFLAGS             = -pthread
 
 ifneq ($(wildcard .forcestatic),)
 	SFLAGS	= -static -s
@@ -31,10 +32,10 @@ endif
 all: sort
 
 gprof: gprofbuild
-	${CXX} -o ${DIST_DIR}/gprof.${PROG} ${SFLAGS} ${WARNINGS} ${GPROFFLAGS} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o 
+	${CXX} -o ${DIST_DIR}/gprof.${PROG} ${PFLAGS} ${SFLAGS} ${WARNINGS} ${GPROFFLAGS} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o 
 
 sort: sortbuild
-	${CXX} -o ${DIST_DIR}/${PROG} -pthread ${SFLAGS} ${WARNINGS} ${OPTIMIZE} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -L${LOCALLIBMTLIBDIR} ${LOCALLIBMTLIBPATH}
+	${CXX} -o ${DIST_DIR}/${PROG} ${PFLAGS} ${SFLAGS} ${WARNINGS} ${OPTIMIZE} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -L${LOCALLIBMTLIBDIR} ${LOCALLIBMTLIBPATH}
 
 gprofbuild: prep
 	${CXX} ${WARNINGS} ${GPROFFLAGS} -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD} -I${LOCALLIBMTINCDIR}
