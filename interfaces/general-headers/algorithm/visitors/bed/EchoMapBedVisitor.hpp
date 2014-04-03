@@ -65,7 +65,6 @@ namespace Visitors {
 
     private:
       typedef std::set< MapType*, Bed::GenomicAddressCompare<MapType, MapType> > SType; // consistent w/sort-bed
-      typedef typename SType::iterator SIter;
       ProcessType pt_;
       SType win_;
     };

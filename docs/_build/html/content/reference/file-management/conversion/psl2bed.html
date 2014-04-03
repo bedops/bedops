@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.3.3.4. psl2bed &mdash; BEDOPS 2.4.0 documentation</title>
+    <title>6.3.3.4. psl2bed &mdash; BEDOPS 2.4.1 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.4.0',
+        VERSION:     '2.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../../../index.html" />
     <link rel="up" title="6.3.3. Data conversion" href="../conversion.html" />
     <link rel="next" title="6.3.3.5. sam2bed" href="sam2bed.html" />
     <link rel="prev" title="6.3.3.3. gtf2bed" href="gtf2bed.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="gtf2bed.html" title="6.3.3.3. gtf2bed"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../conversion.html" accesskey="U">6.3.3. Data conversion</a> &raquo;</li> 
@@ -58,7 +58,7 @@
             
   <div class="section" id="psl2bed">
 <span id="id1"></span><h1>6.3.3.4. <cite>psl2bed</cite><a class="headerlink" href="#psl2bed" title="Permalink to this headline">¶</a></h1>
-<p>The <tt class="docutils literal"><span class="pre">psl2bed</span></tt> script converts 0-based, half-open <tt class="docutils literal"><span class="pre">[start-1,</span> <span class="pre">end)</span></tt> <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format2">Pattern Space Layout</a> (PSL) to unsorted, 0-based, half-open <tt class="docutils literal"><span class="pre">[start-1,</span> <span class="pre">end)</span></tt> extended BED-formatted data.</p>
+<p>The <tt class="docutils literal"><span class="pre">psl2bed</span></tt> script converts 0-based, half-open <tt class="docutils literal"><span class="pre">[start-1,</span> <span class="pre">end)</span></tt> <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format2">Pattern Space Layout</a> (PSL) to sorted, 0-based, half-open <tt class="docutils literal"><span class="pre">[start-1,</span> <span class="pre">end)</span></tt> extended BED-formatted data.</p>
 <p>For convenience, we also offer <tt class="docutils literal"><span class="pre">psl2starch</span></tt>, which performs the extra step of creating a Starch-formatted archive.</p>
 <div class="section" id="dependencies">
 <h2>6.3.3.4.1. Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
@@ -88,7 +88,7 @@
 </div>
 <div class="section" id="example">
 <h2>6.3.3.4.4. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<p>To demonstrate these scripts, we use a sample GFF input called <tt class="docutils literal"><span class="pre">foo.gff</span></tt> (see the <a class="reference internal" href="gff2bed.html#gff2bed-downloads"><em>Downloads</em></a> section to grab this file).</p>
+<p>To demonstrate these scripts, we use a sample PSL input called <tt class="docutils literal"><span class="pre">foo.psl</span></tt> (see the <a class="reference internal" href="#psl2bed-downloads"><em>Downloads</em></a> section to grab this file).</p>
 <div class="highlight-python"><pre>psLayout version 3
 
 match   mis-    rep.    N's     Q gap   Q gap   T gap   T gap   strand  Q               Q       Q       Q       T               T       T       T       block   blockSizes      qStarts  tStarts
@@ -336,7 +336,7 @@ chr16   8149657 8149694 foo     50      +       36      1       0       0       
         <li class="right" >
           <a href="gtf2bed.html" title="6.3.3.3. gtf2bed"
              >previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../conversion.html" >6.3.3. Data conversion</a> &raquo;</li> 

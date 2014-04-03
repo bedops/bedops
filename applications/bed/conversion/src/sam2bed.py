@@ -2,7 +2,7 @@
 
 #
 #    BEDOPS
-#    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+#    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 # Project:      Converts 1-based, closed [a, b] headered or headerless SAM input
 #               into 0-based, half-open [a-1, b) extended BED
 #
-# Version:      2.4.1
+# Version:      2.4.2
 #
 # Notes:        The SAM format is Sequence Alignment/Map file that is a 1-based, closed 
 #               [a, b]. This script converts this indexing back to 0-based, half-
@@ -481,7 +481,7 @@ def which(program):
 
 def printUsage(stream):
     usage = ("Usage:\n"
-             "  %s [ --help ] [ --keep-header ] [ --split ] [ --all-reads ] [ --do-not-sort | --max-mem <value> ] < foo.sam\n\n"
+             "  %s [ --help ] [ --keep-header ] [ --split ] [ --all-reads ] [ --do-not-sort | --max-mem <value> (--sort-tmpdir <dir>) ] < foo.sam\n\n"
              "Options:\n"
              "  --help                 Print this help message and exit\n"
              "  --keep-header          Preserve header section as pseudo-BED elements\n"
@@ -491,7 +491,12 @@ def printUsage(stream):
              "  --custom-tags <value>  Add a comma-separated list of custom SAM tags\n"
              "  --max-mem <value>      Sets aside <value> memory for sorting BED output. For example,\n"
              "                         <value> can be 8G, 8000M or 8000000000 to specify 8 GB of memory\n"
-             "                         (default: 2G)\n\n"
+             "                         (default: 2G)\n"
+             "  --sort-tmpdir <dir>    Optionally sets <dir> as temporary directory for sort data, when\n"
+             "                         used in conjunction with --max-mem <value>. For example, <dir> can\n"
+             "                         be $PWD to store intermediate sort data in the current working\n"
+             "                         directory, in place of the host operating system default\n"
+             "                         temporary directory.\n\n"
              "About:\n"
              "  This script converts 1-based, closed [a, b] binary SAM data from standard         \n"
              "  input into 0-based, half-open [a-1, b) extended BED, which is sorted and sent     \n"
@@ -680,6 +685,8 @@ class Parameters:
         self._keepHeaderIdx = 0
         self._keepHeaderChr = "_header"
         self._sortOutput = True
+        self._sortTmpdir = None
+        self._sortTmpdirSet = False
         self._inputNeedsSplitting = False
         self._includeAllReads = False
         self._maxMem = "2G"
@@ -714,6 +721,20 @@ class Parameters:
     @sortOutput.setter
     def sortOutput(self, flag):
         self._sortOutput = flag
+
+    @property
+    def sortTmpdir(self):
+        return self._sortTmpdir
+    @sortTmpdir.setter
+    def sortTmpdir(self, val):
+        self._sortTmpdir = val
+
+    @property
+    def sortTmpdirSet(self):
+        return self._sortTmpdirSet
+    @sortTmpdirSet.setter
+    def sortTmpdirSet(self, flag):
+        self._sortTmpdirSet = flag
 
     @property
     def inputNeedsSplitting(self):
@@ -776,7 +797,7 @@ def main(*args):
     #
 
     optstr = ""
-    longopts = ["do-not-sort", "keep-header", "split", "all-reads", "help", "custom-tags=", "max-mem="]
+    longopts = ["do-not-sort", "keep-header", "split", "all-reads", "help", "custom-tags=", "max-mem=", "sort-tmpdir="]
     try:
         (options, args) = getopt.getopt(sys.argv[1:], optstr, longopts)
     except getopt.GetoptError as error:
@@ -795,6 +816,9 @@ def main(*args):
             params.includeAllReads = True
         elif key in ("--do-not-sort"):
             params.sortOutput = False
+        elif key in ("--sort-tmpdir"):
+            params.sortTmpdir = str(value)
+            params.sortTmpdirSet = True
         elif key in ("--custom-tags"):
             params.customTagsStr = str(value)
             params.customTagsAdded = True
@@ -811,6 +835,19 @@ def main(*args):
         sys.stderr.write( "[%s] - Error: Cannot specify both --do-not-sort and --max-mem parameters\n" % sys.argv[0] )
         printUsage("stderr")
         return os.EX_USAGE 
+
+    if params.sortTmpdirSet and not params.maxMemChanged:
+        sys.stderr.write( "[%s] - Error: Cannot specify --sort-tmpdir parameter without specifying --max-mem parameter\n" % sys.argv[0] )
+        printUsage("stderr")
+        return os.EX_USAGE
+    
+    if params.sortTmpdirSet:
+        try:
+            os.listdir(params.sortTmpdir)
+        except OSError as error:
+            sys.stderr.write( "[%s] - Error: Temporary sort data directory specified with --sort-tmpdir is a file, is non-existent, or its permissions do not allow access\n" % sys.argv[0] )
+            printUsage("stderr")
+            return os.EX_USAGE
 
     mode = os.fstat(0).st_mode
     inputIsNotAvailable = True
@@ -831,10 +868,13 @@ def main(*args):
         return os.EX_OSFILE
 
     sam_process = subprocess.Popen(['samtools', 'view', '-h', '-S', '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-    sortbed_process = subprocess.Popen(['sort-bed', '--max-mem', params.maxMem, '-'], stdin=subprocess.PIPE, stdout=sys.stdout)
-
     produce_sam_thread = threading.Thread(target=produceSAM, args=(sys.stdin, sam_process.stdin))
+
     if params.sortOutput:
+        if params.sortTmpdirSet:
+            sortbed_process = subprocess.Popen(['sort-bed', '--max-mem', params.maxMem, '--tmpdir', params.sortTmpdir, '-'], stdin=subprocess.PIPE, stdout=sys.stdout)
+        else:
+            sortbed_process = subprocess.Popen(['sort-bed', '--max-mem', params.maxMem, '-'], stdin=subprocess.PIPE, stdout=sys.stdout)
         convert_to_bed_thread = threading.Thread(target=consumeSAM, args=(sam_process.stdout, sortbed_process.stdin, params))
     else:
         convert_to_bed_thread = threading.Thread(target=consumeSAM, args=(sam_process.stdout, sys.stdout, params))

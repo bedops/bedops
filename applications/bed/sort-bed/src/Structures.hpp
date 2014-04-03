@@ -1,5 +1,5 @@
 /*
-  FILE: Bed.h
+  FILE: Structures.hpp
   AUTHOR: Scott Kuehn
    MODS: Shane Neph
   CREATE DATE: Tue May 16 09:15:54 PDT 2006
@@ -67,7 +67,7 @@ int
 mergeSort(FILE **tmpFiles, unsigned int numFiles);
 
 int
-processData(char const **bedFileNames, unsigned int numFiles, double maxMem, char const* tmpPath);
+processData(char const **bedFileNames, unsigned int numFiles, double maxMem, char *tmpPath);
 
 void
 printBed(FILE *out, BedData *beds);

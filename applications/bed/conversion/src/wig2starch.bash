@@ -2,7 +2,7 @@
 
 #
 #    BEDOPS
-#    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+#    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 # Project:      Convert UCSC Wiggle to UCSC BED and thence compressed into a BEDOPS Starch
 #               archive sent to standard output.
 #
-# Version:      2.4.1
+# Version:      2.4.2
 #
 # Notes:        The UCSC Wiggle format (http://genome.ucsc.edu/goldenPath/help/wiggle.html)
 #               is 1-based, closed [a, b] and is offered in variable or fixed step varieties.
@@ -51,7 +51,7 @@
 printUsage () {
     cat <<EOF
 Usage:
-  wig2starch [ --help ] [ --keep-header ] [ --do-not-sort | --max-mem <value> ] [ --multisplit <basename> ] [ --starch-format <bzip2|gzip> ] < foo.wig
+  wig2starch [ --help ] [ --keep-header ] [ --do-not-sort | --max-mem <value> (--sort-tmpdir <dir>) ] [ --multisplit <basename> ] [ --starch-format <bzip2|gzip> ] < foo.wig > foo.starch
 
 Options:
   --help                        Print this help message and exit
@@ -59,6 +59,11 @@ Options:
   --max-mem <value>             Sets aside <value> memory for sorting BED output. For example,
                                 <value> can be 8G, 8000M or 8000000000 to specify 8 GB of memory
                                 (default: 2G).
+  --sort-tmpdir <dir>           Optionally sets <dir> as temporary directory for sort data, when
+                                used in conjunction with --max-mem <value>. For example, <dir> can
+                                be $PWD to store intermediate sort data in the current working
+                                directory, in place of the host operating system default
+                                temporary directory.
   --keep-header                 Preserve header and metadata as BED elements (also works well 
                                 with --multisplit <basename> option)
   --multisplit <basename>       A single input file may have multiple wig sections, a user may
@@ -103,6 +108,9 @@ EOF
 # default sort-bed memory usage
 maxMem="2G"
 
+# default temporary sort data directory
+sortTmpdir="/tmp"
+
 # default multisplit basename
 multisplitBasename="foo"
 
@@ -115,6 +123,7 @@ multisplitFlag=false
 maxMemFlag=false
 keepHeaderFlag=false
 starchFormatSpecifiedFlag=false
+sortTmpdirFlag=false
 
 # cf. http://stackoverflow.com/a/7680682/19410
 optspec="hkm-:"
@@ -142,6 +151,17 @@ while getopts "$optspec" optchar; do
                         exit -1;
                     fi
                     maxMem="${val}";
+                    ;;
+                sort-tmpdir)
+                    sortTmpdirFlag=true;
+                    val="${!OPTIND}"; 
+                    OPTIND=$(( $OPTIND + 1 ));
+                    if [[ ! ${val} ]]; then
+                        echo "[wig2bed] - Error: Must specify value for --sort-tmpdir" >&2
+                        printUsage;
+                        exit -1;
+                    fi
+                    sortTmpdir="${val}";
                     ;;
                 multisplit)
                     multisplitFlag=true;
@@ -189,6 +209,20 @@ if [ -t 0 ]; then
     exit -1;
 fi
 
+if ${sortTmpdirFlag} && ! ${maxMemFlag}; then
+    echo "[wig2bed] - Error: Must specify --max-mem when using --sort-tmpdir -- see usage:" >&2
+    printUsage;
+    exit -1;
+fi
+
+if ${sortTmpdirFlag}; then
+    if [ ! -d ${sortTmpdir} ] || [ ! -w ${sortTmpdir} ]; then 
+        echo "[wig2bed] - Error: Temporary sort data directory specified with --sort-tmpdir is a file, is non-existent, or its permissions do not allow access -- see usage:" >&2
+        printUsage;
+        exit -1;
+    fi
+fi
+
 command -v wig2bed_bin > /dev/null 2>&1 || { echo "[wig2bed] - Error: Could not find wig2bed_bin binary" >&2; exit -1; }
 command -v starch > /dev/null 2>&1 || { echo "[wig2bed] - Error: Could not find starch binary" >&2; exit -1; }
 if ${convertWithoutSortingFlag}; then
@@ -223,32 +257,36 @@ if ${convertWithoutSortingFlag}; then
     fi
 else
     command -v sort-bed > /dev/null 2>&1 || { echo "[wig2bed] - Error: Could not find sort-bed binary" >&2; exit -1; }
+    sortTmpdirStr=""
+    if ${sortTmpdirFlag}; then
+        sortTmpdirStr="--tmpdir ${sortTmpdir}"
+    fi    
     if ${multisplitFlag}; then
         if ${starchFormatSpecifiedFlag}; then
             if ${keepHeaderFlag}; then
-                wig2bed_bin --keep-header --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} - | starch ${starchFormat} -
+                wig2bed_bin --keep-header --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} ${sortTmpdirStr} - | starch ${starchFormat} -
             else
-                wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} - | starch ${starchFormat} -
+                wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} ${sortTmpdirStr} - | starch ${starchFormat} -
             fi
         else
             if ${keepHeaderFlag}; then
-                wig2bed_bin --keep-header --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} - | starch -
+                wig2bed_bin --keep-header --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} ${sortTmpdirStr} - | starch -
             else
-                wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} - | starch -
+                wig2bed_bin --multisplit ${multisplitBasename} - | sort-bed --max-mem ${maxMem} ${sortTmpdirStr} - | starch -
             fi
         fi
     else
         if ${starchFormatSpecifiedFlag}; then
             if ${keepHeaderFlag}; then
-                wig2bed_bin --keep-header - | sort-bed --max-mem ${maxMem} - | starch ${starchFormat} -
+                wig2bed_bin --keep-header - | sort-bed --max-mem ${maxMem} ${sortTmpdirStr} - | starch ${starchFormat} -
             else
-                wig2bed_bin - | sort-bed --max-mem ${maxMem} - | starch ${starchFormat} -
+                wig2bed_bin - | sort-bed --max-mem ${maxMem} ${sortTmpdirStr} - | starch ${starchFormat} -
             fi
         else
             if ${keepHeaderFlag}; then
-                wig2bed_bin --keep-header - | sort-bed --max-mem ${maxMem} - | starch -
+                wig2bed_bin --keep-header - | sort-bed --max-mem ${maxMem} ${sortTmpdirStr} - | starch -
             else
-                wig2bed_bin - | sort-bed --max-mem ${maxMem} - | starch -
+                wig2bed_bin - | sort-bed --max-mem ${maxMem} ${sortTmpdirStr} - | starch -
             fi
         fi
     fi  

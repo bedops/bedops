@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>1. Overview &mdash; BEDOPS 2.4.0 documentation</title>
+    <title>1. Overview &mdash; BEDOPS 2.4.1 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2.4.0',
+        VERSION:     '2.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.0 documentation" href="../index.html" />
+    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../index.html" />
     <link rel="next" title="2. Installation" href="installation.html" />
     <link rel="prev" title="BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis toolkit" href="../index.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../index.html" title="BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis toolkit"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -57,8 +57,8 @@
 <div class="section" id="about-bedops">
 <h2>1.1. About BEDOPS<a class="headerlink" href="#about-bedops" title="Permalink to this headline">¶</a></h2>
 <p>BEDOPS is an open-source command-line toolkit that performs highly efficient and scalable Boolean and other set operations, statistical calculations, archiving, conversion and other management of genomic data of arbitrary scale.</p>
-<p>The suite includes tools for set and statistical operations (<a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a>, <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> and <a class="reference internal" href="reference/set-operations/closest-features.html#closest-features"><em>closest-features</em></a>) and compression of large inputs into a novel lossless format (<a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a>) that can provide greater space savings and faster data extractions than current alternatives. We offer native support for this compression format to these and other BEDOPS tools.</p>
-<p>BEDOPS also offers logarithmic speedups in access to per-chromosome regions in sorted BED data (in <a class="reference internal" href="reference/set-operations/bedextract.html#bedextract"><em>bedextract</em></a> and core BEDOPS tools). This feature makes whole-genome analyses &#8220;embarassingly parallel&#8221;, in that per-chromosome computations can be distributed onto separate work nodes, with results collated at the end in <a class="reference external" href="http://en.wikipedia.org/wiki/MapReduce">map-reduce</a> fashion.</p>
+<p>The suite includes tools for set and statistical operations (<a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a>, <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> and <a class="reference internal" href="reference/set-operations/closest-features.html#closest-features"><em>closest-features</em></a>) and compression of large inputs into a novel lossless format (<a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a>) that can provide greater space savings and faster data extractions than current alternatives. BEDOPS offers native support for this deep compression format, in addition to BED.</p>
+<p>BEDOPS also offers logarithmic time search to per-chromosome regions in sorted BED data (in <a class="reference internal" href="reference/set-operations/bedextract.html#bedextract"><em>bedextract</em></a> and core BEDOPS tools). This feature makes whole-genome analyses &#8220;embarassingly parallel&#8221;, in that per-chromosome computations can be distributed onto separate work nodes, with results collated at the end in <a class="reference external" href="http://en.wikipedia.org/wiki/MapReduce">map-reduce</a> fashion.</p>
 <p>Sorting arbitrarily large BED files is easy with <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a>, which easily scales beyond available system memory, as needed. We also offer portable conversion scripts that transform data in common genomic formats (SAM/BAM, GFF/GTF, PSL, WIG, and VCF) to sorted BED data that are ready to use with core BEDOPS utilities.</p>
 <p>All of these tools are made to be glued together with common UNIX input and output streams. This helps make your pipeline design and maintenance easy, fast and flexible.</p>
 </div>
@@ -72,9 +72,10 @@
     | ... \
     &gt; Answer.bed</pre>
 </div>
-<p>Our <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> and <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> core tools offer numerous operations of all kinds, including those in the slide below:</p>
-<a class="reference internal image-reference" href="../_images/BEDOPS_Presentation_5_small.png"><img alt="../_images/BEDOPS_Presentation_5_small.png" src="../_images/BEDOPS_Presentation_5_small.png" style="width: 99%;" /></a>
-<a class="reference internal image-reference" href="../_images/BEDOPS_Presentation_6_small.png"><img alt="../_images/BEDOPS_Presentation_6_small.png" src="../_images/BEDOPS_Presentation_6_small.png" style="width: 99%;" /></a>
+<p>Our <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> core tool offers numerous set operations of all kinds, including those in the slide below:</p>
+<a class="reference internal image-reference" href="../_images/BEDOPS_Presentation_bedops_ops.png"><img alt="../_images/BEDOPS_Presentation_bedops_ops.png" src="../_images/BEDOPS_Presentation_bedops_ops.png" style="width: 99%;" /></a>
+<p>The <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> core tool applies a wide variety of statistical and mapping operations to genomic inputs:</p>
+<a class="reference internal image-reference" href="../_images/BEDOPS_Presentation_bedmap_ops.png"><img alt="../_images/BEDOPS_Presentation_bedmap_ops.png" src="../_images/BEDOPS_Presentation_bedmap_ops.png" style="width: 99%;" /></a>
 </div>
 <div class="section" id="bedops-tools-are-fast-and-efficient">
 <h3>1.2.2. BEDOPS tools are fast and efficient<a class="headerlink" href="#bedops-tools-are-fast-and-efficient" title="Permalink to this headline">¶</a></h3>
@@ -159,7 +160,7 @@
         <li class="right" >
           <a href="../index.html" title="BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis toolkit"
              >previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.4.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

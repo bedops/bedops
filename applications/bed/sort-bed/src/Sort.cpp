@@ -1,5 +1,5 @@
 /*
-  FILE: sort.c
+  FILE: Sort.cpp
   AUTHOR: Scott Kuehn
     MODS: Shane Neph
   CREATE DATE: Thu Sep  7 08:48:35 PDT 2006
@@ -187,7 +187,6 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, d
     return;
 }
 
-
 int
 main(int argc, char **argv)
 {
@@ -199,15 +198,10 @@ main(int argc, char **argv)
     int rval = EXIT_FAILURE;
     getArgs(argc, argv, inFiles, &numInFiles, &maxMemory, &tmpPath);
 
-// sjn : still need to make sure path isn't already a file -> error; see if dir already exists -> no mkdir; etc.
-//  need to valgrind memory leaks.  double check tmpFiles vs tmpFileNames - alloc/free/remove
-//  need to look at strategy for deleting tmp files on errors, including BED errors that we catch
-//  if dir dne, then create it.  not going to remove it though in case things are done in parallel
     if(tmpPath != NULL)
         {
           if(maxMemory > 0)
               {
-                  mkdir(tmpPath, 0700);
                   clean = true;
               }
           else // tmpPath only useful when --max-mem is used
@@ -219,8 +213,6 @@ main(int argc, char **argv)
     else if (maxMemory > 0)
         {
             tmpPath = getenv("TMPDIR");
-            if (tmpPath != NULL)
-                mkdir(tmpPath, 0700);
         }
 
     // sort
