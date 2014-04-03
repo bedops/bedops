@@ -42,8 +42,6 @@
 
 #include "Structures.hpp"
 
-#include "stdlib_mt.h"
-
 using namespace std;
 
 int
@@ -1172,9 +1170,8 @@ lexSortBedData(BedData *beds)
     /* sort coords */
     for(i = 0; i < beds->numChroms; ++i) 
         {            
-	  /* qsort(beds->chroms[i]->coords, static_cast<size_t>(beds->chroms[i]->numCoords), sizeof(BedCoordData), numCompareBedData); */
-	  qsort_mt(beds->chroms[i]->coords, static_cast<size_t>(beds->chroms[i]->numCoords), sizeof(BedCoordData), numCompareBedData);
-        }
+	  qsort(beds->chroms[i]->coords, static_cast<size_t>(beds->chroms[i]->numCoords), sizeof(BedCoordData), numCompareBedData);
+	}
 
     /* sort chroms */
     qsort(beds->chroms, static_cast<size_t>(beds->numChroms), sizeof(ChromBedData *), lexCompareBedData);
