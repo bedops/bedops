@@ -12,12 +12,6 @@ MAIN               = ../../../..
 HEAD               = ${MAIN}/interfaces/general-headers
 PARTY3             = $(MAIN)/third-party
 THISDIR	           = ${shell pwd}
-LIBLIBMT           = libmt.a
-LOCALLIBMTDIR      = ${THISDIR}/${PARTY3}/libmt
-LOCALLIBMTLIBDIR   = ${LOCALLIBMTDIR}/lib
-LOCALLIBMTLIBPATH  = ${LOCALLIBMTLIBDIR}/${LIBLIBMT}
-LOCALLIBMTINCDIR   = ${LOCALLIBMTDIR}/include
-PFLAGS             = -pthread
 
 ifneq ($(wildcard .forcestatic),)
 	SFLAGS	= -static -s
@@ -35,21 +29,15 @@ gprof: gprofbuild
 	${CXX} -o ${DIST_DIR}/gprof.${PROG} ${PFLAGS} ${SFLAGS} ${WARNINGS} ${GPROFFLAGS} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o 
 
 sort: sortbuild
-	${CXX} -o ${DIST_DIR}/${PROG} ${PFLAGS} ${SFLAGS} ${WARNINGS} ${OPTIMIZE} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -L${LOCALLIBMTLIBDIR} ${LOCALLIBMTLIBPATH}
+	${CXX} -o ${DIST_DIR}/${PROG} ${PFLAGS} ${SFLAGS} ${WARNINGS} ${OPTIMIZE} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o
 
 gprofbuild: prep
-	${CXX} ${WARNINGS} ${GPROFFLAGS} -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD} -I${LOCALLIBMTINCDIR}
+	${CXX} ${WARNINGS} ${GPROFFLAGS} -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
 	${CXX} ${WARNINGS} ${GPROFFLAGS} -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
 
-sortbuild: prep dependencies
-	${CXX} ${WARNINGS} ${OPTIMIZE} -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD} -I${LOCALLIBMTINCDIR}
+sortbuild: prep
+	${CXX} ${WARNINGS} ${OPTIMIZE} -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
 	${CXX} ${WARNINGS} ${OPTIMIZE} -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
-
-dependencies: libmt
-
-libmt:
-	test -d ${LOCALLIBMTDIR} || { cd ${MAIN} && make libmt_support_c && cd ${THISDIR}; }
-	cd ${LOCALLIBMTDIR} && ${LOCALLIBMTDIR}/configure --prefix=${LOCALLIBMTDIR} && make clean && make && make install && cd ${THISDIR}
 
 prep:
 ifneq ($(wildcard .forcestatic),)
@@ -61,7 +49,6 @@ endif
 clean:
 	rm -rf ${OBJ_DIR}
 	rm -rf ${DIST_DIR}/${PROG}
-	-test -d ${LOCALLIBMTDIR} && { cd ${LOCALLIBMTDIR} && make clean && cd ${THISDIR}; }
 
 nonstatic: sortbuild
 	${CXX} ${WARNINGS} ${OPTIMIZE} -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}

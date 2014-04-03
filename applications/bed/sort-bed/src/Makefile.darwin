@@ -12,12 +12,6 @@ MAIN                    = ../../../..
 HEAD                    = ${MAIN}/interfaces/general-headers
 PARTY3                  = $(MAIN)/third-party
 THISDIR	                = ${shell pwd}
-LIBLIBMT                = libmt.a
-LOCALLIBMTDIR           = ${THISDIR}/${PARTY3}/libmt
-LOCALLIBMTLIBDIR        = ${LOCALLIBMTDIR}/lib
-LOCALLIBMTLIBPATH       = ${LOCALLIBMTLIBDIR}/${LIBLIBMT}
-LOCALLIBMTINCDIR        = ${LOCALLIBMTDIR}/include
-PFLAGS                  = -pthread
 
 ifneq ($(wildcard .forcestatic),)
 	SFLAGS	= -static
@@ -26,17 +20,11 @@ endif
 all: sort
 
 sort: sortbuild
-	${CXX} -o ${DIST_DIR}/${PROG}_${ARCH} ${SFLAGS} ${WARNINGS} ${OPTIMIZE} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -lc++ ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -L${LOCALLIBMTLIBDIR} ${LOCALLIBMTLIBPATH}
+	${CXX} -o ${DIST_DIR}/${PROG}_${ARCH} ${SFLAGS} ${WARNINGS} ${OPTIMIZE} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -lc++ ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o
 
-sortbuild: prep dependencies
-	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${PFLAGS} ${WARNINGS} ${OPTIMIZE} -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD} -I${LOCALLIBMTINCDIR}
+sortbuild: prep
+	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${PFLAGS} ${WARNINGS} ${OPTIMIZE} -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
 	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${PFLAGS} ${WARNINGS} ${OPTIMIZE} -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
-
-dependencies: libmt
-
-libmt:
-	test -d ${LOCALLIBMTDIR} || { cd ${MAIN} && make libmt_support_c && cd ${THISDIR}; }
-	cd ${LOCALLIBMTDIR} && ${LOCALLIBMTDIR}/configure --prefix=${LOCALLIBMTDIR} && make clean && make && make install && cd ${THISDIR}
 
 prep:
 ifneq ($(wildcard .forcestatic),)
