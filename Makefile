@@ -8,13 +8,6 @@ JANSSONVERSION   = jansson-2.4
 WHICHJANSSON    := ${PARTY3}/${JANSSONVERSION}
 ZLIBVERSION      = zlib-1.2.7
 WHICHZLIB       := ${PARTY3}/${ZLIBVERSION}
-<<<<<<< HEAD
-=======
-USORTVERSION     = usort-1.0
-WHICHUSORT      := ${PARTY3}/${USORTVERSION}
-LIBMTVERSION     = libmt-0.1
-WHICHLIBMT      := ${PARTY3}/${LIBMTVERSION}
->>>>>>> d9dd9ab44927f7b5c289be61ea8c22cb9e114f9d
 APPDIR           = applications/bed
 BINDIR           = bin
 OSXPKGROOT       = packaging/os_x
@@ -187,30 +180,11 @@ zlib_support_c:
 ZLIBDONE=1
 	export ZLIBDONE
 
-<<<<<<< HEAD
-=======
-usort_support_c:
-	test -s ${WHICHUSORT} || { bzcat ${WHICHUSORT}.tar.bz2 | tar -x -C ${PARTY3}; }
-	ln -sf ${USORTVERSION} ${PARTY3}/usort
-USORTDONE=1
-	export USORTDONE
-
-libmt_support_c:
-	test -s ${WHICHLIBMT} || { bzcat ${WHICHLIBMT}.tar.bz2 | tar -x -C ${PARTY3}; }
-	ln -sf ${LIBMTVERSION} ${PARTY3}/libmt
-LIBMTDONE=1
-	export LIBMTDONE
-
->>>>>>> d9dd9ab44927f7b5c289be61ea8c22cb9e114f9d
 #
 # Generic build targets
 #
 
-<<<<<<< HEAD
 sort_c:
-=======
-sort_c: usort_support_c libmt_support_c
->>>>>>> d9dd9ab44927f7b5c289be61ea8c22cb9e114f9d
 	make -C ${APPDIR}/sort-bed/src
 bedops_c:
 	make -C ${APPDIR}/bedops/src
@@ -229,11 +203,8 @@ wig2bed_c:
 # GNU gprof targets
 #
 
-<<<<<<< HEAD
+
 sort_c_gprof:
-=======
-sort_c_gprof: usort_support_c libmt_support_c
->>>>>>> d9dd9ab44927f7b5c289be61ea8c22cb9e114f9d
 	make -C ${APPDIR}/sort-bed/src gprof
 bedops_c_gprof:
 	make -C ${APPDIR}/bedops/src gprof
@@ -255,17 +226,10 @@ wig2bed_c_gprof:
 sort_c_darwin_intel_fat: sort_c_darwin_intel_i386 sort_c_darwin_intel_x86_64
 	lipo -create ${APPDIR}/sort-bed/bin/sort-bed_i386 ${APPDIR}/sort-bed/bin/sort-bed_x86_64 -output ${APPDIR}/sort-bed/bin/sort-bed
 
-<<<<<<< HEAD
 sort_c_darwin_intel_i386:
 	ARCH=i386 CC=clang CXX=clang++ make -C ${APPDIR}/sort-bed/src -f Makefile.darwin
 
 sort_c_darwin_intel_x86_64:
-=======
-sort_c_darwin_intel_i386: usort_support_c libmt_support_c
-	ARCH=i386 CC=clang CXX=clang++ make -C ${APPDIR}/sort-bed/src -f Makefile.darwin
-
-sort_c_darwin_intel_x86_64: usort_support_c libmt_support_c
->>>>>>> d9dd9ab44927f7b5c289be61ea8c22cb9e114f9d
 	ARCH=x86_64 CC=clang CXX=clang++ make -C ${APPDIR}/sort-bed/src -f Makefile.darwin
 
 bedops_c_darwin_intel_fat: bedops_c_darwin_intel_i386 bedops_c_darwin_intel_x86_64
@@ -386,13 +350,6 @@ very_clean: clean clean_force_static
 	rm -f ${PARTY3}/jansson
 	rm -rf ${WHICHZLIB}
 	rm -f ${PARTY3}/zlib
-<<<<<<< HEAD
-=======
-	rm -rf ${WHICHUSORT}
-	rm -f ${PARTY3}/usort
-	rm -rf ${WHICHLIBMT}
-	rm -f ${PARTY3}/libmt
->>>>>>> d9dd9ab44927f7b5c289be61ea8c22cb9e114f9d
 	rm -f ${OSXPKGDIR}/*
 	rm -f ${OSXLIBDIR}/*
 	rm -Rf ${OSXBUILDDIR}/*
