@@ -152,10 +152,12 @@ def printUsage(stream):
 
 def checkInstallation(rv):
     currentVersion = sys.version_info
-    if currentVersion[0] == rv[0] and currentVersion[1] >= rv[1]:
+    if currentVersion[0] == rv[0] and currentVersion[1] > rv[1]:
+        pass
+    elif currentVersion[0] == rv[0] and currentVersion[1] == rv[1] and currentVersion[2] >= rv[2]:
         pass
     else:
-        sys.stderr.write( "[%s] - Error: Your Python interpreter must be %d.%d or greater (within major version %d)\n" % (sys.argv[0], rv[0], rv[1], rv[0]) )
+        sys.stderr.write( "[%s] - Error: Your Python interpreter must be %d.%d.%d or greater (within major version %d)\n" % (sys.argv[0], rv[0], rv[1], rv[2], rv[0]) )
         sys.exit(os.EX_CONFIG)
     return os.EX_OK
 
@@ -420,7 +422,7 @@ class Parameters:
         self._filterCount = val
 
 def main(*args):
-    requiredVersion = (2,7)
+    requiredVersion = (2,6,2)
     checkInstallation(requiredVersion)
 
     params = Parameters()
