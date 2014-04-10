@@ -266,7 +266,7 @@ def convertVCFToBed(line, params, stream):
             convertedLine = ""
             for alt_allele in alt_alleles:
                 elem_alt = alt_allele
-                if params.filterCount != 0:
+                if params.filterCount != 0 and not params.filterOnInsertions:
                     elem_stop = str(int(elem_start) + int(math.fabs(len(elem_ref) - len(elem_alt))) + 1)
 
                 if not elem_genotype:
@@ -285,7 +285,7 @@ def convertVCFToBed(line, params, stream):
             if not convertedLine:
                 convertedLine = None
         else:
-            if params.filterCount != 0:
+            if params.filterCount != 0 and not params.filterOnInsertions:
                 elem_stop = str(int(elem_start) + int(math.fabs(len(elem_ref) - len(elem_alt))) + 1)
                     
             if not elem_genotype:
