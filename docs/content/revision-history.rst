@@ -12,6 +12,26 @@ Current version
 ===============
 
 ------
+v2.4.2
+------
+
+Released: **April 10, 2014**
+
+* :ref:`conversion scripts <conversion_scripts>`
+
+  * Added support for :ref:`sort-bed` ``--tmpdir`` option to conversion scripts, to allow specification of alternative temporary directory for sorted results when used in conjunction with ``--max-mem`` option.
+
+  * Added support for GFF3 files which include a FASTA directive in ``gff2bed`` and ``gff2starch``.
+
+  * Extended support for Python-based conversion scripts to support use with Python v2.6.2 and forwards, except for ``sam2bed`` and ``sam2starch``, which still require Python v2.7 or greater (and under Python3).
+
+  * Fixed ``--insertions`` option in :ref:`vcf2bed` to now report a single-base BED element.
+
+=================
+Previous versions
+=================
+
+------
 v2.4.1
 ------
 
@@ -46,10 +66,6 @@ Released: **February 26, 2014**
     In the longer term, this gets us closer to moving BEDOPS to using the CMake build system, to further abstract and simplify the build process.
 
 * Cleaned up various compilation warnings found with ``clang``/``clang++`` and GCC kits.
-
-=================
-Previous versions
-=================
 
 ------
 v2.4.0
