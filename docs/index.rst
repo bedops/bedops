@@ -59,8 +59,8 @@ Table of contents
 .. |linux_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.1/bedops_linux_x86_64-v2.4.1.tar.bz2">x86-64 (64-bit)</a> binaries</li>
-   <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.1/bedops_linux_i386-v2.4.1.tar.bz2">i386 (32-bit)</a> binaries</li>
+   <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.2/bedops_linux_x86_64-v2.4.2.tar.bz2">x86-64 (64-bit)</a> binaries</li>
+   <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.2/bedops_linux_i386-v2.4.2.tar.bz2">i386 (32-bit)</a> binaries</li>
    <li><a href="content/installation.html#linux">Installation instructions</a> for Linux hosts</li>
    </ul>
 
@@ -68,7 +68,7 @@ Table of contents
 .. |macosx_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.1/BEDOPS.2.4.1.mpkg.zip">Intel (32-/64-bit, 10.7-10.9)</a> installer package</li>
+   <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.2/BEDOPS.2.4.2.mpkg.zip">Intel (32-/64-bit, 10.7-10.9)</a> installer package</li>
    <li><a href="content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
    </ul>
 
@@ -76,8 +76,8 @@ Table of contents
 .. |source_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><a href="https://github.com/bedops/bedops/archive/v2.4.1.tar.gz">Source code</a> (tar.gz)</li>
-   <li><a href="https://github.com/bedops/bedops/archive/v2.4.1.zip">Source code</a> (zip)</li>
+   <li><a href="https://github.com/bedops/bedops/archive/v2.4.2.tar.gz">Source code</a> (tar.gz)</li>
+   <li><a href="https://github.com/bedops/bedops/archive/v2.4.2.zip">Source code</a> (zip)</li>
    <li><a href="content/installation.html#installation-via-source-code">Compilation instructions</a></li>
    </ul>
 
