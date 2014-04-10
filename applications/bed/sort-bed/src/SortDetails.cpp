@@ -1,5 +1,5 @@
 /*
-  File: Bed.c
+  File: SortDetails.cpp
   AUTHOR: Scott Kuehn
     MODS: Shane Neph
   CREATE DATE: Tue May 16 10:06:58 PDT 2006
@@ -1170,11 +1170,11 @@ lexSortBedData(BedData *beds)
     /* sort coords */
     for(i = 0; i < beds->numChroms; ++i) 
         {            
-            qsort(beds->chroms[i]->coords, static_cast<size_t>(beds->chroms[i]->numCoords), sizeof(BedCoordData), numCompareBedData);
-        }
+	  qsort(beds->chroms[i]->coords, static_cast<size_t>(beds->chroms[i]->numCoords), sizeof(BedCoordData), numCompareBedData);
+	}
 
     /* sort chroms */
-    qsort(beds->chroms, static_cast<size_t>(beds->numChroms), sizeof(ChromBedData *), lexCompareBedData); 
+    qsort(beds->chroms, static_cast<size_t>(beds->numChroms), sizeof(ChromBedData *), lexCompareBedData);
     return;
 }
 

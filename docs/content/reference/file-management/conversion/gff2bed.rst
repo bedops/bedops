@@ -11,7 +11,7 @@ For convenience, we also offer ``gff2starch``, which performs the extra step of 
 Dependencies
 ============
 
-The ``gff2bed`` script requires Python, version 2.7 or greater (and less than Python3).
+The ``gff2bed`` script requires Python, version 2.6.2 or greater (and less than Python3).
 
 This script is also dependent on input that follows the GFF3 specification. A GFF3-format validator is available `here <http://modencode.oicr.on.ca/cgi-bin/validate_gff3_online>`_ to ensure your input follows specification.
 

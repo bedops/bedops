@@ -2,7 +2,7 @@
 
 #
 #    BEDOPS
-#    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+#    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #               and thence compressed into a BEDOPS Starch archive sent
 #               to standard output.
 #
-# Version:      2.4.1
+# Version:      2.4.2
 #
 # Notes:        The GFF3 specification (http://www.sequenceontology.org/gff3.shtml) 
 #               contains columns that do not map directly to common or UCSC BED columns.
@@ -93,7 +93,7 @@ def which(program):
 
 def printUsage(stream):
     usage = ("Usage:\n"
-             "  %s [ --help ] [ --keep-header ] [ --do-not-sort | --max-mem <value> ] [ --starch-format <bzip2|gzip> ] < foo.gff > sorted-foo.gff.bed.starch\n\n"
+             "  %s [ --help ] [ --keep-header ] [ --do-not-sort | --max-mem <value> (--sort-tmpdir <dir>) ] [ --starch-format <bzip2|gzip> ] < foo.gff > sorted-foo.gff.bed.starch\n\n"
              "Options:\n"
              "  --help                        Print this help message and exit\n"
              "  --keep-header                 Preserve metadata and header fields as pseudo-BED elements\n"
@@ -101,6 +101,11 @@ def printUsage(stream):
              "  --max-mem <value>             Sets aside <value> memory for sorting BED output.\n"
              "                                For example, <value> can be 8G, 8000M or 8000000000\n"
              "                                to specify 8 GB of memory (default: 2G).\n"
+             "  --sort-tmpdir <dir>           Optionally sets <dir> as temporary directory for sort data, when\n"
+             "                                used in conjunction with --max-mem <value>. For example, <dir> can\n"
+             "                                be $PWD to store intermediate sort data in the current working\n"
+             "                                directory, in place of the host operating system default\n"
+             "                                temporary directory.\n"
              "  --starch-format <bzip2|gzip>  Specify backend compression format of starch\n"
              "                                archive (default: bzip2).\n\n"
              "About:\n"
@@ -145,17 +150,19 @@ def printUsage(stream):
 
 def checkInstallation(rv):
     currentVersion = sys.version_info
-    if currentVersion[0] == rv[0] and currentVersion[1] >= rv[1]:
+    if currentVersion[0] == rv[0] and currentVersion[1] > rv[1]:
+        pass
+    elif currentVersion[0] == rv[0] and currentVersion[1] == rv[1] and currentVersion[2] >= rv[2]:
         pass
     else:
-        sys.stderr.write( "[%s] - Error: Your Python interpreter must be %d.%d or greater (within major version %d)\n" % (sys.argv[0], rv[0], rv[1], rv[0]) )
+        sys.stderr.write( "[%s] - Error: Your Python interpreter must be %d.%d.%d or greater (within major version %d)\n" % (sys.argv[0], rv[0], rv[1], rv[2], rv[0]) )
         sys.exit(os.EX_CONFIG)
     return os.EX_OK
 
 def consumeGFF(from_stream, to_stream, params):
     while True:
         gff_line = from_stream.readline()
-        if not gff_line:
+        if not gff_line or gff_line.startswith("##FASTA"):
             from_stream.close()
             to_stream.close()
             break
@@ -165,13 +172,17 @@ def consumeGFF(from_stream, to_stream, params):
 
 def consumeBED(from_stream, to_stream, params):
     while True:
-        bed_line = from_stream.readline()
-        if not bed_line:
-            from_stream.close()
+        try:
+            bed_line = from_stream.readline()
+            if not bed_line:
+                from_stream.close()
+                to_stream.close()
+                break
+            to_stream.write(bed_line)
+            to_stream.flush()
+        except AttributeError as e:
             to_stream.close()
             break
-        to_stream.write(bed_line)
-        to_stream.flush()
 
 def convertGFFToBed(line, params, stream):
 
@@ -242,6 +253,8 @@ class Parameters:
         self._keepHeaderIdx = 0
         self._keepHeaderChr = "_header"
         self._sortOutput = True
+        self._sortTmpdir = None
+        self._sortTmpdirSet = False
         self._maxMem = "2G"
         self._maxMemChanged = False
         self._starchFormat = "--bzip2"
@@ -275,6 +288,20 @@ class Parameters:
         self._sortOutput = flag
 
     @property
+    def sortTmpdir(self):
+        return self._sortTmpdir
+    @sortTmpdir.setter
+    def sortTmpdir(self, val):
+        self._sortTmpdir = val
+
+    @property
+    def sortTmpdirSet(self):
+        return self._sortTmpdirSet
+    @sortTmpdirSet.setter
+    def sortTmpdirSet(self, flag):
+        self._sortTmpdirSet = flag
+
+    @property
     def maxMem(self):
         return self._maxMem
     @maxMem.setter
@@ -297,7 +324,7 @@ class Parameters:
 
 def main(*args):
 
-    requiredVersion = (2,7)
+    requiredVersion = (2,6,2)
     checkInstallation(requiredVersion)
 
     params = Parameters()
@@ -314,7 +341,7 @@ def main(*args):
     #
 
     optstr = ""
-    longopts = ["help", "keep-header", "do-not-sort", "max-mem=", "starch-format="]
+    longopts = ["help", "keep-header", "do-not-sort", "max-mem=", "starch-format=", "sort-tmpdir="]
     try:
         (options, args) = getopt.getopt(sys.argv[1:], optstr, longopts)
     except getopt.GetoptError as error:
@@ -329,6 +356,9 @@ def main(*args):
             params.keepHeader = True
         elif key in ("--do-not-sort"):
             params.sortOutput = False
+        elif key in ("--sort-tmpdir"):
+            params.sortTmpdir = str(value)
+            params.sortTmpdirSet = True
         elif key in ("--max-mem"):
             params.maxMem = str(value)
             params.maxMemChanged = True
@@ -339,6 +369,19 @@ def main(*args):
         sys.stderr.write( "[%s] - Error: Cannot specify both --do-not-sort and --max-mem parameters\n" % sys.argv[0] )
         printUsage("stderr")
         return os.EX_USAGE
+
+    if params.sortTmpdirSet and not params.maxMemChanged:
+        sys.stderr.write( "[%s] - Error: Cannot specify --sort-tmpdir parameter without specifying --max-mem parameter\n" % sys.argv[0] )
+        printUsage("stderr")
+        return os.EX_USAGE
+    
+    if params.sortTmpdirSet:
+        try:
+            os.listdir(params.sortTmpdir)
+        except OSError as error:
+            sys.stderr.write( "[%s] - Error: Temporary sort data directory specified with --sort-tmpdir is a file, is non-existent, or its permissions do not allow access\n" % sys.argv[0] )
+            printUsage("stderr")
+            return os.EX_USAGE
     
     mode = os.fstat(0).st_mode
     inputIsNotAvailable = True
@@ -358,10 +401,13 @@ def main(*args):
         sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
         return os.EX_OSFILE
 
-    sortbed_process = subprocess.Popen(['sort-bed', '--max-mem', params.maxMem, '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     starch_process = subprocess.Popen(['starch', params.starchFormat, '-'], stdin=subprocess.PIPE)
 
     if params.sortOutput:
+        if params.sortTmpdirSet:
+            sortbed_process = subprocess.Popen(['sort-bed', '--max-mem', params.maxMem, '--tmpdir', params.sortTmpdir, '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        else:
+            sortbed_process = subprocess.Popen(['sort-bed', '--max-mem', params.maxMem, '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         convert_gff_to_bed_thread = threading.Thread(target=consumeGFF, args=(sys.stdin, sortbed_process.stdin, params))
         pass_bed_to_starch_thread = threading.Thread(target=consumeBED, args=(sortbed_process.stdout, starch_process.stdin, params))
     else:

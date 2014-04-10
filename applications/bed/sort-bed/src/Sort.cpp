@@ -1,5 +1,5 @@
 /*
-  FILE: sort.c
+  FILE: Sort.cpp
   AUTHOR: Scott Kuehn
     MODS: Shane Neph
   CREATE DATE: Thu Sep  7 08:48:35 PDT 2006

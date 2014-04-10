@@ -38,8 +38,8 @@
 #include "jansson.h"
 
 /* old "stable" binary version:      1.2.0 */
-/* current "stable" binary version:  2.3.0 */
-/* current "dev" binary version:     2.4.0 */
+/* current "stable" binary version:  2.4.1 */
+/* current "dev" binary version:     2.4.2 */
 
 /* current "stable" archive version: 2.0.0 */
 

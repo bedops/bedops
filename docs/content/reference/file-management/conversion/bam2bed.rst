@@ -15,7 +15,7 @@ The ``bam2bed`` script is "non-lossy". Similar tools in the world tend to throw 
 Dependencies
 ============
 
-This ``python`` shell script is dependent upon the installation of `SAMtools <http://samtools.sourceforge.net/>`_ and Python, version 2.7 or greater (and less than Python3).
+This ``python`` shell script is dependent upon the installation of `SAMtools <http://samtools.sourceforge.net/>`_ and Python, version 2.6.2 or greater (and less than Python3).
 
 ======
 Source
