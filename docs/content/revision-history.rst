@@ -21,11 +21,11 @@ Released: **April 10, 2014**
 
   * Added support for :ref:`sort-bed` ``--tmpdir`` option to conversion scripts, to allow specification of alternative temporary directory for sorted results when used in conjunction with ``--max-mem`` option.
 
-  * Added support for GFF3 files which include a FASTA directive in ``gff2bed`` and ``gff2starch``.
+  * Added support for GFF3 files which include a FASTA directive in ``gff2bed`` and ``gff2starch`` (thanks to Keith Hughitt).
 
   * Extended support for Python-based conversion scripts to support use with Python v2.6.2 and forwards, except for ``sam2bed`` and ``sam2starch``, which still require Python v2.7 or greater (and under Python3).
 
-  * Fixed ``--insertions`` option in :ref:`vcf2bed` to now report a single-base BED element.
+  * Fixed ``--insertions`` option in :ref:`vcf2bed` to now report a single-base BED element (thanks to Matt Maurano).
 
 =================
 Previous versions
