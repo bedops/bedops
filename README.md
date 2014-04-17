@@ -23,19 +23,6 @@ The <a href="https://bedops.readthedocs.org/en/latest/content/overview.html#over
 <td><img alt="source_png" src="https://bedops.readthedocs.org/en/latest/_images/source.png"></td>
 </tr>
 <tr class="row-even"><td><ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-<<<<<<< HEAD
-<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.1/bedops_linux_x86_64-v2.4.1.tar.bz2">x86-64 (64-bit)</a> binaries</li>
-<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.1/bedops_linux_i386-v2.4.1.tar.bz2">i386 (32-bit)</a> binaries</li>
-<li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#linux">Installation instructions</a></li>
-</ul></td>
-<td><ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.1/BEDOPS.2.4.1.mpkg.zip">Intel (32-/64-bit)</a> installer</li>
-<li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#mac-os-x">Installation instructions</a></li>
-</ul></td>
-<td><ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-<li><a href="https://github.com/bedops/bedops/archive/v2.4.1.tar.gz">Source code</a> (tar.gz)</li>
-<li><a href="https://github.com/bedops/bedops/archive/v2.4.1.zip">Source code</a> (zip)</li>
-=======
 <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.2/bedops_linux_x86_64-v2.4.2.tar.bz2">x86-64 (64-bit)</a> binaries</li>
 <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.2/bedops_linux_i386-v2.4.2.tar.bz2">i386 (32-bit)</a> binaries</li>
 <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#linux">Installation instructions</a></li>
@@ -47,7 +34,6 @@ The <a href="https://bedops.readthedocs.org/en/latest/content/overview.html#over
 <td><ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
 <li><a href="https://github.com/bedops/bedops/archive/v2.4.2.tar.gz">Source code</a> (tar.gz)</li>
 <li><a href="https://github.com/bedops/bedops/archive/v2.4.2.zip">Source code</a> (zip)</li>
->>>>>>> v2p4p2
 <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#installation-via-source-code">Compilation instructions</a></li>
 </ul></td>
 </tr>
