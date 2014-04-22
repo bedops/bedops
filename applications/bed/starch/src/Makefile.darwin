@@ -54,20 +54,7 @@ endif
 all: clean_force_flags dependencies starchLibrary starch unstarch starchcat starchcluster
 	rm -rf *~
 
-jansson:
-	test -d ${LOCALJANSSONDIR} || { cd ${MAIN} && make jansson_support_c && cd ${THISDIR}; }
-	rm -rf ${LOCALJANSSONLIBDIR}/*
-	cd ${LOCALJANSSONDIR} && CC="${CC}" ./configure --prefix=${LOCALJANSSONDIR} CFLAGS="-arch $(ARCH)" --build="$(ARCH)" && make clean && make && make install && cd ${THISDIR}
-
-bzip2:
-	rm -rf ${LOCALBZIP2LIBPATH}
-	test -s ${LOCALBZIP2LIBPATH} || { cd ${MAIN} && make bzip2_support_c && cd ${LOCALBZIP2DIR} && make clean && export CC=${CC} && export CPP=${CXX} && export CXX=${CXX} && export ARCH=${ARCH} && make -f Makefile.darwin_${ARCH} libbz2.a && cd ${THISDIR}; }
-
-zlib:
-	rm -rf ${LOCALZLIBLIBPATH}
-	test -s ${LOCALZLIBLIBPATH} || { cd ${MAIN} && make zlib_support_c && cd ${LOCALZLIBDIR} && echo ${PWD} && make -f ${LOCALZLIBDIR}/Makefile.in clean && CC=${CC} CPP=${CXX} CXX=${CXX} ${LOCALZLIBDIR}/configure --static --archs="-arch ${ARCH}" && make && cd ${THISDIR}; }
-
-dependencies: jansson bzip2 zlib
+dependencies:
 	mkdir -p $(LOCALOBJDIR)
 	${CC} ${CFLAGS} -c ${OBJDIR}/starchConstants.c -o ${LOCALOBJDIR}/starchConstants.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 	${CC} ${CFLAGS} -c ${OBJDIR}/starchMetadataHelpers.c -o  ${LOCALOBJDIR}/starchMetadataHelpers.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
@@ -80,7 +67,7 @@ dependencies: jansson bzip2 zlib
 debug: clean_force_flags dependencies_debug starch_debug unstarch_debug starchcat_debug starchcluster
 	rm -rf *~
 
-dependencies_debug: jansson bzip2 zlib
+dependencies_debug:
 	mkdir -p $(LOCALOBJDIR)
 	${CC} ${CDFLAGS} -c ${OBJDIR}/starchConstants.c -o ${LOCALOBJDIR}/starchConstants.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 	${CC} ${CDFLAGS} -c ${OBJDIR}/unstarchHelpers.c -o  ${LOCALOBJDIR}/unstarchHelpers.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}

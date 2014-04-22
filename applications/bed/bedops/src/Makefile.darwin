@@ -71,22 +71,7 @@ nonstatic: dependencies
 	cd ${LOCALBZIP2DIR} && make clean && cd ${THISDIR}
 	cd ${LOCALZLIBDIR} && make clean && cd ${THISDIR}
 
-jansson:
-	test -d ${LOCALJANSSONDIR} || { cd ${MAIN} && make jansson_support_c && cd ${THISDIR}; }
-	rm -rf ${LOCALJANSSONLIBDIR}/*
-	cd ${LOCALJANSSONDIR} && CC="${CC}" ./configure --prefix=${LOCALJANSSONDIR} CFLAGS="-arch $(ARCH)" --build="$(ARCH)" && make clean && make && make install && cd ${THISDIR}
-
-bzip2:
-	rm -rf ${LOCALBZIP2LIBPATH}
-	test -s ${LOCALBZIP2LIBPATH} || { cd ${MAIN} && make bzip2_support_c && cd ${LOCALBZIP2DIR} && make clean && export CC=${CC} && export CPP=${CXX} && export CXX=${CXX} && export ARCH=${ARCH} && make -f Makefile.darwin_${ARCH} libbz2.a && cd ${THISDIR}; }
-
-zlib:
-	test -s ${LOCALZLIBLIBPATH} || { cd ${MAIN} && make zlib_support_c && cd ${LOCALZLIBDIR} && echo ${PWD} && make -f ${LOCALZLIBDIR}/Makefile.in clean && CC=${CC} CPP=${CXX} CXX=${CXX} ${LOCALZLIBDIR}/configure --static --archs="-arch ${ARCH}" && make && cd ${THISDIR}; }
-
-boost:
-	test -d ${BOOSTLIBDIR} || { cd ${MAIN} && export CC=${CC} && export CXX=${CXX} && make boost_support_c && cd ${THISDIR}; }
-
-dependencies: jansson bzip2 zlib boost
+dependencies:
 	mkdir -p $(OBJDIR)
 	$(CXX) -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB1)/NaN.cpp -o $(OBJDIR)/NaN.o -iquote${HEAD}
 	$(CXX) -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB2)/Formats.cpp -o $(OBJDIR)/Formats.o -iquote${HEAD}

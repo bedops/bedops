@@ -16,7 +16,8 @@ OSXPKGDIR        = ${OSXPKGROOT}/resources/bin
 OSXLIBDIR        = ${OSXPKGROOT}/resources/lib
 THISDIR          = ${shell pwd}
 
-dist: prep_partial_nondarwin_static build_all
+dist: prep_partial_nondarwin_static
+	$(MAKE) build_all
 
 dist_gprof: prep_partial_nondarwin_static build_all_gprof
 
@@ -28,19 +29,30 @@ static: prep_force_static build_all
 # Generic build
 #
 
-build_all: boost_support_c bzip2_support_c jansson_support_c zlib_support_c sort_c bedops_c closestfeatures_c bedmap_c bedextract_c starch_c wig2bed_c
+support: boost_support_c jansson_support_c bzip2_support_c zlib_support_c
+
+apps: sort_c bedops_c closestfeatures_c bedmap_c bedextract_c starch_c wig2bed_c
+
+build_all: support
+	$(MAKE) apps
 
 #
 # GNU gprof build
 #
 
-build_all_gprof: boost_support_c bzip2_support_c jansson_support_c zlib_support_c sort_c_gprof bedops_c_gprof closestfeatures_c_gprof bedmap_c_gprof bedextract_c_gprof starch_c_gprof wig2bed_c_gprof
+apps_gprof: sort_c_gprof bedops_c_gprof closestfeatures_c_gprof bedmap_c_gprof bedextract_c_gprof starch_c_gprof wig2bed_c_gprof
+
+build_all_gprof: support
+	$(MAKE) apps_gprof
 
 #
 # Darwin fat - 10.6-10.9, i386 (32-bit) and x86-64 (64-bit) support
 #
 
-build_all_darwin_intel_fat: boost_support_c sort_c_darwin_intel_fat bedops_c_darwin_intel_fat closestfeatures_c_darwin_intel_fat bedmap_c_darwin_intel_fat bedextract_c_darwin_intel_fat starch_c_darwin_intel_fat wig2bed_c_darwin_intel_fat
+apps_darwin: sort_c_darwin_intel_fat bedops_c_darwin_intel_fat closestfeatures_c_darwin_intel_fat bedmap_c_darwin_intel_fat bedextract_c_darwin_intel_fat starch_c_darwin_intel_fat wig2bed_c_darwin_intel_fat
+
+build_all_darwin_intel_fat: support
+	$(MAKE) apps_darwin
 
 #
 # Install target
@@ -157,28 +169,26 @@ prep_c:
 #
 
 boost_support_c:
-	test -s ${WHICHBOOST} || { bzcat ${WHICHBOOST}.tar.bz2 | tar -x -C ${PARTY3}; }
+	bzcat ${WHICHBOOST}.tar.bz2 | tar -x -C ${PARTY3}
 	ln -sf ${BOOSTVERSION} ${PARTY3}/boost
-BOOSTDONE=1
-	export BOOSTDONE
+
+jansson_support_c:
+	bzcat ${WHICHJANSSON}.tar.bz2 | tar -x -C ${PARTY3}
+	ln -sf ${JANSSONVERSION} ${PARTY3}/jansson
+	cd ${PARTY3}/jansson && configure --prefix=${THISDIR}/${PARTY3}/jansson && make && make install
+	cd ${THISDIR}
 
 bzip2_support_c:
-	test -s ${WHICHBZIP2} || { bzcat ${WHICHBZIP2}.tar.bz2 | tar -x -C ${PARTY3}; }
+	bzcat ${WHICHBZIP2}.tar.bz2 | tar -x -C ${PARTY3}
 	ln -sf ${BZIP2VERSION} ${PARTY3}/bzip2
-BZIP2DONE=1
-	export BZIP2DONE
-
-jansson_support_c: 
-	test -s ${WHICHJANSSON} || { bzcat ${WHICHJANSSON}.tar.bz2 | tar -x -C ${PARTY3}; }
-	ln -sf ${JANSSONVERSION} ${PARTY3}/jansson
-JANSSONDONE=1
-	export JANSSONDONE
+	cd ${PARTY3}/bzip2 && make libbz2.a
+	cd ${THISDIR}
 
 zlib_support_c:
-	test -s ${WHICHZLIB} || { bzcat ${WHICHZLIB}.tar.bz2 | tar -x -C ${PARTY3}; }
+	bzcat ${WHICHZLIB}.tar.bz2 | tar -x -C ${PARTY3}
 	ln -sf ${ZLIBVERSION} ${PARTY3}/zlib
-ZLIBDONE=1
-	export ZLIBDONE
+	cd ${PARTY3}/zlib && configure --static && make
+	cd ${THISDIR}
 
 #
 # Generic build targets
@@ -340,7 +350,6 @@ very_clean: clean clean_force_static
 	rm -rf ${APPDIR}/starch/src/objects
 	rm -rf ${APPDIR}/starch/src/objects
 	rm -rf ${APPDIR}/starch/lib
-	rm -rf ${BINDIR}
 	rm -rf ${WHICHBOOST}
 	rm -f ${PARTY3}/boost
 	rm -rf ${WHICHBZIP2}

@@ -68,11 +68,11 @@ namespace dbug_help
     int
     parseLine(char* line)
     {
-      int i = (int) strlen(line); // perhaps better to cast strlen to an int, in order to fulfill parseline contract
-      while (*line < '0' || *line > '9') line++;
-      line[i-3] = '\0';
-      i = atoi(line);
-      return i;
+        int i = (int) strlen(line); // perhaps better to cast strlen to an int, in order to fulfill parseline contract
+        while (*line < '0' || *line > '9') line++;
+        line[i-3] = '\0';
+        i = atoi(line);
+        return i;
     }
     
     int
@@ -117,85 +117,85 @@ namespace dbug_help
 FILE *
 createTmpFile(char const* path, char** fileName)
 {
-  FILE* fp;
-  int fd;
-  char* tmpl;
+    FILE* fp;
+    int fd;
+    char* tmpl;
 
-  if (path == NULL)
-      {
-          fileName = NULL;
-          return tmpfile();
-      }
+    if (path == NULL)
+        {
+            fileName = NULL;
+            return tmpfile();
+        }
 
-  tmpl = (char*)malloc(1 + strlen(path) + L_tmpnam);
-  strcpy(tmpl, path);
-  strcpy(tmpl+strlen(path), "/sb.XXXXXX");
-  fd = mkstemp(tmpl);
-  if(fd == -1)
-      {
-          fprintf(stderr, "unable to create temp file!\n");
-          return NULL;
-      }
-  fp = fdopen(fd, "wb+");
-  *fileName = (char*)malloc(strlen(tmpl) + 1);
-  strcpy(*fileName, tmpl);
-  free(tmpl);
-  return fp;
+    tmpl = (char*)malloc(1 + strlen(path) + L_tmpnam);
+    strcpy(tmpl, path);
+    strcpy(tmpl+strlen(path), "/sb.XXXXXX");
+    fd = mkstemp(tmpl);
+    if(fd == -1)
+        {
+            fprintf(stderr, "unable to create temp file!\n");
+            return NULL;
+        }
+    fp = fdopen(fd, "wb+");
+    *fileName = (char*)malloc(strlen(tmpl) + 1);
+    strcpy(*fileName, tmpl);
+    free(tmpl);
+    return fp;
 }
 
 int
 createDir(char* dir)
 {
-  /* could use boost filesystem, but it requires compilation, and
-       likely another dependency - jam.
-  */
-  struct stat mystat;
-  bool ok = true;
-  ifstream ifcheck(dir);
-  bool makeit = !ifcheck.good();
-  FILE *fptr = NULL;
-  char *fname = NULL;
+    /* could use boost filesystem, but it requires compilation, and
+         likely another dependency - jam.
+    */
+    struct stat mystat;
+    bool ok = true;
+    ifstream ifcheck(dir);
+    bool makeit = !ifcheck.good();
+    FILE *fptr = NULL;
+    char *fname = NULL;
 
-  if (ifcheck.good()) /* already exists */
-      {
-          if (stat(dir, &mystat) == 0)
-              {
-                  if (S_ISDIR(mystat.st_mode))
-                      {
-                          makeit = false;
-                          /* make sure it's writable */
-                          fptr = createTmpFile(dir, &fname);
-                          if (fptr == NULL)
-                              {
-                                  fprintf(stderr, "Unable to create a file in existing directory: %s\n.Check permissions.\n", dir);
-                                  return EXIT_FAILURE;
-                              }
-                          remove(fname);
-                      }
-                  else
-                      {
-                          fprintf(stderr, "This already exists, but it is not a directory: %s\n", dir);
-                          ok = false;
-                      }
-              }
-          else
-              {
-                  fprintf(stderr, "(odd) Trouble finding: %s\n", dir);
-                  ok = false;
-              }
-      }
+    if (ifcheck.good()) /* already exists */
+        {
+            if (stat(dir, &mystat) == 0)
+                {
+                    if (S_ISDIR(mystat.st_mode))
+                        {
+                            makeit = false;
+                            /* make sure it's writable */
+                            fptr = createTmpFile(dir, &fname);
+                            if (fptr == NULL)
+                                {
+                                    fprintf(stderr, "Unable to create a file in existing directory: %s\n.Check permissions.\n", dir);
+                                    return EXIT_FAILURE;
+                                }
+                            remove(fname);
+                        }
+                    else
+                        {
+                            fprintf(stderr, "This already exists, but it is not a directory: %s\n", dir);
+                            ok = false;
+                        }
+                }
+            else
+                {
+                    fprintf(stderr, "(odd) Trouble finding: %s\n", dir);
+                    ok = false;
+                }
+        }
 
-  if (!ok)
-      return EXIT_FAILURE;
-  else if (makeit)
-      {
-          if (mkdir(dir, 0700) != 0)
-             {
-                fprintf(stderr, "Unknown problem creating directory.  Check permissions.  %s\n", dir);
-                return EXIT_FAILURE;
-             }
-      }
-  return EXIT_SUCCESS;
+    if (!ok)
+        return EXIT_FAILURE;
+    else if (makeit)
+        {
+            if (mkdir(dir, 0700) != 0)
+               {
+                  fprintf(stderr, "Unknown problem creating directory.  Check permissions.  %s\n", dir);
+                  return EXIT_FAILURE;
+               }
+        }
+    return EXIT_SUCCESS;
 }
 
 BedData * 
@@ -1170,8 +1170,8 @@ lexSortBedData(BedData *beds)
     /* sort coords */
     for(i = 0; i < beds->numChroms; ++i) 
         {            
-	  qsort(beds->chroms[i]->coords, static_cast<size_t>(beds->chroms[i]->numCoords), sizeof(BedCoordData), numCompareBedData);
-	}
+	        qsort(beds->chroms[i]->coords, static_cast<size_t>(beds->chroms[i]->numCoords), sizeof(BedCoordData), numCompareBedData);
+        }
 
     /* sort chroms */
     qsort(beds->chroms, static_cast<size_t>(beds->numChroms), sizeof(ChromBedData *), lexCompareBedData);

@@ -57,7 +57,7 @@ TEST_OSX_BINDIR           = ${TEST}/binaries/osx/${ARCH_VERSION}/bin
 all: clean_force_flags dependencies starchLibrary starch unstarch starchcat starchcluster
 	rm -rf *~
 
-dependencies: jansson bzip2 zlib
+dependencies:
 	mkdir -p $(LOCALOBJDIR)
 	${CXX} ${CXXFLAGS} -c ${OBJDIR}/starchConstants.c -o ${LOCALOBJDIR}/starchConstants.o -iquote${MAIN} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 	${CXX} ${CXXFLAGS} -c ${OBJDIR}/starchMetadataHelpers.c -o  ${LOCALOBJDIR}/starchMetadataHelpers.o -iquote${MAIN} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
@@ -70,7 +70,7 @@ dependencies: jansson bzip2 zlib
 debug: clean_force_flags dependencies_debug starchLibrary_debug starch_debug unstarch_debug starchcat_debug starchcluster
 	rm -rf *~
 
-dependencies_debug: jansson bzip2 zlib
+dependencies_debug:
 	mkdir -p $(LOCALOBJDIR)
 	${CXX} ${CXXDFLAGS} -c ${OBJDIR}/starchConstants.c -o ${LOCALOBJDIR}/starchConstants.o -iquote${MAIN} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 	${CXX} ${CXXDFLAGS} -c ${OBJDIR}/unstarchHelpers.c -o  ${LOCALOBJDIR}/unstarchHelpers.o -iquote${MAIN} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
@@ -83,7 +83,7 @@ dependencies_debug: jansson bzip2 zlib
 gprof: clean_force_flags dependencies_gprof starchLibrary_gprof starch_gprof unstarch_gprof starchcat_gprof starchcluster
 	rm -rf *~
 
-dependencies_gprof: jansson bzip2 zlib
+dependencies_gprof:
 	mkdir -p $(LOCALOBJDIR)
 	${CXX} ${CXXGFLAGS} -c ${OBJDIR}/starchConstants.c -o ${LOCALOBJDIR}/starchConstants.o -iquote${MAIN} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 	${CXX} ${CXXGFLAGS} -c ${OBJDIR}/unstarchHelpers.c -o  ${LOCALOBJDIR}/unstarchHelpers.o -iquote${MAIN} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
@@ -97,18 +97,6 @@ clean_force_flags:
 ifneq ($(wildcard .forcestatic),)
 	rm -rf .forcestatic
 endif
-
-jansson:
-	test -d ${LOCALJANSSONDIR} || { cd ${HEAD} && make jansson_support_c && cd ${THISDIR}; }
-	cd ${LOCALJANSSONDIR} && ${LOCALJANSSONDIR}/configure --prefix=${LOCALJANSSONDIR} && make clean && make && make install && cd ${THISDIR}
-
-bzip2:
-	test -d ${LOCALBZIP2DIR} || { cd ${HEAD} && make bzip2_support_c && cd ${THISDIR}; }
-	cd ${LOCALBZIP2DIR} && make libbz2.a && cd ${THISDIR}
-
-zlib:
-	test -d ${LOCALZLIBDIR} || { cd ${HEAD} && make zlib_support_c && cd ${THISDIR}; }
-	cd ${LOCALZLIBDIR} && ${LOCALZLIBDIR}/configure --static && make && cd ${THISDIR}
 
 starchLibrary: dependencies
 	mkdir -p ${LOCALSTARCHLIBDIR}

@@ -53,19 +53,7 @@ gprof: dependencies
 nonstatic: dependencies
 	mkdir -p $(BIN) && $(CXX) -o $(BIN)/nonstatic.$(PROG) $(NONSTATICFLAGS) $(SOURCE1) $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o
 
-jansson:
-	test -s ${LOCALJANSSONLIBPATH} || { cd ${MAIN} && make jansson_support_c && cd ${LOCALJANSSONDIR} && ${LOCALJANSSONDIR}/configure --prefix=${LOCALJANSSONDIR} && make && make install && cd ${THISDIR}; }
-
-bzip2:
-	test -s ${LOCALBZIP2LIBPATH} || { cd ${MAIN} && make bzip2_support_c && cd ${LOCALBZIP2DIR} && make libbz2.a && cd ${THISDIR}; }
-
-zlib:
-	test -s ${LOCALZLIBLIBPATH} || { cd ${MAIN} && make zlib_support_c && cd ${LOCALZLIBDIR} && ${LOCALZLIBDIR}/configure --static && make && cd ${THISDIR}; }
-
-boost:
-	test -d ${BOOSTLIBDIR} || { cd ${MAIN} && make boost_support_c && cd ${THISDIR}; }
-
-dependencies: jansson bzip2 zlib boost
+dependencies:
 ifneq ($(wildcard .forcestatic),)	
 	rm -rf .forcestatic
 endif
