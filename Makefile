@@ -99,6 +99,7 @@ install_conversion_scripts: prep_c
 	cp ${APPDIR}/conversion/src/sam2starch.py ${BINDIR}/sam2starch
 	cp ${APPDIR}/conversion/src/vcf2starch.py ${BINDIR}/vcf2starch
 	cp ${APPDIR}/conversion/src/wig2starch.bash ${BINDIR}/wig2starch
+	cp ${APPDIR}/conversion/src/bam2starchcluster.tcsh ${BINDIR}/bam2starchcluster
 
 install_osx_packaging_bins: prep_c
 	mkdir -p ${OSXPKGDIR}
@@ -127,6 +128,7 @@ install_osx_packaging_bins: prep_c
 	cp ${APPDIR}/conversion/src/sam2starch.py ${OSXPKGDIR}/sam2starch
 	cp ${APPDIR}/conversion/src/vcf2starch.py ${OSXPKGDIR}/vcf2starch
 	cp ${APPDIR}/conversion/src/wig2starch.bash ${OSXPKGDIR}/wig2starch
+	cp ${APPDIR}/conversion/src/bam2starchcluster.tcsh ${OSXPKGDIR}/bam2starchcluster
 	mkdir -p ${OSXLIBDIR}
 
 prep_partial_nondarwin_static:
@@ -328,6 +330,7 @@ clean: clean_force_static
 	rm -f ${BINDIR}/sam2starch
 	rm -f ${BINDIR}/vcf2starch
 	rm -f ${BINDIR}/wig2starch
+	rm -f ${BINDIR}/bam2starchcluster
 	rm -f ${OSXPKGDIR}/*
 	rm -f ${OSXLIBDIR}/*
 	rm -Rf ${OSXBUILDDIR}/*
