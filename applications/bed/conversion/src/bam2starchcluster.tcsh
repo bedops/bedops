@@ -36,7 +36,7 @@ set sge_opts = "$queue $shell $misc_opts $soundoff"
 ############################
 # some input error checking
 ############################
-set help = "\nUsage: starchcluster [--help] [--clean] <input-indexed-bam-file> [output-starch-file]\n\n"
+set help = "\nUsage: bam2starchcluster [--help] [--clean] <input-indexed-bam-file> [output-starch-file]\n\n"
 set help = "$help  Pass in the name of an indexed BAM file to create a starch archive using the cluster.\n\n"
 set help = "$help  (stdin isn't supported through this wrapper script, but starch supports it natively.)\n\n"
 set help = "$help  Add --clean to remove <input-indexed-bam-file> after starching it up.\n\n"
