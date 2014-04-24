@@ -7,7 +7,7 @@ The ``bam2bed`` script converts 0-based, half-open ``[start-1, end)`` `Binary (S
 
 For convenience, we also offer ``bam2starch``, which performs the extra step of creating a :ref:`Starch-formatted <starch_specification>` archive.
 
-The ``bam2bed`` script is "non-lossy". Similar tools in the world tend to throw out information from the original BAM input upon conversion; ``bam2bed`` can retain everything, facilitating reuse of converted data and conversion to other formats.
+The ``bam2bed`` script is "non-lossy" (with the use of specific options, described below). Similar tools in the world tend to throw out information from the original BAM input upon conversion; ``bam2bed`` can retain everything, facilitating reuse of converted data and conversion to other formats.
 
 .. tip:: Doing the extra step of creating a :ref:`Starch-formatted <starch_specification>` archive can save a lot of space relative to the original BAM format, up to 33% of the original BAM dataset, while offering per-chromosome random access.
 
@@ -75,7 +75,7 @@ Here's an example:
   seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     *       0       0       GTGGCTCATTGTAATTTTTTGTTTTAACTCTTCTCT    (-&----,----)-)-),'--)---',+-,),''*,    MF:i:130        Aq:i:63 NM:i:5      UQ:i:38 H0:i:0  H1:i:0
   ...
 
-With this option, the ``sam2bed`` and ``sam2starch`` scripts are completely "non-lossy". Use of ``awk`` or other scripting tools can munge these data back into a SAM-formatted file.
+With this option, the ``bam2bed`` and ``bam2starch`` scripts are completely "non-lossy" (with the exception of unmapped reads; see note below). Use of ``awk`` or other scripting tools can munge these data back into a SAM-formatted file.
 
 .. note:: The provided scripts **strip out unmapped reads** from the BAM file. We believe this makes sense under most circumstances. Add the ``--all-reads`` option if you need unmapped and mapped reads.
 
@@ -85,7 +85,7 @@ With this option, the ``sam2bed`` and ``sam2starch`` scripts are completely "non
 Column mapping
 ==============
 
-In this section, we describe how BAM data (converted to SAM columns) are mapped to BED columns. We start with the first six UCSC BED columns as follows:
+In this section, we describe how non-header BAM data (converted to SAM columns) are mapped to BED columns. We start with the first six UCSC BED columns as follows:
 
 +---------------------------+---------------------+---------------+
 | SAM field                 | BED column index    | BED field     |
@@ -103,7 +103,7 @@ In this section, we describe how BAM data (converted to SAM columns) are mapped 
 | 16 & FLAG                 | 6                   | strand        |
 +---------------------------+---------------------+---------------+
 
-The remaining SAM columns are mapped as-is, in same order, to adjacent BED columns:
+The remaining SAM-converted columns are mapped as-is, in same order, to adjacent BED columns:
 
 +---------------------------+---------------------+---------------+
 | SAM field                 | BED column index    | BED field     |
@@ -123,7 +123,7 @@ The remaining SAM columns are mapped as-is, in same order, to adjacent BED colum
 | QUAL                      | 13                  |               |
 +---------------------------+---------------------+---------------+
 
-Because we have mapped all columns, we can translate converted BED data back to headerless SAM reads with a simple ``awk`` statement (or other script) that reverts back to 1-based coordinates and permutes columns to SAM-based ordering.
+Because we have mapped all columns, we can translate converted BED data back to headered or headerless SAM reads with a simple ``awk`` statement (or other script) that reverts back to 1-based coordinates and permutes columns to SAM-based ordering.
 
 .. _bam2bed_downloads:
 
