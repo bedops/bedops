@@ -48,7 +48,7 @@ The ``--help`` option describes the various mapping and analytical operations an
 
   bedmap
     citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-    version:  2.4.1
+    version:  2.4.2
     authors:  Shane Neph & Scott Kuehn
                                                                                                       
    USAGE: bedmap [process-flags] [overlap-option] <operation(s)...> <ref-file> [map-file]             
