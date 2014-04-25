@@ -30,11 +30,12 @@
 
 // Files included
 #include "NumericalVisitors.hpp"
+#include "bed/EchoMapBedVisitor.hpp" // do not include other/EchoMapVisitor.hpp
 #include "bed/EchoMapIntersectLengthVisitor.hpp"
 #include "bed/OvrAggregateVisitor.hpp"
 #include "bed/OvrUniqueVisitor.hpp"
 #include "bed/OvrUniqueFractionVisitor.hpp"
-#include "bed/EchoMapBedVisitor.hpp" // do not include other/EchoMapVisitor.hpp
+#include "bed/WeightedMean1.hpp"
 #include "other/EchoVisitor.hpp"
 #include "other/MultiVisitor.hpp"
 

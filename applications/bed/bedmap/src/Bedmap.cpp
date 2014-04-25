@@ -516,16 +516,18 @@ namespace BedMap {
         rtn = new typename VTypes::StdDev(pt);
       else if ( nm == visName<typename VTypes::Sum>() )
         rtn = new typename VTypes::Sum(pt);
-      else if ( nm == visName<typename VTypes::TMeans>() ) {
+      else if ( nm == visName<typename VTypes::TMean>() ) {
         Ext::Assert<Ext::UserError>(2 == args.size(), "Need two values with " + nm);
         std::stringstream conv1(args[0]), conv2(args[1]);
         double percentileLow = 100, percentileHigh = -100;
         conv1 >> percentileLow;
         conv2 >> percentileHigh;
-        rtn = new typename VTypes::TMeans(percentileLow, percentileHigh, pt);
+        rtn = new typename VTypes::TMean(percentileLow, percentileHigh, pt);
       }
       else if ( nm == visName<typename VTypes::Variance>() )
         rtn = new typename VTypes::Variance(pt);
+      else if ( nm == visName<typename VTypes::WeightedMean1>() )
+        rtn = new typename VTypes::WeightedMean1(pt);
 
       return(rtn);
     }

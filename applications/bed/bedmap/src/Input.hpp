@@ -263,6 +263,8 @@ namespace BedMap {
           hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::Sum>());
         else if ( next == details::name<typename VT::Median>() )
           hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::Median>());
+        else if ( next == details::name<typename VT::WeightedMean1>() )
+          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::WeightedMean1>());
         else if ( next == details::name<typename VT::MedianAbsoluteDeviation>() ) {
           std::string sval = argv[argcntr];
           if ( sval.find_first_not_of(reals) == std::string::npos ) { // assume argument for this option
@@ -291,29 +293,29 @@ namespace BedMap {
           tmpVec.push_back(sval);
           hasVisitor = addVisitor(Ext::Type2Type<typename VT::KthAverage>(), tmpVec);
         }
-        else if ( next == details::name<typename VT::TMeans>() ) {
-          Ext::Assert<ArgError>(argcntr < argc, "No <low> arg given for --" + details::name<typename VT::TMeans>());
+        else if ( next == details::name<typename VT::TMean>() ) {
+          Ext::Assert<ArgError>(argcntr < argc, "No <low> arg given for --" + details::name<typename VT::TMean>());
           std::string svalLow = argv[argcntr++];
           Ext::Assert<ArgError>(svalLow.find_first_not_of(reals) == std::string::npos,
-                                "Non-numeric argument: " + svalLow + " for --" + details::name<typename VT::TMeans>());
+                                "Non-numeric argument: " + svalLow + " for --" + details::name<typename VT::TMean>());
 
-          Ext::Assert<ArgError>(argcntr < argc, "No <hi> arg given for --" + details::name<typename VT::TMeans>());
+          Ext::Assert<ArgError>(argcntr < argc, "No <hi> arg given for --" + details::name<typename VT::TMean>());
           std::string svalHigh = argv[argcntr++];
           Ext::Assert<ArgError>(svalHigh.find_first_not_of(reals) == std::string::npos,
-                                "Non-numeric argument: " + svalHigh + " for --" + details::name<typename VT::TMeans>());
+                                "Non-numeric argument: " + svalHigh + " for --" + details::name<typename VT::TMean>());
 
           std::stringstream convLow(svalLow), convHigh(svalHigh);
           double valLow = 100, valHigh = 100;
           convLow >> valLow; convHigh >> valHigh;
           Ext::Assert<ArgError>(valLow >= 0 && valLow <= 1,
-                                "--" + details::name<typename VT::TMeans>() + " Expect 0 <= low < hi <= 1");
+                                "--" + details::name<typename VT::TMean>() + " Expect 0 <= low < hi <= 1");
           Ext::Assert<ArgError>(valHigh >= 0 && valHigh <= 1,
-                                "--" + details::name<typename VT::TMeans>() + " Expect 0 <= low < hi <= 1");
+                                "--" + details::name<typename VT::TMean>() + " Expect 0 <= low < hi <= 1");
           Ext::Assert<ArgError>(valLow + valHigh <= 1,
-                                "--" + details::name<typename VT::TMeans>() + " Expect (low + hi) <= 1.");
+                                "--" + details::name<typename VT::TMean>() + " Expect (low + hi) <= 1.");
           std::vector<std::string> tmpVec;
           tmpVec.push_back(svalLow); tmpVec.push_back(svalHigh);
-          hasVisitor = addVisitor(Ext::Type2Type<typename VT::TMeans>(), tmpVec);
+          hasVisitor = addVisitor(Ext::Type2Type<typename VT::TMean>(), tmpVec);
         }
         else
           throw(ArgError("Unknown option: --" + next));
@@ -499,10 +501,11 @@ namespace BedMap {
     usage << "      --" + details::name<VT::MinElement>() + "       An element with the lowest score from overlapping elements in <map-file>.\n";
     usage << "      --" + details::name<VT::StdDev>() + "             The square root of the result of --" + details::name<VT::Variance>() + ".\n";
     usage << "      --" + details::name<VT::Sum>() + "               Accumulated scores from overlapping elements in <map-file>.\n";
-    usage << "      --" + details::name<VT::TMeans>() + " <low> <hi>  The mean score from overlapping elements in <map-file>, after\n";
+    usage << "      --" + details::name<VT::TMean>() + " <low> <hi>  The mean score from overlapping elements in <map-file>, after\n";
     usage << "                            ignoring the bottom <low> and top <hi> fractions of those scores.\n";
     usage << "                            0 <= low <= 1.  0 <= hi <= 1.  low+hi <= 1.\n";
     usage << "      --" + details::name<VT::Variance>() + "          The variance of scores from overlapping elements in <map-file>.\n";
+    usage << "      --" + details::name<VT::WeightedMean1>() + "            Weighted mean of scores from overlapping elements in <map-file>.\n";
     usage << "     \n";
     usage << "     ----------\n";
     usage << "      NON-SCORE:\n";

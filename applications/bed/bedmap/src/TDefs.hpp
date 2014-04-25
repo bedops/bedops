@@ -24,7 +24,6 @@
 //    with this program; if not, write to the Free Software Foundation, Inc.,
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
-
 #ifndef _BEDMAP_TYPEDEFS_HPP
 #define _BEDMAP_TYPEDEFS_HPP
 
@@ -77,7 +76,7 @@ namespace BedMap {
     typedef Visitors::Extreme<ProcessScorePrecision, BaseClass, MinOrder> Min;
     typedef Visitors::StdDev<ProcessScorePrecision, BaseClass> StdDev;
     typedef Visitors::Sum<ProcessScorePrecision, BaseClass> Sum;
-    typedef Visitors::TrimmedMean<ProcessScorePrecision, BaseClass, Ext::ArgumentError> TMeans;
+    typedef Visitors::TrimmedMean<ProcessScorePrecision, BaseClass, Ext::ArgumentError> TMean;
     typedef Visitors::Variance<ProcessScorePrecision, BaseClass> Variance;
 
     typedef Visitors::Extreme<ProcessOne, BaseClass, MaxOrder> MaxElement;
@@ -94,6 +93,7 @@ namespace BedMap {
     typedef Visitors::BedSpecific::OvrAggregate<ProcessScore, BaseClass> OvrAgg;
     typedef Visitors::BedSpecific::OvrUnique<ProcessScore, BaseClass> OvrUniq;
     typedef Visitors::BedSpecific::OvrUniqueFract<ProcessScorePrecision, BaseClass> OvrUniqFract;
+    typedef Visitors::BedSpecific::WeightedMean1<ProcessScorePrecision, BaseClass> WeightedMean1;
 
   };
 

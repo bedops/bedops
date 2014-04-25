@@ -1,7 +1,7 @@
 /*
-  FILE: OvrUniqueVisitor.hpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Wed Sep  5 09:33:15 PDT 2007
+  FILE: WeightMean1.hpp
+  AUTHOR: Shane Neph
+  CREATE DATE: Thu Apr 24 17:01:32 PDT 2014
   PROJECT: utility
   ID: $Id$
 */
@@ -25,69 +25,72 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#ifndef OVR_UNIQUE_VISITOR_HPP
-#define OVR_UNIQUE_VISITOR_HPP
+#ifndef WEIGHTED_AVG_FRACTION_REF_HPP
+#define WEIGHTED_AVG_FRACTION_REF_HPP
 
 #include <set>
 
-#include "data/bed/BedCompare.hpp"
+#include "data/measurement/NaN.hpp"
+
 
 namespace Visitors {
 
   namespace BedSpecific {
-  
+
     template <
               typename ProcessType,
               typename BaseVisitor
              >
-    struct OvrUnique : BaseVisitor {
+    struct WeightedMean1 : BaseVisitor {
       typedef BaseVisitor BaseClass;
       typedef typename BaseClass::reference_type RefType;
       typedef typename BaseClass::mapping_type MapType;
-  
-      OvrUnique(const ProcessType& pt = ProcessType()) : pt_(pt), refItem_(0)
+      typedef typename Signal::SelectMeasure<MapType>::MeasureType MT;
+
+      WeightedMean1(const ProcessType& pt = ProcessType()) : pt_(pt), refItem_(0)
         { /* */ }
-  
+
       inline void SetReference(RefType* t) {
         refItem_ = t;
       }
-      
+
       // Append an element comprised of the coords overlapping target and reference
       inline void Add(MapType* u) {
         cache_.insert(u);
       }
-  
+
       inline void Delete(MapType* u) {
         cache_.erase(u);
       }
-      
-      // Calculate the sum of overlapping ranges
+
+      // Weighted mean using fraction of reference element overlapped per mapping element
       inline void DoneReference() {
-        unsigned int ovr = 0;
         if ( !cache_.empty() ) {
-          MapType tmpOvrRange = **cache_.begin();
-          cacheI i = cache_.begin();
-          for ( ++i; i != cache_.end(); ++i ) {
-            if ( tmpOvrRange.overlap(**i) )
-              tmpOvrRange.eunion(**i);
-            else {
-              ovr += tmpOvrRange.intersection(*refItem_).length();
-              tmpOvrRange = **i;
+          // if --range is used, we don't count the extra bps (like --bases*)
+          //  Use bedops --range for those types of changes.
+          MT val = 0;
+          bool any = false;
+          for ( auto i = cache_.begin(); i != cache_.end(); ++i ) {
+            MT ovr = static_cast<MT>((*i)->intersection(*refItem_).length());
+            if ( ovr > 0 ) {
+              any = true;
+              val += (ovr/refItem_->length() * static_cast<MT>(**i));
             }
           } // for
-          ovr += tmpOvrRange.intersection(*refItem_).length();
+          if ( any )
+            pt_.operator()(val);
+          else
+            pt_.operator()(Signal::NaN());
+        } else {
+          pt_.operator()(Signal::NaN());
         }
-        pt_.operator()(ovr);
       }
-      
-      virtual ~OvrUnique() { /* */ }
-  
+
+      virtual ~WeightedMean1() { /* */ }
+
     protected:
-      typedef Bed::GenomicCompare<MapType, MapType> Comp;
-      typedef std::set<MapType*, Comp> SType; // OK not to use multiset
-  
-      typedef typename SType::const_iterator cacheI;
-  
+      typedef std::set<MapType*> SType;
+
       ProcessType pt_;
       RefType* refItem_;
       SType cache_;
@@ -97,5 +100,4 @@ namespace Visitors {
 
 } // namespace Visitors
 
-
-#endif // OVR_UNIQUE_VISITOR_HPP
+#endif // WEIGHTED_AVG_FRACTION_REF_HPP
