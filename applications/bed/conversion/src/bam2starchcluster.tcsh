@@ -119,7 +119,7 @@ endif
 set files = ()
 set jids = ()
 @ cntr = 1
-foreach chrom (`samtools view -H $input | cut -f2 | grep '^SN:chr' | sed s'/SN://'`)
+foreach chrom (`samtools idxstats $input | cut -f1`)
 
 qsub $sge_opts -N $nm.$cntr > /dev/stderr << __EXTRACTION__
   samtools view $input $chrom -b | bam2starch > $cntr
