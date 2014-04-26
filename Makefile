@@ -177,7 +177,7 @@ boost_support_c:
 jansson_support_c:
 	bzcat ${WHICHJANSSON}.tar.bz2 | tar -x -C ${PARTY3}
 	ln -sf ${JANSSONVERSION} ${PARTY3}/jansson
-	cd ${PARTY3}/jansson && configure --prefix=${THISDIR}/${PARTY3}/jansson && make && make install
+	cd ${PARTY3}/jansson && ./configure --prefix=${THISDIR}/${PARTY3}/jansson && make && make install
 	cd ${THISDIR}
 
 bzip2_support_c:
@@ -189,7 +189,7 @@ bzip2_support_c:
 zlib_support_c:
 	bzcat ${WHICHZLIB}.tar.bz2 | tar -x -C ${PARTY3}
 	ln -sf ${ZLIBVERSION} ${PARTY3}/zlib
-	cd ${PARTY3}/zlib && configure --static && make
+	cd ${PARTY3}/zlib && ./configure --static && make
 	cd ${THISDIR}
 
 #
