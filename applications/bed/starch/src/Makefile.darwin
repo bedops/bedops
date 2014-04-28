@@ -7,9 +7,8 @@ HEAD                      = ${INTERFACES}/general-headers
 THISDIR	                  = ${shell pwd}
 PARTY3                    = ${THISDIR}/$(MAIN)/third-party
 BINDIR                    = ../bin
-LIBSTARCH                 = libstarch.a
-LIBSTARCHDEBUG            = libstarch_debug.a
-LIBSTARCHCPPAPI           = libstarchcpp.a
+LIBSTARCH                 = libstarch_${ARCH}.a
+LIBSTARCHDEBUG            = libstarch_${ARCH}_debug.a
 LIBJANSSON                = libjansson.a
 LIBBZIP2                  = libbz2.a
 LIBZLIB                   = libz.a
@@ -44,7 +43,7 @@ CDFLAGS                   = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_L
 CXXDFLAGS                 = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g ${WARNINGS} -std=c++11 -stdlib=libc++ -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH)
 
 
-build: clean_force_flags dependencies starchLibrary starch unstarch starchcat
+build: dependencies starchLibrary starch unstarch starchcat
 	rm -f *~
 
 dependencies:
@@ -58,7 +57,7 @@ dependencies:
 	${CC} ${CFLAGS} -c ${OBJDIR}/starchSha1Digest.c -o  ${LOCALOBJDIR}/starchSha1Digest.o -iquote${HEAD} -iquote${PARTY3} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 	${CC} ${CFLAGS} -c ${OBJDIR}/starchBase64Coding.c -o  ${LOCALOBJDIR}/starchBase64Coding.o -iquote${HEAD} -iquote${PARTY3} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 
-debug: clean_force_flags dependencies_debug starch_debug unstarch_debug starchcat_debug
+debug: dependencies_debug starch_debug unstarch_debug starchcat_debug
 	rm -f *~
 
 dependencies_debug:
@@ -71,11 +70,6 @@ dependencies_debug:
 	${CC} ${CDFLAGS} -c ${OBJDIR}/starchFileHelpers.c -o  ${LOCALOBJDIR}/starchFileHelpers.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 	${CC} ${CDFLAGS} -c ${OBJDIR}/starchSha1Digest.c -o  ${LOCALOBJDIR}/starchSha1Digest.o -iquote${HEAD} -iquote${PARTY3} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 	${CC} ${CDFLAGS} -c ${OBJDIR}/starchBase64Coding.c -o  ${LOCALOBJDIR}/starchBase64Coding.o -iquote${HEAD} -iquote${PARTY3} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-
-clean_force_flags:
-ifneq ($(wildcard .forcestatic),)
-	rm -f .forcestatic
-endif
 
 starchLibrary: dependencies
 	mkdir -p ${LOCALSTARCHLIBDIR}
@@ -130,6 +124,6 @@ test: starch unstarch starchcat
 	make -C ${TEST} all
 
 clean:
-	rm -rf $(LOCALSTARCHLIBPATH) ${LOCALSTARCHLIBDEBUGPATH} *~
+	rm -f $(LOCALSTARCHLIBPATH) ${LOCALSTARCHLIBDEBUGPATH} *~
 	rm -rf ${LOCALOBJDIR}
 	rm -f ${BINDIR}/*starch*
