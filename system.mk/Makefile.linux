@@ -104,7 +104,7 @@ boost_support_c:
 
 jansson_support_c:
 	bzcat ${WHICHJANSSON}.tar.bz2 | tar -x -C ${PARTY3}
-	cd ${PARTY3}/${JANSSONVERSION} && ./configure --prefix=${WD}/${PARTY3}/${JANSSONVERSION} && make && make install && cd ${WDIR} && ln -sf ${JANSSONVERSION} ${PARTY3}/jansson
+	cd ${PARTY3}/${JANSSONVERSION} && ./configure --prefix=${WDIR}/${PARTY3}/${JANSSONVERSION} && make && make install && cd ${WDIR} && ln -sf ${JANSSONVERSION} ${PARTY3}/jansson
 
 bzip2_support_c:
 	bzcat ${WHICHBZIP2}.tar.bz2 | tar -x -C ${PARTY3}
