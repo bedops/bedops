@@ -201,6 +201,3 @@ clean:
 	rm -rf $(LOCALSTARCHLIBPATH) ${LOCALSTARCHLIBDEBUGPATH}
 	rm -f ${BINDIR}/*starch*
 	rm -rf ${LOCALOBJDIR}
-	-test -d ${LOCALJANSSONDIR} && { cd ${LOCALJANSSONDIR} && make clean && cd ${THISDIR}; }
-	-test -d ${LOCALBZIP2DIR} && { cd ${LOCALBZIP2DIR} && make clean && cd ${THISDIR}; }
-	-test -d ${LOCALZLIBDIR} && { cd ${LOCALZLIBDIR} && make -f Makefile.in clean && cd ${THISDIR}; }
