@@ -20,30 +20,51 @@ SELF             = ${WDIR}/system.mk/Makefile.darwin
 I386             = darwin_intel_i386
 X86_64           = darwin_intel_x86_64
 
+
 default: | mkdirs
 	$(MAKE) build_intel_apps -f $(SELF)
 
 gprof: default
 
 
-SUBDIRS = ${APPDIR}/bedmap/src ${APPDIR}/sort-bed/src ${APPDIR}/bedops/src ${APPDIR}/closestfeats/src ${APPDIR}/bedextract/src ${APPDIR}/starch/src ${APPDIR}/conversion/src/wig2bed
+SUBDIRS = bedmap/src sort-bed/src bedops/src closestfeats/src bedextract/src starch/src conversion/src/wig2bed
+SUBDIRS_FULL := $(patsubst %,${APPDIR}/%,$(SUBDIRS))
+SUBDIRS_I386 := $(patsubst %,%_i386,$(SUBDIRS))
+SUBDIRS_X86_64 := $(patsubst %,%_x86_64,$(SUBDIRS))
 
 .PHONY: $(SUBDIRS)
+.PHONY: $(SUBDIRS_FULL)
+.PHONY: $(SUBDIRS_I386)
+.PHONY: $(SUBDIRS_X86_64)
 
+# $@ needs ${APPDIR}/ as a prefix
 $(SUBDIRS):
-	export ARCH=i386 && $(MAKE) -C $@ -f Makefile.darwin $(MAKECMDGOALS)
+	export ARCH=i386 && $(MAKE) -C ${APPDIR}/$@ -f Makefile.darwin $(MAKECMDGOALS)
+
+# $@ has full path info
+$(SUBDIRS_FULL):
 	export ARCH=x86_64 && $(MAKE) -C $@ -f Makefile.darwin $(MAKECMDGOALS)
+
+# prereq is $(SUBDIRS)
+.SECONDEXPANSION:
+$(SUBDIRS_I386): $$(patsubst %_i386,%,$$@)
+
+# prereq is $(SUBDIRS_FULL)
+.SECONDEXPANSION:
+$(SUBDIRS_X86_64): $$(patsubst %_x86_64,${APPDIR}/%,$$@)
+
+all: $(SUBDIRS_I386) $(SUBDIRS_X86_64)
 
 build_intel_apps: support_intel
 	$(MAKE) build -f $(SELF)
 
-build: $(SUBDIRS)
+build: all
 	$(MAKE) build_fat -f $(SELF)
 
 build_fat: sort_c_intel_fat bedops_c_intel_fat closestfeatures_c_intel_fat bedmap_c_intel_fat bedextract_c_intel_fat wig2bed_c_intel_fat starch_c_intel_fat
 
 
-clean: $(SUBDIRS)
+clean: all
 	rm -f ${BINDIR}/sort-bed
 	rm -f ${BINDIR}/bedops
 	rm -f ${BINDIR}/closest-features
