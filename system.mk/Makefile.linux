@@ -16,17 +16,19 @@ OSXLIBDIR        = ${OSXPKGROOT}/resources/lib
 WDIR             = ${shell pwd}
 CC               = gcc
 CXX              = g++
-SELF             = ${WDIR}/system.mk/Makefile.darwin
+SELF             = ${WDIR}/system.mk/Makefile.linux
 
 default: prep_partial_static support
-	$(MAKE) $(SUBDIRS)
+	$(MAKE) build -f $(SELF)
 
 SUBDIRS = ${APPDIR}/bedmap/src ${APPDIR}/sort-bed/src ${APPDIR}/bedops/src ${APPDIR}/closestfeats/src ${APPDIR}/bedextract/src ${APPDIR}/starch/src ${APPDIR}/conversion/src/wig2bed
 
 .PHONY: $(SUBDIRS)
 
+build: $(SUBDIRS)
+
 $(SUBDIRS):
-	$(MAKE) -C $@ $(MAKECMDGOALS)
+	$(MAKE) -C $@ -f Makefile $(MAKECMDGOALS)
 
 gprof: default
 
