@@ -74,11 +74,11 @@ namespace Visitors {
             MT ovr = static_cast<MT>((*i)->intersection(*refItem_).length());
             if ( ovr > 0 ) {
               any = true;
-              val += (ovr/refItem_->length() * static_cast<MT>(**i));
+              val += (ovr * static_cast<MT>(**i));
             }
           } // for
           if ( any )
-            pt_.operator()(val);
+            pt_.operator()(val/refItem_->length());
           else
             pt_.operator()(Signal::NaN());
         } else {
