@@ -107,6 +107,8 @@ typedef struct transformState {
     SignedCoordType          r_previousStop;
     uint64_t                 r_totalNonUniqueBases;
     uint64_t                 r_totalUniqueBases;
+    Boolean                  r_duplicateElementExists;
+    Boolean                  r_nestedElementExists;
     size_t                   r_nRetransBuf;
 } TransformState;
 
@@ -326,7 +328,16 @@ int      STARCHCAT2_transformCompressionBuffer (const char *compressionBuffer, c
 int      STARCHCAT2_squeezeRetransformedOutputBufferToBzip2Stream (BZFILE **bzStream, char *transformedBuffer);
 int      STARCHCAT2_squeezeRetransformedOutputBufferToGzipStream (z_stream *zStream, const Boolean flushZStreamFlag, char *transformedBuffer, uint64_t *finalStreamSize, size_t *cumulativeOutputSize);
 int      STARCHCAT2_resetCompressionBuffer (char *compressionBuffer, LineCountType *compressionLineCount);
-int      STARCHCAT2_finalizeMetadata (Metadata **outMd, char *finalChromosome, char *finalOutTagFn, uint64_t finalStreamSize, uint64_t finalLineCount, uint64_t finalTotalNonUniqueBases, uint64_t finalTotalUniqueBases);
+
+int      STARCHCAT2_finalizeMetadata (Metadata **outMd, 
+                                          char *finalChromosome, 
+                                          char *finalOutTagFn, 
+                                      uint64_t finalStreamSize, 
+                                      uint64_t finalLineCount, 
+                                      uint64_t finalTotalNonUniqueBases, 
+                                      uint64_t finalTotalUniqueBases,
+                                       Boolean finalDuplicateElementExists,
+                                       Boolean finalNestedElementExists);
 
 #ifdef __cplusplus
 } // namespace starch

@@ -527,6 +527,8 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
     Boolean nonCoordLineBufNeedsPrinting = kStarchFalse;
     BaseCountType totalNonUniqueBases = 0;
     BaseCountType totalUniqueBases = 0;
+    Boolean duplicateElementExistsFlag = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+    Boolean nestedElementExistsFlag = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
 
     if (!streamPtr)
         streamPtr = stdin;
@@ -576,13 +578,15 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                         }
 
                         /* update metadata with compressed file attributes */
-                        if (STARCH_updateMetadataForChromosome(md, 
+                        if (STARCH_updateMetadataForChromosome(md,
                                                                prevChromosome, 
                                                                outCompressedFn, 
                                                                (uint64_t) outCompressedFnSize, 
                                                                lineIdx, 
                                                                totalNonUniqueBases, 
-                                                               totalUniqueBases) != STARCH_EXIT_SUCCESS) {
+                                                               totalUniqueBases,
+                                                               duplicateElementExistsFlag,
+                                                               nestedElementExistsFlag) != STARCH_EXIT_SUCCESS) {
                             fprintf(stderr, "ERROR: Could not update metadata%s\n", outFn);
                             return STARCH_FATAL_ERROR;
                         }
@@ -619,7 +623,9 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                                                     outFnSize, 
                                                     lineIdx, 
                                                     totalNonUniqueBases, 
-                                                    totalUniqueBases);
+                                                    totalUniqueBases,
+                                                    duplicateElementExistsFlag,
+                                                    nestedElementExistsFlag);
                         firstRecord = *md;
                     }
                     else {
@@ -629,7 +635,9 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                                                  outFnSize, 
                                                  lineIdx, 
                                                  totalNonUniqueBases, 
-                                                 totalUniqueBases);
+                                                 totalUniqueBases,
+                                                 duplicateElementExistsFlag,
+                                                 nestedElementExistsFlag);
                     }
 
                     /* make previous chromosome the current chromosome */
@@ -648,6 +656,8 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                     lineIdx = 0UL;
                     totalNonUniqueBases = 0UL;
                     totalUniqueBases = 0UL;
+                    duplicateElementExistsFlag = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+                    nestedElementExistsFlag = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
                     recIdx++;
                 }
                 else if (lineType == kBedLineCoordinates) {
@@ -764,7 +774,9 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                                            (uint64_t) outCompressedFnSize, 
                                            lineIdx, 
                                            totalNonUniqueBases, 
-                                           totalUniqueBases);
+                                           totalUniqueBases,
+                                           duplicateElementExistsFlag,
+                                           nestedElementExistsFlag);
         free(outCompressedFn); outCompressedFn = NULL; 
     }
 
@@ -852,6 +864,8 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
     char *dynamicMdBuf = NULL;
     BaseCountType totalNonUniqueBases = 0;
     BaseCountType totalUniqueBases = 0;
+    Boolean duplicateElementExistsFlag = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+    Boolean nestedElementExistsFlag = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
 
     if (!streamPtr)
         streamPtr = stdin;
@@ -906,7 +920,9 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
                                                                (uint64_t) outCompressedFnSize, 
                                                                lineIdx, 
                                                                totalNonUniqueBases, 
-                                                               totalUniqueBases) != STARCH_EXIT_SUCCESS) {
+                                                               totalUniqueBases,
+                                                               duplicateElementExistsFlag,
+                                                               nestedElementExistsFlag) != STARCH_EXIT_SUCCESS) {
                             fprintf(stderr, "ERROR: Could not update metadata%s\n", outFn);
                             return STARCH_FATAL_ERROR;
                         }
@@ -938,11 +954,26 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
 
                     /* add chromosome to metadata */
                     if (! *md) {
-                        *md = STARCH_createMetadata(chromosome, outFn, outFnSize, lineIdx, totalNonUniqueBases, totalUniqueBases);
+                        *md = STARCH_createMetadata(chromosome, 
+                                                    outFn, 
+                                                    outFnSize, 
+                                                    lineIdx, 
+                                                    totalNonUniqueBases, 
+                                                    totalUniqueBases, 
+                                                    duplicateElementExistsFlag,
+                                                    nestedElementExistsFlag);
                         firstRecord = *md;
                     }
                     else {
-                        *md = STARCH_addMetadata(*md, chromosome, outFn, outFnSize, lineIdx, totalNonUniqueBases, totalUniqueBases);
+                        *md = STARCH_addMetadata(*md, 
+                                                 chromosome, 
+                                                 outFn, 
+                                                 outFnSize, 
+                                                 lineIdx, 
+                                                 totalNonUniqueBases, 
+                                                 totalUniqueBases,
+                                                 duplicateElementExistsFlag,
+                                                 nestedElementExistsFlag);
                     }
 
                     /* make previous chromosome the current chromosome */
@@ -961,6 +992,8 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
                     lineIdx = 0UL;
                     totalNonUniqueBases = 0UL;
                     totalUniqueBases = 0UL;
+                    duplicateElementExistsFlag = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+                    nestedElementExistsFlag = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
                     recIdx++;
                 }
                 else
@@ -1073,7 +1106,9 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
                                            (uint64_t) outCompressedFnSize, 
                                            lineIdx, 
                                            totalNonUniqueBases, 
-                                           totalUniqueBases);
+                                           totalUniqueBases,
+                                           duplicateElementExistsFlag,
+                                           nestedElementExistsFlag);
 
         free(outCompressedFn); outCompressedFn = NULL; 
         free(outFn); outFn = NULL;
@@ -1302,6 +1337,8 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     Boolean withinChr = kStarchFalse;
     unsigned long totalNonUniqueBases = 0UL;
     unsigned long totalUniqueBases = 0UL;
+    Boolean duplicateElementExistsFlag = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+    Boolean nestedElementExistsFlag = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
     size_t intermediateBufferLength = 0U;
     size_t currentTransformedBufferLength = 0U;
     size_t recIdx = 0U;
@@ -1478,7 +1515,15 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                             bzBytesWritten = 0U;
                             bzFp = NULL;
 
-                            if (STARCH_updateMetadataForChromosome(md, prevChromosome, compressedFn, currentRecSize, lineIdx, totalNonUniqueBases, totalUniqueBases) != STARCH_EXIT_SUCCESS) {
+                            if (STARCH_updateMetadataForChromosome(md, 
+                                                                   prevChromosome, 
+                                                                   compressedFn, 
+                                                                   currentRecSize, 
+                                                                   lineIdx, 
+                                                                   totalNonUniqueBases, 
+                                                                   totalUniqueBases, 
+                                                                   duplicateElementExistsFlag, 
+                                                                   nestedElementExistsFlag) != STARCH_EXIT_SUCCESS) {
                                 fprintf(stderr, "ERROR: Could not update metadata %s\n", compressedFn);
                                 return STARCH_FATAL_ERROR;
                             }
@@ -1571,7 +1616,15 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                             fprintf(stderr, "\t(final-between-chromosome) closed z-stream...\n");
                             fprintf(stderr, "\t(final-between-chromosome) updating metadata...\n");
 #endif
-                            if (STARCH_updateMetadataForChromosome(md, prevChromosome, compressedFn, currentRecSize, lineIdx, totalNonUniqueBases, totalUniqueBases) != STARCH_EXIT_SUCCESS) {
+                            if (STARCH_updateMetadataForChromosome(md, 
+                                                                   prevChromosome, 
+                                                                   compressedFn, 
+                                                                   currentRecSize, 
+                                                                   lineIdx, 
+                                                                   totalNonUniqueBases, 
+                                                                   totalUniqueBases, 
+                                                                   duplicateElementExistsFlag, 
+                                                                   nestedElementExistsFlag) != STARCH_EXIT_SUCCESS) {
                                 fprintf(stderr, "ERROR: Could not update metadata %s\n", compressedFn);
                                 return STARCH_FATAL_ERROR;
                             }
@@ -1618,7 +1671,14 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 #endif
                     if (recIdx == 0) {
                         *md = NULL;
-                        *md = STARCH_createMetadata(chromosome, compressedFn, 0, 0UL, 0UL, 0UL);
+                        *md = STARCH_createMetadata(chromosome, 
+                                                    compressedFn, 
+                                                    0, 
+                                                    0UL, 
+                                                    0UL, 
+                                                    0UL, 
+                                                    STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE, 
+                                                    STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE);
                         if (!*md) { 
                             fprintf(stderr, "ERROR: Not enough memory is available\n");
                             return STARCH_EXIT_FAILURE;
@@ -1626,7 +1686,15 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                         firstRecord = *md;
                     }
                     else {
-                        *md = STARCH_addMetadata(*md, chromosome, compressedFn, 0, 0UL, 0UL, 0UL);
+                        *md = STARCH_addMetadata(*md, 
+                                                 chromosome, 
+                                                 compressedFn, 
+                                                 0, 
+                                                 0UL, 
+                                                 0UL, 
+                                                 0UL, 
+                                                 STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE, 
+                                                 STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE);
                     }
 
                     /* make previous chromosome the current chromosome */
@@ -1652,6 +1720,8 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                     lineIdx = 0UL;
                     totalNonUniqueBases = 0UL;
                     totalUniqueBases = 0UL;
+                    duplicateElementExistsFlag = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+                    nestedElementExistsFlag = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
                     recIdx++;
                     currentRecSize = 0UL;
                     transformedBuffer[currentTransformedBufferLength] = '\0';
@@ -1939,14 +2009,22 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 #ifdef DEBUG
     fprintf(stderr, "\t(last-pass) updating last md record...\n");
 #endif
-    if (STARCH_updateMetadataForChromosome(md, prevChromosome, compressedFn, currentRecSize, lineIdx,  totalNonUniqueBases, totalUniqueBases) != STARCH_EXIT_SUCCESS) {
+    if (STARCH_updateMetadataForChromosome(md, 
+                                           prevChromosome, 
+                                           compressedFn, 
+                                           currentRecSize, 
+                                           lineIdx, 
+                                           totalNonUniqueBases, 
+                                           totalUniqueBases, 
+                                           duplicateElementExistsFlag, 
+                                           nestedElementExistsFlag) != STARCH_EXIT_SUCCESS) {
         /* 
            If the stream or input file contains no BED records, then the Metadata pointer md will
            be NULL, as will the char pointer prevChromosome. So we put in a stub metadata record.
         */
         lineIdx = 0;
         *md = NULL;
-        *md = STARCH_createMetadata(nullChr, nullCompressedFn, currentRecSize, lineIdx, 0UL, 0UL);
+        *md = STARCH_createMetadata(nullChr, nullCompressedFn, currentRecSize, lineIdx, 0UL, 0UL, STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE, STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE);
         if (!*md) {
             fprintf(stderr, "ERROR: Not enough memory is available\n");
             return STARCH_EXIT_FAILURE;
@@ -2035,6 +2113,8 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     Boolean withinChr = kStarchFalse;
     unsigned long totalNonUniqueBases = 0UL;
     unsigned long totalUniqueBases = 0UL;
+    Boolean duplicateElementExistsFlag = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+    Boolean nestedElementExistsFlag = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
     size_t intermediateBufferLength = 0U;
     size_t currentTransformedBufferLength = 0U;
     size_t recIdx = 0U;
@@ -2207,7 +2287,15 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                             bzBytesWritten = 0U;
                             bzFp = NULL;
 
-                            if (STARCH_updateMetadataForChromosome(md, prevChromosome, compressedFn, currentRecSize, lineIdx, totalNonUniqueBases, totalUniqueBases) != STARCH_EXIT_SUCCESS) {
+                            if (STARCH_updateMetadataForChromosome(md, 
+                                                                   prevChromosome, 
+                                                                   compressedFn, 
+                                                                   currentRecSize, 
+                                                                   lineIdx, 
+                                                                   totalNonUniqueBases, 
+                                                                   totalUniqueBases, 
+                                                                   duplicateElementExistsFlag, 
+                                                                   nestedElementExistsFlag) != STARCH_EXIT_SUCCESS) {
                                 fprintf(stderr, "ERROR: Could not update metadata %s\n", compressedFn);
                                 return STARCH_FATAL_ERROR;
                             }
@@ -2300,7 +2388,15 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                             fprintf(stderr, "\t(final-between-chromosome) closed z-stream...\n");
                             fprintf(stderr, "\t(final-between-chromosome) updating metadata...\n");
 #endif
-                            if (STARCH_updateMetadataForChromosome(md, prevChromosome, compressedFn, currentRecSize, lineIdx, totalNonUniqueBases, totalUniqueBases) != STARCH_EXIT_SUCCESS) {
+                            if (STARCH_updateMetadataForChromosome(md, 
+                                                                   prevChromosome, 
+                                                                   compressedFn, 
+                                                                   currentRecSize, 
+                                                                   lineIdx, 
+                                                                   totalNonUniqueBases, 
+                                                                   totalUniqueBases, 
+                                                                   duplicateElementExistsFlag, 
+                                                                   nestedElementExistsFlag) != STARCH_EXIT_SUCCESS) {
                                 fprintf(stderr, "ERROR: Could not update metadata %s\n", compressedFn);
                                 return STARCH_FATAL_ERROR;
                             }
@@ -2347,7 +2443,14 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #endif
                     if (recIdx == 0) {
                         *md = NULL;
-                        *md = STARCH_createMetadata(chromosome, compressedFn, 0, 0UL, 0UL, 0UL);
+                        *md = STARCH_createMetadata(chromosome, 
+                                                    compressedFn, 
+                                                    0, 
+                                                    0UL, 
+                                                    0UL, 
+                                                    0UL, 
+                                                    STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE, 
+                                                    STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE);
                         if (!*md) { 
                             fprintf(stderr, "ERROR: Not enough memory is available\n");
                             return STARCH_EXIT_FAILURE;
@@ -2355,7 +2458,15 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                         firstRecord = *md;
                     }
                     else {
-                        *md = STARCH_addMetadata(*md, chromosome, compressedFn, 0, 0UL, 0UL, 0UL);
+                        *md = STARCH_addMetadata(*md, 
+                                                 chromosome, 
+                                                 compressedFn, 
+                                                 0, 
+                                                 0UL, 
+                                                 0UL, 
+                                                 0UL, 
+                                                 STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE,
+                                                 STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE);
                     }
 
                     /* make previous chromosome the current chromosome */
@@ -2381,6 +2492,8 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                     lineIdx = 0UL;
                     totalNonUniqueBases = 0UL;
                     totalUniqueBases = 0UL;
+                    duplicateElementExistsFlag = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+                    nestedElementExistsFlag = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
                     recIdx++;
                     currentRecSize = 0UL;
                     transformedBuffer[currentTransformedBufferLength] = '\0';
@@ -2655,14 +2768,29 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #ifdef DEBUG
     fprintf(stderr, "\t(last-pass) updating last md record...\n");
 #endif
-    if (STARCH_updateMetadataForChromosome(md, prevChromosome, compressedFn, currentRecSize, lineIdx,  totalNonUniqueBases, totalUniqueBases) != STARCH_EXIT_SUCCESS) {
+    if (STARCH_updateMetadataForChromosome(md, 
+                                           prevChromosome, 
+                                           compressedFn, 
+                                           currentRecSize, 
+                                           lineIdx, 
+                                           totalNonUniqueBases, 
+                                           totalUniqueBases,
+                                           duplicateElementExistsFlag,
+                                           nestedElementExistsFlag) != STARCH_EXIT_SUCCESS) {
         /* 
            If the stream or input file contains no BED records, then the Metadata pointer md will
            be NULL, as will the char pointer prevChromosome. So we put in a stub metadata record.
         */
         lineIdx = 0;
         *md = NULL;
-        *md = STARCH_createMetadata(nullChr, nullCompressedFn, currentRecSize, lineIdx, 0UL, 0UL);
+        *md = STARCH_createMetadata(nullChr, 
+                                    nullCompressedFn, 
+                                    currentRecSize, 
+                                    lineIdx, 
+                                    0UL, 
+                                    0UL,
+                                    STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE,
+                                    STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE);
         if (!*md) { 
             fprintf(stderr, "ERROR: Not enough memory is available\n");
             return STARCH_EXIT_FAILURE;

@@ -56,7 +56,7 @@ namespace starch {
 #endif
 
 Metadata * 
-STARCH_createMetadata(char const *chr, char const *fn, uint64_t size, LineCountType lineCount, BaseCountType totalNonUniqueBases, BaseCountType totalUniqueBases)
+STARCH_createMetadata(char const *chr, char const *fn, uint64_t size, LineCountType lineCount, BaseCountType totalNonUniqueBases, BaseCountType totalUniqueBases, Boolean duplicateElementExists, Boolean nestedElementExists)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_createMetadata() ---\n");
@@ -91,6 +91,8 @@ STARCH_createMetadata(char const *chr, char const *fn, uint64_t size, LineCountT
         newMetadata->lineCount = lineCount;
         newMetadata->totalNonUniqueBases = totalNonUniqueBases;
         newMetadata->totalUniqueBases = totalUniqueBases;
+        newMetadata->duplicateElementExists = duplicateElementExists;
+        newMetadata->nestedElementExists = nestedElementExists;
         newMetadata->next = NULL;
     }
     else {
@@ -102,7 +104,7 @@ STARCH_createMetadata(char const *chr, char const *fn, uint64_t size, LineCountT
 }
 
 Metadata * 
-STARCH_addMetadata(Metadata *md, char *chr, char *fn, uint64_t size, LineCountType lineCount, BaseCountType totalNonUniqueBases, BaseCountType totalUniqueBases) 
+STARCH_addMetadata(Metadata *md, char *chr, char *fn, uint64_t size, LineCountType lineCount, BaseCountType totalNonUniqueBases, BaseCountType totalUniqueBases, Boolean duplicateElementExists, Boolean nestedElementExists)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_addMetadata() ---\n");
@@ -112,7 +114,9 @@ STARCH_addMetadata(Metadata *md, char *chr, char *fn, uint64_t size, LineCountTy
                                             size,
                                             lineCount,
                                             totalNonUniqueBases, 
-                                            totalUniqueBases);
+                                            totalUniqueBases,
+                                            duplicateElementExists,
+                                            nestedElementExists);
 
     if ((newMd != NULL) && (md->next == NULL))
         md->next = newMd;
@@ -140,7 +144,9 @@ STARCH_copyMetadata(const Metadata *md)
                                  md->size,
                                  md->lineCount,
                                  md->totalNonUniqueBases,
-                                 md->totalUniqueBases);
+                                 md->totalUniqueBases,
+                                 md->duplicateElementExists,
+                                 md->nestedElementExists);
     firstRec = copy;
     md = md->next;
 
@@ -152,7 +158,9 @@ STARCH_copyMetadata(const Metadata *md)
                                   iter->size,
                                   iter->lineCount,
                                   iter->totalNonUniqueBases,
-                                  iter->totalUniqueBases);
+                                  iter->totalUniqueBases,
+                                  iter->duplicateElementExists,
+                                  iter->nestedElementExists);
     }
 
     if (!firstRec) {
@@ -164,7 +172,7 @@ STARCH_copyMetadata(const Metadata *md)
 }
 
 int 
-STARCH_updateMetadataForChromosome(Metadata **md, char *chr, char *fn, uint64_t size, LineCountType lineCount, BaseCountType totalNonUniqueBases, BaseCountType totalUniqueBases) 
+STARCH_updateMetadataForChromosome(Metadata **md, char *chr, char *fn, uint64_t size, LineCountType lineCount, BaseCountType totalNonUniqueBases, BaseCountType totalUniqueBases, Boolean duplicateElementExists, Boolean nestedElementExists) 
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_updateMetadataForChromosome() ---\n");
@@ -193,6 +201,8 @@ STARCH_updateMetadataForChromosome(Metadata **md, char *chr, char *fn, uint64_t 
             iter->lineCount = lineCount;
             iter->totalNonUniqueBases =  totalNonUniqueBases;
             iter->totalUniqueBases = totalUniqueBases;
+            iter->duplicateElementExists = duplicateElementExists;
+            iter->nestedElementExists = nestedElementExists;
 
             break;
         }
@@ -209,6 +219,8 @@ STARCH_listMetadata(const Metadata *md, const char *chr)
 #endif
     const Metadata *iter;
     Boolean chrFound = kStarchFalse;
+    const char *yes = "yes";
+    const char *no = "no";
 
     if (!md) {
         fprintf(stderr, "ERROR: Could not list metadata (metadata structure is empty)\n");
@@ -227,10 +239,10 @@ STARCH_listMetadata(const Metadata *md, const char *chr)
     }
 
     if (chrFound == kStarchTrue) {
-        fprintf(stdout, "%-25s| %-65s\t| %-15s\t| %-20s\t| %-20s\t| %-20s\n", "chr", "filename", "compressedSize", "uncompressedLineCount", "totalNonUniqueBases", "totalUniqueBases");
+        fprintf(stdout, "%-25s| %-65s\t| %-15s\t| %-20s\t| %-20s\t| %-20s\t| %-25s\t| %-25s\n", "chr", "filename", "compressedSize", "uncompressedLineCount", "totalNonUniqueBases", "totalUniqueBases", "duplicateElementExists", "nestedElementExists");
         for (iter = md; iter != NULL; iter = iter->next) {
             if ( (strcmp((const char *)iter->chromosome, chr) == 0) || (strcmp("all", chr) == 0) )
-                fprintf(stdout, "%-25s| %-65s\t| %-15" PRIu64 "\t| %-20" PRIu64 "\t| %-20" PRIu64 "\t| %-20" PRIu64 "\n", iter->chromosome, iter->filename, iter->size, iter->lineCount, iter->totalNonUniqueBases, iter->totalUniqueBases);
+                fprintf(stdout, "%-25s| %-65s\t| %-15" PRIu64 "\t| %-20" PRIu64 "\t| %-20" PRIu64 "\t| %-20" PRIu64 "| %-25s\t| %-25s\n", iter->chromosome, iter->filename, iter->size, iter->lineCount, iter->totalNonUniqueBases, iter->totalUniqueBases, (iter->duplicateElementExists == kStarchTrue ? yes : no), (iter->nestedElementExists == kStarchTrue ? yes : no));
         }
     }
 
@@ -351,6 +363,8 @@ STARCH_generateJSONMetadata(const Metadata *md, const CompressionType type, cons
     json_t *streamTotalNonUniqueBases = NULL;
     json_t *streamTotalUniqueBases = NULL;
     json_t *streamCustomHeaderFlag = NULL;
+    json_t *streamDuplicateElementExistsFlag = NULL;
+    json_t *streamNestedElementExistsFlag = NULL;
     json_t *streamArchive = NULL;
     json_t *streamArchiveType = NULL;
     json_t *streamArchiveNote = NULL;
@@ -403,7 +417,7 @@ STARCH_generateJSONMetadata(const Metadata *md, const CompressionType type, cons
         return NULL;
     }
     json_object_set_new(streamArchive, STARCH_METADATA_STREAM_HEADER_BED_TYPE_KEY, streamCustomHeaderFlag);
-    
+
     streamArchiveVersion = json_object();
     if (!av) {
         /* starch - create defaults */
@@ -506,6 +520,23 @@ STARCH_generateJSONMetadata(const Metadata *md, const CompressionType type, cons
             totalUniqueBases = iter->totalUniqueBases;
             streamTotalUniqueBases = json_integer((json_int_t)totalUniqueBases);
             json_object_set_new(stream, STARCH_METADATA_STREAM_TOTALUNIQUEBASES_KEY, streamTotalUniqueBases);
+        }
+
+        /* 2.1+ archive */
+        if ((json_integer_value(streamArchiveVersionMajor) > 2) || ((json_integer_value(streamArchiveVersionMajor) == 2) && (json_integer_value(streamArchiveVersionMinor) >= 1))) {
+            streamDuplicateElementExistsFlag = json_boolean(md->duplicateElementExists == kStarchTrue);
+            if (!streamDuplicateElementExistsFlag) {
+                fprintf(stderr, "ERROR: Could not instantiate stream duplicate-element-exists flag object\n");
+                return NULL;
+            }
+            json_object_set_new(stream, STARCH_METADATA_STREAM_DUPLICATEELEMENTEXISTS_KEY, streamDuplicateElementExistsFlag);
+
+            streamNestedElementExistsFlag = json_boolean(md->duplicateElementExists == kStarchTrue);
+            if (!streamNestedElementExistsFlag) {
+                fprintf(stderr, "ERROR: Could not instantiate stream duplicate-element-exists flag object\n");
+                return NULL;
+            }
+            json_object_set_new(stream, STARCH_METADATA_STREAM_DUPLICATEELEMENTEXISTS_KEY, streamNestedElementExistsFlag);
         }
 
         json_array_append_new(streams, stream);
@@ -625,6 +656,8 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
     json_t *streamLineCount = NULL;
     json_t *streamTotalNonUniqueBases = NULL;
     json_t *streamTotalUniqueBases = NULL;
+    json_t *streamDuplicateElementExistsFlag = NULL;
+    json_t *streamNestedElementExistsFlag = NULL;
     json_t *streamsCompressionType = NULL;
     size_t streamIdx;
     char *streamChr = NULL;
@@ -641,6 +674,8 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
     LineCountType streamLineCountValue = STARCH_DEFAULT_LINE_COUNT;
     BaseCountType streamTotalNonUniqueBasesValue = STARCH_DEFAULT_NON_UNIQUE_BASE_COUNT;
     BaseCountType streamTotalUniqueBasesValue = STARCH_DEFAULT_UNIQUE_BASE_COUNT;
+    Boolean streamDuplicateElementExistsValue = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+    Boolean streamNestedElementExistsValue = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
     json_t *mdJSON = NULL;
     size_t mdHashIndex;
     char offsetBuffer[STARCH2_MD_FOOTER_CUMULATIVE_RECORD_SIZE_LENGTH + 1] = {0};
@@ -1097,16 +1132,48 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
             }
             else
                 streamTotalUniqueBasesValue = (BaseCountType) json_integer_value(streamTotalUniqueBases);
+
+            streamDuplicateElementExistsFlag = json_object_get(stream, STARCH_METADATA_STREAM_DUPLICATEELEMENTEXISTS_KEY);
+            if (!streamDuplicateElementExistsFlag) {
+                if (((*version)->major > 2) || (((*version)->major == 2) && ((*version)->minor >= 0))) {
+                    if (suppressErrorMsgs == kStarchFalse)
+                        fprintf(stderr, "ERROR: Could not retrieve stream duplicate-element-exists flag object with compliant version\n");
+                    return STARCH_EXIT_FAILURE;
+                }
+                else {
+                    streamDuplicateElementExistsFlag = json_boolean(STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE);
+                    streamDuplicateElementExistsValue = (Boolean) json_is_true(streamDuplicateElementExistsFlag);
+                    json_decref(streamDuplicateElementExistsFlag);
+                }
+            }
+            else
+                streamDuplicateElementExistsValue = (Boolean) json_is_true(streamDuplicateElementExistsFlag);
+
+            streamNestedElementExistsFlag = json_object_get(stream, STARCH_METADATA_STREAM_NESTEDELEMENTEXISTS_KEY);
+            if (!streamNestedElementExistsFlag) {
+                if (((*version)->major > 2) || (((*version)->major == 2) && ((*version)->minor >= 0))) {
+                    if (suppressErrorMsgs == kStarchFalse)
+                        fprintf(stderr, "ERROR: Could not retrieve stream duplicate-element-exists flag object with compliant version\n");
+                    return STARCH_EXIT_FAILURE;
+                }
+                else {
+                    streamNestedElementExistsFlag = json_boolean(STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE);
+                    streamNestedElementExistsValue = (Boolean) json_is_true(streamNestedElementExistsFlag);
+                    json_decref(streamNestedElementExistsFlag);
+                }
+            }
+            else
+                streamNestedElementExistsValue = (Boolean) json_is_true(streamNestedElementExistsFlag);
             
             strncpy(streamChr, json_string_value(streamChromosome), strlen(json_string_value(streamChromosome)) + 1);
             strncpy(streamFn, json_string_value(streamFilename), strlen(json_string_value(streamFilename)) + 1);
 
             if (streamIdx == 0) {
-                *rec = STARCH_createMetadata(streamChr, streamFn, streamSizeValue, streamLineCountValue, streamTotalNonUniqueBasesValue, streamTotalUniqueBasesValue);
+                *rec = STARCH_createMetadata(streamChr, streamFn, streamSizeValue, streamLineCountValue, streamTotalNonUniqueBasesValue, streamTotalUniqueBasesValue, streamDuplicateElementExistsValue, streamNestedElementExistsValue);
                 firstRec = *rec;
             }
             else
-                *rec = STARCH_addMetadata(*rec, streamChr, streamFn, streamSizeValue, streamLineCountValue, streamTotalNonUniqueBasesValue, streamTotalUniqueBasesValue);
+                *rec = STARCH_addMetadata(*rec, streamChr, streamFn, streamSizeValue, streamLineCountValue, streamTotalNonUniqueBasesValue, streamTotalUniqueBasesValue, streamDuplicateElementExistsValue, streamNestedElementExistsValue);
         }
 
         /* reset Metadata record pointer to first record */
@@ -1242,6 +1309,8 @@ STARCH_readLegacyMetadata(const char *buf, Metadata **rec, CompressionType *type
     LineCountType recLineCountValue = STARCH_DEFAULT_LINE_COUNT;
     BaseCountType recNonUniqueBaseCountValue = STARCH_DEFAULT_NON_UNIQUE_BASE_COUNT;
     BaseCountType recUniqueBaseCountValue = STARCH_DEFAULT_UNIQUE_BASE_COUNT;
+    Boolean recDuplicateElementExistsFlagValue = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+    Boolean recNestedElementExistsFlagValue = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
     char tokBuf[STARCH_LEGACY_METADATA_SIZE];
     char recTokBuf[STARCH_LEGACY_METADATA_SIZE];
     size_t bufIdx, tokBufIdx, recTokBufIdx;
@@ -1310,11 +1379,11 @@ STARCH_readLegacyMetadata(const char *buf, Metadata **rec, CompressionType *type
             if (tokBufIdx != 0) {
                 /* put record into metadata */
                 if (recIdx == 1) {
-                    *rec = STARCH_createMetadata(recChromosome, recFilename, recFileSize, recLineCountValue, recNonUniqueBaseCountValue, recUniqueBaseCountValue);
+                    *rec = STARCH_createMetadata(recChromosome, recFilename, recFileSize, recLineCountValue, recNonUniqueBaseCountValue, recUniqueBaseCountValue, recDuplicateElementExistsFlagValue, recNestedElementExistsFlagValue);
                     firstRec = *rec;
                 }
                 else
-                    *rec = STARCH_addMetadata(*rec, recChromosome, recFilename, recFileSize, recLineCountValue, recNonUniqueBaseCountValue, recUniqueBaseCountValue);
+                    *rec = STARCH_addMetadata(*rec, recChromosome, recFilename, recFileSize, recLineCountValue, recNonUniqueBaseCountValue, recUniqueBaseCountValue, recDuplicateElementExistsFlagValue, recNestedElementExistsFlagValue);
 
                 /* cleanup */
                 if (recFilename)

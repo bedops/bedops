@@ -37,11 +37,11 @@
 
 #include "jansson.h"
 
-/* old "stable" binary version:      1.2.0 */
-/* current "stable" binary version:  2.4.1 */
-/* current "dev" binary version:     2.4.2 */
+/* current "stable" binary version:  2.4.2 */
+/* current "dev" binary version:     2.5.0 */
 
 /* current "stable" archive version: 2.0.0 */
+/* current "dev" archive version:    2.1.0 */
 
 #ifdef __cplusplus
   namespace starch {
@@ -49,7 +49,7 @@
 #endif
 
 #define STARCH_MAJOR_VERSION 2
-#define STARCH_MINOR_VERSION 0
+#define STARCH_MINOR_VERSION 1
 #define STARCH_REVISION_VERSION 0
 
 #define STARCH_DEFAULT_COMPRESSION_TYPE kBzip2
@@ -70,6 +70,8 @@
 #define STARCH_DEFAULT_LINE_COUNT (uint64_t)0
 #define STARCH_DEFAULT_NON_UNIQUE_BASE_COUNT (uint64_t)0
 #define STARCH_DEFAULT_UNIQUE_BASE_COUNT (uint64_t)0
+#define STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE (Boolean)kStarchFalse
+#define STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE (Boolean)kStarchFalse
 #define STARCH_CREATION_TIMESTAMP_LENGTH 80
 #define STARCH_ARCHIVE_VERSION_STRING_LENGTH 80
 
@@ -82,6 +84,8 @@
 #define STARCH_METADATA_STREAM_LINECOUNT_KEY "uncompressedLineCount"
 #define STARCH_METADATA_STREAM_TOTALNONUNIQUEBASES_KEY "nonUniqueBaseCount"
 #define STARCH_METADATA_STREAM_TOTALUNIQUEBASES_KEY "uniqueBaseCount"
+#define STARCH_METADATA_STREAM_DUPLICATEELEMENTEXISTS_KEY "duplicateElementExists"
+#define STARCH_METADATA_STREAM_NESTEDELEMENTEXISTS_KEY "nestedElementExists"
 #define STARCH_METADATA_STREAM_ARCHIVE_KEY "archive"
 #define STARCH_METADATA_STREAM_ARCHIVE_TYPE_KEY "type"
 #define STARCH_METADATA_STREAM_ARCHIVE_NOTE_KEY "note"
@@ -149,6 +153,8 @@ typedef struct metadata {
     LineCountType lineCount;
     BaseCountType totalNonUniqueBases;
     BaseCountType totalUniqueBases;
+    Boolean duplicateElementExists;
+    Boolean nestedElementExists;
     struct metadata *next;
 } Metadata;
 
@@ -192,7 +198,9 @@ Metadata *       STARCH_createMetadata(char const *chr,
                                          uint64_t size,
                                     LineCountType lineCount,
                                     BaseCountType totalNonUniqueBases,
-                                    BaseCountType totalUniqueBases);
+                                    BaseCountType totalUniqueBases,
+                                          Boolean duplicateElementExists, 
+                                          Boolean nestedElementExists);
 
 Metadata *       STARCH_addMetadata(Metadata *md, 
                                         char *chr, 
@@ -200,7 +208,9 @@ Metadata *       STARCH_addMetadata(Metadata *md,
                                     uint64_t size,
                                LineCountType lineCount,
                                BaseCountType totalNonUniqueBases,
-                               BaseCountType totalUniqueBases);
+                               BaseCountType totalUniqueBases,
+                                     Boolean duplicateElementExists, 
+                                     Boolean nestedElementExists);
 
 Metadata *       STARCH_copyMetadata(const Metadata *md);
 
@@ -210,7 +220,9 @@ int              STARCH_updateMetadataForChromosome(Metadata **md,
                                                     uint64_t size,
                                                LineCountType lineCount,
                                                BaseCountType totalNonUniqueBases,
-                                               BaseCountType totalUniqueBases);
+                                               BaseCountType totalUniqueBases,
+                                                     Boolean duplicateElementExists, 
+                                                     Boolean nestedElementExists);
 
 int              STARCH_listMetadata(const Metadata *md,
                                          const char *chr);

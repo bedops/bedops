@@ -255,6 +255,8 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
     LineCountType outFileLineCount = 0;
     BaseCountType outFileNonUniqueBases = 0;
     BaseCountType outFileUniqueBases = 0;
+    Boolean outDuplicateElementExists = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+    Boolean outNestedElementExists = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
     Metadata *iter, *inMd = inRec->metadata;
     const ArchiveVersion *av = inRec->av;
     char buffer[STARCHCAT_COPY_BUFFER_MAXSIZE];
@@ -310,6 +312,8 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
                 outFileLineCount = iter->lineCount;
                 outFileNonUniqueBases = iter->totalNonUniqueBases;
                 outFileUniqueBases = iter->totalUniqueBases;
+                outDuplicateElementExists = iter->duplicateElementExists;
+                outNestedElementExists = iter->nestedElementExists;
             }
             else if ((av->major == 1) && (av->minor >= 3))
                 outFileLineCount = iter->lineCount;
@@ -333,7 +337,7 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
     }
     outFileSize = (uint64_t) (endOffset - startOffset);
     *cumulativeOutputSize += outFileSize;
-    fseeko(inRec->fp, (off_t)startOffset, SEEK_SET);
+    fseeko(inRec->fp, (off_t) startOffset, SEEK_SET);
 
 #ifdef DEBUG
     fprintf(stderr, "\tstartOffset -> %" PRId64" \t outFileSize -> %" PRIu64 " \t *cumulativeOutputSize -> %" PRIu64 "\n", (uint64_t) startOffset, (uint64_t) outFileSize, (uint64_t) *cumulativeOutputSize);
@@ -348,21 +352,21 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
     outFileSizeCounter = outFileSize;
     do {
         if (outFileSizeCounter > STARCHCAT_COPY_BUFFER_MAXSIZE) {
-	nBytesRead = fread(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, inRec->fp);
+	nBytesRead = fread(buffer, sizeof(char), (size_t) STARCHCAT_COPY_BUFFER_MAXSIZE, inRec->fp);
         if (nBytesRead != STARCHCAT_COPY_BUFFER_MAXSIZE * sizeof(char)) {
             fprintf(stderr, "ERROR: Was not able to copy sufficient bytes into buffer (STARCHCAT_COPY_BUFFER_MAXSIZE).\n");
             return STARCHCAT_EXIT_FAILURE;
         }
-	fwrite(buffer, sizeof(char), (size_t)STARCHCAT_COPY_BUFFER_MAXSIZE, outFnPtr);
+	fwrite(buffer, sizeof(char), (size_t) STARCHCAT_COPY_BUFFER_MAXSIZE, outFnPtr);
 	outFileSizeCounter -= STARCHCAT_COPY_BUFFER_MAXSIZE;
       }
       else {
-	nBytesRead = fread(buffer, sizeof(char), (size_t)outFileSizeCounter, inRec->fp);
+	nBytesRead = fread(buffer, sizeof(char), (size_t) outFileSizeCounter, inRec->fp);
         if (nBytesRead != outFileSizeCounter * sizeof(char)) {
             fprintf(stderr, "ERROR: Was not able to copy sufficient bytes into buffer (outFileSizeCounter).\n");
             return STARCHCAT_EXIT_FAILURE;
         }
-	fwrite(buffer, sizeof(char), (size_t)outFileSizeCounter, outFnPtr);
+	fwrite(buffer, sizeof(char), (size_t) outFileSizeCounter, outFnPtr);
 	outFileSizeCounter = 0ULL;
       }
     } while (outFileSizeCounter > 0);
@@ -372,13 +376,28 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
 #ifdef DEBUG
         fprintf(stderr, "\t\tmaking new output metadata structure... (%" PRIu64 ")\n", outFileSize);
 #endif
-        *outMd = STARCH_createMetadata( (char *) inChr, outFn, outFileSize, outFileLineCount, outFileNonUniqueBases, outFileUniqueBases );
+        *outMd = STARCH_createMetadata( (char *) inChr, 
+                                        outFn, 
+                                        outFileSize, 
+                                        outFileLineCount, 
+                                        outFileNonUniqueBases, 
+                                        outFileUniqueBases,
+                                        outDuplicateElementExists,
+                                        outNestedElementExists );
     }
     else {
 #ifdef DEBUG
         fprintf(stderr, "\t\tappending to existing output metadata structure...\n");
 #endif
-        *outMd = STARCH_addMetadata( *outMd, (char *) inChr, outFn, outFileSize, outFileLineCount, outFileNonUniqueBases, outFileUniqueBases );
+        *outMd = STARCH_addMetadata( *outMd, 
+                                     (char *) inChr, 
+                                     outFn, 
+                                     outFileSize, 
+                                     outFileLineCount, 
+                                     outFileNonUniqueBases, 
+                                     outFileUniqueBases,
+                                     outDuplicateElementExists,
+                                     outNestedElementExists );
     }
     
     return STARCHCAT_EXIT_SUCCESS;
@@ -403,6 +422,8 @@ STARCHCAT_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const C
     LineCountType outFileLineCount = 0;
     BaseCountType outFileNonUniqueBases = 0;
     BaseCountType outFileUniqueBases = 0;
+    Boolean outDuplicateElementExists = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+    Boolean outNestedElementExists = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
     Metadata *iter, *inMd = inRec->metadata;
     const ArchiveVersion *av = inRec->av;
     char buffer[STARCHCAT_COPY_BUFFER_MAXSIZE];
@@ -455,6 +476,8 @@ STARCHCAT_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const C
                 outFileLineCount = iter->lineCount;
                 outFileNonUniqueBases = iter->totalNonUniqueBases;
                 outFileUniqueBases = iter->totalUniqueBases;
+                outDuplicateElementExists = iter->duplicateElementExists;
+                outNestedElementExists = iter->nestedElementExists;
             }
             else if ((av->major >= 1) && (av->minor >= 3))
                 outFileLineCount = iter->lineCount;
@@ -511,13 +534,28 @@ STARCHCAT_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const C
 #ifdef DEBUG
         fprintf(stderr, "\t\tmaking new output metadata structure...\n");
 #endif
-        *outMd = STARCH_createMetadata( (char *) inChr, outFn, outFileSize, outFileLineCount, outFileNonUniqueBases, outFileUniqueBases );
+        *outMd = STARCH_createMetadata( (char *) inChr, 
+                                        outFn, 
+                                        outFileSize, 
+                                        outFileLineCount, 
+                                        outFileNonUniqueBases, 
+                                        outFileUniqueBases,
+                                        outDuplicateElementExists,
+                                        outNestedElementExists);
     }
     else {
 #ifdef DEBUG
         fprintf(stderr, "\t\tappending to existing output metadata structure...\n");
 #endif
-        *outMd = STARCH_addMetadata( *outMd, (char *) inChr, outFn, outFileSize, outFileLineCount, outFileNonUniqueBases, outFileUniqueBases );
+        *outMd = STARCH_addMetadata( *outMd, 
+                                     (char *) inChr, 
+                                     outFn, 
+                                     outFileSize, 
+                                     outFileLineCount, 
+                                     outFileNonUniqueBases, 
+                                     outFileUniqueBases,
+                                     outDuplicateElementExists,
+                                     outNestedElementExists);
     }
     /* fprintf(stderr, "\t\tchr: %s, outFn: %s, size: %llu\n", (*outMd)->chromosome, (*outMd)->filename, (*outMd)->size); */
 
@@ -607,6 +645,8 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
     SignedCoordType t_lcDiff = 0;
     BaseCountType t_totalNonUniqueBases = 0;
     BaseCountType t_totalUniqueBases = 0;
+    Boolean t_duplicateElementExists = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+    Boolean t_nestedElementExists = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
     size_t t_fileSize = 0U;
 
     static const char tab = '\t';
@@ -1656,9 +1696,24 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
 
     /* update the metadata */
     if (!*outMd)
-        *outMd = STARCH_createMetadata((char *)inChr, outTagFn, t_fileSize, t_lineIdx, t_totalNonUniqueBases, t_totalUniqueBases);    
+        *outMd = STARCH_createMetadata( (char *) inChr, 
+                                        outTagFn, 
+                                        t_fileSize, 
+                                        t_lineIdx, 
+                                        t_totalNonUniqueBases, 
+                                        t_totalUniqueBases,
+                                        t_duplicateElementExists,
+                                        t_nestedElementExists );    
     else
-        *outMd = STARCH_addMetadata(*outMd, (char *)inChr, outTagFn, t_fileSize, t_lineIdx, t_totalNonUniqueBases, t_totalUniqueBases);
+        *outMd = STARCH_addMetadata( *outMd, 
+                                     (char *) inChr, 
+                                     outTagFn, 
+                                     t_fileSize, 
+                                     t_lineIdx,
+                                     t_totalNonUniqueBases, 
+                                     t_totalUniqueBases,
+                                     t_duplicateElementExists,
+                                     t_nestedElementExists );
 
     /* cleanup */
     if (outTagFn)
@@ -1979,6 +2034,8 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
     LineCountType finalLineCount = 0;
     BaseCountType finalTotalNonUniqueBases = 0;
     BaseCountType finalTotalUniqueBases = 0;
+    Boolean finalDuplicateElementExists = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+    Boolean finalNestedElementExists = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
     char *finalOutTagFn = NULL;
     MetadataRecord *inRecord = NULL;
     size_t *nBzReads = NULL;
@@ -2151,6 +2208,8 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
         outputRetransformState->r_lastPosition              = 0;
         outputRetransformState->r_totalNonUniqueBases       = 0;
         outputRetransformState->r_totalUniqueBases          = 0;
+        outputRetransformState->r_duplicateElementExists    = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+        outputRetransformState->r_nestedElementExists       = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
         outputRetransformState->r_previousStop              = 0;
         outputRetransformState->r_nRetransBuf               = (size_t) 0;
 
@@ -2311,8 +2370,18 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
     }
     finalTotalNonUniqueBases = outputRetransformState->r_totalNonUniqueBases;
     finalTotalUniqueBases = outputRetransformState->r_totalUniqueBases;
+    finalDuplicateElementExists = outputRetransformState->r_duplicateElementExists;
+    finalNestedElementExists = outputRetransformState->r_nestedElementExists;
 
-    STARCHCAT2_finalizeMetadata(outMd, (char *) inChr, finalOutTagFn, finalStreamSize, finalLineCount, finalTotalNonUniqueBases, finalTotalUniqueBases);
+    STARCHCAT2_finalizeMetadata( outMd, 
+                                 (char *) inChr, 
+                                 finalOutTagFn, 
+                                 finalStreamSize, 
+                                 finalLineCount, 
+                                 finalTotalNonUniqueBases, 
+                                 finalTotalUniqueBases,
+                                 finalDuplicateElementExists,
+                                 finalNestedElementExists );
 
     /* breakdown */
     for (inRecIdx = 0U; inRecIdx < summary->numRecords; inRecIdx++) {
@@ -2475,11 +2544,21 @@ STARCHCAT_mergeInputRecordsToOutput (Metadata **outMd, const char *outTag, const
 #endif
         switch (inRec->type) {
             case kBzip2: {
-                UNSTARCH_extractDataWithBzip2( &(inRec->fp), tempOutFp, summary->chromosome, inRec->metadata, inRec->mdOffset, inRec->hFlag );
+                UNSTARCH_extractDataWithBzip2( &(inRec->fp), 
+                                               tempOutFp, 
+                                               summary->chromosome, 
+                                               inRec->metadata, 
+                                               inRec->mdOffset, 
+                                               inRec->hFlag );
                 break;
             }
             case kGzip: {
-                UNSTARCH_extractDataWithGzip( &(inRec->fp), tempOutFp, summary->chromosome, inRec->metadata, inRec->mdOffset, inRec->hFlag );
+                UNSTARCH_extractDataWithGzip( &(inRec->fp), 
+                                              tempOutFp, 
+                                              summary->chromosome, 
+                                              inRec->metadata, 
+                                              inRec->mdOffset, 
+                                              inRec->hFlag );
                 break;
             }
             case kUndefined: {
@@ -2738,7 +2817,12 @@ STARCHCAT_mergeInputRecordsToOutput (Metadata **outMd, const char *outTag, const
     (! *outMd) ? fprintf(stderr, "\t\tmaking new output metadata structure...\n") : fprintf(stderr, "\t\tappending to existing output metadata structure...\n");
 #endif
 
-    if ( STARCH_transformHeaderlessInput( &(*outMd), (const FILE *) transformFnPtr, (const CompressionType) outType, (const char *) outTag, (const Boolean) kStarchFinalizeTransformFalse, (const char *) note ) != 0 ) {
+    if ( STARCH_transformHeaderlessInput( &(*outMd), 
+                                          (const FILE *) transformFnPtr, 
+                                          (const CompressionType) outType, 
+                                          (const char *) outTag, 
+                                          (const Boolean) kStarchFinalizeTransformFalse, 
+                                          (const char *) note ) != 0 ) {
         fprintf(stderr, "ERROR: Could not transform output file. Could not merge.\n");
         return STARCHCAT_EXIT_FAILURE;
     }
@@ -2844,13 +2928,21 @@ STARCHCAT_mergeChromosomeStreams (const ChromosomeSummaries *chrSums, const Comp
 #ifdef DEBUG
                 fprintf(stderr, "\t[%s] copying bytes straight over...\n", summary->chromosome);
 #endif
-                assert( STARCHCAT_copyInputRecordToOutput(&outputMd, (const char *) outputTag, (const CompressionType) outputType, (const char *) inputChr, (const MetadataRecord *) inputRecord) );
+                assert( STARCHCAT_copyInputRecordToOutput( &outputMd, 
+                                                           (const char *) outputTag, 
+                                                           (const CompressionType) outputType, 
+                                                           (const char *) inputChr, 
+                                                           (const MetadataRecord *) inputRecord) );
             }
             else {
 #ifdef DEBUG
                 fprintf(stderr, "\t[%s] extracting bytes to recompressed stream...\n", summary->chromosome);
 #endif
-                assert( STARCHCAT_rewriteInputRecordToOutput(&outputMd, (const char *) outputTag, (const CompressionType) outputType, (const char *) inputChr, (const MetadataRecord *) inputRecord) );
+                assert( STARCHCAT_rewriteInputRecordToOutput( &outputMd, 
+                                                              (const char *) outputTag, 
+                                                              (const CompressionType) outputType, 
+                                                              (const char *) inputChr, 
+                                                              (const MetadataRecord *) inputRecord) );
             }
         }
 
@@ -2865,7 +2957,9 @@ STARCHCAT_mergeChromosomeStreams (const ChromosomeSummaries *chrSums, const Comp
 #ifdef DEBUG
             fprintf(stderr, "\t[%s] unpacking/repacking mixed data...\n", summary->chromosome);
 #endif
-            assert( STARCHCAT_mergeInputRecordsToOutput(&outputMd, (const char *) outputTag, (const CompressionType) outputType, (const ChromosomeSummary *) summary) );
+            assert( STARCHCAT_mergeInputRecordsToOutput(&outputMd, (const char *) outputTag, 
+                                                        (const CompressionType) outputType, 
+                                                        (const ChromosomeSummary *) summary) );
         }
 
         if (!outputMd) {
@@ -2886,7 +2980,11 @@ STARCHCAT_mergeChromosomeStreams (const ChromosomeSummaries *chrSums, const Comp
     }
 
     /* stitch up compressed files into one archive, along with metadata header */
-    assert( STARCH_writeJSONMetadata( (const Metadata *) headOutputMd, &dynamicMdBuffer, (CompressionType *) &outputType, (const Boolean) hFlag, (const char *) note) );
+    assert( STARCH_writeJSONMetadata( (const Metadata *) headOutputMd, 
+                                      &dynamicMdBuffer, 
+                                      (CompressionType *) &outputType, 
+                                      (const Boolean) hFlag, 
+                                      (const char *) note) );
     assert( STARCH_mergeMetadataWithCompressedFiles( (const Metadata *) headOutputMd, dynamicMdBuffer) );
     assert( STARCH_deleteCompressedFiles( (const Metadata *) headOutputMd) );
 
@@ -4879,6 +4977,8 @@ STARCHCAT2_transformCompressionBuffer (const char *compBuf, char *retransBuf, Tr
     SignedCoordType *retransPreviousStop                   = &retransState->r_previousStop;
     BaseCountType   *retransTotalNonUniqueBases            = &retransState->r_totalNonUniqueBases;
     BaseCountType   *retransTotalUniqueBases               = &retransState->r_totalUniqueBases;
+    Boolean         *retransDuplicateElementExists         = &retransState->r_duplicateElementExists;
+    Boolean         *retransNestedElementExists            = &retransState->r_nestedElementExists;
 
 #ifdef DEBUG
     fprintf(stderr, "retransform parameters ->\nretransChromosome - [%s]\nretransRemainder - [%s]\nretransStart - [%" PRId64 "]\nretransStop - [%" PRId64 "]\nretransCoordDiff - [%" PRId64 "]\nretransLcDiff - [%" PRId64 "]\nretransLastPosition - [%" PRId64 "]\nretransPreviousStop - [%" PRId64 "]\nretransTotalNonUniqueBases - [%" PRIu64 "]\nretransTotalUniqueBases - [%" PRIu64 "]\n", retransChromosome, retransRemainder, *retransStart, *retransStop, *retransCoordDiff, *retransLcDiff, *retransLastPosition, *retransPreviousStop, *retransTotalNonUniqueBases, *retransTotalUniqueBases);
@@ -5084,16 +5184,31 @@ STARCHCAT2_resetCompressionBuffer (char *compressionBuffer, LineCountType *compr
 }
 
 int      
-STARCHCAT2_finalizeMetadata (Metadata **outMd, char *finalChromosome, char *finalOutTagFn, uint64_t finalStreamSize, LineCountType finalLineCount, uint64_t finalTotalNonUniqueBases, uint64_t finalTotalUniqueBases)
+STARCHCAT2_finalizeMetadata (Metadata **outMd, char *finalChromosome, char *finalOutTagFn, uint64_t finalStreamSize, LineCountType finalLineCount, uint64_t finalTotalNonUniqueBases, uint64_t finalTotalUniqueBases, Boolean finalDuplicateElementExists, Boolean finalNestedElementExists)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCHCAT2_finalizeMetadata() ---\n");
 #endif
 
     if (!*outMd)
-        *outMd = STARCH_createMetadata(finalChromosome, finalOutTagFn, finalStreamSize, finalLineCount, finalTotalNonUniqueBases, finalTotalUniqueBases);
+        *outMd = STARCH_createMetadata( finalChromosome, 
+                                        finalOutTagFn, 
+                                        finalStreamSize, 
+                                        finalLineCount, 
+                                        finalTotalNonUniqueBases, 
+                                        finalTotalUniqueBases,
+                                        finalDuplicateElementExists,
+                                        finalNestedElementExists );
     else
-        *outMd = STARCH_addMetadata(*outMd, finalChromosome, finalOutTagFn, finalStreamSize, finalLineCount, finalTotalNonUniqueBases, finalTotalUniqueBases);
+        *outMd = STARCH_addMetadata( *outMd, 
+                                     finalChromosome, 
+                                     finalOutTagFn, 
+                                     finalStreamSize, 
+                                     finalLineCount, 
+                                     finalTotalNonUniqueBases, 
+                                     finalTotalUniqueBases,
+                                     finalDuplicateElementExists,
+                                     finalNestedElementExists );
 
     return STARCH_EXIT_SUCCESS;
 }
