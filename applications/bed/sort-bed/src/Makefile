@@ -23,7 +23,7 @@ else
 	WARNINGS += -U__STRICT_ANSI__
 endif
 
-all: sort
+build: sort
 
 gprof: gprofbuild
 	${CXX} -o ${DIST_DIR}/gprof.${PROG} ${PFLAGS} ${SFLAGS} ${WARNINGS} ${GPROFFLAGS} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o 
@@ -39,7 +39,7 @@ sortbuild: prep
 	${CXX} ${WARNINGS} ${OPTIMIZE} -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
 	${CXX} ${WARNINGS} ${OPTIMIZE} -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
 
-prep:
+prep: clean
 ifneq ($(wildcard .forcestatic),)
 	rm -rf .forcestatic
 endif
@@ -48,15 +48,10 @@ endif
 
 clean:
 	rm -rf ${OBJ_DIR}
-	rm -rf ${DIST_DIR}/${PROG}
-
-nonstatic: sortbuild
-	${CXX} ${WARNINGS} ${OPTIMIZE} -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
-	${CXX} ${WARNINGS} ${OPTIMIZE} -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
-	${CXX} ${WARNINGS} ${OPTIMIZE} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -o ${DIST_DIR}/${PROG}.nonstatic
+	rm -f $(DIST_DIR)/$(PROG)
+	rm -f $(DIST_DIR)/*.$(PROG)
 
 debug: prep
 	${CXX} -g -O0 -std=c++11 -fno-inline -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
 	${CXX} -g -O0 -std=c++11 -fno-inline -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
 	${CXX} -g ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -o ${DIST_DIR}/debug.${PROG}
-

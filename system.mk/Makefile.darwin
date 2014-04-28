@@ -1,0 +1,170 @@
+PARTY3           = third-party
+BOOSTVERSION     = boost_1_46_1
+WHICHBOOST      := ${PARTY3}/${BOOSTVERSION}
+BZIP2VERSION     = bzip2-1.0.6
+WHICHBZIP2      := ${PARTY3}/${BZIP2VERSION}
+JANSSONVERSION   = jansson-2.4
+WHICHJANSSON    := ${PARTY3}/${JANSSONVERSION}
+ZLIBVERSION      = zlib-1.2.7
+WHICHZLIB       := ${PARTY3}/${ZLIBVERSION}
+APPDIR           = applications/bed
+BINDIR           = bin
+OSXPKGROOT       = packaging/os_x
+OSXBUILDDIR      = ${OSXPKGROOT}/build
+OSXPKGDIR        = ${OSXPKGROOT}/resources/bin
+OSXLIBDIR        = ${OSXPKGROOT}/resources/lib
+WDIR             = ${shell pwd}
+CC               = clang
+CXX              = clang++
+SELF             = ${WDIR}/system.mk/Makefile.darwin
+I386             = darwin_intel_i386
+X86_64           = darwin_intel_x86_64
+
+default: | mkdirs
+	$(MAKE) build_intel_apps -f $(SELF)
+
+gprof: default
+
+
+SUBDIRS = ${APPDIR}/bedmap/src ${APPDIR}/sort-bed/src ${APPDIR}/bedops/src ${APPDIR}/closestfeats/src ${APPDIR}/bedextract/src ${APPDIR}/starch/src ${APPDIR}/conversion/src/wig2bed
+
+.PHONY: $(SUBDIRS)
+
+$(SUBDIRS):
+	export ARCH=i386 && $(MAKE) -C $@ -f Makefile.darwin $(MAKECMDGOALS)
+	export ARCH=x86_64 && $(MAKE) -C $@ -f Makefile.darwin $(MAKECMDGOALS)
+
+build_intel_apps: support_intel
+	$(MAKE) build -f $(SELF)
+
+build: $(SUBDIRS)
+	$(MAKE) build_fat -f $(SELF)
+
+build_fat: sort_c_intel_fat bedops_c_intel_fat closestfeatures_c_intel_fat bedmap_c_intel_fat bedextract_c_intel_fat wig2bed_c_intel_fat starch_c_intel_fat
+
+
+clean: $(SUBDIRS)
+	rm -f ${BINDIR}/sort-bed
+	rm -f ${BINDIR}/bedops
+	rm -f ${BINDIR}/closest-features
+	rm -f ${BINDIR}/bedmap
+	rm -f ${BINDIR}/bedextract
+	rm -f ${BINDIR}/starch
+	rm -f ${BINDIR}/unstarch
+	rm -f ${BINDIR}/starchcat
+	rm -f ${BINDIR}/starchcluster
+	rm -f ${BINDIR}/starchcluster.gnu_parallel
+	rm -f ${BINDIR}/bam2bed
+	rm -f ${BINDIR}/gff2bed
+	rm -f ${BINDIR}/gtf2bed
+	rm -f ${BINDIR}/psl2bed
+	rm -f ${BINDIR}/sam2bed
+	rm -f ${BINDIR}/vcf2bed
+	rm -f ${BINDIR}/wig2bed
+	rm -f ${BINDIR}/wig2bed_bin
+	rm -f ${BINDIR}/bam2starch
+	rm -f ${BINDIR}/bam2starchcluster
+	rm -f ${BINDIR}/gff2starch
+	rm -f ${BINDIR}/gtf2starch
+	rm -f ${BINDIR}/psl2starch
+	rm -f ${BINDIR}/sam2starch
+	rm -f ${BINDIR}/vcf2starch
+	rm -f ${BINDIR}/wig2starch
+	rm -f ${OSXPKGDIR}/*
+	rm -f ${OSXLIBDIR}/*
+	rm -Rf ${OSXBUILDDIR}/*
+	rm -rf ${WHICHBOOST}
+	rm -f ${PARTY3}/boost
+	rm -rf ${WHICHBZIP2}
+	rm -f ${PARTY3}/bzip2
+	rm -rf ${WHICHJANSSON}
+	rm -f ${PARTY3}/jansson
+	rm -rf ${WHICHZLIB}
+	rm -f ${PARTY3}/zlib
+	rm -rf ${PARTY3}/$(I386)
+	rm -rf ${PARTY3}/$(X86_64)
+
+mkdirs:
+	mkdir -p ${PARTY3}/$(I386)
+	mkdir -p ${PARTY3}/$(X86_64)
+	mkdir -p ${APPDIR}/sort-bed/bin
+	mkdir -p ${APPDIR}/bedops/bin
+	mkdir -p ${APPDIR}/closestfeats/bin
+	mkdir -p ${APPDIR}/bedmap/bin
+	mkdir -p ${APPDIR}/bedextract/bin
+	mkdir -p ${APPDIR}/starch/bin
+	mkdir -p ${APPDIR}/conversion/bin
+
+
+#
+# third-party libraries
+#
+support_intel_i386: boost_support_intel_i386_c jansson_support_intel_i386_c bzip2_support_intel_i386_c zlib_support_intel_i386_c
+
+support_intel_x86_64: boost_support_intel_x86_64_c jansson_support_intel_x86_64_c bzip2_support_intel_x86_64_c zlib_support_intel_x86_64_c
+
+support_intel: support_intel_i386 support_intel_x86_64
+
+
+boost_support_intel_i386_c:
+	bzcat ${WHICHBOOST}.tar.bz2 | tar -x -C ${PARTY3}/$(I386)/
+	cd ${PARTY3}/$(I386)/ && ln -sf ${BOOSTVERSION} boost && cd ${WDIR}
+
+boost_support_intel_x86_64_c:
+	bzcat ${WHICHBOOST}.tar.bz2 | tar -x -C ${PARTY3}/$(X86_64)/
+	cd ${PARTY3}/$(X86_64)/ && ln -sf ${BOOSTVERSION} boost && cd ${WDIR}
+
+jansson_support_intel_i386_c:
+	bzcat ${WHICHJANSSON}.tar.bz2 | tar -x -C ${PARTY3}/$(I386)/
+	cd ${PARTY3}/$(I386)/${JANSSONVERSION} && export ARCH=i386 && export CC=${CC} && export CXX=${CXX} && ./configure --prefix=${WDIR}/${PARTY3}/$(I386)/${JANSSONVERSION} CFLAGS="-arch i386" --build="i386" && make && make install && cd ../ && ln -sf ${JANSSONVERSION} jansson && cd ${WDIR}
+
+jansson_support_intel_x86_64_c:
+	bzcat ${WHICHJANSSON}.tar.bz2 | tar -x -C ${PARTY3}/$(X86_64)/
+	cd ${PARTY3}/$(X86_64)/${JANSSONVERSION} && export ARCH=x86_64 && export CC=${CC} && export CXX=${CXX} && ./configure --prefix=${WDIR}/${PARTY3}/$(X86_64)/${JANSSONVERSION} CFLAGS="-arch x86_64" --build="x86_64" && make && make install && cd ../ && ln -sf ${JANSSONVERSION} jansson && cd ${WDIR}
+
+bzip2_support_intel_i386_c:
+	bzcat ${WHICHBZIP2}.tar.bz2 | tar -x -C ${PARTY3}/$(I386)/
+	cd ${PARTY3}/$(I386)/${BZIP2VERSION} && export ARCH=i386 && export CC=${CC} && export CXX=${CXX} && make -f Makefile.darwin_i386 libbz2.a && cd ../ && ln -sf ${BZIP2VERSION} bzip2 && cd ${WDIR}
+
+bzip2_support_intel_x86_64_c:
+	bzcat ${WHICHBZIP2}.tar.bz2 | tar -x -C ${PARTY3}/$(X86_64)/
+	cd ${PARTY3}/$(X86_64)/${BZIP2VERSION} && export ARCH=x86_64 && export CC=${CC} && export CXX=${CXX} && make -f Makefile.darwin_x86_64 libbz2.a && cd ../ && ln -sf ${BZIP2VERSION} bzip2 && cd ${WDIR}
+
+zlib_support_intel_i386_c:
+	bzcat ${WHICHZLIB}.tar.bz2 | tar -x -C ${PARTY3}/$(I386)/
+	cd ${PARTY3}/$(I386)/${ZLIBVERSION} && export ARCH=i386 && export CC=${CC} && export CXX=${CXX} && ./configure --static --archs="-arch i386" && make && cd ../ && ln -sf ${ZLIBVERSION} zlib && cd ${WDIR}
+
+zlib_support_intel_x86_64_c:
+	bzcat ${WHICHZLIB}.tar.bz2 | tar -x -C ${PARTY3}/$(X86_64)/
+	cd ${PARTY3}/$(X86_64)/${ZLIBVERSION} && export ARCH=x86_64 && export CC=${CC} && export CXX=${CXX} && ./configure --static --archs="-arch x86_64" && make && cd ../ && ln -sf ${ZLIBVERSION} zlib && cd ${WDIR}
+
+
+
+#
+# Darwin fat build targets
+#
+
+sort_c_intel_fat:
+	lipo -create ${APPDIR}/sort-bed/bin/sort-bed_i386 ${APPDIR}/sort-bed/bin/sort-bed_x86_64 -output ${APPDIR}/sort-bed/bin/sort-bed
+
+bedops_c_intel_fat:
+	lipo -create ${APPDIR}/bedops/bin/bedops_i386 ${APPDIR}/bedops/bin/bedops_x86_64 -output ${APPDIR}/bedops/bin/bedops
+
+closestfeatures_c_intel_fat:
+	lipo -create ${APPDIR}/closestfeats/bin/closest-features_i386 ${APPDIR}/closestfeats/bin/closest-features_x86_64 -output ${APPDIR}/closestfeats/bin/closest-features
+
+bedmap_c_intel_fat:
+	lipo -create ${APPDIR}/bedmap/bin/bedmap_i386 ${APPDIR}/bedmap/bin/bedmap_x86_64 -output ${APPDIR}/bedmap/bin/bedmap
+
+bedextract_c_intel_fat:
+	lipo -create ${APPDIR}/bedextract/bin/bedextract_i386 ${APPDIR}/bedextract/bin/bedextract_x86_64 -output ${APPDIR}/bedextract/bin/bedextract
+
+wig2bed_c_intel_fat:
+	lipo -create ${APPDIR}/conversion/bin/wig2bed_bin_i386 ${APPDIR}/conversion/bin/wig2bed_bin_x86_64 -output ${APPDIR}/conversion/bin/wig2bed_bin
+
+starch_c_intel_fat:
+	cp ${APPDIR}/starch/src/starchcluster ${APPDIR}/starch/bin/starchcluster
+	cp ${APPDIR}/starch/src/starchcluster.gnu_parallel  ${APPDIR}/starch/bin/starchcluster.gnu_parallel 
+	lipo -create ${APPDIR}/starch/bin/starch_i386 ${APPDIR}/starch/bin/starch_x86_64 -output ${APPDIR}/starch/bin/starch
+	lipo -create ${APPDIR}/starch/bin/unstarch_i386 ${APPDIR}/starch/bin/unstarch_x86_64 -output ${APPDIR}/starch/bin/unstarch
+	lipo -create ${APPDIR}/starch/bin/starchcat_i386 ${APPDIR}/starch/bin/starchcat_x86_64 -output ${APPDIR}/starch/bin/starchcat

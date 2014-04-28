@@ -1,0 +1,115 @@
+PARTY3           = third-party
+BOOSTVERSION     = boost_1_46_1
+WHICHBOOST      := ${PARTY3}/${BOOSTVERSION}
+BZIP2VERSION     = bzip2-1.0.6
+WHICHBZIP2      := ${PARTY3}/${BZIP2VERSION}
+JANSSONVERSION   = jansson-2.4
+WHICHJANSSON    := ${PARTY3}/${JANSSONVERSION}
+ZLIBVERSION      = zlib-1.2.7
+WHICHZLIB       := ${PARTY3}/${ZLIBVERSION}
+APPDIR           = applications/bed
+BINDIR           = bin
+OSXPKGROOT       = packaging/os_x
+OSXBUILDDIR      = ${OSXPKGROOT}/build
+OSXPKGDIR        = ${OSXPKGROOT}/resources/bin
+OSXLIBDIR        = ${OSXPKGROOT}/resources/lib
+WDIR             = ${shell pwd}
+CC               = gcc
+CXX              = g++
+SELF             = ${WDIR}/system.mk/Makefile.darwin
+
+default: prep_partial_static support
+	$(MAKE) $(SUBDIRS)
+
+SUBDIRS = ${APPDIR}/bedmap/src ${APPDIR}/sort-bed/src ${APPDIR}/bedops/src ${APPDIR}/closestfeats/src ${APPDIR}/bedextract/src ${APPDIR}/starch/src ${APPDIR}/conversion/src/wig2bed
+
+.PHONY: $(SUBDIRS)
+
+$(SUBDIRS):
+	$(MAKE) -C $@ $(MAKECMDGOALS)
+
+gprof: default
+
+clean: clean_force_static $(SUBDIRS)
+	rm -f ${BINDIR}/sort-bed
+	rm -f ${BINDIR}/bedops
+	rm -f ${BINDIR}/closest-features
+	rm -f ${BINDIR}/bedmap
+	rm -f ${BINDIR}/bedextract
+	rm -f ${BINDIR}/starch
+	rm -f ${BINDIR}/unstarch
+	rm -f ${BINDIR}/starchcat
+	rm -f ${BINDIR}/starchcluster
+	rm -f ${BINDIR}/starchcluster.gnu_parallel
+	rm -f ${BINDIR}/bam2bed
+	rm -f ${BINDIR}/gff2bed
+	rm -f ${BINDIR}/gtf2bed
+	rm -f ${BINDIR}/psl2bed
+	rm -f ${BINDIR}/sam2bed
+	rm -f ${BINDIR}/vcf2bed
+	rm -f ${BINDIR}/wig2bed
+	rm -f ${BINDIR}/wig2bed_bin
+	rm -f ${BINDIR}/bam2starch
+	rm -f ${BINDIR}/bam2starchcluster
+	rm -f ${BINDIR}/gff2starch
+	rm -f ${BINDIR}/gtf2starch
+	rm -f ${BINDIR}/psl2starch
+	rm -f ${BINDIR}/sam2starch
+	rm -f ${BINDIR}/vcf2starch
+	rm -f ${BINDIR}/wig2starch
+	rm -f ${OSXPKGDIR}/*
+	rm -f ${OSXLIBDIR}/*
+	rm -Rf ${OSXBUILDDIR}/*
+	rm -rf ${WHICHBOOST}
+	rm -f ${PARTY3}/boost
+	rm -rf ${WHICHBZIP2}
+	rm -f ${PARTY3}/bzip2
+	rm -rf ${WHICHJANSSON}
+	rm -f ${PARTY3}/jansson
+	rm -rf ${WHICHZLIB}
+	rm -f ${PARTY3}/zlib
+
+
+#
+# Generic build
+#
+
+support: boost_support_c jansson_support_c bzip2_support_c zlib_support_c
+
+
+
+prep_partial_static:
+	touch ${APPDIR}/sort-bed/src/.forcestatic
+	touch ${APPDIR}/bedops/src/.forcestatic
+	touch ${APPDIR}/closestfeats/src/.forcestatic
+	touch ${APPDIR}/bedmap/src/.forcestatic
+	touch ${APPDIR}/conversion/src/wig2bed/.forcestatic
+	touch ${APPDIR}/bedextract/src/.forcestatic
+
+clean_force_static:
+	rm -f ${APPDIR}/sort-bed/src/.forcestatic
+	rm -f ${APPDIR}/bedops/src/.forcestatic
+	rm -f ${APPDIR}/closestfeats/src/.forcestatic
+	rm -f ${APPDIR}/bedmap/src/.forcestatic
+	rm -f ${APPDIR}/conversion/src/wig2bed/.forcestatic
+	rm -f ${APPDIR}/bedextract/src/.forcestatic
+	rm -f ${APPDIR}/starch/src/.forcestatic
+
+#
+# third-party libraries
+#
+
+boost_support_c:
+	bzcat ${WHICHBOOST}.tar.bz2 | tar -x -C ${PARTY3} && ln -sf ${BOOSTVERSION} ${PARTY3}/boost
+
+jansson_support_c:
+	bzcat ${WHICHJANSSON}.tar.bz2 | tar -x -C ${PARTY3}
+	cd ${PARTY3}/${JANSSONVERSION} && ./configure --prefix=${WD}/${PARTY3}/${JANSSONVERSION} && make && make install && cd ${WDIR} && ln -sf ${JANSSONVERSION} ${PARTY3}/jansson
+
+bzip2_support_c:
+	bzcat ${WHICHBZIP2}.tar.bz2 | tar -x -C ${PARTY3}
+	cd ${PARTY3}/${BZIP2VERSION} && make libbz2.a && cd ${WDIR} && ln -sf ${BZIP2VERSION} ${PARTY3}/bzip2
+
+zlib_support_c:
+	bzcat ${WHICHZLIB}.tar.bz2 | tar -x -C ${PARTY3}
+	cd ${PARTY3}/${ZLIBVERSION} && ./configure --static && make && cd ${WDIR} && ln -sf ${ZLIBVERSION} ${PARTY3}/zlib
