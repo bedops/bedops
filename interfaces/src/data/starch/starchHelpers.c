@@ -1327,6 +1327,8 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     unsigned long lineIdx = 0UL;
     int64_t start = 0;
     int64_t stop = 0;
+    int64_t pStart = 0;
+    int64_t pStop = 0;
     int64_t previousStop = 0;
     int64_t lastPosition = 0;
     int64_t lcDiff = 0;
@@ -1715,6 +1717,8 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 #endif
                     withinChr = kStarchFalse;
                     lastPosition = 0;
+                    pStart = 0;
+                    pStop = 0;
                     previousStop = 0;
                     lcDiff = 0;
                     lineIdx = 0UL;
@@ -1877,6 +1881,18 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                     else if (previousStop < stop)
                         totalUniqueBases += (BaseCountType) (stop - previousStop);
                     previousStop = (stop > previousStop) ? stop : previousStop;
+
+                    /* test for duplicate element */
+                    if ((pStart == start) && (pStop == stop))
+                        duplicateElementExistsFlag = kStarchTrue;
+                    
+                    /* test for nested element */
+                    if ((pStart < start) && (pStop > stop))
+                        nestedElementExistsFlag = kStarchTrue;
+                
+                    /* set pElement values */
+                    pStart = start;
+                    pStop = stop;
                 }
 
                 if (withinChr == kStarchTrue) 
@@ -1892,7 +1908,68 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
         }
         else
             cIdx++;
-     }
+    }
+
+    /* if we don't have a trailing newline in BED input, then we have reached EOF before we can process a line, so we try that now */
+
+    if (cIdx > 0) {
+        untransformedBuffer[cIdx] = '\0';
+        if (STARCH_createTransformTokensForHeaderlessInput(untransformedBuffer, '\t', &chromosome, &start, &stop, &remainder) == 0)  {
+            fprintf(stderr, "\t(just-before-last-pass) untransformedBuffer:\n%s\n", untransformedBuffer);
+
+            /* transform */
+            if (stop > start)
+                coordDiff = stop - start;
+            else {
+                fprintf(stderr, "ERROR: BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
+                return STARCH_FATAL_ERROR;
+            }
+            if (coordDiff != lcDiff) {
+                lcDiff = coordDiff;
+                sprintf(intermediateBuffer + strlen(intermediateBuffer), "p%" PRId64 "\n", coordDiff);
+            }
+            if (lastPosition != 0) {
+                if (remainder)
+                    sprintf(intermediateBuffer + strlen(intermediateBuffer), "%" PRId64 "\t%s\n", (start - lastPosition), remainder);
+                else
+                    sprintf(intermediateBuffer + strlen(intermediateBuffer), "%" PRId64 "\n", (start - lastPosition));
+            }
+            else {
+                if (remainder)
+                    sprintf(intermediateBuffer + strlen(intermediateBuffer), "%" PRId64 "\t%s\n", start, remainder);
+                else
+                    sprintf(intermediateBuffer + strlen(intermediateBuffer), "%" PRId64 "\n", start);
+            }
+            intermediateBufferLength = strlen(intermediateBuffer);
+            
+            /* append intermediateBuffer to transformedBuffer */
+
+            memcpy(transformedBuffer + currentTransformedBufferLength, intermediateBuffer, intermediateBufferLength);
+            currentTransformedBufferLength += intermediateBufferLength;
+            transformedBuffer[currentTransformedBufferLength] = '\0';
+            memset(intermediateBuffer, 0, intermediateBufferLength + 1);
+            
+            lastPosition = stop;
+            totalNonUniqueBases += (BaseCountType) (stop - start);
+            if (previousStop <= start)
+                totalUniqueBases += (BaseCountType) (stop - start);
+            else if (previousStop < stop)
+                totalUniqueBases += (BaseCountType) (stop - previousStop);
+            previousStop = (stop > previousStop) ? stop : previousStop;
+
+            /* test for duplicate element */
+            if ((pStart == start) && (pStop == stop))
+                duplicateElementExistsFlag = kStarchTrue;
+
+            /* test for nested element */
+            if ((pStart < start) && (pStop > stop))
+                nestedElementExistsFlag = kStarchTrue;
+        }
+        else {
+            fprintf(stderr, "ERROR: BED data is corrupt at line %lu\n", lineIdx);
+            return STARCH_FATAL_ERROR;
+        }
+    }
     
     lineIdx++;
     sprintf(compressedFn, "%s.%s", prevChromosome, tag);
@@ -2103,6 +2180,8 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     unsigned long lineIdx = 0UL;
     int64_t start = 0;
     int64_t stop = 0;
+    int64_t pStart = 0;
+    int64_t pStop = 0;
     int64_t previousStop = 0;
     int64_t lastPosition = 0;
     int64_t lcDiff = 0;
@@ -2487,6 +2566,8 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #endif
                     withinChr = kStarchFalse;
                     lastPosition = 0;
+                    pStart = 0;
+                    pStop = 0;
                     previousStop = 0;
                     lcDiff = 0;
                     lineIdx = 0UL;
@@ -2544,11 +2625,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                         sprintf(intermediateBuffer + strlen(intermediateBuffer), "%" PRId64 "\n", start);
                     }
                 }
-                intermediateBufferLength = strlen(intermediateBuffer);
                 
+                intermediateBufferLength = strlen(intermediateBuffer);
 #ifdef DEBUG
                 fprintf(stderr, "\t(intermediate) state of intermediateBuffer before test:\n%s\n", intermediateBuffer);
-#endif                
+#endif
 
                 if ((currentTransformedBufferLength + intermediateBufferLength) < STARCH_BUFFER_MAX_LENGTH) {
                     /* append intermediateBuffer to transformedBuffer */
@@ -2636,7 +2717,23 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                     totalUniqueBases += (BaseCountType) (stop - start);
                 else if (previousStop < stop)
                     totalUniqueBases += (BaseCountType) (stop - previousStop);
-                previousStop = (stop > previousStop) ? stop : previousStop;                
+                previousStop = (stop > previousStop) ? stop : previousStop;
+
+#ifdef DEBUG
+                fprintf(stderr, "\t(intermediate) testing pElements:\n\tstart/pStart : [ %lld / %lld ]\n\tstop/pStop : [ %lld / %lld ]\n", start, pStart, stop, pStop);
+#endif
+
+                /* test for duplicate element */
+                if ((pStart == start) && (pStop == stop))
+                    duplicateElementExistsFlag = kStarchTrue;
+
+                /* test for nested element */
+                if ((pStart < start) && (pStop > stop))
+                    nestedElementExistsFlag = kStarchTrue;
+                
+                /* set pElement values */
+                pStart = start;
+                pStop = stop;
 
                 if (withinChr == kStarchTrue) 
                     free(chromosome), chromosome = NULL;
@@ -2651,6 +2748,91 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
         }
         else
             cIdx++;
+    }
+
+    /* if we don't have a trailing newline in BED input, then we have reached EOF before we can process a line, so we try that now */
+
+    if (cIdx > 0) {
+        untransformedBuffer[cIdx] = '\0';
+        if (STARCH_createTransformTokensForHeaderlessInput(untransformedBuffer, '\t', &chromosome, &start, &stop, &remainder) == 0)  {
+            fprintf(stderr, "\t(just-before-last-pass) untransformedBuffer:\n%s\n", untransformedBuffer);
+
+            /* transform */
+            if (stop > start)
+                coordDiff = stop - start;
+            else {
+                fprintf(stderr, "ERROR: BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
+                return STARCH_FATAL_ERROR;
+            }
+            if (coordDiff != lcDiff) {
+                lcDiff = coordDiff;
+#ifdef DEBUG
+                fprintf(stderr, "\t(intermediate) A -- \np%" PRId64 "\n", coordDiff);
+#endif
+                sprintf(intermediateBuffer + strlen(intermediateBuffer), "p%" PRId64 "\n", coordDiff);
+            }
+            if (lastPosition != 0) {
+                if (remainder) {                        
+#ifdef DEBUG
+                    fprintf(stderr, "\t(intermediate) B --\n%" PRId64 "\t%s\n", (start - lastPosition), remainder);
+#endif
+                    sprintf(intermediateBuffer + strlen(intermediateBuffer), "%" PRId64 "\t%s\n", (start - lastPosition), remainder);
+                }
+                else {
+#ifdef DEBUG
+                    fprintf(stderr, "\t(intermediate) C --\n%" PRId64 "\n", (start - lastPosition));
+#endif
+                    sprintf(intermediateBuffer + strlen(intermediateBuffer), "%" PRId64 "\n", (start - lastPosition));
+                }
+            }
+            else {
+                if (remainder) {
+#ifdef DEBUG
+                    fprintf(stderr, "\t(intermediate) D --\n%" PRId64 "\t%s\n", start, remainder);
+#endif
+                    sprintf(intermediateBuffer + strlen(intermediateBuffer), "%" PRId64 "\t%s\n", start, remainder);
+                }
+                else {
+#ifdef DEBUG
+                    fprintf(stderr, "\t(intermediate) E --\n%" PRId64 "\n", start);
+#endif
+                    sprintf(intermediateBuffer + strlen(intermediateBuffer), "%" PRId64 "\n", start);
+                }
+            }
+            intermediateBufferLength = strlen(intermediateBuffer);
+#ifdef DEBUG
+            fprintf(stderr, "\t(intermediate) state of intermediateBuffer before test:\n%s\n", intermediateBuffer);
+#endif
+            
+            /* append intermediateBuffer to transformedBuffer */
+#ifdef DEBUG
+            fprintf(stderr, "\t(intermediate) appending intermediateBuffer to transformedBuffer\n");
+#endif
+            memcpy(transformedBuffer + currentTransformedBufferLength, intermediateBuffer, intermediateBufferLength);
+            currentTransformedBufferLength += intermediateBufferLength;
+            transformedBuffer[currentTransformedBufferLength] = '\0';
+            memset(intermediateBuffer, 0, intermediateBufferLength + 1);
+            
+            lastPosition = stop;
+            totalNonUniqueBases += (BaseCountType) (stop - start);
+            if (previousStop <= start)
+                totalUniqueBases += (BaseCountType) (stop - start);
+            else if (previousStop < stop)
+                totalUniqueBases += (BaseCountType) (stop - previousStop);
+            previousStop = (stop > previousStop) ? stop : previousStop;
+
+            /* test for duplicate element */
+            if ((pStart == start) && (pStop == stop))
+                duplicateElementExistsFlag = kStarchTrue;
+
+            /* test for nested element */
+            if ((pStart < start) && (pStop > stop))
+                nestedElementExistsFlag = kStarchTrue;
+        }
+        else {
+            fprintf(stderr, "ERROR: BED data is corrupt at line %lu\n", lineIdx);
+            return STARCH_FATAL_ERROR;
+        }
     }
     
     lineIdx++;
