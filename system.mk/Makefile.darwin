@@ -28,6 +28,7 @@ gprof: default
 
 
 SUBDIRS = bedmap/src sort-bed/src bedops/src closestfeats/src bedextract/src starch/src conversion/src/wig2bed
+#SUBDIRS = starch/src
 SUBDIRS_FULL := $(patsubst %,${APPDIR}/%,$(SUBDIRS))
 SUBDIRS_I386 := $(patsubst %,%_i386,$(SUBDIRS))
 SUBDIRS_X86_64 := $(patsubst %,%_x86_64,$(SUBDIRS))
@@ -166,26 +167,26 @@ zlib_support_intel_x86_64_c:
 #
 
 sort_c_intel_fat:
-	lipo -create ${APPDIR}/sort-bed/bin/sort-bed_i386 ${APPDIR}/sort-bed/bin/sort-bed_x86_64 -output ${APPDIR}/sort-bed/bin/sort-bed
+	-test -e ${APPDIR}/sort-bed/bin/sort-bed_i386 && test -e ${APPDIR}/sort-bed/bin/sort-bed_x86_64 && { lipo -create ${APPDIR}/sort-bed/bin/sort-bed_i386 ${APPDIR}/sort-bed/bin/sort-bed_x86_64 -output ${APPDIR}/sort-bed/bin/sort-bed; }
 
 bedops_c_intel_fat:
-	lipo -create ${APPDIR}/bedops/bin/bedops_i386 ${APPDIR}/bedops/bin/bedops_x86_64 -output ${APPDIR}/bedops/bin/bedops
+	-test -e ${APPDIR}/bedops/bin/bedops_i386 && test -e ${APPDIR}/bedops/bin/bedops_x86_64 && { lipo -create ${APPDIR}/bedops/bin/bedops_i386 ${APPDIR}/bedops/bin/bedops_x86_64 -output ${APPDIR}/bedops/bin/bedops; }
 
 closestfeatures_c_intel_fat:
-	lipo -create ${APPDIR}/closestfeats/bin/closest-features_i386 ${APPDIR}/closestfeats/bin/closest-features_x86_64 -output ${APPDIR}/closestfeats/bin/closest-features
+	-test -e ${APPDIR}/closestfeats/bin/closest-features_i386 && test -e ${APPDIR}/closestfeats/bin/closest-features_x86_64 && { lipo -create ${APPDIR}/closestfeats/bin/closest-features_i386 ${APPDIR}/closestfeats/bin/closest-features_x86_64 -output ${APPDIR}/closestfeats/bin/closest-features; }
 
 bedmap_c_intel_fat:
-	lipo -create ${APPDIR}/bedmap/bin/bedmap_i386 ${APPDIR}/bedmap/bin/bedmap_x86_64 -output ${APPDIR}/bedmap/bin/bedmap
+	-test -e ${APPDIR}/bedmap/bin/bedmap_i386 && test -e ${APPDIR}/bedmap/bin/bedmap_x86_64 && { lipo -create ${APPDIR}/bedmap/bin/bedmap_i386 ${APPDIR}/bedmap/bin/bedmap_x86_64 -output ${APPDIR}/bedmap/bin/bedmap; }
 
 bedextract_c_intel_fat:
-	lipo -create ${APPDIR}/bedextract/bin/bedextract_i386 ${APPDIR}/bedextract/bin/bedextract_x86_64 -output ${APPDIR}/bedextract/bin/bedextract
+	-test -e ${APPDIR}/bedextract/bin/bedextract_i386 && test -e ${APPDIR}/bedextract/bin/bedextract_x86_64 && { lipo -create ${APPDIR}/bedextract/bin/bedextract_i386 ${APPDIR}/bedextract/bin/bedextract_x86_64 -output ${APPDIR}/bedextract/bin/bedextract; }
 
 wig2bed_c_intel_fat:
-	lipo -create ${APPDIR}/conversion/bin/wig2bed_bin_i386 ${APPDIR}/conversion/bin/wig2bed_bin_x86_64 -output ${APPDIR}/conversion/bin/wig2bed_bin
+	-test -e ${APPDIR}/conversion/bin/wig2bed_bin_i386 && test -e ${APPDIR}/conversion/bin/wig2bed_bin_x86_64 && { lipo -create ${APPDIR}/conversion/bin/wig2bed_bin_i386 ${APPDIR}/conversion/bin/wig2bed_bin_x86_64 -output ${APPDIR}/conversion/bin/wig2bed_bin; }
 
 starch_c_intel_fat:
 	cp ${APPDIR}/starch/src/starchcluster ${APPDIR}/starch/bin/starchcluster
-	cp ${APPDIR}/starch/src/starchcluster.gnu_parallel  ${APPDIR}/starch/bin/starchcluster.gnu_parallel 
-	lipo -create ${APPDIR}/starch/bin/starch_i386 ${APPDIR}/starch/bin/starch_x86_64 -output ${APPDIR}/starch/bin/starch
-	lipo -create ${APPDIR}/starch/bin/unstarch_i386 ${APPDIR}/starch/bin/unstarch_x86_64 -output ${APPDIR}/starch/bin/unstarch
-	lipo -create ${APPDIR}/starch/bin/starchcat_i386 ${APPDIR}/starch/bin/starchcat_x86_64 -output ${APPDIR}/starch/bin/starchcat
+	cp ${APPDIR}/starch/src/starchcluster.gnu_parallel ${APPDIR}/starch/bin/starchcluster.gnu_parallel 
+	-test -e ${APPDIR}/starch/bin/starch_i386 && test -e ${APPDIR}/starch/bin/starch_x86_64 && { lipo -create ${APPDIR}/starch/bin/starch_i386 ${APPDIR}/starch/bin/starch_x86_64 -output ${APPDIR}/starch/bin/starch; }
+	-test -e ${APPDIR}/starch/bin/unstarch_i386 && test -e ${APPDIR}/starch/bin/unstarch_x86_64 && { lipo -create ${APPDIR}/starch/bin/unstarch_i386 ${APPDIR}/starch/bin/unstarch_x86_64 -output ${APPDIR}/starch/bin/unstarch; }
+	-test -e ${APPDIR}/starch/bin/starchcat_i386 && test -e ${APPDIR}/starch/bin/starchcat_x86_64 && { lipo -create ${APPDIR}/starch/bin/starchcat_i386 ${APPDIR}/starch/bin/starchcat_x86_64 -output ${APPDIR}/starch/bin/starchcat; }

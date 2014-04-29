@@ -531,12 +531,12 @@ STARCH_generateJSONMetadata(const Metadata *md, const CompressionType type, cons
             }
             json_object_set_new(stream, STARCH_METADATA_STREAM_DUPLICATEELEMENTEXISTS_KEY, streamDuplicateElementExistsFlag);
 
-            streamNestedElementExistsFlag = json_boolean(md->duplicateElementExists == kStarchTrue);
+            streamNestedElementExistsFlag = json_boolean(md->nestedElementExists == kStarchTrue);
             if (!streamNestedElementExistsFlag) {
                 fprintf(stderr, "ERROR: Could not instantiate stream duplicate-element-exists flag object\n");
                 return NULL;
             }
-            json_object_set_new(stream, STARCH_METADATA_STREAM_DUPLICATEELEMENTEXISTS_KEY, streamNestedElementExistsFlag);
+            json_object_set_new(stream, STARCH_METADATA_STREAM_NESTEDELEMENTEXISTS_KEY, streamNestedElementExistsFlag);
         }
 
         json_array_append_new(streams, stream);
