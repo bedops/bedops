@@ -30,8 +30,8 @@ OBJDIR                    = ${INTERFACES}/src/data/starch
 LOCALOBJDIR               = objects_${ARCH}
 BINDIR                    = ../bin_${ARCH}
 WARNINGS                  = -Weverything -Wno-c++98-compat-pedantic -Wno-padded
-ARCH_VERSION              = v2.0
-BIN_VERSION               = v2.4.2
+ARCH_VERSION              = v2.1
+BIN_VERSION               = v2.5.0
 TEST                      = ../test
 TEST_OSX_BINDIR           = ${TEST}/binaries/osx/${ARCH_VERSION}/bin
 

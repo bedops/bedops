@@ -17,6 +17,8 @@ PLATFORM       := ${shell uname}
 BIN_DIR         = ${THIS_DIR}/../binaries
 LINUX_BINDIR    = ${BIN_DIR}/linux
 OSX_BINDIR      = ${BIN_DIR}/osx
+VERSION         = v2.1
+VERSIONP        = 2p1p0
 
 all: archives tests
 
@@ -42,10 +44,10 @@ results_dir:
 fimo_updating_tests: results_dir
 	@echo "[STARCH] extracting v1.2 (bzip2-ed) FIMO archive..."
 ifeq (${PLATFORM},Linux) 
-	if [ ! -s ${RESULTS}/fimo.bzip2.expected ]; then ${LINUX_BINDIR}/v2.0/bin/unstarch ${FIMO_INPUT} > ${RESULTS}/fimo.bzip2.expected; fi 
+	if [ ! -s ${RESULTS}/fimo.bzip2.expected ]; then ${LINUX_BINDIR}/${VERSION}/bin/unstarch ${FIMO_INPUT} > ${RESULTS}/fimo.bzip2.expected; fi 
 endif
 ifeq (${PLATFORM},Darwin)
-	if [ ! -s ${RESULTS}/fimo.bzip2.expected ]; then ${OSX_BINDIR}/v2.0/bin/unstarch ${FIMO_INPUT} > ${RESULTS}/fimo.bzip2.expected; fi
+	if [ ! -s ${RESULTS}/fimo.bzip2.expected ]; then ${OSX_BINDIR}/${VERSION}/bin/unstarch ${FIMO_INPUT} > ${RESULTS}/fimo.bzip2.expected; fi
 endif
 	@echo "[STARCH] making v1.2 (gzip) FIMO archive from bzip2-ed data..."
 ifeq (${PLATFORM},Linux)
@@ -56,117 +58,148 @@ ifeq (${PLATFORM},Darwin)
 endif
 	@echo "[STARCH] extracting v1.2 (gzip-ed) FIMO archive..."
 ifeq (${PLATFORM},Linux) 
-	if [ ! -s ${RESULTS}/fimo.gzip.expected ]; then ${LINUX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/fimo.gzip.starch > ${RESULTS}/fimo.gzip.expected; fi 
+	if [ ! -s ${RESULTS}/fimo.gzip.expected ]; then ${LINUX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/fimo.gzip.starch > ${RESULTS}/fimo.gzip.expected; fi 
 endif
 ifeq (${PLATFORM},Darwin)
-	if [ ! -s ${RESULTS}/fimo.gzip.expected ]; then ${OSX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/fimo.gzip.starch > ${RESULTS}/fimo.gzip.expected; fi
+	if [ ! -s ${RESULTS}/fimo.gzip.expected ]; then ${OSX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/fimo.gzip.starch > ${RESULTS}/fimo.gzip.expected; fi
 endif
-	@echo "[STARCH] taking v1.2 (gzip) FIMO archive and starchcat-ing it to new v2.0 bzip2 and gzip archives..."
+	@echo "[STARCH] taking v1.2 (gzip) FIMO archive and starchcat-ing it to new v2.1 bzip2 and gzip archives..."
 ifeq (${PLATFORM},Linux)
-	if [ ! -s ${RESULTS}/fimo_1p2p0_gzip_to_2p0p0_bzip2.starch ]; then ${LINUX_BINDIR}/v2.0/bin/starchcat --bzip2 ${RESULTS}/fimo.gzip.starch > ${RESULTS}/fimo_1p2p0_gzip_to_2p0p0_bzip2.starch; fi
-	if [ ! -s ${RESULTS}/fimo_1p2p0_gzip_to_2p0p0_gzip.starch ]; then ${LINUX_BINDIR}/v2.0/bin/starchcat --gzip ${RESULTS}/fimo.gzip.starch > ${RESULTS}/fimo_1p2p0_gzip_to_2p0p0_gzip.starch; fi
+	if [ ! -s ${RESULTS}/fimo_1p2p0_gzip_to_${VERSIONP}_bzip2.starch ]; then ${LINUX_BINDIR}/${VERSION}/bin/starchcat --bzip2 ${RESULTS}/fimo.gzip.starch > ${RESULTS}/fimo_1p2p0_gzip_to_${VERSIONP}_bzip2.starch; fi
+	if [ ! -s ${RESULTS}/fimo_1p2p0_gzip_to_${VERSIONP}_gzip.starch ]; then ${LINUX_BINDIR}/${VERSION}/bin/starchcat --gzip ${RESULTS}/fimo.gzip.starch > ${RESULTS}/fimo_1p2p0_gzip_to_${VERSIONP}_gzip.starch; fi
 endif
 ifeq (${PLATFORM},Darwin)
-	if [ ! -s ${RESULTS}/fimo_1p2p0_gzip_to_2p0p0_bzip2.starch ]; then ${OSX_BINDIR}/v2.0/bin/starchcat --bzip2 ${RESULTS}/fimo.gzip.starch > ${RESULTS}/fimo_1p2p0_gzip_to_2p0p0_bzip2.starch; fi
-	if [ ! -s ${RESULTS}/fimo_1p2p0_gzip_to_2p0p0_gzip.starch ]; then ${OSX_BINDIR}/v2.0/bin/starchcat --gzip ${RESULTS}/fimo.gzip.starch > ${RESULTS}/fimo_1p2p0_gzip_to_2p0p0_gzip.starch; fi
+	if [ ! -s ${RESULTS}/fimo_1p2p0_gzip_to_${VERSIONP}_bzip2.starch ]; then ${OSX_BINDIR}/${VERSION}/bin/starchcat --bzip2 ${RESULTS}/fimo.gzip.starch > ${RESULTS}/fimo_1p2p0_gzip_to_${VERSIONP}_bzip2.starch; fi
+	if [ ! -s ${RESULTS}/fimo_1p2p0_gzip_to_${VERSIONP}_gzip.starch ]; then ${OSX_BINDIR}/${VERSION}/bin/starchcat --gzip ${RESULTS}/fimo.gzip.starch > ${RESULTS}/fimo_1p2p0_gzip_to_${VERSIONP}_gzip.starch; fi
 endif
-	@echo "[STARCH] extracting (gzip) v1.2-to-v2.0 bzip2 and gzip FIMO archive..."
+	@echo "[STARCH] extracting (gzip) v1.2-to-v2.1 bzip2 and gzip FIMO archive..."
 ifeq (${PLATFORM},Linux)
-	if [ ! -s ${RESULTS}/fimo.gzip_to_bzip2.observed ]; then ${LINUX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/fimo_1p2p0_gzip_to_2p0p0_bzip2.starch > ${RESULTS}/fimo.gzip_to_bzip2.observed; fi
-	if [ ! -s ${RESULTS}/fimo.gzip_to_gzip.observed ]; then ${LINUX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/fimo_1p2p0_gzip_to_2p0p0_gzip.starch > ${RESULTS}/fimo.gzip_to_gzip.observed; fi
+	if [ ! -s ${RESULTS}/fimo.gzip_to_bzip2.observed ]; then ${LINUX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/fimo_1p2p0_gzip_to_${VERSIONP}_bzip2.starch > ${RESULTS}/fimo.gzip_to_bzip2.observed; fi
+	if [ ! -s ${RESULTS}/fimo.gzip_to_gzip.observed ]; then ${LINUX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/fimo_1p2p0_gzip_to_${VERSIONP}_gzip.starch > ${RESULTS}/fimo.gzip_to_gzip.observed; fi
 endif
 ifeq (${PLATFORM},Darwin)
-	if [ ! -s ${RESULTS}/fimo.gzip_to_bzip2.observed ]; then ${OSX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/fimo_1p2p0_gzip_to_2p0p0_bzip2.starch > ${RESULTS}/fimo.gzip_to_bzip2.observed; fi
-	if [ ! -s ${RESULTS}/fimo.gzip_to_gzip.observed ]; then ${OSX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/fimo_1p2p0_gzip_to_2p0p0_gzip.starch > ${RESULTS}/fimo.gzip_to_gzip.observed; fi
+	if [ ! -s ${RESULTS}/fimo.gzip_to_bzip2.observed ]; then ${OSX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/fimo_1p2p0_gzip_to_${VERSIONP}_bzip2.starch > ${RESULTS}/fimo.gzip_to_bzip2.observed; fi
+	if [ ! -s ${RESULTS}/fimo.gzip_to_gzip.observed ]; then ${OSX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/fimo_1p2p0_gzip_to_${VERSIONP}_gzip.starch > ${RESULTS}/fimo.gzip_to_gzip.observed; fi
 endif
-	@echo "[STARCH] diff-ing v1.2 (gzip, extracted) and v1.2-to-v2.0 (bzip2, observed)..."
+	@echo "[STARCH] diff-ing v1.2 (gzip, extracted) and v1.2-to-v2.1 (bzip2, observed)..."
 	diff --brief ${RESULTS}/fimo.gzip.expected ${RESULTS}/fimo.gzip_to_bzip2.observed
-	@echo "[STARCH] diff-ing v1.2 (gzip, extracted) and v1.2-to-v2.0 (gzip, observed)..."
+	@echo "[STARCH] diff-ing v1.2 (gzip, extracted) and v1.2-to-v2.1 (gzip, observed)..."
 	diff --brief ${RESULTS}/fimo.gzip.expected ${RESULTS}/fimo.gzip_to_gzip.observed
-	@echo "[STARCH] taking v1.2 (bzip2) FIMO archive and starchcat-ing it to new v2.0 bzip2 and gzip archives..."
+	@echo "[STARCH] taking v1.2 (bzip2) FIMO archive and starchcat-ing it to new v2.1 bzip2 and gzip archives..."
 ifeq (${PLATFORM},Linux)
-	if [ ! -s ${RESULTS}/fimo_1p2p0_bzip2_to_2p0p0_bzip2.starch ]; then ${LINUX_BINDIR}/v2.0/bin/starchcat --bzip2 ${FIMO_INPUT} > ${RESULTS}/fimo_1p2p0_bzip2_to_2p0p0_bzip2.starch; fi
-	if [ ! -s ${RESULTS}/fimo_1p2p0_bzip2_to_2p0p0_gzip.starch ]; then ${LINUX_BINDIR}/v2.0/bin/starchcat --gzip ${FIMO_INPUT} > ${RESULTS}/fimo_1p2p0_bzip2_to_2p0p0_gzip.starch; fi
+	if [ ! -s ${RESULTS}/fimo_1p2p0_bzip2_to_${VERSIONP}_bzip2.starch ]; then ${LINUX_BINDIR}/${VERSION}/bin/starchcat --bzip2 ${FIMO_INPUT} > ${RESULTS}/fimo_1p2p0_bzip2_to_${VERSIONP}_bzip2.starch; fi
+	if [ ! -s ${RESULTS}/fimo_1p2p0_bzip2_to_${VERSIONP}_gzip.starch ]; then ${LINUX_BINDIR}/${VERSION}/bin/starchcat --gzip ${FIMO_INPUT} > ${RESULTS}/fimo_1p2p0_bzip2_to_${VERSIONP}_gzip.starch; fi
 endif
 ifeq (${PLATFORM},Darwin)
-	if [ ! -s ${RESULTS}/fimo_1p2p0_bzip2_to_2p0p0_bzip2.starch ]; then ${OSX_BINDIR}/v2.0/bin/starchcat --bzip2 ${FIMO_INPUT} > ${RESULTS}/fimo_1p2p0_bzip2_to_2p0p0_bzip2.starch; fi
-	if [ ! -s ${RESULTS}/fimo_1p2p0_bzip2_to_2p0p0_gzip.starch ]; then ${OSX_BINDIR}/v2.0/bin/starchcat --gzip ${FIMO_INPUT} > ${RESULTS}/fimo_1p2p0_bzip2_to_2p0p0_gzip.starch; fi
+	if [ ! -s ${RESULTS}/fimo_1p2p0_bzip2_to_${VERSIONP}_bzip2.starch ]; then ${OSX_BINDIR}/${VERSION}/bin/starchcat --bzip2 ${FIMO_INPUT} > ${RESULTS}/fimo_1p2p0_bzip2_to_${VERSIONP}_bzip2.starch; fi
+	if [ ! -s ${RESULTS}/fimo_1p2p0_bzip2_to_${VERSIONP}_gzip.starch ]; then ${OSX_BINDIR}/${VERSION}/bin/starchcat --gzip ${FIMO_INPUT} > ${RESULTS}/fimo_1p2p0_bzip2_to_${VERSIONP}_gzip.starch; fi
 endif
-	@echo "[STARCH] extracting (bzip2) v1.2-to-v2.0 bzip2 and gzip FIMO archive..."
+	@echo "[STARCH] extracting (bzip2) v1.2-to-v2.1 bzip2 and gzip FIMO archive..."
 ifeq (${PLATFORM},Linux)
-	if [ ! -s ${RESULTS}/fimo.bzip2_to_bzip2.observed ]; then ${LINUX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/fimo_1p2p0_bzip2_to_2p0p0_bzip2.starch > ${RESULTS}/fimo.bzip2_to_bzip2.observed; fi
-	if [ ! -s ${RESULTS}/fimo.bzip2_to_gzip.observed ]; then ${LINUX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/fimo_1p2p0_bzip2_to_2p0p0_gzip.starch > ${RESULTS}/fimo.bzip2_to_gzip.observed; fi
+	if [ ! -s ${RESULTS}/fimo.bzip2_to_bzip2.observed ]; then ${LINUX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/fimo_1p2p0_bzip2_to_${VERSIONP}_bzip2.starch > ${RESULTS}/fimo.bzip2_to_bzip2.observed; fi
+	if [ ! -s ${RESULTS}/fimo.bzip2_to_gzip.observed ]; then ${LINUX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/fimo_1p2p0_bzip2_to_${VERSIONP}_gzip.starch > ${RESULTS}/fimo.bzip2_to_gzip.observed; fi
 endif
 ifeq (${PLATFORM},Darwin)
-	if [ ! -s ${RESULTS}/fimo.bzip2_to_bzip2.observed ]; then ${OSX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/fimo_1p2p0_bzip2_to_2p0p0_bzip2.starch > ${RESULTS}/fimo.bzip2_to_bzip2.observed; fi
-	if [ ! -s ${RESULTS}/fimo.bzip2_to_gzip.observed ]; then ${OSX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/fimo_1p2p0_bzip2_to_2p0p0_gzip.starch > ${RESULTS}/fimo.bzip2_to_gzip.observed; fi
+	if [ ! -s ${RESULTS}/fimo.bzip2_to_bzip2.observed ]; then ${OSX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/fimo_1p2p0_bzip2_to_${VERSIONP}_bzip2.starch > ${RESULTS}/fimo.bzip2_to_bzip2.observed; fi
+	if [ ! -s ${RESULTS}/fimo.bzip2_to_gzip.observed ]; then ${OSX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/fimo_1p2p0_bzip2_to_${VERSIONP}_gzip.starch > ${RESULTS}/fimo.bzip2_to_gzip.observed; fi
 endif
-	@echo "[STARCH] diff-ing v1.2 (bzip2, extracted) and v1.2-to-v2.0 (bzip2, observed)..."
+	@echo "[STARCH] diff-ing v1.2 (bzip2, extracted) and v1.2-to-v2.1 (bzip2, observed)..."
 	diff --brief ${RESULTS}/fimo.bzip2.expected ${RESULTS}/fimo.bzip2_to_bzip2.observed
 	diff --brief ${RESULTS}/fimo.bzip2.expected ${RESULTS}/fimo.bzip2_to_gzip.observed
 	@echo "[STARCH] no differences found!"
 
 random_updating_tests: compext_archives results_dir
-	@echo "[STARCH] taking v1.2 archive and starchcat-ing it to a new v2.0 archive..."
+	@echo "[STARCH] taking v1.2 archive and starchcat-ing it to a new v2.1 archive..."
 ifeq (${PLATFORM},Linux)
-	${LINUX_BINDIR}/v2.0/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_1p2p0_bzip2.starch > ${RESULTS}/random_1p2p0_bzip2_to_2p0p0_bzip2.starch
-	${LINUX_BINDIR}/v2.0/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_1p2p0_bzip2.starch > ${RESULTS}/random_1p2p0_bzip2_to_2p0p0_gzip.starch
-	${LINUX_BINDIR}/v2.0/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_1p2p0_gzip.starch > ${RESULTS}/random_1p2p0_gzip_to_2p0p0_bzip2.starch
-	${LINUX_BINDIR}/v2.0/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_1p2p0_gzip.starch > ${RESULTS}/random_1p2p0_gzip_to_2p0p0_gzip.starch
+	${LINUX_BINDIR}/${VERSION}/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_1p2p0_bzip2.starch > ${RESULTS}/random_1p2p0_bzip2_to_${VERSIONP}_bzip2.starch
+	${LINUX_BINDIR}/${VERSION}/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_1p2p0_bzip2.starch > ${RESULTS}/random_1p2p0_bzip2_to_${VERSIONP}_gzip.starch
+	${LINUX_BINDIR}/${VERSION}/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_1p2p0_gzip.starch > ${RESULTS}/random_1p2p0_gzip_to_${VERSIONP}_bzip2.starch
+	${LINUX_BINDIR}/${VERSION}/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_1p2p0_gzip.starch > ${RESULTS}/random_1p2p0_gzip_to_${VERSIONP}_gzip.starch
 endif
 ifeq (${PLATFORM},Darwin)
-	${OSX_BINDIR}/v2.0/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_1p2p0_bzip2.starch > ${RESULTS}/random_1p2p0_bzip2_to_2p0p0_bzip2.starch
-	${OSX_BINDIR}/v2.0/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_1p2p0_bzip2.starch > ${RESULTS}/random_1p2p0_bzip2_to_2p0p0_gzip.starch
-	${OSX_BINDIR}/v2.0/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_1p2p0_gzip.starch > ${RESULTS}/random_1p2p0_gzip_to_2p0p0_bzip2.starch
-	${OSX_BINDIR}/v2.0/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_1p2p0_gzip.starch > ${RESULTS}/random_1p2p0_gzip_to_2p0p0_gzip.starch
+	${OSX_BINDIR}/${VERSION}/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_1p2p0_bzip2.starch > ${RESULTS}/random_1p2p0_bzip2_to_${VERSIONP}_bzip2.starch
+	${OSX_BINDIR}/${VERSION}/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_1p2p0_bzip2.starch > ${RESULTS}/random_1p2p0_bzip2_to_${VERSIONP}_gzip.starch
+	${OSX_BINDIR}/${VERSION}/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_1p2p0_gzip.starch > ${RESULTS}/random_1p2p0_gzip_to_${VERSIONP}_bzip2.starch
+	${OSX_BINDIR}/${VERSION}/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_1p2p0_gzip.starch > ${RESULTS}/random_1p2p0_gzip_to_${VERSIONP}_gzip.starch
 endif
-	@echo "[STARCH] taking v1.5 archive and starchcat-ing it to a new v2.0 archive"
+	@echo "[STARCH] taking v1.5 archive and starchcat-ing it to a new v2.1 archive"
 ifeq (${PLATFORM},Linux)
-	${LINUX_BINDIR}/v2.0/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_1p5p0_bzip2.starch > ${RESULTS}/random_1p5p0_bzip2_to_2p0p0_bzip2.starch
-	${LINUX_BINDIR}/v2.0/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_1p5p0_bzip2.starch > ${RESULTS}/random_1p5p0_bzip2_to_2p0p0_gzip.starch
-	${LINUX_BINDIR}/v2.0/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_1p5p0_gzip.starch > ${RESULTS}/random_1p5p0_gzip_to_2p0p0_bzip2.starch
-	${LINUX_BINDIR}/v2.0/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_1p5p0_gzip.starch > ${RESULTS}/random_1p5p0_gzip_to_2p0p0_gzip.starch
+	${LINUX_BINDIR}/${VERSION}/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_1p5p0_bzip2.starch > ${RESULTS}/random_1p5p0_bzip2_to_${VERSIONP}_bzip2.starch
+	${LINUX_BINDIR}/${VERSION}/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_1p5p0_bzip2.starch > ${RESULTS}/random_1p5p0_bzip2_to_${VERSIONP}_gzip.starch
+	${LINUX_BINDIR}/${VERSION}/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_1p5p0_gzip.starch > ${RESULTS}/random_1p5p0_gzip_to_${VERSIONP}_bzip2.starch
+	${LINUX_BINDIR}/${VERSION}/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_1p5p0_gzip.starch > ${RESULTS}/random_1p5p0_gzip_to_${VERSIONP}_gzip.starch
 endif
 ifeq (${PLATFORM},Darwin)
-	${OSX_BINDIR}/v2.0/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_1p5p0_bzip2.starch > ${RESULTS}/random_1p5p0_bzip2_to_2p0p0_bzip2.starch
-	${OSX_BINDIR}/v2.0/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_1p5p0_bzip2.starch > ${RESULTS}/random_1p5p0_bzip2_to_2p0p0_gzip.starch
-	${OSX_BINDIR}/v2.0/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_1p5p0_gzip.starch > ${RESULTS}/random_1p5p0_gzip_to_2p0p0_bzip2.starch
-	${OSX_BINDIR}/v2.0/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_1p5p0_gzip.starch > ${RESULTS}/random_1p5p0_gzip_to_2p0p0_gzip.starch
+	${OSX_BINDIR}/${VERSION}/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_1p5p0_bzip2.starch > ${RESULTS}/random_1p5p0_bzip2_to_${VERSIONP}_bzip2.starch
+	${OSX_BINDIR}/${VERSION}/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_1p5p0_bzip2.starch > ${RESULTS}/random_1p5p0_bzip2_to_${VERSIONP}_gzip.starch
+	${OSX_BINDIR}/${VERSION}/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_1p5p0_gzip.starch > ${RESULTS}/random_1p5p0_gzip_to_${VERSIONP}_bzip2.starch
+	${OSX_BINDIR}/${VERSION}/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_1p5p0_gzip.starch > ${RESULTS}/random_1p5p0_gzip_to_${VERSIONP}_gzip.starch
 endif
-	@echo "[STARCH] diff-comparing elements from v1.2 and v2.0 archives"
+	@echo "[STARCH] taking v2.0 archive and starchcat-ing it to a new v2.1 archive"
 ifeq (${PLATFORM},Linux)
-	${LINUX_BINDIR}/v2.0/bin/unstarch ${COMPEXTRES_DIR}/random_1p2p0_bzip2.starch > ${RESULTS}/random_1p2p0_bzip2.bed
-	${LINUX_BINDIR}/v2.0/bin/unstarch ${COMPEXTRES_DIR}/random_1p2p0_gzip.starch > ${RESULTS}/random_1p2p0_gzip.bed
-	${LINUX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/random_1p2p0_bzip2_to_2p0p0_bzip2.starch | diff --brief - ${RESULTS}/random_1p2p0_bzip2.bed
-	${LINUX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/random_1p2p0_gzip_to_2p0p0_bzip2.starch | diff --brief - ${RESULTS}/random_1p2p0_gzip.bed
-	${LINUX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/random_1p2p0_bzip2_to_2p0p0_gzip.starch | diff --brief - ${RESULTS}/random_1p2p0_bzip2.bed
-	${LINUX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/random_1p2p0_gzip_to_2p0p0_gzip.starch | diff --brief - ${RESULTS}/random_1p2p0_gzip.bed
+	${LINUX_BINDIR}/${VERSION}/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_2p0p0_bzip2.starch > ${RESULTS}/random_2p0p0_bzip2_to_${VERSIONP}_bzip2.starch
+	${LINUX_BINDIR}/${VERSION}/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_2p0p0_bzip2.starch > ${RESULTS}/random_2p0p0_bzip2_to_${VERSIONP}_gzip.starch
+	${LINUX_BINDIR}/${VERSION}/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_2p0p0_gzip.starch > ${RESULTS}/random_2p0p0_gzip_to_${VERSIONP}_bzip2.starch
+	${LINUX_BINDIR}/${VERSION}/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_2p0p0_gzip.starch > ${RESULTS}/random_2p0p0_gzip_to_${VERSIONP}_gzip.starch
 endif
 ifeq (${PLATFORM},Darwin)
-	${OSX_BINDIR}/v2.0/bin/unstarch ${COMPEXTRES_DIR}/random_1p2p0_bzip2.starch > ${RESULTS}/random_1p2p0_bzip2.bed
-	${OSX_BINDIR}/v2.0/bin/unstarch ${COMPEXTRES_DIR}/random_1p2p0_gzip.starch > ${RESULTS}/random_1p2p0_gzip.bed
-	${OSX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/random_1p2p0_bzip2_to_2p0p0_bzip2.starch | diff --brief - ${RESULTS}/random_1p2p0_bzip2.bed
-	${OSX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/random_1p2p0_gzip_to_2p0p0_bzip2.starch | diff --brief - ${RESULTS}/random_1p2p0_gzip.bed
-	${OSX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/random_1p2p0_bzip2_to_2p0p0_gzip.starch | diff --brief - ${RESULTS}/random_1p2p0_bzip2.bed
-	${OSX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/random_1p2p0_gzip_to_2p0p0_gzip.starch | diff --brief - ${RESULTS}/random_1p2p0_gzip.bed
+	${OSX_BINDIR}/${VERSION}/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_2p0p0_bzip2.starch > ${RESULTS}/random_2p0p0_bzip2_to_${VERSIONP}_bzip2.starch
+	${OSX_BINDIR}/${VERSION}/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_2p0p0_bzip2.starch > ${RESULTS}/random_2p0p0_bzip2_to_${VERSIONP}_gzip.starch
+	${OSX_BINDIR}/${VERSION}/bin/starchcat --bzip2 ${COMPEXTRES_DIR}/random_2p0p0_gzip.starch > ${RESULTS}/random_2p0p0_gzip_to_${VERSIONP}_bzip2.starch
+	${OSX_BINDIR}/${VERSION}/bin/starchcat --gzip ${COMPEXTRES_DIR}/random_2p0p0_gzip.starch > ${RESULTS}/random_2p0p0_gzip_to_${VERSIONP}_gzip.starch
+endif
+	@echo "[STARCH] diff-comparing elements from v1.2 and v2.1 archives"
+ifeq (${PLATFORM},Linux)
+	${LINUX_BINDIR}/${VERSION}/bin/unstarch ${COMPEXTRES_DIR}/random_1p2p0_bzip2.starch > ${RESULTS}/random_1p2p0_bzip2.bed
+	${LINUX_BINDIR}/${VERSION}/bin/unstarch ${COMPEXTRES_DIR}/random_1p2p0_gzip.starch > ${RESULTS}/random_1p2p0_gzip.bed
+	${LINUX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_1p2p0_bzip2_to_${VERSIONP}_bzip2.starch | diff --brief - ${RESULTS}/random_1p2p0_bzip2.bed
+	${LINUX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_1p2p0_gzip_to_${VERSIONP}_bzip2.starch | diff --brief - ${RESULTS}/random_1p2p0_gzip.bed
+	${LINUX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_1p2p0_bzip2_to_${VERSIONP}_gzip.starch | diff --brief - ${RESULTS}/random_1p2p0_bzip2.bed
+	${LINUX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_1p2p0_gzip_to_${VERSIONP}_gzip.starch | diff --brief - ${RESULTS}/random_1p2p0_gzip.bed
+endif
+ifeq (${PLATFORM},Darwin)
+	${OSX_BINDIR}/${VERSION}/bin/unstarch ${COMPEXTRES_DIR}/random_1p2p0_bzip2.starch > ${RESULTS}/random_1p2p0_bzip2.bed
+	${OSX_BINDIR}/${VERSION}/bin/unstarch ${COMPEXTRES_DIR}/random_1p2p0_gzip.starch > ${RESULTS}/random_1p2p0_gzip.bed
+	${OSX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_1p2p0_bzip2_to_${VERSIONP}_bzip2.starch | diff --brief - ${RESULTS}/random_1p2p0_bzip2.bed
+	${OSX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_1p2p0_gzip_to_${VERSIONP}_bzip2.starch | diff --brief - ${RESULTS}/random_1p2p0_gzip.bed
+	${OSX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_1p2p0_bzip2_to_${VERSIONP}_gzip.starch | diff --brief - ${RESULTS}/random_1p2p0_bzip2.bed
+	${OSX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_1p2p0_gzip_to_${VERSIONP}_gzip.starch | diff --brief - ${RESULTS}/random_1p2p0_gzip.bed
 endif
 	@echo "[STARCH] no differences found!"
-	@echo "[STARCH] diff-comparing elements from v1.5 and v2.0 archives"
+	@echo "[STARCH] diff-comparing elements from v1.5 and v2.1 archives"
 ifeq (${PLATFORM},Linux)
-	${LINUX_BINDIR}/v2.0/bin/unstarch ${COMPEXTRES_DIR}/random_1p5p0_bzip2.starch > ${RESULTS}/random_1p5p0_bzip2.bed
-	${LINUX_BINDIR}/v2.0/bin/unstarch ${COMPEXTRES_DIR}/random_1p5p0_gzip.starch > ${RESULTS}/random_1p5p0_gzip.bed
-	${LINUX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/random_1p5p0_bzip2_to_2p0p0_bzip2.starch | diff --brief - ${RESULTS}/random_1p5p0_bzip2.bed
-	${LINUX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/random_1p5p0_gzip_to_2p0p0_bzip2.starch | diff --brief - ${RESULTS}/random_1p5p0_gzip.bed
-	${LINUX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/random_1p5p0_bzip2_to_2p0p0_gzip.starch | diff --brief - ${RESULTS}/random_1p5p0_bzip2.bed
-	${LINUX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/random_1p5p0_gzip_to_2p0p0_gzip.starch | diff --brief - ${RESULTS}/random_1p5p0_gzip.bed
+	${LINUX_BINDIR}/${VERSION}/bin/unstarch ${COMPEXTRES_DIR}/random_1p5p0_bzip2.starch > ${RESULTS}/random_1p5p0_bzip2.bed
+	${LINUX_BINDIR}/${VERSION}/bin/unstarch ${COMPEXTRES_DIR}/random_1p5p0_gzip.starch > ${RESULTS}/random_1p5p0_gzip.bed
+	${LINUX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_1p5p0_bzip2_to_${VERSIONP}_bzip2.starch | diff --brief - ${RESULTS}/random_1p5p0_bzip2.bed
+	${LINUX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_1p5p0_gzip_to_${VERSIONP}_bzip2.starch | diff --brief - ${RESULTS}/random_1p5p0_gzip.bed
+	${LINUX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_1p5p0_bzip2_to_${VERSIONP}_gzip.starch | diff --brief - ${RESULTS}/random_1p5p0_bzip2.bed
+	${LINUX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_1p5p0_gzip_to_${VERSIONP}_gzip.starch | diff --brief - ${RESULTS}/random_1p5p0_gzip.bed
 endif
 ifeq (${PLATFORM},Darwin)
-	${OSX_BINDIR}/v2.0/bin/unstarch ${COMPEXTRES_DIR}/random_1p5p0_bzip2.starch > ${RESULTS}/random_1p5p0_bzip2.bed
-	${OSX_BINDIR}/v2.0/bin/unstarch ${COMPEXTRES_DIR}/random_1p5p0_gzip.starch > ${RESULTS}/random_1p5p0_gzip.bed
-	${OSX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/random_1p5p0_bzip2_to_2p0p0_bzip2.starch | diff --brief - ${RESULTS}/random_1p5p0_bzip2.bed
-	${OSX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/random_1p5p0_gzip_to_2p0p0_bzip2.starch | diff --brief - ${RESULTS}/random_1p5p0_gzip.bed
-	${OSX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/random_1p5p0_bzip2_to_2p0p0_gzip.starch | diff --brief - ${RESULTS}/random_1p5p0_bzip2.bed
-	${OSX_BINDIR}/v2.0/bin/unstarch ${RESULTS}/random_1p5p0_gzip_to_2p0p0_gzip.starch | diff --brief - ${RESULTS}/random_1p5p0_gzip.bed
+	${OSX_BINDIR}/${VERSION}/bin/unstarch ${COMPEXTRES_DIR}/random_1p5p0_bzip2.starch > ${RESULTS}/random_1p5p0_bzip2.bed
+	${OSX_BINDIR}/${VERSION}/bin/unstarch ${COMPEXTRES_DIR}/random_1p5p0_gzip.starch > ${RESULTS}/random_1p5p0_gzip.bed
+	${OSX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_1p5p0_bzip2_to_${VERSIONP}_bzip2.starch | diff --brief - ${RESULTS}/random_1p5p0_bzip2.bed
+	${OSX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_1p5p0_gzip_to_${VERSIONP}_bzip2.starch | diff --brief - ${RESULTS}/random_1p5p0_gzip.bed
+	${OSX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_1p5p0_bzip2_to_${VERSIONP}_gzip.starch | diff --brief - ${RESULTS}/random_1p5p0_bzip2.bed
+	${OSX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_1p5p0_gzip_to_${VERSIONP}_gzip.starch | diff --brief - ${RESULTS}/random_1p5p0_gzip.bed
+endif
+	@echo "[STARCH] no differences found!"
+	@echo "[STARCH] diff-comparing elements from v2.0 and v2.1 archives"
+ifeq (${PLATFORM},Linux)
+	${LINUX_BINDIR}/${VERSION}/bin/unstarch ${COMPEXTRES_DIR}/random_2p0p0_bzip2.starch > ${RESULTS}/random_2p0p0_bzip2.bed
+	${LINUX_BINDIR}/${VERSION}/bin/unstarch ${COMPEXTRES_DIR}/random_2p0p0_gzip.starch > ${RESULTS}/random_2p0p0_gzip.bed
+	${LINUX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_2p0p0_bzip2_to_${VERSIONP}_bzip2.starch | diff --brief - ${RESULTS}/random_2p0p0_bzip2.bed
+	${LINUX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_2p0p0_gzip_to_${VERSIONP}_bzip2.starch | diff --brief - ${RESULTS}/random_2p0p0_gzip.bed
+	${LINUX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_2p0p0_bzip2_to_${VERSIONP}_gzip.starch | diff --brief - ${RESULTS}/random_2p0p0_bzip2.bed
+	${LINUX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_2p0p0_gzip_to_${VERSIONP}_gzip.starch | diff --brief - ${RESULTS}/random_2p0p0_gzip.bed
+endif
+ifeq (${PLATFORM},Darwin)
+	${OSX_BINDIR}/${VERSION}/bin/unstarch ${COMPEXTRES_DIR}/random_2p0p0_bzip2.starch > ${RESULTS}/random_2p0p0_bzip2.bed
+	${OSX_BINDIR}/${VERSION}/bin/unstarch ${COMPEXTRES_DIR}/random_2p0p0_gzip.starch > ${RESULTS}/random_2p0p0_gzip.bed
+	${OSX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_2p0p0_bzip2_to_${VERSIONP}_bzip2.starch | diff --brief - ${RESULTS}/random_2p0p0_bzip2.bed
+	${OSX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_2p0p0_gzip_to_${VERSIONP}_bzip2.starch | diff --brief - ${RESULTS}/random_2p0p0_gzip.bed
+	${OSX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_2p0p0_bzip2_to_${VERSIONP}_gzip.starch | diff --brief - ${RESULTS}/random_2p0p0_bzip2.bed
+	${OSX_BINDIR}/${VERSION}/bin/unstarch ${RESULTS}/random_2p0p0_gzip_to_${VERSIONP}_gzip.starch | diff --brief - ${RESULTS}/random_2p0p0_gzip.bed
 endif
 	@echo "[STARCH] no differences found!"
 

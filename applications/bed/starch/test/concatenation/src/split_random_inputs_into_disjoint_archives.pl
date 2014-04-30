@@ -16,41 +16,49 @@ my @archive_types = qw(bzip2
 
 my @version_dirs = qw(v1.2
                       v1.5
-                      v2.0);
+                      v2.0
+                      v2.1);
 
 my @bzip2_fns = qw(random_1p2p0_bzip2.starch
                    random_1p5p0_bzip2.starch
-                   random_2p0p0_bzip2.starch);
+                   random_2p0p0_bzip2.starch
+                   random_2p1p0_bzip2.starch);
 
 my @gzip_fns = qw(random_1p2p0_gzip.starch
                   random_1p5p0_gzip.starch
-                  random_2p0p0_gzip.starch);
+                  random_2p0p0_gzip.starch
+                  random_2p1p0_gzip.starch);
 
 my @elem_counts = qw(250000
                      250000
-                     500000);
+                     250000
+                     250000);
 
-# this script will randomly pick three archives from the bzip2- and gzip-based starch archive pool
-# and pull disjoint sets of 250K, 250K, and 500K elements from these files, respectively. the resulting
-# elements are then starch'ed into three archives.
+my $version_str = "v2.1";
+
+# this script will randomly pick four archives from the bzip2- and gzip-based starch archive pool
+# and pull disjoint sets of 250K, 250K, 250K, and 250K elements from these files, respectively. the 
+# resulting elements are then starch'ed into four archives.
 
 foreach my $archive_type (@archive_types) {
     #print STDERR "making $archive_type archive...\n";
-    my @fn_indices = (0..5);
+    # total of eight files
+    my @fn_indices = (0..7); 
     my @shuffled_indices = shuffle (@fn_indices);
-    # we grab the first three indices
-    my @inds = @shuffled_indices[0..2];
+    # we grab the first four indices
+    my @inds = @shuffled_indices[0..3];
     my @fns = ();
     undef @fns;
+    # grab either a bzip2 or gzip archive at random
     foreach my $ind (@inds) {
-        if ($ind < 3) {
+        if ($ind < 4) {
             push (@fns, $bzip2_fns[$ind]);
         }
         else {
-            push (@fns, $gzip_fns[$ind - 3]);
+            push (@fns, $gzip_fns[$ind - 4]);
         }
     }
-    my @select_inds = (0..2);
+    my @select_inds = (0..3);
     my $total_line_count = 0;
     foreach my $ind (@select_inds) {
         my $real_line_count = 0;
@@ -59,7 +67,7 @@ foreach my $archive_type (@archive_types) {
         $total_line_count += $elem_count;
         # extract
         #print STDERR "extracting $elem_count elements from $fns[$ind] | $real_line_count | $current_line_count | $elem_count | $total_line_count\n";
-        my $unstarch_binary = "$binaries_dir/v2.0/bin/unstarch";
+        my $unstarch_binary = "$binaries_dir/$version_str/bin/unstarch";
         open ARCH, "$unstarch_binary $compr_extr_results_dir/$fns[$ind] |" or die "could not unstarch: $compr_extr_results_dir/$fns[$ind]\n";
         my $intermediate_out_fn = "$concat_results_dir/version_test_"."$archive_type"."_"."$current_line_count-$total_line_count.bed";        
         open OUT, "> $intermediate_out_fn" or die "could not open handle to intermediate output: $intermediate_out_fn\n";
