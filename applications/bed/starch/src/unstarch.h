@@ -32,13 +32,17 @@
 static const char *name = "unstarch";
 static const char *authors = "Alex Reynolds and Shane Neph";
 static const char *usage = "\n" \
-    "USAGE: unstarch [ <chromosome> ]  [ --elements | --bases | --bases-uniq | --list | --list-json | --list-chromosomes | --archive-timestamp | --note | --archive-version ] <starch-file>\n" \
+    "USAGE: unstarch [ <chromosome> ]  [ --elements | --bases | --bases-uniq | --duplicatesExist | --nestedsExist | --list | --list-json | --list-chromosomes | --archive-timestamp | --note | --archive-version ] <starch-file>\n" \
     "\n" \
     "    Process Flags:\n\n" \
     "    <chromosome>                     Optional. Either unarchives chromosome-specific records from the starch archive file or restricts action of operator to chromosome (e.g., chr1, chrY, etc.).\n" \
     "    --elements                       Show total element count for archive. If <chromosome> is specified, the result shows the element count for the chromosome.\n" \
     "    --bases,\n" \
     "    --bases-uniq                     Show total and unique base counts, respectively, for archive. If <chromosome> is specified, the count is specific to the chromosome, if available.\n" \
+    "    --duplicatesExist,               Show whether there are duplicate elements in the specified chromosome, either as numerical (1/0) or string (true/false) value. If no <chromosome> is specified, values are reported for all chromosome records.\n" \
+    "    --duplicatesExistAsString \n" \
+    "    --nestedsExist,                  Show whether there are nested elements in the specified chromosome, either as numerical (1/0) or string (true/false) value. If no <chromosome> is specified, values are reported for all chromosome records.\n" \
+    "    --nestedsExistAsString \n" \
     "    --list                           List archive metadata (output is in text format). If chromosome is specified, the attributes of the given chromosome are shown.\n" \
     "    --list-json,                     List archive metadata (output is in JSON format)\n" \
     "    --list-json-no-trailing-newline  \n" \

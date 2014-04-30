@@ -60,6 +60,14 @@
 #define UNSTARCH_ARCHIVE_NOTE_ERROR 21
 #define UNSTARCH_ARCHIVE_COMPRESSION_TYPE_ERROR 22
 #define UNSTARCH_METADATA_SHA1_SIGNATURE_ERROR 23
+#define UNSTARCH_ELEMENT_DUPLICATE_CHR_INT_ERROR 24
+#define UNSTARCH_ELEMENT_DUPLICATE_ALL_INT_ERROR 25
+#define UNSTARCH_ELEMENT_DUPLICATE_CHR_STR_ERROR 26
+#define UNSTARCH_ELEMENT_DUPLICATE_ALL_STR_ERROR 27
+#define UNSTARCH_ELEMENT_NESTED_CHR_INT_ERROR 28
+#define UNSTARCH_ELEMENT_NESTED_ALL_INT_ERROR 29
+#define UNSTARCH_ELEMENT_NESTED_CHR_STR_ERROR 30
+#define UNSTARCH_ELEMENT_NESTED_ALL_STR_ERROR 31
 
 int                UNSTARCH_reverseTransformInput(const char *chr,
                                          const unsigned char *str,
@@ -203,6 +211,34 @@ void               UNSTARCH_printUniqueBaseCountForChromosome(const Metadata *md
                                                                   const char *chr);
 
 void               UNSTARCH_printUniqueBaseCountForAllChromosomes(const Metadata *md);
+      
+Boolean            UNSTARCH_duplicateElementExistsForChromosome(const Metadata *md,
+                                                                    const char *chr);
+
+void               UNSTARCH_printDuplicateElementExistsStringForChromosome(const Metadata *md, 
+                                                                               const char *chr);
+
+void               UNSTARCH_printDuplicateElementExistsStringsForAllChromosomes(const Metadata *md);
+
+void               UNSTARCH_printDuplicateElementExistsIntegerForChromosome(const Metadata *md, 
+                                                                                const char *chr);
+
+void               UNSTARCH_printDuplicateElementExistsIntegersForAllChromosomes(const Metadata *md);
+
+Boolean            UNSTARCH_nestedElementExistsForChromosome(const Metadata *md,
+                                                                 const char *chr);
+
+void               UNSTARCH_printNestedElementExistsStringForChromosome(const Metadata *md, 
+                                                                            const char *chr);
+
+void               UNSTARCH_printNestedElementExistsStringsForAllChromosomes(const Metadata *md);
+
+void               UNSTARCH_printNestedElementExistsIntegerForChromosome(const Metadata *md, 
+                                                                             const char *chr);
+
+void               UNSTARCH_printNestedElementExistsIntegersForAllChromosomes(const Metadata *md);
+
+const char *       UNSTARCH_booleanToString(const Boolean val);
 
 int                UNSTARCH_reverseTransformCoordinates(const LineCountType lineIdx,
                                                             SignedCoordType *lastPosition,

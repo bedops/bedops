@@ -153,6 +153,38 @@ main(int argc, char **argv)
                 resultValue = UNSTARCH_LIST_CHROMOSOMES_ERROR;
                 break;
             }
+            case UNSTARCH_ELEMENT_DUPLICATE_CHR_INT_ERROR: {
+                resultValue = UNSTARCH_ELEMENT_DUPLICATE_CHR_INT_ERROR;
+                break;
+            }
+            case UNSTARCH_ELEMENT_DUPLICATE_ALL_INT_ERROR: {
+                resultValue = UNSTARCH_ELEMENT_DUPLICATE_ALL_INT_ERROR;
+                break;
+            }
+            case UNSTARCH_ELEMENT_DUPLICATE_CHR_STR_ERROR: {
+                resultValue = UNSTARCH_ELEMENT_DUPLICATE_CHR_STR_ERROR;
+                break;
+            }
+            case UNSTARCH_ELEMENT_DUPLICATE_ALL_STR_ERROR: {
+                resultValue = UNSTARCH_ELEMENT_DUPLICATE_ALL_STR_ERROR;
+                break;
+            }
+            case UNSTARCH_ELEMENT_NESTED_CHR_INT_ERROR: {
+                resultValue = UNSTARCH_ELEMENT_NESTED_CHR_INT_ERROR;
+                break;
+            }
+            case UNSTARCH_ELEMENT_NESTED_ALL_INT_ERROR: {
+                resultValue = UNSTARCH_ELEMENT_NESTED_ALL_INT_ERROR;
+                break;
+            }
+            case UNSTARCH_ELEMENT_NESTED_CHR_STR_ERROR: {
+                resultValue = UNSTARCH_ELEMENT_NESTED_CHR_STR_ERROR;
+                break;
+            }
+            case UNSTARCH_ELEMENT_NESTED_ALL_STR_ERROR: {
+                resultValue = UNSTARCH_ELEMENT_NESTED_ALL_STR_ERROR;
+                break;
+            }
         }
     }
 
@@ -167,7 +199,15 @@ main(int argc, char **argv)
         (resultValue == UNSTARCH_BASES_UNIQUE_COUNT_CHR_ERROR) || 
         (resultValue == UNSTARCH_LIST_CHROMOSOMES_ERROR) ||
         (resultValue == UNSTARCH_ARCHIVE_NOTE_ERROR) ||
-        (resultValue == UNSTARCH_ARCHIVE_COMPRESSION_TYPE_ERROR))
+        (resultValue == UNSTARCH_ARCHIVE_COMPRESSION_TYPE_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_DUPLICATE_CHR_INT_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_DUPLICATE_ALL_INT_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_DUPLICATE_CHR_STR_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_DUPLICATE_ALL_STR_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_NESTED_CHR_INT_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_NESTED_ALL_INT_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_NESTED_CHR_STR_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_NESTED_ALL_STR_ERROR) )
     {
         if (STARCH_readJSONMetadata( &metadataJSON, &inFilePtr, (const char *) inFile, &records, &type, &archiveVersion, &archiveTimestamp, &note, &metadataOffset, &headerFlag, suppressErrorMsgs, preserveJSONRef) != STARCH_EXIT_SUCCESS) {
             fprintf(stderr, "ERROR: Could not read metadata\n");
@@ -478,6 +518,86 @@ main(int argc, char **argv)
                 }
                 break;
             }
+            case UNSTARCH_ELEMENT_DUPLICATE_CHR_INT_ERROR: {
+                if ((archiveVersion->major == 2) && (archiveVersion->minor >= 1)) {
+                    UNSTARCH_printDuplicateElementExistsIntegerForChromosome(records, whichChromosome);
+                }
+                else {
+                    fprintf(stderr, "ERROR: Archive version (%d.%d.%d) does not support duplicate element flag (starchcat the archive to bring its version to v2.1.0 or greater)\n", archiveVersion->major, archiveVersion->minor, archiveVersion->revision);
+                    resultValue = EXIT_FAILURE;
+                }
+                break;
+            }
+            case UNSTARCH_ELEMENT_DUPLICATE_ALL_INT_ERROR: {
+                if ((archiveVersion->major == 2) && (archiveVersion->minor >= 1)) {
+                    UNSTARCH_printDuplicateElementExistsIntegersForAllChromosomes(records);
+                }
+                else {
+                    fprintf(stderr, "ERROR: Archive version (%d.%d.%d) does not support duplicate element flag (starchcat the archive to bring its version to v2.1.0 or greater)\n", archiveVersion->major, archiveVersion->minor, archiveVersion->revision);
+                    resultValue = EXIT_FAILURE;
+                }
+                break;
+            }
+            case UNSTARCH_ELEMENT_DUPLICATE_CHR_STR_ERROR: {
+                if ((archiveVersion->major == 2) && (archiveVersion->minor >= 1)) {
+                    UNSTARCH_printDuplicateElementExistsStringForChromosome(records, whichChromosome);
+                }
+                else {
+                    fprintf(stderr, "ERROR: Archive version (%d.%d.%d) does not support duplicate element flag (starchcat the archive to bring its version to v2.1.0 or greater)\n", archiveVersion->major, archiveVersion->minor, archiveVersion->revision);
+                    resultValue = EXIT_FAILURE;
+                }
+                break;
+            }
+            case UNSTARCH_ELEMENT_DUPLICATE_ALL_STR_ERROR: {
+                if ((archiveVersion->major == 2) && (archiveVersion->minor >= 1)) {
+                    UNSTARCH_printDuplicateElementExistsStringsForAllChromosomes(records);
+                }
+                else {
+                    fprintf(stderr, "ERROR: Archive version (%d.%d.%d) does not support duplicate element flag (starchcat the archive to bring its version to v2.1.0 or greater)\n", archiveVersion->major, archiveVersion->minor, archiveVersion->revision);
+                    resultValue = EXIT_FAILURE;
+                }
+                break;
+            }
+            case UNSTARCH_ELEMENT_NESTED_CHR_INT_ERROR: {
+                if ((archiveVersion->major == 2) && (archiveVersion->minor >= 1)) {
+                    UNSTARCH_printNestedElementExistsIntegerForChromosome(records, whichChromosome);
+                }
+                else {
+                    fprintf(stderr, "ERROR: Archive version (%d.%d.%d) does not support nested element flag (starchcat the archive to bring its version to v2.1.0 or greater)\n", archiveVersion->major, archiveVersion->minor, archiveVersion->revision);
+                    resultValue = EXIT_FAILURE;
+                }
+                break;
+            }
+            case UNSTARCH_ELEMENT_NESTED_ALL_INT_ERROR: {
+                if ((archiveVersion->major == 2) && (archiveVersion->minor >= 1)) {
+                    UNSTARCH_printNestedElementExistsIntegersForAllChromosomes(records);
+                }
+                else {
+                    fprintf(stderr, "ERROR: Archive version (%d.%d.%d) does not support nested element flag (starchcat the archive to bring its version to v2.1.0 or greater)\n", archiveVersion->major, archiveVersion->minor, archiveVersion->revision);
+                    resultValue = EXIT_FAILURE;
+                }
+                break;
+            }
+            case UNSTARCH_ELEMENT_NESTED_CHR_STR_ERROR: {
+                if ((archiveVersion->major == 2) && (archiveVersion->minor >= 1)) {
+                    UNSTARCH_printNestedElementExistsStringForChromosome(records, whichChromosome);
+                }
+                else {
+                    fprintf(stderr, "ERROR: Archive version (%d.%d.%d) does not support nested element flag (starchcat the archive to bring its version to v2.1.0 or greater)\n", archiveVersion->major, archiveVersion->minor, archiveVersion->revision);
+                    resultValue = EXIT_FAILURE;
+                }
+                break;
+            }
+            case UNSTARCH_ELEMENT_NESTED_ALL_STR_ERROR: {
+                if ((archiveVersion->major == 2) && (archiveVersion->minor >= 1)) {
+                    UNSTARCH_printNestedElementExistsStringsForAllChromosomes(records);
+                }
+                else {
+                    fprintf(stderr, "ERROR: Archive version (%d.%d.%d) does not support nested element flag (starchcat the archive to bring its version to v2.1.0 or greater)\n", archiveVersion->major, archiveVersion->minor, archiveVersion->revision);
+                    resultValue = EXIT_FAILURE;
+                }
+                break;
+            }
         }
     }
 
@@ -493,7 +613,15 @@ main(int argc, char **argv)
         (resultValue == UNSTARCH_BASES_UNIQUE_COUNT_ALL_ERROR) ||
         (resultValue == UNSTARCH_LIST_CHROMOSOMES_ERROR) ||
         (resultValue == UNSTARCH_ARCHIVE_NOTE_ERROR) ||
-        (resultValue == UNSTARCH_METADATA_SHA1_SIGNATURE_ERROR))
+        (resultValue == UNSTARCH_METADATA_SHA1_SIGNATURE_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_DUPLICATE_CHR_INT_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_DUPLICATE_ALL_INT_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_DUPLICATE_CHR_STR_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_DUPLICATE_ALL_STR_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_NESTED_CHR_INT_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_NESTED_ALL_INT_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_NESTED_CHR_STR_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_NESTED_ALL_STR_ERROR) )
         resultValue = EXIT_SUCCESS;
 
     /* cleanup */
@@ -668,9 +796,10 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
         *fn = STARCH_strdup(argv[3]);
     }
 
-#ifdef DEBUG 
+#ifdef DEBUG
     fprintf(stderr, "chr -> %s \t ftr1 -> %s \t ftr2 -> %s \t fn -> %s \n", *chr, ftr1, ftr2, *fn);
 #endif
+
 
     if ((! *fn) || 
         (! *chr) || 
@@ -743,7 +872,23 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
         else if (strcmp(*optn, "bases-uniq") == 0) {
             *pval = (strcmp(*chr, "--bases-uniq") == 0) ? UNSTARCH_BASES_UNIQUE_COUNT_ALL_ERROR : UNSTARCH_BASES_UNIQUE_COUNT_CHR_ERROR;
             return *pval;
-        }        
+        }
+        else if (strcmp(*optn, "duplicatesExistAsString") == 0) {
+            *pval = (strcmp(*chr, "--duplicatesExistAsString") == 0) ? UNSTARCH_ELEMENT_DUPLICATE_ALL_STR_ERROR : UNSTARCH_ELEMENT_DUPLICATE_CHR_STR_ERROR;
+            return *pval;
+        }
+        else if (strcmp(*optn, "duplicatesExist") == 0) {
+            *pval = (strcmp(*chr, "--duplicatesExist") == 0) ? UNSTARCH_ELEMENT_DUPLICATE_ALL_INT_ERROR : UNSTARCH_ELEMENT_DUPLICATE_CHR_INT_ERROR;
+            return *pval;
+        }
+        else if (strcmp(*optn, "nestedsExistAsString") == 0) {
+            *pval = (strcmp(*chr, "--nestedsExistAsString") == 0) ? UNSTARCH_ELEMENT_NESTED_ALL_STR_ERROR : UNSTARCH_ELEMENT_NESTED_CHR_STR_ERROR;
+            return *pval;
+        }
+        else if (strcmp(*optn, "nestedsExist") == 0) {
+            *pval = (strcmp(*chr, "--nestedsExist") == 0) ? UNSTARCH_ELEMENT_NESTED_ALL_INT_ERROR : UNSTARCH_ELEMENT_NESTED_CHR_INT_ERROR;
+            return *pval;
+        }
         else if ((strcmp(*optn, "list") != 0) && 
                  (strcmp(*optn, "listJSON") != 0) && 
                  (strcmp(*optn, "list-json") != 0) && 

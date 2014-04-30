@@ -219,8 +219,8 @@ STARCH_listMetadata(const Metadata *md, const char *chr)
 #endif
     const Metadata *iter;
     Boolean chrFound = kStarchFalse;
-    const char *yes = "yes";
-    const char *no = "no";
+    const char *t = "true";
+    const char *f = "false";
 
     if (!md) {
         fprintf(stderr, "ERROR: Could not list metadata (metadata structure is empty)\n");
@@ -242,7 +242,7 @@ STARCH_listMetadata(const Metadata *md, const char *chr)
         fprintf(stdout, "%-25s| %-65s\t| %-15s\t| %-20s\t| %-20s\t| %-20s\t| %-25s\t| %-25s\n", "chr", "filename", "compressedSize", "uncompressedLineCount", "totalNonUniqueBases", "totalUniqueBases", "duplicateElementExists", "nestedElementExists");
         for (iter = md; iter != NULL; iter = iter->next) {
             if ( (strcmp((const char *)iter->chromosome, chr) == 0) || (strcmp("all", chr) == 0) )
-                fprintf(stdout, "%-25s| %-65s\t| %-15" PRIu64 "\t| %-20" PRIu64 "\t| %-20" PRIu64 "\t| %-20" PRIu64 "| %-25s\t| %-25s\n", iter->chromosome, iter->filename, iter->size, iter->lineCount, iter->totalNonUniqueBases, iter->totalUniqueBases, (iter->duplicateElementExists == kStarchTrue ? yes : no), (iter->nestedElementExists == kStarchTrue ? yes : no));
+                fprintf(stdout, "%-25s| %-65s\t| %-15" PRIu64 "\t| %-20" PRIu64 "\t| %-20" PRIu64 "\t| %-20" PRIu64 "\t| %-25s\t| %-25s\n", iter->chromosome, iter->filename, iter->size, iter->lineCount, iter->totalNonUniqueBases, iter->totalUniqueBases, (iter->duplicateElementExists == kStarchTrue ? t : f), (iter->nestedElementExists == kStarchTrue ? t : f));
         }
     }
 

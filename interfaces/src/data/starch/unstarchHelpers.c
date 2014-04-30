@@ -1319,9 +1319,8 @@ UNSTARCH_uniqueBaseCountForChromosome(const Metadata *md, const char *chr)
     const Metadata *iter;
 
     for (iter = md; iter != NULL; iter = iter->next) {
-        if (strcmp(chr, iter->chromosome) == 0) {
+        if (strcmp(chr, iter->chromosome) == 0)
             return iter->totalUniqueBases;
-        }
     }
 
     return (BaseCountType) 0;
@@ -1344,7 +1343,7 @@ void
 UNSTARCH_printUniqueBaseCountForAllChromosomes(const Metadata *md)
 {
 #ifdef DEBUG
-    fprintf(stderr, "\n--- UNSTARCH_printUniqueBaseCountForChromosome() ---\n");
+    fprintf(stderr, "\n--- UNSTARCH_printUniqueBaseCountForAllChromosomes() ---\n");
 #endif
     const Metadata *iter;
     BaseCountType totalBaseCount = 0;
@@ -1353,6 +1352,167 @@ UNSTARCH_printUniqueBaseCountForAllChromosomes(const Metadata *md)
         totalBaseCount += iter->totalUniqueBases;
 
     fprintf(stdout, "%" PRIu64 "\n", totalBaseCount);
+}
+
+Boolean
+UNSTARCH_duplicateElementExistsForChromosome(const Metadata *md, const char *chr)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_duplicateElementExistsForChromosome() ---\n");
+#endif 
+    const Metadata *iter;
+    
+    for (iter = md; iter != NULL; iter = iter->next) {
+        if (strcmp(chr, iter->chromosome) == 0)
+            return iter->duplicateElementExists;
+    }
+
+    return STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+}
+
+void
+UNSTARCH_printDuplicateElementExistsStringForChromosome(const Metadata *md, const char *chr) 
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_printDuplicateElementExistsForChromosome() ---\n");
+#endif
+
+    Boolean res = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+
+    if (strcmp(chr, "all") == 0)
+        UNSTARCH_printDuplicateElementExistsStringsForAllChromosomes(md);
+    else {
+        res = UNSTARCH_duplicateElementExistsForChromosome(md, chr);
+        fprintf(stdout, "%s\n", UNSTARCH_booleanToString(res));
+    }
+}
+
+void
+UNSTARCH_printDuplicateElementExistsStringsForAllChromosomes(const Metadata *md)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_printDuplicateElementExistsForAllChromosomes() ---\n");
+#endif
+    const Metadata *iter;
+
+    for (iter = md; iter != NULL; iter = iter->next) {
+        UNSTARCH_printDuplicateElementExistsStringForChromosome(md, iter->chromosome);
+    }
+}
+
+void
+UNSTARCH_printDuplicateElementExistsIntegerForChromosome(const Metadata *md, const char *chr)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_printDuplicateElementExistsIntegerForChromosome() ---\n");
+#endif
+    Boolean res = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+
+    if (strcmp(chr, "all") == 0)
+        UNSTARCH_printDuplicateElementExistsIntegersForAllChromosomes(md);
+    else {
+        res = UNSTARCH_duplicateElementExistsForChromosome(md, chr);
+        fprintf(stdout, "%d\n", (int) res);
+    }
+}
+
+void
+UNSTARCH_printDuplicateElementExistsIntegersForAllChromosomes(const Metadata *md)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_printDuplicateElementExistsIntegersForAllChromosomes() ---\n");
+#endif
+    const Metadata *iter;
+
+    for (iter = md; iter != NULL; iter = iter->next) {
+        UNSTARCH_printDuplicateElementExistsIntegerForChromosome(md, iter->chromosome);
+    }
+}
+
+Boolean
+UNSTARCH_nestedElementExistsForChromosome(const Metadata *md, const char *chr)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_nestedElementExistsForChromosome() ---\n");
+#endif 
+    const Metadata *iter;
+    
+    for (iter = md; iter != NULL; iter = iter->next) {
+        if (strcmp(chr, iter->chromosome) == 0)
+            return iter->nestedElementExists;
+    }
+
+    return STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
+}
+
+void
+UNSTARCH_printNestedElementExistsStringForChromosome(const Metadata *md, const char *chr) 
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_printNestedElementExistsForChromosome() ---\n");
+#endif
+    Boolean res = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
+
+    if (strcmp(chr, "all") == 0)
+        UNSTARCH_printNestedElementExistsStringsForAllChromosomes(md);
+    else {
+        res = UNSTARCH_nestedElementExistsForChromosome(md, chr);
+        fprintf(stdout, "%s\n", UNSTARCH_booleanToString(res));
+    }
+}
+
+void
+UNSTARCH_printNestedElementExistsStringsForAllChromosomes(const Metadata *md)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_printNestedElementExistsForAllChromosomes() ---\n");
+#endif
+    const Metadata *iter;
+
+    for (iter = md; iter != NULL; iter = iter->next) {
+        UNSTARCH_printNestedElementExistsStringForChromosome(md, iter->chromosome);
+    }
+}
+
+void
+UNSTARCH_printNestedElementExistsIntegerForChromosome(const Metadata *md, const char *chr)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_printNestedElementExistsIntegerForChromosome() ---\n");
+#endif
+    Boolean res = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
+
+    if (strcmp(chr, "all") == 0)
+        UNSTARCH_printNestedElementExistsIntegersForAllChromosomes(md);
+    else {
+        res = UNSTARCH_nestedElementExistsForChromosome(md, chr);
+        fprintf(stdout, "%d\n", (int) res);
+    }
+}
+
+void
+UNSTARCH_printNestedElementExistsIntegersForAllChromosomes(const Metadata *md)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_printNestedElementExistsIntegersForAllChromosomes() ---\n");
+#endif
+    const Metadata *iter;
+
+    for (iter = md; iter != NULL; iter = iter->next) {
+        UNSTARCH_printNestedElementExistsIntegerForChromosome(md, iter->chromosome);
+    }
+}
+
+const char *
+UNSTARCH_booleanToString(const Boolean val) 
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_booleanToString() ---\n");
+#endif
+    const char *t = "true";
+    const char *f = "false";
+
+    return ((val == kStarchTrue) ? t : f);
 }
 
 int
