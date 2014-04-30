@@ -44,6 +44,11 @@ set help = "$help  You can pass in the name of the output starch archive to be c
 set help = "$help  Otherwise, the output will have the same name as the input file, with an additional\n"
 set help = "$help   '.starch' ending.  If the input file ends with '.bed', that will be stripped off.\n"
 
+if ( $#argv == 0 ) then
+  printf "$help"
+  exit -1
+endif
+
 @ inputset = 0
 @ clean = 0
 foreach argc (`seq 1 $#argv`)
