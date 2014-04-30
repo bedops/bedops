@@ -101,6 +101,8 @@ typedef struct transformState {
     char                     r_remainder[UNSTARCH_SECOND_TOKEN_MAX_LENGTH + 1];
     SignedCoordType          r_start;
     SignedCoordType          r_stop;
+    SignedCoordType          r_pStart;
+    SignedCoordType          r_pStop;
     SignedCoordType          r_coordDiff;
     SignedCoordType          r_lcDiff;
     SignedCoordType          r_lastPosition;

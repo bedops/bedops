@@ -640,6 +640,8 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
     char *t_currRemainder = NULL;
     size_t t_currRemainderLen = 0U;
     LineCountType t_lineIdx = 0;
+    SignedCoordType t_pStart = 0;
+    SignedCoordType t_pStop = 0;
     SignedCoordType t_previousStop = 0;
     SignedCoordType t_lastPosition = 0;
     SignedCoordType t_lcDiff = 0;
@@ -944,6 +946,18 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                                 else if (t_previousStop < t_currStop)
                                     t_totalUniqueBases += (BaseCountType) (t_currStop - t_previousStop);
                                 t_previousStop = (t_currStop > t_previousStop) ? t_currStop : t_previousStop;
+
+                                /* test for duplicate element */
+                                if ((t_pStart == t_currStart) && (t_pStop == t_currStop))
+                                    t_duplicateElementExists = kStarchTrue;
+                                
+                                /* test for nested element */
+                                if ((t_pStart < t_currStart) && (t_pStop > t_currStop))
+                                    t_nestedElementExists = kStarchTrue;
+
+                                /* set pElement values */
+                                t_pStart = t_currStart;
+                                t_pStop = t_currStop;
 
                                 /* collate transformed coordinates with larger buffer */
                                 if (nRetransformBuf + nRetransformLineBufPos < (int64_t) sizeof(retransformBuf)) {
@@ -1342,6 +1356,18 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                                 else if (t_previousStop < t_currStop)
                                     t_totalUniqueBases += (BaseCountType) (t_currStop - t_previousStop);
                                 t_previousStop = (t_currStop > t_previousStop) ? t_currStop : t_previousStop;
+
+                                /* test for duplicate element */
+                                if ((t_pStart == t_currStart) && (t_pStop == t_currStop))
+                                    t_duplicateElementExists = kStarchTrue;
+                                
+                                /* test for nested element */
+                                if ((t_pStart < t_currStart) && (t_pStop > t_currStop))
+                                    t_nestedElementExists = kStarchTrue;
+
+                                /* set pElement values */
+                                t_pStart = t_currStart;
+                                t_pStop = t_currStop;
 
                                 /* shuffle data into retransformation buffer if we're not yet ready to compress */
                                 if (nRetransformBuf + nRetransformLineBufPos < (int64_t) sizeof(retransformBuf)) {
@@ -2203,6 +2229,8 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
         memset(outputRetransformState->r_remainder, 0, UNSTARCH_SECOND_TOKEN_MAX_LENGTH);
         outputRetransformState->r_start                     = 0;
         outputRetransformState->r_stop                      = 0;
+        outputRetransformState->r_pStart                    = 0;
+        outputRetransformState->r_pStop                     = 0;
         outputRetransformState->r_coordDiff                 = 0;
         outputRetransformState->r_lcDiff                    = 0;
         outputRetransformState->r_lastPosition              = 0;
@@ -2316,12 +2344,17 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
             STARCHCAT2_resetCompressionBuffer(compressionBuffer, &compressionLineCount);           
             switch (outType) {
                 case kBzip2: {
-                    STARCHCAT2_squeezeRetransformedOutputBufferToBzip2Stream(&bzOutFp, retransformedOutputBuffer);
+                    STARCHCAT2_squeezeRetransformedOutputBufferToBzip2Stream(&bzOutFp, 
+                                                                             retransformedOutputBuffer);
                     break;
                 }
                 case kGzip: {
                     flushZStreamFlag = allEOF;
-                    STARCHCAT2_squeezeRetransformedOutputBufferToGzipStream(&zOutStream, (const Boolean) flushZStreamFlag, retransformedOutputBuffer, &finalStreamSize, cumulativeOutputSize);
+                    STARCHCAT2_squeezeRetransformedOutputBufferToGzipStream(&zOutStream, 
+                                                                            (const Boolean) flushZStreamFlag, 
+                                                                            retransformedOutputBuffer, 
+                                                                            &finalStreamSize, 
+                                                                            cumulativeOutputSize);
                     break;
                 }
                 case kUndefined: {
@@ -4971,6 +5004,8 @@ STARCHCAT2_transformCompressionBuffer (const char *compBuf, char *retransBuf, Tr
     char *retransRemainder                                 = STARCH_strdup(retransState->r_remainder);
     SignedCoordType *retransStart                          = &retransState->r_start;
     SignedCoordType *retransStop                           = &retransState->r_stop;
+    SignedCoordType *retransPStart                         = &retransState->r_pStart;
+    SignedCoordType *retransPStop                          = &retransState->r_pStop;
     SignedCoordType *retransCoordDiff                      = &retransState->r_coordDiff;
     SignedCoordType *retransLcDiff                         = &retransState->r_lcDiff;
     SignedCoordType *retransLastPosition                   = &retransState->r_lastPosition;
@@ -5068,6 +5103,18 @@ STARCHCAT2_transformCompressionBuffer (const char *compBuf, char *retransBuf, Tr
                 else if (*retransPreviousStop < *retransStop)
                     *retransTotalUniqueBases += (BaseCountType) (*retransStop - *retransPreviousStop);
                 *retransPreviousStop = (*retransStop > *retransPreviousStop) ? *retransStop : *retransPreviousStop;
+
+                /* test for duplicate element */
+                if ((*retransPStart == *retransStart) && (*retransPStop == *retransStop))
+                    *retransDuplicateElementExists = kStarchTrue;
+
+                /* test for nested element */
+                if ((*retransPStart < *retransStart) && (*retransPStop > *retransStop))
+                    *retransNestedElementExists = kStarchTrue;
+
+                /* set pElement values */
+                *retransPStart = *retransStart;
+                *retransPStop = *retransStop;
 #ifdef DEBUG
                 fprintf(stderr, "\tretransLineBuf - [%s]\n", retransLineBuf);
 #endif
