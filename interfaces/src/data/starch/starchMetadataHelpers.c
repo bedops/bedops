@@ -1135,9 +1135,9 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
 
             streamDuplicateElementExistsFlag = json_object_get(stream, STARCH_METADATA_STREAM_DUPLICATEELEMENTEXISTS_KEY);
             if (!streamDuplicateElementExistsFlag) {
-                if (((*version)->major > 2) || (((*version)->major == 2) && ((*version)->minor >= 0))) {
+                if (((*version)->major > 2) || (((*version)->major == 2) && ((*version)->minor >= 1))) {
                     if (suppressErrorMsgs == kStarchFalse)
-                        fprintf(stderr, "ERROR: Could not retrieve stream duplicate-element-exists flag object with compliant version\n");
+                        fprintf(stderr, "ERROR: Could not retrieve stream duplicate-element-exists flag object with compliant version (%d.%d.%d)\n", (*version)->major, (*version)->minor, (*version)->revision);
                     return STARCH_EXIT_FAILURE;
                 }
                 else {
@@ -1151,7 +1151,7 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
 
             streamNestedElementExistsFlag = json_object_get(stream, STARCH_METADATA_STREAM_NESTEDELEMENTEXISTS_KEY);
             if (!streamNestedElementExistsFlag) {
-                if (((*version)->major > 2) || (((*version)->major == 2) && ((*version)->minor >= 0))) {
+                if (((*version)->major > 2) || (((*version)->major == 2) && ((*version)->minor >= 1))) {
                     if (suppressErrorMsgs == kStarchFalse)
                         fprintf(stderr, "ERROR: Could not retrieve stream duplicate-element-exists flag object with compliant version\n");
                     return STARCH_EXIT_FAILURE;
