@@ -307,7 +307,7 @@ bzip2 1.0.6
 URL: http://www.bzip.org
 License: BSD-style License
 
-jansson 2.4
+jansson 2.6
 URL: http://www.digip.org/jansson
 License: MIT License
 
@@ -385,7 +385,7 @@ bzip2/libbzip2 version 1.0.6 of 6 September 2010
 
 Jansson
 ------------------------------------------------------------
-Copyright (c) 2009-2012 Petri Lehtinen <petri@digip.org>
+Copyright (c) 2009-2014 Petri Lehtinen <petri@digip.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -1,6 +1,6 @@
 /*
   FILE: SelectMeasureType.hpp
-  AUTHOR: Shane Neph, Scott Kuen
+  AUTHOR: Shane Neph, Scott Kuehn
   CREATE DATE: Dec.2013
   PROJECT: data/measurement
   ID: $Id: SelectMeasureType.hpp $
@@ -8,7 +8,7 @@
 
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
