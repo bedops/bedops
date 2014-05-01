@@ -31,7 +31,7 @@ Specifying certain options will instead send :ref:`archive metadata <unstarch_ar
 Requirements
 ============
 
-The metadata of a Starch v2 archive must pass an integrity check before :ref:`unstarch` can extract data. Any manual changes to the metadata will cause extraction to fail.
+The metadata of a Starch v2.x archive must pass an integrity check before :ref:`unstarch` can extract data. Any manual changes to the metadata will cause extraction to fail.
 
 =====
 Usage
