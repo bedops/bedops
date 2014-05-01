@@ -43,10 +43,10 @@ Use the ``--help`` option to list all options:
 
   unstarch
    citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-   binary version: 2.4.2 (extracts archive version: 2.0.0 or older)
+   binary version: 2.5.0 (extracts archive version: 2.1.0 or older)
    authors: Alex Reynolds and Shane Neph
 
-  USAGE: unstarch [ <chromosome> ]  [ --elements | --bases | --bases-uniq | --list | --list-json | --list-chromosomes | --archive-timestamp | --note | --archive-version ] <starch-file>
+  USAGE: unstarch [ <chromosome> ]  [ --elements | --bases | --bases-uniq | --duplicatesExist | --nestedsExist | --list | --list-json | --list-chromosomes | --archive-timestamp | --note | --archive-version ] <starch-file>
 
       Process Flags:
 
@@ -54,6 +54,10 @@ Use the ``--help`` option to list all options:
       --elements                       Show total element count for archive. If <chromosome> is specified, the result shows the element count for the chromosome.
       --bases,
       --bases-uniq                     Show total and unique base counts, respectively, for archive. If <chromosome> is specified, the count is specific to the chromosome, if available.
+      --duplicatesExist,               Show whether there are duplicate elements in the specified chromosome, either as numerical (1/0) or string (true/false) value. If no <chromosome> is specified, values are reported for all chromosome records.
+      --duplicatesExistAsString 
+      --nestedsExist,                  Show whether there are nested elements in the specified chromosome, either as numerical (1/0) or string (true/false) value. If no <chromosome> is specified, values are reported for all chromosome records.
+      --nestedsExistAsString
       --list                           List archive metadata (output is in text format). If chromosome is specified, the attributes of the given chromosome are shown.
       --list-json,                     List archive metadata (output is in JSON format)
       --list-json-no-trailing-newline  
@@ -99,10 +103,10 @@ Use the ``--list-json`` or ``--list`` options to export the archive metadata as 
     "archive": {
       "type": "starch",
       "customUCSCHeaders": false,
-      "creationTimestamp": "2013-01-17T13:44:54-0800",
+      "creationTimestamp": "2014-05-01T14:09:29-0700",
       "version": {
         "major": 2,
-        "minor": 0,
+        "minor": 1,
         "revision": 0
       },
       "compressionFormat": 0
@@ -114,7 +118,9 @@ Use the ``--list-json`` or ``--list`` options to export the archive metadata as 
         "size": "88330",
         "uncompressedLineCount": 10753,
         "nonUniqueBaseCount": 549829,
-        "uniqueBaseCount": 548452
+        "uniqueBaseCount": 548452,
+        "duplicateElementExists": false,
+        "nestedElementExists": false
       },
       ...
     ]
@@ -174,6 +180,30 @@ Bases
 
 The ``--bases`` and ``--bases-uniq`` flags return the overall and unique base counts for a specified chromosome, or the sum of counts over all chromosomes, if no one chromosome is specified.
 
+^^^^^^^^^^^^^^^^^^^
+Duplicate element(s)
+^^^^^^^^^^^^^^^^^^^
+
+The ``--duplicatesExist`` operator reports whether the chromosome stream contains one or more duplicate elements, printing a ``0`` if the chromosome does *not* contain a duplicate element, and a ``1`` if the chromosome *does* contain a duplicate. 
+
+.. note:: A duplicate element exists if there are two or more BED elements where the chromosome name and start and stop positions are identical. The id, score, strand and other option columns are ignored when determining if a duplicate exists.
+
+.. tip:: To get a string value of ``true`` or ``false`` in place of ``1`` and ``0``, use the ``--duplicatesExistAsString`` operator, instead.
+
+.. tip:: If the chromosome name argument to ``unstarch`` is omitted, or set to ``all``, the ``--duplicatesExist`` and ``--duplicatesExistAsString`` operators will return a list of results for each chromosome. If the chromosome name is provided and the archive does not contain metadata for the given chromosome, these operators will return ``0`` or ``false`` result.
+
+^^^^^^^^^^^^^^^^^
+Nested element(s)
+^^^^^^^^^^^^^^^^^
+
+The ``--nestedsExist`` operator reports whether the chromosome stream contains one or more :ref:`nested elements <nested_elements>`, printing a ``0`` if the chromosome does *not* contain a nested element, and a ``1`` if the chromosome *does* contain a nested element. 
+
+.. note:: The definition of a nested element relies on coordinates and is explained in the :ref:`documentation for nested elements <nested_elements>`. The id, score, strand and other option columns are ignored when determining if a nested element exists.
+
+.. tip:: To get a string value of ``true`` or ``false`` in place of ``1`` and ``0``, use the ``--nestedsExistAsString`` operator, instead.
+
+.. tip:: If the chromosome name argument to ``unstarch`` is omitted, or set to ``all``, the ``--nestedsExist`` and ``--nestedsExistAsString`` operators will return a list of results for each chromosome. If the chromosome name is provided and the archive does not contain metadata for the given chromosome, these operators will return ``0`` or ``false`` result.
+
 =======
 Example
 =======
@@ -217,6 +247,13 @@ To find the number of unique bases in chromosome ``chr8``:
   $ unstarch chr8 --bases-uniq example.starch
   545822
 
+To report if the chromosome ``chr14`` contains at least one duplicate BED element:
+
+::
+
+  $ unstarch chr14 --duplicatesExistAsString example.starch
+  true
+
 To show when the archive was created:
 
 ::
@@ -224,7 +261,7 @@ To show when the archive was created:
   $ unstarch --archive-timestamp example.starch
   2013-01-17T13:44:54-0800
 
-.. note:: Some option calls will not work with legacy v1.x archives. If you have v1.x archives, use the :ref:`starchcat` utility to upgrade older archives to Starch v2 files, which get updated attributes.
+.. note:: Some option calls will not work with legacy v1.x or v2.0 archives. If you have a v1.x or v2.0 archive, use the :ref:`starchcat` utility to upgrade older archives to Starch v2.1 files, which will recalculate and make all attributes available.
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace

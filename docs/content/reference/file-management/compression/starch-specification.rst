@@ -1,9 +1,9 @@
 .. _starch_specification:
 
-Starch (v2) specification
+Starch (v2.x) specification
 =========================
 
-This document describes the specification for a "Starch v2"-formatted archive, which is created by the :ref:`starch` and :ref:`starchcat` utilities and extracted with the :ref:`unstarch` utility.
+This document describes the specification for a "Starch v2.x"-formatted archive, which is created by the :ref:`starch` and :ref:`starchcat` utilities and extracted with the :ref:`unstarch` utility.
 
 .. _starch_archive_structure:
 
@@ -11,7 +11,7 @@ This document describes the specification for a "Starch v2"-formatted archive, w
 Archive structure
 =================
 
-A Starch v2 archive is divided up into six portions:
+A Starch v2.x archive is divided up into six portions:
 
 .. image:: ../../../../assets/reference/file-management/compression/starch_specification.png
    :width: 99%
@@ -26,7 +26,7 @@ Magic bytes
 
 .. image:: ../../../../assets/reference/file-management/compression/starch_specification_magicbytes.png
 
-We use four ``unsigned char`` bytes ``ca5cade5`` to identify the file as a Starch v2 archive. BEDOPS utilities and applications which process Starch archives search for these magic bytes at the start of the file to identify it as a v2 archive.
+We use four ``unsigned char`` bytes ``ca5cade5`` to identify the file as a Starch v2.x archive. BEDOPS utilities and applications which process Starch archives search for these magic bytes at the start of the file to identify it as a v2.x archive.
 
 If the file does not have these bytes, it may still be a legacy (v1, v1.2 or v1.5) Starch archive, which is identified and processed by other means not described in this document.
 
@@ -79,7 +79,7 @@ The archive key scheme is described below:
       "type": "starch",
       "customUCSCHeaders": (Boolean),
       "creationTimestamp": (string),
-      "version": { "major": 2, "minor": 0, "revision": 0 },
+      "version": { "major": 2, "minor": 1, "revision": 0 },
       "compressionFormat": (unsigned integer),
       "note": (string, optional)
     },
@@ -92,7 +92,7 @@ The ``customUCSCHeaders`` value is either ``true`` or ``false``. If ``true``, th
 
 The ``creationTimestamp`` value is an `ISO 8601 <http://en.wikipedia.org/wiki/ISO-8601>`_ string that specifies the creation date and time of the archive. Most scripting and programming languages can parse ISO 8601-formatted date strings with little or no extra work.
 
-The ``version`` is a triplet of integer values specifying the version of the archive. For a v2 archive, the major version will be set to ``2``. Major, minor and revision values need not necessarily be the identical to the version of the :ref:`starch` binary used to create the archive.
+The ``version`` is a triplet of integer values specifying the version of the archive. For a v2.x archive, the major version will be set to ``2``. Major, minor and revision values need not necessarily be the identical to the version of the :ref:`starch` binary used to create the archive. At this time (April 2014), we offer v2 and v2.1 archives, with each make different stream metadata fields available.
 
 The ``compressionFormat`` key specifies the backend compression format used for the chromosome streams contained within the archive. We currently use ``0`` to specify ``bzip2`` and ``1`` to specify ``gzip``. No other backend formats are available at this time.
 
@@ -117,7 +117,9 @@ The ``streams`` key scheme contains an array of objects, each describing the att
         "size": (unsigned integer),
         "uncompressedLineCount": (unsigned integer),
         "nonUniqueBaseCount": (unsigned integer),
-        "uniqueBaseCount": (unsigned integer)
+        "uniqueBaseCount": (unsigned integer),
+        "duplicateElementExists": (Boolean),
+        "nestedElementExists": (Boolean)
       },
       ...
     ]
@@ -134,6 +136,10 @@ The ``uncompressedLineCount`` key specifies the number of BED elements that were
 The ``nonUniqueBaseCount`` key specifies the sum of non-unique bases across all BED elements compressed into the chromosome stream. Non-uniqueness allows multiple counting of bases in elements which overlap.
 
 The ``uniqueBaseCount`` key specifies the sum of unique bases across all BED elements compressed into the chromosome stream. Uniqueness takes into account overlapping elements and therefore only counts bases once.
+
+The ``duplicateElementExists`` key specifies if there is a duplicate BED element somewhere within the compressed chromosome stream. A duplicate element is defined by matching chromosome name and start and stop coordinates; id, score, strand and other optional information are ignored when determining if a duplicate element exists.
+
+The ``nestedElementExists`` key specifies if there is a nested BED element somewhere within the compressed chromosome stream. Refer to BEDOPS documentation to see how a :ref:`nested element <nested_element>` is defined. 
 
 .. _starch_archive_metadata_offset:
 
