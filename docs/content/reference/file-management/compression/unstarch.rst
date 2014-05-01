@@ -3,7 +3,7 @@
 `unstarch`
 ==========
 
-With high-throughput sequencing generating large amounts of genomic data, archiving can be a critical part of an analysis toolkit. BEDOPS includes the ``unstarch`` utility to recover original BED input and whole-file or per-chromosome data attributes from archives created with :ref:`starch` (these can be v1.x or :ref:`v2 archives <starch_specification>`).
+With high-throughput sequencing generating large amounts of genomic data, archiving can be a critical part of an analysis toolkit. BEDOPS includes the ``unstarch`` utility to recover original BED input and whole-file or per-chromosome data attributes from archives created with :ref:`starch` (these can be v1.x or :ref:`v2.x archives <starch_specification>`).
 
 The :ref:`unstarch` utility includes `large file support <http://en.wikipedia.org/wiki/Large_file_support>`_ on 64-bit operating systems, enabling extraction of more than 2 GB of data (a common restriction on 32-bit systems).
 
@@ -186,11 +186,11 @@ Duplicate element(s)
 
 The ``--duplicatesExist`` operator reports whether the chromosome stream contains one or more duplicate elements, printing a ``0`` if the chromosome does *not* contain a duplicate element, and a ``1`` if the chromosome *does* contain a duplicate. 
 
-.. note:: A duplicate element exists if there are two or more BED elements where the chromosome name and start and stop positions are identical. The id, score, strand and other option columns are ignored when determining if a duplicate exists.
+.. note:: A duplicate element exists if there are two or more BED elements where the chromosome name and start and stop positions are identical. The id, score, strand and other optional columns are ignored when determining if a duplicate exists.
 
 .. tip:: To get a string value of ``true`` or ``false`` in place of ``1`` and ``0``, use the ``--duplicatesExistAsString`` operator, instead.
 
-.. tip:: If the chromosome name argument to ``unstarch`` is omitted, or set to ``all``, the ``--duplicatesExist`` and ``--duplicatesExistAsString`` operators will return a list of results for each chromosome. If the chromosome name is provided and the archive does not contain metadata for the given chromosome, these operators will return ``0`` or ``false`` result.
+.. tip:: If the chromosome name argument to ``unstarch`` is omitted, or set to ``all``, the ``--duplicatesExist`` and ``--duplicatesExistAsString`` operators will return a list of results for all chromosomes. If the chromosome name is provided and the archive does not contain metadata for the given chromosome, these operators will return a ``0`` or ``false`` result.
 
 ^^^^^^^^^^^^^^^^^
 Nested element(s)
@@ -202,7 +202,7 @@ The ``--nestedsExist`` operator reports whether the chromosome stream contains o
 
 .. tip:: To get a string value of ``true`` or ``false`` in place of ``1`` and ``0``, use the ``--nestedsExistAsString`` operator, instead.
 
-.. tip:: If the chromosome name argument to ``unstarch`` is omitted, or set to ``all``, the ``--nestedsExist`` and ``--nestedsExistAsString`` operators will return a list of results for each chromosome. If the chromosome name is provided and the archive does not contain metadata for the given chromosome, these operators will return ``0`` or ``false`` result.
+.. tip:: If the chromosome name argument to ``unstarch`` is omitted, or set to ``all``, the ``--nestedsExist`` and ``--nestedsExistAsString`` operators will return a list of results for all chromosomes. If the chromosome name is provided and the archive does not contain metadata for the given chromosome, these operators will return a ``0`` or ``false`` result.
 
 =======
 Example
@@ -259,9 +259,9 @@ To show when the archive was created:
 ::
 
   $ unstarch --archive-timestamp example.starch
-  2013-01-17T13:44:54-0800
+  2014-05-01T14:09:29-0700
 
-.. note:: Some option calls will not work with legacy v1.x or v2.0 archives. If you have a v1.x or v2.0 archive, use the :ref:`starchcat` utility to upgrade older archives to Starch v2.1 files, which will recalculate and make all attributes available.
+.. note:: Some option calls will not work with legacy v1.x or v2.0 archives. For instance, to get a result for nested or duplicate elements, you need to input a v2.1 archive. If you have a v1.x or v2.0 archive, use the :ref:`starchcat` utility to upgrade an older archive to a Starch v2.1 file, which will recalculate and make all current attributes available.
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
