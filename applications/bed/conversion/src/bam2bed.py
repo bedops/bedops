@@ -25,7 +25,7 @@
 # Project:      Converts 0-based, half-open [a-1,b) headered or headerless BAM input
 #               into 0-based, half-open [a-1,b) extended BED
 #
-# Version:      2.4.2
+# Version:      2.5.0
 #
 # Notes:        The BAM format is an indexed, binary representation of a SAM (Sequence
 #               Alignment/Map) file. Internally, it is a 0-based, half-open [a-1,b)
@@ -491,6 +491,8 @@ def which(program):
 def printUsage(stream):
     usage = ("Usage:\n"
              "  %s [ --help ] [ --keep-header ] [ --split ] [ --all-reads ] [ --do-not-sort | --max-mem <value> (--sort-tmpdir <dir>) ] < foo.bam\n\n"
+             "Version:\n"
+             "  v2.5.0\n\n"
              "Options:\n"
              "  --help                 Print this help message and exit\n"
              "  --keep-header          Preserve header section as pseudo-BED elements\n"

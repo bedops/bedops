@@ -26,7 +26,7 @@
 #               half-open [a-1, b) extended BED and thence compressed into a
 #               BEDOPS Starch archive sent to standard output.
 #
-# Version:      2.4.2
+# Version:      2.5.0
 #
 # Notes:        This conversion script relies on the VCF v4 format, with its
 #               specifications outlined here by the 1000 Genomes project:
@@ -98,6 +98,8 @@ def which(program):
 def printUsage(stream):
     usage = ("Usage:\n"
              "  %s [ --help ] [ --keep-header ] [ --snvs | --insertions | --deletions ] [ --do-not-sort | --max-mem <value> (--sort-tmpdir <dir>) ] [ --starch-format <bzip2|gzip> ] < foo.vcf > sorted-foo.vcf.bed.starch\n\n"
+             "Version:\n"
+             "  v2.5.0\n\n"
              "Options:\n"
              "  --help                        Print this help message and exit\n"
              "  --keep-header                 Preserve metadata and header information as pseudo-BED elements\n"

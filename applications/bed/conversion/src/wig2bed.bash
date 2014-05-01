@@ -24,7 +24,7 @@
 #
 # Project:      Convert UCSC Wiggle to UCSC BED
 #
-# Version:      2.4.2
+# Version:      2.5.0
 #
 # Notes:        The UCSC Wiggle format (http://genome.ucsc.edu/goldenPath/help/wiggle.html)
 #               is 1-based, closed [a, b] and is offered in variable or fixed step varieties.
@@ -51,6 +51,9 @@ printUsage () {
     cat <<EOF
 Usage:
   wig2bed [ --help ] [ --keep-header ] [ --do-not-sort | --max-mem <value> (--sort-tmpdir <dir>) ] [ --multisplit <basename> ] < foo.wig
+
+Version:
+  v2.5.0
 
 Options:
   --help                   Print this help message and exit

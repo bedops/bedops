@@ -27,7 +27,7 @@
 #               and thence compressed into a BEDOPS Starch archive sent
 #               to standard output.
 #
-# Version:      2.4.2
+# Version:      2.5.0
 #
 # Notes:        The GTF2.2 specification (http://mblab.wustl.edu/GTF22.html)
 #               contains columns that do not map directly to common or UCSC BED columns.
@@ -91,6 +91,8 @@ def which(program):
 def printUsage(stream):
     usage = ("Usage:\n"
              "  %s [ --help ] [ --do-not-sort | --max-mem <value> (--sort-tmpdir <dir>) ] [ --starch-format <bzip2|gzip> ] < foo.gtf > sorted-foo.gtf.bed.starch\n\n"
+             "Version:\n"
+             "  v2.5.0\n\n"
              "Options:\n"
              "  --help                        Print this help message and exit\n"
              "  --do-not-sort                 Do not sort converted data with BEDOPS sort-bed\n"
