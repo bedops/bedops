@@ -1,10 +1,10 @@
 MIN_OSX_VERSION           = 10.7
 
-MAIN	                  = ../../../..
+MAIN                      = ../../../..
 MAINAPPDIR                = ../..
 INTERFACES                = $(MAIN)/interfaces
 HEAD                      = ${INTERFACES}/general-headers
-THISDIR	                  = ${shell pwd}
+THISDIR                   = ${shell pwd}
 PARTY3                    = ${THISDIR}/$(MAIN)/third-party
 LIBSTARCH                 = libstarch.a
 LIBSTARCHDEBUG            = libstarch_debug.a
@@ -12,22 +12,24 @@ LIBJANSSON                = libjansson.a
 LIBBZIP2                  = libbz2.a
 LIBZLIB                   = libz.a
 LOCALSTARCHLIBDIR         = ../lib_${ARCH}
-LOCALSTARCHLIBPATH        = ${LOCALSTARCHLIBDIR}/${LIBSTARCH}
-LOCALSTARCHLIBDEBUGPATH   = ${LOCALSTARCHLIBDIR}/${LIBSTARCHDEBUG}
+LOCALSTARCHLIB            = ${LOCALSTARCHLIBDIR}/${LIBSTARCH}
+LOCALSTARCHLIBDEBUG       = ${LOCALSTARCHLIBDIR}/${LIBSTARCHDEBUG}
 LOCALJANSSONDIR           = ${PARTY3}/darwin_intel_${ARCH}/jansson
 LOCALJANSSONLIBDIR        = ${LOCALJANSSONDIR}/lib
-LOCALJANSSONLIBPATH       = ${LOCALJANSSONLIBDIR}/${LIBJANSSON}
+LOCALJANSSONLIB           = ${LOCALJANSSONLIBDIR}/${LIBJANSSON}
 LOCALJANSSONINCDIR        = ${LOCALJANSSONDIR}/include
 LOCALBZIP2DIR             = ${PARTY3}/darwin_intel_${ARCH}/bzip2
 LOCALBZIP2LIBDIR          = ${LOCALBZIP2DIR}
-LOCALBZIP2LIBPATH         = ${LOCALBZIP2LIBDIR}/${LIBBZIP2}
+LOCALBZIP2LIB             = ${LOCALBZIP2LIBDIR}/${LIBBZIP2}
 LOCALBZIP2INCDIR          = ${LOCALBZIP2DIR}
 LOCALZLIBDIR              = ${PARTY3}/darwin_intel_${ARCH}/zlib
 LOCALZLIBLIBDIR           = ${LOCALZLIBDIR}
-LOCALZLIBLIBPATH          = ${LOCALZLIBLIBDIR}/${LIBZLIB}
+LOCALZLIBLIB              = ${LOCALZLIBLIBDIR}/${LIBZLIB}
 LOCALZLIBINCDIR           = ${LOCALZLIBDIR}
 OBJDIR                    = ${INTERFACES}/src/data/starch
 LOCALOBJDIR               = objects_${ARCH}
+INCLUDES                  = -iquote${MAIN} -iquote${HEAD} -iquote${PARTY3} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
+LIBRARIES                 = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 BINDIR                    = ../bin_${ARCH}
 WARNINGS                  = -Weverything -Wno-c++98-compat-pedantic -Wno-padded
 ARCH_VERSION              = v2.1
@@ -44,63 +46,63 @@ CXXDFLAGS                 = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_L
 build: dependencies starchLibrary starch unstarch starchcat
 	rm -f *~
 
-# dependencies-related recipes all have mkdirs/mkdirs_debug prereqs
+# dependencies-related recipes all have mkdirs prereqs
 #   and pretty much everything else has dependencies-related prereqs at some level
 #   -> let make figure out hierarchy and eliminate mkdir/rm race conditions
 dependencies: mkdirs
-	${CC} ${CFLAGS} -c ${OBJDIR}/starchConstants.c -o ${LOCALOBJDIR}/starchConstants.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CC} ${CFLAGS} -c ${OBJDIR}/starchMetadataHelpers.c -o  ${LOCALOBJDIR}/starchMetadataHelpers.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CC} ${CFLAGS} -c ${OBJDIR}/unstarchHelpers.c -o  ${LOCALOBJDIR}/unstarchHelpers.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CC} ${CFLAGS} -c ${OBJDIR}/starchHelpers.c -o  ${LOCALOBJDIR}/starchHelpers.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CC} ${CFLAGS} -c ${OBJDIR}/starchFileHelpers.c -o  ${LOCALOBJDIR}/starchFileHelpers.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CC} ${CFLAGS} -c ${OBJDIR}/starchSha1Digest.c -o  ${LOCALOBJDIR}/starchSha1Digest.o -iquote${HEAD} -iquote${PARTY3} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CC} ${CFLAGS} -c ${OBJDIR}/starchBase64Coding.c -o  ${LOCALOBJDIR}/starchBase64Coding.o -iquote${HEAD} -iquote${PARTY3} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
+	${CC} ${CFLAGS} -c ${OBJDIR}/starchConstants.c -o ${LOCALOBJDIR}/starchConstants.o ${INCLUDES}
+	${CC} ${CFLAGS} -c ${OBJDIR}/starchMetadataHelpers.c -o  ${LOCALOBJDIR}/starchMetadataHelpers.o ${INCLUDES}
+	${CC} ${CFLAGS} -c ${OBJDIR}/unstarchHelpers.c -o  ${LOCALOBJDIR}/unstarchHelpers.o ${INCLUDES}
+	${CC} ${CFLAGS} -c ${OBJDIR}/starchHelpers.c -o  ${LOCALOBJDIR}/starchHelpers.o ${INCLUDES}
+	${CC} ${CFLAGS} -c ${OBJDIR}/starchFileHelpers.c -o  ${LOCALOBJDIR}/starchFileHelpers.o ${INCLUDES}
+	${CC} ${CFLAGS} -c ${OBJDIR}/starchSha1Digest.c -o  ${LOCALOBJDIR}/starchSha1Digest.o ${INCLUDES}
+	${CC} ${CFLAGS} -c ${OBJDIR}/starchBase64Coding.c -o  ${LOCALOBJDIR}/starchBase64Coding.o ${INCLUDES}
 
 debug: dependencies_debug starch_debug unstarch_debug starchcat_debug
 	rm -f *~
 
-dependencies_debug: mkdirs mkdirs_debug
-	${CC} ${CDFLAGS} -c ${OBJDIR}/starchConstants.c -o ${LOCALOBJDIR}/starchConstants.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CC} ${CDFLAGS} -c ${OBJDIR}/unstarchHelpers.c -o  ${LOCALOBJDIR}/unstarchHelpers.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CC} ${CDFLAGS} -c ${OBJDIR}/starchHelpers.c -o  ${LOCALOBJDIR}/starchHelpers.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CC} ${CDFLAGS} -c ${OBJDIR}/starchMetadataHelpers.c -o  ${LOCALOBJDIR}/starchMetadataHelpers.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CC} ${CDFLAGS} -c ${OBJDIR}/starchFileHelpers.c -o  ${LOCALOBJDIR}/starchFileHelpers.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CC} ${CDFLAGS} -c ${OBJDIR}/starchSha1Digest.c -o  ${LOCALOBJDIR}/starchSha1Digest.o -iquote${HEAD} -iquote${PARTY3} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CC} ${CDFLAGS} -c ${OBJDIR}/starchBase64Coding.c -o  ${LOCALOBJDIR}/starchBase64Coding.o -iquote${HEAD} -iquote${PARTY3} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
+dependencies_debug: mkdirs
+	${CC} ${CDFLAGS} -c ${OBJDIR}/starchConstants.c -o ${LOCALOBJDIR}/starchConstants.o ${INCLUDES}
+	${CC} ${CDFLAGS} -c ${OBJDIR}/unstarchHelpers.c -o  ${LOCALOBJDIR}/unstarchHelpers.o ${INCLUDES}
+	${CC} ${CDFLAGS} -c ${OBJDIR}/starchHelpers.c -o  ${LOCALOBJDIR}/starchHelpers.o ${INCLUDES}
+	${CC} ${CDFLAGS} -c ${OBJDIR}/starchMetadataHelpers.c -o  ${LOCALOBJDIR}/starchMetadataHelpers.o ${INCLUDES}
+	${CC} ${CDFLAGS} -c ${OBJDIR}/starchFileHelpers.c -o  ${LOCALOBJDIR}/starchFileHelpers.o ${INCLUDES}
+	${CC} ${CDFLAGS} -c ${OBJDIR}/starchSha1Digest.c -o  ${LOCALOBJDIR}/starchSha1Digest.o ${INCLUDES}
+	${CC} ${CDFLAGS} -c ${OBJDIR}/starchBase64Coding.c -o  ${LOCALOBJDIR}/starchBase64Coding.o ${INCLUDES}
 
 starchLibrary: dependencies
-	${AR} rcs ${LOCALSTARCHLIBPATH} ${LOCALOBJDIR}/starchConstants.o  ${LOCALOBJDIR}/unstarchHelpers.o  ${LOCALOBJDIR}/starchHelpers.o  ${LOCALOBJDIR}/starchMetadataHelpers.o  ${LOCALOBJDIR}/starchFileHelpers.o ${LOCALOBJDIR}/starchSha1Digest.o ${LOCALOBJDIR}/starchBase64Coding.o
+	${AR} rcs ${LOCALSTARCHLIB} ${LOCALOBJDIR}/starchConstants.o  ${LOCALOBJDIR}/unstarchHelpers.o  ${LOCALOBJDIR}/starchHelpers.o  ${LOCALOBJDIR}/starchMetadataHelpers.o  ${LOCALOBJDIR}/starchFileHelpers.o ${LOCALOBJDIR}/starchSha1Digest.o ${LOCALOBJDIR}/starchBase64Coding.o
 
 starchLibrary_debug: dependencies_debug
-	${AR} rcs ${LOCALSTARCHLIBDEBUGPATH} ${LOCALOBJDIR}/starchConstants.o  ${LOCALOBJDIR}/unstarchHelpers.o  ${LOCALOBJDIR}/starchHelpers.o  ${LOCALOBJDIR}/starchMetadataHelpers.o  ${LOCALOBJDIR}/starchFileHelpers.o ${LOCALOBJDIR}/starchSha1Digest.o ${LOCALOBJDIR}/starchBase64Coding.o
+	${AR} rcs ${LOCALSTARCHLIBDEBUG} ${LOCALOBJDIR}/starchConstants.o  ${LOCALOBJDIR}/unstarchHelpers.o  ${LOCALOBJDIR}/starchHelpers.o  ${LOCALOBJDIR}/starchMetadataHelpers.o  ${LOCALOBJDIR}/starchFileHelpers.o ${LOCALOBJDIR}/starchSha1Digest.o ${LOCALOBJDIR}/starchBase64Coding.o
 
 starch: starchLibrary
-	${CC} ${CFLAGS} -c starch.c -o $(LOCALOBJDIR)/starch.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/starch.o -o ${BINDIR}/starch ${LOCALSTARCHLIBPATH} ${LOCALJANSSONLIBPATH} ${LOCALBZIP2LIBPATH} ${LOCALZLIBLIBPATH}
+	${CC} ${CFLAGS} -c starch.c -o $(LOCALOBJDIR)/starch.o ${INCLUDES}
+	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/starch.o -o ${BINDIR}/starch ${LOCALSTARCHLIB} ${LIBRARIES}
 
 starch_debug: starchLibrary_debug
-	${CC} ${CDFLAGS} -c starch.c -o $(LOCALOBJDIR)/debug.starch.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.starch.o -o ${BINDIR}/debug.starch ${LOCALSTARCHLIBDEBUGPATH} ${LOCALJANSSONLIBPATH} ${LOCALBZIP2LIBPATH} ${LOCALZLIBLIBPATH}
+	${CC} ${CDFLAGS} -c starch.c -o $(LOCALOBJDIR)/debug.starch.o ${INCLUDES}
+	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.starch.o -o ${BINDIR}/debug.starch ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
 
 unstarch: starchLibrary
-	${CC} ${CFLAGS} -c unstarch.c -o $(LOCALOBJDIR)/unstarch.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/unstarch.o -o ${BINDIR}/unstarch ${LOCALSTARCHLIBPATH} ${LOCALJANSSONLIBPATH} ${LOCALBZIP2LIBPATH} ${LOCALZLIBLIBPATH}
+	${CC} ${CFLAGS} -c unstarch.c -o $(LOCALOBJDIR)/unstarch.o ${INCLUDES}
+	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/unstarch.o -o ${BINDIR}/unstarch ${LOCALSTARCHLIB} ${LIBRARIES}
 
 unstarch_debug: starchLibrary_debug
-	${CC} ${CDFLAGS} -c unstarch.c -o $(LOCALOBJDIR)/debug.unstarch.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.unstarch.o -o ${BINDIR}/debug.unstarch ${LOCALSTARCHLIBDEBUGPATH} ${LOCALJANSSONLIBPATH} ${LOCALBZIP2LIBPATH} ${LOCALZLIBLIBPATH}
+	${CC} ${CDFLAGS} -c unstarch.c -o $(LOCALOBJDIR)/debug.unstarch.o ${INCLUDES}
+	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.unstarch.o -o ${BINDIR}/debug.unstarch ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
 
 starchcluster: starchcat
 	touch starchcluster && cp starchcluster ${BINDIR}
 	touch starchcluster.gnu_parallel && cp starchcluster.gnu_parallel ${BINDIR}
 
 starchcat: starchLibrary
-	${CC} ${CFLAGS} -c starchcat.c -o $(LOCALOBJDIR)/starchcat.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/starchcat.o -o ${BINDIR}/starchcat ${LOCALSTARCHLIBPATH} ${LOCALJANSSONLIBPATH} ${LOCALBZIP2LIBPATH} ${LOCALZLIBLIBPATH}
+	${CC} ${CFLAGS} -c starchcat.c -o $(LOCALOBJDIR)/starchcat.o ${INCLUDES}
+	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/starchcat.o -o ${BINDIR}/starchcat ${LOCALSTARCHLIB} ${LIBRARIES}
 
 starchcat_debug: starchLibrary_debug
-	${CC} ${CDFLAGS} -c starchcat.c -o $(LOCALOBJDIR)/starchcat.o -iquote${HEAD} -iquote$(PARTY3) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/starchcat.o -o ${BINDIR}/debug.starchcat ${LOCALSTARCHLIBDEBUGPATH} ${LOCALJANSSONLIBPATH} ${LOCALBZIP2LIBPATH} ${LOCALZLIBLIBPATH}
+	${CC} ${CDFLAGS} -c starchcat.c -o $(LOCALOBJDIR)/starchcat.o ${INCLUDES}
+	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/starchcat.o -o ${BINDIR}/debug.starchcat ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
 
 test: starch unstarch starchcat
 	cp ${BINDIR}/starch ${TEST_OSX_BINDIR}/starch
@@ -113,11 +115,8 @@ mkdirs:
 	mkdir -p ${LOCALSTARCHLIBDIR}
 	mkdir -p ${BINDIR}
 
-mkdirs_debug:
-	mkdir -p ${LOCALSTARCHLIBDEBUGPATH}
-
 clean:
-	rm -f $(LOCALSTARCHLIBPATH)
-	rm -f ${LOCALSTARCHLIBDEBUGPATH}
+	rm -f $(LOCALSTARCHLIB)
+	rm -f ${LOCALSTARCHLIBDEBUG}
 	rm -rf ${LOCALOBJDIR}
 	rm -f ${BINDIR}/*starch*

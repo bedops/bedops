@@ -1,17 +1,15 @@
-CC               = gcc
-CXX              = g++
-WARNINGS         = -Wall -Wextra -pedantic
-NONSTATICFLAGS   = -ansi ${WARNINGS} -O3
-SFLAGS           = -static -s $(NONSTATICFLAGS)
+WARNINGS   = -Wall -Wextra -pedantic
+BLDFLAGS   = -ansi ${WARNINGS} -O3
+SFLAGS     = -static -s
 
-FLAGS	         = $(SFLAGS) -std=c++11
-DFLAGS	         = ${WARNINGS} -O0 -g -fno-inline -std=c++11
-GPROFFLAGS       = ${WARNINGS} -O -pg -std=c++11
-MAIN             = ../../../../..
-HEAD             = ${MAIN}/interfaces/general-headers
-SOURCE1	         = Wig2Bed.cpp
-BINDIR           = ../../bin
-PROG             = wig2bed_bin
+FLAGS      = ${SFLAGS} ${BLDFLAGS} -std=c++11
+DFLAGS     = ${WARNINGS} -O0 -g -fno-inline -std=c++11
+GPROFFLAGS = ${WARNINGS} -O -pg -std=c++11
+MAIN       = ../../../../..
+HEAD       = ${MAIN}/interfaces/general-headers
+SOURCE1    = Wig2Bed.cpp
+BINDIR     = ../../bin
+PROG       = wig2bed_bin
 
 build:
 	mkdir -p $(BINDIR) && $(CXX) -o $(BINDIR)/$(PROG) $(FLAGS) $(SOURCE1) -iquote${HEAD}

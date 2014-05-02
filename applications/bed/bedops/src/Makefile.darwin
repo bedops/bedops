@@ -6,65 +6,61 @@ HEAD                 = $(MAIN)/interfaces/general-headers
 LIB1                 = $(MAIN)/interfaces/src/data/measurement
 LIB2                 = $(MAIN)/interfaces/src/utility
 LIB3                 = $(MAIN)/interfaces/src/data/starch
-THISDIR	             = ${shell pwd}
+THISDIR              = ${shell pwd}
 PARTY3               = ${THISDIR}/$(MAIN)/third-party
-OBJDIR               = objects_$(ARCH)
 LIBJANSSON           = libjansson.a
 LIBBZIP2             = libbz2.a
 LIBZLIB              = libz.a
 LOCALJANSSONDIR      = ${PARTY3}/darwin_intel_${ARCH}/jansson
 LOCALJANSSONLIBDIR   = ${LOCALJANSSONDIR}/lib
 LOCALJANSSONINCDIR   = ${LOCALJANSSONDIR}/include
-LOCALJANSSONLIBPATH  = ${LOCALJANSSONLIBDIR}/${LIBJANSSON}
+LOCALJANSSONLIB      = ${LOCALJANSSONLIBDIR}/${LIBJANSSON}
 BOOSTLIBDIR          = $(PARTY3)/darwin_intel_${ARCH}/boost
 LOCALBZIP2DIR        = ${PARTY3}/darwin_intel_${ARCH}/bzip2
 LOCALBZIP2LIBDIR     = ${LOCALBZIP2DIR}
-LOCALBZIP2LIBPATH    = ${LOCALBZIP2LIBDIR}/${LIBBZIP2}
+LOCALBZIP2LIB        = ${LOCALBZIP2LIBDIR}/${LIBBZIP2}
 LOCALBZIP2INCDIR     = ${LOCALBZIP2DIR}
 LOCALZLIBDIR         = ${PARTY3}/darwin_intel_${ARCH}/zlib
-LOCALZLIBLIBDIR      = ${LOCALZLIBDIR}
-LOCALZLIBLIBPATH     = ${LOCALZLIBLIBDIR}/${LIBZLIB}
+LOCALZLIBLIB         = ${LOCALZLIBDIR}/${LIBZLIB}
 LOCALZLIBINCDIR      = ${LOCALZLIBDIR}
+OBJDIR               = objects_$(ARCH)
 INCLUDES             = -iquote$(HEAD) -I$(BOOSTLIBDIR) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
+LIBLOCATION          = -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBDIR}
+LIBRARIES            = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 
-NONSTATICFLAGS       = -Wall -pedantic -O3 ${INCLUDES} -std=c++11 -stdlib=libc++
+BLDFLAGS             = -Wall -pedantic -O3 ${INCLUDES} -std=c++11 -stdlib=libc++
 
-SFLAGS               = -I$(HEAD)
+FLAGS                = $(BLDFLAGS) $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION}
 
-FLAGS               = $(SFLAGS) $(NONSTATICFLAGS) $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBLIBDIR}
+DFLAGS               = -g -O0 -std=c++11 -Wall -pedantic $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION}
 
-DFLAGS              = $(SFLAGS) -g -O0 -std=c++11 -Wall -pedantic $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBLIBDIR}
+GPROFFLAGS           = -O -std=c++11 -Wall -pedantic -pg $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION}
 
-GPROFFLAGS           = $(SFLAGS) -O -std=c++11 -Wall -pedantic -pg $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBLIBDIR}
-
-SOURCE1             = Bedops.cpp
-BINDIR                 = ../bin
-PROG                = bedops
+SOURCE1              = Bedops.cpp
+BINDIR               = ../bin
+PROG                 = bedops
 
 build: dependencies
-	$(CXX) -o $(BINDIR)/$(PROG)_$(ARCH) $(FLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LOCALJANSSONLIBPATH} ${LOCALBZIP2LIBPATH} ${LOCALZLIBLIBPATH} $(SOURCE1)
+	$(CXX) -o $(BINDIR)/$(PROG)_$(ARCH) $(FLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIBRARIES} $(SOURCE1)
 
 debug: dependencies
-	$(CXX) -o $(BINDIR)/debug.$(PROG)_$(ARCH) $(DFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LOCALJANSSONLIBPATH} ${LOCALBZIP2LIBPATH} ${LOCALZLIBLIBPATH} $(SOURCE1)
+	$(CXX) -o $(BINDIR)/debug.$(PROG)_$(ARCH) $(DFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIBRARIES} $(SOURCE1)
 
 gprof: dependencies
-	$(CXX) -o $(BINDIR)/gprof.$(PROG)_$(ARCH) $(FLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LOCALJANSSONLIBPATH} ${LOCALBZIP2LIBPATH} ${LOCALZLIBLIBPATH} $(SOURCE1)
-
-nonstatic: dependencies
-	$(CXX) -o $(BINDIR)/$(PROG).nonstatic_$(ARCH) $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(SOURCE1) $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o
+	$(CXX) -o $(BINDIR)/gprof.$(PROG)_$(ARCH) $(FLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIBRARIES} $(SOURCE1)
 
 dependencies:
 	rm -rf $(OBJDIR)
 	mkdir -p $(OBJDIR)
-	$(CXX) -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB1)/NaN.cpp -o $(OBJDIR)/NaN.o -iquote${HEAD}
-	$(CXX) -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB2)/Formats.cpp -o $(OBJDIR)/Formats.o -iquote${HEAD}
-	$(CXX) -x c++ -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchConstants.c -o $(OBJDIR)/starchConstants.o ${INCLUDES}
-	$(CXX) -x c++ -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchFileHelpers.c -o $(OBJDIR)/starchFileHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchHelpers.c -o $(OBJDIR)/starchHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchMetadataHelpers.c -o $(OBJDIR)/starchMetadataHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/unstarchHelpers.c -o $(OBJDIR)/unstarchHelpers.o ${INCLUDES}
-	${CXX} -x c++ -c ${NONSTATICFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIB3}/starchSha1Digest.c -o  ${OBJDIR}/starchSha1Digest.o ${INCLUDES}
-	${CXX} -x c++ -c ${NONSTATICFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIB3}/starchBase64Coding.c -o  ${OBJDIR}/starchBase64Coding.o ${INCLUDES}
+	$(CXX) -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB1)/NaN.cpp -o $(OBJDIR)/NaN.o ${INCLUDES}
+	$(CXX) -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB2)/Formats.cpp -o $(OBJDIR)/Formats.o ${INCLUDES}
+	$(CXX) -x c++ -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchConstants.c -o $(OBJDIR)/starchConstants.o ${INCLUDES}
+	$(CXX) -x c++ -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchFileHelpers.c -o $(OBJDIR)/starchFileHelpers.o ${INCLUDES}
+	$(CXX) -x c++ -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchHelpers.c -o $(OBJDIR)/starchHelpers.o ${INCLUDES}
+	$(CXX) -x c++ -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchMetadataHelpers.c -o $(OBJDIR)/starchMetadataHelpers.o ${INCLUDES}
+	$(CXX) -x c++ -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/unstarchHelpers.c -o $(OBJDIR)/unstarchHelpers.o ${INCLUDES}
+	${CXX} -x c++ -c ${BLDFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIB3}/starchSha1Digest.c -o  ${OBJDIR}/starchSha1Digest.o ${INCLUDES}
+	${CXX} -x c++ -c ${BLDFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIB3}/starchBase64Coding.c -o  ${OBJDIR}/starchBase64Coding.o ${INCLUDES}
 
 test:
 	mkdir -p $(TMPTESTDIR)
