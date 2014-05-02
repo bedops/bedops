@@ -13,7 +13,7 @@ What are nested elements
 
 A *nested element* is defined as a BED element from a sorted BED file, where a genomic range is entirely enclosed by the previous element's range.
 
-More rigorously, we define two BED elements :math:`A` and :math:`B`, both with the chromosome name :math:`chrName` and each with ranges :math:`{(a_{start}, a_{stop}]}` and :math:`{(b_{start}, b_{stop}]}`, respectively.
+More rigorously, we define two BED elements :math:`A` and :math:`B`, both located on the same chromosome :math:`N`, and each with ranges :math:`{(a_{start}, a_{stop}]}` and :math:`{(b_{start}, b_{stop}]}`, respectively.
 
 These two elements :math:`A` and :math:`B` meet the following conditions:
 
