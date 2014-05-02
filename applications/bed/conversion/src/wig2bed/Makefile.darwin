@@ -11,19 +11,14 @@ SOURCE1	            = Wig2Bed.cpp
 BINDIR              = ../../bin
 PROG                = wig2bed_bin
 
-build: dependencies
+build:
 	$(CXX) -o $(BINDIR)/$(PROG)_$(ARCH) $(FLAGS) $(SOURCE1) -iquote${HEAD}
 
-gprof: dependencies
+gprof:
 	$(CXX) -o $(BINDIR)/gprof.$(PROG)_$(ARCH) $(GPROFFLAGS) $(SOURCE1) -iquote${HEAD}
 
-debug: dependencies
+debug:
 	$(CXX) -o $(BINDIR)/debug.$(PROG)_$(ARCH) $(DFLAGS) $(SOURCE1) -iquote${HEAD}
-
-dependencies:
-ifneq ($(wildcard .forcestatic),)
-	rm -rf .forcestatic
-endif
 
 clean:
 	rm -f $(BINDIR)/$(PROG)*

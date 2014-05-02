@@ -11,7 +11,6 @@ WARNINGS                = -Weverything
 MAIN                    = ../../../..
 HEAD                    = ${MAIN}/interfaces/general-headers
 PARTY3                  = $(MAIN)/third-party
-THISDIR	                = ${shell pwd}
 
 
 build: sort
@@ -24,9 +23,6 @@ sortbuild: prep
 	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${PFLAGS} ${WARNINGS} ${OPTIMIZE} -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
 
 prep:
-ifneq ($(wildcard .forcestatic),)
-	rm -rf .forcestatic
-endif
 	rm -rf ${OBJ_DIR}
 	mkdir -p ${OBJ_DIR}
 

@@ -11,11 +11,8 @@ WARNINGS           = -Wall -Wextra -pedantic
 MAIN               = ../../../..
 HEAD               = ${MAIN}/interfaces/general-headers
 PARTY3             = $(MAIN)/third-party
-THISDIR	           = ${shell pwd}
+SFLAGS             = -static -s
 
-ifneq ($(wildcard .forcestatic),)
-	SFLAGS	= -static -s
-endif
 
 ifneq ($(shell uname -s),CYGWIN_NT-6.1)
 	WARNINGS += -ansi
@@ -40,9 +37,6 @@ sortbuild: prep
 	${CXX} ${WARNINGS} ${OPTIMIZE} -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
 
 prep: clean
-ifneq ($(wildcard .forcestatic),)
-	rm -rf .forcestatic
-endif
 	mkdir -p ${DIST_DIR}
 	mkdir -p ${OBJ_DIR}
 

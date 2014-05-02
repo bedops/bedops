@@ -28,12 +28,7 @@ LOCALZLIBINCDIR     = ${LOCALZLIBDIR}
 OBJDIR              = objects
 INCLUDES            = -iquote$(HEAD) -I$(BOOSTLIBDIR)
 NONSTATICFLAGS      = -Wall -pedantic -O3 ${INCLUDES} -std=c++11
-
-ifeq ($(wildcard .forcestatic),)
-	SFLAGS = -I$(HEAD)
-else
-	SFLAGS = -static -s -I$(HEAD)
-endif
+SFLAGS              = -static -s -I$(HEAD)
 
 FLAGS               = $(SFLAGS) $(NONSTATICFLAGS) $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBLIBDIR} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 DFLAGS              = $(SFLAGS) -g -O0 -std=c++11 -Wall -fno-inline -pedantic $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBLIBDIR} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
@@ -52,9 +47,6 @@ nonstatic: dependencies
 	mkdir -p $(BINDIR) && $(CXX) -o $(BINDIR)/nonstatic.$(PROG) $(NONSTATICFLAGS) $(SOURCE1) $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o
 
 dependencies:
-ifneq ($(wildcard .forcestatic),)	
-	rm -rf .forcestatic
-endif
 	rm -rf $(OBJDIR)
 	mkdir -p $(OBJDIR)
 	$(CXX) -c $(NONSTATICFLAGS) $(LIB1)/NaN.cpp -o $(OBJDIR)/NaN.o -iquote${HEAD}

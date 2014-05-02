@@ -18,7 +18,7 @@ CC               = gcc
 CXX              = g++
 SELF             = ${WDIR}/system.mk/Makefile.linux
 
-default: prep_partial_static support
+default: support
 	$(MAKE) build -f $(SELF)
 
 SUBDIRS = ${APPDIR}/bedmap/src ${APPDIR}/sort-bed/src ${APPDIR}/bedops/src ${APPDIR}/closestfeats/src ${APPDIR}/bedextract/src ${APPDIR}/starch/src ${APPDIR}/conversion/src/wig2bed
@@ -32,7 +32,7 @@ $(SUBDIRS):
 
 gprof: default
 
-clean: clean_force_static $(SUBDIRS)
+clean: $(SUBDIRS)
 	rm -f ${BINDIR}/sort-bed
 	rm -f ${BINDIR}/bedops
 	rm -f ${BINDIR}/closest-features
@@ -73,33 +73,10 @@ clean: clean_force_static $(SUBDIRS)
 
 
 #
-# Generic build
+# third-party libraries
 #
 
 support: boost_support_c jansson_support_c bzip2_support_c zlib_support_c
-
-
-
-prep_partial_static:
-	touch ${APPDIR}/sort-bed/src/.forcestatic
-	touch ${APPDIR}/bedops/src/.forcestatic
-	touch ${APPDIR}/closestfeats/src/.forcestatic
-	touch ${APPDIR}/bedmap/src/.forcestatic
-	touch ${APPDIR}/conversion/src/wig2bed/.forcestatic
-	touch ${APPDIR}/bedextract/src/.forcestatic
-
-clean_force_static:
-	rm -f ${APPDIR}/sort-bed/src/.forcestatic
-	rm -f ${APPDIR}/bedops/src/.forcestatic
-	rm -f ${APPDIR}/closestfeats/src/.forcestatic
-	rm -f ${APPDIR}/bedmap/src/.forcestatic
-	rm -f ${APPDIR}/conversion/src/wig2bed/.forcestatic
-	rm -f ${APPDIR}/bedextract/src/.forcestatic
-	rm -f ${APPDIR}/starch/src/.forcestatic
-
-#
-# third-party libraries
-#
 
 boost_support_c:
 	bzcat ${WHICHBOOST}.tar.bz2 | tar -x -C ${PARTY3} && ln -sf ${BOOSTVERSION} ${PARTY3}/boost
