@@ -2720,7 +2720,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                 previousStop = (stop > previousStop) ? stop : previousStop;
 
 #ifdef DEBUG
-                fprintf(stderr, "\t(intermediate) testing pElements:\n\tstart/pStart : [ %lld / %lld ]\n\tstop/pStop : [ %lld / %lld ]\n", start, pStart, stop, pStop);
+                fprintf(stderr, "\t(intermediate) testing pElements:\n\tstart/pStart : [ %" PRId64 " / %" PRId64 " ]\n\tstop/pStop : [ %" PRId64 " / %" PRId64 " ]\n", start, pStart, stop, pStop);
 #endif
 
                 /* test for duplicate element */
