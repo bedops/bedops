@@ -290,7 +290,7 @@ Compression and extraction
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--duplicatesExist`` or      | Report if optional ``<chromosome>`` or chromosomes contain duplicate | 1                | 1                | NA               |
 | ``--duplicatesExistAsString`` | elements as 0/1 numbers or false/true strings                        |                  |                  |                  |
-| with <chromosome>             |                                                                      |                  |                  |                  |
+| with ``<chromosome>``         |                                                                      |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--elements <chromosome>``   | Show element count for optional ``<chromosome>`` (omitting           | 1                | 1                | NA               |
 |                               | ``<chromosome>`` shows total element count).                         |                  |                  |                  |
@@ -303,7 +303,7 @@ Compression and extraction
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--nestedsExist`` or         | Report if optional ``<chromosome>`` or chromosomes contain nested    | 1                | 1                | NA               |
 | ``--nestedsExistAsString``    | elements as 0/1 numbers or false/true strings                        |                  |                  |                  |
-| with <chromosome>             |                                                                      |                  |                  |                  |
+| with ``<chromosome>``         |                                                                      |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--note``                    | Show descriptive note (if originally added to archive).              | 1                | 1                | NA               |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
