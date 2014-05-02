@@ -32,7 +32,7 @@
 static const char *name = "unstarch";
 static const char *authors = "Alex Reynolds and Shane Neph";
 static const char *usage = "\n" \
-    "USAGE: unstarch [ <chromosome> ]  [ --elements | --bases | --bases-uniq | --duplicatesExist | --nestedsExist | --list | --list-json | --list-chromosomes | --archive-timestamp | --note | --archive-version ] <starch-file>\n" \
+    "USAGE: unstarch [ <chromosome> ]  [ --elements | --bases | --bases-uniq | --duplicatesExist | --nestedsExist | --list | --list-json | --list-chromosomes | --archive-timestamp | --note | --archive-version | -is-starch ] <starch-file>\n" \
     "\n" \
     "    Process Flags:\n\n" \
     "    <chromosome>                     Optional. Either unarchives chromosome-specific records from the starch archive file or restricts action of operator to chromosome (e.g., chr1, chrY, etc.).\n" \
@@ -53,6 +53,7 @@ static const char *usage = "\n" \
     "    --archive-timestamp              Show archive creation timestamp (ISO 8601 format).\n" \
     "    --archive-type                   Show archive compression type.\n" \
     "    --archive-version                Show archive version.\n" \
+    "    --is-starch                      Test if <starch-file> is a valid archive and print 0/1 (false/true) to standard output.\n" \
     "    --version                        Show binary version.\n" \
     "    --help                           Show this usage message.\n";
 

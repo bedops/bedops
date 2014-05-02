@@ -105,6 +105,10 @@ main(int argc, char **argv)
                 resultValue = UNSTARCH_VERSION_ERROR;
                 break;
             }
+            case UNSTARCH_IS_STARCH_ARCHIVE_ERROR: {
+                resultValue = UNSTARCH_IS_STARCH_ARCHIVE_ERROR;
+                break;
+            }
             case UNSTARCH_ARCHIVE_VERSION_ERROR: {
                 resultValue = UNSTARCH_ARCHIVE_VERSION_ERROR;
                 break;
@@ -213,6 +217,15 @@ main(int argc, char **argv)
             fprintf(stderr, "ERROR: Could not read metadata\n");
             resultValue = EXIT_FAILURE;
         }
+    }
+    else if (resultValue == UNSTARCH_IS_STARCH_ARCHIVE_ERROR)
+    {
+        /* we suppress warnings from STARCH_readJSONMetadata() */
+        if (STARCH_readJSONMetadata( &metadataJSON, &inFilePtr, (const char *) inFile, &records, &type, &archiveVersion, &archiveTimestamp, &note, &metadataOffset, &headerFlag, kStarchTrue, kStarchTrue) != STARCH_EXIT_SUCCESS)
+            fprintf(stdout, "0\n"); /* false -- no valid metadata, therefore not a starch archive */
+        else
+            fprintf(stdout, "1\n"); /* true -- valid metadata, therefore a starch archive */
+        return EXIT_SUCCESS;
     }
     else if (resultValue == UNSTARCH_METADATA_SHA1_SIGNATURE_ERROR) 
     {
@@ -812,7 +825,8 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
         (strcmp(*fn, "--archive-type") == 0) ||
         (strcmp(*fn, "--archive-version") == 0) ||
         (strcmp(*fn, "--archive-timestamp") == 0) ||
-        (strcmp(*fn, "--sha1-signature") == 0) ) 
+        (strcmp(*fn, "--sha1-signature") == 0) ||
+        (strcmp(*fn, "--is-starch") == 0) ) 
     {
         if (ftr1)
             free(ftr1);
@@ -837,6 +851,10 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
             *pval = UNSTARCH_VERSION_ERROR;
             return *pval;
         }    
+        else if (strcmp(*optn, "is-starch") == 0) {
+            *pval = UNSTARCH_IS_STARCH_ARCHIVE_ERROR;
+            return *pval;
+        }
         else if ((strcmp(*optn, "archiveVersion") == 0) || (strcmp(*optn, "archive-version") == 0)) {
             *pval = UNSTARCH_ARCHIVE_VERSION_ERROR;
             return *pval;

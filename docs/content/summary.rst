@@ -295,6 +295,9 @@ Compression and extraction
 | ``--elements <chromosome>``   | Show element count for optional ``<chromosome>`` (omitting           | 1                | 1                | NA               |
 |                               | ``<chromosome>`` shows total element count).                         |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--is-starch``               | Test if the <starch-file> is a valid starch archive, returning 0/1   | 1                | 1                | NA               |
+|                               | for a false/true result                                              |                  |                  |                  | 
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--list`` or ``--list-json`` | Print the metadata for a ``starch`` file, either in tabular form or  | 1                | 1                | NA               |
 |                               | with JSON formatting.                                                |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+

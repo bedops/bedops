@@ -68,6 +68,7 @@
 #define UNSTARCH_ELEMENT_NESTED_ALL_INT_ERROR 29
 #define UNSTARCH_ELEMENT_NESTED_CHR_STR_ERROR 30
 #define UNSTARCH_ELEMENT_NESTED_ALL_STR_ERROR 31
+#define UNSTARCH_IS_STARCH_ARCHIVE_ERROR 32
 
 int                UNSTARCH_reverseTransformInput(const char *chr,
                                          const unsigned char *str,
