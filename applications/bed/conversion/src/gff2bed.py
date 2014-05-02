@@ -363,14 +363,14 @@ def main(*args):
         printUsage("stderr")
         return os.EX_NOINPUT
 
-    try:
-        if which('sort-bed') is None:
-            raise IOError("The sort-bed binary could not be found in your user PATH -- please locate and install this binary")
-    except IOError, msg:
-        sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
-        return os.EX_OSFILE
 
     if params.sortOutput:
+        try:
+            if which('sort-bed') is None:
+                raise IOError("The sort-bed binary could not be found in your user PATH -- please locate and install this binary")
+        except IOError, msg:
+            sys.stderr.write( "[%s] - %s\n" % (sys.argv[0], msg) )
+            return os.EX_OSFILE
         if params.sortTmpdirSet:
             sortbed_process = subprocess.Popen(['sort-bed', '--max-mem', params.maxMem, '--tmpdir', params.sortTmpdir, '-'], stdin=subprocess.PIPE, stdout=sys.stdout)
         else:
