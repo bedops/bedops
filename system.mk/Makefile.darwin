@@ -104,6 +104,7 @@ clean: all
 	rm -f ${PARTY3}/zlib
 	rm -rf ${PARTY3}/$(I386)
 	rm -rf ${PARTY3}/$(X86_64)
+	rm -f ${APPDIR}/starch/bin/*starch*
 
 mkdirs:
 	mkdir -p ${PARTY3}/$(I386)
