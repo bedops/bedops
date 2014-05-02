@@ -1,17 +1,15 @@
-MAIN               = ../../../..
-HEAD               = $(MAIN)/interfaces/general-headers
-CC                 = gcc
-CXX                = g++
-PROG               = sort-bed
-DIST_DIR           = ../bin
-OBJ_DIR            = objects
-OPTIMIZE           = -O3 -std=c++11
-GPROFFLAGS         = -O -std=c++11 -pg
-WARNINGS           = -Wall -Wextra -pedantic
-MAIN               = ../../../..
-HEAD               = ${MAIN}/interfaces/general-headers
-PARTY3             = $(MAIN)/third-party
-SFLAGS             = -static -s
+MAIN       = ../../../..
+HEAD       = $(MAIN)/interfaces/general-headers
+PROG       = sort-bed
+DIST_DIR   = ../bin
+OBJ_DIR    = objects
+OPTIMIZE   = -O3 -std=c++11
+GPROFFLAGS = -O -std=c++11 -pg
+WARNINGS   = -Wall -Wextra -pedantic
+MAIN       = ../../../..
+HEAD       = ${MAIN}/interfaces/general-headers
+PARTY3     = $(MAIN)/third-party
+SFLAGS     = -static -s
 
 
 ifneq ($(shell uname -s),CYGWIN_NT-6.1)

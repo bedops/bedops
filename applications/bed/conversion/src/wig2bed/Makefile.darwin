@@ -1,15 +1,15 @@
-MIN_OSX_VERSION     = 10.7
-WARNINGS            = -Weverything
-NONSTATICFLAGS	    = ${WARNINGS} -O3 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -lc++ 
+MIN_OSX_VERSION = 10.7
+WARNINGS        = -Weverything
+BLDFLAGS        = ${WARNINGS} -O3 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -lc++ 
 
-FLAGS               = $(NONSTATICFLAGS) -std=c++11 -stdlib=libc++
-DFLAGS              = ${WARNINGS} -O0 -g -std=c++11 -stdlib=libc++ -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -lc++ 
-GPROFFLAGS          = ${WARNINGS} -O -pg -std=c++11 -stdlib=libc++ -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -lc++ 
-MAIN                = ../../../../..
-HEAD                = ${MAIN}/interfaces/general-headers
-SOURCE1	            = Wig2Bed.cpp
-BINDIR              = ../../bin
-PROG                = wig2bed_bin
+FLAGS           = ${BLDFLAGS} -std=c++11 -stdlib=libc++
+DFLAGS          = ${WARNINGS} -O0 -g -std=c++11 -stdlib=libc++ -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -lc++ 
+GPROFFLAGS      = ${WARNINGS} -O -pg -std=c++11 -stdlib=libc++ -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -lc++ 
+MAIN            = ../../../../..
+HEAD            = ${MAIN}/interfaces/general-headers
+SOURCE1         = Wig2Bed.cpp
+BINDIR          = ../../bin
+PROG            = wig2bed_bin
 
 build:
 	$(CXX) -o $(BINDIR)/$(PROG)_$(ARCH) $(FLAGS) $(SOURCE1) -iquote${HEAD}

@@ -1,16 +1,16 @@
-MIN_OSX_VERSION         = 10.7
+MIN_OSX_VERSION = 10.7
 
-MAIN                    = ../../../..
-MAINAPPDIR              = ../..
-HEAD                    = $(MAIN)/interfaces/general-headers
-PROG                    = sort-bed
-DIST_DIR                = ../bin
-OBJ_DIR                 = objects_${ARCH}
-OPTIMIZE                = -O3 -std=c++11 -stdlib=libc++
-WARNINGS                = -Weverything
-MAIN                    = ../../../..
-HEAD                    = ${MAIN}/interfaces/general-headers
-PARTY3                  = $(MAIN)/third-party
+MAIN            = ../../../..
+MAINAPPDIR      = ../..
+HEAD            = $(MAIN)/interfaces/general-headers
+PROG            = sort-bed
+DIST_DIR        = ../bin
+OBJ_DIR         = objects_${ARCH}
+OPTIMIZE        = -O3 -std=c++11 -stdlib=libc++
+WARNINGS        = -Weverything
+MAIN            = ../../../..
+HEAD            = ${MAIN}/interfaces/general-headers
+PARTY3          = $(MAIN)/third-party
 
 
 build: sort

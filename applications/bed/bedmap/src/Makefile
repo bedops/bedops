@@ -1,12 +1,10 @@
 MAIN                = ../../../..
 HEAD                = ${MAIN}/interfaces/general-headers
-CC                  = gcc
-CXX                 = g++
 LIB1                = ${MAIN}/interfaces/src/data/measurement
 LIB2                = ${MAIN}/interfaces/src/utility
 LIB3                = ${MAIN}/interfaces/src/data/starch
 PARTY3              = ${THISDIR}/${MAIN}/third-party
-THISDIR	            = ${shell pwd}
+THISDIR             = ${shell pwd}
 LIBJANSSON          = libjansson.a
 LIBBZIP2            = libbz2.a
 LIBZLIB             = libz.a
@@ -14,21 +12,20 @@ BOOSTLIBDIR         = ${PARTY3}/boost
 LOCALJANSSONDIR     = ${PARTY3}/jansson
 LOCALJANSSONLIBDIR  = ${LOCALJANSSONDIR}/lib
 LOCALJANSSONINCDIR  = ${LOCALJANSSONDIR}/include
-LOCALJANSSONLIBPATH = ${LOCALJANSSONLIBDIR}/${LIBJANSSON}
+LOCALJANSSONLIB     = ${LOCALJANSSONLIBDIR}/${LIBJANSSON}
 LOCALBZIP2DIR       = ${PARTY3}/bzip2
 LOCALBZIP2LIBDIR    = ${LOCALBZIP2DIR}
-LOCALBZIP2LIBPATH   = ${LOCALBZIP2LIBDIR}/${LIBBZIP2}
+LOCALBZIP2LIB       = ${LOCALBZIP2LIBDIR}/${LIBBZIP2}
 LOCALBZIP2INCDIR    = ${LOCALBZIP2DIR}
 LOCALZLIBDIR        = ${PARTY3}/zlib
-LOCALZLIBLIBDIR     = ${LOCALZLIBDIR}
-LOCALZLIBLIBPATH    = ${LOCALZLIBLIBDIR}/${LIBZLIB}
+LOCALZLIBLIB        = ${LOCALZLIBDIR}/${LIBZLIB}
 LOCALZLIBINCDIR     = ${LOCALZLIBDIR}
 OBJDIR              = objects
 INCLUDES            = -iquote${HEAD} -I${BOOSTLIBDIR} -I${PARTY3} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-LIBLOCATION         = -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBLIBDIR}
-LIBRARIES           = ${LOCALJANSSONLIBPATH} ${LOCALBZIP2LIBPATH} ${LOCALZLIBLIBPATH}
+LIBLOCATION         = -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBDIR}
+LIBRARIES           = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 BLDFLAGS            = -Wall -pedantic -O3 -std=c++11 
-SFLAGS	            = -static -s
+SFLAGS              = -static -s
 
 
 FLAGS               = ${SFLAGS} ${BLDFLAGS} ${OBJDIR}/NaN.o ${OBJDIR}/Formats.o ${OBJDIR}/starchConstants.o ${OBJDIR}/starchFileHelpers.o ${OBJDIR}/starchHelpers.o ${OBJDIR}/starchMetadataHelpers.o ${OBJDIR}/unstarchHelpers.o ${OBJDIR}/starchSha1Digest.o ${OBJDIR}/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
@@ -59,9 +56,9 @@ dependencies:
 	$(CXX) -c ${BLDFLAGS} ${LIB3}/starchFileHelpers.c -o ${OBJDIR}/starchFileHelpers.o ${INCLUDES}
 	$(CXX) -c ${BLDFLAGS} ${LIB3}/starchHelpers.c -o ${OBJDIR}/starchHelpers.o ${INCLUDES}
 	$(CXX) -c ${BLDFLAGS} ${LIB3}/starchMetadataHelpers.c -o ${OBJDIR}/starchMetadataHelpers.o ${INCLUDES}
-	$(CXX) -c ${BLDFLAGS} ${LIB3}/unstarchHelpers.c -o ${OBJDIR}/unstarchHelpers.o -iquote${HEAD} ${INCLUDES}
-	$(CXX) -c ${BLDFLAGS} ${LIB3}/starchSha1Digest.c -o  ${OBJDIR}/starchSha1Digest.o -iquote${HEAD} ${INCLUDES}
-	$(CXX) -c ${BLDFLAGS} ${LIB3}/starchBase64Coding.c -o  ${OBJDIR}/starchBase64Coding.o -iquote${HEAD} ${INCLUDES}
+	$(CXX) -c ${BLDFLAGS} ${LIB3}/unstarchHelpers.c -o ${OBJDIR}/unstarchHelpers.o ${INCLUDES}
+	$(CXX) -c ${BLDFLAGS} ${LIB3}/starchSha1Digest.c -o  ${OBJDIR}/starchSha1Digest.o ${INCLUDES}
+	$(CXX) -c ${BLDFLAGS} ${LIB3}/starchBase64Coding.c -o  ${OBJDIR}/starchBase64Coding.o ${INCLUDES}
 
 clean:
 	rm -f ${BINDIR}/${PROG}
