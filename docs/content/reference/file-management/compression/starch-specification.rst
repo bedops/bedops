@@ -92,7 +92,7 @@ The ``customUCSCHeaders`` value is either ``true`` or ``false``. If ``true``, th
 
 The ``creationTimestamp`` value is an `ISO 8601 <http://en.wikipedia.org/wiki/ISO-8601>`_ string that specifies the creation date and time of the archive. Most scripting and programming languages can parse ISO 8601-formatted date strings with little or no extra work.
 
-The ``version`` is a triplet of integer values specifying the version of the archive. For a v2.x archive, the major version will be set to ``2``. Major, minor and revision values need not necessarily be the identical to the version of the :ref:`starch` binary used to create the archive. At this time (April 2014), we offer v2 and v2.1 archives, with each make different stream metadata fields available.
+The ``version`` is a triplet of integer values specifying the version of the archive. For a v2.x archive, the major version will be set to ``2``. Major, minor and revision values need not necessarily be the identical to the version of the :ref:`starch` binary used to create the archive. At this time (April 2014), we offer v2 and v2.1 archives: each make different stream metadata fields available.
 
 The ``compressionFormat`` key specifies the backend compression format used for the chromosome streams contained within the archive. We currently use ``0`` to specify ``bzip2`` and ``1`` to specify ``gzip``. No other backend formats are available at this time.
 
@@ -139,7 +139,7 @@ The ``uniqueBaseCount`` key specifies the sum of unique bases across all BED ele
 
 The ``duplicateElementExists`` key specifies if there is a duplicate BED element somewhere within the compressed chromosome stream. A duplicate element is defined by matching chromosome name and start and stop coordinates; id, score, strand and other optional information are ignored when determining if a duplicate element exists.
 
-The ``nestedElementExists`` key specifies if there is a nested BED element somewhere within the compressed chromosome stream. Refer to BEDOPS documentation to see how a :ref:`nested element <nested_element>` is defined. 
+The ``nestedElementExists`` key specifies if there is a nested BED element somewhere within the compressed chromosome stream. Refer to BEDOPS documentation to see how a :ref:`nested element <nested_elements>` is defined. 
 
 .. _starch_archive_metadata_offset:
 
