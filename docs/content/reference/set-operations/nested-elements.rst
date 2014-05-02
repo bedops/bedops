@@ -7,9 +7,9 @@ This page describes nested BED elements, their impact on the performance of BEDO
 
 .. _what_are_nested_elements:
 
-========================
-What are nested elements
-========================
+==========
+Definition
+==========
 
 A *nested element* is defined as a BED element from a sorted BED file, where a genomic range is entirely enclosed by the previous element's range.
 
@@ -27,9 +27,9 @@ If :math:`a_{start} < b_{start}` and :math:`b_{stop} < a_{stop}`, then for the p
 
 .. _what_is_an_example_of_a_nested_element:
 
-===========================
-Example of a nested element
-===========================
+=======
+Example
+=======
 
 An example of a sorted BED file which contains a nested element follows:
 
@@ -47,9 +47,9 @@ While this dataset is sorted, the element ``chr1:125-150`` is entirely nested wi
 
 .. _why_nested_elements_matter:
 
-====================================
-Why nested elements matter in BEDOPS
-====================================
+==========================
+Why nested elements matter
+==========================
 
 BEDOPS :ref:`bedmap <bedmap>` and :ref:`bedextract <bedextract>` tools offer very fast retrieval of overlapping elements, so long as input datasets do not contain (fully) nested elements, as defined here. To obtain maximum performance out of the use of the BEDOPS toolkit, therefore, it is very useful to know if the input datasets contain such elements.
 
