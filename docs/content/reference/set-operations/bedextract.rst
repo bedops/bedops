@@ -60,7 +60,7 @@ The ``--help`` option describes the functionality available to the end user:
 
   bedextract
     citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-    version:  2.4.2
+    version:  2.5.0
     authors:  Shane Neph & Alex Reynolds
 
       Every input file must be sorted per sort-bed.
@@ -135,7 +135,9 @@ Three criteria make the use of :ref:`bedextract` in this mode very successful in
 What are nested elements?
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-An example of a sorted BED file which contains a nested element follows:
+For a precise definition of a nested element, refer to the :ref:`documentation on nested elements <nested_elements>`.
+
+For an example, we show the following sorted BED file:
 
 ::
 
@@ -144,14 +146,14 @@ An example of a sorted BED file which contains a nested element follows:
   chr1    125    150
   chr1    150    1000
 
-While this dataset is sorted, the element ``chr1:125-150`` is entirely nested within ``chr1:100-200``:
+In this sorted dataset, the element ``chr1:125-150`` is entirely nested within ``chr1:100-200``:
 
 .. image:: ../../../assets/reference/set-operations/reference_bedextract_nested_elements.png
    :width: 99%
 
 .. note::  Fully-nested elements are not a problem for the other two :ref:`bedextract` features: 1) Listing all chromosomes, and 2) Retrieving all information for a single chromosome.
 
-Fully-nested elements are only an issue if they exist in the ``Query`` dataset. Results are not affected if the ``Target`` dataset contains nested elements. Overlapping (but not fully-nested) elements in the ``Query`` input file are fine, as are duplicated genomic positions.
+Fully-nested elements are only an issue for :ref:`bedextract` if they exist in the ``Query`` dataset. Results are not affected if the ``Target`` dataset contains nested elements. Overlapping (but not fully-nested) elements in the ``Query`` input file are fine, as are duplicated genomic positions.
 
 .. note:: Our lab works with BED data of various types: cut-counts, hotspots, peaks, footprints, etc. These data generally do not contain nested elements and so are amenable to use with :ref:`bedextract` for extracting overlapping elements.
 
