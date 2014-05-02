@@ -46,7 +46,7 @@ Use the ``--help`` option to list all options:
    binary version: 2.5.0 (extracts archive version: 2.1.0 or older)
    authors: Alex Reynolds and Shane Neph
 
-  USAGE: unstarch [ <chromosome> ]  [ --elements | --bases | --bases-uniq | --duplicatesExist | --nestedsExist | --list | --list-json | --list-chromosomes | --archive-timestamp | --note | --archive-version ] <starch-file>
+  USAGE: unstarch [ <chromosome> ]  [ --elements | --bases | --bases-uniq | --duplicatesExist | --nestedsExist | --list | --list-json | --list-chromosomes | --archive-timestamp | --note | --archive-version | --is-starch ] <starch-file>
 
       Process Flags:
 
@@ -68,6 +68,7 @@ Use the ``--help`` option to list all options:
       --archive-timestamp              Show archive creation timestamp (ISO 8601 format).
       --archive-type                   Show archive compression type.
       --archive-version                Show archive version.
+      --is-starch                      Test if <starch-file> is a valid archive and print 0/1 (false/true) to standard output.
       --version                        Show binary version.
       --help                           Show this usage message.
 
