@@ -51,7 +51,7 @@ While this dataset is sorted, the element ``chr1:125-150`` is entirely nested wi
 Why nested elements matter in BEDOPS
 ====================================
 
-BEDOPS :ref:`bedmap <bedmap>` and :ref:`bedextract <bedextract>` tools offer very fast access to overlapping elements, so long as input datasets do not contain (fully) nested elements, as defined here. To obtain maximum performance out of the use of the BEDOPS toolkit, therefore, it is very useful to know if the input datasets contain such elements. 
+BEDOPS :ref:`bedmap <bedmap>` and :ref:`bedextract <bedextract>` tools offer very fast retrieval of overlapping elements, so long as input datasets do not contain (fully) nested elements, as defined here. To obtain maximum performance out of the use of the BEDOPS toolkit, therefore, it is very useful to know if the input datasets contain such elements.
 
 Common datasets we work with do not contain nested elements: reads, peaks, footprints, and others. However, other datasets do, such as motif hits or paired-end sequencing reads. 
 
