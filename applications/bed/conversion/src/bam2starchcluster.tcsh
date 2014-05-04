@@ -125,7 +125,7 @@ endif
 #####################################################
 set files = ()
 set jids = ()
-@ cntr = 1
+@ cntr = 0
 foreach chrom (`samtools idxstats $input | cut -f1`)
 
 qsub $sge_opts -N $nm.$cntr > /dev/stderr << __EXTRACTION__
@@ -137,7 +137,6 @@ __EXTRACTION__
   @ cntr++
 end
 
-@ cntr--
 if ( $cntr == 0 ) then
   printf "Program problem: no files were submitted to the cluster?\n"
   exit -1

@@ -23,17 +23,6 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-####################################################
-# cluster variables:
-#  change to match your environment
-#  may also require changes to 2 'qsub' calls below
-####################################################
-set shell = "-S /bin/tcsh"
-set queue = "-q all.q"
-set misc_opts = "-V -cwd -w e -r yes -now no"
-set soundoff = "-j n -e /dev/null -o /dev/null"
-set sge_opts = "$queue $shell $misc_opts $soundoff"
-
 
 ############################
 # some input error checking
