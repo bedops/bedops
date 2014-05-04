@@ -14,8 +14,8 @@ OSXBUILDDIR      = ${OSXPKGROOT}/build
 OSXPKGDIR        = ${OSXPKGROOT}/resources/bin
 OSXLIBDIR        = ${OSXPKGROOT}/resources/lib
 WDIR             = ${shell pwd}
-CC               = gcc
-CXX              = g++
+export CC        = gcc
+export CXX       = g++
 SELF             = ${WDIR}/system.mk/Makefile.linux
 
 default: support
