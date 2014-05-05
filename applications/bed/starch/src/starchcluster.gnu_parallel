@@ -23,11 +23,17 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
+############################
+# GNU Parallel variables
+############################
+
+set hosts_string = "oneski twoski threeski fourski"
 
 ############################
 # some input error checking
 ############################
-set help = "\nUsage: starchcluster [--help] [--clean] <input-bed-file> [output-starch-file]\n\n"
+
+set help = "\nUsage: starchcluster.gnu_parallel [--help] [--clean] <input-bed-file> [output-starch-file]\n\n"
 set help = "$help  Pass in the name of a BED file to create a starch archive using the cluster.\n\n"
 set help = "$help  (stdin isn't supported through this wrapper script, but starch supports it natively.)\n\n"
 set help = "$help  Add --clean to remove <input-bed-file> after starching it up.\n\n"
@@ -77,11 +83,11 @@ else if ( "$output" == "$originput:t.starch" && "$originput:e" == "bed" ) then
   set output = "$originput:t:r.starch"
 endif
 
-
 ###############################################################
 # new working directory to keep file pileups local to this job
 ###############################################################
-set nm = gstar.`uname -a | cut -f2 -d' '`.$$
+
+set nm = partar.`uname -a | cut -f2 -d' '`.$$
 if ( -d $nm ) then
   rm -rf $nm
 endif
@@ -103,7 +109,6 @@ else
   # $output includes absolute path
 endif
 
-
 #####################################################
 # extract information by chromosome and starch it up
 #####################################################
@@ -115,15 +120,17 @@ bedextract --list-chr $input \
     --sshlogin $hosts_string \ 
     "bedextract {} $input | starch - > $here/$nm/{}.starch"
 
-@ extracted_file_count = `find . -type f | wc -l`
+@ extracted_file_count = `find $here/$nm -name '*.starch' | wc -l`
 if ( $chrom_count != $extracted_file_count ) then
-  printf "Program problem: only some or no files were submitted to hosts?\n"
+  printf "Program problem: only some or no files were submitted to GNU Parallel hosts?\n"
   exit -1
 endif
 
 ##################################################
 # create final starch archive and clean things up
 ##################################################
+
+starchcat $here/$nm/*.starch > $output
 cd $here
 rm -rf $nm
 if ( $clean > 0 ) then
