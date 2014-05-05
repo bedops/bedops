@@ -33,6 +33,8 @@ Released: **May 2, 2014**
 
   * Added :ref:`bam2starchcluster` script, which parallelizes creation of :ref:`Starch <starch_specification>` archive from very large BAM files in SGE environments.
 
+  * Added bug fix for missing code in `starchcluster.gnu_parallel` script, where the final collation step was missing.
+
 =================
 Previous versions
 =================
