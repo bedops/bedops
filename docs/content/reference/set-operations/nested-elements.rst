@@ -20,10 +20,11 @@ These two elements :math:`A` and :math:`B` meet the following conditions:
  1. :math:`a_{start} < a_{stop}`
  2. :math:`b_{start} < b_{stop}` 
  3. :math:`a_{start} <= b_{start}`
+ 4. :math:`a_{stop} <= b_{stop}`
 
-.. note:: This third condition places elements :math:`A` and :math:`B` into sort order, as applied by :ref:`sort-bed <sort-bed>`.
+.. note:: The third and fourth conditions place elements :math:`A` and :math:`B` into sort order, as applied by :ref:`sort-bed <sort-bed>`.
 
-If we apply the following two additional restrictions: :math:`a_{start} < b_{start}` and :math:`b_{stop} < a_{stop}`, then for the purposes of BEDOPS the element :math:`B` is called a *nested element*.
+If we further restrict these ranges: :math:`a_{start} < b_{start}` and :math:`b_{stop} < a_{stop}`, then for the purposes of BEDOPS the element :math:`B` is called a *nested element*.
 
 .. _example_of_a_nested_element:
 
