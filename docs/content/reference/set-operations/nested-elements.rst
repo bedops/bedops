@@ -22,9 +22,9 @@ These two elements :math:`A` and :math:`B` meet the following conditions:
  3. :math:`a_{start} <= b_{start}`
  4. :math:`a_{stop} <= b_{stop}`
 
-.. note:: The third and fourth conditions place elements :math:`A` and :math:`B` into sort order, as applied by :ref:`sort-bed <sort-bed>`.
+.. note:: The third and fourth conditions place elements :math:`A` and :math:`B` into sort order, as applied by the :ref:`sort-bed <sort-bed>` application.
 
-If we further restrict these ranges: :math:`a_{start} < b_{start}` and :math:`b_{stop} < a_{stop}`, then for the purposes of BEDOPS the element :math:`B` is called a *nested element*.
+If we further restrict these ranges: :math:`a_{start} < b_{start}` and :math:`b_{stop} < a_{stop}`, then for the purposes of BEDOPS we call the element :math:`B` a *nested element*.
 
 .. _example_of_a_nested_element:
 
@@ -52,12 +52,12 @@ While this dataset is sorted, the element ``chr1:125-150`` is entirely nested wi
 Why nested elements matter
 ==========================
 
-BEDOPS :ref:`bedmap <bedmap>` and :ref:`bedextract <bedextract>` tools offer very fast retrieval of overlapping elements, so long as input datasets do not contain (fully) nested elements, as defined above. To extract maximum performance out of the use of the BEDOPS toolkit, therefore, it is very useful to know if the input datasets contain such elements.
+BEDOPS :ref:`bedmap <bedmap>` and :ref:`bedextract <bedextract>` tools offer very fast retrieval of overlapping elements, so long as input datasets do not contain (fully) nested elements, as defined above. To extract maximum performance out of the use of the BEDOPS toolkit, therefore, it is very useful to know if the input datasets contain such elements — if they do not, then we can apply optimizations.
 
 Common datasets we work with do not contain nested elements: reads, peaks, footprints, and others. However, other datasets do, such as motif hits or paired-end sequencing reads. 
 
-So how can we find out if our inputs have nested elements, before we start applying any operations?
+How can we find out if our inputs have nested elements, before we start applying any operations?
 
-The compression tool :ref:`starch <starch>` (v2.5 and greater) will look for these elements in an input BED file and store this condition as a flag in the output archive's metadata, a value which can be retrieved in constant time with :ref:`unstarch <unstarch>` and other tools which make use of the Starch C++ API.
+The compression tool :ref:`starch <starch>` (v2.5 and greater) will look for these elements in an input BED file and store this condition as a flag in the output archive's metadata. This value can be retrieved in constant time with :ref:`unstarch <unstarch>` and other tools which make use of the Starch C++ API.
 
 Additionally, the ``--ec`` (error-correction) option in :ref:`bedmap <bedmap>` will also report if inputs contain nested elements. This option doubles execution time, but when used in conjunction with the ``--faster`` option, the speed gains are more than recovered.
