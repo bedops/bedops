@@ -139,7 +139,7 @@ The ``uniqueBaseCount`` key specifies the sum of unique bases across all BED ele
 
 The ``duplicateElementExists`` key specifies if there is a duplicate BED element somewhere within the compressed chromosome stream. A duplicate element is defined by matching chromosome name and start and stop coordinates; id, score, strand and other optional information are ignored when determining if a duplicate element exists.
 
-The ``nestedElementExists`` key specifies if there is a nested BED element somewhere within the compressed chromosome stream. Refer to BEDOPS documentation to see how :ref:`nested elements` are defined. 
+The ``nestedElementExists`` key specifies if there is a nested BED element somewhere within the compressed chromosome stream. Refer to BEDOPS documentation to see how :ref:`nested elements <nested_elements>` are defined. 
 
 .. _starch_archive_metadata_offset:
 
