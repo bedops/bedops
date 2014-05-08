@@ -891,20 +891,20 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
             *pval = (strcmp(*chr, "--bases-uniq") == 0) ? UNSTARCH_BASES_UNIQUE_COUNT_ALL_ERROR : UNSTARCH_BASES_UNIQUE_COUNT_CHR_ERROR;
             return *pval;
         }
-        else if (strcmp(*optn, "duplicatesExistAsString") == 0) {
-            *pval = (strcmp(*chr, "--duplicatesExistAsString") == 0) ? UNSTARCH_ELEMENT_DUPLICATE_ALL_STR_ERROR : UNSTARCH_ELEMENT_DUPLICATE_CHR_STR_ERROR;
+        else if (strcmp(*optn, "has-duplicates-as-string") == 0) {
+            *pval = (strcmp(*chr, "--has-duplicates-as-string") == 0) ? UNSTARCH_ELEMENT_DUPLICATE_ALL_STR_ERROR : UNSTARCH_ELEMENT_DUPLICATE_CHR_STR_ERROR;
             return *pval;
         }
-        else if (strcmp(*optn, "duplicatesExist") == 0) {
-            *pval = (strcmp(*chr, "--duplicatesExist") == 0) ? UNSTARCH_ELEMENT_DUPLICATE_ALL_INT_ERROR : UNSTARCH_ELEMENT_DUPLICATE_CHR_INT_ERROR;
+        else if (strcmp(*optn, "has-duplicates") == 0) {
+            *pval = (strcmp(*chr, "--has-duplicates") == 0) ? UNSTARCH_ELEMENT_DUPLICATE_ALL_INT_ERROR : UNSTARCH_ELEMENT_DUPLICATE_CHR_INT_ERROR;
             return *pval;
         }
-        else if (strcmp(*optn, "nestedsExistAsString") == 0) {
-            *pval = (strcmp(*chr, "--nestedsExistAsString") == 0) ? UNSTARCH_ELEMENT_NESTED_ALL_STR_ERROR : UNSTARCH_ELEMENT_NESTED_CHR_STR_ERROR;
+        else if (strcmp(*optn, "has-nested-as-string") == 0) {
+            *pval = (strcmp(*chr, "--has-nested-as-string") == 0) ? UNSTARCH_ELEMENT_NESTED_ALL_STR_ERROR : UNSTARCH_ELEMENT_NESTED_CHR_STR_ERROR;
             return *pval;
         }
-        else if (strcmp(*optn, "nestedsExist") == 0) {
-            *pval = (strcmp(*chr, "--nestedsExist") == 0) ? UNSTARCH_ELEMENT_NESTED_ALL_INT_ERROR : UNSTARCH_ELEMENT_NESTED_CHR_INT_ERROR;
+        else if (strcmp(*optn, "has-nested") == 0) {
+            *pval = (strcmp(*chr, "--has-nested") == 0) ? UNSTARCH_ELEMENT_NESTED_ALL_INT_ERROR : UNSTARCH_ELEMENT_NESTED_CHR_INT_ERROR;
             return *pval;
         }
         else if ((strcmp(*optn, "list") != 0) && 

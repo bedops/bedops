@@ -54,10 +54,10 @@ Use the ``--help`` option to list all options:
       --elements                       Show total element count for archive. If <chromosome> is specified, the result shows the element count for the chromosome.
       --bases,
       --bases-uniq                     Show total and unique base counts, respectively, for archive. If <chromosome> is specified, the count is specific to the chromosome, if available.
-      --duplicatesExist,               Show whether there are duplicate elements in the specified chromosome, either as numerical (1/0) or string (true/false) value. If no <chromosome> is specified, values are reported for all chromosome records.
-      --duplicatesExistAsString 
-      --nestedsExist,                  Show whether there are nested elements in the specified chromosome, either as numerical (1/0) or string (true/false) value. If no <chromosome> is specified, values are reported for all chromosome records.
-      --nestedsExistAsString
+      --has-duplicate,                 Show whether there is one or more duplicate elements in the specified chromosome, either as a numerical (1/0) or string (true/false) value. If no <chromosome> is specified, the value given indicates if there is one or more duplicate elements across all chromosome records.
+      --has-duplicate-as-string
+      --has-nested,                    Show whether there is one ore more nested elements in the specified chromosome, either as a numerical (1/0) or string (true/false) value. If no <chromosome> is specified, the value given indicates if there is one or more nested elements across all chromosome records.
+      --has-nested-as-string
       --list                           List archive metadata (output is in text format). If chromosome is specified, the attributes of the given chromosome are shown.
       --list-json,                     List archive metadata (output is in JSON format)
       --list-json-no-trailing-newline  
@@ -185,25 +185,25 @@ The ``--bases`` and ``--bases-uniq`` flags return the overall and unique base co
 Duplicate element(s)
 ^^^^^^^^^^^^^^^^^^^
 
-The ``--duplicatesExist`` operator reports whether the chromosome stream contains one or more duplicate elements, printing a ``0`` if the chromosome does *not* contain a duplicate element, and a ``1`` if the chromosome *does* contain a duplicate. 
+The ``--has-duplicate`` operator reports whether the chromosome stream contains one or more duplicate elements, printing a ``0`` if the chromosome does *not* contain a duplicate element, and a ``1`` if the chromosome *does* contain a duplicate. 
 
-.. note:: A duplicate element exists if there are two or more BED elements where the chromosome name and start and stop positions are identical. The id, score, strand and other optional columns are ignored when determining if a duplicate exists.
+.. note:: A duplicate element exists if there are two or more BED elements where the chromosome name and start and stop positions are identical. Id, score, strand and any other optional columns are ignored when determining if a duplicate element is present.
 
-.. tip:: To get a string value of ``true`` or ``false`` in place of ``1`` and ``0``, use the ``--duplicatesExistAsString`` operator, instead.
+.. tip:: To get a string value of ``true`` or ``false`` in place of ``1`` and ``0``, use the ``--has-duplicate-as-string`` operator, instead.
 
-.. tip:: If the chromosome name argument to ``unstarch`` is omitted, or set to ``all``, the ``--duplicatesExist`` and ``--duplicatesExistAsString`` operators will return a list of results for all chromosomes. If the chromosome name is provided and the archive does not contain metadata for the given chromosome, these operators will return a ``0`` or ``false`` result.
+.. note:: If the chromosome name argument to ``unstarch`` is omitted, or set to ``all``, the ``--has-duplicate`` and ``--has-duplicate-as-string`` operators will return a result for all chromosomes (if any one chromosome has one or more duplicate elements, the return value is ``1`` or ``true``, respectively). If the chromosome name is provided and the archive does not contain metadata for the given chromosome, these operators will return a ``0`` or ``false`` result.
 
 ^^^^^^^^^^^^^^^^^
 Nested element(s)
 ^^^^^^^^^^^^^^^^^
 
-The ``--nestedsExist`` operator reports whether the chromosome stream contains one or more :ref:`nested elements <nested_elements>`, printing a ``0`` if the chromosome does *not* contain a nested element, and a ``1`` if the chromosome *does* contain a nested element. 
+The ``--has-nested`` operator reports whether the chromosome stream contains one or more :ref:`nested elements <nested_elements>`, printing a ``0`` if the chromosome does *not* contain a nested element, and a ``1`` if the chromosome *does* contain a nested element. 
 
-.. note:: The definition of a nested element relies on coordinates and is explained in the :ref:`documentation for nested elements <nested_elements>`. The id, score, strand and other option columns are ignored when determining if a nested element exists.
+.. note:: The definition of a nested element relies on coordinates and is explained in the :ref:`documentation for nested elements <nested_elements>`. Id, score, strand and any other optional columns are ignored when determining if a nested element is present.
 
-.. tip:: To get a string value of ``true`` or ``false`` in place of ``1`` and ``0``, use the ``--nestedsExistAsString`` operator, instead.
+.. tip:: To get a string value of ``true`` or ``false`` in place of ``1`` and ``0``, use the ``--has-nested-as-string`` operator, instead.
 
-.. tip:: If the chromosome name argument to ``unstarch`` is omitted, or set to ``all``, the ``--nestedsExist`` and ``--nestedsExistAsString`` operators will return a list of results for all chromosomes. If the chromosome name is provided and the archive does not contain metadata for the given chromosome, these operators will return a ``0`` or ``false`` result.
+.. note:: If the chromosome name argument to ``unstarch`` is omitted, or set to ``all``, the ``--has-nested`` and ``--has-nested-as-string`` operators will return a result for all chromosomes (if any one chromosome has one or more nested elements, the return value is ``1`` or ``true``, respectively). If the chromosome name is provided and the archive does not contain metadata for the given chromosome, these operators will return a ``0`` or ``false`` result.
 
 =======
 Example

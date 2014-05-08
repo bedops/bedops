@@ -1396,8 +1396,13 @@ UNSTARCH_printDuplicateElementExistsStringsForAllChromosomes(const Metadata *md)
     const Metadata *iter;
 
     for (iter = md; iter != NULL; iter = iter->next) {
-        UNSTARCH_printDuplicateElementExistsStringForChromosome(md, iter->chromosome);
+        if (UNSTARCH_duplicateElementExistsForChromosome(md, iter->chromosome) == kStarchTrue) {
+            fprintf(stdout, "%s\n", UNSTARCH_booleanToString(kStarchTrue));
+            return;
+        }
     }
+
+    fprintf(stdout, "%s\n", UNSTARCH_booleanToString(kStarchFalse));
 }
 
 void
@@ -1425,8 +1430,13 @@ UNSTARCH_printDuplicateElementExistsIntegersForAllChromosomes(const Metadata *md
     const Metadata *iter;
 
     for (iter = md; iter != NULL; iter = iter->next) {
-        UNSTARCH_printDuplicateElementExistsIntegerForChromosome(md, iter->chromosome);
+        if (UNSTARCH_duplicateElementExistsForChromosome(md, iter->chromosome) == kStarchTrue) {
+            fprintf(stdout, "%d\n", (int) kStarchTrue);
+            return;
+        }
     }
+
+    fprintf(stdout, "%d\n", (int) kStarchFalse);
 }
 
 Boolean
@@ -1470,8 +1480,13 @@ UNSTARCH_printNestedElementExistsStringsForAllChromosomes(const Metadata *md)
     const Metadata *iter;
 
     for (iter = md; iter != NULL; iter = iter->next) {
-        UNSTARCH_printNestedElementExistsStringForChromosome(md, iter->chromosome);
+        if (UNSTARCH_nestedElementExistsForChromosome(md, iter->chromosome) == kStarchTrue) {
+            fprintf(stdout, "%s\n", UNSTARCH_booleanToString(kStarchTrue));
+            return;
+        }
     }
+
+    fprintf(stdout, "%s\n", UNSTARCH_booleanToString(kStarchFalse));
 }
 
 void
@@ -1499,8 +1514,13 @@ UNSTARCH_printNestedElementExistsIntegersForAllChromosomes(const Metadata *md)
     const Metadata *iter;
 
     for (iter = md; iter != NULL; iter = iter->next) {
-        UNSTARCH_printNestedElementExistsIntegerForChromosome(md, iter->chromosome);
+        if (UNSTARCH_nestedElementExistsForChromosome(md, iter->chromosome) == kStarchTrue) {
+            fprintf(stdout, "%d\n", (int) kStarchTrue);
+            return;
+        }
     }
+
+    fprintf(stdout, "%d\n", (int) kStarchFalse);
 }
 
 const char *
