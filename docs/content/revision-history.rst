@@ -19,7 +19,7 @@ Released: **May 2, 2014**
 
 * :ref:`Starch <starch_specification>` archival format and compression/extraction tools
 
-  * Added duplicate- and :ref:`nested-element <nested_elements>` flags in v2.1 of Starch metadata, which denote if a chromosome contains one or more duplicate and/or nested elements. BED files compressed with :ref:`starch` v2.5 or greater, or Starch archives updated with :ref:`starchcat` v2.5 or greater will include these values in the archive metadata. The :ref:`unstarch` extraction tool offers ``--duplicatesExist`` and ``--nestedsExist`` options to retrieve these flag values for a specified chromosome (or for all chromosomes).
+  * Added duplicate- and :ref:`nested-element <nested_elements>` flags in v2.1 of Starch metadata, which denote if a chromosome contains one or more duplicate and/or nested elements. BED files compressed with :ref:`starch` v2.5 or greater, or Starch archives updated with :ref:`starchcat` v2.5 or greater will include these values in the archive metadata. The :ref:`unstarch` extraction tool offers ``--has-duplicate`` and ``--has-nested`` options to retrieve these flag values for a specified chromosome (or for all chromosomes).
 
   * Added ``--is-starch`` option to :ref:`unstarch` to test if specified input file is a Starch v1 or v2 archive.
  
