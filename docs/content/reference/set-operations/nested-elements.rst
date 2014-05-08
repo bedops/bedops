@@ -24,7 +24,7 @@ These two elements :math:`A` and :math:`B` meet the following conditions:
 
 .. note:: The third and fourth conditions place elements :math:`A` and :math:`B` into sort order, as applied by the :ref:`sort-bed <sort-bed>` application.
 
-If we further restrict these ranges: :math:`a_{start} < b_{start}` and :math:`b_{stop} < a_{stop}`, then for the purposes of BEDOPS we call the element :math:`B` a *nested element*.
+If we further restrict these ranges: :math:`a_{start} < b_{start}` and :math:`b_{stop} < a_{stop}`, then for the purposes of BEDOPS we call the element :math:`B` a *nested element*, which is contained within element :math:`A`.
 
 .. _example_of_a_nested_element:
 
