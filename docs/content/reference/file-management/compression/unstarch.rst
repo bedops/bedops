@@ -252,7 +252,7 @@ To report if the chromosome ``chr14`` contains at least one duplicate BED elemen
 
 ::
 
-  $ unstarch chr14 --duplicatesExistAsString example.starch
+  $ unstarch chr14 --has-duplicate-as-string example.starch
   true
 
 To show when the archive was created:
