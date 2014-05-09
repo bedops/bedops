@@ -9,7 +9,7 @@ WARNINGS   = -Wall -Wextra -pedantic
 MAIN       = ../../../..
 HEAD       = ${MAIN}/interfaces/general-headers
 PARTY3     = $(MAIN)/third-party
-SFLAGS     = -static -s
+SFLAGS     = -static
 
 
 ifneq ($(shell uname -s),CYGWIN_NT-6.1)
@@ -24,7 +24,7 @@ gprof: gprofbuild
 	${CXX} -o ${DIST_DIR}/gprof.${PROG} ${PFLAGS} ${SFLAGS} ${WARNINGS} ${GPROFFLAGS} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o 
 
 sort: sortbuild
-	${CXX} -o ${DIST_DIR}/${PROG} ${PFLAGS} ${SFLAGS} ${WARNINGS} ${OPTIMIZE} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o
+	${CXX} -o ${DIST_DIR}/${PROG} ${PFLAGS} ${SFLAGS} -s ${WARNINGS} ${OPTIMIZE} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o
 
 gprofbuild: prep
 	${CXX} ${WARNINGS} ${GPROFFLAGS} -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
@@ -46,4 +46,4 @@ clean:
 debug: prep
 	${CXX} -g -O0 -std=c++11 -fno-inline -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
 	${CXX} -g -O0 -std=c++11 -fno-inline -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
-	${CXX} -g ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -o ${DIST_DIR}/debug.${PROG}
+	${CXX} -g ${SFLAGS} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -o ${DIST_DIR}/debug.${PROG}

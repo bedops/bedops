@@ -21,15 +21,15 @@ support: default
 debug: default
 
 install: prep_c install_conversion_scripts install_starchcluster_scripts
-	-cp ${APPDIR}/sort-bed/bin/sort-bed ${BINDIR}/sort-bed
-	-cp ${APPDIR}/bedops/bin/bedops ${BINDIR}/bedops
-	-cp ${APPDIR}/closestfeats/bin/closest-features ${BINDIR}/closest-features
-	-cp ${APPDIR}/bedmap/bin/bedmap ${BINDIR}/bedmap
-	-cp ${APPDIR}/bedextract/bin/bedextract ${BINDIR}/bedextract
-	-cp ${APPDIR}/starch/bin/starch ${BINDIR}/starch
-	-cp ${APPDIR}/starch/bin/unstarch ${BINDIR}/unstarch
-	-cp ${APPDIR}/starch/bin/starchcat ${BINDIR}/starchcat
-	-cp ${APPDIR}/conversion/bin/wig2bed_bin ${BINDIR}/wig2bed_bin
+	-cp ${APPDIR}/sort-bed/bin/sort-bed ${BINDIR}/
+	-cp ${APPDIR}/bedops/bin/bedops ${BINDIR}/
+	-cp ${APPDIR}/closestfeats/bin/closest-features ${BINDIR}/
+	-cp ${APPDIR}/bedmap/bin/bedmap ${BINDIR}/
+	-cp ${APPDIR}/bedextract/bin/bedextract ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/starch ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/unstarch ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/starchcat ${BINDIR}/
+	-cp ${APPDIR}/conversion/bin/wig2bed_bin ${BINDIR}/
 
 
 
@@ -40,16 +40,27 @@ install: prep_c install_conversion_scripts install_starchcluster_scripts
 prep_c:
 	mkdir -p ${BINDIR}
 
+install_debug: prep_c install_conversion_scripts install_starchcluster_scripts
+	-cp ${APPDIR}/sort-bed/bin/debug.sort-bed ${BINDIR}/
+	-cp ${APPDIR}/bedops/bin/debug.bedops ${BINDIR}/
+	-cp ${APPDIR}/closestfeats/bin/debug.closest-features ${BINDIR}/
+	-cp ${APPDIR}/bedmap/bin/debug.bedmap ${BINDIR}/
+	-cp ${APPDIR}/bedextract/bin/debug.bedextract ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/debug.starch ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/debug.unstarch ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/debug.starchcat ${BINDIR}/
+	-cp ${APPDIR}/conversion/bin/debug.wig2bed_bin ${BINDIR}/
+
 install_gprof: prep_c install_conversion_scripts install_starchcluster_scripts
-	-cp ${APPDIR}/sort-bed/bin/gprof.sort-bed ${BINDIR}/gprof.sort-bed
-	-cp ${APPDIR}/bedops/bin/gprof.bedops ${BINDIR}/gprof.bedops
-	-cp ${APPDIR}/closestfeats/bin/gprof.closest-features ${BINDIR}/gprof.closest-features
-	-cp ${APPDIR}/bedmap/bin/gprof.bedmap ${BINDIR}/gprof.bedmap
-	-cp ${APPDIR}/bedextract/bin/gprof.bedextract ${BINDIR}/gprof.bedextract
-	-cp ${APPDIR}/starch/bin/gprof.starch ${BINDIR}/gprof.starch
-	-cp ${APPDIR}/starch/bin/gprof.unstarch ${BINDIR}/gprof.unstarch
-	-cp ${APPDIR}/starch/bin/gprof.starchcat ${BINDIR}/gprof.starchcat
-	-cp ${APPDIR}/conversion/bin/gprof.wig2bed_bin ${BINDIR}/gprof.wig2bed_bin
+	-cp ${APPDIR}/sort-bed/bin/gprof.sort-bed ${BINDIR}/
+	-cp ${APPDIR}/bedops/bin/gprof.bedops ${BINDIR}/
+	-cp ${APPDIR}/closestfeats/bin/gprof.closest-features ${BINDIR}/
+	-cp ${APPDIR}/bedmap/bin/gprof.bedmap ${BINDIR}/
+	-cp ${APPDIR}/bedextract/bin/gprof.bedextract ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/gprof.starch ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/gprof.unstarch ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/gprof.starchcat ${BINDIR}/
+	-cp ${APPDIR}/conversion/bin/gprof.wig2bed_bin ${BINDIR}/
 
 install_starchcluster_scripts: prep_c
 	-cp ${APPDIR}/starch/bin/starchcluster ${BINDIR}/starchcluster
@@ -74,17 +85,17 @@ install_conversion_scripts: prep_c
 
 install_osx_packaging_bins: prep_c
 	mkdir -p ${OSXPKGDIR}
-	-cp ${APPDIR}/sort-bed/bin/sort-bed ${OSXPKGDIR}/sort-bed
-	-cp ${APPDIR}/bedops/bin/bedops ${OSXPKGDIR}/bedops
-	-cp ${APPDIR}/closestfeats/bin/closest-features ${OSXPKGDIR}/closest-features
-	-cp ${APPDIR}/bedmap/bin/bedmap ${OSXPKGDIR}/bedmap
-	-cp ${APPDIR}/bedextract/bin/bedextract ${OSXPKGDIR}/bedextract
-	-cp ${APPDIR}/starch/bin/starch ${OSXPKGDIR}/starch
-	-cp ${APPDIR}/starch/bin/unstarch ${OSXPKGDIR}/unstarch
-	-cp ${APPDIR}/starch/bin/starchcat ${OSXPKGDIR}/starchcat
-	-cp ${APPDIR}/starch/bin/starchcluster ${OSXPKGDIR}/starchcluster
-	-cp ${APPDIR}/starch/bin/starchcluster.gnu_parallel ${OSXPKGDIR}/starchcluster.gnu_parallel
-	-cp ${APPDIR}/conversion/bin/wig2bed_bin ${OSXPKGDIR}/wig2bed_bin
+	-cp ${APPDIR}/sort-bed/bin/sort-bed ${OSXPKGDIR}/
+	-cp ${APPDIR}/bedops/bin/bedops ${OSXPKGDIR}/
+	-cp ${APPDIR}/closestfeats/bin/closest-features ${OSXPKGDIR}/
+	-cp ${APPDIR}/bedmap/bin/bedmap ${OSXPKGDIR}/
+	-cp ${APPDIR}/bedextract/bin/bedextract ${OSXPKGDIR}/
+	-cp ${APPDIR}/starch/bin/starch ${OSXPKGDIR}/
+	-cp ${APPDIR}/starch/bin/unstarch ${OSXPKGDIR}/
+	-cp ${APPDIR}/starch/bin/starchcat ${OSXPKGDIR}/
+	-cp ${APPDIR}/starch/bin/starchcluster ${OSXPKGDIR}/
+	-cp ${APPDIR}/starch/bin/starchcluster.gnu_parallel ${OSXPKGDIR}/
+	-cp ${APPDIR}/conversion/bin/wig2bed_bin ${OSXPKGDIR}/
 	-cp ${APPDIR}/conversion/src/bam2bed.py ${OSXPKGDIR}/bam2bed
 	-cp ${APPDIR}/conversion/src/gff2bed.py ${OSXPKGDIR}/gff2bed
 	-cp ${APPDIR}/conversion/src/gtf2bed.py ${OSXPKGDIR}/gtf2bed

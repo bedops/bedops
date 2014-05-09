@@ -83,12 +83,12 @@ The ``--help`` option describes the set operation and other options available to
         Operations: (choose one of)
             -c, --complement [-L] File1 [File]*
             -d, --difference ReferenceFile File2 [File]*
-            -e, --element-of [-number% | -number (in bp)] ReferenceFile File2 [File]*
-                   by default, -e -100% is used.
+            -e, --element-of [-number% | -number] ReferenceFile File2 [File]*
+                   by default, -e -100% is used.  'bedops -e -1' is also popular.
             -i, --intersect File1 File2 [File]*
             -m, --merge File1 [File]*
-            -n, --not-element-of [-number% | -number (in bp)] ReferenceFile File2 [File]*
-                   by default, -n -100% is used.
+            -n, --not-element-of [-number% | -number] ReferenceFile File2 [File]*
+                   by default, -n -100% is used.  'bedops -n -1' is also popular.
             -p, --partition File1 [File]*
             -s, --symmdiff File1 File2 [File]*
             -u, --everything File1 [File]*

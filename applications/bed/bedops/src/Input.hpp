@@ -603,12 +603,12 @@ private:
     msg += "      Operations: (choose one of)\n";
     msg += "          -c, --complement [-L] File1 [File]*\n";
     msg += "          -d, --difference ReferenceFile File2 [File]*\n";
-    msg += "          -e, --element-of [-number% | -number (in bp)] ReferenceFile File2 [File]*\n";
-    msg += "                 by default, -e -100% is used.\n";
+    msg += "          -e, --element-of [-number% | -number] ReferenceFile File2 [File]*\n";
+    msg += "                 by default, -e -100% is used.  'bedops -e -1' is also popular.\n";
     msg += "          -i, --intersect File1 File2 [File]*\n";
     msg += "          -m, --merge File1 [File]*\n";
-    msg += "          -n, --not-element-of [-number% | -number (in bp)] ReferenceFile File2 [File]*\n";
-    msg += "                 by default, -n -100% is used.\n";
+    msg += "          -n, --not-element-of [-number% | -number] ReferenceFile File2 [File]*\n";
+    msg += "                 by default, -n -100% is used.  'bedops -n -1' is also popular.\n";
     msg += "          -p, --partition File1 [File]*\n";
     msg += "          -s, --symmdiff File1 File2 [File]*\n";
     msg += "          -u, --everything File1 [File]*\n\n";

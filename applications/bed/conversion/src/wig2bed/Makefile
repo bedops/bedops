@@ -1,10 +1,10 @@
 WARNINGS   = -Wall -Wextra -pedantic
 BLDFLAGS   = -ansi ${WARNINGS} -O3
-SFLAGS     = -static -s
+SFLAGS     = -static
 
-FLAGS      = ${SFLAGS} ${BLDFLAGS} -std=c++11
-DFLAGS     = ${WARNINGS} -O0 -g -fno-inline -std=c++11
-GPROFFLAGS = ${WARNINGS} -O -pg -std=c++11
+FLAGS      = ${SFLAGS} -s ${BLDFLAGS} -std=c++11
+DFLAGS     = ${SFLAGS} ${WARNINGS} -O0 -g -fno-inline -std=c++11
+GPROFFLAGS = ${SFLAGS} ${WARNINGS} -O -pg -std=c++11
 MAIN       = ../../../../..
 HEAD       = ${MAIN}/interfaces/general-headers
 SOURCE1    = Wig2Bed.cpp
