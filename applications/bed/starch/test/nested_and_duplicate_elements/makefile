@@ -6,6 +6,7 @@ TMP             = /tmp
 USER           := $(shell whoami)
 THIS_DIR       := ${shell pwd}
 RESULTS         = ${TMP}/${USER}/starch_regression_test/results/nested_and_duplicate_elements
+SRC             = ${THIS_DIR}/src
 BED_INPUT       = ${THIS_DIR}/data/test_input.bed
 STARCH_BZIP2    = ${RESULTS}/test_output.bz2starch
 STARCH_GZIP     = ${RESULTS}/test_output.gzstarch
@@ -39,13 +40,51 @@ endif
 tests: nested_tests duplicate_tests
 	@echo "[STARCH] nested- and duplicate-element tests passed!"
 
-nested_tests:
-	@echo "[STARCH] testing nested elements..."
+nested_tests: nested_tests_bzip2 nested_tests_gzip
 	@echo "[STARCH] nested element tests passed!"
 
-duplicate_tests:
-	@echo "[STARCH] testing duplicate elements..."
+nested_tests_bzip2:
+	@echo "[STARCH] testing (bzip2-starch) nested elements..."
+ifeq (${PLATFORM},Linux)
+	@${SRC}/hasNestedElements.py ${LINUX_BINDIR}/${VERSION}/bin/unstarch ${STARCH_BZIP2}
+endif
+ifeq (${PLATFORM},Darwin)
+	@${SRC}/hasNestedElements.py ${OSX_BINDIR}/${VERSION}/bin/unstarch ${STARCH_BZIP2}
+endif
+	@echo "[STARCH] (bzip2-starch) nested element tests passed!"
+
+nested_tests_gzip:
+	@echo "[STARCH] testing (gzip-starch) nested elements..."
+ifeq (${PLATFORM},Linux)
+	@${SRC}/hasNestedElements.py ${LINUX_BINDIR}/${VERSION}/bin/unstarch ${STARCH_GZIP}
+endif
+ifeq (${PLATFORM},Darwin)
+	@${SRC}/hasNestedElements.py ${OSX_BINDIR}/${VERSION}/bin/unstarch ${STARCH_GZIP}
+endif
+	@echo "[STARCH] (gzip-starch) nested element tests passed!"
+
+duplicate_tests: duplicate_tests_bzip2 duplicate_tests_gzip
 	@echo "[STARCH] duplicate element tests passed!"
+
+duplicate_tests_bzip2:
+	@echo "[STARCH] testing (bzip2-starch) duplicate elements..."
+ifeq (${PLATFORM},Linux)
+	@${SRC}/hasDuplicateElements.py ${LINUX_BINDIR}/${VERSION}/bin/unstarch ${STARCH_BZIP2}
+endif
+ifeq (${PLATFORM},Darwin)
+	@${SRC}/hasDuplicateElements.py ${OSX_BINDIR}/${VERSION}/bin/unstarch ${STARCH_BZIP2}
+endif
+	@echo "[STARCH] (bzip2-starch) duplicate element tests passed!"
+
+duplicate_tests_gzip:
+	@echo "[STARCH] testing (gzip-starch) duplicate elements..."
+ifeq (${PLATFORM},Linux)
+	@${SRC}/hasDuplicateElements.py ${LINUX_BINDIR}/${VERSION}/bin/unstarch ${STARCH_GZIP}
+endif
+ifeq (${PLATFORM},Darwin)
+	@${SRC}/hasDuplicateElements.py ${OSX_BINDIR}/${VERSION}/bin/unstarch ${STARCH_GZIP}
+endif
+	@echo "[STARCH] (gzip-starch) duplicate element tests passed!"
 
 clean:
 	@echo "[STARCH] cleaning up intermediate starch archives..."
