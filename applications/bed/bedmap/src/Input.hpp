@@ -439,7 +439,7 @@ namespace BedMap {
     usage << "                                                                                                    \n";
     usage << " USAGE: bedmap [process-flags] [overlap-option] <operation(s)...> <ref-file> [map-file]             \n";
     usage << "     Any input file must be sorted per the sort-bed utility.                                        \n";
-    usage << "     The program accepts BED and starch file formats.                                               \n";
+    usage << "     The program accepts BED and Starch file formats.                                               \n";
     usage << "     May use '-' for a file to indicate reading from standard input (BED format only).              \n";
     usage << "                                                                                                    \n";
     usage << "     Traverse <ref-file>, while applying <operation(s)> on qualified, overlapping elements from     \n";

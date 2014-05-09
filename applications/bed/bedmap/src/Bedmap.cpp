@@ -45,7 +45,6 @@
 #include "data/bed/BedCheckIterator.hpp"
 #include "data/bed/BedDistances.hpp"
 #include "data/bed/BedTypes.hpp"
-#include "data/starch/starchApi.hpp"
 #include "suite/BEDOPS.Version.hpp"
 #include "utility/Assertion.hpp"
 #include "utility/ByLine.hpp"

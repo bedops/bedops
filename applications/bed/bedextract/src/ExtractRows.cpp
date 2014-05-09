@@ -123,7 +123,7 @@ namespace {
         if ( f1_ == NULL )
           throw("Unable to find file: " + fn);
         else if ( starch::Starch::isStarch(f1_) )
-          throw("starch format is not supported with first file given to " + prognm + std::string("\nProblem file: ") + fn);
+          throw("Starch format is not supported with first file given to " + prognm + std::string("\nProblem file: ") + fn);
       } else {
         m_ = TWOFILE;
         std::string fn = argv[argcntr];
@@ -153,7 +153,7 @@ namespace {
         }
 
         if ( starch::Starch::isStarch(f1_) )
-          throw("starch format is not supported with first file given to " + prognm + std::string("\nProblem file: ") + fn);
+          throw("Starch format is not supported with first file given to " + prognm + std::string("\nProblem file: ") + fn);
       }
     }
 

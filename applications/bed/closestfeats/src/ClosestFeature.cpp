@@ -45,7 +45,6 @@
 #include "data/bed/BedTypes.hpp"
 #include "suite/BEDOPS.Constants.hpp"
 #include "suite/BEDOPS.Version.hpp"
-#include "data/starch/starchApi.hpp"
 #include "utility/Exception.hpp"
 #include "utility/FPWrap.hpp"
 #include "utility/Typify.hpp"

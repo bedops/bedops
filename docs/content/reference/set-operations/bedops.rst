@@ -62,7 +62,7 @@ The ``--help`` option describes the set operation and other options available to
             Each operation requires a minimum number of files as shown below.
               There is no fixed maximum number of files that may be used.
             Input files must have at least the first 3 columns of the BED specification.
-            The program accepts BED and starch file formats.
+            The program accepts BED and Starch file formats.
             May use '-' for a file to indicate reading from standard input (BED format only).
 
         Process Flags:

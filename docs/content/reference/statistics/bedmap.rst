@@ -53,7 +53,7 @@ The ``--help`` option describes the various mapping and analytical operations an
                                                                                                       
    USAGE: bedmap [process-flags] [overlap-option] <operation(s)...> <ref-file> [map-file]             
        Any input file must be sorted per the sort-bed utility.                                        
-       The program accepts BED and starch file formats.                                               
+       The program accepts BED and Starch file formats.                                               
        May use '-' for a file to indicate reading from standard input (BED format only).              
                                                                                                     
        Traverse <ref-file>, while applying <operation(s)> on qualified, overlapping elements from     

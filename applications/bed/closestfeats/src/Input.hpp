@@ -148,7 +148,7 @@ namespace FeatDist {
   std::string Usage() {
     std::string msg = "\nUSAGE: closest-features [Process-Flags] <input-file> <query-file>\n";
     msg += "   All input files must be sorted per sort-bed.\n";
-    msg += "   The program accepts BED and starch file formats\n";
+    msg += "   The program accepts BED and Starch file formats\n";
     msg += "   May use '-' for a file to indicate reading from standard input (BED format only).\n";
     msg += "\n";
     msg += "   For every element in <input-file>, determine the two elements from <query-file> falling\n";

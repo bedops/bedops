@@ -582,7 +582,7 @@ private:
     msg += "          Each operation requires a minimum number of files as shown below.\n";
     msg += "            There is no fixed maximum number of files that may be used.\n";
     msg += "          Input files must have at least the first 3 columns of the BED specification.\n";
-    msg += "          The program accepts BED and starch file formats.\n";
+    msg += "          The program accepts BED and Starch file formats.\n";
     msg += "          May use '-' for a file to indicate reading from standard input (BED format only).\n";
     msg += "\n";
     msg += "      Process Flags:\n";

@@ -45,7 +45,6 @@
 #include "data/bed/BedCheckIterator.hpp"
 #include "data/bed/BedCompare.hpp"
 #include "data/bed/BedTypes.hpp"
-#include "data/starch/starchApi.hpp"
 #include "suite/BEDOPS.Constants.hpp"
 #include "suite/BEDOPS.Version.hpp"
 #include "utility/Exception.hpp"
