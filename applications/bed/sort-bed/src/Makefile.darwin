@@ -28,8 +28,8 @@ prep:
 
 clean:
 	rm -rf ${OBJ_DIR}
-	rm -f ${DIST_DIR}/${PROG}*
-	rm -f ${DIST_DIR}/*.${PROG}*
+	rm -rf ${DIST_DIR}/${PROG}*
+	rm -rf ${DIST_DIR}/*.${PROG}*
 
 nonstatic: sortbuild
 	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${WARNINGS} ${OPTIMIZE} -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}

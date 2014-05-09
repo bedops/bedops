@@ -119,4 +119,4 @@ clean:
 	rm -f $(LOCALSTARCHLIB)
 	rm -f ${LOCALSTARCHLIBDEBUG}
 	rm -rf ${LOCALOBJDIR}
-	rm -f ${BINDIR}/*starch*
+	rm -rf ${BINDIR}/*starch*

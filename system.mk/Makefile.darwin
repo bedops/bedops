@@ -21,8 +21,8 @@ I386             = darwin_intel_i386
 X86_64           = darwin_intel_x86_64
 
 
-default: | mkdirs
-	$(MAKE) build_intel_apps -f $(SELF)
+default: support
+	$(MAKE) build -f $(SELF)
 
 SUBDIRS = bedmap/src sort-bed/src bedops/src closestfeats/src bedextract/src starch/src conversion/src/wig2bed
 SUBDIRS_FULL := $(patsubst %,${APPDIR}/%,$(SUBDIRS))
@@ -52,15 +52,15 @@ $(SUBDIRS_X86_64): $$(patsubst %_x86_64,${APPDIR}/%,$$@)
 
 all: $(SUBDIRS_I386) $(SUBDIRS_X86_64)
 
-build_intel_apps: support_intel
-	$(MAKE) build -f $(SELF)
-
 build: all
 	$(MAKE) build_fat -f $(SELF)
 
 build_fat: sort_c_intel_fat bedops_c_intel_fat closestfeatures_c_intel_fat bedmap_c_intel_fat bedextract_c_intel_fat wig2bed_c_intel_fat starch_c_intel_fat
 
 debug: all
+	$(MAKE) dbg_build_fat -f $(SELF)
+
+dbg_build_fat: dbg_sort_c_intel_fat dbg_bedops_c_intel_fat dbg_closestfeatures_c_intel_fat dbg_bedmap_c_intel_fat dbg_bedextract_c_intel_fat dbg_wig2bed_c_intel_fat dbg_starch_c_intel_fat
 
 #
 # clean ups
@@ -167,11 +167,9 @@ clean_gprof:
 #
 # mkdir's
 #
-mkdir_libs:
+mkdirs:
 	mkdir -p ${PARTY3}/$(I386)
 	mkdir -p ${PARTY3}/$(X86_64)
-
-mkdirs: | mkdir_libs
 	mkdir -p ${APPDIR}/sort-bed/bin
 	mkdir -p ${APPDIR}/bedops/bin
 	mkdir -p ${APPDIR}/closestfeats/bin
@@ -190,7 +188,7 @@ support_intel_x86_64: boost_support_intel_x86_64_c jansson_support_intel_x86_64_
 
 support_intel: support_intel_i386 support_intel_x86_64
 
-support: | mkdir_libs
+support: | mkdirs
 	$(MAKE) support_intel -f $(SELF)
 
 boost_support_intel_i386_c:
@@ -254,3 +252,33 @@ starch_c_intel_fat:
 	-test -e ${APPDIR}/starch/bin_i386/starch && test -e ${APPDIR}/starch/bin_x86_64/starch && { lipo -create ${APPDIR}/starch/bin_i386/starch ${APPDIR}/starch/bin_x86_64/starch -output ${APPDIR}/starch/bin/starch; }
 	-test -e ${APPDIR}/starch/bin_i386/unstarch && test -e ${APPDIR}/starch/bin_x86_64/unstarch && { lipo -create ${APPDIR}/starch/bin_i386/unstarch ${APPDIR}/starch/bin_x86_64/unstarch -output ${APPDIR}/starch/bin/unstarch; }
 	-test -e ${APPDIR}/starch/bin_i386/starchcat && test -e ${APPDIR}/starch/bin_x86_64/starchcat && { lipo -create ${APPDIR}/starch/bin_i386/starchcat ${APPDIR}/starch/bin_x86_64/starchcat -output ${APPDIR}/starch/bin/starchcat; }
+
+
+
+#
+# Debug: Darwin fat build targets
+#
+dbg_sort_c_intel_fat:
+	-test -e ${APPDIR}/sort-bed/bin/debug.sort-bed_i386 && test -e ${APPDIR}/sort-bed/bin/debug.sort-bed_x86_64 && { lipo -create ${APPDIR}/sort-bed/bin/debug.sort-bed_i386 ${APPDIR}/sort-bed/bin/debug.sort-bed_x86_64 -output ${APPDIR}/sort-bed/bin/debug.sort-bed; }
+
+dbg_bedops_c_intel_fat:
+	-test -e ${APPDIR}/bedops/bin/debug.bedops_i386 && test -e ${APPDIR}/bedops/bin/debug.bedops_x86_64 && { lipo -create ${APPDIR}/bedops/bin/debug.bedops_i386 ${APPDIR}/bedops/bin/debug.bedops_x86_64 -output ${APPDIR}/bedops/bin/debug.bedops; }
+
+dbg_closestfeatures_c_intel_fat:
+	-test -e ${APPDIR}/closestfeats/bin/debug.closest-features_i386 && test -e ${APPDIR}/closestfeats/bin/debug.closest-features_x86_64 && { lipo -create ${APPDIR}/closestfeats/bin/debug.closest-features_i386 ${APPDIR}/closestfeats/bin/debug.closest-features_x86_64 -output ${APPDIR}/closestfeats/bin/debug.closest-features; }
+
+dbg_bedmap_c_intel_fat:
+	-test -e ${APPDIR}/bedmap/bin/debug.bedmap_i386 && test -e ${APPDIR}/bedmap/bin/debug.bedmap_x86_64 && { lipo -create ${APPDIR}/bedmap/bin/debug.bedmap_i386 ${APPDIR}/bedmap/bin/debug.bedmap_x86_64 -output ${APPDIR}/bedmap/bin/debug.bedmap; }
+
+dbg_bedextract_c_intel_fat:
+	-test -e ${APPDIR}/bedextract/bin/debug.bedextract_i386 && test -e ${APPDIR}/bedextract/bin/debug.bedextract_x86_64 && { lipo -create ${APPDIR}/bedextract/bin/debug.bedextract_i386 ${APPDIR}/bedextract/bin/debug.bedextract_x86_64 -output ${APPDIR}/bedextract/bin/debug.bedextract; }
+
+dbg_wig2bed_c_intel_fat:
+	-test -e ${APPDIR}/conversion/bin/debug.wig2bed_bin_i386 && test -e ${APPDIR}/conversion/bin/debug.wig2bed_bin_x86_64 && { lipo -create ${APPDIR}/conversion/bin/debug.wig2bed_bin_i386 ${APPDIR}/conversion/bin/debug.wig2bed_bin_x86_64 -output ${APPDIR}/conversion/bin/debug.wig2bed_bin; }
+
+dbg_starch_c_intel_fat:
+	cp ${APPDIR}/starch/src/starchcluster ${APPDIR}/starch/bin/starchcluster
+	cp ${APPDIR}/starch/src/starchcluster.gnu_parallel ${APPDIR}/starch/bin/starchcluster.gnu_parallel 
+	-test -e ${APPDIR}/starch/bin_i386/debug.starch && test -e ${APPDIR}/starch/bin_x86_64/debug.starch && { lipo -create ${APPDIR}/starch/bin_i386/debug.starch ${APPDIR}/starch/bin_x86_64/debug.starch -output ${APPDIR}/starch/bin/debug.starch; }
+	-test -e ${APPDIR}/starch/bin_i386/debug.unstarch && test -e ${APPDIR}/starch/bin_x86_64/debug.unstarch && { lipo -create ${APPDIR}/starch/bin_i386/debug.unstarch ${APPDIR}/starch/bin_x86_64/debug.unstarch -output ${APPDIR}/starch/bin/debug.unstarch; }
+	-test -e ${APPDIR}/starch/bin_i386/debug.starchcat && test -e ${APPDIR}/starch/bin_x86_64/debug.starchcat && { lipo -create ${APPDIR}/starch/bin_i386/debug.starchcat ${APPDIR}/starch/bin_x86_64/debug.starchcat -output ${APPDIR}/starch/bin/debug.starchcat; }
