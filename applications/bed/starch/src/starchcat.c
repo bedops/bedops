@@ -1105,10 +1105,8 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
             switch (outType) {
                 case kBzip2: {
 #ifdef DEBUG
-                    /*
                     retransformBuf[nRetransformBuf] = '\0';
-                    fprintf(stderr, "\t(whatever's left) writing compressed retransformBuf data to bzOutFp:\n----\n%s\n---\n%d\n---\n", retransformBuf, nRetransformBuf);
-                    */
+                    fprintf(stderr, "\t(whatever's left) writing compressed retransformBuf data to bzOutFp:\n----\n%s\n---\n%" PRId64 "\n---\n", retransformBuf, nRetransformBuf);
 #endif
                     BZ2_bzWrite(&bzOutError, bzOutFp, retransformBuf, (int) nRetransformBuf);
                     if (bzOutError != BZ_OK) {
@@ -1136,7 +1134,7 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                 case kGzip: {
 #ifdef DEBUG
                     retransformBuf[nRetransformBuf] = '\0';
-                    fprintf(stderr, "\t(whatever's left) writing compressed retransformBuf data to zOutFp:\n----\n%s\n---\n%d\n---\n", retransformBuf, nRetransformBuf);
+                    fprintf(stderr, "\t(whatever's left) writing compressed retransformBuf data to zOutFp:\n----\n%s\n---\n%" PRId64 "\n---\n", retransformBuf, nRetransformBuf);
 #endif
                     zOutStream.next_in = (unsigned char *) retransformBuf;
                     zOutStream.avail_in = (uInt) nRetransformBuf;
@@ -1272,14 +1270,14 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                     */
 #ifdef DEBUG
                     if ((t_currStart > 5238450) && (t_currStart < 5238520)) {
-                        fprintf(stderr, "\tzInHave: %d \t zInError: %d \t nZRemainderBuf: %d \t zRemainderBuf: [%s]\n", zInHave, zInError, nZRemainderBuf, zRemainderBuf);
+                        fprintf(stderr, "\tzInHave: %zd \t zInError: %d \t nZRemainderBuf: %zd \t zRemainderBuf: [%s]\n", zInHave, zInError, nZRemainderBuf, zRemainderBuf);
                     }
 #endif
                     bufCharIndex = 0;
                     
                     if (nZRemainderBuf > 0) {
 #ifdef DEBUG
-                        fprintf(stderr, "\tADDING FROM REMAINDER [%d] [%s]\n", nZRemainderBuf, zRemainderBuf);
+                        fprintf(stderr, "\tADDING FROM REMAINDER [%zd] [%s]\n", nZRemainderBuf, zRemainderBuf);
 #endif
                         memset((char *) zLineBuf, 0, nZRemainderBuf + 1);
                         zBufIndex = 0;
@@ -1438,7 +1436,7 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                                         case kGzip: {
 #ifdef DEBUG
                                             if ((t_currStart > 5238450) && (t_currStart < 5238520)) {                                            
-                                                fprintf(stderr, "\twriting compressed retransformBuf data to zOutStream:\n----\n%s\n---\n%d\n---\n", retransformBuf, nRetransformBuf);
+                                                fprintf(stderr, "\twriting compressed retransformBuf data to zOutStream:\n----\n%s\n---\n%" PRId64 "\n---\n", retransformBuf, nRetransformBuf);
                                             }
 #endif
                                             zOutStream.next_in = (unsigned char *) retransformBuf;
@@ -1495,7 +1493,7 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
 #ifdef DEBUG
                             if ((t_currStart > 5238450) && (t_currStart < 5238520)) {                                            
                                 fprintf(stderr, "\tLAST NEWLINE OFFSET -> %lu\n", lastNewlineOffset);
-                                fprintf(stderr, "\tzInStream.avail_out: %d \t zBufIndex + 1: %d \t zInHave: %d \t zOutBuf[zBufIndex]: [%c]\n", zInStream.avail_out, (zBufIndex + 1), zInHave, zOutBuf[zBufIndex]);
+                                fprintf(stderr, "\tzInStream.avail_out: %d \t zBufIndex + 1: %zd \t zInHave: %zd \t zOutBuf[zBufIndex]: [%c]\n", zInStream.avail_out, (zBufIndex + 1), zInHave, zOutBuf[zBufIndex]);
                             }
 #endif
 
@@ -1533,7 +1531,7 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                         }
 #ifdef DEBUG
                         if ((t_currStart > 5238450) && (t_currStart < 5238520)) {                                            
-                            fprintf(stderr, "\tzBufIndex: %d zOutBuf -> [%c] \t zInHave: %d \t zInStream.avail_out: %d\n", zBufIndex, zOutBuf[zBufIndex], zInHave, zInStream.avail_out); 
+                            fprintf(stderr, "\tzBufIndex: %zd zOutBuf -> [%c] \t zInHave: %zd \t zInStream.avail_out: %d\n", zBufIndex, zOutBuf[zBufIndex], zInHave, zInStream.avail_out); 
                         }
 #endif
                         zBufIndex++;
@@ -1552,7 +1550,7 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
 #ifdef DEBUG
                     if ((t_currStart > 5238450) && (t_currStart < 5238520)) {                                            
                         retransformBuf[nRetransformBuf] = '\0';
-                        fprintf(stderr, "\t(whatever's left) writing compressed retransformBuf data to bzOutFp:\n----\n%s\n---\n%d\n---\n", retransformBuf, nRetransformBuf);
+                        fprintf(stderr, "\t(whatever's left) writing compressed retransformBuf data to bzOutFp:\n----\n%s\n---\n%" PRId64 "\n---\n", retransformBuf, nRetransformBuf);
                     }
 #endif
                     BZ2_bzWrite(&bzOutError, bzOutFp, retransformBuf, (int) nRetransformBuf);
@@ -1582,7 +1580,7 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
 #ifdef DEBUG
                     if ((t_currStart > 5238450) && (t_currStart < 5238520)) {                                            
                         retransformBuf[nRetransformBuf] = '\0';
-                        fprintf(stderr, "\twriting compressed retransformBuf data to zOutStream:\n----\n%s\n---\n%d\n---\n", retransformBuf, nRetransformBuf);
+                        fprintf(stderr, "\twriting compressed retransformBuf data to zOutStream:\n----\n%s\n---\n%" PRId64 "\n---\n", retransformBuf, nRetransformBuf);
                     }
 #endif
                     zOutStream.next_in = (unsigned char *) retransformBuf;
@@ -3562,7 +3560,6 @@ STARCHCAT_buildMetadataRecords (json_t ***metadataJSONs, MetadataRecord **mdReco
             case kUndefined: {
                 fprintf(stderr, "ERROR: Undefined compression type in archive header.\n");
                 return STARCHCAT_EXIT_FAILURE;
-                break;
             }
         }
 #endif
@@ -4761,7 +4758,7 @@ STARCHCAT2_fillExtractionBufferFromGzipStream (Boolean *eofFlag, FILE **inputFp,
 
         if (*nZRemainderBuf > 0) {
 #ifdef DEBUG
-            fprintf(stderr,"\tadding remainder [%d | %s] to zLineBuf\n", *nZRemainderBuf, *zRemainderBuf);
+            fprintf(stderr,"\tadding remainder [%zd | %s] to zLineBuf\n", *nZRemainderBuf, *zRemainderBuf);
 #endif
             memcpy(zLineBuf, *zRemainderBuf, *nZRemainderBuf);
             zCharIndex = *nZRemainderBuf;
@@ -4835,7 +4832,7 @@ STARCHCAT2_fillExtractionBufferFromGzipStream (Boolean *eofFlag, FILE **inputFp,
     *nZRemainderBuf = zCharIndex;
 
 #ifdef DEBUG
-    fprintf(stderr, "zRemainderBuf -> %s | length -> %d\n", *zRemainderBuf, *nZRemainderBuf);
+    fprintf(stderr, "zRemainderBuf -> %s | length -> %zd\n", *zRemainderBuf, *nZRemainderBuf);
 #endif
 
     /* cleanup */
