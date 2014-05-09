@@ -1915,7 +1915,9 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     if (cIdx > 0) {
         untransformedBuffer[cIdx] = '\0';
         if (STARCH_createTransformTokensForHeaderlessInput(untransformedBuffer, '\t', &chromosome, &start, &stop, &remainder) == 0)  {
+#ifdef DEBUG
             fprintf(stderr, "\t(just-before-last-pass) untransformedBuffer:\n%s\n", untransformedBuffer);
+#endif
 
             /* transform */
             if (stop > start)
@@ -2755,7 +2757,9 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     if (cIdx > 0) {
         untransformedBuffer[cIdx] = '\0';
         if (STARCH_createTransformTokensForHeaderlessInput(untransformedBuffer, '\t', &chromosome, &start, &stop, &remainder) == 0)  {
+#ifdef DEBUG
             fprintf(stderr, "\t(just-before-last-pass) untransformedBuffer:\n%s\n", untransformedBuffer);
+#endif
 
             /* transform */
             if (stop > start)

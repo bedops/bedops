@@ -87,4 +87,5 @@ clean:
 	@make -C ${CONCAT_DIR} -f makefile clean
 	@make -C ${UPDATING_DIR} -f makefile clean
 	@make -C ${MD_INTEG_DIR} -f makefile clean
+	@make -C ${ND_ELEM_DIR} -f makefile clean
 	@rm -rf ${ORIGINAL_DATA}
