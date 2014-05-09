@@ -16,6 +16,8 @@ endif
 
 clean: default
 
+support: default
+
 install: prep_c install_conversion_scripts install_starchcluster_scripts
 	-cp ${APPDIR}/sort-bed/bin/sort-bed ${BINDIR}/sort-bed
 	-cp ${APPDIR}/bedops/bin/bedops ${BINDIR}/bedops

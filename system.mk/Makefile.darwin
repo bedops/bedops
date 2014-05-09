@@ -127,6 +127,8 @@ support_intel_x86_64: boost_support_intel_x86_64_c jansson_support_intel_x86_64_
 
 support_intel: support_intel_i386 support_intel_x86_64
 
+support: support_intel
+
 
 boost_support_intel_i386_c:
 	bzcat ${WHICHBOOST}.tar.bz2 | tar -x -C ${PARTY3}/$(I386)/
