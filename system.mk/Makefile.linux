@@ -30,7 +30,6 @@ build: $(SUBDIRS)
 $(SUBDIRS):
 	$(MAKE) -C $@ -f Makefile $(MAKECMDGOALS)
 
-gprof: default
 
 clean: $(SUBDIRS)
 	rm -f ${BINDIR}/sort-bed
