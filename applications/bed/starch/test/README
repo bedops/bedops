@@ -41,6 +41,7 @@ This directory contains the following subdirectories:
   / compression_and_extraction
   / concatenation
   / metadata_integrity
+  / nesteds_and_duplicates
   / original_data
   / timing
   / updating
@@ -168,6 +169,22 @@ calls to the Starch archive. We also test all-chromosome results.
 To run these tests directly:
 
   $ make metadata_integrity_tests
+
+
+
+Nested and Duplicate Elements
+====================================================================================
+Starch v2.1 metadata (written by starch/starchcat v2.5 or greater, and read by unstarch
+v2.5 or greater) include flags that indicate if a nested or duplicate element is located 
+in a specified chromosome (or if the chromosome is omitted, if the condition is present 
+in any chromosome contained within the archive). Here, we test if a given BED file 
+compressed and extracted with v2.5 or greater tools display condition flags with 
+expected values.
+
+To run these tests directly:
+
+  $ make nested_and_duplicate_element_tests
+
 
 
 

@@ -8,7 +8,7 @@ all: input_data tests
 
 input_data: random.bed 
 
-tests: compression_and_extraction_tests concatenation_tests updating_tests metadata_integrity_tests
+tests: compression_and_extraction_tests concatenation_tests updating_tests metadata_integrity_tests nested_and_duplicate_element_tests
 
 #
 # setup of original (random) BED data
@@ -64,6 +64,17 @@ MD_INTEG_RES_DIR = ${TMP}/${USER}/starch_regression_test/results/metadata_integr
 metadata_integrity_tests: random.bed compression_and_extraction_tests
 	@if [ -d ${MD_INTEG_RES_DIR} ]; then make -C ${MD_INTEG_DIR} -f makefile clean; fi;
 	@make -C ${MD_INTEG_DIR} -f makefile all
+
+#
+# nested and duplicate element tests
+#
+
+ND_ELEM_DIR = ${THIS_DIR}/nested_and_duplicate_elements
+ND_ELEM_RES_DIR = ${TMP}/${USER}/starch_regression_test/results/nested_and_duplicate_elements
+
+nested_and_duplicate_element_tests:
+	@if [ -d ${ND_ELEM_RES_DIR} ]; then make -C ${ND_ELEM_DIR} -f makefile clean; fi;
+	@make -C ${ND_ELEM_DIR} -f makefile all
 
 #
 # clean-up
