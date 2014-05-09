@@ -32,7 +32,9 @@ $(SUBDIRS):
 
 debug: $(SUBDIRS)
 
-clean: $(SUBDIRS)
+gprof: $(SUBDIRS)
+
+clean: clean_debug clean_gprof $(SUBDIRS)
 	rm -f ${BINDIR}/sort-bed
 	rm -f ${BINDIR}/bedops
 	rm -f ${BINDIR}/closest-features
@@ -70,6 +72,63 @@ clean: $(SUBDIRS)
 	rm -f ${PARTY3}/jansson
 	rm -rf ${WHICHZLIB}
 	rm -f ${PARTY3}/zlib
+
+clean_debug:
+	rm -f ${BINDIR}/debug.sort-bed
+	rm -f ${BINDIR}/debug.bedops
+	rm -f ${BINDIR}/debug.closest-features
+	rm -f ${BINDIR}/debug.bedmap
+	rm -f ${BINDIR}/debug.bedextract
+	rm -f ${BINDIR}/debug.starch
+	rm -f ${BINDIR}/debug.unstarch
+	rm -f ${BINDIR}/debug.starchcat
+	rm -f ${BINDIR}/starchcluster
+	rm -f ${BINDIR}/starchcluster.gnu_parallel
+	rm -f ${BINDIR}/bam2bed
+	rm -f ${BINDIR}/gff2bed
+	rm -f ${BINDIR}/gtf2bed
+	rm -f ${BINDIR}/psl2bed
+	rm -f ${BINDIR}/sam2bed
+	rm -f ${BINDIR}/vcf2bed
+	rm -f ${BINDIR}/wig2bed
+	rm -f ${BINDIR}/debug.wig2bed_bin
+	rm -f ${BINDIR}/bam2starch
+	rm -f ${BINDIR}/bam2starchcluster
+	rm -f ${BINDIR}/gff2starch
+	rm -f ${BINDIR}/gtf2starch
+	rm -f ${BINDIR}/psl2starch
+	rm -f ${BINDIR}/sam2starch
+	rm -f ${BINDIR}/vcf2starch
+	rm -f ${BINDIR}/wig2starch
+
+clean_gprof:
+	rm -f ${BINDIR}/gprof.sort-bed
+	rm -f ${BINDIR}/gprof.bedops
+	rm -f ${BINDIR}/gprof.closest-features
+	rm -f ${BINDIR}/gprof.bedmap
+	rm -f ${BINDIR}/gprof.bedextract
+	rm -f ${BINDIR}/gprof.starch
+	rm -f ${BINDIR}/gprof.unstarch
+	rm -f ${BINDIR}/gprof.starchcat
+	rm -f ${BINDIR}/starchcluster
+	rm -f ${BINDIR}/starchcluster.gnu_parallel
+	rm -f ${BINDIR}/bam2bed
+	rm -f ${BINDIR}/gff2bed
+	rm -f ${BINDIR}/gtf2bed
+	rm -f ${BINDIR}/psl2bed
+	rm -f ${BINDIR}/sam2bed
+	rm -f ${BINDIR}/vcf2bed
+	rm -f ${BINDIR}/wig2bed
+	rm -f ${BINDIR}/gprof.wig2bed_bin
+	rm -f ${BINDIR}/bam2starch
+	rm -f ${BINDIR}/bam2starchcluster
+	rm -f ${BINDIR}/gff2starch
+	rm -f ${BINDIR}/gtf2starch
+	rm -f ${BINDIR}/psl2starch
+	rm -f ${BINDIR}/sam2starch
+	rm -f ${BINDIR}/vcf2starch
+	rm -f ${BINDIR}/wig2starch
+
 
 
 #
