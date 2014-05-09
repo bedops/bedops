@@ -60,6 +60,7 @@ build: all
 
 build_fat: sort_c_intel_fat bedops_c_intel_fat closestfeatures_c_intel_fat bedmap_c_intel_fat bedextract_c_intel_fat wig2bed_c_intel_fat starch_c_intel_fat
 
+debug: all
 
 #
 # clean ups
