@@ -29,6 +29,8 @@ Released: **May 2, 2014**
 
   * Shane Neph put in a great deal of work to enable parallel builds (*e.g.*, ``make -j N`` to build various targets in parallel). Depending on the end user's environment, this can speed up compilation time by a factor of 2, 4 or more.
 
+  * Fixed compilation warnings of debug builds of :ref:`starch` toolkit under RHEL6/GCC and OS X 10.9.2/LLVM.
+
 * :ref:`conversion scripts <conversion_scripts>`
 
   * Added :ref:`bam2starchcluster` script, which parallelizes creation of :ref:`Starch <starch_specification>` archive from very large BAM files in SGE environments.
