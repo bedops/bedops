@@ -38,10 +38,10 @@
 
 namespace Wig2Bed {
 
-    extern const std::string& prognm();
-    extern const std::string& citation();
-    extern const std::string& version();
-    extern const std::string& authors();
+    extern std::string prognm();
+    extern std::string citation();
+    extern std::string version();
+    extern std::string authors();
     
     struct Help { /* */ };
     struct Version { /* */ };

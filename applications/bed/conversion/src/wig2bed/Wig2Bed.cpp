@@ -38,23 +38,24 @@
 
 #include "Input.hpp"
 
-namespace {
-    const std::string& prognm() {
-        static std::string* ret = new std::string("wig2bed");
-        return *ret;
-    }
-    const std::string& citation() {
-        static std::string* ret = new std::string(BEDOPS::citation());
-        return *ret;
-    }
-    const std::string& version() {
-        static std::string* ret = new std::string(BEDOPS::revision());
-        return *ret;
-    }
-    const std::string& authors() {
-        static std::string* ret = new std::string("Scott Kuehn & Shane Neph");
-        return *ret;
-    }
+namespace
+{
+    std::string prognm()
+        {
+            return "wig2bed";
+        }
+    std::string citation()
+        {
+            return BEDOPS::citation();
+        }
+    std::string version()
+        {
+            return std::string(BEDOPS::revision());
+        }
+    std::string authors()
+        {
+            return "Scott Kuehn & Shane Neph";
+        }
 } // unnamed
 
 int
@@ -73,12 +74,13 @@ main(int argc, char **argv)
 
             for(Wig2Bed::Input::InFileIterator i = progInput.inFiles_.begin(); i != progInput.inFiles_.end(); i++)	  
                 {
-                    if ( multiout ) {
-                        std::stringstream con;
-                        con << progInput.basename_ << "." << cntr++;
-                        std::string s = con.str();
-                        outfile = std::fopen(s.c_str(), "w");
-                    }
+                    if ( multiout )
+                        {
+                            std::stringstream con;
+                            con << progInput.basename_ << "." << cntr++;
+                            std::string s = con.str();
+                            outfile = std::fopen(s.c_str(), "w");
+                        }
                     Bed::LineCountType line = 0;
                     Bed::LineCountType posLines = 0;
                     Bed::CoordType span = 0;
@@ -98,41 +100,47 @@ main(int argc, char **argv)
                             
                             /*Ignore leading white space and comments*/
                             std::size_t lineStartPos = currLine.find_first_not_of(" \t");
-                            if ( lineStartPos == std::string::npos || currLine[lineStartPos] == '#' ) {
-                                if ( multiout && startWrite ) {
-                                    startWrite = false;
-                                    std::fclose(outfile);
-                                    std::stringstream con;
-                                    con << progInput.basename_ << "." << cntr++;
-                                    keepHeaderPos = 0;
-                                    std::string s = con.str();
-                                    outfile = std::fopen(s.c_str(), "w");
+                            if ( lineStartPos == std::string::npos || currLine[lineStartPos] == '#' )
+                                {
+                                    if ( multiout && startWrite )
+                                        {
+                                            startWrite = false;
+                                            std::fclose(outfile);
+                                            std::stringstream con;
+                                            con << progInput.basename_ << "." << cntr++;
+                                            keepHeaderPos = 0;
+                                            std::string s = con.str();
+                                            outfile = std::fopen(s.c_str(), "w");
+                                        }
+                                    if ( keepHeader )
+                                        {
+                                            std::fprintf(outfile, "%s\t%d\t%d\t%s\n", keepHeaderChrom, keepHeaderPos, (keepHeaderPos + 1), currLine.c_str());
+                                            keepHeaderPos++;
+                                        }
+                                    continue;
                                 }
-                                if ( keepHeader ) {
-                                    std::fprintf(outfile, "%s\t%d\t%d\t%s\n", keepHeaderChrom, keepHeaderPos, (keepHeaderPos + 1), currLine.c_str());
-                                    keepHeaderPos++;
-                                }
-                                continue;
-                            }
                             currLine.assign(currLine, lineStartPos, currLine.size() - lineStartPos);
 
                             /* Evaluate Wig Line */
-                            if ( (std::strncmp(currLine.c_str(), "track", 5) == 0) || std::strncmp(currLine.c_str(), "browser", 7) == 0 ) {
-                                if ( multiout && startWrite ) {
-                                    startWrite = false;
-                                    std::fclose(outfile);
-                                    std::stringstream con;
-                                    con << progInput.basename_ << "." << cntr++;
-                                    keepHeaderPos = 0;
-                                    std::string s = con.str();
-                                    outfile = std::fopen(s.c_str(), "w");
+                            if ( (std::strncmp(currLine.c_str(), "track", 5) == 0) || std::strncmp(currLine.c_str(), "browser", 7) == 0 )
+                                {
+                                    if ( multiout && startWrite )
+                                        {
+                                            startWrite = false;
+                                            std::fclose(outfile);
+                                            std::stringstream con;
+                                            con << progInput.basename_ << "." << cntr++;
+                                            keepHeaderPos = 0;
+                                            std::string s = con.str();
+                                            outfile = std::fopen(s.c_str(), "w");
+                                        }
+                                    if ( keepHeader )
+                                        {
+                                            std::fprintf(outfile, "%s\t%d\t%d\t%s\n", keepHeaderChrom, keepHeaderPos, (keepHeaderPos + 1), currLine.c_str());
+                                            keepHeaderPos++;
+                                        }
+                                    continue;
                                 }
-                                if ( keepHeader ) {
-                                    std::fprintf(outfile, "%s\t%d\t%d\t%s\n", keepHeaderChrom, keepHeaderPos, (keepHeaderPos + 1), currLine.c_str());
-                                    keepHeaderPos++;
-                                }
-                                continue;
-                            }
                             else if (std::strncmp(currLine.c_str(), "variableStep", 12) == 0) 
                                 {
                                     int fields = std::sscanf(currLine.c_str(), "variableStep chrom=%s span=%" SCNu64 "\n", chromBuf, &span);
@@ -145,19 +153,21 @@ main(int argc, char **argv)
                                     if (fields == 1) 
                                         span = 1;
                                     isFixedStep = false;
-                                    if ( multiout && startWrite ) {
-                                        startWrite = false;
-                                        std::fclose(outfile);
-                                        std::stringstream con;
-                                        con << progInput.basename_ << "." << cntr++;
-                                        keepHeaderPos = 0;
-                                        std::string s = con.str();
-                                        outfile = std::fopen(s.c_str(), "w");
-                                    }
-                                    if ( keepHeader ) {
-                                        std::fprintf(outfile, "%s\t%d\t%d\t%s\n", keepHeaderChrom, keepHeaderPos, (keepHeaderPos + 1), currLine.c_str());
-                                        keepHeaderPos++;
-                                    }
+                                    if ( multiout && startWrite )
+                                        {
+                                            startWrite = false;
+                                            std::fclose(outfile);
+                                            std::stringstream con;
+                                            con << progInput.basename_ << "." << cntr++;
+                                            keepHeaderPos = 0;
+                                            std::string s = con.str();
+                                            outfile = std::fopen(s.c_str(), "w");
+                                        }
+                                    if ( keepHeader )
+                                        {
+                                            std::fprintf(outfile, "%s\t%d\t%d\t%s\n", keepHeaderChrom, keepHeaderPos, (keepHeaderPos + 1), currLine.c_str());
+                                            keepHeaderPos++;
+                                        }
                                 }
                             else if (std::strncmp(currLine.c_str(), "fixedStep", 9) == 0) 
                                 {
@@ -172,19 +182,21 @@ main(int argc, char **argv)
                                     if(fields == 3)
                                         span = 1;
                                     isFixedStep = true;
-                                    if ( multiout && startWrite ) {
-                                        startWrite = false;
-                                        std::fclose(outfile);
-                                        std::stringstream con;
-                                        con << progInput.basename_ << "." << cntr++;
-                                        keepHeaderPos = 0;
-                                        std::string s = con.str();
-                                        outfile = std::fopen(s.c_str(), "w");
-                                    }
-                                    if ( keepHeader ) {
-                                        std::fprintf(outfile, "%s\t%d\t%d\t%s\n", keepHeaderChrom, keepHeaderPos, (keepHeaderPos + 1), currLine.c_str());
-                                        keepHeaderPos++;
-                                    }
+                                    if ( multiout && startWrite )
+                                        {
+                                            startWrite = false;
+                                            std::fclose(outfile);
+                                            std::stringstream con;
+                                            con << progInput.basename_ << "." << cntr++;
+                                            keepHeaderPos = 0;
+                                            std::string s = con.str();
+                                            outfile = std::fopen(s.c_str(), "w");
+                                        }
+                                    if ( keepHeader )
+                                        {
+                                            std::fprintf(outfile, "%s\t%d\t%d\t%s\n", keepHeaderChrom, keepHeaderPos, (keepHeaderPos + 1), currLine.c_str());
+                                            keepHeaderPos++;
+                                        }
                                 }
                             else if (std::strncmp(currLine.c_str(), "chr", 3) == 0) 
                                 {
