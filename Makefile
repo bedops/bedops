@@ -20,6 +20,8 @@ support: default
 
 debug: default
 
+gprof: default
+
 install: prep_c install_conversion_scripts install_starchcluster_scripts
 	-cp ${APPDIR}/sort-bed/bin/sort-bed ${BINDIR}/
 	-cp ${APPDIR}/bedops/bin/bedops ${BINDIR}/
