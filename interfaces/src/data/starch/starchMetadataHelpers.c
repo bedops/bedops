@@ -176,6 +176,7 @@ STARCH_updateMetadataForChromosome(Metadata **md, char *chr, char *fn, uint64_t 
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_updateMetadataForChromosome() ---\n");
+    fprintf(stderr, "\tduplicateElementExists: %d\n\tnestedElementExists: %d\n", (int) duplicateElementExists, (int) nestedElementExists);
 #endif
     Metadata *iter;
 
@@ -189,6 +190,9 @@ STARCH_updateMetadataForChromosome(Metadata **md, char *chr, char *fn, uint64_t 
 
     for (iter = *md; iter != NULL; iter = iter->next) {
         if (strcmp((const char *)iter->chromosome, chr) == 0) {
+#ifdef DEBUG
+            fprintf(stderr, "\tupdating record for chr: %s\n", iter->chromosome);
+#endif
             free(iter->filename); 
             iter->filename = NULL;
             iter->filename = (char *) malloc(strlen(fn) + 1);
@@ -203,7 +207,6 @@ STARCH_updateMetadataForChromosome(Metadata **md, char *chr, char *fn, uint64_t 
             iter->totalUniqueBases = totalUniqueBases;
             iter->duplicateElementExists = duplicateElementExists;
             iter->nestedElementExists = nestedElementExists;
-
             break;
         }
     }
@@ -524,14 +527,18 @@ STARCH_generateJSONMetadata(const Metadata *md, const CompressionType type, cons
 
         /* 2.1+ archive */
         if ((json_integer_value(streamArchiveVersionMajor) > 2) || ((json_integer_value(streamArchiveVersionMajor) == 2) && (json_integer_value(streamArchiveVersionMinor) >= 1))) {
-            streamDuplicateElementExistsFlag = json_boolean(md->duplicateElementExists == kStarchTrue);
+#ifdef DEBUG
+            fprintf(stderr, "\titer->duplicateElementExists: %d\n", (int) iter->duplicateElementExists);
+            fprintf(stderr, "\titer->nestedElementExists: %d\n", (int) iter->nestedElementExists);
+#endif
+            streamDuplicateElementExistsFlag = json_boolean(iter->duplicateElementExists == kStarchTrue);
             if (!streamDuplicateElementExistsFlag) {
                 fprintf(stderr, "ERROR: Could not instantiate stream duplicate-element-exists flag object\n");
                 return NULL;
             }
             json_object_set_new(stream, STARCH_METADATA_STREAM_DUPLICATEELEMENTEXISTS_KEY, streamDuplicateElementExistsFlag);
 
-            streamNestedElementExistsFlag = json_boolean(md->nestedElementExists == kStarchTrue);
+            streamNestedElementExistsFlag = json_boolean(iter->nestedElementExists == kStarchTrue);
             if (!streamNestedElementExistsFlag) {
                 fprintf(stderr, "ERROR: Could not instantiate stream duplicate-element-exists flag object\n");
                 return NULL;

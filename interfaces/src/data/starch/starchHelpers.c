@@ -1882,6 +1882,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                         totalUniqueBases += (BaseCountType) (stop - previousStop);
                     previousStop = (stop > previousStop) ? stop : previousStop;
 
+#ifdef DEBUG
+                    fprintf(stderr, "\t(intermediate) start: %" PRId64 "\tpStart: %" PRId64 "\tstop: %" PRId64 "\tpStop: %" PRId64 "\n", start, pStart, stop, pStop);
+                    fprintf(stderr, "\t(intermediate) duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", (int) duplicateElementExistsFlag, (int) nestedElementExistsFlag);
+#endif
+
                     /* test for duplicate element */
                     if ((pStart == start) && (pStop == stop))
                         duplicateElementExistsFlag = kStarchTrue;
@@ -1958,6 +1963,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
             else if (previousStop < stop)
                 totalUniqueBases += (BaseCountType) (stop - previousStop);
             previousStop = (stop > previousStop) ? stop : previousStop;
+
+#ifdef DEBUG
+            fprintf(stderr, "\t(just-before-last-pass) start: %" PRId64 "\tpStart: %" PRId64 "\tstop: %" PRId64 "\tpStop: %" PRId64 "\n", start, pStart, stop, pStop);
+            fprintf(stderr, "\t(just-before-last-pass) duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", (int) duplicateElementExistsFlag, (int) nestedElementExistsFlag);
+#endif
 
             /* test for duplicate element */
             if ((pStart == start) && (pStop == stop))
@@ -2722,7 +2732,8 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                 previousStop = (stop > previousStop) ? stop : previousStop;
 
 #ifdef DEBUG
-                fprintf(stderr, "\t(intermediate) testing pElements:\n\tstart/pStart : [ %" PRId64 " / %" PRId64 " ]\n\tstop/pStop : [ %" PRId64 " / %" PRId64 " ]\n", start, pStart, stop, pStop);
+                fprintf(stderr, "\t(intermediate) start: %" PRId64 "\tpStart: %" PRId64 "\tstop: %" PRId64 "\tpStop: %" PRId64 "\n", start, pStart, stop, pStop);
+                fprintf(stderr, "\t(intermediate) duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", (int) duplicateElementExistsFlag, (int) nestedElementExistsFlag);
 #endif
 
                 /* test for duplicate element */
@@ -2824,6 +2835,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
             else if (previousStop < stop)
                 totalUniqueBases += (BaseCountType) (stop - previousStop);
             previousStop = (stop > previousStop) ? stop : previousStop;
+
+#ifdef DEBUG
+            fprintf(stderr, "\t(intermediate) start: %" PRId64 "\tpStart: %" PRId64 "\tstop: %" PRId64 "\tpStop: %" PRId64 "\n", start, pStart, stop, pStop);
+            fprintf(stderr, "\t(intermediate) duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", (int) duplicateElementExistsFlag, (int) nestedElementExistsFlag);
+#endif
 
             /* test for duplicate element */
             if ((pStart == start) && (pStop == stop))
@@ -2953,6 +2969,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 
 #ifdef DEBUG
     fprintf(stderr, "\t(last-pass) updating last md record...\n");
+    fprintf(stderr, "\t(last-pass) flag state: duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", (int) duplicateElementExistsFlag, (int) nestedElementExistsFlag);
 #endif
     if (STARCH_updateMetadataForChromosome(md, 
                                            prevChromosome, 
