@@ -711,8 +711,10 @@ namespace starch
             Bed::LineCountType              getCurrentChromosomeLineCount() { return (archMdIter) ? archMdIter->lineCount : 0; }
             Bed::BaseCountType              getCurrentChromosomeNonUniqueBaseCount() { return (archMdIter) ? archMdIter->totalNonUniqueBases : 0; }
             Bed::BaseCountType              getCurrentChromosomeUniqueBaseCount() { return (archMdIter) ? archMdIter->totalUniqueBases : 0; }
-            Boolean                         getCurrentChromosomeDuplicateElementExists() { return (archMdIter) ? archMdIter->duplicateElementExists : STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE; }
-            Boolean                         getCurrentChromosomeNestedElementExists() { return (archMdIter) ? archMdIter->nestedElementExists : STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE; }
+            bool                            getCurrentChromosomeHasDuplicateElement() { return (archMdIter) ? (archMdIter->duplicateElementExists == kStarchTrue ? true : false ) : (STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE == kStarchTrue ? true : false ); }
+            bool                            getCurrentChromosomeHasNestedElement() { return (archMdIter) ? (archMdIter->nestedElementExists == kStarchTrue ? true : false ) : (STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE == kStarchTrue ? true : false ); }
+            bool                            getAllChromosomesHaveDuplicateElement() { Metadata *_archMdIter; for (_archMdIter = archMd; _archMdIter != NULL; _archMdIter = _archMdIter->next) { if (UNSTARCH_duplicateElementExistsForChromosome(archMd, _archMdIter->chromosome) == kStarchTrue) return true; } return false; }
+            bool                            getAllChromosomesHaveNestedElement() { Metadata *_archMdIter; for (_archMdIter = archMd; _archMdIter != NULL; _archMdIter = _archMdIter->next) { if (UNSTARCH_nestedElementExistsForChromosome(archMd, _archMdIter->chromosome) == kStarchTrue) return true; } return false; }
             inline bool                     isEOF() { return (!getCurrentChromosome()); }
 
         // ------------        
