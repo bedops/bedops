@@ -201,27 +201,27 @@ boost_support_intel_x86_64_c:
 
 jansson_support_intel_i386_c:
 	bzcat ${WHICHJANSSON}.tar.bz2 | tar -x -C ${PARTY3}/$(I386)/
-	cd ${PARTY3}/$(I386)/${JANSSONVERSION} && export ARCH=i386 && export CC=${CC} && export CXX=${CXX} && ./configure --prefix=${WDIR}/${PARTY3}/$(I386)/${JANSSONVERSION} CFLAGS="-arch i386" --build="i386" && make && make install && cd ../ && rm -f jansson && ln -s ${JANSSONVERSION} jansson && cd ${WDIR}
+	cd ${PARTY3}/$(I386)/${JANSSONVERSION} && export ARCH=i386 && export CC=${CC} && export CXX=${CXX} && ./configure --prefix=${WDIR}/${PARTY3}/$(I386)/${JANSSONVERSION} CFLAGS="-arch i386" --build="i386" && $(MAKE) && $(MAKE) install && cd ../ && rm -f jansson && ln -s ${JANSSONVERSION} jansson && cd ${WDIR}
 
 jansson_support_intel_x86_64_c:
 	bzcat ${WHICHJANSSON}.tar.bz2 | tar -x -C ${PARTY3}/$(X86_64)/
-	cd ${PARTY3}/$(X86_64)/${JANSSONVERSION} && export ARCH=x86_64 && export CC=${CC} && export CXX=${CXX} && ./configure --prefix=${WDIR}/${PARTY3}/$(X86_64)/${JANSSONVERSION} CFLAGS="-arch x86_64" --build="x86_64" && make && make install && cd ../ && rm -f jansson && ln -s ${JANSSONVERSION} jansson && cd ${WDIR}
+	cd ${PARTY3}/$(X86_64)/${JANSSONVERSION} && export ARCH=x86_64 && export CC=${CC} && export CXX=${CXX} && ./configure --prefix=${WDIR}/${PARTY3}/$(X86_64)/${JANSSONVERSION} CFLAGS="-arch x86_64" --build="x86_64" && $(MAKE) && $(MAKE) install && cd ../ && rm -f jansson && ln -s ${JANSSONVERSION} jansson && cd ${WDIR}
 
 bzip2_support_intel_i386_c:
 	bzcat ${WHICHBZIP2}.tar.bz2 | tar -x -C ${PARTY3}/$(I386)/
-	cd ${PARTY3}/$(I386)/${BZIP2VERSION} && export ARCH=i386 && export CC=${CC} && export CXX=${CXX} && make -f Makefile.darwin_i386 libbz2.a && cd ../ && rm -f bzip2 && ln -s ${BZIP2VERSION} bzip2 && cd ${WDIR}
+	cd ${PARTY3}/$(I386)/${BZIP2VERSION} && export ARCH=i386 && export CC=${CC} && export CXX=${CXX} && $(MAKE) -f Makefile.darwin_i386 libbz2.a && cd ../ && rm -f bzip2 && ln -s ${BZIP2VERSION} bzip2 && cd ${WDIR}
 
 bzip2_support_intel_x86_64_c:
 	bzcat ${WHICHBZIP2}.tar.bz2 | tar -x -C ${PARTY3}/$(X86_64)/
-	cd ${PARTY3}/$(X86_64)/${BZIP2VERSION} && export ARCH=x86_64 && export CC=${CC} && export CXX=${CXX} && make -f Makefile.darwin_x86_64 libbz2.a && cd ../ && rm -f bzip2 && ln -s ${BZIP2VERSION} bzip2 && cd ${WDIR}
+	cd ${PARTY3}/$(X86_64)/${BZIP2VERSION} && export ARCH=x86_64 && export CC=${CC} && export CXX=${CXX} && $(MAKE) -f Makefile.darwin_x86_64 libbz2.a && cd ../ && rm -f bzip2 && ln -s ${BZIP2VERSION} bzip2 && cd ${WDIR}
 
 zlib_support_intel_i386_c:
 	bzcat ${WHICHZLIB}.tar.bz2 | tar -x -C ${PARTY3}/$(I386)/
-	cd ${PARTY3}/$(I386)/${ZLIBVERSION} && export ARCH=i386 && export CC=${CC} && export CXX=${CXX} && ./configure --static --archs="-arch i386" && make && cd ../ && rm -f zlib && ln -s ${ZLIBVERSION} zlib && cd ${WDIR}
+	cd ${PARTY3}/$(I386)/${ZLIBVERSION} && export ARCH=i386 && export CC=${CC} && export CXX=${CXX} && ./configure --static --archs="-arch i386" && $(MAKE) && cd ../ && rm -f zlib && ln -s ${ZLIBVERSION} zlib && cd ${WDIR}
 
 zlib_support_intel_x86_64_c:
 	bzcat ${WHICHZLIB}.tar.bz2 | tar -x -C ${PARTY3}/$(X86_64)/
-	cd ${PARTY3}/$(X86_64)/${ZLIBVERSION} && export ARCH=x86_64 && export CC=${CC} && export CXX=${CXX} && ./configure --static --archs="-arch x86_64" && make && cd ../ && rm -f zlib && ln -s ${ZLIBVERSION} zlib && cd ${WDIR}
+	cd ${PARTY3}/$(X86_64)/${ZLIBVERSION} && export ARCH=x86_64 && export CC=${CC} && export CXX=${CXX} && ./configure --static --archs="-arch x86_64" && $(MAKE) && cd ../ && rm -f zlib && ln -s ${ZLIBVERSION} zlib && cd ${WDIR}
 
 
 

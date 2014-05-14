@@ -142,12 +142,12 @@ boost_support_c:
 
 jansson_support_c:
 	bzcat ${WHICHJANSSON}.tar.bz2 | tar -x -C ${PARTY3}
-	cd ${PARTY3}/${JANSSONVERSION} && ./configure --prefix=${WDIR}/${PARTY3}/${JANSSONVERSION} && make && make install && cd ${WDIR} && rm -f jansson && ln -s ${JANSSONVERSION} ${PARTY3}/jansson
+	cd ${PARTY3}/${JANSSONVERSION} && ./configure --prefix=${WDIR}/${PARTY3}/${JANSSONVERSION} && $(MAKE) && $(MAKE) install && cd ${WDIR} && rm -f jansson && ln -s ${JANSSONVERSION} ${PARTY3}/jansson
 
 bzip2_support_c:
 	bzcat ${WHICHBZIP2}.tar.bz2 | tar -x -C ${PARTY3}
-	cd ${PARTY3}/${BZIP2VERSION} && make libbz2.a && cd ${WDIR} && rm -f bzip2 && ln -s ${BZIP2VERSION} ${PARTY3}/bzip2
+	cd ${PARTY3}/${BZIP2VERSION} && $(MAKE) libbz2.a && cd ${WDIR} && rm -f bzip2 && ln -s ${BZIP2VERSION} ${PARTY3}/bzip2
 
 zlib_support_c:
 	bzcat ${WHICHZLIB}.tar.bz2 | tar -x -C ${PARTY3}
-	cd ${PARTY3}/${ZLIBVERSION} && ./configure --static && make && cd ${WDIR} && rm -f zlib && ln -s ${ZLIBVERSION} ${PARTY3}/zlib
+	cd ${PARTY3}/${ZLIBVERSION} && ./configure --static && $(MAKE) && cd ${WDIR} && rm -f zlib && ln -s ${ZLIBVERSION} ${PARTY3}/zlib
