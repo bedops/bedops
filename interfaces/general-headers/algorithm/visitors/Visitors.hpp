@@ -36,8 +36,8 @@ namespace Visitors {
   // Visitor that should be inherited when using sweep() algorithm.
   template <typename RefType, typename MapType = RefType>
   struct Visitor {
-    typedef RefType reference_type;
-    typedef MapType mapping_type;
+    typedef const RefType reference_type;
+    typedef const MapType mapping_type;
 
   private:
     template <class I, class R, class E>

@@ -378,7 +378,7 @@ namespace Visitors {
         if ( beg == end )
           return;
 
-        typename boost::remove_pointer<typename Iter::value_type>::type val = **beg;
+        typename boost::remove_const<typename boost::remove_pointer<typename Iter::value_type>::type>::type val = **beg;
         while ( ++beg != end ) {
           if ( val.start() > (*beg)->start() )
             val.start((*beg)->start());

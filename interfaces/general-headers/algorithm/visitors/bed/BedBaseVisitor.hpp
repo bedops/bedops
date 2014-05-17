@@ -120,8 +120,8 @@ namespace Visitors {
   template <typename BedDist, typename Ref, typename Map = Ref>
   struct BedBaseVisitor {
      typedef BedDist dist_type;
-     typedef Ref reference_type;
-     typedef Map mapping_type;
+     typedef const Ref reference_type;
+     typedef const Map mapping_type;
   
    protected:
      // friends

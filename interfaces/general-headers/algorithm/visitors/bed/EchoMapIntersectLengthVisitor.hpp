@@ -30,6 +30,8 @@
 
 #include <set>
 
+#include <boost/type_traits.hpp>
+
 #include "data/bed/Bed.hpp"
 #include "data/bed/BedCompare.hpp"
 
@@ -67,7 +69,7 @@ namespace Visitors {
         std::vector<long> vec;
         typename SType::const_iterator i = win_.begin();
         while ( i != win_.end() ) {
-          T c = *refItem_;
+          typename boost::remove_const<T>::type c = *refItem_;
           c.intersection(**i++);
           vec.push_back(c.length());
         } // while

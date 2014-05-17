@@ -30,6 +30,8 @@
 
 #include <set>
 
+#include <boost/type_traits.hpp>
+
 #include "data/bed/BedCompare.hpp"
 
 namespace Visitors {
@@ -65,7 +67,7 @@ namespace Visitors {
       inline void DoneReference() {
         unsigned int ovr = 0;
         if ( !cache_.empty() ) {
-          MapType tmpOvrRange = **cache_.begin();
+          typename boost::remove_const<MapType>::type tmpOvrRange = **cache_.begin();
           cacheI i = cache_.begin();
           for ( ++i; i != cache_.end(); ++i ) {
             if ( tmpOvrRange.overlap(**i) )
