@@ -235,7 +235,13 @@ def convertVCFToBed(line, params, stream):
     else:
         elems = chomped_line.split('\t')
         metadata = dict()
-        for columnIdx in range(len(params.columns)):
+        try:
+            columns_length = len(params.columns)
+        except TypeError as te:
+            sys.stderr.write( '[%s] Error: Could not read VCF header keys (perhaps missing or bad delimiters in header line or data row?)' % (sys.argv[0]))
+            stream.close()
+            sys.exit(os.EX_DATAERR)
+        for columnIdx in range(columns_length):
             try:
                 metadata[params.columns[columnIdx]] = elems[columnIdx];
             except IndexError as ie:
