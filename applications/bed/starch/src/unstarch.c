@@ -754,6 +754,11 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
             *fn = STARCH_strdup(argv[2]);
         }
         else {
+            if ((hdr1[0] == '-') && (hdr1[1] != '-')) {
+                free(hdr1);
+                fprintf(stderr, "ERROR: Malformed argument\n");
+                return UNSTARCH_FATAL_ERROR;
+            }
             if (strlen(argv[2]) > 1) {
                 hdr2 = UNSTARCH_strndup(argv[2], 2);
                 if (strcmp(hdr2, "--") == 0) {
@@ -792,6 +797,11 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
         if (strcmp(hdr1, "--") == 0) {
             free(hdr1);
             fprintf(stderr, "ERROR: Cannot place option before chromosome name\n");
+            return UNSTARCH_FATAL_ERROR;
+        }
+        else if ((hdr1[0] == '-') && (hdr1[1] != '-')) {
+            free(hdr1);
+            fprintf(stderr, "ERROR: Malformed argument\n");
             return UNSTARCH_FATAL_ERROR;
         }
         free(hdr1);
