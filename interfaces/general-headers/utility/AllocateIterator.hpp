@@ -42,11 +42,11 @@ template <class _Tp>
 class allocate_iterator<_Tp*> {
 
 public:
-  typedef std::input_iterator_tag  iterator_category;
-  typedef _Tp*                     value_type;
-  typedef std::ptrdiff_t           difference_type;
-  typedef _Tp**                    pointer;
-  typedef _Tp*&                    reference;
+  typedef std::forward_iterator_tag iterator_category;
+  typedef _Tp*                      value_type;
+  typedef std::ptrdiff_t            difference_type;
+  typedef _Tp**                     pointer;
+  typedef _Tp*&                     reference;
 
   allocate_iterator() : _M_ok(false), fp_(NULL), _M_value(0) {}
   allocate_iterator(FILE* fp) /* this ASSUMES fp is open and meaningful */

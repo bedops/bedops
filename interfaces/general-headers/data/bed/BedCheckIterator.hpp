@@ -58,12 +58,12 @@ template <class BedType>
 class bed_check_iterator<BedType*> {
 
 public:
-  typedef Ext::UserError           Exception;
-  typedef std::input_iterator_tag  iterator_category;
-  typedef BedType*                 value_type;
-  typedef std::ptrdiff_t           difference_type;
-  typedef BedType**                pointer;
-  typedef BedType*&                reference;
+  typedef Ext::UserError            Exception;
+  typedef std::forward_iterator_tag iterator_category;
+  typedef BedType*                  value_type;
+  typedef std::ptrdiff_t            difference_type;
+  typedef BedType**                 pointer;
+  typedef BedType*&                 reference;
 
   static const int nFields_  = BedType::NumFields;
   static const bool hasRest_ = BedType::UseRest;

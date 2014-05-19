@@ -52,11 +52,11 @@ template <class BedType>
 class allocate_iterator_starch_bed<BedType*> {
 
 public:
-  typedef std::input_iterator_tag  iterator_category;
-  typedef BedType*                 value_type;
-  typedef std::ptrdiff_t           difference_type;
-  typedef BedType**                pointer;
-  typedef BedType*&                reference;
+  typedef std::forward_iterator_tag iterator_category;
+  typedef BedType*                  value_type;
+  typedef std::ptrdiff_t            difference_type;
+  typedef BedType**                 pointer;
+  typedef BedType*&                 reference;
 
   allocate_iterator_starch_bed() : _M_ok(false), fp_(NULL), _M_value(0), is_starch_(false), all_(false), archive_(NULL) { chr_[0] = '\0'; }
   allocate_iterator_starch_bed(FILE* fp, const std::string& chr = "all") /* this ASSUMES fp is open and meaningful */
