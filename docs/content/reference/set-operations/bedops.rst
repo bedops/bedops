@@ -135,15 +135,23 @@ As with all BEDOPS tools and operations, the output of this operation is :ref:`s
       chr2	150	300
       chr2	200	250
       chr3      100     150
-      
+
+   .. code:: bash
+
       $ more B.bed
       chr2	50	150
       chr2	400	600
-      
+
+   .. code:: bash
+
       $ more C.bed
       chr3	150	350
+
+   .. code:: bash
       
       $ bedops --everything A.bed B.bed C.bed > D.bed
+
+   .. code:: bash
       
       $ more D.bed
       chr1	100	200
