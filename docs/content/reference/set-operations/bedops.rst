@@ -182,9 +182,12 @@ Elements that are returned are always from the reference set (in this case, set 
 
 .. note:: The ``--element-of`` option preserves all columns from the first (reference) input.
 
-.. note:: The argument to ``--element-of`` is a value that species to degree of overlap for elements. The value is either integral for per-base overlap,  or fractional for overlap measured by length.
+.. admonition:: Example
+   :class: admonition-example
 
-   We show here a more concrete demonstration of the use of ``--element-of -1`` on two sorted sets ``First.bed`` and ``Second.bed``, which looks for elements in the ``First`` set that overlap elements in the ``Second`` set by one or more bases:
+   The argument to ``--element-of`` is a value that species to degree of overlap for elements. The value is either integral for per-base overlap,  or fractional for overlap measured by length.
+
+   Here is a demonstration of the use of ``--element-of -1`` on two sorted sets ``First.bed`` and ``Second.bed``, which looks for elements in the ``First`` set that overlap elements in the ``Second`` set by one or more bases:
  
    .. code:: bash
 
@@ -244,7 +247,10 @@ Note that `--element-of` is *not* a symmetric operation, as demonstrated by reve
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_elementof_ba.png
    :width: 99%
 
-.. note:: As we show here, by inverting the usual order of our sample sets ``First`` and ``Second``, we retrieve elements from the ``Second`` set:
+.. admonition:: Example
+   :class: admonition-example
+
+   As we show here, by inverting the usual order of our sample sets ``First`` and ``Second``, we retrieve elements from the ``Second`` set:
  
    .. code:: bash
 
@@ -271,8 +277,10 @@ The ``--not-element-of`` operation shows elements in the reference file which do
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_notelementof_ab.png
    :width: 99%
 
+.. admonition:: Example
+   :class: admonition-example
 
-.. note:: We again use sorted sets ``First.bed`` and ``Second.bed`` to demonstrate ``--not-element-of``, in order to look for elements in the ``First`` set that *do not* overlap elements in the ``Second`` set by one or more bases:
+   We again use sorted sets ``First.bed`` and ``Second.bed`` to demonstrate ``--not-element-of``, in order to look for elements in the ``First`` set that *do not* overlap elements in the ``Second`` set by one or more bases:
  
    .. code:: bash
 
