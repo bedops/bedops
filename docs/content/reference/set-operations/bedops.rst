@@ -113,10 +113,6 @@ These datasets can be :ref:`sorted <sort-bed>` BED or :ref:`Starch-formatted <st
 
 .. example:: Here is a test of foo bar baz
 
-   ```
-   X Y Z   
-   ```
-
 .. _bedops_everything:
 
 -----------------------------
