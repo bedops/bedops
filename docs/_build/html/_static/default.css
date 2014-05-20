@@ -259,3 +259,8 @@ div.viewcode-block:target {
     border-top: 1px solid #ac9;
     border-bottom: 1px solid #ac9;
 }
+
+div.admonition-example {
+    background-color: #7070f0;
+    border-bottom: 1px solid #606090;
+}
