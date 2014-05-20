@@ -516,6 +516,9 @@ The ``--merge`` operation flattens all overlapping and adjoining elements into c
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_merge_ab.png
    :width: 99%
 
+.. admonition:: Example
+   :class: admonition-example
+
    To demonstrate ``--merge``, we use sorted sets ``First.bed`` and ``Second.bed`` and compute the contiguous genomic space across both ``First`` and ``Second``:
  
    .. code:: bash
@@ -557,6 +560,51 @@ The ``--partition`` operator splits all overlapping input regions into a set of 
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_partition_ab.png
    :width: 99%
+
+.. admonition:: Example
+   :class: admonition-example
+
+   To demonstrate ``--partition``, we use sorted sets ``First.bed`` and ``Second.bed`` and compute disjointed genomic regions across both ``First`` and ``Second``:
+ 
+   .. code:: bash
+
+      $ more First.bed
+      chr1	100	200
+      chr1	150	160
+      chr1	200	300
+      chr1	400	475
+      chr1	500	550
+
+   .. code:: bash
+
+      $ more Second.bed
+      chr1	120	125
+      chr1	150	155
+      chr1	150	160
+      chr1	460	470
+      chr1	490	500
+
+   .. code:: bash
+      
+      $ bedops --partition First.bed Second.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	100	120
+      chr1	120	125
+      chr1	125	150
+      chr1	150	155
+      chr1	155	160
+      chr1	160	200
+      chr1	200	300
+      chr1	400	460
+      chr1	460	470
+      chr1	470	475
+      chr1	490	500
+      chr1	500	550
+
+   Notice that the result set of partitioned elements excludes any duplicates from input regions, thus enforcing the disjoint nature of the computed result.
 
 .. note:: As with ``--merge``, ``--complement`` and other "computing" operations, note the lack of ID, score and other columnar data in this computed result.
 
