@@ -200,10 +200,10 @@ chr3      150     350
 <p class="first admonition-title">Note</p>
 <p class="last">The <tt class="docutils literal"><span class="pre">--element-of</span></tt> option preserves all columns from the first (reference) input.</p>
 </div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
 <p>The argument to <tt class="docutils literal"><span class="pre">--element-of</span></tt> is a value that species to degree of overlap for elements. The value is either integral for per-base overlap,  or fractional for overlap measured by length.</p>
-<p>We show here a more concrete demonstration of the use of <tt class="docutils literal"><span class="pre">--element-of</span> <span class="pre">-1</span></tt> on two sorted sets <tt class="docutils literal"><span class="pre">First.bed</span></tt> and <tt class="docutils literal"><span class="pre">Second.bed</span></tt>, which looks for elements in the <tt class="docutils literal"><span class="pre">First</span></tt> set that overlap elements in the <tt class="docutils literal"><span class="pre">Second</span></tt> set by one or more bases:</p>
+<p>Here is a demonstration of the use of <tt class="docutils literal"><span class="pre">--element-of</span> <span class="pre">-1</span></tt> on two sorted sets <tt class="docutils literal"><span class="pre">First.bed</span></tt> and <tt class="docutils literal"><span class="pre">Second.bed</span></tt>, which looks for elements in the <tt class="docutils literal"><span class="pre">First</span></tt> set that overlap elements in the <tt class="docutils literal"><span class="pre">Second</span></tt> set by one or more bases:</p>
 <div class="code bash highlight-python"><div class="highlight"><pre>$ more First.bed
 chr1      100     200
 chr1      150     160
@@ -249,8 +249,8 @@ chr1      150     160
 </div>
 <p>Note that <cite>&#8211;element-of</cite> is <em>not</em> a symmetric operation, as demonstrated by reversing the order of the reference and query set:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_elementof_ba.png"><img alt="../../../_images/reference_setops_bedops_elementof_ba.png" src="../../../_images/reference_setops_bedops_elementof_ba.png" style="width: 99%;" /></a>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
 <p>As we show here, by inverting the usual order of our sample sets <tt class="docutils literal"><span class="pre">First</span></tt> and <tt class="docutils literal"><span class="pre">Second</span></tt>, we retrieve elements from the <tt class="docutils literal"><span class="pre">Second</span></tt> set:</p>
 <div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --element-of -1 Second.bed First.bed &gt; Result.bed
 </pre></div>
@@ -273,8 +273,8 @@ chr1      460     470
 <h3>6.1.1.3.3. Not-element-of (-n, &#8211;not-element-of)<a class="headerlink" href="#not-element-of-n-not-element-of" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--not-element-of</span></tt> operation shows elements in the reference file which do not overlap elements in all other sets. For example:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_notelementof_ab.png"><img alt="../../../_images/reference_setops_bedops_notelementof_ab.png" src="../../../_images/reference_setops_bedops_notelementof_ab.png" style="width: 99%;" /></a>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
 <p>We again use sorted sets <tt class="docutils literal"><span class="pre">First.bed</span></tt> and <tt class="docutils literal"><span class="pre">Second.bed</span></tt> to demonstrate <tt class="docutils literal"><span class="pre">--not-element-of</span></tt>, in order to look for elements in the <tt class="docutils literal"><span class="pre">First</span></tt> set that <em>do not</em> overlap elements in the <tt class="docutils literal"><span class="pre">Second</span></tt> set by one or more bases:</p>
 <div class="code bash highlight-python"><div class="highlight"><pre>$ more First.bed
 chr1      100     200
@@ -316,9 +316,35 @@ chr1      500     550
 <h3>6.1.1.3.4. Complement (-c, &#8211;complement)<a class="headerlink" href="#complement-c-complement" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--complement</span></tt> operation calculates the genomic regions in the gaps between the contiguous per-chromosome ranges defined by one or more inputs. The following example shows the use of two inputs:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_complement_ab.png"><img alt="../../../_images/reference_setops_bedops_complement_ab.png" src="../../../_images/reference_setops_bedops_complement_ab.png" style="width: 99%;" /></a>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Note this <strong>computed result</strong> will lack ID, score and other columnar data other than the first three columns that contain positional data. That is, computed elements will not come from any of the input sets, but are new elements created from the input set space.</p>
+<p>Note this <strong>computed result</strong> will lack ID, score and other columnar data other than the first three columns that contain positional data. That is, computed elements will not come from any of the input sets, but are new elements created from the input set space.</p>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate <tt class="docutils literal"><span class="pre">--complement</span></tt>, we again use sorted sets <tt class="docutils literal"><span class="pre">First.bed</span></tt> and <tt class="docutils literal"><span class="pre">Second.bed</span></tt>, in order to compute the &#8220;gaps&#8221; between their inputs:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more First.bed
+chr1      100     200
+chr1      150     160
+chr1      200     300
+chr1      400     475
+chr1      500     550
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Second.bed
+chr1      120     125
+chr1      150     155
+chr1      150     160
+chr1      460     470
+chr1      490     500
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --complement First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Result.bed
+chr1      300     400
+chr1      475     490
+</pre></div>
+</div>
+<p class="last">As we see here, for a given chromosome, gaps are computed between the leftmost and rightmost edges of elements in the union of elements across all input sets.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -329,6 +355,38 @@ chr1      500     550
 <h3>6.1.1.3.5. Difference (-d, &#8211;difference)<a class="headerlink" href="#difference-d-difference" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--difference</span></tt> operation calculates the genomic regions found within the first (reference) input file, excluding regions in all other input files:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_difference_ab.png"><img alt="../../../_images/reference_setops_bedops_difference_ab.png" src="../../../_images/reference_setops_bedops_difference_ab.png" style="width: 99%;" /></a>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate <tt class="docutils literal"><span class="pre">--difference</span></tt>, we use sorted sets <tt class="docutils literal"><span class="pre">First.bed</span></tt> and <tt class="docutils literal"><span class="pre">Second.bed</span></tt> and compute the genomic space in <tt class="docutils literal"><span class="pre">First</span></tt> that excludes (or &#8220;subtracts&#8221;) ranges from <tt class="docutils literal"><span class="pre">Second</span></tt>:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more First.bed
+chr1      100     200
+chr1      150     160
+chr1      200     300
+chr1      400     475
+chr1      500     550
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Second.bed
+chr1      120     125
+chr1      150     155
+chr1      150     160
+chr1      460     470
+chr1      490     500
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --difference First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash last highlight-python"><div class="highlight"><pre>$ more Result.bed
+chr1      100     120
+chr1      125     150
+chr1      160     300
+chr1      400     460
+chr1      470     475
+chr1      500     550
+</pre></div>
+</div>
+</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">As with <tt class="docutils literal"><span class="pre">--element-of</span></tt> and <tt class="docutils literal"><span class="pre">--not-element-of</span></tt>, this operation is not symmetric. While <tt class="docutils literal"><span class="pre">--not-element-of</span></tt> preserves all columns of elements found in the reference input and allows one to define overlaps, the <tt class="docutils literal"><span class="pre">--difference</span></tt> operator simply reports every genomic range as three-column BED, which does not overlap elements found in the second and subsequent input files by any amount.</p>
@@ -338,40 +396,198 @@ chr1      500     550
 <h3>6.1.1.3.6. Symmetric difference (-s, &#8211;symmdiff)<a class="headerlink" href="#symmetric-difference-s-symmdiff" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--symmdiff</span></tt> operation calculates the genomic range that is exclusive to each input, excluding any ranges shared across inputs:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_symmetricdifference_ab.png"><img alt="../../../_images/reference_setops_bedops_symmetricdifference_ab.png" src="../../../_images/reference_setops_bedops_symmetricdifference_ab.png" style="width: 99%;" /></a>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate <tt class="docutils literal"><span class="pre">--symmdiff</span></tt>, we use sorted sets <tt class="docutils literal"><span class="pre">First.bed</span></tt> and <tt class="docutils literal"><span class="pre">Second.bed</span></tt> and compute the genomic space that is unique to <tt class="docutils literal"><span class="pre">First</span></tt> and <tt class="docutils literal"><span class="pre">Second</span></tt>:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more First.bed
+chr1      100     200
+chr1      150     160
+chr1      200     300
+chr1      400     475
+chr1      500     550
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Second.bed
+chr1      120     125
+chr1      150     155
+chr1      150     160
+chr1      460     470
+chr1      490     500
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --symmdiff First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash last highlight-python"><div class="highlight"><pre>$ more Result.bed
+chr1      100     120
+chr1      125     150
+chr1      160     300
+chr1      400     460
+chr1      470     475
+chr1      490     550
+</pre></div>
+</div>
+</div>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
-<p class="last">It has been observed that <tt class="docutils literal"><span class="pre">--symmdiff</span></tt> (<tt class="docutils literal"><span class="pre">-s</span></tt>) is the same as <tt class="docutils literal"><span class="pre">--difference</span> <span class="pre">A</span> <span class="pre">B</span></tt> unionized with <tt class="docutils literal"><span class="pre">--difference</span> <span class="pre">B</span> <span class="pre">A</span></tt>, but <tt class="docutils literal"><span class="pre">--symmdiff</span></tt> runs faster in practice.</p>
+<p class="last">It has been observed that <tt class="docutils literal"><span class="pre">--symmdiff</span></tt> (<tt class="docutils literal"><span class="pre">-s</span></tt>) is the same as the union of <tt class="docutils literal"><span class="pre">--difference</span> <span class="pre">A</span> <span class="pre">B</span></tt> with <tt class="docutils literal"><span class="pre">--difference</span> <span class="pre">B</span> <span class="pre">A</span></tt>, but <tt class="docutils literal"><span class="pre">--symmdiff</span></tt> runs faster in practice.</p>
 </div>
 </div>
 <div class="section" id="intersect-i-intersect">
 <h3>6.1.1.3.7. Intersect (-i, &#8211;intersect)<a class="headerlink" href="#intersect-i-intersect" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--intersect</span></tt> operation determines genomic regions common to all input sets:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_intersect_ab.png"><img alt="../../../_images/reference_setops_bedops_intersect_ab.png" src="../../../_images/reference_setops_bedops_intersect_ab.png" style="width: 99%;" /></a>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate <tt class="docutils literal"><span class="pre">--intersect</span></tt>, we use sorted sets <tt class="docutils literal"><span class="pre">First.bed</span></tt> and <tt class="docutils literal"><span class="pre">Second.bed</span></tt> and compute the genomic space that is common to both <tt class="docutils literal"><span class="pre">First</span></tt> and <tt class="docutils literal"><span class="pre">Second</span></tt>:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more First.bed
+chr1      100     200
+chr1      150     160
+chr1      200     300
+chr1      400     475
+chr1      500     550
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Second.bed
+chr1      120     125
+chr1      150     155
+chr1      150     160
+chr1      460     470
+chr1      490     500
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --intersect First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Result.bed
+chr1      120     125
+chr1      150     160
+chr1      460     470
+</pre></div>
+</div>
+<p class="last">Notice how this computed result is quite different from that of <tt class="docutils literal"><span class="pre">--element-of</span> <span class="pre">-N</span></tt>, which functions more like a LEFT JOIN operation in a SQL database.</p>
+</div>
 </div>
 <div class="section" id="merge-m-merge">
 <h3>6.1.1.3.8. Merge (-m, &#8211;merge)<a class="headerlink" href="#merge-m-merge" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--merge</span></tt> operation flattens all overlapping and adjoining elements into contiguous regions:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_merge_ab.png"><img alt="../../../_images/reference_setops_bedops_merge_ab.png" src="../../../_images/reference_setops_bedops_merge_ab.png" style="width: 99%;" /></a>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate <tt class="docutils literal"><span class="pre">--merge</span></tt>, we use sorted sets <tt class="docutils literal"><span class="pre">First.bed</span></tt> and <tt class="docutils literal"><span class="pre">Second.bed</span></tt> and compute the contiguous genomic space across both <tt class="docutils literal"><span class="pre">First</span></tt> and <tt class="docutils literal"><span class="pre">Second</span></tt>:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more First.bed
+chr1      100     200
+chr1      150     160
+chr1      200     300
+chr1      400     475
+chr1      500     550
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Second.bed
+chr1      120     125
+chr1      150     155
+chr1      150     160
+chr1      460     470
+chr1      490     500
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --merge First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash last highlight-python"><div class="highlight"><pre>$ more Result.bed
+chr1      100     300
+chr1      400     475
+chr1      490     550
+</pre></div>
+</div>
+</div>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
-<p class="last">The preceding example shows use of <tt class="docutils literal"><span class="pre">--merge</span></tt> (<tt class="docutils literal"><span class="pre">-m</span></tt>) with two inputs, but the merge operation works just as well with one input, collapsing regions which overlap or which are directly adjoining.</p>
+<p class="last">The preceding example shows use of <tt class="docutils literal"><span class="pre">--merge</span></tt> (<tt class="docutils literal"><span class="pre">-m</span></tt>) with two inputs, but the merge operation works just as well with one input, collapsing elements within the file that overlap or which are directly adjoining.</p>
 </div>
 </div>
 <div class="section" id="partition-p-partition">
 <h3>6.1.1.3.9. Partition (-p, &#8211;partition)<a class="headerlink" href="#partition-p-partition" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--partition</span></tt> operator splits all overlapping input regions into a set of disjoint segments. One or more input files may be provided; this option will segment regions from all inputs:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_partition_ab.png"><img alt="../../../_images/reference_setops_bedops_partition_ab.png" src="../../../_images/reference_setops_bedops_partition_ab.png" style="width: 99%;" /></a>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate <tt class="docutils literal"><span class="pre">--partition</span></tt>, we use sorted sets <tt class="docutils literal"><span class="pre">First.bed</span></tt> and <tt class="docutils literal"><span class="pre">Second.bed</span></tt> and compute disjointed genomic regions across both <tt class="docutils literal"><span class="pre">First</span></tt> and <tt class="docutils literal"><span class="pre">Second</span></tt>:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more First.bed
+chr1      100     200
+chr1      150     160
+chr1      200     300
+chr1      400     475
+chr1      500     550
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Second.bed
+chr1      120     125
+chr1      150     155
+chr1      150     160
+chr1      460     470
+chr1      490     500
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --partition First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Result.bed
+chr1      100     120
+chr1      120     125
+chr1      125     150
+chr1      150     155
+chr1      155     160
+chr1      160     200
+chr1      200     300
+chr1      400     460
+chr1      460     470
+chr1      470     475
+chr1      490     500
+chr1      500     550
+</pre></div>
+</div>
+<p class="last">Notice that the result set of partitioned elements excludes any duplicates from input regions, thus enforcing the disjoint nature of the computed result.</p>
+</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">As with <tt class="docutils literal"><span class="pre">--merge</span></tt>, <tt class="docutils literal"><span class="pre">--complement</span></tt> and other &#8220;computing&#8221; operations, note the lack of ID, score and other columnar data in this computed result.</p>
 </div>
 </div>
 <div class="section" id="per-chromosome-operations-chrom">
-<h3>6.1.1.3.10. Per-chromosome operations (&#8211;chrom)<a class="headerlink" href="#per-chromosome-operations-chrom" title="Permalink to this headline">¶</a></h3>
+<span id="bedops-chrom"></span><h3>6.1.1.3.10. Per-chromosome operations (&#8211;chrom)<a class="headerlink" href="#per-chromosome-operations-chrom" title="Permalink to this headline">¶</a></h3>
 <p>All operations on inputs can be restricted to one chromosome, by adding the <tt class="docutils literal"><span class="pre">--chrom</span> <span class="pre">&lt;val&gt;</span></tt> operator.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This operator is highly useful for cluster-based work, where operations on large BED inputs can be split up by chromosome and pushed to separate cluster nodes. (See the <a class="reference internal" href="../../usage-examples/starchcluster.html#starchcluster"><em>Efficiently creating Starch-formatted archives with a cluster</em></a> documentation for a demonstration of this technique in action.)</p>
+<p class="last">This operator is highly useful for cluster-based work, where operations on large BED inputs can be split up by chromosome and pushed to separate cluster nodes. See the <a class="reference internal" href="../../usage-examples/starchcluster.html#starchcluster"><em>Efficiently creating Starch-formatted archives with a cluster</em></a> documentation for a demonstration of this technique in action.</p>
+</div>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate the use of <tt class="docutils literal"><span class="pre">--chrom</span></tt> to restrict operations to a chromosome (such as <tt class="docutils literal"><span class="pre">chr3</span></tt>), we perform a per-chromosome union of elements from three sorted sets <tt class="docutils literal"><span class="pre">First.bed</span></tt>, <tt class="docutils literal"><span class="pre">Second.bed</span></tt> and <tt class="docutils literal"><span class="pre">Third.bed</span></tt>, each with elements from multiple chromosomes:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more First.bed
+chr1      100     200
+chr2      150     300
+chr2      200     250
+chr3      100     150
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Second.bed
+chr2      50      150
+chr2      400     600
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Third.bed
+chr3      150     350
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --chrom chr3 --everything First.bed Second.bed Third.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash last highlight-python"><div class="highlight"><pre>$ more Result.bed
+chr3      100     150
+chr3      150     350
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="range-range">

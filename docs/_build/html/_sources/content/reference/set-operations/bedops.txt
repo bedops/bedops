@@ -182,9 +182,12 @@ Elements that are returned are always from the reference set (in this case, set 
 
 .. note:: The ``--element-of`` option preserves all columns from the first (reference) input.
 
-.. note:: The argument to ``--element-of`` is a value that species to degree of overlap for elements. The value is either integral for per-base overlap,  or fractional for overlap measured by length.
+.. admonition:: Example
+   :class: admonition-example
 
-   We show here a more concrete demonstration of the use of ``--element-of -1`` on two sorted sets ``First.bed`` and ``Second.bed``, which looks for elements in the ``First`` set that overlap elements in the ``Second`` set by one or more bases:
+   The argument to ``--element-of`` is a value that species to degree of overlap for elements. The value is either integral for per-base overlap,  or fractional for overlap measured by length.
+
+   Here is a demonstration of the use of ``--element-of -1`` on two sorted sets ``First.bed`` and ``Second.bed``, which looks for elements in the ``First`` set that overlap elements in the ``Second`` set by one or more bases:
  
    .. code:: bash
 
@@ -244,7 +247,10 @@ Note that `--element-of` is *not* a symmetric operation, as demonstrated by reve
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_elementof_ba.png
    :width: 99%
 
-.. note:: As we show here, by inverting the usual order of our sample sets ``First`` and ``Second``, we retrieve elements from the ``Second`` set:
+.. admonition:: Example
+   :class: admonition-example
+
+   As we show here, by inverting the usual order of our sample sets ``First`` and ``Second``, we retrieve elements from the ``Second`` set:
  
    .. code:: bash
 
@@ -271,8 +277,10 @@ The ``--not-element-of`` operation shows elements in the reference file which do
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_notelementof_ab.png
    :width: 99%
 
+.. admonition:: Example
+   :class: admonition-example
 
-.. note:: We again use sorted sets ``First.bed`` and ``Second.bed`` to demonstrate ``--not-element-of``, in order to look for elements in the ``First`` set that *do not* overlap elements in the ``Second`` set by one or more bases:
+   We again use sorted sets ``First.bed`` and ``Second.bed`` to demonstrate ``--not-element-of``, in order to look for elements in the ``First`` set that *do not* overlap elements in the ``Second`` set by one or more bases:
  
    .. code:: bash
 
@@ -319,7 +327,42 @@ The ``--complement`` operation calculates the genomic regions in the gaps betwee
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_complement_ab.png
    :width: 99%
 
-.. note:: Note this **computed result** will lack ID, score and other columnar data other than the first three columns that contain positional data. That is, computed elements will not come from any of the input sets, but are new elements created from the input set space.
+Note this **computed result** will lack ID, score and other columnar data other than the first three columns that contain positional data. That is, computed elements will not come from any of the input sets, but are new elements created from the input set space.
+
+.. admonition:: Example
+   :class: admonition-example
+
+   To demonstrate ``--complement``, we again use sorted sets ``First.bed`` and ``Second.bed``, in order to compute the "gaps" between their inputs:
+ 
+   .. code:: bash
+
+      $ more First.bed
+      chr1	100	200
+      chr1	150	160
+      chr1	200	300
+      chr1	400	475
+      chr1	500	550
+
+   .. code:: bash
+
+      $ more Second.bed
+      chr1	120	125
+      chr1	150	155
+      chr1	150	160
+      chr1	460	470
+      chr1	490	500
+
+   .. code:: bash
+      
+      $ bedops --complement First.bed Second.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	300	400
+      chr1	475	490
+
+   As we see here, for a given chromosome, gaps are computed between the leftmost and rightmost edges of elements in the union of elements across all input sets.
 
 .. note:: For a more in-depth discussion on using ``--complement`` with left and right bounds of input chromosomes, please review the BEDOPS `forum discussion <http://bedops.uwencode.org/forum/index.php?topic=19.0>`_ on this subject.
 
@@ -332,6 +375,43 @@ The ``--difference`` operation calculates the genomic regions found within the f
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_difference_ab.png
    :width: 99%
 
+.. admonition:: Example
+   :class: admonition-example
+
+   To demonstrate ``--difference``, we use sorted sets ``First.bed`` and ``Second.bed`` and compute the genomic space in ``First`` that excludes (or "subtracts") ranges from ``Second``:
+ 
+   .. code:: bash
+
+      $ more First.bed
+      chr1	100	200
+      chr1	150	160
+      chr1	200	300
+      chr1	400	475
+      chr1	500	550
+
+   .. code:: bash
+
+      $ more Second.bed
+      chr1	120	125
+      chr1	150	155
+      chr1	150	160
+      chr1	460	470
+      chr1	490	500
+
+   .. code:: bash
+      
+      $ bedops --difference First.bed Second.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	100	120
+      chr1	125	150
+      chr1	160	300
+      chr1	400	460
+      chr1	470	475
+      chr1	500	550
+
 .. note:: As with ``--element-of`` and ``--not-element-of``, this operation is not symmetric. While ``--not-element-of`` preserves all columns of elements found in the reference input and allows one to define overlaps, the ``--difference`` operator simply reports every genomic range as three-column BED, which does not overlap elements found in the second and subsequent input files by any amount.
 
 -------------------------------------
@@ -343,7 +423,44 @@ The ``--symmdiff`` operation calculates the genomic range that is exclusive to e
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_symmetricdifference_ab.png
    :width: 99%
 
-.. tip:: It has been observed that ``--symmdiff`` (``-s``) is the same as ``--difference A B`` unionized with ``--difference B A``, but ``--symmdiff`` runs faster in practice.
+.. admonition:: Example
+   :class: admonition-example
+
+   To demonstrate ``--symmdiff``, we use sorted sets ``First.bed`` and ``Second.bed`` and compute the genomic space that is unique to ``First`` and ``Second``:
+ 
+   .. code:: bash
+
+      $ more First.bed
+      chr1	100	200
+      chr1	150	160
+      chr1	200	300
+      chr1	400	475
+      chr1	500	550
+
+   .. code:: bash
+
+      $ more Second.bed
+      chr1	120	125
+      chr1	150	155
+      chr1	150	160
+      chr1	460	470
+      chr1	490	500
+
+   .. code:: bash
+      
+      $ bedops --symmdiff First.bed Second.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	100	120
+      chr1	125	150
+      chr1	160	300
+      chr1	400	460
+      chr1	470	475
+      chr1	490	550
+
+.. tip:: It has been observed that ``--symmdiff`` (``-s``) is the same as the union of ``--difference A B`` with ``--difference B A``, but ``--symmdiff`` runs faster in practice.
 
 ---------------------------
 Intersect (-i, --intersect)
@@ -354,6 +471,42 @@ The ``--intersect`` operation determines genomic regions common to all input set
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_intersect_ab.png
    :width: 99%
 
+.. admonition:: Example
+   :class: admonition-example
+
+   To demonstrate ``--intersect``, we use sorted sets ``First.bed`` and ``Second.bed`` and compute the genomic space that is common to both ``First`` and ``Second``:
+ 
+   .. code:: bash
+
+      $ more First.bed
+      chr1	100	200
+      chr1	150	160
+      chr1	200	300
+      chr1	400	475
+      chr1	500	550
+
+   .. code:: bash
+
+      $ more Second.bed
+      chr1	120	125
+      chr1	150	155
+      chr1	150	160
+      chr1	460	470
+      chr1	490	500
+
+   .. code:: bash
+      
+      $ bedops --intersect First.bed Second.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	120	125
+      chr1	150	160
+      chr1	460	470
+
+   Notice how this computed result is quite different from that of ``--element-of -N``, which functions more like a LEFT JOIN operation in a SQL database.
+
 -------------------
 Merge (-m, --merge)
 -------------------
@@ -363,7 +516,41 @@ The ``--merge`` operation flattens all overlapping and adjoining elements into c
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_merge_ab.png
    :width: 99%
 
-.. tip:: The preceding example shows use of ``--merge`` (``-m``) with two inputs, but the merge operation works just as well with one input, collapsing regions which overlap or which are directly adjoining.
+.. admonition:: Example
+   :class: admonition-example
+
+   To demonstrate ``--merge``, we use sorted sets ``First.bed`` and ``Second.bed`` and compute the contiguous genomic space across both ``First`` and ``Second``:
+ 
+   .. code:: bash
+
+      $ more First.bed
+      chr1	100	200
+      chr1	150	160
+      chr1	200	300
+      chr1	400	475
+      chr1	500	550
+
+   .. code:: bash
+
+      $ more Second.bed
+      chr1	120	125
+      chr1	150	155
+      chr1	150	160
+      chr1	460	470
+      chr1	490	500
+
+   .. code:: bash
+      
+      $ bedops --merge First.bed Second.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	100	300
+      chr1	400	475
+      chr1	490	550
+
+.. tip:: The preceding example shows use of ``--merge`` (``-m``) with two inputs, but the merge operation works just as well with one input, collapsing elements within the file that overlap or which are directly adjoining.
 
 ---------------------------
 Partition (-p, --partition)
@@ -374,7 +561,54 @@ The ``--partition`` operator splits all overlapping input regions into a set of 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_partition_ab.png
    :width: 99%
 
+.. admonition:: Example
+   :class: admonition-example
+
+   To demonstrate ``--partition``, we use sorted sets ``First.bed`` and ``Second.bed`` and compute disjointed genomic regions across both ``First`` and ``Second``:
+ 
+   .. code:: bash
+
+      $ more First.bed
+      chr1	100	200
+      chr1	150	160
+      chr1	200	300
+      chr1	400	475
+      chr1	500	550
+
+   .. code:: bash
+
+      $ more Second.bed
+      chr1	120	125
+      chr1	150	155
+      chr1	150	160
+      chr1	460	470
+      chr1	490	500
+
+   .. code:: bash
+      
+      $ bedops --partition First.bed Second.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	100	120
+      chr1	120	125
+      chr1	125	150
+      chr1	150	155
+      chr1	155	160
+      chr1	160	200
+      chr1	200	300
+      chr1	400	460
+      chr1	460	470
+      chr1	470	475
+      chr1	490	500
+      chr1	500	550
+
+   Notice that the result set of partitioned elements excludes any duplicates from input regions, thus enforcing the disjoint nature of the computed result.
+
 .. note:: As with ``--merge``, ``--complement`` and other "computing" operations, note the lack of ID, score and other columnar data in this computed result.
+
+.. _bedops_chrom:
 
 -----------------------------------
 Per-chromosome operations (--chrom)
@@ -382,7 +616,41 @@ Per-chromosome operations (--chrom)
 
 All operations on inputs can be restricted to one chromosome, by adding the ``--chrom <val>`` operator. 
 
-.. note:: This operator is highly useful for cluster-based work, where operations on large BED inputs can be split up by chromosome and pushed to separate cluster nodes. (See the :ref:`starchcluster` documentation for a demonstration of this technique in action.)
+.. note:: This operator is highly useful for cluster-based work, where operations on large BED inputs can be split up by chromosome and pushed to separate cluster nodes. See the :ref:`starchcluster` documentation for a demonstration of this technique in action.
+
+.. admonition:: Example
+   :class: admonition-example
+
+   To demonstrate the use of ``--chrom`` to restrict operations to a chromosome (such as ``chr3``), we perform a per-chromosome union of elements from three sorted sets ``First.bed``, ``Second.bed`` and ``Third.bed``, each with elements from multiple chromosomes: 
+ 
+   .. code:: bash
+
+      $ more First.bed
+      chr1	100	200
+      chr2	150	300
+      chr2	200	250
+      chr3      100     150
+
+   .. code:: bash
+
+      $ more Second.bed
+      chr2	50	150
+      chr2	400	600
+
+   .. code:: bash
+
+      $ more Third.bed
+      chr3	150	350
+
+   .. code:: bash
+      
+      $ bedops --chrom chr3 --everything First.bed Second.bed Third.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr3	100	150
+      chr3	150	350
 
 .. _bedops_range:
 
