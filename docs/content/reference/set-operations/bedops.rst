@@ -268,7 +268,7 @@ The ``--not-element-of`` operation shows elements in the reference file which do
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_notelementof_ab.png
    :width: 99%
 
-   .. note:: We again use sorted sets ``First.bed`` and ``Second.bed`` to demonstrate ``--not-element-of``, in order to look for elements in the ``First`` set that *do not* overlap elements in the ``Second`` set by one or more bases:
+.. note:: We again use sorted sets ``First.bed`` and ``Second.bed`` to demonstrate ``--not-element-of``, in order to look for elements in the ``First`` set that *do not* overlap elements in the ``Second`` set by one or more bases:
  
    .. code:: bash
 
