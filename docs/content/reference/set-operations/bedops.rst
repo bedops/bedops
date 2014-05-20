@@ -471,6 +471,42 @@ The ``--intersect`` operation determines genomic regions common to all input set
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_intersect_ab.png
    :width: 99%
 
+.. admonition:: Example
+   :class: admonition-example
+
+   To demonstrate ``--intersect``, we use sorted sets ``First.bed`` and ``Second.bed`` and compute the genomic space that is common to both ``First`` and ``Second``:
+ 
+   .. code:: bash
+
+      $ more First.bed
+      chr1	100	200
+      chr1	150	160
+      chr1	200	300
+      chr1	400	475
+      chr1	500	550
+
+   .. code:: bash
+
+      $ more Second.bed
+      chr1	120	125
+      chr1	150	155
+      chr1	150	160
+      chr1	460	470
+      chr1	490	500
+
+   .. code:: bash
+      
+      $ bedops --intersect First.bed Second.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	120	125
+      chr1	150	160
+      chr1	460	470
+
+   Notice how this computed result is quite different from that of ``--element-of -N``, which functions more like a LEFT JOIN operation in a SQL database.
+
 -------------------
 Merge (-m, --merge)
 -------------------
