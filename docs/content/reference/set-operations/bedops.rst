@@ -505,7 +505,7 @@ The ``--intersect`` operation determines genomic regions common to all input set
       chr1	150	160
       chr1	460	470
 
-   Notice how this computed result is quite different from that of ``--element-of -N``, which functions more like a LEFT JOIN operation in a SQL database.
+   Notice how this computed result is quite different from that of ``--element-of -N``, which functions more like a LEFT JOIN operation in SQL.
 
 -------------------
 Merge (-m, --merge)
