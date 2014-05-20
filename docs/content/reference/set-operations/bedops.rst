@@ -327,7 +327,42 @@ The ``--complement`` operation calculates the genomic regions in the gaps betwee
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_complement_ab.png
    :width: 99%
 
-.. note:: Note this **computed result** will lack ID, score and other columnar data other than the first three columns that contain positional data. That is, computed elements will not come from any of the input sets, but are new elements created from the input set space.
+Note this **computed result** will lack ID, score and other columnar data other than the first three columns that contain positional data. That is, computed elements will not come from any of the input sets, but are new elements created from the input set space.
+
+.. admonition:: Example
+   :class: admonition-example
+
+   To demonstrate ``--complement``, we again use sorted sets ``First.bed`` and ``Second.bed``, in order to compute the "gaps" between their inputs:
+ 
+   .. code:: bash
+
+      $ more First.bed
+      chr1	100	200
+      chr1	150	160
+      chr1	200	300
+      chr1	400	475
+      chr1	500	550
+
+   .. code:: bash
+
+      $ more Second.bed
+      chr1	120	125
+      chr1	150	155
+      chr1	150	160
+      chr1	460	470
+      chr1	490	500
+
+   .. code:: bash
+      
+      $ bedops --complement First.bed Second.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	300	400
+      chr1	475	490
+
+   As we see here, for a given chromosome, gaps are computed between the leftmost and rightmost edges of elements in the union of elements across all input sets.
 
 .. note:: For a more in-depth discussion on using ``--complement`` with left and right bounds of input chromosomes, please review the BEDOPS `forum discussion <http://bedops.uwencode.org/forum/index.php?topic=19.0>`_ on this subject.
 
