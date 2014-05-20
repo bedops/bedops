@@ -111,7 +111,7 @@ These datasets can be :ref:`sorted <sort-bed>` BED or :ref:`Starch-formatted <st
 
 .. note:: The :ref:`bedops` tool can operate on multiple inputs, but we show the results of operations on just two sets to help demonstrate the basic principles.
 
-.. example:: Here is a test of foo bar baz
+.. hint:: Here is a test of foo bar baz hinting
 
 .. _bedops_everything:
 
