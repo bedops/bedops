@@ -135,16 +135,16 @@ As with all BEDOPS tools and operations, the output of this operation is :ref:`s
       chr2	150	300
       chr2	200	250
       chr3      100     150
-
+      
       $ more B.bed
       chr2	50	150
       chr2	400	600
-
+      
       $ more C.bed
       chr3	150	350
-
+      
       $ bedops --everything A.bed B.bed C.bed > D.bed
-
+      
       $ more D.bed
       chr1	100	200
       chr2	50	150
