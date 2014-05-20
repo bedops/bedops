@@ -212,7 +212,7 @@ Elements that are returned are always from the reference set (in this case, set 
 
    One base is the least stringent (default) integral criterion. We can be increasingly restrictive about our overlap requirement by increasing this value, say to 15 bases:
 
-   .. code::bash
+   .. code:: bash
       
       $ bedops --element-of -15 First.bed Second.bed > Result.bed
 
@@ -239,7 +239,7 @@ Note that `--element-of` is *not* a symmetric operation, as demonstrated by reve
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_elementof_ba.png
    :width: 99%
 
-.. note:: Reversing the order of our sample inputs ``First`` and ``Second`` will yield elements from the ``Second`` sets:
+.. note:: As we demonstrate here, inverting the usual order of our sample sets ``First`` and ``Second`` will yield elements from the ``Second`` set:
  
    .. code:: bash
 
