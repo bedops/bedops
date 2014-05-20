@@ -534,3 +534,10 @@ span.eqno {
         display: none;
     }
 }
+
+/* -- customizations --------------------------------------------------- */
+
+.admonition-example {
+    background-color: #70f070;
+    border-bottom: 1px solid #60f060;
+}
