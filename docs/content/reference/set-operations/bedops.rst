@@ -516,7 +516,38 @@ The ``--merge`` operation flattens all overlapping and adjoining elements into c
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_merge_ab.png
    :width: 99%
 
-.. tip:: The preceding example shows use of ``--merge`` (``-m``) with two inputs, but the merge operation works just as well with one input, collapsing regions which overlap or which are directly adjoining.
+   To demonstrate ``--merge``, we use sorted sets ``First.bed`` and ``Second.bed`` and compute the contiguous genomic space across both ``First`` and ``Second``:
+ 
+   .. code:: bash
+
+      $ more First.bed
+      chr1	100	200
+      chr1	150	160
+      chr1	200	300
+      chr1	400	475
+      chr1	500	550
+
+   .. code:: bash
+
+      $ more Second.bed
+      chr1	120	125
+      chr1	150	155
+      chr1	150	160
+      chr1	460	470
+      chr1	490	500
+
+   .. code:: bash
+      
+      $ bedops --merge First.bed Second.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	100	300
+      chr1	400	475
+      chr1	490	550
+
+.. tip:: The preceding example shows use of ``--merge`` (``-m``) with two inputs, but the merge operation works just as well with one input, collapsing elements within the file that overlap or which are directly adjoining.
 
 ---------------------------
 Partition (-p, --partition)
