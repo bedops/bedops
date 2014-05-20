@@ -111,12 +111,6 @@ These datasets can be :ref:`sorted <sort-bed>` BED or :ref:`Starch-formatted <st
 
 .. note:: The :ref:`bedops` tool can operate on multiple inputs, but we show the results of operations on just two sets to help demonstrate the basic principles.
 
-.. note:: Foo bar baz test
- 
-   .. code:: bash
-
-      $ bedops --element-of -1 A B > C
-
 .. _bedops_everything:
 
 -----------------------------
@@ -131,6 +125,34 @@ The ``--everything`` option is equivalent to concatenating and sorting BED eleme
 As with all BEDOPS tools and operations, the output of this operation is :ref:`sorted <sort-bed>`.
 
 .. note:: The ``--everything`` option preserves all columns from all inputs. This is useful for multiset unions of datasets with additional ID, score or other metadata.
+
+.. note:: The ``--everything`` option can be used to perform a multiset union |---| for example:
+ 
+   .. code:: bash
+
+      $ more A.bed
+      chr1	100	200
+      chr2	150	300
+      chr2	200	250
+      chr3      100     150
+
+      $ more B.bed
+      chr2	50	150
+      chr2	400	600
+
+      $ more C.bed
+      chr3	150	350
+
+      $ bedops --everything A.bed B.bed C.bed > D.bed
+
+      $ more D.bed
+      chr1	100	200
+      chr2	50	150
+      chr2	150	300
+      chr2	200	250
+      chr2	400	600
+      chr3      100     150
+      chr3	150	350
 
 -----------------------------
 Element-of (-e, --element-of)
