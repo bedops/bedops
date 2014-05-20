@@ -179,7 +179,7 @@ Elements that are returned are always from the reference set (in this case, set 
 
 .. note:: The argument to ``--element-of`` is a value that species to degree of overlap for elements. The value is either integral for per-base overlap,  or fractional for overlap measured by length.
 
-   We show here a more concrete demonstration of the use of ``--element-of -1`` on two sorted sets ``First.bed`` and ``Second.bed``, which looks for elements in ``First`` that overlap elements in set ``Second`` by one or more bases:
+   We show here a more concrete demonstration of the use of ``--element-of -1`` on two sorted sets ``First.bed`` and ``Second.bed``, which looks for elements in the ``First`` set that overlap elements in the ``Second`` set by one or more bases:
  
    .. code:: bash
 
@@ -210,7 +210,7 @@ Elements that are returned are always from the reference set (in this case, set 
       chr1	150	160
       chr1	400	475
 
-   One base is the least stringent (default) integral criterion. We can be increasingly restrictive about our overlap requirement by increasing this value, say to 15 bases:
+   One base is the least stringent (default) integral criterion. We can be more restrictive about our overlap requirement by increasing this value, say to 15 bases:
 
    .. code:: bash
       
