@@ -608,13 +608,49 @@ The ``--partition`` operator splits all overlapping input regions into a set of 
 
 .. note:: As with ``--merge``, ``--complement`` and other "computing" operations, note the lack of ID, score and other columnar data in this computed result.
 
+.. _bedops_chrom:
+
 -----------------------------------
 Per-chromosome operations (--chrom)
 -----------------------------------
 
 All operations on inputs can be restricted to one chromosome, by adding the ``--chrom <val>`` operator. 
 
-.. note:: This operator is highly useful for cluster-based work, where operations on large BED inputs can be split up by chromosome and pushed to separate cluster nodes. (See the :ref:`starchcluster` documentation for a demonstration of this technique in action.)
+.. note:: This operator is highly useful for cluster-based work, where operations on large BED inputs can be split up by chromosome and pushed to separate cluster nodes. See the :ref:`starchcluster` documentation for a demonstration of this technique in action.
+
+.. admonition:: Example
+   :class: admonition-example
+
+   To demonstrate the use of ``--chrom`` to restrict operations to a chromosome (such as ``chr3``), we perform a per-chromosome union of elements from three sorted sets ``First.bed``, ``Second.bed`` and ``Third.bed``, each with elements from multiple chromosomes: 
+ 
+   .. code:: bash
+
+      $ more First.bed
+      chr1	100	200
+      chr2	150	300
+      chr2	200	250
+      chr3      100     150
+
+   .. code:: bash
+
+      $ more Second.bed
+      chr2	50	150
+      chr2	400	600
+
+   .. code:: bash
+
+      $ more Third.bed
+      chr3	150	350
+
+   .. code:: bash
+      
+      $ bedops --chrom chr3 --everything First.bed Second.bed Third.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr3	100	150
+      chr3	150	350
 
 .. _bedops_range:
 
