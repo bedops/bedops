@@ -126,11 +126,11 @@ As with all BEDOPS tools and operations, the output of this operation is :ref:`s
 
 .. note:: The ``--everything`` option preserves all columns from all inputs. This is useful for multiset unions of datasets with additional ID, score or other metadata.
 
-.. note:: The ``--everything`` option can be used to perform a multiset union |---| for example:
+.. note:: To demonstrate the use of ``--everything`` in performing a multiset union, we show three sorted sets ``First.bed``, ``Second.bed`` and ``Third.bed`` and the result of their union with ``bedops``:
  
    .. code:: bash
 
-      $ more A.bed
+      $ more First.bed
       chr1	100	200
       chr2	150	300
       chr2	200	250
@@ -138,22 +138,22 @@ As with all BEDOPS tools and operations, the output of this operation is :ref:`s
 
    .. code:: bash
 
-      $ more B.bed
+      $ more Second.bed
       chr2	50	150
       chr2	400	600
 
    .. code:: bash
 
-      $ more C.bed
+      $ more Third.bed
       chr3	150	350
 
    .. code:: bash
       
-      $ bedops --everything A.bed B.bed C.bed > D.bed
+      $ bedops --everything First.bed Second.bed Third.bed > Result.bed
 
    .. code:: bash
       
-      $ more D.bed
+      $ more Result.bed
       chr1	100	200
       chr2	50	150
       chr2	150	300
@@ -166,9 +166,9 @@ As with all BEDOPS tools and operations, the output of this operation is :ref:`s
 Element-of (-e, --element-of)
 -----------------------------
 
-The ``--element-of`` operation shows the elements of the first ("*reference*") file that overlap elements in the second and subsequent files by the specified length (in bases) or by percentage of length.
+The ``--element-of`` operation shows the elements of the first ("*reference*") file that overlap elements in the second and subsequent "*query*" files by the specified length (in bases) or by percentage of length.
 
-In the following example, we search for elements in the reference set ``A`` which overlap elements in ``B`` by at least one base:
+In the following example, we search for elements in the reference set ``A`` which overlap elements in query set ``B`` by at least one base:
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_elementof_ab.png
    :width: 99%
@@ -177,14 +177,69 @@ Elements that are returned are always from the reference set (in this case, set 
 
 .. note:: The ``--element-of`` option preserves all columns from the first (reference) input.
 
-Note that `--element-of` is *not* a symmetric operation, as demonstrated by making ``B`` the reference set:
+.. note:: The argument to ``--element-of`` is a value that species to degree of overlap for elements. The value is either integral for per-base overlap,  or fractional for overlap measured by length.
+
+    We show here a more concrete demonstration of the use of ``--element-of -1`` on two sorted sets ``First.bed`` and ``Second.bed``, which looks for elements in ``First`` that overlap elements in set ``Second`` by one or more bases:
+ 
+   .. code:: bash
+
+      $ more First.bed
+      chr1	100	200
+      chr1	150	160
+      chr1	200	300
+      chr1	400	475
+      chr1	500	550
+
+   .. code:: bash
+
+      $ more Second.bed
+      chr1	120	125
+      chr1	150	155
+      chr1	150	160
+      chr1	460	470
+      chr1	490	500
+
+   .. code:: bash
+      
+      $ bedops --element-of -1 First.bed Second.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	100	200
+      chr1	150	160
+      chr1	400	475
+
+   One base is the least stringent (default) integral criterion. We can be increasingly restrictive about our overlap requirement by increasing this value, say to 15 bases:
+
+   .. code::bash
+
+      $ bedops --element-of -15 First.bed Second.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	100	200
+
+   Only this element from the ``First`` set overlaps one or more elements in the ``Second`` set by a total of fifteen or more bases.
+
+   We can also use percentage of overlap as our argument. Let's say that we only want elements from the ``First`` set, which overlap half their length or more of a qualifying element in the ``Second`` set:
+
+   .. code:: bash
+
+      $ bedops --element-of -50% First.bed Second.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	150	160
+
+Note that `--element-of` is *not* a symmetric operation, as demonstrated by reversing the order of the reference and query set:
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_elementof_ba.png
    :width: 99%
 
-.. note:: The argument to ``--element-of`` is a value that species to degree of overlap for elements. The value is either integral for per-base overlap,  or fractional for overlap measured by length.
-
-In sum, ``--element-of`` (``-e``) produces exactly everything that ``--not-element-of`` (``-n``) does not, given the same overlap criterion (which is 100% by default).
+While this operation is not symmetric with respect to ordering of input sets, ``--element-of`` (``-e``) does produce exactly everything that ``--not-element-of`` (``-n``) does not, given the same overlap criterion and ordered input sets.
 
 .. note:: For a more in-depth discussion of ``--element-of`` and how overlaps are determined with three or more input files, please review the `BEDOPS forum discussion <http://bedops.uwencode.org/forum/index.php?topic=20.0>`_ on this subject.
 
