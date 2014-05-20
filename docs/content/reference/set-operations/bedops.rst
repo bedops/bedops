@@ -423,7 +423,44 @@ The ``--symmdiff`` operation calculates the genomic range that is exclusive to e
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_symmetricdifference_ab.png
    :width: 99%
 
-.. tip:: It has been observed that ``--symmdiff`` (``-s``) is the same as ``--difference A B`` unionized with ``--difference B A``, but ``--symmdiff`` runs faster in practice.
+.. admonition:: Example
+   :class: admonition-example
+
+   To demonstrate ``--symmdiff``, we use sorted sets ``First.bed`` and ``Second.bed`` and compute the genomic space that is unique to ``First`` and ``Second``:
+ 
+   .. code:: bash
+
+      $ more First.bed
+      chr1	100	200
+      chr1	150	160
+      chr1	200	300
+      chr1	400	475
+      chr1	500	550
+
+   .. code:: bash
+
+      $ more Second.bed
+      chr1	120	125
+      chr1	150	155
+      chr1	150	160
+      chr1	460	470
+      chr1	490	500
+
+   .. code:: bash
+      
+      $ bedops --symmdiff First.bed Second.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	100	120
+      chr1	125	150
+      chr1	160	300
+      chr1	400	460
+      chr1	470	475
+      chr1	490	550
+
+.. tip:: It has been observed that ``--symmdiff`` (``-s``) is the same as the union of ``--difference A B`` with ``--difference B A``, but ``--symmdiff`` runs faster in practice.
 
 ---------------------------
 Intersect (-i, --intersect)
