@@ -314,3 +314,5 @@ epub_copyright = u'2013, Shane Neph, Alex Reynolds'
 intersphinx_mapping = {'http://docs.python.org/': None}
 
 RTD_OLD_THEME = True
+
+html_style = 'test.css'
