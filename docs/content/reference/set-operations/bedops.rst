@@ -162,6 +162,8 @@ As with all BEDOPS tools and operations, the output of this operation is :ref:`s
       chr3      100     150
       chr3	150	350
 
+   This example uses three input sets, but you can specify two, four or even more sets with ``--everything`` to take their union.
+
 -----------------------------
 Element-of (-e, --element-of)
 -----------------------------
@@ -255,7 +257,7 @@ Note that `--element-of` is *not* a symmetric operation, as demonstrated by reve
 
 While this operation is not symmetric with respect to ordering of input sets, ``--element-of`` (``-e``) does produce exactly everything that ``--not-element-of`` (``-n``) does not, given the same overlap criterion and ordered input sets.
 
-.. note:: For a more in-depth discussion of ``--element-of`` and how overlaps are determined with three or more input files, please review the `BEDOPS forum discussion <http://bedops.uwencode.org/forum/index.php?topic=20.0>`_ on this subject.
+.. note:: We show usage examples with two files, but ``--element-of`` supports three or more input sets. For a more in-depth discussion of ``--element-of`` and how overlaps are determined with three or more input files, please review the `BEDOPS forum discussion <http://bedops.uwencode.org/forum/index.php?topic=20.0>`_ on this subject.
 
 -------------------------------------
 Not-element-of (-n, --not-element-of)
