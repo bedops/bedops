@@ -241,7 +241,7 @@ Note that `--element-of` is *not* a symmetric operation, as demonstrated by reve
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_elementof_ba.png
    :width: 99%
 
-.. note:: As we demonstrate here, inverting the usual order of our sample sets ``First`` and ``Second`` will yield elements from the ``Second`` set:
+.. note:: As we show here, by inverting the usual order of our sample sets ``First`` and ``Second``, we retrieve elements from the ``Second`` set:
  
    .. code:: bash
 
