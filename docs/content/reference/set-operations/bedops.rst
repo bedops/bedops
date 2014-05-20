@@ -268,7 +268,39 @@ The ``--not-element-of`` operation shows elements in the reference file which do
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_notelementof_ab.png
    :width: 99%
 
-As with the ``--element-of`` (``-e``) operator, the overlap criterion for ``--not-element-of`` (``-n``) can be specified by length (in bases) or by percentage of length. Similarly, this operation is not symmetric |---| the order of inputs will specify the reference set.
+   .. note:: We again use sorted sets ``First.bed`` and ``Second.bed`` to demonstrate ``--not-element-of``, in order to look for elements in the ``First`` set that *do not* overlap elements in the ``Second`` set by one or more bases:
+ 
+   .. code:: bash
+
+      $ more First.bed
+      chr1	100	200
+      chr1	150	160
+      chr1	200	300
+      chr1	400	475
+      chr1	500	550
+
+   .. code:: bash
+
+      $ more Second.bed
+      chr1	120	125
+      chr1	150	155
+      chr1	150	160
+      chr1	460	470
+      chr1	490	500
+
+   .. code:: bash
+      
+      $ bedops --not-element-of -1 First.bed Second.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	200	300
+      chr1	500	550
+
+As with the ``--element-of`` (``-e``) operator, the overlap criterion for ``--not-element-of`` (``-n``) can be specified either by length in bases, or by percentage of length. 
+
+Similarly, this operation is not symmetric |--| the order of inputs will specify the reference set, and thus the elements in the result (if any).
 
 .. note:: The ``--not-element-of`` operatior preserves columns from the first (reference) dataset.
 
