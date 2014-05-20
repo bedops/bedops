@@ -89,6 +89,7 @@ div.sphinxsidebar #searchbox input[type="submit"] {
 
 img {
     border: 0;
+    max-width: 100%;
 }
 
 /* -- search page ----------------------------------------------------------- */
@@ -533,11 +534,4 @@ span.eqno {
     #top-link {
         display: none;
     }
-}
-
-/* -- customizations --------------------------------------------------- */
-
-div.admonition-example {
-    background-color: #70f070;
-    border-bottom: 1px solid #60f060;
 }

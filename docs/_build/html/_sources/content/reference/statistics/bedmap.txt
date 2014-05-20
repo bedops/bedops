@@ -48,12 +48,12 @@ The ``--help`` option describes the various mapping and analytical operations an
 
   bedmap
     citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-    version:  2.4.1
+    version:  2.5.0
     authors:  Shane Neph & Scott Kuehn
                                                                                                       
    USAGE: bedmap [process-flags] [overlap-option] <operation(s)...> <ref-file> [map-file]             
        Any input file must be sorted per the sort-bed utility.                                        
-       The program accepts BED and starch file formats.                                               
+       The program accepts BED and Starch file formats.                                               
        May use '-' for a file to indicate reading from standard input (BED format only).              
                                                                                                     
        Traverse <ref-file>, while applying <operation(s)> on qualified, overlapping elements from     
@@ -231,19 +231,19 @@ Using ``--faster`` with ``--bp-ovr``, ``--fraction-both``, ``--exact`` or ``--ra
 
 The ``--faster`` modifier works with the ``--bp-ovr``, ``--fraction-both`` and ``--exact`` (``--fraction-both 1``) overlap and ``--range`` specifiers to dramatically increase the performance of :ref:`bedmap`, when the following input restriction is met:
 
-* No fully-nested elements in any input mapping file (duplicate elements and other overlapping elements are okay).
+* No :ref:`fully-nested elements <nested_elements>` in any input mapping file (duplicate elements and other overlapping elements are okay).
 
-.. note:: The details of this nested-element restriction are explained in more detail in the :ref:`bedextract <bedextract_nested_elements>` documentation.
+.. note:: The details of this restriction are explained in more detail in the :ref:`nested element documentation <nested_elements>`.
 
 This option also works with the ``--ec`` error checking flag, which indicates if the data contain nested elements. Using ``--ec`` carries its usual overhead, but as it only doubles the much-improved execution time, it may be worth using.
 
-.. tip:: To give an idea of the speed improvement, a ``--range 100000 --echo --count`` operation on 8.4 million, non-nested mapping elements (DNaseI footprints across multiple cell types) took *2 minutes and 55 seconds* without speed-up. By adding the ``--faster`` flag, the same calculation took *10 seconds*. That is an 18-fold speed improvement.
+.. tip:: To give an idea of the speed improvement, a ``--range 100000 --echo --count`` operation on 8.4 million, non-nested mapping elements (DNaseI footprints across multiple cell types) took *2 minutes and 55 seconds* without speed-up. By adding the ``--faster`` flag, the same calculation took *10 seconds*. That is an **18-fold** speed improvement.
  
    One scenario where this option can provide great speed gains is where ``--range`` is used with a large numerical parameter. Another scenario where this option is very useful is where the reference file has large elements, and the mapping file is made up of many small elements |---| specifically, where a number of small elements overlap each big element from the reference file. 
 
    An example of a research application for our lab which benefits from this flag is where we perform statistical analysis of large numbers of small sequence tags that fall in hotspot regions.
 
-   If your data meet the :ref:`non-nesting criteria <bedextract_nested_elements>`, using ``--faster`` with ``--bp-ovr``, ``--fraction-both``, ``--exact`` or ``--range`` is *highly recommended*.
+   If your data meet the :ref:`non-nesting criteria <nested_elements>`, using ``--faster`` with ``--bp-ovr``, ``--fraction-both``, ``--exact`` or ``--range`` is *highly recommended*.
 
 .. note:: Our lab works with BED data of various types: cut-counts, hotspots, peaks, footprints, etc. These data generally do not contain nested elements and so are amenable to use with :ref:`bedmap's <bedmap>` ``--faster`` flag for extracting overlapping elements.
 
@@ -627,23 +627,23 @@ Using ``--faster`` with ``--range``
 
 The ``--faster`` modifier works with the ``--bp-ovr``, ``--fraction-both`` and ``--exact`` (``--fraction-both 1``) overlap and ``--range`` specifiers to dramatically increase the performance of :ref:`bedmap`, when the following input restriction is met:
 
-* No fully-nested elements in any input mapping file (duplicate elements and other overlapping elements are okay).
+* No :ref:`fully-nested elements <nested_elements>` in any input mapping file (duplicate elements and other overlapping elements are okay).
 
-.. note:: The details of this nested-element restriction are explained in more detail in the :ref:`bedextract <bedextract_nested_elements>` documentation.
+.. note:: The details of this restriction are explained in more detail in the :ref:`nested element documentation <nested_elements>`.
 
 This option also works with the ``--ec`` error checking flag, which indicates if the data contain nested elements. Using ``--ec`` carries its usual overhead, but as it only doubles the much-improved execution time, it may be worth using.
 
-.. tip:: To give an idea of the speed improvement, a ``--range 100000 --echo --count`` operation on 8.4 million, non-nested mapping elements (DNaseI footprints across multiple cell types) took *2 minutes and 55 seconds* without speed-up. By adding the ``--faster`` flag, the same calculation took *10 seconds*. That is an 18-fold speed improvement.
+.. tip:: To give an idea of the speed improvement, a ``--range 100000 --echo --count`` operation on 8.4 million, non-nested mapping elements (DNaseI footprints across multiple cell types) took *2 minutes and 55 seconds* without speed-up. By adding the ``--faster`` flag, the same calculation took *10 seconds*. That is an **18-fold** speed improvement.
  
    One scenario where this option can provide great speed gains is where ``--range`` is used with a large numerical parameter. Another scenario where this option is very useful is where the reference file has large elements, and the mapping file is made up of many small elements |---| specifically, where a number of small elements overlap each big element from the reference file. 
 
    An example of a research application for our lab which benefits from this flag is where we perform statistical analysis of large numbers of small sequence tags that fall in hotspot regions.
 
-   If your data meet the :ref:`non-nesting criteria <bedextract_nested_elements>`, using ``--faster`` with ``--bp-ovr``, ``--exact`` or ``--range`` is highly recommended.
+   If your data meet the :ref:`non-nesting criteria <nested_elements>`, using ``--faster`` with ``--bp-ovr``, ``--exact`` or ``--range`` is **highly recommended**.
 
 .. note:: Our lab works with BED data of various types: cut-counts, hotspots, peaks, footprints, etc. These data generally do not contain nested elements and so are amenable to use with :ref:`bedmap's <bedmap>` ``--faster`` flag for extracting overlapping elements.
 
-   However, other types of data can be problematic. `FIMO <http://meme.nbcr.net/meme/fimo-intro.html>`_ search results, for example, may cause trouble, where the boundaries of one motif hit can be contained within another larger hit. Or paired-end sequence data, where tags are not of a fixed length.
+   However, other types of data can be problematic. `FIMO <http://meme.nbcr.net/meme/fimo-intro.html>`_ search results (motif hits), for example, may cause trouble, where the boundaries of one motif hit can be contained within another larger hit. Or paired-end sequence data, where tags are not of a fixed length.
 
    Be sure to consider the makeup of your BED data before using ``--faster``. 
 

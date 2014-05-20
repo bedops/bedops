@@ -181,9 +181,9 @@ Bases
 
 The ``--bases`` and ``--bases-uniq`` flags return the overall and unique base counts for a specified chromosome, or the sum of counts over all chromosomes, if no one chromosome is specified.
 
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 Duplicate element(s)
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 
 The ``--has-duplicate`` operator reports whether the chromosome stream contains one or more duplicate elements, printing a ``0`` if the chromosome does *not* contain a duplicate element, and a ``1`` if the chromosome *does* contain a duplicate. 
 

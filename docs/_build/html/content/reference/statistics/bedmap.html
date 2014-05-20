@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.2.1. bedmap &mdash; BEDOPS 2.4.1 documentation</title>
+    <title>6.2.1. bedmap &mdash; BEDOPS 2.5.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '2.4.1',
+        VERSION:     '2.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../../index.html" />
+    <link rel="top" title="BEDOPS 2.5.0 documentation" href="../../../index.html" />
     <link rel="up" title="6.2. Statistics" href="../statistics.html" />
     <link rel="next" title="6.3. File management" href="../file-management.html" />
     <link rel="prev" title="6.2. Statistics" href="../statistics.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="../statistics.html" title="6.2. Statistics"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li>
           <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../statistics.html" accesskey="U">6.2. Statistics</a> &raquo;</li> 
       </ul>
@@ -83,15 +83,15 @@
 <div class="section" id="usage">
 <h2>6.2.1.2. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>The <tt class="docutils literal"><span class="pre">--help</span></tt> option describes the various mapping and analytical operations and other options available to the end user:</p>
-<div class="highlight-python"><pre>bedmap
+<div class="highlight-python"><div class="highlight"><pre>bedmap
   citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-  version:  2.4.1
+  version:  2.5.0
   authors:  Shane Neph &amp; Scott Kuehn
 
  USAGE: bedmap [process-flags] [overlap-option] &lt;operation(s)...&gt; &lt;ref-file&gt; [map-file]
      Any input file must be sorted per the sort-bed utility.
-     The program accepts BED and starch file formats.
-     May use '-' for a file to indicate reading from standard input (BED format only).
+     The program accepts BED and Starch file formats.
+     May use &#39;-&#39; for a file to indicate reading from standard input (BED format only).
 
      Traverse &lt;ref-file&gt;, while applying &lt;operation(s)&gt; on qualified, overlapping elements from
        &lt;map-file&gt;.  Output is one line for each line in &lt;ref-file&gt;, sent to standard output.  There
@@ -103,13 +103,13 @@
     Process Flags:
      --------
       --chrom &lt;chromosome&gt;  Jump to and process data for given &lt;chromosome&gt; only.
-      --delim &lt;delim&gt;       Change output delimiter from '|' to &lt;delim&gt; between columns (e.g. '\t').
+      --delim &lt;delim&gt;       Change output delimiter from &#39;|&#39; to &lt;delim&gt; between columns (e.g. &#39;\t&#39;).
       --ec                  Error check all input files (slower).
       --faster              (advanced) Strong input assumptions are made.  Compatible with:
                               --bp-ovr, --range, --fraction-both, and --exact overlap options only.
       --header              Accept headers (VCF, GFF, SAM, BED, WIG) in any input file.
       --help                Print this message and exit successfully.
-      --multidelim &lt;delim&gt;  Change delimiter of multi-value output columns from ';' to &lt;delim&gt;.
+      --multidelim &lt;delim&gt;  Change delimiter of multi-value output columns from &#39;;&#39; to &lt;delim&gt;.
       --prec &lt;int&gt;          Change the post-decimal precision of scores to &lt;int&gt;.  0 &lt;= &lt;int&gt;.
       --sci                 Use scientific notation for score outputs.
       --skip-unmapped       Print no output for a row with no mapped elements.
@@ -119,18 +119,18 @@
     Overlap Options (At most, one may be selected.  By default, --bp-ovr 1 is used):
      --------
       --bp-ovr &lt;int&gt;           Require &lt;int&gt; bp overlap between elements of input files.
-      --range &lt;int&gt;            Grab &lt;map-file&gt; elements within &lt;int&gt; bp of &lt;ref-file&gt;'s element,
+      --range &lt;int&gt;            Grab &lt;map-file&gt; elements within &lt;int&gt; bp of &lt;ref-file&gt;&#39;s element,
                                  where 0 &lt;= int.  --range 0 is an alias for --bp-ovr 1.
-      --fraction-ref &lt;val&gt;     The fraction of the element's size from &lt;ref-file&gt; that must overlap
+      --fraction-ref &lt;val&gt;     The fraction of the element&#39;s size from &lt;ref-file&gt; that must overlap
                                  the element in &lt;map-file&gt;.  Expect 0 &lt; val &lt;= 1.
-      --fraction-map &lt;val&gt;     The fraction of the element's size from &lt;map-file&gt; that must overlap
+      --fraction-map &lt;val&gt;     The fraction of the element&#39;s size from &lt;map-file&gt; that must overlap
                                  the element in &lt;ref-file&gt;.  Expect 0 &lt; val &lt;= 1.
       --fraction-both &lt;val&gt;    Both --fraction-ref &lt;val&gt; and --fraction-map &lt;val&gt; must be true to
                                  qualify as overlapping.  Expect 0 &lt; val &lt;= 1.
       --fraction-either &lt;val&gt;  Either --fraction-ref &lt;val&gt; or --fraction-map &lt;val&gt; must be true to
                                  qualify as overlapping.  Expect 0 &lt; val &lt;= 1.
       --exact                  Shorthand for --fraction-both 1.  First 3 fields from &lt;map-file&gt; must
-                                 be identical to &lt;ref-file&gt;'s element.
+                                 be identical to &lt;ref-file&gt;&#39;s element.
 
 
     Operations:  (Any number of operations may be used any number of times.)
@@ -140,7 +140,7 @@
 
       --cv                The result of --stdev divided by the result of --mean.
       --kth &lt;val&gt;         Generalized median. Report the value, x, such that the fraction &lt;val&gt;
-                            of overlapping elements' scores from &lt;map-file&gt; is less than x,
+                            of overlapping elements&#39; scores from &lt;map-file&gt; is less than x,
                             and the fraction 1-&lt;val&gt; of scores is greater than x.  0 &lt; val &lt;= 1.
       --mad &lt;mult=1&gt;      The median absolute deviation of overlapping elements in &lt;map-file&gt;.
                             Multiply mad score by &lt;mult&gt;.  0 &lt; mult, and mult is 1 by default.
@@ -165,9 +165,9 @@
        For all others, &lt;map-file&gt; requires at least 3 columns.
 
       --bases             The total number of overlapping bases from &lt;map-file&gt;.
-      --bases-uniq        The number of distinct bases from &lt;ref-file&gt;'s element covered by
+      --bases-uniq        The number of distinct bases from &lt;ref-file&gt;&#39;s element covered by
                             overlapping elements in &lt;map-file&gt;.
-      --bases-uniq-f      The fraction of distinct bases from &lt;ref-file&gt;'s element covered by
+      --bases-uniq-f      The fraction of distinct bases from &lt;ref-file&gt;&#39;s element covered by
                             overlapping elements in &lt;map-file&gt;.
       --count             The number of overlapping elements in &lt;map-file&gt;.
       --echo              Print each line from &lt;ref-file&gt;.
@@ -178,7 +178,8 @@
       --echo-map-score    List scores from overlapping &lt;map-file&gt; elements.
       --echo-map-size     List the full length of every overlapping element.
       --echo-overlap-size List lengths of overlaps.
-      --indicator         Print 1 if there exists an overlapping element in &lt;map-file&gt;, 0 otherwise.</pre>
+      --indicator         Print 1 if there exists an overlapping element in &lt;map-file&gt;, 0 otherwise.
+</pre></div>
 </div>
 </div>
 <div class="section" id="operations">
@@ -186,7 +187,7 @@
 <p>To demonstrate the various operations in <a class="reference internal" href="#bedmap"><em>bedmap</em></a>, we start with two simple, pre-sorted BED files that we label as <tt class="docutils literal"><span class="pre">Map</span></tt> and <tt class="docutils literal"><span class="pre">Reference</span></tt> (see the <a class="reference internal" href="#bedmap-downloads"><em>Downloads</em></a> section for files you can use to follow along).</p>
 <p>Our <tt class="docutils literal"><span class="pre">Map</span></tt> file is a snippet of real-world BED data derived from <a class="reference external" href="http://www.uwencode.org/">ENCODE</a> experiments conducted by our lab: specifically, raw <a class="reference external" href="http://en.wikipedia.org/wiki/Hypersensitive_site">DNaseI hypersensitivity</a> signal for the human K562 cell line (region <tt class="docutils literal"><span class="pre">chr21:33031165-33032485</span></tt>, assembly <tt class="docutils literal"><span class="pre">GRCh37/h19</span></tt> and table <tt class="docutils literal"><span class="pre">wgEncodeUwDnaseK562RawRep1</span></tt> from the <a class="reference external" href="http://genome.ucsc.edu/">UCSC Genome Browser</a>).</p>
 <p>This raw signal is the density of sequence tags which map within a 150 bp sliding window, at 20 bp steps across the genome—a smoothed picture of DNaseI hypersensitivity:</p>
-<div class="highlight-python"><pre>chr21   33031165        33031185        map-1   1.000000
+<div class="highlight-python"><div class="highlight"><pre>chr21   33031165        33031185        map-1   1.000000
 chr21   33031185        33031205        map-2   3.000000
 chr21   33031205        33031225        map-3   3.000000
 chr21   33031225        33031245        map-4   3.000000
@@ -202,7 +203,8 @@ chr21   33031405        33031425        map-13  17.000000
 ...
 chr21   33032425        33032445        map-64  5.000000
 chr21   33032445        33032465        map-65  5.000000
-chr21   33032465        33032485        map-66  6.000000</pre>
+chr21   33032465        33032485        map-66  6.000000
+</pre></div>
 </div>
 <p>When visualized, the signal data has the following appearance:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_bedmap_mapref_all.png"><img alt="../../../_images/reference_bedmap_mapref_all.png" src="../../../_images/reference_bedmap_mapref_all.png" style="width: 99%;" /></a>
@@ -211,9 +213,10 @@ chr21   33032465        33032485        map-66  6.000000</pre>
 <p class="last">Rectangles colored in grey represent each of the sixty-six <tt class="docutils literal"><span class="pre">map</span></tt> elements. The x-axis represents the start coordinate of the <tt class="docutils literal"><span class="pre">map</span></tt> element, while the y-axis denotes the tag density, or sum of tags over that element&#8217;s 20-base window.</p>
 </div>
 <p>Our sample <tt class="docutils literal"><span class="pre">Reference</span></tt> file is not as exciting. It is just three BED elements which span portions of this density file:</p>
-<div class="highlight-python"><pre>chr21   33031200    33032400    ref-1
+<div class="highlight-python"><div class="highlight"><pre>chr21   33031200    33032400    ref-1
 chr21   33031400    33031800    ref-2
-chr21   33031900    33032000    ref-3</pre>
+chr21   33031900    33032000    ref-3
+</pre></div>
 </div>
 <p>These reference elements could be exons, promoter regions, etc. It doesn&#8217;t matter for purposes of demonstration here, except to say that we can use <a class="reference internal" href="#bedmap"><em>bedmap</em></a> to ask some questions about the <tt class="docutils literal"><span class="pre">Reference</span></tt> set.</p>
 <p>Among them, what are the quantitative and qualitative features of the <tt class="docutils literal"><span class="pre">map</span></tt> elements that span over these three reference regions? For example, we might want to know the mean DNase hypersensitivity across each—the answer may have some biological significance.</p>
@@ -237,19 +240,19 @@ chr21   33031900    33032000    ref-3</pre>
 <h4>6.2.1.3.1.1. Using <tt class="docutils literal"><span class="pre">--faster</span></tt> with <tt class="docutils literal"><span class="pre">--bp-ovr</span></tt>, <tt class="docutils literal"><span class="pre">--fraction-both</span></tt>, <tt class="docutils literal"><span class="pre">--exact</span></tt> or <tt class="docutils literal"><span class="pre">--range</span></tt><a class="headerlink" href="#using-faster-with-bp-ovr-fraction-both-exact-or-range" title="Permalink to this headline">¶</a></h4>
 <p>The <tt class="docutils literal"><span class="pre">--faster</span></tt> modifier works with the <tt class="docutils literal"><span class="pre">--bp-ovr</span></tt>, <tt class="docutils literal"><span class="pre">--fraction-both</span></tt> and <tt class="docutils literal"><span class="pre">--exact</span></tt> (<tt class="docutils literal"><span class="pre">--fraction-both</span> <span class="pre">1</span></tt>) overlap and <tt class="docutils literal"><span class="pre">--range</span></tt> specifiers to dramatically increase the performance of <a class="reference internal" href="#bedmap"><em>bedmap</em></a>, when the following input restriction is met:</p>
 <ul class="simple">
-<li>No fully-nested elements in any input mapping file (duplicate elements and other overlapping elements are okay).</li>
+<li>No <a class="reference internal" href="../set-operations/nested-elements.html#nested-elements"><em>fully-nested elements</em></a> in any input mapping file (duplicate elements and other overlapping elements are okay).</li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The details of this nested-element restriction are explained in more detail in the <a class="reference internal" href="../set-operations/bedextract.html#bedextract-nested-elements"><em>bedextract</em></a> documentation.</p>
+<p class="last">The details of this restriction are explained in more detail in the <a class="reference internal" href="../set-operations/nested-elements.html#nested-elements"><em>nested element documentation</em></a>.</p>
 </div>
 <p>This option also works with the <tt class="docutils literal"><span class="pre">--ec</span></tt> error checking flag, which indicates if the data contain nested elements. Using <tt class="docutils literal"><span class="pre">--ec</span></tt> carries its usual overhead, but as it only doubles the much-improved execution time, it may be worth using.</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
-<p>To give an idea of the speed improvement, a <tt class="docutils literal"><span class="pre">--range</span> <span class="pre">100000</span> <span class="pre">--echo</span> <span class="pre">--count</span></tt> operation on 8.4 million, non-nested mapping elements (DNaseI footprints across multiple cell types) took <em>2 minutes and 55 seconds</em> without speed-up. By adding the <tt class="docutils literal"><span class="pre">--faster</span></tt> flag, the same calculation took <em>10 seconds</em>. That is an 18-fold speed improvement.</p>
+<p>To give an idea of the speed improvement, a <tt class="docutils literal"><span class="pre">--range</span> <span class="pre">100000</span> <span class="pre">--echo</span> <span class="pre">--count</span></tt> operation on 8.4 million, non-nested mapping elements (DNaseI footprints across multiple cell types) took <em>2 minutes and 55 seconds</em> without speed-up. By adding the <tt class="docutils literal"><span class="pre">--faster</span></tt> flag, the same calculation took <em>10 seconds</em>. That is an <strong>18-fold</strong> speed improvement.</p>
 <p>One scenario where this option can provide great speed gains is where <tt class="docutils literal"><span class="pre">--range</span></tt> is used with a large numerical parameter. Another scenario where this option is very useful is where the reference file has large elements, and the mapping file is made up of many small elements—specifically, where a number of small elements overlap each big element from the reference file.</p>
 <p>An example of a research application for our lab which benefits from this flag is where we perform statistical analysis of large numbers of small sequence tags that fall in hotspot regions.</p>
-<p class="last">If your data meet the <a class="reference internal" href="../set-operations/bedextract.html#bedextract-nested-elements"><em>non-nesting criteria</em></a>, using <tt class="docutils literal"><span class="pre">--faster</span></tt> with <tt class="docutils literal"><span class="pre">--bp-ovr</span></tt>, <tt class="docutils literal"><span class="pre">--fraction-both</span></tt>, <tt class="docutils literal"><span class="pre">--exact</span></tt> or <tt class="docutils literal"><span class="pre">--range</span></tt> is <em>highly recommended</em>.</p>
+<p class="last">If your data meet the <a class="reference internal" href="../set-operations/nested-elements.html#nested-elements"><em>non-nesting criteria</em></a>, using <tt class="docutils literal"><span class="pre">--faster</span></tt> with <tt class="docutils literal"><span class="pre">--bp-ovr</span></tt>, <tt class="docutils literal"><span class="pre">--fraction-both</span></tt>, <tt class="docutils literal"><span class="pre">--exact</span></tt> or <tt class="docutils literal"><span class="pre">--range</span></tt> is <em>highly recommended</em>.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -280,13 +283,15 @@ chr21   33031900    33032000    ref-3</pre>
 <p>One can also take the sum of scores (<tt class="docutils literal"><span class="pre">--sum</span></tt>), find the minimum or maximum score over a region (<tt class="docutils literal"><span class="pre">--min</span></tt> and <tt class="docutils literal"><span class="pre">--max</span></tt>, respectively), or retrieve the map element with the least or greatest signal over the reference region (<tt class="docutils literal"><span class="pre">--min-element</span></tt> and <tt class="docutils literal"><span class="pre">--max-element</span></tt>, respectively).</p>
 <p>We will demonstrate some of these operators by applying them to the <tt class="docutils literal"><span class="pre">Reference</span></tt> and <tt class="docutils literal"><span class="pre">Map</span></tt> datasets (see the <a class="reference internal" href="#bedmap-downloads"><em>Downloads</em></a> section for sample inputs).</p>
 <p>As a reminder, the <tt class="docutils literal"><span class="pre">Map</span></tt> file contains regions of DNaseI-seq tag density. If we want the mean of the density across <cite>Reference</cite> elements, we use the <tt class="docutils literal"><span class="pre">--mean</span></tt> option:</p>
-<div class="highlight-python"><pre>$ bedmap --echo --mean reference.bed map.bed &gt; mappedReferences.mean.bed</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ bedmap --echo --mean reference.bed map.bed &gt; mappedReferences.mean.bed
+</pre></div>
 </div>
 <p>The <tt class="docutils literal"><span class="pre">--echo</span></tt> flag prints each <tt class="docutils literal"><span class="pre">Reference</span></tt> element, while the <tt class="docutils literal"><span class="pre">--mean</span></tt> flag calculates the mean signal of the <tt class="docutils literal"><span class="pre">Map</span></tt> elements which overlap the reference element:</p>
-<div class="highlight-python"><pre>$ more mappedReferences.mean.bed
+<div class="highlight-python"><div class="highlight"><pre>$ more mappedReferences.mean.bed
 chr21   33031200    33032400    ref-1|43.442623
 chr21   33031400    33031800    ref-2|31.571429
-chr21   33031900    33032000    ref-3|154.500000</pre>
+chr21   33031900    33032000    ref-3|154.500000
+</pre></div>
 </div>
 <p>This result tells us that the mean density across regions <tt class="docutils literal"><span class="pre">ref-1</span></tt>, <tt class="docutils literal"><span class="pre">ref-2</span></tt> and <tt class="docutils literal"><span class="pre">ref-3</span></tt> is <tt class="docutils literal"><span class="pre">44.442623</span></tt>, <tt class="docutils literal"><span class="pre">31.571429</span></tt> and <tt class="docutils literal"><span class="pre">154.5</span></tt>, respectively.</p>
 <div class="admonition note">
@@ -298,15 +303,17 @@ chr21   33031900    33032000    ref-3|154.500000</pre>
 <p class="last">Because we used the <tt class="docutils literal"><span class="pre">--echo</span></tt> flag in this example, we are guaranteed output that is at least three-column BED format and which is <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a>, which can be useful for <a class="reference external" href="http://en.wikipedia.org/wiki/Pipeline_(Unix)">pipeline</a> design, where results are piped downstream to <a class="reference internal" href="#bedmap"><em>bedmap</em></a>, <a class="reference internal" href="../set-operations/bedops.html#bedops"><em>bedops</em></a> and other BEDOPS and UNIX utilities.</p>
 </div>
 <p>If we simply want the mean values and don&#8217;t care about the reference data, we can skip <tt class="docutils literal"><span class="pre">--echo</span></tt>:</p>
-<div class="highlight-python"><pre>$ bedmap --mean reference.bed map.bed
+<div class="highlight-python"><div class="highlight"><pre>$ bedmap --mean reference.bed map.bed
 43.442623
 31.571429
-154.500000</pre>
+154.500000
+</pre></div>
 </div>
 <p>While not very detailed, this single-column representation can be useful for those who use UNIX utilities like <tt class="docutils literal"><span class="pre">paste</span></tt> or need to do additional downstream calculations with <tt class="docutils literal"><span class="pre">R</span></tt> or other utilities, where the reference information is unnecessary (or, at least, more work to excise).</p>
 <p>If a reference element does not overlap any map element, then a <tt class="docutils literal"><span class="pre">NAN</span></tt> is returned for any operation on that entry, <em>e.g.</em>, we know that the <em>ad hoc</em> element <tt class="docutils literal"><span class="pre">chr21:1000-2000</span></tt> does not overlap any member of our <tt class="docutils literal"><span class="pre">Map</span></tt> dataset, and there is therefore no mean value that can be calculated for that element:</p>
-<div class="highlight-python"><pre>$ echo -e "chr21\t1000\t2000\tfoo-1" | bedmap --echo --mean - map.bed
-chr21   1000    2000    foo-1|NAN</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ echo -e &quot;chr21\t1000\t2000\tfoo-1&quot; | bedmap --echo --mean - map.bed
+chr21   1000    2000    foo-1|NAN
+</pre></div>
 </div>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
@@ -315,45 +322,51 @@ chr21   1000    2000    foo-1|NAN</pre>
 <p class="last">Using <a class="reference external" href="http://en.wikipedia.org/wiki/Pipeline_(Unix)">standard streams</a> is useful for reducing file I/O and improving performance, especially in situations where one is using <a class="reference internal" href="#bedmap"><em>bedmap</em></a> in the middle of an extended pipeline.</p>
 </div>
 <p>While <a class="reference internal" href="#bedmap"><em>bedmap</em></a> returns a <tt class="docutils literal"><span class="pre">NAN</span></tt> if there are no mapped elements that associate with a reference element, we may want to filter these lines out. We can apply the <tt class="docutils literal"><span class="pre">--skip-unmapped</span></tt> option to leave out reference elements without mapped elements:</p>
-<div class="highlight-python"><pre>$ echo -e "chr21\t1000\t2000\tfoo-1" | bedmap --echo --mean --skip-unmapped - map.bed
-$</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ echo -e &quot;chr21\t1000\t2000\tfoo-1&quot; | bedmap --echo --mean --skip-unmapped - map.bed
+$
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>Some operations may yield a reference element with one or more mapped elements, which still return a <tt class="docutils literal"><span class="pre">NAN</span></tt> value by virtue of the calculation result. The <tt class="docutils literal"><span class="pre">--skip-unmapped</span></tt> operand will still allow these reference elements to be printed out!</p>
 <p>For instance, consider the <tt class="docutils literal"><span class="pre">--variance</span></tt> operator, which requires two or more map elements to calculate a variance. Where there is only one mapped element associated with the reference element, a <tt class="docutils literal"><span class="pre">--variance</span></tt> calculation will return a <tt class="docutils literal"><span class="pre">NAN</span></tt>. In this case, <tt class="docutils literal"><span class="pre">--skip-unmapped</span></tt> will still print this element, even though the result is <tt class="docutils literal"><span class="pre">NAN</span></tt>.</p>
 <p>Given the following statement:</p>
-<div class="highlight-python"><pre>$ bedmap --skip-unmapped --variance file1 file2</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ bedmap --skip-unmapped --variance file1 file2
+</pre></div>
 </div>
 <p>This is functionally equivalent to the following statement:</p>
-<div class="highlight-python"><pre>$ bedmap --indicator --variance --delim "\t" file1 file2 | awk '($1==1) {print $2}'</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ bedmap --indicator --variance --delim &quot;\t&quot; file1 file2 | awk &#39;($1==1) {print $2}&#39;
+</pre></div>
 </div>
 <p>The <tt class="docutils literal"><span class="pre">--indicator</span></tt> operand calculates whether there are any mapped elements (or none)—see the <a class="reference internal" href="#bedmap-indicator"><em>indicator</em></a> section for more detail. The <tt class="docutils literal"><span class="pre">awk</span></tt> statement then prints results which have one or more mapped elements, effectively filtering unmapped references.</p>
 <p class="last">It should therefore be more convenient to use <tt class="docutils literal"><span class="pre">--skip-unmapped</span></tt> where unmapped reference elements are not needed.</p>
 </div>
 <p>Another option is to retrieve the mapping element with the highest or lowest score within the reference region, using the <tt class="docutils literal"><span class="pre">--max-element</span></tt> or <tt class="docutils literal"><span class="pre">--min-element</span></tt> operators, respectively.</p>
 <p>Going back to our sample <tt class="docutils literal"><span class="pre">Reference</span></tt> and <tt class="docutils literal"><span class="pre">Map</span></tt> data, we can search for the highest scoring mapping elements across the three reference elements:</p>
-<div class="highlight-python"><pre>$ bedmap --echo --max-element --prec 0 reference.bed map.bed
+<div class="highlight-python"><div class="highlight"><pre>$ bedmap --echo --max-element --prec 0 reference.bed map.bed
 chr21   33031200        33032400        ref-1|chr21     33031885        33031905        map-37  165
 chr21   33031400        33031800        ref-2|chr21     33031785        33031805        map-32  82
-chr21   33031900        33032000        ref-3|chr21     33031885        33031905        map-37  165</pre>
+chr21   33031900        33032000        ref-3|chr21     33031885        33031905        map-37  165
+</pre></div>
 </div>
 <p>Over reference elements <tt class="docutils literal"><span class="pre">ref-1</span></tt> and <tt class="docutils literal"><span class="pre">ref-3</span></tt>, the mapping element <tt class="docutils literal"><span class="pre">map-37</span></tt> has the highest score. Over reference element <tt class="docutils literal"><span class="pre">ref-2</span></tt>, the highest scoring mapping element is <tt class="docutils literal"><span class="pre">map-32</span></tt>.</p>
 <p>Likewise, we can repeat this operation, but look for the lowest scoring elements, instead:</p>
-<div class="highlight-python"><pre>$ bedmap --echo --min-element --prec 0 reference.bed map.bed
+<div class="highlight-python"><div class="highlight"><pre>$ bedmap --echo --min-element --prec 0 reference.bed map.bed
 chr21   33031200        33032400        ref-1|chr21     33032265        33032285        map-56  2
 chr21   33031400        33031800        ref-2|chr21     33031525        33031545        map-19  13
-chr21   33031900        33032000        ref-3|chr21     33031985        33032005        map-42  138</pre>
+chr21   33031900        33032000        ref-3|chr21     33031985        33032005        map-42  138
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Where there are ties in score values, there is no guarantee about which tied element will be chosen. In this case, the <tt class="docutils literal"><span class="pre">--echo-map</span></tt> operator can be used to manually examine the full list of elements and apply different logic.</p>
 </div>
 <p>We can also perform multiple score operations, which are summarized on one line, <em>e.g.</em>, to show the mean, standard deviation, and minimum and maximum signal over each <tt class="docutils literal"><span class="pre">Reference</span></tt> element, we simply add the requisite options in series:</p>
-<div class="highlight-python"><pre>$ bedmap --echo --mean --stdev --min --max reference.bed map.bed
+<div class="highlight-python"><div class="highlight"><pre>$ bedmap --echo --mean --stdev --min --max reference.bed map.bed
 chr21   33031200    33032400    ref-1|43.442623|50.874527|2.000000|165.000000
 chr21   33031400    33031800    ref-2|31.571429|19.638155|13.000000|82.000000
-chr21   33031900    33032000    ref-3|154.500000|9.311283|138.000000|165.000000</pre>
+chr21   33031900    33032000    ref-3|154.500000|9.311283|138.000000|165.000000
+</pre></div>
 </div>
 <p>Multiple score-operational results are ordered identically with the command-line options. The section on <a class="reference internal" href="#bedmap-formatting-score-output"><em>formatting score output</em></a> demonstrates how one can change the precision and general format of numerical score results.</p>
 </div>
@@ -371,17 +384,19 @@ chr21   33031900    33032000    ref-3|154.500000|9.311283|138.000000|165.000000<
 <p>The <tt class="docutils literal"><span class="pre">--echo</span></tt> flag reports each reference element. We have already seen the application of <tt class="docutils literal"><span class="pre">--echo</span></tt> in earlier examples. The option helps to clearly associate results from other chosen operations with specific reference elements. Additionally, <tt class="docutils literal"><span class="pre">--echo</span></tt> enables the output from <a class="reference internal" href="#bedmap"><em>bedmap</em></a> to be used as input to additional BEDOPS utilities, including <a class="reference internal" href="#bedmap"><em>bedmap</em></a> itself.</p>
 <p>The <tt class="docutils literal"><span class="pre">--echo-map</span></tt> flag gathers overlapping mapped elements for every reference element. The option is useful for debugging and detailed downstream processing needs. This is the most general operation in <a class="reference internal" href="#bedmap"><em>bedmap</em></a> in that overlapping elements are returned in full detail, for every reference element. While results are well-defined and easily parsed, the output can be very large and difficult to read.</p>
 <p>As an example of using the <tt class="docutils literal"><span class="pre">--echo-map-id</span></tt> operator in a biological context, we examine a <a class="reference external" href="http://meme.nbcr.net/meme/fimo-intro.html">FIMO</a> analysis that returns a subset of transcription factor binding sites in BED format, with <a class="reference external" href="http://en.wikipedia.org/wiki/TRANSFAC">TRANSFAC</a> motif names listed in the ID column:</p>
-<div class="highlight-python"><pre>chr1    4534161 4534177 -V_GRE_C        4.20586e-06     -       CGTACACACAGTTCTT
+<div class="highlight-python"><div class="highlight"><pre>chr1    4534161 4534177 -V_GRE_C        4.20586e-06     -       CGTACACACAGTTCTT
 chr1    4534192 4534205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
 chr1    4534209 4534223 +V_HNF4_Q6_01   6.93604e-06     +       GGACCAGAGTCCAC
 chr1    4962522 4962540 -V_GCNF_01      9.4497e-06      -       CCCAAGGTCAAGATAAAG
 chr1    4962529 4962539 +V_NUR77_Q5     8.43564e-06     +       TTGACCTTGG
-...</pre>
+...
+</pre></div>
 </div>
 <p>This input is available from the <a class="reference internal" href="#bedmap-downloads"><em>Downloads</em></a> section as the <tt class="docutils literal"><span class="pre">Motifs</span></tt> dataset.</p>
 <p>We will treat this as a map file, asking which motif IDs are associated with a region of interest (<tt class="docutils literal"><span class="pre">chr1:4534150-4534300</span></tt>). To do this using <a class="reference internal" href="#bedmap"><em>bedmap</em></a>, we use the <tt class="docutils literal"><span class="pre">--echo-map-id</span></tt> option to summarize the IDs of mapped elements:</p>
-<div class="highlight-python"><pre>$ echo -e "chr1\t4534150\t4534300\tref-1" | bedmap --echo --echo-map-id - motifs.bed
-chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ echo -e &quot;chr1\t4534150\t4534300\tref-1&quot; | bedmap --echo --echo-map-id - motifs.bed
+chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -389,12 +404,14 @@ chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01</pre>
 <p class="last">One could determine, for example, where predicted sites are most prevalent and investigate the distribution of factors or other genomic features at or around these dense regions.</p>
 </div>
 <p>The <tt class="docutils literal"><span class="pre">--echo-map-id-uniq</span></tt> operator works exactly like <tt class="docutils literal"><span class="pre">--echo-map-id</span></tt>, except that duplicate IDs are removed from the result. For example, we can pull all the motifs hits from a wide region on <tt class="docutils literal"><span class="pre">chr2</span></tt>:</p>
-<div class="highlight-python"><pre>$ echo -e "chr2\t1000\t10000000\tref-1" | bedmap --echo --echo-map-id - motifs.bed
-chr2    1000    10000000        ref-1|+V_OCT1_05;+V_OCT_C;-V_CACD_01;+V_IRF_Q6;-V_BLIMP1_Q6;-V_IRF2_01;-V_IRF_Q6_01;+V_SMAD_Q6_01;-V_TATA_01;-V_TATA_C;-V_CEBP_01;-V_HNF6_Q6;+V_MTF1_Q4;+V_MYOD_Q6_01;-V_KROX_Q6;+V_EGR1_01;-V_SP1SP3_Q4;+V_EGR_Q6;+V_SP1_Q6;-V_SP1_Q2_01;-V_CKROX_Q2;+V_SP1_Q6_01;-V_SREBP1_Q5;+V_VDR_Q3;-V_DMRT1_01;-V_DMRT7_01;+V_DMRT1_01;-V_DMRT1_01;-V_DMRT7_01;+V_DMRT1_01;-V_DMRT1_01;-V_DMRT7_01</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ echo -e &quot;chr2\t1000\t10000000\tref-1&quot; | bedmap --echo --echo-map-id - motifs.bed
+chr2    1000    10000000        ref-1|+V_OCT1_05;+V_OCT_C;-V_CACD_01;+V_IRF_Q6;-V_BLIMP1_Q6;-V_IRF2_01;-V_IRF_Q6_01;+V_SMAD_Q6_01;-V_TATA_01;-V_TATA_C;-V_CEBP_01;-V_HNF6_Q6;+V_MTF1_Q4;+V_MYOD_Q6_01;-V_KROX_Q6;+V_EGR1_01;-V_SP1SP3_Q4;+V_EGR_Q6;+V_SP1_Q6;-V_SP1_Q2_01;-V_CKROX_Q2;+V_SP1_Q6_01;-V_SREBP1_Q5;+V_VDR_Q3;-V_DMRT1_01;-V_DMRT7_01;+V_DMRT1_01;-V_DMRT1_01;-V_DMRT7_01;+V_DMRT1_01;-V_DMRT1_01;-V_DMRT7_01
+</pre></div>
 </div>
 <p>However, some hits (<em>e.g.</em>, <tt class="docutils literal"><span class="pre">-V_DMRT7_01</span></tt>) show up two or more times. If we want a non-redundant list, we replace <tt class="docutils literal"><span class="pre">--echo-map-id</span></tt> with <tt class="docutils literal"><span class="pre">--echo-map-id-uniq</span></tt>:</p>
-<div class="highlight-python"><pre>$ echo -e "chr2\t1000\t10000000\tref-1" | bedmap --echo --echo-map-id-uniq - motifs.bed
-chr2    1000    10000000        ref-1|+V_DMRT1_01;+V_EGR1_01;+V_EGR_Q6;+V_IRF_Q6;+V_MTF1_Q4;+V_MYOD_Q6_01;+V_OCT1_05;+V_OCT_C;+V_SMAD_Q6_01;+V_SP1_Q6;+V_SP1_Q6_01;+V_VDR_Q3;-V_BLIMP1_Q6;-V_CACD_01;-V_CEBP_01;-V_CKROX_Q2;-V_DMRT1_01;-V_DMRT7_01;-V_HNF6_Q6;-V_IRF2_01;-V_IRF_Q6_01;-V_KROX_Q6;-V_SP1SP3_Q4;-V_SP1_Q2_01;-V_SREBP1_Q5;-V_TATA_01;-V_TATA_C</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ echo -e &quot;chr2\t1000\t10000000\tref-1&quot; | bedmap --echo --echo-map-id-uniq - motifs.bed
+chr2    1000    10000000        ref-1|+V_DMRT1_01;+V_EGR1_01;+V_EGR_Q6;+V_IRF_Q6;+V_MTF1_Q4;+V_MYOD_Q6_01;+V_OCT1_05;+V_OCT_C;+V_SMAD_Q6_01;+V_SP1_Q6;+V_SP1_Q6_01;+V_VDR_Q3;-V_BLIMP1_Q6;-V_CACD_01;-V_CEBP_01;-V_CKROX_Q2;-V_DMRT1_01;-V_DMRT7_01;-V_HNF6_Q6;-V_IRF2_01;-V_IRF_Q6_01;-V_KROX_Q6;-V_SP1SP3_Q4;-V_SP1_Q2_01;-V_SREBP1_Q5;-V_TATA_01;-V_TATA_C
+</pre></div>
 </div>
 <p>The <tt class="docutils literal"><span class="pre">--echo-map-score</span></tt> flag works in a similar fashion to <tt class="docutils literal"><span class="pre">--echo-map-id</span></tt>, reporting scores instead of IDs. The <a class="reference internal" href="#bedmap-formatting-score-output"><em>formatting score output</em></a> section demonstrates how one can use <tt class="docutils literal"><span class="pre">--echo-map-score</span></tt> to summarize score data from mapped elements.</p>
 <div class="admonition note">
@@ -402,10 +419,11 @@ chr2    1000    10000000        ref-1|+V_DMRT1_01;+V_EGR1_01;+V_EGR_Q6;+V_IRF_Q6
 <p class="last">Both the <tt class="docutils literal"><span class="pre">--echo-map-id</span></tt> and <tt class="docutils literal"><span class="pre">--echo-map-score</span></tt> flags use the semi-colon (<tt class="docutils literal"><span class="pre">;</span></tt>) as a default delimiter, which may be changed with the <tt class="docutils literal"><span class="pre">--multidelim</span></tt> option (see the <a class="reference internal" href="#bedmap-delimiters"><em>Delimiters</em></a> section for more information on this and other modifier operators).</p>
 </div>
 <p>The <tt class="docutils literal"><span class="pre">--echo-map-range</span></tt> flag tells <a class="reference internal" href="#bedmap"><em>bedmap</em></a> to report the genomic range of overlapping mapped elements. If we apply this flag to the <tt class="docutils literal"><span class="pre">Reference</span></tt> and <tt class="docutils literal"><span class="pre">Map</span></tt> datasets (see <a class="reference internal" href="#bedmap-downloads"><em>Downloads</em></a>), we get the following result:</p>
-<div class="highlight-python"><pre>$ bedmap --echo --echo-map-range reference.bed map.bed
+<div class="highlight-python"><div class="highlight"><pre>$ bedmap --echo --echo-map-range reference.bed map.bed
 chr21   33031200    33032400    ref-1|chr21 33031185    33032405
 chr21   33031400    33031800    ref-2|chr21 33031385    33031805
-chr21   33031900    33032000    ref-3|chr21 33031885    33032005</pre>
+chr21   33031900    33032000    ref-3|chr21 33031885    33032005
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -416,34 +434,39 @@ chr21   33031900    33032000    ref-3|chr21 33031885    33032005</pre>
 <div class="section" id="element-and-overlap-statistics">
 <span id="bedmap-element-and-overlap-statistics"></span><h4>6.2.1.3.3.2. Element and overlap statistics<a class="headerlink" href="#element-and-overlap-statistics" title="Permalink to this headline">¶</a></h4>
 <p>Looking back at the <tt class="docutils literal"><span class="pre">Map</span></tt> and <tt class="docutils literal"><span class="pre">Reference</span></tt> datasets, let&#8217;s say we want to count the number of elements in <tt class="docutils literal"><span class="pre">Map</span></tt> that overlap a given <tt class="docutils literal"><span class="pre">Reference</span></tt> element, as well as the extent of that overlap as measured by the total number of overlapping bases from mapped elements. For this, we use the <tt class="docutils literal"><span class="pre">--count</span></tt> and <tt class="docutils literal"><span class="pre">--bases</span></tt> flags, respectively:</p>
-<div class="highlight-python"><pre>$ bedmap --echo --count --bases reference.bed map.bed
+<div class="highlight-python"><div class="highlight"><pre>$ bedmap --echo --count --bases reference.bed map.bed
 chr21   33031200    33032400    ref-1|61|1200
 chr21   33031400    33031800    ref-2|21|400
-chr21   33031900    33032000    ref-3|6|100</pre>
+chr21   33031900    33032000    ref-3|6|100
+</pre></div>
 </div>
 <p>This result tells us that there are 61 elements in <tt class="docutils literal"><span class="pre">Map</span></tt> that overlap <tt class="docutils literal"><span class="pre">ref-1</span></tt>, and 1200 total bases from the 61 elements overlap bases of <tt class="docutils literal"><span class="pre">ref-1</span></tt>. Similarly, 21 elements overlap <tt class="docutils literal"><span class="pre">ref-2</span></tt>, and 400 total bases from the 21 elements overlap bases of <tt class="docutils literal"><span class="pre">ref-2</span></tt>, etc.</p>
 <p>The <tt class="docutils literal"><span class="pre">--bases</span></tt> operator works on <tt class="docutils literal"><span class="pre">Map</span></tt> elements. If, instead, we want to quantify the degree to which <tt class="docutils literal"><span class="pre">Reference</span></tt> elements overlap <tt class="docutils literal"><span class="pre">Map</span></tt> , we can use the <tt class="docutils literal"><span class="pre">--bases-uniq</span></tt> and <tt class="docutils literal"><span class="pre">--bases-uniq-f</span></tt> flags to count the number of bases and, respectively, the fraction of total bases within <tt class="docutils literal"><span class="pre">Reference</span></tt> which are covered by overlapping elements in <tt class="docutils literal"><span class="pre">Map</span></tt>.</p>
 <p>This last example uses <tt class="docutils literal"><span class="pre">Motifs</span></tt> elements and all of the options: <tt class="docutils literal"><span class="pre">--bases</span></tt>, <tt class="docutils literal"><span class="pre">--bases-uniq</span></tt> and <tt class="docutils literal"><span class="pre">--bases-uniq-f</span></tt>, to illustrate their different behaviors:</p>
-<div class="highlight-python"><pre>$ echo -e "chr1\t4534161\t4962550\tadhoc-1" | bedmap --echo --bases --bases-uniq --bases-uniq-f - motifs.bed
-chr1    4534161     4962550     adhoc-1|169|71|0.000166</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ echo -e &quot;chr1\t4534161\t4962550\tadhoc-1&quot; | bedmap --echo --bases --bases-uniq --bases-uniq-f - motifs.bed
+chr1    4534161     4962550     adhoc-1|169|71|0.000166
+</pre></div>
 </div>
 </div>
 <div class="section" id="indicator">
 <span id="bedmap-indicator"></span><h4>6.2.1.3.3.3. Indicator<a class="headerlink" href="#indicator" title="Permalink to this headline">¶</a></h4>
 <p>If we simply want to know if a reference element overlaps one or more map elements, we can use the <tt class="docutils literal"><span class="pre">--indicator</span></tt> operator, which returns a <tt class="docutils literal"><span class="pre">1</span></tt> or <tt class="docutils literal"><span class="pre">0</span></tt> value, depending on whether there is or is not an overlap, respectively. For example:</p>
-<div class="highlight-python"><pre>$ bedmap --echo --indicator reference.bed map.bed
+<div class="highlight-python"><div class="highlight"><pre>$ bedmap --echo --indicator reference.bed map.bed
 chr21   33031200    33032400    ref-1|1
 chr21   33031400    33031800    ref-2|1
-chr21   33031900    33032000    ref-3|1</pre>
+chr21   33031900    33032000    ref-3|1
+</pre></div>
 </div>
 <p>All three of our reference elements have mapped elements associated with them. If we, instead, test a reference element that we know ahead of time does not contain overlapping map elements, we get a <tt class="docutils literal"><span class="pre">0</span></tt> result, as we expect:</p>
-<div class="highlight-python"><pre>$ echo -e "chr21\t1000\t2000\tfoo-1" | bedmap --echo --indicator - map.bed
-chr21   1000    2000    foo-1|0</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ echo -e &quot;chr21\t1000\t2000\tfoo-1&quot; | bedmap --echo --indicator - map.bed
+chr21   1000    2000    foo-1|0
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>The <tt class="docutils literal"><span class="pre">--indicator</span></tt> option is equivalent to testing if the result from <tt class="docutils literal"><span class="pre">--count</span></tt> is equal to or greater than <tt class="docutils literal"><span class="pre">0</span></tt>:</p>
-<div class="highlight-python"><pre>$ bedmap --count foo bar | awk '{ print ($1 &gt; 0 ? "1" : "0") }' -</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ bedmap --count foo bar | awk &#39;{ print ($1 &gt; 0 ? &quot;1&quot; : &quot;0&quot;) }&#39; -
+</pre></div>
 </div>
 <p class="last">This option eliminates the need for piping <a class="reference internal" href="#bedmap"><em>bedmap</em></a> results to <tt class="docutils literal"><span class="pre">awk</span></tt>.</p>
 </div>
@@ -460,23 +483,27 @@ chr21   1000    2000    foo-1|0</pre>
 <p class="last">To change the coordinates of a BED file on <em>output</em> (symmetrically or asymmetrically), see the <tt class="docutils literal"><span class="pre">--range</span></tt> option applied with <a class="reference internal" href="../set-operations/bedops.html#bedops-range"><em>bedops &#8211;everything</em></a>.</p>
 </div>
 <p>As an example, we look again at element <tt class="docutils literal"><span class="pre">ref-3</span></tt> from the <tt class="docutils literal"><span class="pre">Reference</span></tt> dataset and where it overlaps with <tt class="docutils literal"><span class="pre">Map</span></tt>:</p>
-<div class="highlight-python"><pre>chr21   33031900    33032000    ref-3</pre>
+<div class="highlight-python"><div class="highlight"><pre>chr21   33031900    33032000    ref-3
+</pre></div>
 </div>
 <a class="reference internal image-reference" href="../../../_images/reference_bedmap_mapref_ref3.png"><img alt="../../../_images/reference_bedmap_mapref_ref3.png" src="../../../_images/reference_bedmap_mapref_ref3.png" style="width: 99%;" /></a>
 <p>If we want to apply an operation on 100 bp upstream and downstream of this and the other reference elements, we can use the <tt class="docutils literal"><span class="pre">--range</span></tt> option:</p>
-<div class="highlight-python"><pre>$ bedmap --echo --echo-map-id --range 100 reference.bed map.bed &gt; mappedReference.padded.bed</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ bedmap --echo --echo-map-id --range 100 reference.bed map.bed &gt; mappedReference.padded.bed
+</pre></div>
 </div>
 <p>Any operation will now be applied to a broader set of mapped elements, as visualized here with a &#8220;padded&#8221; version of <tt class="docutils literal"><span class="pre">ref-3</span></tt>:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_bedmap_mapref_ref3_padded.png"><img alt="../../../_images/reference_bedmap_mapref_ref3_padded.png" src="../../../_images/reference_bedmap_mapref_ref3_padded.png" style="width: 99%;" /></a>
 <p>We can compare mean densities, in order to see the effect of using <tt class="docutils literal"><span class="pre">--range</span></tt>. Here is the mean density across the original, unpadded <tt class="docutils literal"><span class="pre">ref-3</span></tt>:</p>
-<div class="highlight-python"><pre>$ bedmap --echo --mean reference.bed map.bed
+<div class="highlight-python"><div class="highlight"><pre>$ bedmap --echo --mean reference.bed map.bed
 ...
-chr21   33031900    33032000    ref-3|154.500000</pre>
+chr21   33031900    33032000    ref-3|154.500000
+</pre></div>
 </div>
 <p>And here is the mean density across the padded <tt class="docutils literal"><span class="pre">ref-3</span></tt>:</p>
-<div class="highlight-python"><pre>$ bedmap --echo --range 100 --mean reference.bed map.bed
+<div class="highlight-python"><div class="highlight"><pre>$ bedmap --echo --range 100 --mean reference.bed map.bed
 ...
-chr21   33031900    33032000    ref-3|117.750000</pre>
+chr21   33031900    33032000    ref-3|117.750000
+</pre></div>
 </div>
 <p>Looking at the visualizations above, we would expect the mean density to be lower, as the expanded reference region includes map elements with lower tag density, which pushes down the overall mean.</p>
 <div class="admonition note">
@@ -487,23 +514,26 @@ chr21   33031900    33032000    ref-3|117.750000</pre>
 <p class="first admonition-title">Note</p>
 <p>Because <tt class="docutils literal"><span class="pre">--range</span></tt> is an internal operation, some statistical operations like <tt class="docutils literal"><span class="pre">--bases</span></tt> and <tt class="docutils literal"><span class="pre">--bases-uniq</span></tt> do not work as one might expect.</p>
 <p>As an example, we might want to count the number of overlapping, unique bases between a 1000-base window around a reference element and a set of mapped elements. The following command will not work:</p>
-<div class="highlight-python"><pre>$ bedmap --echo --range 1000 --bases-uniq reference.bed map.bed</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ bedmap --echo --range 1000 --bases-uniq reference.bed map.bed
+</pre></div>
 </div>
 <p>Instead, use <a class="reference internal" href="../set-operations/bedops.html#bedops"><em>bedops</em></a> to build the window, piping it into a downstream <a class="reference internal" href="#bedmap"><em>bedmap</em></a> command. The result of this operation can be piped into the core utility <tt class="docutils literal"><span class="pre">paste</span></tt> with the original reference set, in order to associate reference elements with the windowed operation result:</p>
-<div class="highlight-python"><pre>$ bedops --range 1000 --everything reference.bed \
+<div class="highlight-python"><div class="highlight"><pre>$ bedops --range 1000 --everything reference.bed \
     | bedmap --bases-uniq - map.bed \
-    | paste reference.bed -</pre>
+    | paste reference.bed -
+</pre></div>
 </div>
 <p>To extend this demonstration even further, let&#8217;s say we are interested in calculations of unique base counts across 1, 2.5 and 5 kilobase windows around reference elements. We can build a matrix-like result through a judicious use of UNIX pipes that progressively expand windows:</p>
-<div class="highlight-python"><pre>$ bedops --range 1000 --everything reference.bed \
+<div class="highlight-python"><div class="highlight"><pre>$ bedops --range 1000 --everything reference.bed \
   | bedmap --echo --bases-uniq - map.bed \
   | bedops --range 1500 --everything - \
   | bedmap --echo --bases-uniq - map.bed \
   | bedops --range 2500 --everything - \
   | bedmap --echo --bases-uniq - map.bed \
-  | cut -f2- -d'|' \
+  | cut -f2- -d&#39;|&#39; \
   | paste reference.bed - \
-  | tr '|' '\t'</pre>
+  | tr &#39;|&#39; &#39;\t&#39;
+</pre></div>
 </div>
 <p>To explain how this works, we first build a 1 kilobase window around reference elements with <a class="reference internal" href="../set-operations/bedops.html#bedops"><em>bedops</em></a> and pipe these windows to <a class="reference internal" href="#bedmap"><em>bedmap</em></a>, which does two things:</p>
 <ol class="arabic simple">
@@ -520,24 +550,24 @@ chr21   33031900    33032000    ref-3|117.750000</pre>
 <span id="bedmap-using-faster-with-range"></span><h4>6.2.1.3.4.2. Using <tt class="docutils literal"><span class="pre">--faster</span></tt> with <tt class="docutils literal"><span class="pre">--range</span></tt><a class="headerlink" href="#using-faster-with-range" title="Permalink to this headline">¶</a></h4>
 <p>The <tt class="docutils literal"><span class="pre">--faster</span></tt> modifier works with the <tt class="docutils literal"><span class="pre">--bp-ovr</span></tt>, <tt class="docutils literal"><span class="pre">--fraction-both</span></tt> and <tt class="docutils literal"><span class="pre">--exact</span></tt> (<tt class="docutils literal"><span class="pre">--fraction-both</span> <span class="pre">1</span></tt>) overlap and <tt class="docutils literal"><span class="pre">--range</span></tt> specifiers to dramatically increase the performance of <a class="reference internal" href="#bedmap"><em>bedmap</em></a>, when the following input restriction is met:</p>
 <ul class="simple">
-<li>No fully-nested elements in any input mapping file (duplicate elements and other overlapping elements are okay).</li>
+<li>No <a class="reference internal" href="../set-operations/nested-elements.html#nested-elements"><em>fully-nested elements</em></a> in any input mapping file (duplicate elements and other overlapping elements are okay).</li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The details of this nested-element restriction are explained in more detail in the <a class="reference internal" href="../set-operations/bedextract.html#bedextract-nested-elements"><em>bedextract</em></a> documentation.</p>
+<p class="last">The details of this restriction are explained in more detail in the <a class="reference internal" href="../set-operations/nested-elements.html#nested-elements"><em>nested element documentation</em></a>.</p>
 </div>
 <p>This option also works with the <tt class="docutils literal"><span class="pre">--ec</span></tt> error checking flag, which indicates if the data contain nested elements. Using <tt class="docutils literal"><span class="pre">--ec</span></tt> carries its usual overhead, but as it only doubles the much-improved execution time, it may be worth using.</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
-<p>To give an idea of the speed improvement, a <tt class="docutils literal"><span class="pre">--range</span> <span class="pre">100000</span> <span class="pre">--echo</span> <span class="pre">--count</span></tt> operation on 8.4 million, non-nested mapping elements (DNaseI footprints across multiple cell types) took <em>2 minutes and 55 seconds</em> without speed-up. By adding the <tt class="docutils literal"><span class="pre">--faster</span></tt> flag, the same calculation took <em>10 seconds</em>. That is an 18-fold speed improvement.</p>
+<p>To give an idea of the speed improvement, a <tt class="docutils literal"><span class="pre">--range</span> <span class="pre">100000</span> <span class="pre">--echo</span> <span class="pre">--count</span></tt> operation on 8.4 million, non-nested mapping elements (DNaseI footprints across multiple cell types) took <em>2 minutes and 55 seconds</em> without speed-up. By adding the <tt class="docutils literal"><span class="pre">--faster</span></tt> flag, the same calculation took <em>10 seconds</em>. That is an <strong>18-fold</strong> speed improvement.</p>
 <p>One scenario where this option can provide great speed gains is where <tt class="docutils literal"><span class="pre">--range</span></tt> is used with a large numerical parameter. Another scenario where this option is very useful is where the reference file has large elements, and the mapping file is made up of many small elements—specifically, where a number of small elements overlap each big element from the reference file.</p>
 <p>An example of a research application for our lab which benefits from this flag is where we perform statistical analysis of large numbers of small sequence tags that fall in hotspot regions.</p>
-<p class="last">If your data meet the <a class="reference internal" href="../set-operations/bedextract.html#bedextract-nested-elements"><em>non-nesting criteria</em></a>, using <tt class="docutils literal"><span class="pre">--faster</span></tt> with <tt class="docutils literal"><span class="pre">--bp-ovr</span></tt>, <tt class="docutils literal"><span class="pre">--exact</span></tt> or <tt class="docutils literal"><span class="pre">--range</span></tt> is highly recommended.</p>
+<p class="last">If your data meet the <a class="reference internal" href="../set-operations/nested-elements.html#nested-elements"><em>non-nesting criteria</em></a>, using <tt class="docutils literal"><span class="pre">--faster</span></tt> with <tt class="docutils literal"><span class="pre">--bp-ovr</span></tt>, <tt class="docutils literal"><span class="pre">--exact</span></tt> or <tt class="docutils literal"><span class="pre">--range</span></tt> is <strong>highly recommended</strong>.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>Our lab works with BED data of various types: cut-counts, hotspots, peaks, footprints, etc. These data generally do not contain nested elements and so are amenable to use with <a class="reference internal" href="#bedmap"><em>bedmap&#8217;s</em></a> <tt class="docutils literal"><span class="pre">--faster</span></tt> flag for extracting overlapping elements.</p>
-<p>However, other types of data can be problematic. <a class="reference external" href="http://meme.nbcr.net/meme/fimo-intro.html">FIMO</a> search results, for example, may cause trouble, where the boundaries of one motif hit can be contained within another larger hit. Or paired-end sequence data, where tags are not of a fixed length.</p>
+<p>However, other types of data can be problematic. <a class="reference external" href="http://meme.nbcr.net/meme/fimo-intro.html">FIMO</a> search results (motif hits), for example, may cause trouble, where the boundaries of one motif hit can be contained within another larger hit. Or paired-end sequence data, where tags are not of a fixed length.</p>
 <p class="last">Be sure to consider the makeup of your BED data before using <tt class="docutils literal"><span class="pre">--faster</span></tt>.</p>
 </div>
 <div class="admonition tip">
@@ -549,28 +579,33 @@ chr21   33031900    33032000    ref-3|117.750000</pre>
 <span id="bedmap-formatting-score-output"></span><h4>6.2.1.3.4.3. Formatting score output<a class="headerlink" href="#formatting-score-output" title="Permalink to this headline">¶</a></h4>
 <p>The <tt class="docutils literal"><span class="pre">--prec</span></tt> and <tt class="docutils literal"><span class="pre">--sci</span></tt> process flags are useful for controlling the <a class="reference external" href="http://en.wikipedia.org/wiki/Precision_(arithmetic)">arithmetic precision</a> and <a class="reference external" href="http://en.wikipedia.org/wiki/Scientific_notation">notation</a> of score output, when used with the <tt class="docutils literal"><span class="pre">--echo-map-score</span></tt>, <tt class="docutils literal"><span class="pre">--sum</span></tt>, <tt class="docutils literal"><span class="pre">--mean</span></tt> and other numerical score operators. This will also format results from the non-score operator <tt class="docutils literal"><span class="pre">--bases-uniq-f</span></tt>.</p>
 <p>To demonstrate their use, we revisit the <tt class="docutils literal"><span class="pre">Motifs</span></tt> dataset, which includes <em>p</em>-values reporting the statistical significance of putative transcription factor binding sites:</p>
-<div class="highlight-python"><pre>chr1    4534161 4534177 -V_GRE_C        4.20586e-06     -       CGTACACACAGTTCTT
+<div class="highlight-python"><div class="highlight"><pre>chr1    4534161 4534177 -V_GRE_C        4.20586e-06     -       CGTACACACAGTTCTT
 chr1    4534192 4534205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
 chr1    4534209 4534223 +V_HNF4_Q6_01   6.93604e-06     +       GGACCAGAGTCCAC
 chr1    4962522 4962540 -V_GCNF_01      9.4497e-06      -       CCCAAGGTCAAGATAAAG
 chr1    4962529 4962539 +V_NUR77_Q5     8.43564e-06     +       TTGACCTTGG
-...</pre>
+...
+</pre></div>
 </div>
 <p>Let&#8217;s say we want a list of motifs and associated <em>p</em>-values mapped to a coordinate range of interest (<tt class="docutils literal"><span class="pre">chr1:4534150-4534300</span></tt>). In order to conserve space, however, we only want two significant figures for the score data. So we use <tt class="docutils literal"><span class="pre">--prec</span> <span class="pre">2</span></tt> to try to reformat the score output:</p>
-<div class="highlight-python"><pre>$ echo -e "chr1\t4534150\t4534300\tref-1" \
+<div class="highlight-python"><div class="highlight"><pre>$ echo -e &quot;chr1\t4534150\t4534300\tref-1&quot; \
     | bedmap --prec 2 --echo --echo-map-id --echo-map-score - motifs.bed \
-    &gt; motifsForRef1.bed</pre>
+    &gt; motifsForRef1.bed
+</pre></div>
 </div>
 <p>Here is the output:</p>
-<div class="highlight-python"><pre>chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01|0.00;0.00;0.00</pre>
+<div class="highlight-python"><div class="highlight"><pre>chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01|0.00;0.00;0.00
+</pre></div>
 </div>
 <p>It looks like our <em>p</em>-values were rounded down to zeroes, which is not what we want. But we remember that the binding site <em>p</em>-values are listed in scientific notation, and so we add the <tt class="docutils literal"><span class="pre">--sci</span></tt> flag to preserve the format of the score data in scientific notation:</p>
-<div class="highlight-python"><pre>$ echo -e "chr1\t4534150\t4534300\tref-1" \
+<div class="highlight-python"><div class="highlight"><pre>$ echo -e &quot;chr1\t4534150\t4534300\tref-1&quot; \
     | bedmap --prec 2 --sci --echo --echo-map-id --echo-map-score - motifs.bed \
-    &gt; correctedMotifsForRef1.bed</pre>
+    &gt; correctedMotifsForRef1.bed
+</pre></div>
 </div>
 <p>Here is the corrected output:</p>
-<div class="highlight-python"><pre>chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01|4.21e-06;2.22e-06;6.94e-06</pre>
+<div class="highlight-python"><div class="highlight"><pre>chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01|4.21e-06;2.22e-06;6.94e-06
+</pre></div>
 </div>
 <p>Rounding of the mantissa is done to the precision specified in <tt class="docutils literal"><span class="pre">--prec</span></tt>.</p>
 <p>Obviously, the <tt class="docutils literal"><span class="pre">--sci</span></tt> flag is useful for very small or large score data. You probably wouldn&#8217;t use <tt class="docutils literal"><span class="pre">--sci</span></tt> with most integer signal (<em>e.g.</em>, raw tag counts or most discrete measurements).</p>
@@ -579,7 +614,8 @@ chr1    4962529 4962539 +V_NUR77_Q5     8.43564e-06     +       TTGACCTTGG
 <span id="bedmap-delimiters"></span><h4>6.2.1.3.4.4. Delimiters<a class="headerlink" href="#delimiters" title="Permalink to this headline">¶</a></h4>
 <p>As shown in the examples above, the pipe (<tt class="docutils literal"><span class="pre">|</span></tt>) and semi-colon (<tt class="docutils literal"><span class="pre">;</span></tt>) characters are used to split operational and <tt class="docutils literal"><span class="pre">echo</span></tt>-ed results, respectively. The <tt class="docutils literal"><span class="pre">--delim</span></tt> and <tt class="docutils literal"><span class="pre">--multidelim</span></tt> flags change these delimiters to characters of your choice, which let you pick what makes most sense for your custom post-processing or other downstream pipelining work (for instance, in our lab <tt class="docutils literal"><span class="pre">--delim</span> <span class="pre">&quot;\t&quot;</span></tt> is a popular alternative to the default <tt class="docutils literal"><span class="pre">|</span></tt> character).</p>
 <p>As an example, the following <a class="reference internal" href="#bedmap"><em>bedmap</em></a> result is obtained from using the <tt class="docutils literal"><span class="pre">--echo</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-id</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-score</span></tt> and <tt class="docutils literal"><span class="pre">--max</span></tt> options on the <tt class="docutils literal"><span class="pre">Motifs</span></tt> dataset:</p>
-<div class="highlight-python"><pre>chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01|4.21e-06;2.22e-06;6.94e-06|6.94e-06</pre>
+<div class="highlight-python"><div class="highlight"><pre>chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01|4.21e-06;2.22e-06;6.94e-06|6.94e-06
+</pre></div>
 </div>
 <p>For this result, the <a class="reference internal" href="#bedmap"><em>bedmap</em></a> program organizes data using the default set of delimiters:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">reference</span><span class="o">-</span><span class="n">line</span><span class="p">]</span> <span class="o">|</span> <span class="p">[</span><span class="nb">map</span><span class="o">-</span><span class="n">IDs</span><span class="p">]</span> <span class="o">|</span> <span class="p">[</span><span class="nb">map</span><span class="o">-</span><span class="n">scores</span><span class="p">]</span> <span class="o">|</span> <span class="p">[</span><span class="n">maximum</span><span class="o">-</span><span class="nb">map</span><span class="o">-</span><span class="n">score</span><span class="p">]</span>
@@ -594,8 +630,9 @@ chr1    4962529 4962539 +V_NUR77_Q5     8.43564e-06     +       TTGACCTTGG
 </pre></div>
 </div>
 <p>You can use the <tt class="docutils literal"><span class="pre">--multidelim</span></tt> option to replace the semi-colon with another delimiter, <em>e.g.</em>:</p>
-<div class="highlight-python"><pre>$ echo -e "chr1\t4534150\t4534300\tref-1" | bedmap --multidelim '$' --echo --echo-map-id - motifs.bed
-chr1    4534150 4534300 ref-1|-V_GRE_C$-V_STAT_Q6$+V_HNF4_Q6_01</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ echo -e &quot;chr1\t4534150\t4534300\tref-1&quot; | bedmap --multidelim &#39;$&#39; --echo --echo-map-id - motifs.bed
+chr1    4534150 4534300 ref-1|-V_GRE_C$-V_STAT_Q6$+V_HNF4_Q6_01
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -608,20 +645,23 @@ chr1    4534150 4534300 ref-1|-V_GRE_C$-V_STAT_Q6$+V_HNF4_Q6_01</pre>
 <span id="bedmap-per-chromosome-operations"></span><h2>6.2.1.4. Per-chromosome operations (&#8211;chrom)<a class="headerlink" href="#per-chromosome-operations-chrom" title="Permalink to this headline">¶</a></h2>
 <p>All operations on inputs described so far can be restricted to one chromosome, by adding the <tt class="docutils literal"><span class="pre">--chrom</span> <span class="pre">&lt;val&gt;</span></tt> operator. This is highly useful for cluster-based work, where operations on large BED inputs can be split up by chromosome and pushed to separate cluster nodes.</p>
 <p>Here, we use the <tt class="docutils literal"><span class="pre">--echo</span></tt> and <tt class="docutils literal"><span class="pre">--echo-map-id</span></tt> operators on our <tt class="docutils literal"><span class="pre">Motifs</span></tt> dataset, but we limit operations to those on elements on chromosome <tt class="docutils literal"><span class="pre">chr2</span></tt>:</p>
-<div class="highlight-python"><pre>$ echo -e "chr2\t1000000\t5000000\tref-1" | bedmap --chrom chr2 --echo --echo-map-id - motifs.bed
-chr2    1000000 5000000 ref-1|+V_OCT1_05;+V_OCT_C;-V_CACD_01;+V_IRF_Q6;-V_BLIMP1_Q6;-V_IRF2_01;-V_IRF_Q6_01</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ echo -e &quot;chr2\t1000000\t5000000\tref-1&quot; | bedmap --chrom chr2 --echo --echo-map-id - motifs.bed
+chr2    1000000 5000000 ref-1|+V_OCT1_05;+V_OCT_C;-V_CACD_01;+V_IRF_Q6;-V_BLIMP1_Q6;-V_IRF2_01;-V_IRF_Q6_01
+</pre></div>
 </div>
 <p>If the reference elements are not on the specified chromosome provided to <tt class="docutils literal"><span class="pre">--chrom</span></tt>, then no output is generated. In the following example, our reference element is on <tt class="docutils literal"><span class="pre">chr2</span></tt>, but we ask for operations to be limited to <tt class="docutils literal"><span class="pre">chr3</span></tt>, yielding an empty set:</p>
-<div class="highlight-python"><pre>$ echo -e "chr2\t1000000\t5000000\tref-1" | bedmap --chrom chr3 --echo --echo-map-id - motifs.bed
-$</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ echo -e &quot;chr2\t1000000\t5000000\tref-1&quot; | bedmap --chrom chr3 --echo --echo-map-id - motifs.bed
+$
+</pre></div>
 </div>
 </div>
 <div class="section" id="starch-support">
 <span id="bedmap-starch-support"></span><h2>6.2.1.5. Starch support<a class="headerlink" href="#starch-support" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="#bedmap"><em>bedmap</em></a> application supports use of <a class="reference internal" href="../file-management/compression/starch.html#starch"><em>Starch-formatted archives</em></a> as inputs, as well as text-based BED data. One or multiple inputs may be Starch archives.</p>
 <p>For example, we can repeat the overlapping-motif example from the <a class="reference internal" href="#bedmap-echo"><em>Echo section</em></a>, using a Starch archive made from the regions in <tt class="docutils literal"><span class="pre">Motifs</span></tt>:</p>
-<div class="highlight-python"><pre>$ echo -e "chr1\t4534150\t4534300\tref-1" | bedmap --echo --echo-map-id - motifs.bed.starch
-chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ echo -e &quot;chr1\t4534150\t4534300\tref-1&quot; | bedmap --echo --echo-map-id - motifs.bed.starch
+chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01
+</pre></div>
 </div>
 <p>By combining the <tt class="docutils literal"><span class="pre">--chrom</span></tt> operator with operations on Starch archives, the end user can achieve improved computing performance and disk space savings, particularly where <a class="reference internal" href="../set-operations/bedops.html#bedops"><em>bedops</em></a>, <a class="reference internal" href="#bedmap"><em>bedmap</em></a> and <a class="reference internal" href="../set-operations/closest-features.html#closest-features"><em>closest-features</em></a> operations are applied with a computational cluster on separate chromosomes.</p>
 </div>
@@ -636,7 +676,8 @@ chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01</pre>
 <div class="section" id="endlines">
 <span id="bedmap-endlines"></span><h2>6.2.1.7. Endlines<a class="headerlink" href="#endlines" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="#bedmap"><em>bedmap</em></a> program expects endlines (<tt class="docutils literal"><span class="pre">\n</span></tt>) appropriate to Linux and Mac OS X operating systems. Microsoft Windows uses different characters for endlines. In UNIX-like environments, you can quickly check to see if your file contains the native endlines with this command:</p>
-<div class="highlight-python"><pre>$ head myData.bed | cat -et</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ head myData.bed | cat -et
+</pre></div>
 </div>
 <p>The appropriate endlines will show up as a <tt class="docutils literal"><span class="pre">$</span></tt> character at the end of each line. See the <tt class="docutils literal"><span class="pre">dos2unix</span></tt> program (sometimes called <tt class="docutils literal"><span class="pre">fromdos</span></tt>) to convert newlines from files saved on Microsoft Windows. The <tt class="docutils literal"><span class="pre">unix2dos</span></tt> (or <tt class="docutils literal"><span class="pre">todos</span></tt>) program can convert files in the other direction, if needed.</p>
 </div>
@@ -738,14 +779,14 @@ chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01</pre>
         <li class="right" >
           <a href="../statistics.html" title="6.2. Statistics"
              >previous</a> |</li>
-        <li><a href="../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li>
           <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../statistics.html" >6.2. Statistics</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

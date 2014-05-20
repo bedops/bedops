@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.3.3.1. bam2bed &mdash; BEDOPS 2.4.1 documentation</title>
+    <title>6.3.3.1. bam2bed &mdash; BEDOPS 2.5.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.4.1',
+        VERSION:     '2.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,9 +26,9 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../../../index.html" />
+    <link rel="top" title="BEDOPS 2.5.0 documentation" href="../../../../index.html" />
     <link rel="up" title="6.3.3. Data conversion" href="../conversion.html" />
-    <link rel="next" title="6.3.3.2. gff2bed" href="gff2bed.html" />
+    <link rel="next" title="6.3.3.2. bam2starchcluster" href="bam2starchcluster.html" />
     <link rel="prev" title="6.3.3. Data conversion" href="../conversion.html" /> 
   </head>
   <body>
@@ -39,12 +39,12 @@
           <a href="../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="gff2bed.html" title="6.3.3.2. gff2bed"
+          <a href="bam2starchcluster.html" title="6.3.3.2. bam2starchcluster"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="../conversion.html" title="6.3.3. Data conversion"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../conversion.html" accesskey="U">6.3.3. Data conversion</a> &raquo;</li> 
@@ -60,14 +60,14 @@
 <span id="id1"></span><h1>6.3.3.1. <cite>bam2bed</cite><a class="headerlink" href="#bam2bed" title="Permalink to this headline">¶</a></h1>
 <p>The <tt class="docutils literal"><span class="pre">bam2bed</span></tt> script converts 0-based, half-open <tt class="docutils literal"><span class="pre">[start-1,</span> <span class="pre">end)</span></tt> <a class="reference external" href="http://samtools.sourceforge.net/SAM1.pdf">Binary (Sequence) Alignment/Map</a> (BAM) to sorted, 0-based, half-open <tt class="docutils literal"><span class="pre">[start-1,</span> <span class="pre">end)</span></tt> UCSC BED data.</p>
 <p>For convenience, we also offer <tt class="docutils literal"><span class="pre">bam2starch</span></tt>, which performs the extra step of creating a <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive.</p>
-<p>The <tt class="docutils literal"><span class="pre">bam2bed</span></tt> script is &#8220;non-lossy&#8221;. Similar tools in the world tend to throw out information from the original BAM input upon conversion; <tt class="docutils literal"><span class="pre">bam2bed</span></tt> can retain everything, facilitating reuse of converted data and conversion to other formats.</p>
+<p>The <tt class="docutils literal"><span class="pre">bam2bed</span></tt> script is &#8220;non-lossy&#8221; (with the use of specific options, described below). Similar tools in the world tend to throw out information from the original BAM input upon conversion; <tt class="docutils literal"><span class="pre">bam2bed</span></tt> can retain everything, facilitating reuse of converted data and conversion to other formats.</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
 <p class="last">Doing the extra step of creating a <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive can save a lot of space relative to the original BAM format, up to 33% of the original BAM dataset, while offering per-chromosome random access.</p>
 </div>
 <div class="section" id="dependencies">
 <h2>6.3.3.1.1. Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
-<p>This <tt class="docutils literal"><span class="pre">python</span></tt> shell script is dependent upon the installation of <a class="reference external" href="http://samtools.sourceforge.net/">SAMtools</a> and Python, version 2.7 or greater (and less than Python3).</p>
+<p>This <tt class="docutils literal"><span class="pre">python</span></tt> shell script is dependent upon the installation of <a class="reference external" href="http://samtools.sourceforge.net/">SAMtools</a> and Python, version 2.6.2 or greater (and less than Python3).</p>
 </div>
 <div class="section" id="source">
 <h2>6.3.3.1.2. Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h2>
@@ -98,12 +98,13 @@
 <h2>6.3.3.1.4. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>To demonstrate these scripts, we use a sample binary input called <tt class="docutils literal"><span class="pre">foo.bam</span></tt> (see the <a class="reference internal" href="#bam2bed-downloads"><em>Downloads</em></a> section to grab this file).</p>
 <p>We can convert it to sorted BED data in the following manner (omitting standard error messages):</p>
-<div class="highlight-python"><pre>$ bam2bed --custom-tags MF,Aq &lt; foo.bam
+<div class="highlight-python"><div class="highlight"><pre>$ bam2bed --custom-tags MF,Aq &lt; foo.bam
 seq1    0       36      B7_591:4:96:693:509     73      +       99      36M     *       0       0       CACTAGTGGCTCATTGTAAATGTGTGGTTTAACTCG    &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;5&lt;&lt;&lt;&lt;&lt;;:&lt;;7    MF:i:18 Aq:i:73 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
 seq1    2       37      EAS54_65:7:152:368:113  73      +       99      35M     *       0       0       CTAGTGGCTCATTGTAAATGTGTGGTTTAACTCGT     &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;0&lt;&lt;&lt;&lt;655&lt;&lt;7&lt;&lt;&lt;:9&lt;&lt;3/:&lt;6):     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
 seq1    4       39      EAS51_64:8:5:734:57     137     +       99      35M     *       0       0       AGTGGCTCATTGTAAATGTGTGGTTTAACTCGTCC     &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;7;71&lt;&lt;;&lt;;;&lt;7;&lt;&lt;3;);3*8/5     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
-seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     *       0       0       GTGGCTCATTGTAATTTTTTGTTTTAACTCTTCTCT    (-&amp;----,----)-)-),'--)---',+-,),''*,    MF:i:130        Aq:i:63 NM:i:5  UQ:i:38 H0:i:0  H1:i:0
-...</pre>
+seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     *       0       0       GTGGCTCATTGTAATTTTTTGTTTTAACTCTTCTCT    (-&amp;----,----)-)-),&#39;--)---&#39;,+-,),&#39;&#39;*,    MF:i:130        Aq:i:63 NM:i:5  UQ:i:38 H0:i:0  H1:i:0
+...
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -111,7 +112,7 @@ seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     
 </div>
 <p>Note also that we strip the header section from the output. If we want to keep this, the use of the <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option will preserve the BAM file&#8217;s header, turning it into BED elements that use <tt class="docutils literal"><span class="pre">_header</span></tt> as a chromosome name.</p>
 <p>Here&#8217;s an example:</p>
-<div class="highlight-python"><pre>$ bam2bed --custom-tags MF,Aq --keep-header &lt; foo.bam
+<div class="highlight-python"><div class="highlight"><pre>$ bam2bed --custom-tags MF,Aq --keep-header &lt; foo.bam
 _header 0       1       @HD     VN:1.0 SO:coordinate
 _header 1       2       @SQ     SN:seq1 LN:5000
 _header 2       3       @SQ     SN:seq2 LN:5000
@@ -119,10 +120,11 @@ _header 3       4       @CO     Example of SAM/BAM file format.
 seq1    0       36      B7_591:4:96:693:509     73      +       99      36M     *       0       0       CACTAGTGGCTCATTGTAAATGTGTGGTTTAACTCG    &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;5&lt;&lt;&lt;&lt;&lt;;:&lt;;7    MF:i:18 Aq:i:73 NM:i:0  UQ:i:0      H0:i:1  H1:i:0
 seq1    2       37      EAS54_65:7:152:368:113  73      +       99      35M     *       0       0       CTAGTGGCTCATTGTAAATGTGTGGTTTAACTCGT     &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;0&lt;&lt;&lt;&lt;655&lt;&lt;7&lt;&lt;&lt;:9&lt;&lt;3/:&lt;6):     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0      H0:i:1  H1:i:0
 seq1    4       39      EAS51_64:8:5:734:57     137     +       99      35M     *       0       0       AGTGGCTCATTGTAAATGTGTGGTTTAACTCGTCC     &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;7;71&lt;&lt;;&lt;;;&lt;7;&lt;&lt;3;);3*8/5     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0      H0:i:1  H1:i:0
-seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     *       0       0       GTGGCTCATTGTAATTTTTTGTTTTAACTCTTCTCT    (-&amp;----,----)-)-),'--)---',+-,),''*,    MF:i:130        Aq:i:63 NM:i:5      UQ:i:38 H0:i:0  H1:i:0
-...</pre>
+seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     *       0       0       GTGGCTCATTGTAATTTTTTGTTTTAACTCTTCTCT    (-&amp;----,----)-)-),&#39;--)---&#39;,+-,),&#39;&#39;*,    MF:i:130        Aq:i:63 NM:i:5      UQ:i:38 H0:i:0  H1:i:0
+...
+</pre></div>
 </div>
-<p>With this option, the <tt class="docutils literal"><span class="pre">sam2bed</span></tt> and <tt class="docutils literal"><span class="pre">sam2starch</span></tt> scripts are completely &#8220;non-lossy&#8221;. Use of <tt class="docutils literal"><span class="pre">awk</span></tt> or other scripting tools can munge these data back into a SAM-formatted file.</p>
+<p>With this option, the <tt class="docutils literal"><span class="pre">bam2bed</span></tt> and <tt class="docutils literal"><span class="pre">bam2starch</span></tt> scripts are completely &#8220;non-lossy&#8221; (with the exception of unmapped reads; see note below). Use of <tt class="docutils literal"><span class="pre">awk</span></tt> or other scripting tools can munge these data back into a SAM-formatted file.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The provided scripts <strong>strip out unmapped reads</strong> from the BAM file. We believe this makes sense under most circumstances. Add the <tt class="docutils literal"><span class="pre">--all-reads</span></tt> option if you need unmapped and mapped reads.</p>
@@ -130,7 +132,7 @@ seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     
 </div>
 <div class="section" id="column-mapping">
 <span id="bam2bed-column-mapping"></span><h2>6.3.3.1.5. Column mapping<a class="headerlink" href="#column-mapping" title="Permalink to this headline">¶</a></h2>
-<p>In this section, we describe how BAM data (converted to SAM columns) are mapped to BED columns. We start with the first six UCSC BED columns as follows:</p>
+<p>In this section, we describe how non-header BAM data (converted to SAM columns) are mapped to BED columns. We start with the first six UCSC BED columns as follows:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="43%" />
@@ -170,7 +172,7 @@ seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     
 </tr>
 </tbody>
 </table>
-<p>The remaining SAM columns are mapped as-is, in same order, to adjacent BED columns:</p>
+<p>The remaining SAM-converted columns are mapped as-is, in same order, to adjacent BED columns:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="43%" />
@@ -214,7 +216,7 @@ seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     
 </tr>
 </tbody>
 </table>
-<p>Because we have mapped all columns, we can translate converted BED data back to headerless SAM reads with a simple <tt class="docutils literal"><span class="pre">awk</span></tt> statement (or other script) that reverts back to 1-based coordinates and permutes columns to SAM-based ordering.</p>
+<p>Because we have mapped all columns, we can translate converted BED data back to headered or headerless SAM reads with a simple <tt class="docutils literal"><span class="pre">awk</span></tt> statement (or other script) that reverts back to 1-based coordinates and permutes columns to SAM-based ordering.</p>
 </div>
 <div class="section" id="downloads">
 <span id="bam2bed-downloads"></span><h2>6.3.3.1.6. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
@@ -250,8 +252,8 @@ seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     
   <p class="topless"><a href="../conversion.html"
                         title="previous chapter">6.3.3. Data conversion</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="gff2bed.html"
-                        title="next chapter">6.3.3.2. <cite>gff2bed</cite></a></p>
+  <p class="topless"><a href="bam2starchcluster.html"
+                        title="next chapter">6.3.3.2. <cite>bam2starchcluster</cite></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../../../_sources/content/reference/file-management/conversion/bam2bed.txt"
@@ -281,12 +283,12 @@ seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     
           <a href="../../../../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="gff2bed.html" title="6.3.3.2. gff2bed"
+          <a href="bam2starchcluster.html" title="6.3.3.2. bam2starchcluster"
              >next</a> |</li>
         <li class="right" >
           <a href="../conversion.html" title="6.3.3. Data conversion"
              >previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../conversion.html" >6.3.3. Data conversion</a> &raquo;</li> 
@@ -294,7 +296,7 @@ seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

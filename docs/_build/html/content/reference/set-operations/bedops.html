@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.1.1. bedops &mdash; BEDOPS 2.4.1 documentation</title>
+    <title>6.1.1. bedops &mdash; BEDOPS 2.5.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '2.4.1',
+        VERSION:     '2.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../../index.html" />
+    <link rel="top" title="BEDOPS 2.5.0 documentation" href="../../../index.html" />
     <link rel="up" title="6.1. Set operations" href="../set-operations.html" />
     <link rel="next" title="6.1.2. bedextract" href="bedextract.html" />
     <link rel="prev" title="6.1. Set operations" href="../set-operations.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="../set-operations.html" title="6.1. Set operations"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li>
           <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../set-operations.html" accesskey="U">6.1. Set operations</a> &raquo;</li> 
       </ul>
@@ -86,9 +86,9 @@
 <p>If your data are unsorted, use BEDOPS <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> to prepare data for <a class="reference internal" href="#bedops"><em>bedops</em></a>. You only need to sort once, as all BEDOPS tools read and write sorted BED data.</p>
 <p>Because memory usage is very low, one can use sorted inputs of any size. Processing times generally follow a simple linear relationship with input sizes (<em>e.g.</em>, as the input size doubles, the processing time doubles accordingly).</p>
 <p>The <tt class="docutils literal"><span class="pre">--help</span></tt> option describes the set operation and other options available to the end user:</p>
-<div class="highlight-python"><pre>bedops
+<div class="highlight-python"><div class="highlight"><pre>bedops
   citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-  version:  2.4.1
+  version:  2.5.0
   authors:  Shane Neph &amp; Scott Kuehn
 
       USAGE: bedops [process-flags] &lt;operation&gt; &lt;File(s)&gt;*
@@ -97,8 +97,8 @@
           Each operation requires a minimum number of files as shown below.
             There is no fixed maximum number of files that may be used.
           Input files must have at least the first 3 columns of the BED specification.
-          The program accepts BED and starch file formats.
-          May use '-' for a file to indicate reading from standard input (BED format only).
+          The program accepts BED and Starch file formats.
+          May use &#39;-&#39; for a file to indicate reading from standard input (BED format only).
 
       Process Flags:
           --chrom &lt;chromosome&gt; Process data for given &lt;chromosome&gt; only.
@@ -107,7 +107,7 @@
           --help               Print this message and exit successfully.
           --help-&lt;operation&gt;   Detailed help on &lt;operation&gt;.
                                  An example is --help-c or --help-complement
-          --range L:R          Add 'L' bp to all start coordinates and 'R' bp to end
+          --range L:R          Add &#39;L&#39; bp to all start coordinates and &#39;R&#39; bp to end
                                  coordinates. Either value may be + or - to grow or
                                  shrink regions.  With the -e/-n operations, the first
                                  (reference) file is not padded, unlike all other files.
@@ -118,18 +118,19 @@
       Operations: (choose one of)
           -c, --complement [-L] File1 [File]*
           -d, --difference ReferenceFile File2 [File]*
-          -e, --element-of [-number% | -number (in bp)] ReferenceFile File2 [File]*
-                 by default, -e -100% is used.
+          -e, --element-of [-number% | -number] ReferenceFile File2 [File]*
+                 by default, -e -100% is used.  &#39;bedops -e -1&#39; is also popular.
           -i, --intersect File1 File2 [File]*
           -m, --merge File1 [File]*
-          -n, --not-element-of [-number% | -number (in bp)] ReferenceFile File2 [File]*
-                 by default, -n -100% is used.
+          -n, --not-element-of [-number% | -number] ReferenceFile File2 [File]*
+                 by default, -n -100% is used.  &#39;bedops -n -1&#39; is also popular.
           -p, --partition File1 [File]*
           -s, --symmdiff File1 File2 [File]*
           -u, --everything File1 [File]*
 
       Example: bedops --range 10 -u file1.bed
-      NOTE: Only operations -e|n|u preserve all columns (no flattening)</pre>
+      NOTE: Only operations -e|n|u preserve all columns (no flattening)
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -143,7 +144,7 @@
 <p>These datasets can be <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED or <a class="reference internal" href="../file-management/compression/starch.html#starch"><em>Starch-formatted</em></a> files or streams.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <a class="reference internal" href="#bedops"><em>bedops</em></a> tool can operate on multiple inputs, but we show the results of operations on just two sets to help demonstrate the basic principles.</p>
+<p class="last">The <a class="reference internal" href="#bedops"><em>bedops</em></a> tool can operate on two or more multiple inputs, but we show here the results of operations acting on just two or three sets, in order to help demonstrate the basic principles of applying set operations.</p>
 </div>
 <div class="section" id="everything-u-everything">
 <span id="bedops-everything"></span><h3>6.1.1.3.1. Everything (-u, &#8211;everything)<a class="headerlink" href="#everything-u-everything" title="Permalink to this headline">¶</a></h3>
@@ -154,34 +155,154 @@
 <p class="first admonition-title">Note</p>
 <p class="last">The <tt class="docutils literal"><span class="pre">--everything</span></tt> option preserves all columns from all inputs. This is useful for multiset unions of datasets with additional ID, score or other metadata.</p>
 </div>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate the use of <tt class="docutils literal"><span class="pre">--everything</span></tt> in performing a multiset union, we show three sorted sets <tt class="docutils literal"><span class="pre">First.bed</span></tt>, <tt class="docutils literal"><span class="pre">Second.bed</span></tt> and <tt class="docutils literal"><span class="pre">Third.bed</span></tt> and the result of their union with <tt class="docutils literal"><span class="pre">bedops</span></tt>:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more First.bed
+chr1      100     200
+chr2      150     300
+chr2      200     250
+chr3      100     150
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Second.bed
+chr2      50      150
+chr2      400     600
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Third.bed
+chr3      150     350
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --everything First.bed Second.bed Third.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Result.bed
+chr1      100     200
+chr2      50      150
+chr2      150     300
+chr2      200     250
+chr2      400     600
+chr3      100     150
+chr3      150     350
+</pre></div>
+</div>
+<p class="last">This example uses three input sets, but you can specify two, four or even more sets with <tt class="docutils literal"><span class="pre">--everything</span></tt> to take their union.</p>
+</div>
 </div>
 <div class="section" id="element-of-e-element-of">
 <h3>6.1.1.3.2. Element-of (-e, &#8211;element-of)<a class="headerlink" href="#element-of-e-element-of" title="Permalink to this headline">¶</a></h3>
-<p>The <tt class="docutils literal"><span class="pre">--element-of</span></tt> operation shows the elements of the first (&#8220;<em>reference</em>&#8221;) file that overlap elements in the second and subsequent files by the specified length (in bases) or by percentage of length.</p>
-<p>In the following example, we search for elements in the reference set <tt class="docutils literal"><span class="pre">A</span></tt> which overlap elements in <tt class="docutils literal"><span class="pre">B</span></tt> by at least one base:</p>
+<p>The <tt class="docutils literal"><span class="pre">--element-of</span></tt> operation shows the elements of the first (&#8220;<em>reference</em>&#8221;) file that overlap elements in the second and subsequent &#8220;<em>query</em>&#8221; files by the specified length (in bases) or by percentage of length.</p>
+<p>In the following example, we search for elements in the reference set <tt class="docutils literal"><span class="pre">A</span></tt> which overlap elements in query set <tt class="docutils literal"><span class="pre">B</span></tt> by at least one base:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_elementof_ab.png"><img alt="../../../_images/reference_setops_bedops_elementof_ab.png" src="../../../_images/reference_setops_bedops_elementof_ab.png" style="width: 99%;" /></a>
 <p>Elements that are returned are always from the reference set (in this case, set <tt class="docutils literal"><span class="pre">A</span></tt>).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The <tt class="docutils literal"><span class="pre">--element-of</span></tt> option preserves all columns from the first (reference) input.</p>
 </div>
-<p>Note that <cite>&#8211;element-of</cite> is <em>not</em> a symmetric operation, as demonstrated by making <tt class="docutils literal"><span class="pre">B</span></tt> the reference set:</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The argument to <tt class="docutils literal"><span class="pre">--element-of</span></tt> is a value that species to degree of overlap for elements. The value is either integral for per-base overlap,  or fractional for overlap measured by length.</p>
+<p>We show here a more concrete demonstration of the use of <tt class="docutils literal"><span class="pre">--element-of</span> <span class="pre">-1</span></tt> on two sorted sets <tt class="docutils literal"><span class="pre">First.bed</span></tt> and <tt class="docutils literal"><span class="pre">Second.bed</span></tt>, which looks for elements in the <tt class="docutils literal"><span class="pre">First</span></tt> set that overlap elements in the <tt class="docutils literal"><span class="pre">Second</span></tt> set by one or more bases:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more First.bed
+chr1      100     200
+chr1      150     160
+chr1      200     300
+chr1      400     475
+chr1      500     550
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Second.bed
+chr1      120     125
+chr1      150     155
+chr1      150     160
+chr1      460     470
+chr1      490     500
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --element-of -1 First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Result.bed
+chr1      100     200
+chr1      150     160
+chr1      400     475
+</pre></div>
+</div>
+<p>One base is the least stringent (default) integral criterion. We can be more restrictive about our overlap requirement by increasing this value, say to 15 bases:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --element-of -15 First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Result.bed
+chr1      100     200
+</pre></div>
+</div>
+<p>Only this element from the <tt class="docutils literal"><span class="pre">First</span></tt> set overlaps one or more elements in the <tt class="docutils literal"><span class="pre">Second</span></tt> set by a total of fifteen or more bases.</p>
+<p>We can also use percentage of overlap as our argument. Let&#8217;s say that we only want elements from the <tt class="docutils literal"><span class="pre">First</span></tt> set, which overlap half their length or more of a qualifying element in the <tt class="docutils literal"><span class="pre">Second</span></tt> set:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --element-of -50% First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash last highlight-python"><div class="highlight"><pre>$ more Result.bed
+chr1      150     160
+</pre></div>
+</div>
+</div>
+<p>Note that <cite>&#8211;element-of</cite> is <em>not</em> a symmetric operation, as demonstrated by reversing the order of the reference and query set:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_elementof_ba.png"><img alt="../../../_images/reference_setops_bedops_elementof_ba.png" src="../../../_images/reference_setops_bedops_elementof_ba.png" style="width: 99%;" /></a>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The argument to <tt class="docutils literal"><span class="pre">--element-of</span></tt> is a value that species to degree of overlap for elements. The value is either integral for per-base overlap,  or fractional for overlap measured by length.</p>
+<p>As we show here, by inverting the usual order of our sample sets <tt class="docutils literal"><span class="pre">First</span></tt> and <tt class="docutils literal"><span class="pre">Second</span></tt>, we retrieve elements from the <tt class="docutils literal"><span class="pre">Second</span></tt> set:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --element-of -1 Second.bed First.bed &gt; Result.bed
+</pre></div>
 </div>
-<p>In sum, <tt class="docutils literal"><span class="pre">--element-of</span></tt> (<tt class="docutils literal"><span class="pre">-e</span></tt>) produces exactly everything that <tt class="docutils literal"><span class="pre">--not-element-of</span></tt> (<tt class="docutils literal"><span class="pre">-n</span></tt>) does not, given the same overlap criterion (which is 100% by default).</p>
+<div class="code bash last highlight-python"><div class="highlight"><pre>$ more Result.bed
+chr1      120     125
+chr1      150     155
+chr1      150     160
+chr1      460     470
+</pre></div>
+</div>
+</div>
+<p>While this operation is not symmetric with respect to ordering of input sets, <tt class="docutils literal"><span class="pre">--element-of</span></tt> (<tt class="docutils literal"><span class="pre">-e</span></tt>) does produce exactly everything that <tt class="docutils literal"><span class="pre">--not-element-of</span></tt> (<tt class="docutils literal"><span class="pre">-n</span></tt>) does not, given the same overlap criterion and ordered input sets.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">For a more in-depth discussion of <tt class="docutils literal"><span class="pre">--element-of</span></tt> and how overlaps are determined with three or more input files, please review the <a class="reference external" href="http://bedops.uwencode.org/forum/index.php?topic=20.0">BEDOPS forum discussion</a> on this subject.</p>
+<p class="last">We show usage examples with two files, but <tt class="docutils literal"><span class="pre">--element-of</span></tt> supports three or more input sets. For a more in-depth discussion of <tt class="docutils literal"><span class="pre">--element-of</span></tt> and how overlaps are determined with three or more input files, please review the <a class="reference external" href="http://bedops.uwencode.org/forum/index.php?topic=20.0">BEDOPS forum discussion</a> on this subject.</p>
 </div>
 </div>
 <div class="section" id="not-element-of-n-not-element-of">
 <h3>6.1.1.3.3. Not-element-of (-n, &#8211;not-element-of)<a class="headerlink" href="#not-element-of-n-not-element-of" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--not-element-of</span></tt> operation shows elements in the reference file which do not overlap elements in all other sets. For example:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_notelementof_ab.png"><img alt="../../../_images/reference_setops_bedops_notelementof_ab.png" src="../../../_images/reference_setops_bedops_notelementof_ab.png" style="width: 99%;" /></a>
-<p>As with the <tt class="docutils literal"><span class="pre">--element-of</span></tt> (<tt class="docutils literal"><span class="pre">-e</span></tt>) operator, the overlap criterion for <tt class="docutils literal"><span class="pre">--not-element-of</span></tt> (<tt class="docutils literal"><span class="pre">-n</span></tt>) can be specified by length (in bases) or by percentage of length. Similarly, this operation is not symmetric—the order of inputs will specify the reference set.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>We again use sorted sets <tt class="docutils literal"><span class="pre">First.bed</span></tt> and <tt class="docutils literal"><span class="pre">Second.bed</span></tt> to demonstrate <tt class="docutils literal"><span class="pre">--not-element-of</span></tt>, in order to look for elements in the <tt class="docutils literal"><span class="pre">First</span></tt> set that <em>do not</em> overlap elements in the <tt class="docutils literal"><span class="pre">Second</span></tt> set by one or more bases:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more First.bed
+chr1      100     200
+chr1      150     160
+chr1      200     300
+chr1      400     475
+chr1      500     550
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Second.bed
+chr1      120     125
+chr1      150     155
+chr1      150     160
+chr1      460     470
+chr1      490     500
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --not-element-of -1 First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash last highlight-python"><div class="highlight"><pre>$ more Result.bed
+chr1      200     300
+chr1      500     550
+</pre></div>
+</div>
+</div>
+<p>As with the <tt class="docutils literal"><span class="pre">--element-of</span></tt> (<tt class="docutils literal"><span class="pre">-e</span></tt>) operator, the overlap criterion for <tt class="docutils literal"><span class="pre">--not-element-of</span></tt> (<tt class="docutils literal"><span class="pre">-n</span></tt>) can be specified either by length in bases, or by percentage of length.</p>
+<p>Similarly, this operation is not symmetric – the order of inputs will specify the reference set, and thus the elements in the result (if any).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The <tt class="docutils literal"><span class="pre">--not-element-of</span></tt> operatior preserves columns from the first (reference) dataset.</p>
@@ -259,10 +380,12 @@
 <p>When used with one value (<tt class="docutils literal"><span class="pre">--range</span> <span class="pre">S</span></tt>), this operation <strong>symmetrically</strong> pads all elements of input sets by the specified integral value <tt class="docutils literal"><span class="pre">S</span></tt>. When the specified value is positive, every genomic segment grows in size. An element will grow asymmetrically to prevent growth beyond base position 0, if needed. Otherwise, when negative, elements shrink, and any element with zero (or less) length is discarded.</p>
 <p>Alternatively, when used with two values (<tt class="docutils literal"><span class="pre">--range</span> <span class="pre">L:R</span></tt>), this operation <strong>asymmetrically</strong> pads elements, adding <tt class="docutils literal"><span class="pre">L</span></tt> to each start coordinate, and adding <tt class="docutils literal"><span class="pre">R</span></tt> to each stop coordinate. Negative values may be specified to grow or shrink the region, accordingly.</p>
 <p id="bed-index-shifting">This option is immediately useful for adjusting the coordinate index of BED files. For example, to shift from 1-based to 0-based coordinate indexing:</p>
-<div class="highlight-python"><pre>$ bedops --range -1:-1 --everything my1BasedCoordinates.bed &gt; my0BasedCoordinates.bed</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ bedops --range -1:-1 --everything my1BasedCoordinates.bed &gt; my0BasedCoordinates.bed
+</pre></div>
 </div>
 <p>And, likewise, for 0-based to 1-based indexing:</p>
-<div class="highlight-python"><pre>$ bedops --range 1:1 --everything my0BasedCoordinates.bed &gt; my1BasedCoordinates.bed</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ bedops --range 1:1 --everything my0BasedCoordinates.bed &gt; my1BasedCoordinates.bed
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -284,12 +407,13 @@
 <h2>6.1.1.5. Error checking (&#8211;ec)<a class="headerlink" href="#error-checking-ec" title="Permalink to this headline">¶</a></h2>
 <p>Use the <tt class="docutils literal"><span class="pre">--ec</span></tt> option in conjunction with any aforementioned operation to do more stringent checking of the inputs&#8217; compliance to <a class="reference internal" href="#bedops"><em>bedops</em></a> requirements, including sorting checks, delimiter checks, among others.</p>
 <p>To demonstrate, we can deliberately introduce a typo in dataset <cite>A</cite>, using the <tt class="docutils literal"><span class="pre">--ec</span></tt> option to try to catch it:</p>
-<div class="highlight-python"><pre>$ bedops --ec --everything BEDFileA
+<div class="highlight-python"><div class="highlight"><pre>$ bedops --ec --everything BEDFileA
 May use bedops --help for more help.
 
 Error: in BEDFileA
-First column should not have spaces.  Consider 'chr1' vs. 'chr1 '.  These are different names.
-See row: 3</pre>
+First column should not have spaces.  Consider &#39;chr1&#39; vs. &#39;chr1 &#39;.  These are different names.
+See row: 3
+</pre></div>
 </div>
 <p>The typo introduced was the addition of a space within the third line of dataset <tt class="docutils literal"><span class="pre">A</span></tt>.</p>
 <div class="admonition note">
@@ -302,7 +426,8 @@ See row: 3</pre>
 <div class="section" id="chaining-operations">
 <h3>6.1.1.6.1. Chaining operations<a class="headerlink" href="#chaining-operations" title="Permalink to this headline">¶</a></h3>
 <p>You can efficiently chain operations together, <em>e.g.</em>:</p>
-<div class="highlight-python"><pre>$ bedops --range 50 --merge A | bedops --intersect - B &gt; answer.bed</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ bedops --range 50 --merge A | bedops --intersect - B &gt; answer.bed
+</pre></div>
 </div>
 <p>In this example, elements from <tt class="docutils literal"><span class="pre">A</span></tt> are padded 50 bases up- and downstream and merged, before intersecting with coordinates in <tt class="docutils literal"><span class="pre">B</span></tt>.</p>
 </div>
@@ -400,14 +525,14 @@ See row: 3</pre>
         <li class="right" >
           <a href="../set-operations.html" title="6.1. Set operations"
              >previous</a> |</li>
-        <li><a href="../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li>
           <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../set-operations.html" >6.1. Set operations</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

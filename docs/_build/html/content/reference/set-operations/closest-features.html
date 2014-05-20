@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.1.3. closest-features &mdash; BEDOPS 2.4.1 documentation</title>
+    <title>6.1.3. closest-features &mdash; BEDOPS 2.5.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '2.4.1',
+        VERSION:     '2.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../../index.html" />
+    <link rel="top" title="BEDOPS 2.5.0 documentation" href="../../../index.html" />
     <link rel="up" title="6.1. Set operations" href="../set-operations.html" />
     <link rel="next" title="6.2. Statistics" href="../statistics.html" />
     <link rel="prev" title="6.1.2. bedextract" href="bedextract.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="bedextract.html" title="6.1.2. bedextract"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li>
           <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../set-operations.html" accesskey="U">6.1. Set operations</a> &raquo;</li> 
       </ul>
@@ -60,7 +60,8 @@
 <p>The <tt class="docutils literal"><span class="pre">closest-features</span></tt> program efficiently associates nearest features between two sorted inputs, based upon genomic distance measures.</p>
 <p>An application of this tool in our own research is <a class="reference internal" href="../../usage-examples/distance-frequencies.html#distance-frequencies"><em>finding the nearest DNase hypersensitive sites</em></a> upstream and downstream from a given SNP, as well as signed distances. The <a class="reference internal" href="#closest-features"><em>closest-features</em></a> program can report both results.</p>
 <p>As another example of what one can do with this utility, we can identify the closest transcriptional start site for a given putative replication origin. Suppose we have a sorted BED file named <tt class="docutils literal"><span class="pre">TSS.bed</span></tt> that contains all transcriptional start sites of all genes in some genome. Further, suppose that we have a set of measurements showing probable replication origins for the same species in a sorted BED file named <tt class="docutils literal"><span class="pre">RepOrigins.bed</span></tt>. The following command gives the closest TSS to each origin:</p>
-<div class="highlight-python"><pre>$ closest-features --closest RepOrigins.bed TSS.bed</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ closest-features --closest RepOrigins.bed TSS.bed
+</pre></div>
 </div>
 <p>By default, the program will echo each entry from <tt class="docutils literal"><span class="pre">RepOrigins.bed</span></tt>, followed by the two closest elements in <tt class="docutils literal"><span class="pre">TSS.bed</span></tt> (the closest element to each side of the entry from <tt class="docutils literal"><span class="pre">RepOrigins.bed</span></tt>), with output columns separated by a pipe (<tt class="docutils literal"><span class="pre">|</span></tt>). With the <tt class="docutils literal"><span class="pre">--shortest</span></tt> option, the echoed entry from <tt class="docutils literal"><span class="pre">RepOrigins.bed</span></tt> and only the single nearest element in <tt class="docutils literal"><span class="pre">TSS.bed</span></tt> will be part of the output.</p>
 <div class="section" id="inputs-and-outputs">
@@ -79,15 +80,15 @@
 <div class="section" id="usage">
 <h2>6.1.3.2. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>The <tt class="docutils literal"><span class="pre">--help</span></tt> option describes the various operations and options available to the end user:</p>
-<div class="highlight-python"><pre>closest-features
+<div class="highlight-python"><div class="highlight"><pre>closest-features
   citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-  version:  2.4.1
+  version:  2.5.0
   authors:  Shane Neph &amp; Scott Kuehn
 
 USAGE: closest-features [Process-Flags] &lt;input-file&gt; &lt;query-file&gt;
    All input files must be sorted per sort-bed.
-   The program accepts BED and starch file formats
-   May use '-' for a file to indicate reading from standard input (BED format only).
+   The program accepts BED and Starch file formats
+   May use &#39;-&#39; for a file to indicate reading from standard input (BED format only).
 
    For every element in &lt;input-file&gt;, determine the two elements from &lt;query-file&gt; falling
      nearest to its left and right edges (See NOTES below).  By default, echo the &lt;input-file&gt;
@@ -96,7 +97,7 @@ USAGE: closest-features [Process-Flags] &lt;input-file&gt; &lt;query-file&gt;
   Process Flags:
     --chrom &lt;chromosome&gt;   : Process data for given &lt;chromosome&gt; only.
     --closest              : Choose the closest element for output only.  Ties go the left element.
-    --delim &lt;delim&gt;        : Change output delimiter from '|' to &lt;delim&gt; between columns (e.g. '\t')
+    --delim &lt;delim&gt;        : Change output delimiter from &#39;|&#39; to &lt;delim&gt; between columns (e.g. &#39;\t&#39;)
     --dist                 : Print the signed distances to the &lt;input-file&gt; element as additional
                                columns of output.  An overlapping element has a distance of 0.
     --ec                   : Error check all input files (slower).
@@ -109,11 +110,12 @@ USAGE: closest-features [Process-Flags] &lt;input-file&gt; &lt;query-file&gt;
   NOTES:
     If an element from &lt;query-file&gt; overlaps the &lt;input-file&gt; element, its distance is zero.
       An overlapping element take precedence over all non-overlapping elements.  This is true
-      even when the overlapping element's edge-to-edge distance to the &lt;input-file&gt;'s element
+      even when the overlapping element&#39;s edge-to-edge distance to the &lt;input-file&gt;&#39;s element
       is greater than the edge-to-edge distance from a non-overlapping element.
     Overlapping elements may be ignored completely (no precedence) with --no-overlaps.
     Elements reported as closest to the left and right edges are never the same.
-    When no qualifying element from &lt;query-file&gt; exists as a closest feature, 'NA' is reported.</pre>
+    When no qualifying element from &lt;query-file&gt; exists as a closest feature, &#39;NA&#39; is reported.
+</pre></div>
 </div>
 </div>
 <div class="section" id="per-chromosome-operations-chrom">
@@ -124,7 +126,7 @@ USAGE: closest-features [Process-Flags] &lt;input-file&gt; &lt;query-file&gt;
 <p class="last">This option is highly useful for cluster-based work, where operations on large BED inputs can be split up by chromosome and pushed to separate cluster nodes.</p>
 </div>
 <p>To demonstrate the use of this option, we take two sample Starch-archived BED datasets <tt class="docutils literal"><span class="pre">A</span></tt> and <tt class="docutils literal"><span class="pre">B</span></tt> (refer to the <a class="reference internal" href="#closest-features-downloads"><em>Downloads</em></a> section for sample inputs) which contain regions from multiple chromosomes:</p>
-<div class="highlight-python"><pre>$ unstarch A.starch
+<div class="highlight-python"><div class="highlight"><pre>$ unstarch A.starch
 chr1    100     200     id-001A
 chr1    400     500     id-002A
 chr2    100     300     id-003A
@@ -133,11 +135,13 @@ $ unstarch B.starch
 chr1    150     300     id-001B
 chr1    500     600     id-002B
 chr2    100     150     id-003B
-chr2    180     500     id-004B</pre>
+chr2    180     500     id-004B
+</pre></div>
 </div>
 <p>Now we want to ask, what is the closest element from <tt class="docutils literal"><span class="pre">chr2</span></tt> in <tt class="docutils literal"><span class="pre">A</span></tt>, to <tt class="docutils literal"><span class="pre">chr2</span></tt> elements in <tt class="docutils literal"><span class="pre">B</span></tt>:</p>
-<div class="highlight-python"><pre>$ closest-features --chrom chr2 --closest A.starch B.starch
-chr2    100     300     id-003A|chr2    100     150     id-003B</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ closest-features --chrom chr2 --closest A.starch B.starch
+chr2    100     300     id-003A|chr2    100     150     id-003B
+</pre></div>
 </div>
 <p>As we expect, element <tt class="docutils literal"><span class="pre">id-003A</span></tt> is closest to element <tt class="docutils literal"><span class="pre">id-003B</span></tt> between the two datasets.</p>
 </div>
@@ -223,14 +227,14 @@ chr2    100     300     id-003A|chr2    100     150     id-003B</pre>
         <li class="right" >
           <a href="bedextract.html" title="6.1.2. bedextract"
              >previous</a> |</li>
-        <li><a href="../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li>
           <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../set-operations.html" >6.1. Set operations</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

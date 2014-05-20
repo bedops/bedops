@@ -11,7 +11,7 @@ For convenience, we also offer ``gtf2starch``, which performs the extra step of 
 Dependencies
 ============
 
-The ``gtf2bed`` script requires Python, version 2.7 or greater (and less than Python3).
+The ``gtf2bed`` script requires Python, version 2.6.2 or greater (and less than Python3).
 
 This script is also dependent on input that follows the GTF 2.2 specification. A GTF-format validator is available `here <http://mblab.wustl.edu/software.html>`_ to ensure your input follows specification.
 

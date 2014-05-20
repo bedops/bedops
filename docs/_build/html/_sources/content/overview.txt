@@ -34,12 +34,14 @@ Our tools fit easily into analysis pipelines, allow practically unlimited inputs
 Our :ref:`bedops` core tool offers numerous set operations of all kinds, including those in the slide below:
 
 .. image:: ../assets/overview/BEDOPS_Presentation_bedops_ops.png
-   :width: 99%
+   :width: 75%
 
 The :ref:`bedmap` core tool applies a wide variety of statistical and mapping operations to genomic inputs:
 
 .. image:: ../assets/overview/BEDOPS_Presentation_bedmap_ops.png
-   :width: 99%
+   :width: 75%
+
+These and other tools send their results to the output stream, ready for consumption by processes downstream along your pipeline.
 
 -----------------------------------
 BEDOPS tools are fast and efficient
@@ -49,13 +51,13 @@ BEDOPS tools take advantage of the information in a sorted BED file to use only 
 
 `Independent tests <http://www.ncbi.nlm.nih.gov/pubmed/23277498>`_ comparing various kits show that BEDOPS offers the fastest operations with the lowest memory overhead:
 
-.. image:: ../assets/overview/BEDOPS_Presentation_9_small.png
-   :width: 99%
+.. image:: ../assets/overview/BEDOPS_Presentation_grok_tests.png
+   :width: 75%
 
 BEDOPS also introduces a novel and **lossless** compression format called :ref:`Starch <starch_specification>` that reduces whole-genome BED datasets to **~5%** of their original size (and BAM datasets to roughly 35% of their original size), while adding useful metadata and random access, allowing instantaneous retrieval of any compressed chromosome:
 
-.. image:: ../assets/overview/BEDOPS_Presentation_10_small.png
-   :width: 99%
+.. image:: ../assets/overview/BEDOPS_Presentation_starch_efficiency.png
+   :width: 75%
 
 --------------------------------------------------------------
 BEDOPS tools make your work embarrassingly easy to parallelize

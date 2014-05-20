@@ -1,7 +1,7 @@
 .. _starch_specification:
 
 Starch (v2.x) specification
-=========================
+===========================
 
 This document describes the specification for a "Starch v2.x"-formatted archive, which is created by the :ref:`starch` and :ref:`starchcat` utilities and extracted with the :ref:`unstarch` utility.
 
