@@ -127,6 +127,7 @@ As with all BEDOPS tools and operations, the output of this operation is :ref:`s
 .. note:: The ``--everything`` option preserves all columns from all inputs. This is useful for multiset unions of datasets with additional ID, score or other metadata.
 
 .. admonition:: Example
+   :class: admonition-example
 
    To demonstrate the use of ``--everything`` in performing a multiset union, we show three sorted sets ``First.bed``, ``Second.bed`` and ``Third.bed`` and the result of their union with ``bedops``:
  
