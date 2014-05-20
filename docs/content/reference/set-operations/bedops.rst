@@ -375,6 +375,43 @@ The ``--difference`` operation calculates the genomic regions found within the f
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_difference_ab.png
    :width: 99%
 
+.. admonition:: Example
+   :class: admonition-example
+
+   To demonstrate ``--difference``, we use sorted sets ``First.bed`` and ``Second.bed`` and compute the genomic space in ``First`` that excludes (or "subtracts") ranges from ``Second``:
+ 
+   .. code:: bash
+
+      $ more First.bed
+      chr1	100	200
+      chr1	150	160
+      chr1	200	300
+      chr1	400	475
+      chr1	500	550
+
+   .. code:: bash
+
+      $ more Second.bed
+      chr1	120	125
+      chr1	150	155
+      chr1	150	160
+      chr1	460	470
+      chr1	490	500
+
+   .. code:: bash
+      
+      $ bedops --difference First.bed Second.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	100	120
+      chr1	125	150
+      chr1	160	300
+      chr1	400	460
+      chr1	470	475
+      chr1	500	550
+
 .. note:: As with ``--element-of`` and ``--not-element-of``, this operation is not symmetric. While ``--not-element-of`` preserves all columns of elements found in the reference input and allows one to define overlaps, the ``--difference`` operator simply reports every genomic range as three-column BED, which does not overlap elements found in the second and subsequent input files by any amount.
 
 -------------------------------------
