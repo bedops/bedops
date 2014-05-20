@@ -239,6 +239,20 @@ Note that `--element-of` is *not* a symmetric operation, as demonstrated by reve
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_elementof_ba.png
    :width: 99%
 
+.. note:: Reversing the order of our sample inputs ``First`` and ``Second`` will yield elements from the ``Second`` sets:
+ 
+   .. code:: bash
+
+      $ bedops --element-of -1 Second.bed First.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	120	125
+      chr1	150	155
+      chr1	150	160
+      chr1	460	470
+
 While this operation is not symmetric with respect to ordering of input sets, ``--element-of`` (``-e``) does produce exactly everything that ``--not-element-of`` (``-n``) does not, given the same overlap criterion and ordered input sets.
 
 .. note:: For a more in-depth discussion of ``--element-of`` and how overlaps are determined with three or more input files, please review the `BEDOPS forum discussion <http://bedops.uwencode.org/forum/index.php?topic=20.0>`_ on this subject.
