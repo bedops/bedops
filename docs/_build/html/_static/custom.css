@@ -1,4 +1,4 @@
-div.admonition-example {
-  background-color: #0066CC;
+div.admonition-example, .admonition-example-title {
+  background-color: #CCCCFF;
   border-bottom: 1px solid #003399;
 }
