@@ -15,3 +15,12 @@ div.note p.admonition-title {
 div.note {
   background-color: #F4E0EA;
 }
+
+div.tip p.admonition-title {
+  background-color: #009933;
+  border-bottom: 1px solid #006B24;
+}
+
+div.tip {
+  background-color: #B2E0C2;
+}
