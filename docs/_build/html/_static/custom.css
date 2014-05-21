@@ -1,4 +1,4 @@
-div.admonition-example div p {
+div.admonition-example>div>p {
   background-color: #CCCCFF;
   border-bottom: 1px solid #003399;
 }
