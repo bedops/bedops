@@ -6,3 +6,12 @@ div.admonition-example p.admonition-title {
 div.admonition-example {
   background-color: #CCCCFF;
 }
+
+div.note p.admonition-title {
+  background-color: #CC0066;
+  border-bottom: 1px solid #A30052;
+}
+
+div.note {
+  background-color: #F4E0EA;
+}
