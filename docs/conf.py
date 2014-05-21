@@ -317,3 +317,5 @@ intersphinx_mapping = {'http://docs.python.org/': None}
 RTD_OLD_THEME = True
 
 #html_style = 'test.css'
+def setup(app):
+    app.add_stylesheet("custom.css")
