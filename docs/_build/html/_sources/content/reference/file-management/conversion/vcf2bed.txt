@@ -5,7 +5,7 @@
 
 The ``vcf2bed`` script converts 1-based, closed ``[start, end]`` `Variant Call Format v4 <http://vcftools.sourceforge.net/specs.html>`_ (VCF) to sorted, 0-based, half-open ``[start-1, start)`` extended BED data.
 
-.. note:: Note that this script converts from ``[start, end]`` to ``[start-1, start)``. We perform the equivalent of a *single-base insertion* to make BED output that is guaranteed to work with BEDOPS, **regardless of what the actual variant may be**, to allow operations to be performed. The converted output contains additional columns which allow reconstruction of the original VCF data and associated variant parameters.
+.. note:: Note that this script converts from ``[start, end]`` to ``[start-1, start)``. Unless the ``--snvs``, ``--insertions`` or ``--deletions`` options are added, we perform the equivalent of a *single-base insertion* to make BED output that is guaranteed to work with BEDOPS, **regardless of what the actual variant may be**, to allow operations to be performed. The converted output contains additional columns which allow reconstruction of the original VCF data and associated variant parameters.
 
 For convenience, we also offer ``vcf2starch``, which performs the extra step of creating a :ref:`Starch-formatted <starch_specification>` archive.
 
@@ -13,7 +13,7 @@ For convenience, we also offer ``vcf2starch``, which performs the extra step of 
 Dependencies
 ============
 
-The ``vcf2bed`` script requires Python, version 2.7 or greater (and less than Python3).
+The ``vcf2bed`` script requires Python, version 2.6.2 or greater (and less than Python3).
 
 This script is also dependent on input that follows the VCF specification.
 
@@ -54,7 +54,7 @@ In addition, using any of these three custom options automatically results in pr
   #CHROM POS     ID        REF    ALT     QUAL FILTER INFO                              FORMAT      NA00001        NA00002        NA00003
   20     1234567 microsat1 GTC    G,GTCT  50   PASS   NS=3;DP=9;AA=G                    GT:GQ:DP    0/1:35:4       0/2:17:2       1/1:40:3
 
-When using ``--snvs``, ``--insertions`` or ``--deletions``, this record is split into two distinct BED records and filtered depending on which custom option was chosen. The ``--insertions`` option would only export the insertion in this mixed variant, while ``--deletions`` would show the deletion.
+When using ``--snvs``, ``--insertions`` or ``--deletions``, this record is split into two distinct BED records and filtered depending on which custom option was chosen. The ``--insertions`` option would only export the single-base position of the insertion in this mixed variant, while ``--deletions`` would show the deletion.
 
 In this way, you can control what kinds of variants are translated into BED outputs |---| most importantly, there is also no confusion about what the length of the BED element signifies.
 
@@ -195,7 +195,9 @@ If present in the VCF v4 input, the following columns are also mapped:
 | ...                       | 13, 14, etc.        |               |
 +---------------------------+---------------------+---------------+
 
-The "meta-information" (starting with ``##``) and "header" lines (starting with ``#``) are discarded.
+When using ``--deletions``, the stop value of the BED output is determined by the length difference between ALT and REF alleles. Use of ``--insertions`` or ``--snvs`` yields a one-base BED element.
+
+The "meta-information" (starting with ``##``) and "header" lines (starting with ``#``) are discarded, unless the ``--keep-headers`` options is specified.
 
 .. _vcf2bed_downloads:
 

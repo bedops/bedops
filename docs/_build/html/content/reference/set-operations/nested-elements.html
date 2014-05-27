@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Nested elements &mdash; BEDOPS 2.5.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2.5.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="BEDOPS 2.5.0 documentation" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nested-elements">
+<span id="id1"></span><h1>Nested elements<a class="headerlink" href="#nested-elements" title="Permalink to this headline">¶</a></h1>
+<p>This page describes nested BED elements, their impact on the performance of BEDOPS tools, and how we can identify them beforehand.</p>
+<div class="section" id="definition">
+<span id="what-are-nested-elements"></span><h2>Definition<a class="headerlink" href="#definition" title="Permalink to this headline">¶</a></h2>
+<p>A <em>nested element</em> is defined as a BED element from a sorted BED file, where a genomic range is entirely enclosed by the previous element&#8217;s range.</p>
+<p>More rigorously, we define two BED elements <span class="math">\(A\)</span> and <span class="math">\(B\)</span>, both located on the same chromosome <span class="math">\(N\)</span>, and each with ranges <span class="math">\({(a_{start}, a_{stop}]}\)</span> and <span class="math">\({(b_{start}, b_{stop}]}\)</span>, respectively.</p>
+<p>These two elements <span class="math">\(A\)</span> and <span class="math">\(B\)</span> meet the following conditions:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><span class="math">\(a_{start} &lt; a_{stop}\)</span></li>
+<li><span class="math">\(b_{start} &lt; b_{stop}\)</span></li>
+<li><span class="math">\(a_{start} &lt;= b_{start}\)</span></li>
+<li><span class="math">\(a_{stop} &lt;= b_{stop}\)</span></li>
+</ol>
+</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The third and fourth conditions place elements <span class="math">\(A\)</span> and <span class="math">\(B\)</span> into sort order, as applied by the <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> application.</p>
+</div>
+<p>If we further restrict these ranges: <span class="math">\(a_{start} &lt; b_{start}\)</span> and <span class="math">\(b_{stop} &lt; a_{stop}\)</span>, then for the purposes of BEDOPS we call the element <span class="math">\(B\)</span> a <em>nested element</em>, which is contained within element <span class="math">\(A\)</span>.</p>
+</div>
+<div class="section" id="example">
+<span id="example-of-a-nested-element"></span><h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>An example of a sorted BED file which contains a nested element follows:</p>
+<div class="highlight-python"><div class="highlight"><pre>chr1    1      100
+chr1    100    200
+chr1    125    150
+chr1    150    1000
+</pre></div>
+</div>
+<p>While this dataset is sorted, the element <tt class="docutils literal"><span class="pre">chr1:125-150</span></tt> is entirely nested within <tt class="docutils literal"><span class="pre">chr1:100-200</span></tt>:</p>
+<a class="reference internal image-reference" href="../../../_images/reference_bedextract_nested_elements.png"><img alt="../../../_images/reference_bedextract_nested_elements.png" src="../../../_images/reference_bedextract_nested_elements.png" style="width: 99%;" /></a>
+</div>
+<div class="section" id="why-nested-elements-matter">
+<span id="id2"></span><h2>Why nested elements matter<a class="headerlink" href="#why-nested-elements-matter" title="Permalink to this headline">¶</a></h2>
+<p>BEDOPS <a class="reference internal" href="../statistics/bedmap.html#bedmap"><em>bedmap</em></a> and <a class="reference internal" href="bedextract.html#bedextract"><em>bedextract</em></a> tools offer very fast retrieval of overlapping elements, so long as input datasets do not contain (fully) nested elements, as defined above. To extract maximum performance out of the use of the BEDOPS toolkit, therefore, it is very useful to know if the input datasets contain such elements — if they do not, then we can apply optimizations.</p>
+<p>Common datasets we work with do not contain nested elements: reads, peaks, footprints, and others. However, other datasets do, such as motif hits or paired-end sequencing reads.</p>
+<p>How can we find out if our inputs have nested elements, before we start applying any operations?</p>
+<p>The compression tool <a class="reference internal" href="../file-management/compression/starch.html#starch"><em>starch</em></a> (v2.5 and greater) will look for these elements in an input BED file and store this condition as a flag in the output archive&#8217;s metadata. This value can be retrieved in constant time with <a class="reference internal" href="../file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a> and other tools which make use of the Starch C++ API.</p>
+<p>Additionally, the <tt class="docutils literal"><span class="pre">--ec</span></tt> (error-correction) option in <a class="reference internal" href="../statistics/bedmap.html#bedmap"><em>bedmap</em></a> will also report if inputs contain nested elements. This option doubles execution time, but when used in conjunction with the <tt class="docutils literal"><span class="pre">--faster</span></tt> option, the speed gains are more than recovered.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/logo_with_label_v2.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Nested elements</a><ul>
+<li><a class="reference internal" href="#definition">Definition</a></li>
+<li><a class="reference internal" href="#example">Example</a></li>
+<li><a class="reference internal" href="#why-nested-elements-matter">Why nested elements matter</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/content/reference/set-operations/nested-elements.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Shane Neph, Alex Reynolds.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+div.admonition-example p.admonition-title {
+  background-color: #0066CC;
+  border-bottom: 1px solid #003399;
+}
+
+div.admonition-example {
+  background-color: #CCCCFF;
+}
+
+div.note p.admonition-title {
+  background-color: #CC0066;
+  border-bottom: 1px solid #A30052;
+}
+
+div.note {
+  background-color: #F4E0EA;
+}
+
+div.tip p.admonition-title {
+  background-color: #009933;
+  border-bottom: 1px solid #006B24;
+}
+
+div.tip {
+  background-color: #B2E0C2;
+}

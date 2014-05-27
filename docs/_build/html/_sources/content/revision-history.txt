@@ -12,6 +12,52 @@ Current version
 ===============
 
 ------
+v2.5.0
+------
+
+Released: **May 2, 2014**
+
+* :ref:`Starch <starch_specification>` archival format and compression/extraction tools
+
+  * Added duplicate- and :ref:`nested-element <nested_elements>` flags in v2.1 of Starch metadata, which denote if a chromosome contains one or more duplicate and/or nested elements. BED files compressed with :ref:`starch` v2.5 or greater, or Starch archives updated with :ref:`starchcat` v2.5 or greater will include these values in the archive metadata. The :ref:`unstarch` extraction tool offers ``--has-duplicate`` and ``--has-nested`` options to retrieve these flag values for a specified chromosome (or for all chromosomes).
+
+  * Added ``--is-starch`` option to :ref:`unstarch` to test if specified input file is a Starch v1 or v2 archive.
+ 
+  * Added bug fix for compressing BED files with :ref:`starch`, where the archive would not include the last element of the BED input, if the BED input lacked a trailing newline. The compression tools now include a routine for capturing the last line, if there is no newline.
+
+* Compilation improvements
+
+  * Shane Neph put in a great deal of work to enable parallel builds (*e.g.*, ``make -j N`` to build various targets in parallel). Depending on the end user's environment, this can speed up compilation time by a factor of 2, 4 or more.
+
+  * Fixed compilation warnings of debug builds of :ref:`starch` toolkit under RHEL6/GCC and OS X 10.9.2/LLVM.
+
+* :ref:`conversion scripts <conversion_scripts>`
+
+  * Added :ref:`bam2starchcluster` script, which parallelizes creation of :ref:`Starch <starch_specification>` archive from very large BAM files in SGE environments.
+
+  * Added bug fix for missing code in :ref:`starchcluster.gnu_parallel <starchcluster>` script, where the final collation step was missing.
+
+=================
+Previous versions
+=================
+
+------
+v2.4.2
+------
+
+Released: **April 10, 2014**
+
+* :ref:`conversion scripts <conversion_scripts>`
+
+  * Added support for :ref:`sort-bed` ``--tmpdir`` option to conversion scripts, to allow specification of alternative temporary directory for sorted results when used in conjunction with ``--max-mem`` option.
+
+  * Added support for GFF3 files which include a FASTA directive in ``gff2bed`` and ``gff2starch`` (thanks to Keith Hughitt).
+
+  * Extended support for Python-based conversion scripts to support use with Python v2.6.2 and forwards, except for ``sam2bed`` and ``sam2starch``, which still require Python v2.7 or greater (and under Python3).
+
+  * Fixed ``--insertions`` option in :ref:`vcf2bed` to now report a single-base BED element (thanks to Matt Maurano).
+
+------
 v2.4.1
 ------
 
@@ -46,10 +92,6 @@ Released: **February 26, 2014**
     In the longer term, this gets us closer to moving BEDOPS to using the CMake build system, to further abstract and simplify the build process.
 
 * Cleaned up various compilation warnings found with ``clang``/``clang++`` and GCC kits.
-
-=================
-Previous versions
-=================
 
 ------
 v2.4.0

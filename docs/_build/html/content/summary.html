@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7. Summary &mdash; BEDOPS 2.4.1 documentation</title>
+    <title>7. Summary &mdash; BEDOPS 2.5.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2.4.1',
+        VERSION:     '2.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,8 +26,8 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../index.html" />
-    <link rel="prev" title="6.3.3.7. wig2bed" href="reference/file-management/conversion/wig2bed.html" /> 
+    <link rel="top" title="BEDOPS 2.5.0 documentation" href="../index.html" />
+    <link rel="prev" title="6.3.3.8. wig2bed" href="reference/file-management/conversion/wig2bed.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,9 +37,9 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="reference/file-management/conversion/wig2bed.html" title="6.3.3.7. wig2bed"
+          <a href="reference/file-management/conversion/wig2bed.html" title="6.3.3.8. wig2bed"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -721,9 +721,25 @@ extraction time performance.</td>
 <td>1</td>
 <td>NA</td>
 </tr>
-<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--elements</span> <span class="pre">&lt;chromosome&gt;</span></tt></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--duplicatesExist</span></tt> or
+<tt class="docutils literal"><span class="pre">--duplicatesExistAsString</span></tt>
+with <tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt></td>
+<td>Report if optional <tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt> or chromosomes contain duplicate
+elements as 0/1 numbers or false/true strings</td>
+<td>1</td>
+<td>1</td>
+<td>NA</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--elements</span> <span class="pre">&lt;chromosome&gt;</span></tt></td>
 <td>Show element count for optional <tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt> (omitting
 <tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt> shows total element count).</td>
+<td>1</td>
+<td>1</td>
+<td>NA</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--is-starch</span></tt></td>
+<td>Test if the &lt;starch-file&gt; is a valid starch archive, returning 0/1
+for a false/true result</td>
 <td>1</td>
 <td>1</td>
 <td>NA</td>
@@ -743,13 +759,22 @@ with JSON formatting.</td>
 <td>1</td>
 <td>NA</td>
 </tr>
-<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--note</span></tt></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--nestedsExist</span></tt> or
+<tt class="docutils literal"><span class="pre">--nestedsExistAsString</span></tt>
+with <tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt></td>
+<td>Report if optional <tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt> or chromosomes contain nested
+elements as 0/1 numbers or false/true strings</td>
+<td>1</td>
+<td>1</td>
+<td>NA</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--note</span></tt></td>
 <td>Show descriptive note (if originally added to archive).</td>
 <td>1</td>
 <td>1</td>
 <td>NA</td>
 </tr>
-<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--sha1-signature</span></tt></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--sha1-signature</span></tt></td>
 <td>Show SHA1 signature of JSON-formatted metadata (Base64-encoded).</td>
 <td>1</td>
 <td>1</td>
@@ -842,7 +867,7 @@ extraction time performance.</td>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="reference/file-management/conversion/wig2bed.html"
-                        title="previous chapter">6.3.3.7. <cite>wig2bed</cite></a></p>
+                        title="previous chapter">6.3.3.8. <cite>wig2bed</cite></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/content/summary.txt"
@@ -872,14 +897,14 @@ extraction time performance.</td>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="reference/file-management/conversion/wig2bed.html" title="6.3.3.7. wig2bed"
+          <a href="reference/file-management/conversion/wig2bed.html" title="6.3.3.8. wig2bed"
              >previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

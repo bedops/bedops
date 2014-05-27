@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.3.3.7. wig2bed &mdash; BEDOPS 2.4.1 documentation</title>
+    <title>6.3.3.8. wig2bed &mdash; BEDOPS 2.5.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.4.1',
+        VERSION:     '2.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,10 +26,10 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../../../index.html" />
+    <link rel="top" title="BEDOPS 2.5.0 documentation" href="../../../../index.html" />
     <link rel="up" title="6.3.3. Data conversion" href="../conversion.html" />
     <link rel="next" title="7. Summary" href="../../../summary.html" />
-    <link rel="prev" title="6.3.3.6. vcf2bed" href="vcf2bed.html" /> 
+    <link rel="prev" title="6.3.3.7. vcf2bed" href="vcf2bed.html" /> 
   </head>
   <body>
     <div class="related">
@@ -42,9 +42,9 @@
           <a href="../../../summary.html" title="7. Summary"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="vcf2bed.html" title="6.3.3.6. vcf2bed"
+          <a href="vcf2bed.html" title="6.3.3.7. vcf2bed"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../conversion.html" accesskey="U">6.3.3. Data conversion</a> &raquo;</li> 
@@ -57,16 +57,16 @@
           <div class="body">
             
   <div class="section" id="wig2bed">
-<span id="id1"></span><h1>6.3.3.7. <cite>wig2bed</cite><a class="headerlink" href="#wig2bed" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>6.3.3.8. <cite>wig2bed</cite><a class="headerlink" href="#wig2bed" title="Permalink to this headline">¶</a></h1>
 <p>The <tt class="docutils literal"><span class="pre">wig2bed</span></tt> script converts both <em>variable</em> - and <em>fixed</em> -step, 1-based, closed <tt class="docutils literal"><span class="pre">[start,</span> <span class="pre">end]</span></tt> <a class="reference external" href="http://genome.ucsc.edu/goldenPath/help/wiggle.html">UCSC Wiggle format</a> (WIG) to sorted, 0-based, half-open <tt class="docutils literal"><span class="pre">[start-1,</span> <span class="pre">end)</span></tt> extended BED data.</p>
 <p>For convenience, we also offer <tt class="docutils literal"><span class="pre">wig2starch</span></tt>, which performs the extra step of creating a <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive.</p>
 <p>The utility also supports multiple embedded WIG sections in a single file, which are output to a single file or split into multiple BED files with the <tt class="docutils literal"><span class="pre">--multisplit</span></tt> option.</p>
 <div class="section" id="source">
-<h2>6.3.3.7.1. Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h2>
+<h2>6.3.3.8.1. Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h2>
 <p>The <tt class="docutils literal"><span class="pre">wig2bed</span></tt> and <tt class="docutils literal"><span class="pre">wig2starch</span></tt> conversion scripts are part of the binary and source downloads of BEDOPS. See the <a class="reference internal" href="../../../installation.html#installation"><em>Installation</em></a> documentation for more details.</p>
 </div>
 <div class="section" id="usage">
-<h2>6.3.3.7.2. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<h2>6.3.3.8.2. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>The <tt class="docutils literal"><span class="pre">wig2bed</span></tt> script parses WIG from standard input and prints sorted BED to standard output. The <tt class="docutils literal"><span class="pre">wig2starch</span></tt> script uses an extra step to parse WIG to a compressed BEDOPS <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive, which is also directed to standard output.</p>
 <p>The header data of a WIG file is usually discarded, unless you add the <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option. In this case, BED elements are created from these data, using the chromosome name <tt class="docutils literal"><span class="pre">_header</span></tt> to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field).</p>
 <p>If your data contain multiple WIG sections, use the <tt class="docutils literal"><span class="pre">--multisplit</span> <span class="pre">&lt;basename&gt;</span></tt> option to split sections out to separate BED files. This option can be used in conjunction with the <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option to preserve metadata.</p>
@@ -80,14 +80,15 @@
 </div>
 </div>
 <div class="section" id="example">
-<h2>6.3.3.7.3. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<h2>6.3.3.8.3. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>To demonstrate these scripts, we use a sample multi-section WIG input called <tt class="docutils literal"><span class="pre">foo.wig</span></tt> (see the <a class="reference internal" href="#wig2bed-downloads"><em>Downloads</em></a> section to grab this file). We can convert WIG to sorted BED data in the following manner:</p>
-<div class="highlight-python"><pre>$ wig2bed &lt; foo.wig
+<div class="highlight-python"><div class="highlight"><pre>$ wig2bed &lt; foo.wig
 chr1    147971108       147971158       id-1    -0.590000
 chr1    147971146       147971196       id-2    0.120000
 chr1    147971184       147971234       id-3    0.110000
 chr1    147971222       147971272       id-4    -0.760000
-...</pre>
+...
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -96,10 +97,11 @@ chr1    147971222       147971272       id-4    -0.760000
 <p>If we want to preserve the header data, we can add the <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option. In this case, BED elements are created from these data, using the chromosome name <tt class="docutils literal"><span class="pre">_header</span></tt> to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field).</p>
 <p>In the case of the sample input <tt class="docutils literal"><span class="pre">foo.wig</span></tt>, we will also need to add the <tt class="docutils literal"><span class="pre">--multisplit</span></tt> option, as header BED elements from each section will otherwise be collated in a non-sensical way. Adding <tt class="docutils literal"><span class="pre">--multisplit</span></tt> ensures that header data are converted and stored in separate BED files.</p>
 <p>To demonstrate, we next repeat the above conversion, adding the <tt class="docutils literal"><span class="pre">--keep-header</span></tt> and <tt class="docutils literal"><span class="pre">--multisplit</span></tt> options:</p>
-<div class="highlight-python"><pre>$ wig2bed --multisplit bar --keep-header &lt; foo.wig</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ wig2bed --multisplit bar --keep-header &lt; foo.wig
+</pre></div>
 </div>
 <p>Conversion of this two-section WIG input results in two files called <tt class="docutils literal"><span class="pre">bar.1</span></tt> and <tt class="docutils literal"><span class="pre">bar.2</span></tt>, each with their own unique set of <tt class="docutils literal"><span class="pre">_header</span></tt> elements:</p>
-<div class="highlight-python"><pre>$ more bar.1
+<div class="highlight-python"><div class="highlight"><pre>$ more bar.1
 _header 0       1       track type=wiggle_0 name=foo description=foo
 chr1    147971108       147971158       id-1    -0.590000
 chr1    147971146       147971196       id-2    0.120000
@@ -113,7 +115,8 @@ chrX    99      104     id-11   1.900000
 chrX    109     114     id-12   2.300000
 chrX    119     124     id-13   -0.100000
 chrX    129     134     id-14   1.100000
-chrX    139     144     id-15   4.100000</pre>
+chrX    139     144     id-15   4.100000
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -129,7 +132,7 @@ chrX    139     144     id-15   4.100000</pre>
 </div>
 </div>
 <div class="section" id="downloads">
-<span id="wig2bed-downloads"></span><h2>6.3.3.7.4. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
+<span id="wig2bed-downloads"></span><h2>6.3.3.8.4. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Sample WIG dataset: <a class="reference download internal" href="../../../../_downloads/reference_wig2bed_foo.wig"><tt class="xref download docutils literal"><span class="pre">foo.wig</span></tt></a></li>
 </ul>
@@ -147,18 +150,18 @@ chrX    139     144     id-15   4.100000</pre>
             </a></p>
   <h3><a href="../../../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">6.3.3.7. <cite>wig2bed</cite></a><ul>
-<li><a class="reference internal" href="#source">6.3.3.7.1. Source</a></li>
-<li><a class="reference internal" href="#usage">6.3.3.7.2. Usage</a></li>
-<li><a class="reference internal" href="#example">6.3.3.7.3. Example</a></li>
-<li><a class="reference internal" href="#downloads">6.3.3.7.4. Downloads</a></li>
+<li><a class="reference internal" href="#">6.3.3.8. <cite>wig2bed</cite></a><ul>
+<li><a class="reference internal" href="#source">6.3.3.8.1. Source</a></li>
+<li><a class="reference internal" href="#usage">6.3.3.8.2. Usage</a></li>
+<li><a class="reference internal" href="#example">6.3.3.8.3. Example</a></li>
+<li><a class="reference internal" href="#downloads">6.3.3.8.4. Downloads</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="vcf2bed.html"
-                        title="previous chapter">6.3.3.6. <cite>vcf2bed</cite></a></p>
+                        title="previous chapter">6.3.3.7. <cite>vcf2bed</cite></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../../../summary.html"
                         title="next chapter">7. Summary</a></p>
@@ -194,9 +197,9 @@ chrX    139     144     id-15   4.100000</pre>
           <a href="../../../summary.html" title="7. Summary"
              >next</a> |</li>
         <li class="right" >
-          <a href="vcf2bed.html" title="6.3.3.6. vcf2bed"
+          <a href="vcf2bed.html" title="6.3.3.7. vcf2bed"
              >previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../conversion.html" >6.3.3. Data conversion</a> &raquo;</li> 
@@ -204,7 +207,7 @@ chrX    139     144     id-15   4.100000</pre>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

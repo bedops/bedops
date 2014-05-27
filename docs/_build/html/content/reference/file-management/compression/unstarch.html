@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.3.2.2. unstarch &mdash; BEDOPS 2.4.1 documentation</title>
+    <title>6.3.2.2. unstarch &mdash; BEDOPS 2.5.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.4.1',
+        VERSION:     '2.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../../../index.html" />
+    <link rel="top" title="BEDOPS 2.5.0 documentation" href="../../../../index.html" />
     <link rel="up" title="6.3.2. Compression" href="../compression.html" />
     <link rel="next" title="6.3.2.3. starchcat" href="starchcat.html" />
     <link rel="prev" title="6.3.2.1. starch" href="starch.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="starch.html" title="6.3.2.1. starch"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../compression.html" accesskey="U">6.3.2. Compression</a> &raquo;</li> 
@@ -58,7 +58,7 @@
             
   <div class="section" id="unstarch">
 <span id="id1"></span><h1>6.3.2.2. <cite>unstarch</cite><a class="headerlink" href="#unstarch" title="Permalink to this headline">¶</a></h1>
-<p>With high-throughput sequencing generating large amounts of genomic data, archiving can be a critical part of an analysis toolkit. BEDOPS includes the <tt class="docutils literal"><span class="pre">unstarch</span></tt> utility to recover original BED input and whole-file or per-chromosome data attributes from archives created with <a class="reference internal" href="starch.html#starch"><em>starch</em></a> (these can be v1.x or <a class="reference internal" href="starch-specification.html#starch-specification"><em>v2 archives</em></a>).</p>
+<p>With high-throughput sequencing generating large amounts of genomic data, archiving can be a critical part of an analysis toolkit. BEDOPS includes the <tt class="docutils literal"><span class="pre">unstarch</span></tt> utility to recover original BED input and whole-file or per-chromosome data attributes from archives created with <a class="reference internal" href="starch.html#starch"><em>starch</em></a> (these can be v1.x or <a class="reference internal" href="starch-specification.html#starch-specification"><em>v2.x archives</em></a>).</p>
 <p>The <a class="reference internal" href="#unstarch"><em>unstarch</em></a> utility includes <a class="reference external" href="http://en.wikipedia.org/wiki/Large_file_support">large file support</a> on 64-bit operating systems, enabling extraction of more than 2 GB of data (a common restriction on 32-bit systems).</p>
 <p>Starch data can be stored with one of two open-source backend compression methods, either <tt class="docutils literal"><span class="pre">bzip2</span></tt> or <tt class="docutils literal"><span class="pre">gzip</span></tt>. The <a class="reference internal" href="#unstarch"><em>unstarch</em></a> utility will transparently extract data, without the end user needing to specify the backend type.</p>
 <div class="section" id="inputs-and-outputs">
@@ -75,17 +75,17 @@
 </div>
 <div class="section" id="requirements">
 <h2>6.3.2.2.2. Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
-<p>The metadata of a Starch v2 archive must pass an integrity check before <a class="reference internal" href="#unstarch"><em>unstarch</em></a> can extract data. Any manual changes to the metadata will cause extraction to fail.</p>
+<p>The metadata of a Starch v2.x archive must pass an integrity check before <a class="reference internal" href="#unstarch"><em>unstarch</em></a> can extract data. Any manual changes to the metadata will cause extraction to fail.</p>
 </div>
 <div class="section" id="usage">
 <h2>6.3.2.2.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>Use the <tt class="docutils literal"><span class="pre">--help</span></tt> option to list all options:</p>
-<div class="highlight-python"><pre>unstarch
+<div class="highlight-python"><div class="highlight"><pre>unstarch
  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
- binary version: 2.4.1 (extracts archive version: 2.0.0 or older)
+ binary version: 2.5.0 (extracts archive version: 2.1.0 or older)
  authors: Alex Reynolds and Shane Neph
 
-USAGE: unstarch [ &lt;chromosome&gt; ]  [ --elements | --bases | --bases-uniq | --list | --list-json | --list-chromosomes | --archive-timestamp | --note | --archive-version ] &lt;starch-file&gt;
+USAGE: unstarch [ &lt;chromosome&gt; ]  [ --elements | --bases | --bases-uniq | --duplicatesExist | --nestedsExist | --list | --list-json | --list-chromosomes | --archive-timestamp | --note | --archive-version | --is-starch ] &lt;starch-file&gt;
 
     Process Flags:
 
@@ -93,24 +93,31 @@ USAGE: unstarch [ &lt;chromosome&gt; ]  [ --elements | --bases | --bases-uniq | 
     --elements                       Show total element count for archive. If &lt;chromosome&gt; is specified, the result shows the element count for the chromosome.
     --bases,
     --bases-uniq                     Show total and unique base counts, respectively, for archive. If &lt;chromosome&gt; is specified, the count is specific to the chromosome, if available.
+    --has-duplicate,                 Show whether there is one or more duplicate elements in the specified chromosome, either as a numerical (1/0) or string (true/false) value. If no &lt;chromosome&gt; is specified, the value given indicates if there is one or more duplicate elements across all chromosome records.
+    --has-duplicate-as-string
+    --has-nested,                    Show whether there is one ore more nested elements in the specified chromosome, either as a numerical (1/0) or string (true/false) value. If no &lt;chromosome&gt; is specified, the value given indicates if there is one or more nested elements across all chromosome records.
+    --has-nested-as-string
     --list                           List archive metadata (output is in text format). If chromosome is specified, the attributes of the given chromosome are shown.
     --list-json,                     List archive metadata (output is in JSON format)
     --list-json-no-trailing-newline
-    --list-chr,                      List all or specified chromosome in starch archive (similar to "bedextract --list-chr"). If &lt;chromosome&gt; is specified but is not in the output list, nothing is returned.
+    --list-chr,                      List all or specified chromosome in starch archive (similar to &quot;bedextract --list-chr&quot;). If &lt;chromosome&gt; is specified but is not in the output list, nothing is returned.
     --list-chromosomes
     --note                           Show descriptive note, if available.
     --sha1-signature                 Show SHA1 signature of JSON-formatted metadata (Base64-encoded).
     --archive-timestamp              Show archive creation timestamp (ISO 8601 format).
     --archive-type                   Show archive compression type.
     --archive-version                Show archive version.
+    --is-starch                      Test if &lt;starch-file&gt; is a valid archive and print 0/1 (false/true) to standard output.
     --version                        Show binary version.
-    --help                           Show this usage message.</pre>
+    --help                           Show this usage message.
+</pre></div>
 </div>
 <div class="section" id="extraction">
 <h3>6.3.2.2.3.1. Extraction<a class="headerlink" href="#extraction" title="Permalink to this headline">¶</a></h3>
 <p>Specify a specific chromosome to extract data only from that chromosome. This is optional; if a chromosome is not specified, data are extracted from all chromosomes in the archive.</p>
-<div class="highlight-python"><pre>$ unstarch chr12 example.starch
-...</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ unstarch chr12 example.starch
+...
+</pre></div>
 </div>
 </div>
 <div class="section" id="archive-attributes">
@@ -119,31 +126,34 @@ USAGE: unstarch [ &lt;chromosome&gt; ]  [ --elements | --bases | --bases-uniq | 
 <div class="section" id="metadata">
 <h4>6.3.2.2.3.2.1. Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h4>
 <p>Use the <tt class="docutils literal"><span class="pre">--list-json</span></tt> or <tt class="docutils literal"><span class="pre">--list</span></tt> options to export the archive metadata as a JSON- or table-formatted text string, sent to standard output:</p>
-<div class="highlight-python"><pre>$ unstarch --list-json example.starch
+<div class="highlight-python"><div class="highlight"><pre>$ unstarch --list-json example.starch
 {
-  "archive": {
-    "type": "starch",
-    "customUCSCHeaders": false,
-    "creationTimestamp": "2013-01-17T13:44:54-0800",
-    "version": {
-      "major": 2,
-      "minor": 0,
-      "revision": 0
+  &quot;archive&quot;: {
+    &quot;type&quot;: &quot;starch&quot;,
+    &quot;customUCSCHeaders&quot;: false,
+    &quot;creationTimestamp&quot;: &quot;2014-05-01T14:09:29-0700&quot;,
+    &quot;version&quot;: {
+      &quot;major&quot;: 2,
+      &quot;minor&quot;: 1,
+      &quot;revision&quot;: 0
     },
-    "compressionFormat": 0
+    &quot;compressionFormat&quot;: 0
   },
-  "streams": [
+  &quot;streams&quot;: [
     {
-      "chromosome": "chr1",
-      "filename": "chr1.pid31740.fiddlehead.regulomecorp.com",
-      "size": "88330",
-      "uncompressedLineCount": 10753,
-      "nonUniqueBaseCount": 549829,
-      "uniqueBaseCount": 548452
+      &quot;chromosome&quot;: &quot;chr1&quot;,
+      &quot;filename&quot;: &quot;chr1.pid31740.fiddlehead.regulomecorp.com&quot;,
+      &quot;size&quot;: &quot;88330&quot;,
+      &quot;uncompressedLineCount&quot;: 10753,
+      &quot;nonUniqueBaseCount&quot;: 549829,
+      &quot;uniqueBaseCount&quot;: 548452,
+      &quot;duplicateElementExists&quot;: false,
+      &quot;nestedElementExists&quot;: false
     },
     ...
   ]
-}</pre>
+}
+</pre></div>
 </div>
 <p>The <tt class="docutils literal"><span class="pre">--list-chr</span></tt> (or <tt class="docutils literal"><span class="pre">--list-chromosomes</span></tt>) option exports a list of chromosomes stored in the Starch archive.</p>
 </div>
@@ -162,9 +172,10 @@ USAGE: unstarch [ &lt;chromosome&gt; ]  [ --elements | --bases | --bases-uniq | 
 <div class="section" id="compression-type">
 <h4>6.3.2.2.3.2.4. Compression type<a class="headerlink" href="#compression-type" title="Permalink to this headline">¶</a></h4>
 <p>The <tt class="docutils literal"><span class="pre">--archive-type</span></tt> option will report the compression type of the archive, either <tt class="docutils literal"><span class="pre">bzip2</span></tt> or <tt class="docutils literal"><span class="pre">gzip</span></tt>:</p>
-<div class="highlight-python"><pre>$ unstarch --archive-type example.starch
+<div class="highlight-python"><div class="highlight"><pre>$ unstarch --archive-type example.starch
 unstarch
- archive compression type: bzip2</pre>
+ archive compression type: bzip2
+</pre></div>
 </div>
 </div>
 <div class="section" id="version">
@@ -179,23 +190,56 @@ unstarch
 <p>The <tt class="docutils literal"><span class="pre">--elements</span></tt> operator reports the number of BED elements that were compressed into the chromosome stream, if specified. If no chromosome is specified, the sum of elements over all chromosomes is reported.</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
-<p class="last">This option is equivalent to a <tt class="docutils literal"><span class="pre">wc</span> <span class="pre">-l</span></tt> (line count) operation performed on BED elements that match the given chromosome, but is much, much faster as data are precomputed and stored with the archive, retrieved from the metadata.</p>
+<p class="last">This option is equivalent to a <tt class="docutils literal"><span class="pre">wc</span> <span class="pre">-l</span></tt> (line count) operation performed on BED elements that match the given chromosome, but is much, much faster as data are precomputed and stored with the archive, retrieved from the metadata in O(1) time.</p>
 </div>
 </div>
 <div class="section" id="bases">
 <h4>6.3.2.2.3.3.2. Bases<a class="headerlink" href="#bases" title="Permalink to this headline">¶</a></h4>
 <p>The <tt class="docutils literal"><span class="pre">--bases</span></tt> and <tt class="docutils literal"><span class="pre">--bases-uniq</span></tt> flags return the overall and unique base counts for a specified chromosome, or the sum of counts over all chromosomes, if no one chromosome is specified.</p>
 </div>
+<div class="section" id="duplicate-element-s">
+<h4>6.3.2.2.3.3.3. Duplicate element(s)<a class="headerlink" href="#duplicate-element-s" title="Permalink to this headline">¶</a></h4>
+<p>The <tt class="docutils literal"><span class="pre">--has-duplicate</span></tt> operator reports whether the chromosome stream contains one or more duplicate elements, printing a <tt class="docutils literal"><span class="pre">0</span></tt> if the chromosome does <em>not</em> contain a duplicate element, and a <tt class="docutils literal"><span class="pre">1</span></tt> if the chromosome <em>does</em> contain a duplicate.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">A duplicate element exists if there are two or more BED elements where the chromosome name and start and stop positions are identical. Id, score, strand and any other optional columns are ignored when determining if a duplicate element is present.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">To get a string value of <tt class="docutils literal"><span class="pre">true</span></tt> or <tt class="docutils literal"><span class="pre">false</span></tt> in place of <tt class="docutils literal"><span class="pre">1</span></tt> and <tt class="docutils literal"><span class="pre">0</span></tt>, use the <tt class="docutils literal"><span class="pre">--has-duplicate-as-string</span></tt> operator, instead.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the chromosome name argument to <tt class="docutils literal"><span class="pre">unstarch</span></tt> is omitted, or set to <tt class="docutils literal"><span class="pre">all</span></tt>, the <tt class="docutils literal"><span class="pre">--has-duplicate</span></tt> and <tt class="docutils literal"><span class="pre">--has-duplicate-as-string</span></tt> operators will return a result for all chromosomes (if any one chromosome has one or more duplicate elements, the return value is <tt class="docutils literal"><span class="pre">1</span></tt> or <tt class="docutils literal"><span class="pre">true</span></tt>, respectively). If the chromosome name is provided and the archive does not contain metadata for the given chromosome, these operators will return a <tt class="docutils literal"><span class="pre">0</span></tt> or <tt class="docutils literal"><span class="pre">false</span></tt> result.</p>
+</div>
+</div>
+<div class="section" id="nested-element-s">
+<h4>6.3.2.2.3.3.4. Nested element(s)<a class="headerlink" href="#nested-element-s" title="Permalink to this headline">¶</a></h4>
+<p>The <tt class="docutils literal"><span class="pre">--has-nested</span></tt> operator reports whether the chromosome stream contains one or more <a class="reference internal" href="../../set-operations/nested-elements.html#nested-elements"><em>nested elements</em></a>, printing a <tt class="docutils literal"><span class="pre">0</span></tt> if the chromosome does <em>not</em> contain a nested element, and a <tt class="docutils literal"><span class="pre">1</span></tt> if the chromosome <em>does</em> contain a nested element.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The definition of a nested element relies on coordinates and is explained in the <a class="reference internal" href="../../set-operations/nested-elements.html#nested-elements"><em>documentation for nested elements</em></a>. Id, score, strand and any other optional columns are ignored when determining if a nested element is present.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">To get a string value of <tt class="docutils literal"><span class="pre">true</span></tt> or <tt class="docutils literal"><span class="pre">false</span></tt> in place of <tt class="docutils literal"><span class="pre">1</span></tt> and <tt class="docutils literal"><span class="pre">0</span></tt>, use the <tt class="docutils literal"><span class="pre">--has-nested-as-string</span></tt> operator, instead.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the chromosome name argument to <tt class="docutils literal"><span class="pre">unstarch</span></tt> is omitted, or set to <tt class="docutils literal"><span class="pre">all</span></tt>, the <tt class="docutils literal"><span class="pre">--has-nested</span></tt> and <tt class="docutils literal"><span class="pre">--has-nested-as-string</span></tt> operators will return a result for all chromosomes (if any one chromosome has one or more nested elements, the return value is <tt class="docutils literal"><span class="pre">1</span></tt> or <tt class="docutils literal"><span class="pre">true</span></tt>, respectively). If the chromosome name is provided and the archive does not contain metadata for the given chromosome, these operators will return a <tt class="docutils literal"><span class="pre">0</span></tt> or <tt class="docutils literal"><span class="pre">false</span></tt> result.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="example">
 <h2>6.3.2.2.4. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>To extract a generic Starch file input to a BED file:</p>
-<div class="highlight-python"><pre>$ unstarch example.starch &gt; example.bed</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ unstarch example.starch &gt; example.bed
+</pre></div>
 </div>
 <p>This creates the <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sorted</em></a> file <tt class="docutils literal"><span class="pre">example.bed</span></tt>, containing BED data from extracting <tt class="docutils literal"><span class="pre">example.starch</span></tt>. This can be a <tt class="docutils literal"><span class="pre">bzip2</span></tt> or <tt class="docutils literal"><span class="pre">gzip</span></tt> -formatted Starch archive—<a class="reference internal" href="#unstarch"><em>unstarch</em></a> knows how to extract either type transparently.</p>
 <p>To list the chromosomes in a Starch v2 archive, use the <tt class="docutils literal"><span class="pre">--list-chr</span></tt> (or <tt class="docutils literal"><span class="pre">--list-chromosomes</span></tt>) option:</p>
-<div class="highlight-python"><pre>$ unstarch --list-chr example.starch
+<div class="highlight-python"><div class="highlight"><pre>$ unstarch --list-chr example.starch
 chr1
 chr10
 chr11
@@ -206,23 +250,32 @@ chr14
 chr15
 chr16
 chr17
-...</pre>
+...
+</pre></div>
 </div>
 <p>To show the number of BED elements in chromosome <tt class="docutils literal"><span class="pre">chr13</span></tt>, use the <tt class="docutils literal"><span class="pre">--elements</span></tt> operator:</p>
-<div class="highlight-python"><pre>$ unstarch chr13 --elements example.starch
-10753</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ unstarch chr13 --elements example.starch
+10753
+</pre></div>
 </div>
 <p>To find the number of unique bases in chromosome <tt class="docutils literal"><span class="pre">chr8</span></tt>:</p>
-<div class="highlight-python"><pre>$ unstarch chr8 --bases-uniq example.starch
-545822</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ unstarch chr8 --bases-uniq example.starch
+545822
+</pre></div>
+</div>
+<p>To report if the chromosome <tt class="docutils literal"><span class="pre">chr14</span></tt> contains at least one duplicate BED element:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ unstarch chr14 --has-duplicate-as-string example.starch
+true
+</pre></div>
 </div>
 <p>To show when the archive was created:</p>
-<div class="highlight-python"><pre>$ unstarch --archive-timestamp example.starch
-2013-01-17T13:44:54-0800</pre>
+<div class="highlight-python"><div class="highlight"><pre>$ unstarch --archive-timestamp example.starch
+2014-05-01T14:09:29-0700
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Some option calls will not work with legacy v1.x archives. If you have v1.x archives, use the <a class="reference internal" href="starchcat.html#starchcat"><em>starchcat</em></a> utility to upgrade older archives to Starch v2 files, which get updated attributes.</p>
+<p class="last">Some option calls will not work with legacy v1.x or v2.0 archives. For instance, to get a result for nested or duplicate elements, you need to input a v2.1 archive. If you have a v1.x or v2.0 archive, use the <a class="reference internal" href="starchcat.html#starchcat"><em>starchcat</em></a> utility to upgrade an older archive to a Starch v2.1 file, which will recalculate and make all current attributes available.</p>
 </div>
 </div>
 </div>
@@ -258,6 +311,8 @@ chr17
 <li><a class="reference internal" href="#whole-file-or-per-chromosome-attributes">6.3.2.2.3.3. Whole-file or per-chromosome attributes</a><ul>
 <li><a class="reference internal" href="#elements">6.3.2.2.3.3.1. Elements</a></li>
 <li><a class="reference internal" href="#bases">6.3.2.2.3.3.2. Bases</a></li>
+<li><a class="reference internal" href="#duplicate-element-s">6.3.2.2.3.3.3. Duplicate element(s)</a></li>
+<li><a class="reference internal" href="#nested-element-s">6.3.2.2.3.3.4. Nested element(s)</a></li>
 </ul>
 </li>
 </ul>
@@ -307,7 +362,7 @@ chr17
         <li class="right" >
           <a href="starch.html" title="6.3.2.1. starch"
              >previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../compression.html" >6.3.2. Compression</a> &raquo;</li> 
@@ -315,7 +370,7 @@ chr17
     </div>
     <div class="footer">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

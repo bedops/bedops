@@ -10,6 +10,7 @@ Some other formats not covered here can be converted with, for instance, the `UC
 .. toctree::
 
    conversion/bam2bed
+   conversion/bam2starchcluster
    conversion/gff2bed
    conversion/gtf2bed
    conversion/psl2bed
