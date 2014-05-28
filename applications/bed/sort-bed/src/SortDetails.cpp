@@ -168,7 +168,7 @@ createDir(char* dir)
                             if (fptr == NULL)
                                 {
                                     fprintf(stderr, "Unable to create a file in existing directory: %s\n.Check permissions.\n", dir);
-                                    return EXIT_FAILURE;
+                                    ok = false;
                                 }
                             remove(fname);
                         }
