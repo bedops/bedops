@@ -65,8 +65,8 @@ install_gprof: prep_c install_conversion_scripts install_starchcluster_scripts
 	-cp ${APPDIR}/conversion/bin/gprof.wig2bed_bin ${BINDIR}/
 
 install_starchcluster_scripts: prep_c
-	-cp ${APPDIR}/starch/bin/starchcluster ${BINDIR}/starchcluster
-	-cp ${APPDIR}/starch/bin/starchcluster.gnu_parallel ${BINDIR}/starchcluster.gnu_parallel
+	-cp ${APPDIR}/starch/bin/starchcluster ${BINDIR}/starchcluster_sge
+	-cp ${APPDIR}/starch/bin/starchcluster.gnu_parallel ${BINDIR}/starchcluster_gnuparallel
 
 install_conversion_scripts: prep_c
 	-cp ${APPDIR}/conversion/src/bam2bed.py ${BINDIR}/bam2bed
@@ -83,7 +83,8 @@ install_conversion_scripts: prep_c
 	-cp ${APPDIR}/conversion/src/sam2starch.py ${BINDIR}/sam2starch
 	-cp ${APPDIR}/conversion/src/vcf2starch.py ${BINDIR}/vcf2starch
 	-cp ${APPDIR}/conversion/src/wig2starch.bash ${BINDIR}/wig2starch
-	-cp ${APPDIR}/conversion/src/bam2starchcluster.tcsh ${BINDIR}/bam2starchcluster
+	-cp ${APPDIR}/conversion/src/bam2bedcluster.tcsh ${BINDIR}/bam2bedcluster_sge
+	-cp ${APPDIR}/conversion/src/bam2starchcluster.tcsh ${BINDIR}/bam2starchcluster_sge
 
 install_osx_packaging_bins: prep_c
 	mkdir -p ${OSXPKGDIR}
@@ -112,5 +113,6 @@ install_osx_packaging_bins: prep_c
 	-cp ${APPDIR}/conversion/src/sam2starch.py ${OSXPKGDIR}/sam2starch
 	-cp ${APPDIR}/conversion/src/vcf2starch.py ${OSXPKGDIR}/vcf2starch
 	-cp ${APPDIR}/conversion/src/wig2starch.bash ${OSXPKGDIR}/wig2starch
-	-cp ${APPDIR}/conversion/src/bam2starchcluster.tcsh ${OSXPKGDIR}/bam2starchcluster
+	-cp ${APPDIR}/conversion/src/bam2bedcluster.tcsh ${OSXPKGDIR}/bam2bedcluster_sge
+	-cp ${APPDIR}/conversion/src/bam2starchcluster.tcsh ${OSXPKGDIR}/bam2starchcluster_sge
 	mkdir -p ${OSXLIBDIR}
