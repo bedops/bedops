@@ -65,8 +65,8 @@ install_gprof: prep_c install_conversion_scripts install_starchcluster_scripts
 	-cp ${APPDIR}/conversion/bin/gprof.wig2bed_bin ${BINDIR}/
 
 install_starchcluster_scripts: prep_c
-	-cp ${APPDIR}/starch/bin/starchcluster ${BINDIR}/starchcluster_sge
-	-cp ${APPDIR}/starch/bin/starchcluster.gnu_parallel ${BINDIR}/starchcluster_gnuparallel
+	-cp ${APPDIR}/starch/bin/starchcluster_sge ${BINDIR}/starchcluster_sge
+	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel ${BINDIR}/starchcluster_gnuparallel
 
 install_conversion_scripts: prep_c
 	-cp ${APPDIR}/conversion/src/bam2bed.py ${BINDIR}/bam2bed
@@ -83,8 +83,8 @@ install_conversion_scripts: prep_c
 	-cp ${APPDIR}/conversion/src/sam2starch.py ${BINDIR}/sam2starch
 	-cp ${APPDIR}/conversion/src/vcf2starch.py ${BINDIR}/vcf2starch
 	-cp ${APPDIR}/conversion/src/wig2starch.bash ${BINDIR}/wig2starch
-	-cp ${APPDIR}/conversion/src/bam2bedcluster.tcsh ${BINDIR}/bam2bedcluster_sge
-	-cp ${APPDIR}/conversion/src/bam2starchcluster.tcsh ${BINDIR}/bam2starchcluster_sge
+	-cp ${APPDIR}/conversion/src/bam2bedcluster_sge.tcsh ${BINDIR}/bam2bedcluster_sge
+	-cp ${APPDIR}/conversion/src/bam2starchcluster_sge.tcsh ${BINDIR}/bam2starchcluster_sge
 
 install_osx_packaging_bins: prep_c
 	mkdir -p ${OSXPKGDIR}
@@ -96,8 +96,8 @@ install_osx_packaging_bins: prep_c
 	-cp ${APPDIR}/starch/bin/starch ${OSXPKGDIR}/
 	-cp ${APPDIR}/starch/bin/unstarch ${OSXPKGDIR}/
 	-cp ${APPDIR}/starch/bin/starchcat ${OSXPKGDIR}/
-	-cp ${APPDIR}/starch/bin/starchcluster ${OSXPKGDIR}/
-	-cp ${APPDIR}/starch/bin/starchcluster.gnu_parallel ${OSXPKGDIR}/
+	-cp ${APPDIR}/starch/bin/starchcluster_sge ${OSXPKGDIR}/
+	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel ${OSXPKGDIR}/
 	-cp ${APPDIR}/conversion/bin/wig2bed_bin ${OSXPKGDIR}/
 	-cp ${APPDIR}/conversion/src/bam2bed.py ${OSXPKGDIR}/bam2bed
 	-cp ${APPDIR}/conversion/src/gff2bed.py ${OSXPKGDIR}/gff2bed
@@ -113,6 +113,6 @@ install_osx_packaging_bins: prep_c
 	-cp ${APPDIR}/conversion/src/sam2starch.py ${OSXPKGDIR}/sam2starch
 	-cp ${APPDIR}/conversion/src/vcf2starch.py ${OSXPKGDIR}/vcf2starch
 	-cp ${APPDIR}/conversion/src/wig2starch.bash ${OSXPKGDIR}/wig2starch
-	-cp ${APPDIR}/conversion/src/bam2bedcluster.tcsh ${OSXPKGDIR}/bam2bedcluster_sge
-	-cp ${APPDIR}/conversion/src/bam2starchcluster.tcsh ${OSXPKGDIR}/bam2starchcluster_sge
+	-cp ${APPDIR}/conversion/src/bam2bedcluster_sge.tcsh ${OSXPKGDIR}/bam2bedcluster_sge
+	-cp ${APPDIR}/conversion/src/bam2starchcluster_sge.tcsh ${OSXPKGDIR}/bam2starchcluster_sge
 	mkdir -p ${OSXLIBDIR}

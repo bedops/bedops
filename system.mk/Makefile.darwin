@@ -74,9 +74,9 @@ clean: clean_debug clean_gprof all
 	rm -f ${BINDIR}/starch
 	rm -f ${BINDIR}/unstarch
 	rm -f ${BINDIR}/starchcat
-	rm -f ${BINDIR}/starchcluster
-	rm -f ${BINDIR}/starchcluster.gnu_parallel
+	rm -f ${BINDIR}/starchcluster*
 	rm -f ${BINDIR}/bam2bed
+	rm -f ${BINDIR}/bam2bedcluster*
 	rm -f ${BINDIR}/gff2bed
 	rm -f ${BINDIR}/gtf2bed
 	rm -f ${BINDIR}/psl2bed
@@ -85,7 +85,7 @@ clean: clean_debug clean_gprof all
 	rm -f ${BINDIR}/wig2bed
 	rm -f ${BINDIR}/wig2bed_bin
 	rm -f ${BINDIR}/bam2starch
-	rm -f ${BINDIR}/bam2starchcluster
+	rm -f ${BINDIR}/bam2starchcluster*
 	rm -f ${BINDIR}/gff2starch
 	rm -f ${BINDIR}/gtf2starch
 	rm -f ${BINDIR}/psl2starch
@@ -116,9 +116,9 @@ clean_debug:
 	rm -f ${BINDIR}/debug.starch
 	rm -f ${BINDIR}/debug.unstarch
 	rm -f ${BINDIR}/debug.starchcat
-	rm -f ${BINDIR}/starchcluster
-	rm -f ${BINDIR}/starchcluster.gnu_parallel
+	rm -f ${BINDIR}/starchcluster*
 	rm -f ${BINDIR}/bam2bed
+	rm -f ${BINDIR}/bam2bedcluster*
 	rm -f ${BINDIR}/gff2bed
 	rm -f ${BINDIR}/gtf2bed
 	rm -f ${BINDIR}/psl2bed
@@ -127,7 +127,7 @@ clean_debug:
 	rm -f ${BINDIR}/wig2bed
 	rm -f ${BINDIR}/debug.wig2bed_bin
 	rm -f ${BINDIR}/bam2starch
-	rm -f ${BINDIR}/bam2starchcluster
+	rm -f ${BINDIR}/bam2starchcluster*
 	rm -f ${BINDIR}/gff2starch
 	rm -f ${BINDIR}/gtf2starch
 	rm -f ${BINDIR}/psl2starch
@@ -144,9 +144,9 @@ clean_gprof:
 	rm -f ${BINDIR}/gprof.starch
 	rm -f ${BINDIR}/gprof.unstarch
 	rm -f ${BINDIR}/gprof.starchcat
-	rm -f ${BINDIR}/starchcluster
-	rm -f ${BINDIR}/starchcluster.gnu_parallel
+	rm -f ${BINDIR}/starchcluster*
 	rm -f ${BINDIR}/bam2bed
+	rm -f ${BINDIR}/bam2bedcluster*
 	rm -f ${BINDIR}/gff2bed
 	rm -f ${BINDIR}/gtf2bed
 	rm -f ${BINDIR}/psl2bed
@@ -155,7 +155,7 @@ clean_gprof:
 	rm -f ${BINDIR}/wig2bed
 	rm -f ${BINDIR}/gprof.wig2bed_bin
 	rm -f ${BINDIR}/bam2starch
-	rm -f ${BINDIR}/bam2starchcluster
+	rm -f ${BINDIR}/bam2starchcluster*
 	rm -f ${BINDIR}/gff2starch
 	rm -f ${BINDIR}/gtf2starch
 	rm -f ${BINDIR}/psl2starch
