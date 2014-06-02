@@ -27,14 +27,22 @@
 # GNU Parallel variables
 ############################
 
-set hosts_string = "oneski twoski threeski fourski"
+@ fqhs = ""
+set hosts_string = "oneski,twoski,threeski,fourski"
+set domain = "stamlab.org"
+set hosts = ($hosts_string:as/,/ /)
+foreach host (`seq 1 $#hosts`)
+    set fqhs = ( $fqhs $hosts[$host].$domain )
+end
+set fqhs_string = `echo "$fqhs[2-]" | sed "s/ /,/g"`
 
 ############################
 # some input error checking
 ############################
 
 set help = "\nUsage: starchcluster.gnu_parallel [--help] [--clean] <input-bed-file> [output-starch-file]\n\n"
-set help = "$help  Pass in the name of a BED file to create a starch archive using the cluster.\n\n"
+set help = "$help  Pass in the name of a BED file to create a starch archive using GNU Parallel and hosts\n"
+set help = "$help  specfied in the script's variable hosts_string.\n\n"
 set help = "$help  (stdin isn't supported through this wrapper script, but starch supports it natively.)\n\n"
 set help = "$help  Add --clean to remove <input-bed-file> after starching it up.\n\n"
 set help = "$help  You can pass in the name of the output starch archive to be created.\n"
@@ -117,7 +125,7 @@ endif
 
 bedextract --list-chr $input \
   | parallel \
-    --sshlogin $hosts_string \ 
+    --sshlogin $fqhs_string \ 
     "bedextract {} $input | starch - > $here/$nm/{}.starch"
 
 @ extracted_file_count = `find $here/$nm -name '*.starch' | wc -l`
