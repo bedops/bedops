@@ -13,7 +13,7 @@ This script splits the indexed BAM file by chromosome name. Each chromosome of B
 Dependencies
 ============
 
-This ``python`` shell script is dependent upon the installation of `SAMtools <http://samtools.sourceforge.net/>`_ and Python, version 2.6.2 or greater (and less than Python3). It also requires a computational grid that is managed with Sun Grid Engine 6.1u5 (or higher).
+This shell script is dependent upon a working computational grid that is managed with Sun Grid Engine 6.1u5 (or higher).
 
 ======
 Source
