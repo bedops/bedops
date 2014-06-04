@@ -28,21 +28,22 @@
 #  change to match your environment
 #  may also require changes to 2 'qsub' calls below
 ####################################################
+
 set shell = "-S /bin/tcsh"
 set queue = "-q all.q"
 set misc_opts = "-V -cwd -w e -r yes -now no"
 set soundoff = "-j n -e /dev/null -o /dev/null"
 set sge_opts = "$queue $shell $misc_opts $soundoff"
 
-
 ############################
 # some input error checking
 ############################
-set help = "\nUsage: bam2starchcluster [--help] [--clean] <input-indexed-bam-file> [output-starch-file]\n\n"
-set help = "$help  Pass in the name of an indexed BAM file to create a starch archive using the cluster.\n\n"
-set help = "$help  (stdin isn't supported through this wrapper script, but starch supports it natively.)\n\n"
+
+set help = "\nUsage: bam2starchcluster_sge [--help] [--clean] <input-indexed-bam-file> [output-starch-file]\n\n"
+set help = "$help  Pass in the name of an indexed BAM file to create a Starch archive using the cluster.\n\n"
+set help = "$help  (stdin isn't supported through this wrapper script, but Starch supports it natively.)\n\n"
 set help = "$help  Add --clean to remove <input-indexed-bam-file> after starching it up.\n\n"
-set help = "$help  You can pass in the name of the output starch archive to be created.\n"
+set help = "$help  You can pass in the name of the output Starch archive to be created.\n"
 set help = "$help  Otherwise, the output will have the same name as the input file, with an additional\n"
 set help = "$help   '.starch' ending.  If the input file ends with '.bam', that will be stripped off.\n"
 
@@ -97,7 +98,8 @@ endif
 ###############################################################
 # new working directory to keep file pileups local to this job
 ###############################################################
-set nm = b2sc.`uname -a | cut -f2 -d' '`.$$
+
+set nm = b2scs.`uname -a | cut -f2 -d' '`.$$
 if ( -d $nm ) then
   rm -rf $nm
 endif
@@ -119,17 +121,16 @@ else
   # $output includes absolute path
 endif
 
-
 #####################################################
 # extract information by chromosome and bam2starch it
 #####################################################
+
 set files = ()
 set jids = ()
 @ cntr = 0
 foreach chrom (`samtools idxstats $input | cut -f1`)
-
-qsub $sge_opts -N $nm.$cntr > /dev/stderr << __EXTRACTION__
-  samtools view $input $chrom -b | bam2starch > $cntr
+  qsub $sge_opts -N $nm.$cntr > /dev/stderr << __EXTRACTION__
+    samtools view $input $chrom -b | bam2starch > $cntr
 __EXTRACTION__
 
   set jids = ($jids $nm.$cntr)
@@ -142,10 +143,10 @@ if ( $cntr == 0 ) then
   exit -1
 endif
 
-
 ##################################################
 # create final starch archive and clean things up
 ##################################################
+
 qsub $sge_opts -N $nm.union -hold_jid `echo $jids | tr ' ' ','` > /dev/stderr << __CATTED__
   starchcat $files > $output
   cd $here

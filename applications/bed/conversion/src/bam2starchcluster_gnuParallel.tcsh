@@ -23,27 +23,15 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-####################################################
-# cluster variables:
-#  change to match your environment
-#  may also require changes to 2 'qsub' calls below
-####################################################
-
-set shell = "-S /bin/tcsh"
-set queue = "-q all.q"
-set misc_opts = "-V -cwd -w e -r yes -now no"
-set soundoff = "-j n -e /dev/null -o /dev/null"
-set sge_opts = "$queue $shell $misc_opts $soundoff"
-
 ############################
 # some input error checking
 ############################
 
-set help = "\nUsage: bam2bedcluster_sge [--help] [--clean] <input-indexed-bam-file> [output-bed-file]\n\n"
-set help = "$help  Pass in the name of an indexed BAM file to create a starch archive using the cluster.\n\n"
+set help = "\nUsage: bam2starchcluster_gnuParallel [--help] [--clean] <input-indexed-bam-file> [output-starch-file]\n\n"
+set help = "$help  Pass in the name of an indexed BAM file to create a Starch file using GNU Parallel.\n\n"
 set help = "$help  (stdin isn't supported through this wrapper script.)\n\n"
 set help = "$help  Add --clean to remove <input-indexed-bam-file> after starching it up.\n\n"
-set help = "$help  You can pass in the name of the output bed archive to be created.\n"
+set help = "$help  You can pass in the name of the output Starch archive to be created.\n"
 set help = "$help  Otherwise, the output will have the same name as the input file, with an additional\n"
 set help = "$help   '.bed' ending.  If the input file ends with '.bam', that will be stripped off.\n"
 
@@ -99,7 +87,7 @@ endif
 # new working directory to keep file pileups local to this job
 ###############################################################
 
-set nm = b2scs.`uname -a | cut -f2 -d' '`.$$
+set nm = b2bcg.`uname -a | cut -f2 -d' '`.$$
 if ( -d $nm ) then
   rm -rf $nm
 endif
@@ -125,21 +113,13 @@ endif
 # extract information by chromosome and bam2bed it
 #####################################################
 
-set files = ()
-set jids = ()
-@ cntr = 0
-foreach chrom (`samtools idxstats $input | cut -f1`)
-  qsub $sge_opts -N $nm.$cntr > /dev/stderr << __EXTRACTION__
-    samtools view $input $chrom -b | bam2bed > $cntr
-__EXTRACTION__
+@ chrom_count = (`samtools idxstats $input | cut -f1 | awk 'END { print NR }'`)
 
-  set jids = ($jids $nm.$cntr)
-  set files = ($files $cntr)
-  @ cntr++
-end
+samtools idxstats $input | cut -f1 | parallel "samtools view $input {} -b | bam2starch > $here/$nm/{}.starch"
 
-if ( $cntr == 0 ) then
-  printf "Program problem: no files were submitted to the cluster?\n"
+@ converted_file_count = `find $here/$nm -name '*.starch' | wc -l`
+if ( $chrom_count != $converted_file_count ) then
+  printf "Error: Only some or no files were submitted to GNU Parallel successfully\n"
   exit -1
 endif
 
@@ -147,14 +127,13 @@ endif
 # create final bed archive and clean things up
 ##################################################
 
-qsub $sge_opts -N $nm.union -hold_jid `echo $jids | tr ' ' ','` > /dev/stderr << __CATTED__
-  bedops --everything $files > $output
-  cd $here
-  rm -rf $nm
+starchcat $here/$nm/*.starch > $output
 
-  if ( $clean > 0 ) then
-    rm -f $originput
-  endif
-__CATTED__
+cd $here
+rm -rf $nm
+
+if ( $clean > 0 ) then
+  rm -f $originput
+endif
 
 exit 0

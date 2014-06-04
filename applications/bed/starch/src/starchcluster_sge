@@ -28,17 +28,18 @@
 #  change to match your environment
 #  may also require changes to 2 'qsub' calls below
 ####################################################
+
 set shell = "-S /bin/tcsh"
 set queue = "-q all.q"
 set misc_opts = "-V -cwd -w e -r yes -now no"
 set soundoff = "-j n -e /dev/null -o /dev/null"
 set sge_opts = "$queue $shell $misc_opts $soundoff"
 
-
 ############################
 # some input error checking
 ############################
-set help = "\nUsage: starchcluster [--help] [--clean] <input-bed-file> [output-starch-file]\n\n"
+
+set help = "\nUsage: starchcluster_sge [--help] [--clean] <input-bed-file> [output-starch-file]\n\n"
 set help = "$help  Pass in the name of a BED file to create a starch archive using the cluster.\n\n"
 set help = "$help  (stdin isn't supported through this wrapper script, but starch supports it natively.)\n\n"
 set help = "$help  Add --clean to remove <input-bed-file> after starching it up.\n\n"
@@ -88,11 +89,11 @@ else if ( "$output" == "$originput:t.starch" && "$originput:e" == "bed" ) then
   set output = "$originput:t:r.starch"
 endif
 
-
 ###############################################################
 # new working directory to keep file pileups local to this job
 ###############################################################
-set nm = gstar.`uname -a | cut -f2 -d' '`.$$
+
+set nm = scs.`uname -a | cut -f2 -d' '`.$$
 if ( -d $nm ) then
   rm -rf $nm
 endif
@@ -114,10 +115,10 @@ else
   # $output includes absolute path
 endif
 
-
 #####################################################
 # extract information by chromosome and starch it up
 #####################################################
+
 set files = ()
 set jids = ()
 @ cntr = 0
@@ -137,10 +138,10 @@ if ( $cntr == 0 ) then
   exit -1
 endif
 
-
 ##################################################
 # create final starch archive and clean things up
 ##################################################
+
 qsub $sge_opts -N $nm.union -hold_jid `echo $jids | tr ' ' ','` > /dev/stderr << __CATTED__
   starchcat $files > $output
   cd $here

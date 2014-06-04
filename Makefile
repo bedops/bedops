@@ -84,7 +84,9 @@ install_conversion_scripts: prep_c
 	-cp ${APPDIR}/conversion/src/vcf2starch.py ${BINDIR}/vcf2starch
 	-cp ${APPDIR}/conversion/src/wig2starch.bash ${BINDIR}/wig2starch
 	-cp ${APPDIR}/conversion/src/bam2bedcluster_sge.tcsh ${BINDIR}/bam2bedcluster_sge
+	-cp ${APPDIR}/conversion/src/bam2bedcluster_gnuParallel.tcsh ${BINDIR}/bam2bedcluster_gnuParallel
 	-cp ${APPDIR}/conversion/src/bam2starchcluster_sge.tcsh ${BINDIR}/bam2starchcluster_sge
+	-cp ${APPDIR}/conversion/src/bam2starchcluster_gnuParallel.tcsh ${BINDIR}/bam2starchcluster_gnuParallel
 
 install_osx_packaging_bins: prep_c
 	mkdir -p ${OSXPKGDIR}
@@ -114,5 +116,7 @@ install_osx_packaging_bins: prep_c
 	-cp ${APPDIR}/conversion/src/vcf2starch.py ${OSXPKGDIR}/vcf2starch
 	-cp ${APPDIR}/conversion/src/wig2starch.bash ${OSXPKGDIR}/wig2starch
 	-cp ${APPDIR}/conversion/src/bam2bedcluster_sge.tcsh ${OSXPKGDIR}/bam2bedcluster_sge
+	-cp ${APPDIR}/conversion/src/bam2bedcluster_gnuParallel.tcsh ${OSXPKGDIR}/bam2bedcluster_gnuParallel
 	-cp ${APPDIR}/conversion/src/bam2starchcluster_sge.tcsh ${OSXPKGDIR}/bam2starchcluster_sge
+	-cp ${APPDIR}/conversion/src/bam2starchcluster_gnuParallel.tcsh ${OSXPKGDIR}/bam2starchcluster_gnuParallel
 	mkdir -p ${OSXLIBDIR}
