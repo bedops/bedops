@@ -13,7 +13,7 @@ This script splits the indexed BAM file by chromosome name. Each chromosome of B
 Dependencies
 ============
 
-This shell script is dependent upon a working computational grid that is managed with Sun Grid Engine 6.1u5 (or higher).
+This shell script is dependent upon a working computational grid that is managed with Sun Grid Engine 6.1u5 (or higher), or installation of GNU Parallel v20130922 or greater.
 
 ======
 Source
