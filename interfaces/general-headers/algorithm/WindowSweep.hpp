@@ -42,6 +42,13 @@ namespace WindowSweep {
   void sweep(InputIterator start, InputIterator end,
              RangeComp inRange, EventVisitor& visitor);
 
+  template <
+            class InputIterator,
+            class EventVisitor
+           >
+  void sweep(InputIterator start, InputIterator end,
+             Bed::Overlapping inRange, EventVisitor& visitor);
+
 
   //=================================================================
   // sweep() Overload2 : Two pair of input iterator pairs
