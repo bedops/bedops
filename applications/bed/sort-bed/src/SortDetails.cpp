@@ -605,9 +605,10 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
 
             /* error check if your line length (including the newline) is BED_LINE_LEN or more */
             bedLine[BED_LINE_LEN] = '1';
+            bedLine[0] = '\n';
             while(fgets(bedLine, BED_LINE_LEN+1, bedFile))
                 {
-                    if(1 == strlen(bedLine))
+                    if('\n' == bedLine[0])
                         { /* only a new line was found */
                             lines++;
                             continue;
@@ -706,7 +707,7 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                             cptr = strchr(dptr, '\n');
                             if(cptr == NULL)
                                 {
-                                    fprintf(stderr, "No end of line found at %" PRIu64 " in %s.\n",
+                                    fprintf(stderr, "No end of line found at %" PRIu64 " in %s.\nMay need to increase BED_LINE_LEN and recompile.\nFirst check that you have unix newlines (cat -A).",
                                             lines, bedFileNames[iidx]);
                                     return EXIT_FAILURE;
                                 }
@@ -1035,6 +1036,7 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                          }
 
                      bedLine[BED_LINE_LEN] = '1';
+                     bedLine[0] = '\n';
                      lines++;
                  } /* while */
 
