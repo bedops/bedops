@@ -1,11 +1,7 @@
 /*
-  FILE: OrderCompare.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Sun Aug 19 19:01:10 PDT 2007
-  PROJECT: general-utilities
-  ID: $Id:$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Sun Aug 19 19:01:10 PDT 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -25,10 +21,8 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef ORDERING_COMPARISONS_H
 #define ORDERING_COMPARISONS_H
-
 
 namespace Ordering {
 

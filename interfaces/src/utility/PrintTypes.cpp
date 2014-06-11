@@ -1,11 +1,7 @@
 /*
-  FILE: PrintTypes.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Wed Sep  5 11:16:29 PDT 2007
-  PROJECT: utility
-  ID: $Id:$
+  Author: Shane Neph & Scott Kuehn
+  Date: Wed Sep  5 11:16:29 PDT 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -25,24 +21,19 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Files included
 #include <cstdio>
 #include <string>
+#include <type_traits>
 
-// Files included
-#include <boost/utility/enable_if.hpp>
-
-// Files included
 #include "utility/Formats.hpp"
 #include "utility/PrintTypes.hpp"
-
 
 namespace PrintTypes {
 
   // Built-in char* and arithmetic types: Print() and Println()
 
   template <typename T>
-  typename boost::enable_if< Details::check<T>, void >::type
+  typename std::enable_if<Details::check<T>::value>::type
   Print(T t) {
     static std::string f = Formats::Format(t);
     static char const* format = f.c_str();
@@ -50,7 +41,7 @@ namespace PrintTypes {
   }
 
   template <typename T>
-  typename boost::enable_if< Details::check<T>, void >::type
+  typename std::enable_if<Details::check<T>::value>::type
   Println(T t) {
     static std::string end = Formats::Format(t) + std::string("\n");
     static char const* format = end.c_str();
@@ -58,7 +49,7 @@ namespace PrintTypes {
   }
 
   template <typename T>
-  extern typename boost::enable_if< boost::is_arithmetic<T>, void >::type
+  extern typename std::enable_if<std::is_arithmetic<T>::value>::type
   Print(T t, int precision, bool scientific) {
     std::string f = Formats::Format(t, precision, scientific);
     char const* format = f.c_str();
@@ -66,7 +57,7 @@ namespace PrintTypes {
   }
 
   template <typename T>
-  extern typename boost::enable_if< boost::is_arithmetic<T>, void >::type
+  extern typename std::enable_if<std::is_arithmetic<T>::value>::type
   Println(T t, int precision, bool scientific) {
     std::string end = Formats::Format(t, precision, scientific) + std::string("\n");
     char const* format = end.c_str();
@@ -74,7 +65,7 @@ namespace PrintTypes {
   }
 
   template <typename T>
-  typename boost::enable_if< Details::check<T>, void >::type
+  typename std::enable_if<Details::check<T>::value>::type
   Print(FILE* out, T t) {
     static std::string f = Formats::Format(t);
     static char const* format = f.c_str();
@@ -82,7 +73,7 @@ namespace PrintTypes {
   }
 
   template <typename T>
-  typename boost::enable_if< Details::check<T>, void >::type
+  typename std::enable_if<Details::check<T>::value>::type
   Println(FILE* out, T t) {
     static std::string end = Formats::Format(t) + std::string("\n");
     static char const* format = end.c_str();
@@ -94,22 +85,22 @@ namespace PrintTypes {
   //  More specialized version can be created for other user-defined types
 
   template <typename T>
-  typename boost::disable_if< Details::check<T>, void >::type
+  typename std::enable_if<!Details::check<T>::value>::type
   Print(const T& t)
     { t.print(); }
 
   template <typename T>
-  typename boost::disable_if< Details::check<T>, void >::type
+  typename std::enable_if<!Details::check<T>::value>::type
   Println(const T& t)
     { t.println(); }
 
   template <typename T>
-  typename boost::disable_if< Details::check<T>, void >::type
+  typename std::enable_if<!Details::check<T>::value>::type
   Print(FILE* out, const T& t)
     { t.print(out); }
 
   template <typename T>
-  typename boost::disable_if< Details::check<T>, void >::type
+  typename std::enable_if<!Details::check<T>::value>::type
   Println(FILE* out, const T& t)
     { t.println(out); }
 

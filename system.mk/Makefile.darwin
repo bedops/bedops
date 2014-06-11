@@ -1,6 +1,4 @@
 PARTY3           = third-party
-BOOSTVERSION     = boost_1_46_1
-WHICHBOOST      := ${PARTY3}/${BOOSTVERSION}
 BZIP2VERSION     = bzip2-1.0.6
 WHICHBZIP2      := ${PARTY3}/${BZIP2VERSION}
 JANSSONVERSION   = jansson-2.6
@@ -95,8 +93,6 @@ clean: clean_debug clean_gprof all
 	rm -f ${OSXPKGDIR}/*
 	rm -f ${OSXLIBDIR}/*
 	rm -Rf ${OSXBUILDDIR}/*
-	rm -rf ${WHICHBOOST}
-	rm -f ${PARTY3}/boost
 	rm -rf ${WHICHBZIP2}
 	rm -f ${PARTY3}/bzip2
 	rm -rf ${WHICHJANSSON}
@@ -182,22 +178,14 @@ mkdirs:
 #
 # third-party libraries
 #
-support_intel_i386: boost_support_intel_i386_c jansson_support_intel_i386_c bzip2_support_intel_i386_c zlib_support_intel_i386_c
+support_intel_i386: jansson_support_intel_i386_c bzip2_support_intel_i386_c zlib_support_intel_i386_c
 
-support_intel_x86_64: boost_support_intel_x86_64_c jansson_support_intel_x86_64_c bzip2_support_intel_x86_64_c zlib_support_intel_x86_64_c
+support_intel_x86_64: jansson_support_intel_x86_64_c bzip2_support_intel_x86_64_c zlib_support_intel_x86_64_c
 
 support_intel: support_intel_i386 support_intel_x86_64
 
 support: | mkdirs
 	$(MAKE) support_intel -f $(SELF)
-
-boost_support_intel_i386_c:
-	bzcat ${WHICHBOOST}.tar.bz2 | tar -x -C ${PARTY3}/$(I386)/
-	cd ${PARTY3}/$(I386)/ && rm -f boost && ln -s ${BOOSTVERSION} boost && cd ${WDIR}
-
-boost_support_intel_x86_64_c:
-	bzcat ${WHICHBOOST}.tar.bz2 | tar -x -C ${PARTY3}/$(X86_64)/
-	cd ${PARTY3}/$(X86_64)/ && rm -f boost && ln -s ${BOOSTVERSION} boost && cd ${WDIR}
 
 jansson_support_intel_i386_c:
 	bzcat ${WHICHJANSSON}.tar.bz2 | tar -x -C ${PARTY3}/$(I386)/

@@ -2,7 +2,6 @@
   Author: Scott Kuehn, Shane Neph
   Date:   Fri Jul 27 11:49:03 PDT 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -31,8 +30,7 @@
 #include <cstdlib>
 #include <limits>
 #include <string>
-
-#include <boost/type_traits.hpp>
+#include <type_traits>
 
 #include "suite/BEDOPS.Constants.hpp"
 #include "utility/Formats.hpp"
@@ -712,7 +710,7 @@ namespace Bed {
     MeasureType measurement_;
 
     static std::string outFormatter() {
-      typedef typename boost::remove_cv<MeasureType>::type MType;
+      typedef typename std::remove_cv<MeasureType>::type MType;
       return(BaseClass::outFormatter() + "\t" + Formats::Format(MType()));
     }
 
