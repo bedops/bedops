@@ -1,11 +1,7 @@
 /*
-  FILE: OvrUniqueVisitor.hpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Wed Sep  5 09:33:15 PDT 2007
-  PROJECT: utility
-  ID: $Id$
+  Author: Scott Kuehn, Shane Neph
+  Date:   Wed Sep  5 09:33:15 PDT 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -30,7 +26,6 @@
 
 #include "algorithm/visitors/bed/OvrUniqueVisitor.hpp"
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
-
 
 namespace Visitors {
 

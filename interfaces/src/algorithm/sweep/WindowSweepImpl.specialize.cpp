@@ -23,8 +23,10 @@
 
 #include <cstdlib>
 #include <deque>
+#include <type_traits>
 
 #include "data/bed/BedCheckIterator.hpp"
+#include "data/bed/BedDistances.hpp"
 #include "data/bed/AllocateIterator_BED_starch.hpp"
 #include "utility/AllocateIterator.hpp"
 
@@ -32,44 +34,15 @@ namespace WindowSweep {
 
   // See WindowSweep.hpp for detailed assumptions of sweep()
 
-  namespace Details {
-
-    // get() function overloads allow sweep() to be written only twice.
-    //  New iterator ideas receive just another get().  For example,
-    //  the speedy allocate_iterator<T> requires something special below.
-    template <typename IteratorType>
-    inline typename IteratorType::value_type* get(IteratorType& i)
-      { return(new typename IteratorType::value_type(*i)); }
-
-
-    template <typename T>
-    inline typename Ext::allocate_iterator<T*>::value_type
-                                     get(Ext::allocate_iterator<T*>& i)
-      { return(*i); } /* no copy via operator new here */
-
-    template <typename T>
-    inline typename Bed::allocate_iterator_starch_bed<T*>::value_type
-                                     get(Bed::allocate_iterator_starch_bed<T*>& i)
-      { return(*i); } /* no copy via operator new here */
-
-
-    template <typename T>
-    inline typename Bed::bed_check_iterator<T*>::value_type
-                                     get(Bed::bed_check_iterator<T*>& i)
-      { return(*i); } /* no copy via operator new here */
-
-  } // namespace Details
-
   //===================
   // sweep Overload1 :
   //===================
   template <
             class InputIterator,
-            class RangeComp,
             class EventVisitor
            >
   void sweep(InputIterator start, InputIterator end,
-             RangeComp inRange, EventVisitor& visitor) {
+             Bed::Overlapping inRange, EventVisitor& visitor) {
 
     // Local typedefs
     typedef typename EventVisitor::reference_type Type;
@@ -92,7 +65,8 @@ namespace WindowSweep {
       if ( !reset ) { // Check items falling out of range 'to the left'
         visitor.OnStart(win[index]);
         while ( !win.empty() && inRange.Map2Ref(win[0], win[index]) < 0 ) {
-          visitor.OnDelete(win[0]);
+          if ( win[0]->length() >= inRange.ovrRequired_ )
+            visitor.OnDelete(win[0]);
           delete win[0];
           win.pop_front(), --index;
         } // while
@@ -137,13 +111,15 @@ namespace WindowSweep {
             first = false;
 
             while ( !win.empty() ) { // deletions on behalf of new ref
-              visitor.OnDelete(win[0]);
+              if ( win[0]->length() >= inRange.ovrRequired_ )
+                visitor.OnDelete(win[0]);
               delete win[0];
               win.pop_front();
             } // while
           }
           win.push_back(bPtr);
-          visitor.OnAdd(bPtr); // must follow 'reset' check
+          if ( bPtr->length() >= inRange.ovrRequired_ )
+            visitor.OnAdd(bPtr); // must follow 'reset' check
         }
         else { // read one passed current windowed range
           cache = bPtr;
@@ -160,99 +136,5 @@ namespace WindowSweep {
       delete cache; // never given to visitor
 
   } // sweep() overload1
-
-
-  //===================
-  // sweep Overload2 :
-  //===================
-  template <
-            class InputIterator1,
-            class InputIterator2,
-            class RangeComp,
-            class EventVisitor
-           >
-  void sweep(InputIterator1 refStart, InputIterator1 refEnd,
-             InputIterator2 mapFromStart, InputIterator2 mapFromEnd,
-             RangeComp inRange, EventVisitor& visitor, bool sweepMapAll) {
-
-    // Local typedefs
-    typedef typename EventVisitor::reference_type RefType;
-    typedef typename EventVisitor::mapping_type MapType;
-    typedef MapType* MapTypePtr;
-    typedef std::deque<MapTypePtr> WindowType;
-    typedef RefType* RefTypePtr;
-
-    // Local variables
-    // const bool cleanHere = !visitor.ManagesOwnMemory(); no longer useful with multivisitor
-    const MapTypePtr zero = static_cast<MapTypePtr>(0);
-    RefTypePtr rPtr;
-    MapTypePtr mPtr = zero, cache = zero;
-    WindowType win;
-    double value = 0;
-    bool willPurge = false;
-
-    // Loop through inputs
-    while ( refStart != refEnd ) {
-
-      rPtr = Details::get(refStart); // don't do get(refStart++); in case allocate_iterator
-      ++refStart;
-      visitor.OnStart(rPtr);
-
-      // See if we will be starting a new window
-      willPurge = !win.empty() && (inRange.Map2Ref(win[win.size()-1], rPtr) < 0);
-      if ( willPurge ) // notify visitor before deleting elements
-        visitor.OnPurge();
-
-      // Pop off items falling out of range 'to the left'
-      while ( !win.empty() && inRange.Map2Ref(win[0], rPtr) < 0 ) {
-        visitor.OnDelete(win[0]);
-        delete win[0];
-        win.pop_front();
-      } // while
-
-      // Check for items to be included in current windowed range
-      while ( cache || mapFromStart != mapFromEnd ) {
-        if ( cache ) {
-          mPtr = cache;
-          cache = zero;
-        }
-        else {
-          mPtr = Details::get(mapFromStart); // don't do get(mapFromStart++); in case allocate_iterator
-          ++mapFromStart;
-        }
-
-        if ( (value = inRange.Ref2Map(rPtr, mPtr)) == 0 ) { // within range
-          win.push_back(mPtr);
-          visitor.OnAdd(mPtr);
-        }
-        else if ( value < 0 ) { // read one passed current windowed range
-          cache = mPtr;
-          break;
-        }
-        else
-          delete mPtr;
-      } // while
-      visitor.OnDone(); // done processing current ref item
-      delete rPtr;
-    } // while more ref data
-
-    visitor.OnEnd();
-    while ( !win.empty() ) { // deletions belonging to NO ref
-      delete win[0];
-      win.pop_front();
-    } // while
-
-    if ( cache ) // never given to visitor
-      delete cache;
-
-    if ( sweepMapAll ) { // read and clean remainder of map file
-      while ( mapFromStart != mapFromEnd ) {
-        mPtr = Details::get(mapFromStart); // don't do get(mapFromStart); in case allocate_iterator
-        ++mapFromStart;
-        delete mPtr; // never given to visitor
-      } // while
-    }
-
-  } // sweep() overload2
 
 } // namespace WindowSweep

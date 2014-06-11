@@ -39,13 +39,7 @@ namespace Visitors {
     typedef const RefType reference_type;
     typedef const MapType mapping_type;
 
-  private:
-    template <class I, class R, class E>
-    friend void WindowSweep::sweep(I, I, R&, E&);
-
-    template <class I, class J, class R, class E>
-    friend void WindowSweep::sweep(I, I, J, J, R&, E&, bool);
-
+    // interface for sweep()
     inline virtual bool ManagesOwnMemory() const { return(false); }
     inline virtual void OnAdd(mapping_type* u) { Add(u); }
     inline virtual void OnDelete(mapping_type* u) { Delete(u); }

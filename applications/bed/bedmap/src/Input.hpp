@@ -255,8 +255,6 @@ namespace BedMap {
           hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::Sum>());
         else if ( next == details::name<typename VT::Median>() )
           hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::Median>());
-        //else if ( next == details::name<typename VT::WeightedMean1>() )
-        //  hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::WeightedMean1>());
         else if ( next == details::name<typename VT::MedianAbsoluteDeviation>() ) {
           std::string sval = argv[argcntr];
           if ( sval.find_first_not_of(reals) == std::string::npos ) { // assume argument for this option
@@ -498,7 +496,6 @@ namespace BedMap {
     usage << "                            ignoring the bottom <low> and top <hi> fractions of those scores.\n";
     usage << "                            0 <= low <= 1.  0 <= hi <= 1.  low+hi <= 1.\n";
     usage << "      --" + details::name<VT::Variance>() + "          The variance of scores from overlapping elements in <map-file>.\n";
-    //usage << "      --" + details::name<VT::WeightedMean1>() + "            Weighted mean of scores from overlapping elements in <map-file>.\n";
     usage << "     \n";
     usage << "     ----------\n";
     usage << "      NON-SCORE:\n";

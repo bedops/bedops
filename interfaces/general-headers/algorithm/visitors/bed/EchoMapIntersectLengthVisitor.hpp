@@ -1,11 +1,7 @@
 /*
-  FILE: EchoMapIntersectLengthVisitor.hpp
-  AUTHOR: Shane Neph
-  CREATE DATE: Mon Dec  9 16:07:08 PST 2013
-  PROJECT: utility
-  ID: $Id$
+  Author: Shane Neph
+  Date:   Mon Dec  9 16:07:08 PST 2013
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -29,8 +25,7 @@
 #define INTERSECT_REF_VISITOR_HPP
 
 #include <set>
-
-#include <boost/type_traits.hpp>
+#include <type_traits>
 
 #include "data/bed/Bed.hpp"
 #include "data/bed/BedCompare.hpp"
@@ -69,7 +64,7 @@ namespace Visitors {
         std::vector<long> vec;
         typename SType::const_iterator i = win_.begin();
         while ( i != win_.end() ) {
-          typename boost::remove_const<T>::type c = *refItem_;
+          typename std::remove_const<T>::type c = *refItem_;
           c.intersection(**i++);
           vec.push_back(c.length());
         } // while

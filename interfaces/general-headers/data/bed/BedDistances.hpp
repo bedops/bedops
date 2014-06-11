@@ -140,8 +140,7 @@ namespace Bed {
       return((a->start() < b->start()) ? -1 : 1); // no overlap
     }
 
-    private:
-      std::size_t ovrRequired_;
+    std::size_t ovrRequired_;
   };
 
   //========================
