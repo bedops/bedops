@@ -1,9 +1,6 @@
 /*
-  FILE: BedTypes.hpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Tue Aug 14 14:44:45 PDT 2007
-  PROJECT: wg-pro
-  ID: $Id$
+  Author: Scott Kuehn, Shane Neph
+  Date:   Tue Aug 14 14:44:45 PDT 2007
 */
 
 //
@@ -28,7 +25,6 @@
 #ifndef BEDTYPES_HPP
 #define BEDTYPES_HPP
 
-// Files included
 #include "data/bed/Bed.hpp"
 
 namespace Bed {

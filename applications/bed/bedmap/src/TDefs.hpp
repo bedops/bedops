@@ -1,11 +1,7 @@
 /*
-  FILE: Input.cpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Fri Oct 19 08:20:50 PDT 2007
-  PROJECT: utility
-  ID: $Id$
+  Author: Scott Kuehn, Shane Neph
+  Date:   Fri Oct 19 08:20:50 PDT 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -24,17 +20,15 @@
 //    with this program; if not, write to the Free Software Foundation, Inc.,
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
+
 #ifndef _BEDMAP_TYPEDEFS_HPP
 #define _BEDMAP_TYPEDEFS_HPP
 
-// Files included
 #include "algorithm/visitors/bed/BedBaseVisitor.hpp"
 #include "algorithm/visitors/BedVisitors.hpp"
 #include "algorithm/visitors/helpers/ProcessBedVisitorRow.hpp"
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
 #include "utility/Exception.hpp"
-
-
 
 namespace BedMap {
 

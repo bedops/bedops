@@ -1,11 +1,7 @@
 /*
-  FILE: Bedmap.cpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Wed Oct 17 14:23:29 PDT 2007
-  PROJECT: utility
-  ID: $Id$
+  Author: Scott Kuehn, Shane Neph
+  Date:   Wed Oct 17 14:23:29 PDT 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -54,7 +50,6 @@
 
 #include "Input.hpp"
 #include "TDefs.hpp"
-
 
 namespace BedMap {
 
@@ -126,6 +121,13 @@ int main(int argc, char **argv) {
                           progInput.chrom_, progInput.skipUnmappedRows_, visitorNames, visitorArgs);
     } else if ( progInput.isPercBoth_ ) { // % overlap relative to both MapType's and RefType's sizes
       Bed::PercentOverlapBoth bedDist(progInput.percOvr_);
+      Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
+      BedMap::selectSweep(sweepDist, bedDist, progInput.refFileName_, progInput.mapFileName_,
+                          progInput.minRefFields_, progInput.minMapFields_, progInput.errorCheck_,
+                          progInput.outDelim_, progInput.multiDelim_, prec, sci, progInput.fastMode_,
+                          progInput.chrom_, progInput.skipUnmappedRows_, visitorNames, visitorArgs);
+    } else if ( progInput.isExact_ ) { // must be identical coordinates
+      Bed::Exact bedDist;
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
       BedMap::selectSweep(sweepDist, bedDist, progInput.refFileName_, progInput.mapFileName_,
                           progInput.minRefFields_, progInput.minMapFields_, progInput.errorCheck_,

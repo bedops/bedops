@@ -1,11 +1,7 @@
 /*
-  FILE: Input.cpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Fri Oct 19 08:20:50 PDT 2007
-  PROJECT: utility
-  ID: $Id$
+  Author: Scott Kuehn, Shane Neph
+  Date:   Fri Oct 19 08:20:50 PDT 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -25,7 +21,6 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-
 #ifndef _BEDMAP_INPUT_HPP
 #define _BEDMAP_INPUT_HPP
 
@@ -44,10 +39,7 @@
 #include "utility/Assertion.hpp"
 #include "utility/Typify.hpp"
 
-
 #include "TDefs.hpp"
-
-
 
 namespace BedMap {
 
@@ -81,10 +73,11 @@ namespace BedMap {
     Input(int argc, char **argv)
       : refFileName_(""), mapFileName_(""), rangeBP_(0), overlapBP_(0),
         percOvr_(0.0), isPercMap_(false), isPercRef_(false), isPercEither_(false),
-        isPercBoth_(false), isRangeBP_(false), isOverlapBP_(false), precision_(6),
-        useScientific_(false), setPrec_(false), numFiles_(0), minRefFields_(0),
-        minMapFields_(0), errorCheck_(false), outDelim_("|"), multiDelim_(";"),
-        fastMode_(false), rangeAlias_(false), chrom_("all"), skipUnmappedRows_(false) {
+        isPercBoth_(false), isRangeBP_(false), isOverlapBP_(false), isExact_(false),
+        precision_(6), useScientific_(false), setPrec_(false), numFiles_(0),
+        minRefFields_(0), minMapFields_(0), errorCheck_(false), outDelim_("|"),
+        multiDelim_(";"), fastMode_(false), rangeAlias_(false), chrom_("all"),
+        skipUnmappedRows_(false) {
 
       // Process user's operation options
       if ( argc <= 1 )
@@ -213,9 +206,8 @@ namespace BedMap {
           Ext::Assert<ArgError>(percOvr_ > 0 && percOvr_ <= 1, "--fraction-both value must be: >0-1.0");
           isPercBoth_ = true;
         } else if ( next == "exact" ) { // same as --fraction-both 1
-          Ext::Assert<ArgError>(!isPercBoth_, "multiple --fraction-both/--exact's detected");
-          percOvr_ = 1;
-          isPercBoth_ = true;
+          Ext::Assert<ArgError>(!isExact_, "multiple --exact's detected - use one");
+          isExact_ = true;
         }
         else if ( next == details::name<typename VT::OvrAgg>() )
           hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::OvrAgg>());
@@ -321,7 +313,7 @@ namespace BedMap {
           throw(ArgError("Unknown option: --" + next));
       } // while
 
-      if ( !(isPercMap_ || isPercRef_ || isPercEither_ || isPercBoth_ || isRangeBP_ || isOverlapBP_) ) {
+      if ( !(isPercMap_ || isPercRef_ || isPercEither_ || isPercBoth_ || isRangeBP_ || isOverlapBP_ || isExact_) ) {
         // use defaults
         isOverlapBP_ = true;
         overlapBP_ = 1;
@@ -332,13 +324,14 @@ namespace BedMap {
       count += isPercBoth_;
       count += isRangeBP_;
       count += isOverlapBP_;
+      count += isExact_;
       Ext::Assert<ArgError>(1 == count, "More than one overlap specification used.");
 
       Ext::Assert<ArgError>(hasVisitor, "No processing option specified (ie; --max).");
       Ext::Assert<ArgError>(0 <= argc - argcntr, "No files");
       Ext::Assert<ArgError>(3 == minRefFields_, "Program error: Input.hpp::minRefFields_");
       Ext::Assert<ArgError>(3 <= minMapFields_ && 5 >= minMapFields_, "Program error: Input.hpp::minMapFields_");
-      Ext::Assert<ArgError>(!fastMode_ || isOverlapBP_ || isRangeBP_ || isPercBoth_, "--faster compatible with --range, --bp-ovr, --fraction-both, and --exact only");
+      Ext::Assert<ArgError>(!fastMode_ || isOverlapBP_ || isRangeBP_ || isPercBoth_ || isExact_, "--faster compatible with --range, --bp-ovr, --fraction-both, and --exact only");
 
       // Process files inputs
       Ext::Assert<ArgError>(2 >= argc - argcntr, "Need [one or] two input files");
@@ -373,6 +366,7 @@ namespace BedMap {
     bool isPercBoth_;
     bool isRangeBP_;
     bool isOverlapBP_;
+    bool isExact_;
     int precision_;
     bool useScientific_;
     bool setPrec_;
@@ -478,8 +472,7 @@ namespace BedMap {
     usage << "                                 qualify as overlapping.  Expect 0 < val <= 1.                      \n";
     usage << "      --fraction-either <val>  Either --fraction-ref <val> or --fraction-map <val> must be true to  \n";
     usage << "                                 qualify as overlapping.  Expect 0 < val <= 1.                      \n";
-    usage << "      --exact                  Shorthand for --fraction-both 1.  First 3 fields from <map-file> must\n";
-    usage << "                                 be identical to <ref-file>'s element.                              \n";
+    usage << "      --exact                  First 3 fields from <map-file> must be identical to <ref-file>'s.    \n";
     usage << "                                                                                                    \n";
     usage << "                                                                                                    \n";
     usage << "    Operations:  (Any number of operations may be used any number of times.)                        \n";
