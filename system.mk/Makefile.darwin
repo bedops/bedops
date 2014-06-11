@@ -235,8 +235,8 @@ wig2bed_c_intel_fat:
 	-test -e ${APPDIR}/conversion/bin/wig2bed_bin_i386 && test -e ${APPDIR}/conversion/bin/wig2bed_bin_x86_64 && { lipo -create ${APPDIR}/conversion/bin/wig2bed_bin_i386 ${APPDIR}/conversion/bin/wig2bed_bin_x86_64 -output ${APPDIR}/conversion/bin/wig2bed_bin; }
 
 starch_c_intel_fat:
-	cp ${APPDIR}/starch/src/starchcluster_sge.tcsh ${APPDIR}/starch/bin/starchcluster_sge
-	cp ${APPDIR}/starch/src/starchcluster_gnuParallel.tcsh ${APPDIR}/starch/bin/starchcluster_gnuParallel
+	cp ${APPDIR}/starch/src/starchcluster_sge.tcsh ${APPDIR}/starch/bin/starchcluster_sge.tcsh
+	cp ${APPDIR}/starch/src/starchcluster_gnuParallel.tcsh ${APPDIR}/starch/bin/starchcluster_gnuParallel.tcsh
 	-test -e ${APPDIR}/starch/bin_i386/starch && test -e ${APPDIR}/starch/bin_x86_64/starch && { lipo -create ${APPDIR}/starch/bin_i386/starch ${APPDIR}/starch/bin_x86_64/starch -output ${APPDIR}/starch/bin/starch; }
 	-test -e ${APPDIR}/starch/bin_i386/unstarch && test -e ${APPDIR}/starch/bin_x86_64/unstarch && { lipo -create ${APPDIR}/starch/bin_i386/unstarch ${APPDIR}/starch/bin_x86_64/unstarch -output ${APPDIR}/starch/bin/unstarch; }
 	-test -e ${APPDIR}/starch/bin_i386/starchcat && test -e ${APPDIR}/starch/bin_x86_64/starchcat && { lipo -create ${APPDIR}/starch/bin_i386/starchcat ${APPDIR}/starch/bin_x86_64/starchcat -output ${APPDIR}/starch/bin/starchcat; }
