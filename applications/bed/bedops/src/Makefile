@@ -7,7 +7,6 @@ TESTDIR             = ../test
 TMPTESTDIR          = $(TESTDIR)/regression.tests
 THISDIR             = ${shell pwd}
 PARTY3              = ${THISDIR}/$(MAIN)/third-party
-BOOSTLIBDIR         = $(PARTY3)/boost
 LIBJANSSON          = libjansson.a
 LIBBZIP2            = libbz2.a
 LIBZLIB             = libz.a
@@ -23,7 +22,7 @@ LOCALZLIBDIR        = ${PARTY3}/zlib
 LOCALZLIBLIB        = ${LOCALZLIBDIR}/${LIBZLIB}
 LOCALZLIBINCDIR     = ${LOCALZLIBDIR}
 OBJDIR              = objects
-INCLUDES            = -iquote$(HEAD) -I$(BOOSTLIBDIR) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
+INCLUDES            = -iquote$(HEAD) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 LIBLOCATION         = -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBDIR}
 LIBRARIES           = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 BLDFLAGS            = -Wall -pedantic -O3 -std=c++11

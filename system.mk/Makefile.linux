@@ -1,6 +1,4 @@
 PARTY3           = third-party
-BOOSTVERSION     = boost_1_46_1
-WHICHBOOST      := ${PARTY3}/${BOOSTVERSION}
 BZIP2VERSION     = bzip2-1.0.6
 WHICHBZIP2      := ${PARTY3}/${BZIP2VERSION}
 JANSSONVERSION   = jansson-2.6
@@ -64,8 +62,6 @@ clean: clean_debug clean_gprof $(SUBDIRS)
 	rm -f ${OSXPKGDIR}/*
 	rm -f ${OSXLIBDIR}/*
 	rm -Rf ${OSXBUILDDIR}/*
-	rm -rf ${WHICHBOOST}
-	rm -f ${PARTY3}/boost
 	rm -rf ${WHICHBZIP2}
 	rm -f ${PARTY3}/bzip2
 	rm -rf ${WHICHJANSSON}
@@ -135,10 +131,7 @@ clean_gprof:
 # third-party libraries
 #
 
-support: boost_support_c jansson_support_c bzip2_support_c zlib_support_c
-
-boost_support_c:
-	bzcat ${WHICHBOOST}.tar.bz2 | tar -x -C ${PARTY3} && rm -f boost && ln -s ${BOOSTVERSION} ${PARTY3}/boost
+support: jansson_support_c bzip2_support_c zlib_support_c
 
 jansson_support_c:
 	bzcat ${WHICHJANSSON}.tar.bz2 | tar -x -C ${PARTY3}

@@ -1,11 +1,7 @@
 /*
-  FILE: BedBaseVisitor.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Dec. 7, 2009
-  PROJECT: utility
-  ID: $Id$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Dec. 7, 2009
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -120,23 +116,17 @@ namespace Visitors {
   template <typename BedDist, typename Ref, typename Map = Ref>
   struct BedBaseVisitor {
      typedef BedDist dist_type;
-     typedef Ref reference_type;
-     typedef Map mapping_type;
-  
-   protected:
-     // friends
-     template <class I, class R, class E>
-     friend void WindowSweep::sweep(I, I, R&, E&);
-  
-     template <class I, class J, class R, class E>
-     friend void WindowSweep::sweep(I, I, J, J, R&, E&, bool);
-  
+     typedef const Ref reference_type;
+     typedef const Map mapping_type;
+
+  protected:  
      // typedefs
      typedef std::set< mapping_type*, Bed::GenomicAddressCompare<mapping_type> > OrderLesser;
      typedef OrderLesser OrderCache;
      typedef OrderLesser OrderWin;
-  
-     // Implement what WindowSweep::sweep() needs
+
+  public:
+     // Interface for sweep()
      inline bool ManagesOwnMemory() const { return(false); }
   
      inline void OnStart(reference_type* t) {

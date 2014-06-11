@@ -1,11 +1,7 @@
 /*
-  FILE: AssayMeasurement.hpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Fri Jul 27 11:49:03 PDT 2007
-  PROJECT: data/measurement
-  ID: $Id: AssayMeasurement.hpp 1745 2010-09-13 23:39:13Z sjn $
+  Author: Scott Kuehn, Shane Neph
+  Date:   Fri Jul 27 11:49:03 PDT 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -25,17 +21,15 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#include <boost/type_traits.hpp>
-#include <boost/utility/enable_if.hpp>
 #include <limits>
+#include <type_traits>
 
 #include "utility/Formats.hpp"
 
 #ifndef ASSAY_MEASUREMENT_HPP
 #define ASSAY_MEASUREMENT_HPP
 
-namespace Signal
-{
+namespace Signal {
   namespace Details {
 
     // The main idea:  AssayMeasurement inherits from AssayMeasurementImpl<T, T>.  When T happens
@@ -47,7 +41,7 @@ namespace Signal
     struct AssayMeasurementImpl; // Forward Decl
 
     template <typename T>
-    struct AssayMeasurementImpl< T, typename boost::enable_if< boost::is_arithmetic<T>, T >::type > {
+    struct AssayMeasurementImpl< T, typename std::enable_if<std::is_arithmetic<T>::value, T>::type> {
       typedef T value_type;
 
       explicit AssayMeasurementImpl(T m = 0) : measurement_(m)  { }
@@ -62,7 +56,7 @@ namespace Signal
         { measurement_ = a.measurement_; return *this; }
 
       static inline char const* formatter()
-        { return Formats::Format(typename boost::remove_cv<T>::type()); }
+        { return Formats::Format(typename std::remove_cv<T>::type()); }
 
     protected:
       T measurement_;

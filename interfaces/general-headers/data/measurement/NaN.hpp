@@ -1,11 +1,7 @@
 /*
-  FILE: NaN.hpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Mon Sep 10 11:33:57 PDT 2007
-  PROJECT: utility
-  ID: $Id$
+  Author: Scott Kuehn, Shane Neph
+  Date:   Mon Sep 10 11:33:57 PDT 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds

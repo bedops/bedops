@@ -1,11 +1,7 @@
 /*
-  FILE: EchoMapVisitor.hpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Thu Nov  8 13:31:09 PST 2007
-  PROJECT: utility
-  ID: $Id$
+  Author: Scott Kuehn, Shane Neph
+  Date:   Thu Nov  8 13:31:09 PST 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds

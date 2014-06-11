@@ -1,11 +1,7 @@
 /*
-  FILE: Formats.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Sun Aug 19 11:39:47 PDT 2007
-  PROJECT: utility
-  ID: $Id:$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Sun Aug 19 11:39:47 PDT 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -25,7 +21,6 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef SIMPLE_C_FORMATS_H
 #define SIMPLE_C_FORMATS_H
 

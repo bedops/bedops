@@ -1,10 +1,7 @@
-//=========
-// Author : Shane Neph & Scott Kuehn
-// Date   : Fri Aug 24 18:12:08 PDT 2007
-// Project: BED utilities
-// ID     : $Id:$
-//=========
-
+/*
+ Author : Shane Neph & Scott Kuehn
+ Date   : Fri Aug 24 18:12:08 PDT 2007
+*/
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -24,14 +21,11 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef BED_DATA_COMPARE_H
 #define BED_DATA_COMPARE_H
 
-// Files included
 #include <cstring>
 #include <functional>
-
 
 namespace Bed {
 

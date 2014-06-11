@@ -1,11 +1,7 @@
 /*
-  FILE: Bed.hpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Fri Jul 27 11:49:03 PDT 2007
-  PROJECT: BEDOPS
-  ID: $Id: Bed.hpp 2488 2012-11-06 19:54:36Z sjn $
+  Author: Scott Kuehn, Shane Neph
+  Date:   Fri Jul 27 11:49:03 PDT 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -34,8 +30,7 @@
 #include <cstdlib>
 #include <limits>
 #include <string>
-
-#include <boost/type_traits.hpp>
+#include <type_traits>
 
 #include "suite/BEDOPS.Constants.hpp"
 #include "utility/Formats.hpp"
@@ -52,7 +47,6 @@
   There is no automated way (that I know of) to prevent improper base pointer to derived class.  Using these
     in that way leads to memory leaks (and is the reason for that rule of thumb).
 */
-
 
 namespace Bed {
 
@@ -716,7 +710,7 @@ namespace Bed {
     MeasureType measurement_;
 
     static std::string outFormatter() {
-      typedef typename boost::remove_cv<MeasureType>::type MType;
+      typedef typename std::remove_cv<MeasureType>::type MType;
       return(BaseClass::outFormatter() + "\t" + Formats::Format(MType()));
     }
 

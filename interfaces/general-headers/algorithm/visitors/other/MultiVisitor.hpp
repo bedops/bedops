@@ -68,14 +68,14 @@ namespace Visitors {
         pAll_(processAll), cnt_(0)
       { /* */ }
 
-    void Add(MapType* u) {
-      void (BaseClass::*memberFuncPtr)(MapType*) = &BaseClass::Add;
+    void Add(MapType const* u) {
+      void (BaseClass::*memberFuncPtr)(MapType const*) = &BaseClass::Add;
       std::for_each(t_.begin(), t_.end(), std::bind2nd(std::mem_fun(memberFuncPtr), u));
       ++cnt_;
     }
     
-    void Delete(MapType* u) {
-      void (BaseClass::*memberFuncPtr)(MapType*) = &BaseClass::Delete;
+    void Delete(MapType const* u) {
+      void (BaseClass::*memberFuncPtr)(MapType const*) = &BaseClass::Delete;
       std::for_each(t_.begin(), t_.end(), std::bind2nd(std::mem_fun(memberFuncPtr), u));
       --cnt_;
     }
@@ -97,8 +97,8 @@ namespace Visitors {
       pRows_.operator()();
     }
 
-    void SetReference(RefType* t) {
-      void (BaseClass::*memberFuncPtr)(RefType*) = &BaseClass::SetReference;
+    void SetReference(RefType const* t) {
+      void (BaseClass::*memberFuncPtr)(RefType const*) = &BaseClass::SetReference;
       std::for_each(t_.begin(), t_.end(), std::bind2nd(std::mem_fun(memberFuncPtr), t));
     }
 

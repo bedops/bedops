@@ -1,10 +1,7 @@
-//==========
-// Author  : Shane Neph & Scott Kuehn
-// Date    : Sat Aug 25 01:22:03 PDT 2007
-// Project : FILE pointer lifetime ownership
-// ID      : $Id$
-//==========
-
+/*
+  Author  : Shane Neph & Scott Kuehn
+  Date    : Sat Aug 25 01:22:03 PDT 2007
+*/
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -27,13 +24,11 @@
 #ifndef FP_WRAPPER_HPP
 #define FP_WRAPPER_HPP
 
-// Files included
 #include <cstddef>
 #include <cstdio>
 #include <string>
 
 #include "utility/Assertion.hpp"
-
 
 namespace Ext {
 
@@ -69,7 +64,6 @@ namespace Ext {
   private:
     FILE* fp_;
   };
-
 
 } // namespace Ext
 

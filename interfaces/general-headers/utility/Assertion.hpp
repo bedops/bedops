@@ -1,11 +1,7 @@
 /*
-  FILE: Assertion.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Tue Aug  7 09:12:26 PDT 2007
-  PROJECT: utility
-  ID: $Id: Assertion.hpp 1531 2010-07-25 03:45:25Z sjn $
+  Author: Shane Neph & Scott Kuehn
+  Date:   Tue Aug  7 09:12:26 PDT 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -25,15 +21,12 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro guard
 #ifndef ASSERTIONMECHANISM_H
 #define ASSERTIONMECHANISM_H
 
-// Files included
 #include <string>
 
-namespace Ext
-{
+namespace Ext {
 
   //==============================================================================
   // Assert<ExcType>(bool, error)
@@ -56,6 +49,6 @@ namespace Ext
     }
   };
 
-} // namespace ext
+} // namespace Ext
 
 #endif // ASSERTIONMECHANISM_H

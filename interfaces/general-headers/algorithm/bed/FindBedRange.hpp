@@ -1,11 +1,7 @@
 /*
-  FILE: MSS.hpp
-  AUTHOR: Shane Neph & Alex Reynolds
-  CREATE DATE: Mon Jan 23 06:29:10 PST 2012
-  PROJECT: algorithm
-  ID: $Id$
+  Author: Shane Neph & Alex Reynolds
+  Date: Mon Jan 23 06:29:10 PST 2012
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -25,7 +21,6 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef BED_RANGE_FINDER_ALGORITHM_H
 #define BED_RANGE_FINDER_ALGORITHM_H
 
@@ -38,7 +33,6 @@
 #include "data/bed/BedDistances.hpp"
 #include "data/bed/BedTypes.hpp"
 #include "suite/BEDOPS.Constants.hpp"
-
 
 namespace Bed {
 

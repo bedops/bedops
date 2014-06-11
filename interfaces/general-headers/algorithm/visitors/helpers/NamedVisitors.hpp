@@ -1,9 +1,6 @@
 /*
-  FILE: NamedVisitors.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Sun Dec 13 23:50:58 PST 2009
-  PROJECT: utility
-  ID: $Id$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Sun Dec 13 23:50:58 PST 2009
 */
 
 //
@@ -28,11 +25,9 @@
 #ifndef _NAMED_VISITORS_HPP
 #define _NAMED_VISITORS_HPP
 
-// File included
 #include <sstream>
 #include <string>
 #include <vector>
-
 
 #include "algorithm/visitors/BedVisitors.hpp"
 #include "algorithm/visitors/NumericalVisitors.hpp"
@@ -185,12 +180,6 @@ namespace Visitors {
     struct VisitorName< Visitors::BedSpecific::EchoMapBed<A<Visitors::BedHelpers::PrintID>,B> > {
       static std::string Name()
         { return "echo-map-id"; }
-    };
-
-    template <typename A, typename B>
-    struct VisitorName< Visitors::BedSpecific::WeightedMean1<A,B> > {
-      static std::string Name()
-        { return "wmean1"; }
     };
 
     template <class B>

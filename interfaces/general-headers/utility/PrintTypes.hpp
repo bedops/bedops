@@ -1,11 +1,7 @@
 /*
-  FILE: PrintTypes.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Wed Sep  5 11:16:29 PDT 2007
-  PROJECT: utility
-  ID: $Id:$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Wed Sep  5 11:16:29 PDT 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -25,14 +21,10 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef SIMPLE_PRINT_FORMATS_H
 #define SIMPLE_PRINT_FORMATS_H
 
-// Files included
-#include <boost/type_traits.hpp>
-#include <boost/utility/enable_if.hpp>
-
+#include <type_traits>
 
 namespace PrintTypes {
 
@@ -40,52 +32,52 @@ namespace PrintTypes {
     template <typename T>
     struct check {
       static const bool value = 
-              boost::is_arithmetic<T>::value ||
-              boost::is_same< typename boost::remove_const<T>::type, char* >::value ||
-              boost::is_same< typename boost::remove_const<T>::type, char const* >::value;
+              std::is_arithmetic<T>::value ||
+              std::is_same<typename std::remove_const<T>::type, char*>::value ||
+              std::is_same<typename std::remove_const<T>::type, char const*>::value;
     };
   }
 
   template <typename T>
-  extern typename boost::enable_if< Details::check<T>, void >::type
+  extern typename std::enable_if<Details::check<T>::value>::type
   Print(T);
 
   template <typename T>
-  extern typename boost::enable_if< Details::check<T>, void >::type
+  extern typename std::enable_if<Details::check<T>::value>::type
   Println(T);
 
   template <typename T>
-  extern typename boost::enable_if< boost::is_arithmetic<T>, void >::type
+  extern typename std::enable_if<std::is_arithmetic<T>::value>::type
   Print(T, int, bool);
 
   template <typename T>
-  extern typename boost::enable_if< boost::is_arithmetic<T>, void >::type
+  extern typename std::enable_if<std::is_arithmetic<T>::value>::type
   Println(T, int, bool);
 
   template <typename T>
-  extern typename boost::enable_if< Details::check<T>, void >::type
+  extern typename std::enable_if<Details::check<T>::value>::type
   Print(FILE* out, T t);
 
   template <typename T>
-  extern typename boost::enable_if< Details::check<T>, void >::type
+  extern typename std::enable_if<Details::check<T>::value>::type
   Println(FILE* out, T t);
 
 
 
   template <typename T>
-  extern typename boost::disable_if< Details::check<T>, void >::type
+  extern typename std::enable_if<!Details::check<T>::value>::type
   Print(const T& t);
 
   template <typename T>
-  extern typename boost::disable_if< Details::check<T>, void >::type
+  extern typename std::enable_if<!Details::check<T>::value>::type
   Println(const T& t);
 
   template <typename T>
-  extern typename boost::disable_if< Details::check<T>, void >::type
+  extern typename std::enable_if<!Details::check<T>::value>::type
   Print(FILE* out, const T& t);
 
   template <typename T>
-  extern typename boost::disable_if< Details::check<T>, void >::type
+  extern typename std::enable_if<!Details::check<T>::value>::type
   Println(FILE* out, const T& t);
 
 } // namespace PrintTypes

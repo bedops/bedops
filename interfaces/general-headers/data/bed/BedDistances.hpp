@@ -1,9 +1,6 @@
 /*
-  FILE: BedDistances.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Tue Aug 14 15:50:16 PDT 2007
-  PROJECT: bed
-  ID: $Id$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Tue Aug 14 15:50:16 PDT 2007
 */
 
 //
@@ -25,18 +22,14 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef BED_DISTANCE_FUNCTIONS_H
 #define BED_DISTANCE_FUNCTIONS_H
 
-// Files included
 #include <algorithm>
 #include <cstddef>
 #include <cstdlib>
 #include <cstring>
 #include <limits>
-
-
 
 namespace Bed {
 
@@ -44,7 +37,7 @@ namespace Bed {
   // RangedDist
   //============
   struct RangedDist {
-    enum { PercentBased = false, Symmetric = true };
+    enum { PercentBased = false, Symmetric = true, BP = !PercentBased };
 
     explicit RangedDist(std::size_t maxDist = 0)
       : maxDist_(maxDist) { /* */ }
@@ -72,7 +65,6 @@ namespace Bed {
     std::size_t maxDist_;
   };
 
-
   //=================
   // AsymmRangedDist
   //=================
@@ -98,7 +90,7 @@ namespace Bed {
 
     template <typename MapType, typename RefType>
     inline int Map2Ref(MapType const* mapptr, RefType const* refptr) const {
-      return(-1 * Ref2Map(refptr, mapptr));
+      return(-Ref2Map(refptr, mapptr));
     }
 
   private:
@@ -106,12 +98,11 @@ namespace Bed {
   };
   */
 
-
   //=============
   // Overlapping
   //=============
   struct Overlapping {
-    enum { PercentBased = false, Symmetric = true };
+    enum { PercentBased = false, Symmetric = true, BP = !PercentBased };
 
     explicit Overlapping(std::size_t ovrRequired = 0)
       : ovrRequired_(ovrRequired) {
@@ -149,17 +140,15 @@ namespace Bed {
       return((a->start() < b->start()) ? -1 : 1); // no overlap
     }
 
-    private:
-      std::size_t ovrRequired_;
+    std::size_t ovrRequired_;
   };
-
 
   //========================
   // PercentOverlapMapping : look at % overlap relative to mapType's size
   //   (think signalmap)
   //========================
   struct PercentOverlapMapping {
-    enum { PercentBased = true, Symmetric = false };
+    enum { PercentBased = true, Symmetric = false, BP = !PercentBased };
 
     explicit PercentOverlapMapping(double perc = 1.0)
       : perc_(perc) {
@@ -220,20 +209,19 @@ namespace Bed {
     //  else, report -1 if mapType "<" refType or 1 otherwise
     template <typename T2, typename T1>
     inline int Map2Ref(T2 const* mapType, T1 const* refType) const {
-      return(-1 * Ref2Map(refType, mapType));
+      return(-Ref2Map(refType, mapType));
     }
 
   private:
     double perc_;
   };
 
-
   //==========================
   // PercentOverlapReference: looking at % overlap relative to refType's size
   //   (think setops -e)
   //==========================
   struct PercentOverlapReference : public PercentOverlapMapping {
-    enum { PercentBased = true, Symmetric = false };
+    enum { PercentBased = true, Symmetric = false, BP = !PercentBased };
 
     explicit PercentOverlapReference(double perc = 1.0)
       : BaseClass(perc) { }
@@ -242,26 +230,25 @@ namespace Bed {
     //  else, report -1 if refType "<" mapType or 1 otherwise
     template <typename T1, typename T2>
     inline int Ref2Map(T1 const* refType, T2 const* mapType) const {
-      return(-1 * BaseClass::Ref2Map(mapType, refType));
+      return(-BaseClass::Ref2Map(mapType, refType));
     }
 
     // report 0 if refType overlaps mapType by perc or more (relative to refType's length)
     //  else, report -1 if mapType "<" refType or 1 othersise
     template <typename T1, typename T2>
     inline int Map2Ref(T1 const* mapType, T2 const* refType) const {
-      return(-1 * Ref2Map(refType, mapType));
+      return(-Ref2Map(refType, mapType));
     }
 
   protected:
     typedef PercentOverlapMapping BaseClass;
   };
 
-
   //==========================
   // PercentOverlapEither: looking at % overlap relative to refType's OR mapType's size
   //==========================
   struct PercentOverlapEither : public PercentOverlapMapping {
-    enum { PercentBased = true, Symmetric = false };
+    enum { PercentBased = true, Symmetric = false, BP = !PercentBased };
 
     explicit PercentOverlapEither(double perc = 1.0)
       : BaseClass(perc) { }
@@ -285,19 +272,18 @@ namespace Bed {
     //  else, report -1 if mapType "<" refType or 1 othersise
     template <typename T1, typename T2>
     inline int Map2Ref(T1 const* mapType, T2 const* refType) const {
-      return(-1 * Ref2Map(refType, mapType));
+      return(-Ref2Map(refType, mapType));
     }
 
   protected:
     typedef PercentOverlapMapping BaseClass;
   };
 
-
   //==========================
   // PercentOverlapBoth: looking at % overlap relative to refType's AND mapType's size
   //==========================
   struct PercentOverlapBoth : public PercentOverlapMapping {
-    enum { PercentBased = true, Symmetric = true };
+    enum { PercentBased = true, Symmetric = true, BP = !PercentBased };
 
     explicit PercentOverlapBoth(double perc = 1.0)
       : BaseClass(perc) { }
@@ -310,7 +296,7 @@ namespace Bed {
       int val1 = BaseClass::Ref2Map(refType, mapType);
       if ( 0 != val1 )
         return(val1);
-      int val2 = -1 * BaseClass::Ref2Map(mapType, refType);
+      int val2 = -BaseClass::Ref2Map(mapType, refType);
       if ( 0 != val2 )
         return(val2);
       return(0);
@@ -321,13 +307,41 @@ namespace Bed {
     //  else, report -1 if mapType "<" refType or 1 othersise
     template <typename T1, typename T2>
     inline int Map2Ref(T1 const* mapType, T2 const* refType) const {
-      return(-1 * Ref2Map(refType, mapType));
+      return(-Ref2Map(refType, mapType));
     }
 
   protected:
     typedef PercentOverlapMapping BaseClass;
   };
 
+  //==============================
+  // Exact: what the name implies
+  //==============================
+  struct Exact {
+    enum { PercentBased = false, Symmetric = true, BP = !PercentBased };
+
+    Exact() {}
+
+    // report 0 if exact.
+    //  else, report -1 if refType "<" mapType or 1 otherwise
+    template <typename T1, typename T2>
+    inline int Ref2Map(T1 const* refType, T2 const* mapType) const {
+      int v = 0;
+      if ( (v = std::strcmp(refType->chrom(), mapType->chrom())) != 0 )
+        return v < 0 ? -1 : 1;
+      else if ( refType->start() != mapType->start() )
+        return refType->start() < mapType->start() ? -1 : 1;
+      else if ( refType->end() != mapType->end() )
+        return refType->end() < mapType->end() ? -1 : 1;
+      return 0;
+    }
+
+    // invert Ref2Map's result with args switched
+    template <typename T1, typename T2>
+    inline int Map2Ref(T1 const* mapType, T2 const* refType) const {
+      return -Ref2Map(refType, mapType);
+    }
+  };
 
 } // namespace Bed
 

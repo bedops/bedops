@@ -1,11 +1,7 @@
 /*
-  FILE: Exception.hpp
-  AUTHOR: Shane Neph, Scott Kuehn
-  CREATE DATE: Fri Aug 10 15:01:39 PDT 2007
-  PROJECT: utility
-  ID: $Id: Exception.hpp 1589 2010-08-12 13:19:34Z sjn $
+  Author: Shane Neph, Scott Kuehn
+  Date:   Fri Aug 10 15:01:39 PDT 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -31,8 +27,7 @@
 #include <exception>
 #include <string>
 
-namespace Ext
-{
+namespace Ext {
 
   template <typename ExceptionType, int ErrorID>
   struct Exception 
@@ -44,7 +39,7 @@ namespace Ext
     virtual ~Exception() throw() { /* */ }
     virtual const char* what() const throw() { return msg_.c_str(); }
   protected:
-    Exception() { } // Hack.  look at traits in boost
+    Exception() { }
     std::string msg_;
   };
 
@@ -87,7 +82,7 @@ namespace Ext
   typedef Exception<ProgramError, LogicErrorNum> LogicError;
   typedef Exception<ProgramError, ArgumentErrorNum> ArgumentError;
 
-}
+} // namespace Ext
 
 #endif // EXCEPTIONTEMPLATE_H
 
