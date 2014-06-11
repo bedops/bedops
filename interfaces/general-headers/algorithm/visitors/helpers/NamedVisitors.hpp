@@ -187,12 +187,6 @@ namespace Visitors {
         { return "echo-map-id"; }
     };
 
-    template <typename A, typename B>
-    struct VisitorName< Visitors::BedSpecific::WeightedMean1<A,B> > {
-      static std::string Name()
-        { return "wmean1"; }
-    };
-
     template <class B>
     struct VisitorName< Visitors::BedSpecific::EchoMapBed<Visitors::BedHelpers::PrintUniqueRangeIDs, B> > {
       static std::string Name()
