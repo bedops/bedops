@@ -235,8 +235,8 @@ wig2bed_c_intel_fat:
 	-test -e ${APPDIR}/conversion/bin/wig2bed_bin_i386 && test -e ${APPDIR}/conversion/bin/wig2bed_bin_x86_64 && { lipo -create ${APPDIR}/conversion/bin/wig2bed_bin_i386 ${APPDIR}/conversion/bin/wig2bed_bin_x86_64 -output ${APPDIR}/conversion/bin/wig2bed_bin; }
 
 starch_c_intel_fat:
-	cp ${APPDIR}/starch/src/starchcluster ${APPDIR}/starch/bin/starchcluster
-	cp ${APPDIR}/starch/src/starchcluster.gnu_parallel ${APPDIR}/starch/bin/starchcluster.gnu_parallel 
+	cp ${APPDIR}/starch/src/starchcluster_sge.tcsh ${APPDIR}/starch/bin/starchcluster_sge
+	cp ${APPDIR}/starch/src/starchcluster_gnuParallel.tcsh ${APPDIR}/starch/bin/starchcluster_gnuParallel
 	-test -e ${APPDIR}/starch/bin_i386/starch && test -e ${APPDIR}/starch/bin_x86_64/starch && { lipo -create ${APPDIR}/starch/bin_i386/starch ${APPDIR}/starch/bin_x86_64/starch -output ${APPDIR}/starch/bin/starch; }
 	-test -e ${APPDIR}/starch/bin_i386/unstarch && test -e ${APPDIR}/starch/bin_x86_64/unstarch && { lipo -create ${APPDIR}/starch/bin_i386/unstarch ${APPDIR}/starch/bin_x86_64/unstarch -output ${APPDIR}/starch/bin/unstarch; }
 	-test -e ${APPDIR}/starch/bin_i386/starchcat && test -e ${APPDIR}/starch/bin_x86_64/starchcat && { lipo -create ${APPDIR}/starch/bin_i386/starchcat ${APPDIR}/starch/bin_x86_64/starchcat -output ${APPDIR}/starch/bin/starchcat; }
@@ -265,8 +265,8 @@ dbg_wig2bed_c_intel_fat:
 	-test -e ${APPDIR}/conversion/bin/debug.wig2bed_bin_i386 && test -e ${APPDIR}/conversion/bin/debug.wig2bed_bin_x86_64 && { lipo -create ${APPDIR}/conversion/bin/debug.wig2bed_bin_i386 ${APPDIR}/conversion/bin/debug.wig2bed_bin_x86_64 -output ${APPDIR}/conversion/bin/debug.wig2bed_bin; }
 
 dbg_starch_c_intel_fat:
-	cp ${APPDIR}/starch/src/starchcluster ${APPDIR}/starch/bin/starchcluster
-	cp ${APPDIR}/starch/src/starchcluster.gnu_parallel ${APPDIR}/starch/bin/starchcluster.gnu_parallel 
+	cp ${APPDIR}/starch/src/starchcluster_sge.tcsh ${APPDIR}/starch/bin/starchcluster_sge.tcsh
+	cp ${APPDIR}/starch/src/starchcluster_gnuParallel.tcsh ${APPDIR}/starch/bin/starchcluster_gnuParallel.tcsh
 	-test -e ${APPDIR}/starch/bin_i386/debug.starch && test -e ${APPDIR}/starch/bin_x86_64/debug.starch && { lipo -create ${APPDIR}/starch/bin_i386/debug.starch ${APPDIR}/starch/bin_x86_64/debug.starch -output ${APPDIR}/starch/bin/debug.starch; }
 	-test -e ${APPDIR}/starch/bin_i386/debug.unstarch && test -e ${APPDIR}/starch/bin_x86_64/debug.unstarch && { lipo -create ${APPDIR}/starch/bin_i386/debug.unstarch ${APPDIR}/starch/bin_x86_64/debug.unstarch -output ${APPDIR}/starch/bin/debug.unstarch; }
 	-test -e ${APPDIR}/starch/bin_i386/debug.starchcat && test -e ${APPDIR}/starch/bin_x86_64/debug.starchcat && { lipo -create ${APPDIR}/starch/bin_i386/debug.starchcat ${APPDIR}/starch/bin_x86_64/debug.starchcat -output ${APPDIR}/starch/bin/debug.starchcat; }
