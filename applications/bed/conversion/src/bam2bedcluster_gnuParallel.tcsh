@@ -77,7 +77,7 @@ else if ( "$output" == "$originput:t.bed" && "$originput:e" == "bam" ) then
   set output = "$originput:t:r.bed"
 endif
 
-set origininputindex = "$origininput:r.bai"
+set origininputindex = "$originput:r.bai"
 if ( ! -s $origininputindex ) then
   printf "Unable to find associated BAI file (is the BAM file indexed?): %s\n" $origininputindex
   exit -1
@@ -115,7 +115,7 @@ endif
 
 @ chrom_count = (`samtools idxstats $input | cut -f1 | awk 'END { print NR }'`)
 
-samtools idxstats $input | cut -f1 | parallel "samtools view $input {} -b | bam2bed > $here/$nm/{}.bed"
+samtools idxstats $input | cut -f1 | parallel "samtools view -b $input {} | bam2bed > $here/$nm/{}.bed"
 
 @ converted_file_count = `find $here/$nm -name '*.bed' | wc -l`
 if ( $chrom_count != $converted_file_count ) then

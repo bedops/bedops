@@ -89,7 +89,7 @@ else if ( "$output" == "$originput:t.bed" && "$originput:e" == "bam" ) then
   set output = "$originput:t:r.bed"
 endif
 
-set origininputindex = "$origininput:r.bai"
+set origininputindex = "$originput:r.bai"
 if ( ! -s $origininputindex ) then
   printf "Unable to find associated BAI file (is the BAM file indexed?): %s\n" $origininputindex
   exit -1
@@ -130,7 +130,7 @@ set jids = ()
 @ cntr = 0
 foreach chrom (`samtools idxstats $input | cut -f1`)
   qsub $sge_opts -N $nm.$cntr > /dev/stderr << __EXTRACTION__
-    samtools view $input $chrom -b | bam2bed > $cntr
+    samtools view -b $input $chrom | bam2bed > $cntr
 __EXTRACTION__
 
   set jids = ($jids $nm.$cntr)
