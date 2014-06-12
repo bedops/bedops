@@ -28,7 +28,6 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
-#include <clocale>
 
 #include <sys/stat.h>
 
@@ -197,9 +196,8 @@ main(int argc, char **argv)
     char* tmpPath = NULL;
     bool clean = false;
     int rval = EXIT_FAILURE;
-    getArgs(argc, argv, inFiles, &numInFiles, &maxMemory, &tmpPath);
 
-    std::setlocale(LC_ALL, "C");
+    getArgs(argc, argv, inFiles, &numInFiles, &maxMemory, &tmpPath);
 
     if(tmpPath != NULL)
         {
