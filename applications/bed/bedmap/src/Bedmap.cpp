@@ -527,8 +527,6 @@ namespace BedMap {
       }
       else if ( nm == visName<typename VTypes::Variance>() )
         rtn = new typename VTypes::Variance(pt);
-      //else if ( nm == visName<typename VTypes::WeightedMean1>() )
-      //  rtn = new typename VTypes::WeightedMean1(pt);
 
       return(rtn);
     }

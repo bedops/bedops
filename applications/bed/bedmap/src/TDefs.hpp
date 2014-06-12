@@ -87,7 +87,6 @@ namespace BedMap {
     typedef Visitors::BedSpecific::OvrAggregate<ProcessScore, BaseClass> OvrAgg;
     typedef Visitors::BedSpecific::OvrUnique<ProcessScore, BaseClass> OvrUniq;
     typedef Visitors::BedSpecific::OvrUniqueFract<ProcessScorePrecision, BaseClass> OvrUniqFract;
-    //typedef Visitors::BedSpecific::WeightedMean1<ProcessScorePrecision, BaseClass> WeightedMean1;
 
   };
 
