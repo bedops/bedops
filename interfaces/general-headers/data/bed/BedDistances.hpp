@@ -31,6 +31,8 @@
 #include <cstring>
 #include <limits>
 
+#include "suite/BEDOPS.Constants.hpp"
+
 namespace Bed {
 
   //============
@@ -39,7 +41,7 @@ namespace Bed {
   struct RangedDist {
     enum { PercentBased = false, Symmetric = true, BP = !PercentBased };
 
-    explicit RangedDist(std::size_t maxDist = 0)
+    explicit RangedDist(CoordType maxDist = 0)
       : maxDist_(maxDist) { /* */ }
 
     template <typename T1, typename T2>
@@ -62,7 +64,7 @@ namespace Bed {
     }
 
   private:
-    std::size_t maxDist_;
+    CoordType maxDist_;
   };
 
   //=================
@@ -74,7 +76,7 @@ namespace Bed {
     enum { PercentBased = false };
 
     // leftDist_ and rightDist_ apply to reference elements
-    explicit AsymmRangedDist(std::size_t leftDist = 0, std::size_t rightDist = 0)
+    explicit AsymmRangedDist(CoordType leftDist = 0, CoordType rightDist = 0)
       : leftDist_(leftDist), rightDist_(rightDist) { }
 
     // report 0 if within distance of 'ref'; -1 if 'refptr' < 'mapptr'; 1 otherwise
@@ -94,7 +96,7 @@ namespace Bed {
     }
 
   private:
-    std::size_t leftDist_, rightDist_;
+    CoordType leftDist_, rightDist_;
   };
   */
 
@@ -104,11 +106,8 @@ namespace Bed {
   struct Overlapping {
     enum { PercentBased = false, Symmetric = true, BP = !PercentBased };
 
-    explicit Overlapping(std::size_t ovrRequired = 0)
-      : ovrRequired_(ovrRequired) {
-          if ( ovrRequired_ > 0 )
-            --ovrRequired_; // due to how ovrRequired_ is used
-        }
+    explicit Overlapping(CoordType ovrRequired = 0)
+      : ovrRequired_(ovrRequired) { /* */ }
 
     template <typename T1, typename T2>
     inline int Ref2Map(T1 const* t1, T2 const* t2) const
@@ -124,28 +123,27 @@ namespace Bed {
       static int v = 0;
       if ( (v = std::strcmp(a->chrom(), b->chrom())) != 0 )
         return ((v > 0) ? 1 : -1);
-      std::size_t mn = std::max(a->start(), b->start());
-      std::size_t mx = std::min(a->end(), b->end());
+      CoordType mn = std::max(a->start(), b->start());
+      CoordType mx = std::min(a->end(), b->end());
       if ( mx > mn ) { // some overlap
-        if ( mn + ovrRequired_ < mx )
+        if ( mx-mn >= ovrRequired_ )
           return(0);
         if ( a->start() != b->start() )
           return((a->start() < b->start()) ? -1 : 1);
         if ( a->end() != b->end() )
           return((a->end() < b->end()) ? -1 : 1);
-        std::size_t aidx = (a - static_cast<BedType1 const*>(0));
-        std::size_t bidx = (b - static_cast<BedType2 const*>(0));
+        CoordType aidx = (a - static_cast<BedType1 const*>(0));
+        CoordType bidx = (b - static_cast<BedType2 const*>(0));
         return((aidx < bidx) ? -1 : 1); // a==b but still overlap < ovrRequired
       }
       return((a->start() < b->start()) ? -1 : 1); // no overlap
     }
 
-    std::size_t ovrRequired_;
+    CoordType ovrRequired_;
   };
 
   //========================
   // PercentOverlapMapping : look at % overlap relative to mapType's size
-  //   (think signalmap)
   //========================
   struct PercentOverlapMapping {
     enum { PercentBased = true, Symmetric = false, BP = !PercentBased };
@@ -218,7 +216,7 @@ namespace Bed {
 
   //==========================
   // PercentOverlapReference: looking at % overlap relative to refType's size
-  //   (think setops -e)
+  //   (think bedops -e)
   //==========================
   struct PercentOverlapReference : public PercentOverlapMapping {
     enum { PercentBased = true, Symmetric = false, BP = !PercentBased };
