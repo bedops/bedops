@@ -135,7 +135,7 @@ set jids = ()
 @ cntr = 0
 foreach chrom (`samtools idxstats $input | cut -f1`)
   qsub $sge_opts -N $nm.$cntr > /dev/stderr << __EXTRACTION__
-    samtools view -b $input $chrom | $python_bin -m cProfile -o $here/$nm/$cntr.profile $bam2starch_script > $here/$nm/$cntr
+    samtools view -b $input $chrom | $python_bin $bam2starch_script > $here/$nm/$cntr
 __EXTRACTION__
 
   set jids = ($jids $nm.$cntr)
