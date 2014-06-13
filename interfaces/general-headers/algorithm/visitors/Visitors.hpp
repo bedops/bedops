@@ -35,13 +35,13 @@ namespace Visitors {
     typedef const Map MapType;
 
     // interface for sweep()
-    inline virtual bool ManagesOwnMemory() const { return(false); }
-    inline virtual void OnAdd(MapType* u) { Add(u); }
-    inline virtual void OnDelete(MapType* u) { Delete(u); }
-    inline virtual void OnDone() { DoneReference(); }
-    inline virtual void OnEnd() { End(); }
-    inline virtual void OnPurge() { Purge(); }
-    inline virtual void OnStart(RefType* t) { SetReference(t); }
+    inline bool ManagesOwnMemory() const { return(false); }
+    inline void OnAdd(MapType* u) { Add(u); }
+    inline void OnDelete(MapType* u) { Delete(u); }
+    inline void OnDone() { DoneReference(); }
+    inline void OnEnd() { End(); }
+    inline void OnPurge() { Purge(); }
+    inline void OnStart(RefType* t) { SetReference(t); }
 
   public:
     Visitor() { /* */ }

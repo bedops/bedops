@@ -54,7 +54,7 @@ namespace BedMap {
     typedef Visitors::Helpers::PrintRangeDelim<ProcessScorePrecision> ProcessRangeDelimScorePrecision;
     typedef Visitors::BedHelpers::PrintGenomicRange<ProcessBED3> ProcessMapGenomicRange;
 
-    typedef typename BaseClass::MapType RefType;
+    typedef typename BaseClass::RefType RefType;
     typedef typename BaseClass::MapType MapType;
     typedef Ordering::CompValueThenAddressGreater<MapType, MapType> MaxOrder;
     typedef Ordering::CompValueThenAddressLesser<MapType, MapType> MinOrder;
