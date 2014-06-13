@@ -1,11 +1,7 @@
 /*
-  FILE: CoeffVariation.hpp
-  AUTHOR: Shane Neph, Scott Kuehn
-  CREATE DATE: Tue Sep  7 22:52:08 PDT 2010
-  PROJECT: utility
-  ID: $Id$
+  Author: Shane Neph, Scott Kuehn
+  Date:   Tue Sep  7 22:52:08 PDT 2010
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -25,11 +21,9 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef _COEFF_VARIATION_HPP
 #define _COEFF_VARIATION_HPP
 
-// Files included
 #include <cmath>
 
 #include "data/measurement/NaN.hpp"
@@ -44,8 +38,8 @@ namespace Visitors {
 
     typedef BaseVisitor BaseClass;
     typedef Process ProcessType;
-    typedef typename BaseClass::reference_type RefType;
-    typedef typename BaseClass::mapping_type MapType;
+    typedef typename BaseClass::RefType RefType;
+    typedef typename BaseClass::MapType MapType;
 
     explicit CoeffVariation(const ProcessType& pt = ProcessType())
         : pt_(pt), sum_(0), squareSum_(0), count_(0)

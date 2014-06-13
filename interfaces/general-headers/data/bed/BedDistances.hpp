@@ -39,7 +39,7 @@ namespace Bed {
   // RangedDist
   //============
   struct RangedDist {
-    enum { PercentBased = false, Symmetric = true, BP = !PercentBased };
+    enum { PercentBased = false, Symmetric = true, BP = !PercentBased, Identical = false, Ranged = true };
 
     explicit RangedDist(CoordType maxDist = 0)
       : maxDist_(maxDist) { /* */ }
@@ -63,7 +63,6 @@ namespace Bed {
       return((b->end() + maxDist_ > a->start()) ? 0 : 1);
     }
 
-  private:
     CoordType maxDist_;
   };
 
@@ -72,39 +71,14 @@ namespace Bed {
   //=================
   /* this does not work well with sweep() because of asymmetry - use bedops --range L:R
        functionality to achieve what you need.
-  struct AsymmRangedDist {
-    enum { PercentBased = false };
-
-    // leftDist_ and rightDist_ apply to reference elements
-    explicit AsymmRangedDist(CoordType leftDist = 0, CoordType rightDist = 0)
-      : leftDist_(leftDist), rightDist_(rightDist) { }
-
-    // report 0 if within distance of 'ref'; -1 if 'refptr' < 'mapptr'; 1 otherwise
-    template <typename RefType, typename MapType>
-    inline int Ref2Map(RefType const* refptr, MapType const* mapptr) const {
-      static int v = 0;
-      if ( (v = std::strcmp(refptr->chrom(), mapptr->chrom())) != 0 )
-        return((v > 0) ? 1 : -1);
-      else if ( refptr->start() < mapptr->end() )
-        return((refptr->end() + rightDist_ > mapptr->start()) ? 0 : -1);
-      return((mapptr->end() + leftDist_ > refptr->start()) ? 0 : 1);
-    }
-
-    template <typename MapType, typename RefType>
-    inline int Map2Ref(MapType const* mapptr, RefType const* refptr) const {
-      return(-Ref2Map(refptr, mapptr));
-    }
-
-  private:
-    CoordType leftDist_, rightDist_;
-  };
+  struct AsymmRangedDist { };
   */
 
   //=============
   // Overlapping
   //=============
   struct Overlapping {
-    enum { PercentBased = false, Symmetric = true, BP = !PercentBased };
+    enum { PercentBased = false, Symmetric = true, BP = !PercentBased, Identical = false, Ranged = false };
 
     explicit Overlapping(CoordType ovrRequired = 0)
       : ovrRequired_(ovrRequired) { /* */ }
@@ -117,7 +91,8 @@ namespace Bed {
     inline int Map2Ref(T2 const* t2, T1 const* t1) const
       { return(this->operator()(t2, t1)); }
 
-    /* report 0 if overlapping "ovrRequired"; +/- 1 otherwise */
+    /* report 0 if overlapping "ovrRequired";
+        -1 if a "<" b, and +1 otherwise */
     template <typename BedType1, typename BedType2>
     inline int operator()(BedType1 const* a, BedType2 const* b) const {
       static int v = 0;
@@ -146,7 +121,7 @@ namespace Bed {
   // PercentOverlapMapping : look at % overlap relative to mapType's size
   //========================
   struct PercentOverlapMapping {
-    enum { PercentBased = true, Symmetric = false, BP = !PercentBased };
+    enum { PercentBased = true, Symmetric = false, BP = !PercentBased, Identical = false, Ranged = false };
 
     explicit PercentOverlapMapping(double perc = 1.0)
       : perc_(perc) {
@@ -219,7 +194,7 @@ namespace Bed {
   //   (think bedops -e)
   //==========================
   struct PercentOverlapReference : public PercentOverlapMapping {
-    enum { PercentBased = true, Symmetric = false, BP = !PercentBased };
+    enum { PercentBased = true, Symmetric = false, BP = !PercentBased, Identical = false, Ranged = false };
 
     explicit PercentOverlapReference(double perc = 1.0)
       : BaseClass(perc) { }
@@ -246,7 +221,7 @@ namespace Bed {
   // PercentOverlapEither: looking at % overlap relative to refType's OR mapType's size
   //==========================
   struct PercentOverlapEither : public PercentOverlapMapping {
-    enum { PercentBased = true, Symmetric = false, BP = !PercentBased };
+    enum { PercentBased = true, Symmetric = false, BP = !PercentBased, Identical = false, Ranged = false };
 
     explicit PercentOverlapEither(double perc = 1.0)
       : BaseClass(perc) { }
@@ -281,7 +256,7 @@ namespace Bed {
   // PercentOverlapBoth: looking at % overlap relative to refType's AND mapType's size
   //==========================
   struct PercentOverlapBoth : public PercentOverlapMapping {
-    enum { PercentBased = true, Symmetric = true, BP = !PercentBased };
+    enum { PercentBased = true, Symmetric = true, BP = !PercentBased, Identical = false, Ranged = false };
 
     explicit PercentOverlapBoth(double perc = 1.0)
       : BaseClass(perc) { }
@@ -316,7 +291,7 @@ namespace Bed {
   // Exact: what the name implies
   //==============================
   struct Exact {
-    enum { PercentBased = false, Symmetric = true, BP = !PercentBased };
+    enum { PercentBased = false, Symmetric = true, BP = !PercentBased, Identical = true, Ranged = false };
 
     Exact() {}
 

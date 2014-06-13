@@ -1,11 +1,7 @@
 /*
-  FILE: Visitors.hpp
-  AUTHOR: Shane Neph, Scott Kuehn
-  CREATE DATE: Thu Sep 27 10:50:39 PDT 2007
-  PROJECT: utility
-  ID: $Id$
+  Author: Shane Neph, Scott Kuehn
+  Date:   Thu Sep 27 10:50:39 PDT 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -30,23 +26,22 @@
 
 #include "algorithm/WindowSweep.hpp"
 
-
 namespace Visitors {
 
   // Visitor that should be inherited when using sweep() algorithm.
-  template <typename RefType, typename MapType = RefType>
+  template <typename Ref, typename Map = Ref>
   struct Visitor {
-    typedef const RefType reference_type;
-    typedef const MapType mapping_type;
+    typedef const Ref RefType;
+    typedef const Map MapType;
 
     // interface for sweep()
     inline virtual bool ManagesOwnMemory() const { return(false); }
-    inline virtual void OnAdd(mapping_type* u) { Add(u); }
-    inline virtual void OnDelete(mapping_type* u) { Delete(u); }
+    inline virtual void OnAdd(MapType* u) { Add(u); }
+    inline virtual void OnDelete(MapType* u) { Delete(u); }
     inline virtual void OnDone() { DoneReference(); }
     inline virtual void OnEnd() { End(); }
     inline virtual void OnPurge() { Purge(); }
-    inline virtual void OnStart(reference_type* t) { SetReference(t); }
+    inline virtual void OnStart(RefType* t) { SetReference(t); }
 
   public:
     Visitor() { /* */ }
@@ -54,10 +49,10 @@ namespace Visitors {
     virtual ~Visitor() { /* */ }
 
     // Derived Class interface : Must be public due to MultiVisitor-type usage
-    virtual void Delete(mapping_type*) = 0;
-    virtual void Add(mapping_type*) = 0;
+    virtual void Delete(MapType*) = 0;
+    virtual void Add(MapType*) = 0;
     virtual void DoneReference() = 0;
-    virtual void SetReference(reference_type*) { /* */ }
+    virtual void SetReference(RefType*) { /* */ }
     virtual void End() { /* */ }
     virtual void Purge() { /* */ }
   };

@@ -47,7 +47,8 @@ namespace BedMap {
 
   namespace details {
     struct dummyBase {
-      typedef int mapping_type;
+      typedef int RefType;
+      typedef int MapType;
     };
 
 

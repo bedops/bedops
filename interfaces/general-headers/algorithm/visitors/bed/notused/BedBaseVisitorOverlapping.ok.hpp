@@ -21,8 +21,8 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#ifndef _BED_BASE_VISITOR_HPP
-#define _BED_BASE_VISITOR_HPP
+#ifndef _BED_BASE_VISITOR_OVERLAPPING_HPP
+#define _BED_BASE_VISITOR_OVERLAPPING_HPP
 
 #include <list>
 #include <set>
@@ -115,8 +115,8 @@
 
 namespace Visitors {
 
-  template <typename BedDist, typename Ref, typename Map = Ref>
-  struct BedBaseVisitor {
+  template <typename BedDist, typename Ref, typename Map>
+  struct BedBaseVisitor<BedDist, Ref, Map, typename std::enable_if<BedDist::BP && !BedDist::Identical && !BedDist::Ranged>::type> {
      typedef BedDist DistType;
      typedef const Ref RefType;
      typedef const Map MapType;
@@ -139,10 +139,13 @@ namespace Visitors {
 
      inline void OnAdd(MapType* u) {
        // Add(u); Do not add until deletions done in fixWindow()
-       cache_.insert(u);
+       if ( u->length() >= dist_.ovrRequired_ )
+         cache_.insert(u);
      }
 
      inline void OnDelete(MapType* u) {
+       if ( u->length() < dist_.ovrRequired_ )
+         return;
        static typename OrderWin::iterator winIter;
        winIter = win_.find(u);
        if ( winIter != win_.end() ) { // update
@@ -226,4 +229,4 @@ namespace Visitors {
 
 } // namespace Visitors
 
-#endif // _BED_BASE_VISITOR_HPP
+#endif // _BED_BASE_VISITOR_OVERLAPPING_HPP

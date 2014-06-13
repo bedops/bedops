@@ -39,8 +39,8 @@ namespace Visitors {
   struct Echo : BaseVisitor {
     typedef BaseVisitor BaseClass;
     typedef Process ProcessType;
-    typedef typename BaseVisitor::reference_type RefType;
-    typedef typename BaseVisitor::mapping_type MapType;
+    typedef typename BaseVisitor::RefType RefType;
+    typedef typename BaseVisitor::MapType MapType;
 
     explicit Echo(const ProcessType& pt = ProcessType())
       : pt_(pt),  ref_(0)

@@ -39,8 +39,8 @@ namespace Visitors {
              >
     struct OvrUnique : BaseVisitor {
       typedef BaseVisitor BaseClass;
-      typedef typename BaseClass::reference_type RefType;
-      typedef typename BaseClass::mapping_type MapType;
+      typedef typename BaseClass::RefType RefType;
+      typedef typename BaseClass::MapType MapType;
   
       OvrUnique(const ProcessType& pt = ProcessType()) : pt_(pt), refItem_(0)
         { /* */ }

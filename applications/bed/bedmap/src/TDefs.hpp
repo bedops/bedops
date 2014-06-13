@@ -24,7 +24,6 @@
 #ifndef _BEDMAP_TYPEDEFS_HPP
 #define _BEDMAP_TYPEDEFS_HPP
 
-#include "algorithm/visitors/bed/BedBaseVisitor.hpp"
 #include "algorithm/visitors/BedVisitors.hpp"
 #include "algorithm/visitors/helpers/ProcessBedVisitorRow.hpp"
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
@@ -55,7 +54,8 @@ namespace BedMap {
     typedef Visitors::Helpers::PrintRangeDelim<ProcessScorePrecision> ProcessRangeDelimScorePrecision;
     typedef Visitors::BedHelpers::PrintGenomicRange<ProcessBED3> ProcessMapGenomicRange;
 
-    typedef typename BaseClass::mapping_type MapType;
+    typedef typename BaseClass::MapType RefType;
+    typedef typename BaseClass::MapType MapType;
     typedef Ordering::CompValueThenAddressGreater<MapType, MapType> MaxOrder;
     typedef Ordering::CompValueThenAddressLesser<MapType, MapType> MinOrder;
 

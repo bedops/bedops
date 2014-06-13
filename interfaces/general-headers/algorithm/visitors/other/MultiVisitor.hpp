@@ -46,8 +46,8 @@ namespace Visitors {
     typedef BaseVisitor BaseClass;
     typedef ProcessFields ProcessFieldType;
     typedef ProcessRows ProcessRowType;
-    typedef typename BaseClass::reference_type RefType;
-    typedef typename BaseClass::mapping_type MapType;
+    typedef typename BaseClass::RefType RefType;
+    typedef typename BaseClass::MapType MapType;
     typedef std::vector<BaseClass*> GroupType;
 
     explicit MultiVisitor(GroupType& visitors,

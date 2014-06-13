@@ -72,7 +72,7 @@ namespace WindowSweep {
              RangeComp inRange, EventVisitor& visitor) {
 
     // Local typedefs
-    typedef typename EventVisitor::reference_type Type;
+    typedef typename EventVisitor::RefType Type;
     typedef Type* TypePtr;
     typedef std::deque<TypePtr> WindowType;
 
@@ -176,8 +176,8 @@ namespace WindowSweep {
              RangeComp inRange, EventVisitor& visitor, bool sweepMapAll) {
 
     // Local typedefs
-    typedef typename EventVisitor::reference_type RefType;
-    typedef typename EventVisitor::mapping_type MapType;
+    typedef typename EventVisitor::RefType RefType;
+    typedef typename EventVisitor::MapType MapType;
     typedef MapType* MapTypePtr;
     typedef std::deque<MapTypePtr> WindowType;
     typedef RefType* RefTypePtr;

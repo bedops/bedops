@@ -1,11 +1,7 @@
 /*
-  FILE: RollingKthAverageVisitor.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Mon Aug 20 14:22:38 PDT 2007
-  PROJECT: windowing visitors
-  ID: $Id$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Mon Aug 20 14:22:38 PDT 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -25,18 +21,14 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef ROLLING_KTH_VISITOR_AVERAGE_HPP
 #define ROLLING_KTH_VISITOR_AVERAGE_HPP
 
-
-// Files included
 #include <cmath>
 #include <cstdlib>
 #include <set>
 #include <string>
 
-// Files included
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
 #include "algorithm/visitors/numerical/RollingKthVisitor.hpp"
 #include "data/measurement/NaN.hpp"
@@ -53,9 +45,9 @@ namespace Visitors {
 
     typedef RollingKth<Visitors::Helpers::DoNothing, BaseVisitor, ExceptionType> BaseClass;
     typedef Process ProcessType;
-    typedef typename BaseClass::T1 T1;
-    typedef typename BaseClass::T2 T2;
-    typedef T2* PtrType;
+    typedef typename BaseClass::RefType RefType;
+    typedef typename BaseClass::MapType MapType;
+    typedef MapType* PtrType;
 
     //==============
     // Construction
@@ -71,7 +63,7 @@ namespace Visitors {
 
       // The calculations below are based upon suggestions from wikipedia.
       //   They are different from the base class' implementation
-      typedef typename Signal::SelectMeasure<T2>::MeasureType MT;
+      typedef typename Signal::SelectMeasure<MapType>::MeasureType MT;
       std::size_t size = BaseClass::scoresBuf_.size();
       std::size_t kthPosUp = static_cast<std::size_t>(std::ceil(static_cast<double>(BaseClass::kthValue_ * size)));
       std::size_t kthPosDown = static_cast<std::size_t>(std::floor(static_cast<double>(BaseClass::kthValue_ * size)));
@@ -107,7 +99,7 @@ namespace Visitors {
       { /* */ }
 
   protected:
-    typedef Ordering::CompValueThenAddressLesser<T2, T2> Comp;
+    typedef Ordering::CompValueThenAddressLesser<MapType, MapType> Comp;
     typedef std::set<PtrType, Comp> ScoreTypeContainer;
 
   protected:

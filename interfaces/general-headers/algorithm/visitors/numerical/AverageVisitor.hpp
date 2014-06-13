@@ -1,11 +1,7 @@
 /*
-  FILE: AverageVisitor.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Thu Aug 23 17:42:22 PDT 2007
-  PROJECT: windowing-visitors
-  ID: $Id:$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Thu Aug 23 17:42:22 PDT 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -25,21 +21,13 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef CLASS_WINDOW_AVERAGE_VISITOR_H
 #define CLASS_WINDOW_AVERAGE_VISITOR_H
 
-
-// Files included
 #include "data/measurement/NaN.hpp"
-
 
 namespace Visitors {
 
-
-  //=========
-  // Average
-  //=========
   template <
             typename Process,
             typename BaseVisitor
@@ -48,19 +36,19 @@ namespace Visitors {
 
     typedef BaseVisitor BaseClass;
     typedef Process ProcessType;
-    typedef typename BaseClass::reference_type T1;
-    typedef typename BaseClass::mapping_type T2;
+    typedef typename BaseClass::RefType RefType;
+    typedef typename BaseClass::MapType MapType;
 
     explicit Average(const ProcessType& pt = ProcessType())
         : pt_(pt), sum_(0), counter_(0)
       { /* */ }
 
-    inline void Add(T2* bt) {
+    inline void Add(MapType* bt) {
       sum_ += *bt;
       ++counter_;
     }
 
-    inline void Delete(T2* bt) {
+    inline void Delete(MapType* bt) {
       sum_ -= *bt;
       --counter_;
     }
@@ -86,7 +74,6 @@ namespace Visitors {
     double sum_;
     int counter_;
   };
-
 
 } // namespace Visitors
 

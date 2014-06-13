@@ -32,8 +32,6 @@
 #include <vector>
 
 #include "algorithm/visitors/BedVisitors.hpp"
-#include "algorithm/visitors/Visitors.hpp"
-#include "algorithm/visitors/bed/BedBaseVisitor.hpp"
 #include "algorithm/visitors/helpers/NamedVisitors.hpp"
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
 #include "algorithm/WindowSweep.hpp"
@@ -202,7 +200,7 @@ namespace BedMap {
                 bool skipUnmappedRows,
                 std::vector<BaseClass*>& visitorGroup) {
 
-    typedef typename BaseClass::reference_type RefType;
+    typedef typename BaseClass::RefType RefType;
     typedef Visitors::Helpers::PrintDelim PrintType;
 
     // Set up visitors
@@ -263,8 +261,8 @@ namespace BedMap {
                 bool skipUnmappedRows,
                 std::vector<BaseClass*>& visitorGroup) {
 
-    typedef typename BaseClass::reference_type RefType;
-    typedef typename BaseClass::mapping_type MapType;
+    typedef typename BaseClass::RefType RefType;
+    typedef typename BaseClass::MapType MapType;
     typedef Visitors::Helpers::PrintDelim PrintType;
 
     // Set up visitors

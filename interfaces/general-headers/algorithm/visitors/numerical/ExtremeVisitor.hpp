@@ -1,9 +1,6 @@
 /*
-  FILE: ExtremeVisitor.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Thu Aug 23 17:42:22 PDT 2007
-  PROJECT: windowing-visitors
-  ID: $Id:$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Thu Aug 23 17:42:22 PDT 2007
 */
 
 //
@@ -25,25 +22,17 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef CLASS_WINDOW_EXTREME_VISITOR_H
 #define CLASS_WINDOW_EXTREME_VISITOR_H
 
-// Files included
 #include <iostream>
 #include <set>
 #include <string>
 
-// Files included
 #include "data/measurement/NaN.hpp"
 #include "utility/OrderCompare.hpp"
 
-
 namespace Visitors {
-
-  //=========
-  // Extreme
-  //=========
 
   /*
     CompType requires value + address comparisons; we must use a std::set<>
@@ -62,16 +51,16 @@ namespace Visitors {
 
     typedef BaseVisitor BaseClass;
     typedef Process ProcessType;
-    typedef typename BaseVisitor::reference_type T1;
-    typedef typename BaseVisitor::mapping_type T2;
+    typedef typename BaseVisitor::RefType RefType;
+    typedef typename BaseVisitor::MapType MapType;
 
     explicit Extreme(const ProcessType& pt = ProcessType()) : pt_(pt) { /* */ }
 
-    inline void Add(T2* bt) {
+    inline void Add(MapType* bt) {
       m_.insert(bt);
     }
 
-    inline void Delete(T2* bt) {
+    inline void Delete(MapType* bt) {
       m_.erase(bt);
     }
 
@@ -88,7 +77,7 @@ namespace Visitors {
 
   protected:
     ProcessType pt_;
-    std::set<T2*, CompType> m_;
+    std::set<MapType*, CompType> m_;
   };
 
 } // namespace Visitors

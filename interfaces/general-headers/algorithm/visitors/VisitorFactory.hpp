@@ -1,9 +1,6 @@
 /*
-  FILE: StatVisitor.hpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Thu Sep 27 16:47:55 PDT 2007
-  PROJECT: utility
-  ID: $Id$
+  Author: Scott Kuehn, Shane Neph
+  Date:   Thu Sep 27 16:47:55 PDT 2007
 */
 
 //

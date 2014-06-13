@@ -45,7 +45,7 @@ namespace WindowSweep {
              Bed::Overlapping inRange, EventVisitor& visitor) {
 
     // Local typedefs
-    typedef typename EventVisitor::reference_type Type;
+    typedef typename EventVisitor::RefType Type;
     typedef Type* TypePtr;
     typedef std::deque<TypePtr> WindowType;
 

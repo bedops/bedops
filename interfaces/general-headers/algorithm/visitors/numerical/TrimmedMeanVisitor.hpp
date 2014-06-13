@@ -1,11 +1,7 @@
 /*
-  FILE: TrimmedMeanVisitor.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Mon Aug 20 14:22:38 PDT 2007
-  PROJECT: windowing visitors
-  ID: $Id$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Mon Aug 20 14:22:38 PDT 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -25,24 +21,19 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef TMEANS_VISITOR_HPP
 #define TMEANS_VISITOR_HPP
 
-
-// Files included
 #include <cmath>
 #include <cstdlib>
 #include <limits>
 #include <set>
 #include <string>
 
-// Files included
 #include "data/measurement/NaN.hpp"
 #include "utility/Assertion.hpp"
 #include "utility/Exception.hpp"
 #include "utility/OrderCompare.hpp"
-
 
 namespace Visitors {
 
@@ -55,10 +46,10 @@ namespace Visitors {
 
     typedef BaseVisitor BaseClass;
     typedef Process ProcessType;
-    typedef typename BaseClass::reference_type T1;
-    typedef typename BaseClass::mapping_type T2;
-    typedef T2* PtrType;
-    typedef Ordering::CompValueThenAddressLesser<T2, T2> Comp;
+    typedef typename BaseClass::RefType RefType;
+    typedef typename BaseClass::MapType MapType;
+    typedef MapType* PtrType;
+    typedef Ordering::CompValueThenAddressLesser<MapType, MapType> Comp;
     typedef std::set<PtrType, Comp> ScoreTypeContainer;
 
 

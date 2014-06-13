@@ -1,11 +1,7 @@
 /*
-  FILE: RollingKthVisitor.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Mon Aug 20 14:22:38 PDT 2007
-  PROJECT: windowing visitors
-  ID: $Id$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Mon Aug 20 14:22:38 PDT 2007
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -25,24 +21,19 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef ROLLING_KTH_VISITOR_HPP
 #define ROLLING_KTH_VISITOR_HPP
 
-
-// Files included
 #include <cmath>
 #include <cstdlib>
 #include <set>
 #include <string>
 
-// Files included
 #include "data/measurement/SelectMeasureType.hpp"
 #include "data/measurement/NaN.hpp"
 #include "utility/Assertion.hpp"
 #include "utility/Exception.hpp"
 #include "utility/OrderCompare.hpp"
-
 
 namespace Visitors {
 
@@ -55,9 +46,9 @@ namespace Visitors {
 
     typedef BaseVisitor BaseClass;
     typedef Process ProcessType;
-    typedef typename BaseClass::reference_type T1;
-    typedef typename BaseClass::mapping_type T2;
-    typedef T2* PtrType;
+    typedef typename BaseClass::RefType RefType;
+    typedef typename BaseClass::MapType MapType;
+    typedef MapType* PtrType;
 
     //==============
     // Construction
@@ -106,7 +97,7 @@ namespace Visitors {
     //====================================
     inline void DoneReference() {
       // guaranteed: 0 < kthValue <= 1
-      typedef typename Signal::SelectMeasure<T2>::MeasureType MT;
+      typedef typename Signal::SelectMeasure<MapType>::MeasureType MT;
       std::size_t size = scoresBuf_.size();
       std::size_t kthPos = static_cast<std::size_t>(iround(kthValue_ * size));
       if ( kthPos > 0 ) // make zero based
@@ -137,7 +128,7 @@ namespace Visitors {
       { /* */ }
 
   protected:
-    typedef Ordering::CompValueThenAddressLesser<T2, T2> Comp;
+    typedef Ordering::CompValueThenAddressLesser<MapType, MapType> Comp;
     typedef std::set<PtrType, Comp> ScoreTypeContainer;
 
   protected:
