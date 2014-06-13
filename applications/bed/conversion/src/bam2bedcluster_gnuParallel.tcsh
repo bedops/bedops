@@ -28,7 +28,7 @@
 ############################
 
 set help = "\nUsage: bam2bedcluster_gnuParallel [--help] [--clean] <input-indexed-bam-file> [output-bed-file]\n\n"
-set help = "$help  Pass in the name of an indexed BAM file to create a BED file using GNU Parallel.\n\n"
+set help = "$help  Pass in the name of an indexed BAM file to create a sorted BED file using GNU Parallel.\n\n"
 set help = "$help  (stdin isn't supported through this wrapper script.)\n\n"
 set help = "$help  Add --clean to remove <input-indexed-bam-file> after starching it up.\n\n"
 set help = "$help  You can pass in the name of the output bed archive to be created.\n"

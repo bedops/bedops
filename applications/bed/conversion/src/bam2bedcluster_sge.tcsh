@@ -42,7 +42,7 @@ set bam2bed_script = "/net/lebowski/vol1/sw/bedops/2.4.2/bin/bam2bed"
 ############################
 
 set help = "\nUsage: bam2bedcluster_sge [--help] [--clean] <input-indexed-bam-file> [output-bed-file]\n\n"
-set help = "$help  Pass in the name of an indexed BAM file to create a starch archive using the cluster.\n\n"
+set help = "$help  Pass in the name of an indexed BAM file to create a sorted BED file using the cluster.\n\n"
 set help = "$help  (stdin isn't supported through this wrapper script.)\n\n"
 set help = "$help  Add --clean to remove <input-indexed-bam-file> after starching it up.\n\n"
 set help = "$help  You can pass in the name of the output bed archive to be created.\n"
