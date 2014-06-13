@@ -34,6 +34,8 @@ set queue = "-q all.q"
 set misc_opts = "-V -cwd -w e -r yes -now no"
 set soundoff = "-j n -e /dev/null -o /dev/null"
 set sge_opts = "$queue $shell $misc_opts $soundoff"
+set python_bin = "/net/lebowski/vol1/sw/python/2.7.3/bin/python"
+set bam2starch_script = "/net/lebowski/vol1/sw/bedops/2.4.2/bin/bam2starch"
 
 ############################
 # some input error checking
@@ -116,9 +118,12 @@ endif
 
 # $output:h gives back $output if there is no directory information
 if ( -d ../$output:h || "$output:h" == "$output" ) then
-  set output = ../$output
-else
+  set output = $here/$output
+else if ( `echo $output | awk '{ print substr($0, 1, 1); }'` == "/" ) then
   # $output includes absolute path
+else
+  # $output includes non-absolute path
+  set output = $here/$output
 endif
 
 #####################################################
@@ -130,11 +135,11 @@ set jids = ()
 @ cntr = 0
 foreach chrom (`samtools idxstats $input | cut -f1`)
   qsub $sge_opts -N $nm.$cntr > /dev/stderr << __EXTRACTION__
-    samtools view -b $input $chrom | bam2starch > $cntr
+    samtools view -b $input $chrom | $python_bin -m cProfile -o $here/$nm/$cntr.profile $bam2starch_script > $here/$nm/$cntr
 __EXTRACTION__
 
   set jids = ($jids $nm.$cntr)
-  set files = ($files $cntr)
+  set files = ($files $here/$nm/$cntr)
   @ cntr++
 end
 

@@ -110,9 +110,12 @@ endif
 
 # $output:h gives back $output if there is no directory information
 if ( -d ../$output:h || "$output:h" == "$output" ) then
-  set output = ../$output
-else
+  set output = $here/$output
+else if ( `echo $output | awk '{ print substr($0, 1, 1); }'` == "/" ) then
   # $output includes absolute path
+else
+  # $output includes non-absolute path
+  set output = $here/$output
 endif
 
 #####################################################

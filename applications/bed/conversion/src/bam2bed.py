@@ -900,7 +900,7 @@ def main(*args):
         sortbed_process.wait()
 
     #
-    # This helps ensure that an early error-bsaed exit from samtools or sort-bed will result in an error exit status code
+    # This helps ensure that an early error-based exit from samtools or sort-bed will result in an error exit status code
     #
 
     if params.sortOutput and int(sortbed_process.returncode) != 0:
