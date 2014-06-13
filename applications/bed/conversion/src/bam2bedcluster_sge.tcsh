@@ -89,7 +89,7 @@ else if ( "$output" == "$originput:t.bed" && "$originput:e" == "bam" ) then
   set output = "$originput:t:r.bed"
 endif
 
-set origininputindex = "$originput:r.bai"
+set origininputindex = "$originput.bai"
 if ( ! -s $origininputindex ) then
   printf "Unable to find associated BAI file (is the BAM file indexed?): %s\n" $origininputindex
   exit -1
