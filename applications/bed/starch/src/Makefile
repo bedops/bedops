@@ -125,8 +125,8 @@ unstarch_gprof: starchLibrary_gprof
 	rm -f *~
 
 starchcluster: starchcat
-	touch starchcluster_sge.tcsh && cp starchcluster_sge.tcsh ${BINDIR}
-	touch starchcluster_gnuParallel.tcsh && cp starchcluster_gnuParallel.tcsh ${BINDIR}
+	touch starchcluster_sge.tcsh && cp starchcluster_sge.tcsh ${BINDIR}/starchcluster_sge
+	touch starchcluster_gnuParallel.tcsh && cp starchcluster_gnuParallel.tcsh ${BINDIR}/starchcluster_gnuParallel
 
 starchcat: starchLibrary
 	${CXX} ${CXXFLAGS} -c starchcat.c -o $(LOCALOBJDIR)/starchcat.o ${INCLUDES}
