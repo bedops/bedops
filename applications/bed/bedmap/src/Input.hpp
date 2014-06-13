@@ -197,7 +197,7 @@ namespace BedMap {
           Ext::Assert<ArgError>(percOvr_ > 0 && percOvr_ <= 1, "--fraction-either value must be: >0-1.0");
           isPercEither_ = true;
         } else if ( next == "fraction-both" ) {
-          Ext::Assert<ArgError>(!isPercBoth_, "multiple --fraction-both/--exact's detected");
+          Ext::Assert<ArgError>(!isPercBoth_, "multiple --fraction-both's detected");
           Ext::Assert<ArgError>(argcntr < argc, "No arg for --fraction-both");
           std::string sval = argv[argcntr++];
           Ext::Assert<ArgError>(sval.find_first_not_of(reals) == std::string::npos,
