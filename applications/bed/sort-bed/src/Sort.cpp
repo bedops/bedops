@@ -103,7 +103,7 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, d
                                 {
                                     if(!isdigit(argv[i][k]))
                                         {
-                                            if( k != lng-1 || 0 == k) /* bad number? just G? M? */
+                                            if(0 == k ||  k != lng-1) /* bad number? just G? M? */
                                                 {
                                                     fprintf(stderr, "Bad number for --max-mem.  Expect value to be like 10G (for 10 gigabytes) or 1000M (for 1000 megabytes) or just 1000000000 (for 1 gigabyte).\n");
                                                     exit(EXIT_FAILURE);
