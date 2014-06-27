@@ -52,7 +52,6 @@ struct Version { /* */ };
 //=======
 struct Input {
 
-  // Constructor
   Input(int argc, char** argv) : ft_(MERGE), numFiles_(0), minFiles_(1000),
                                  allFiles_(), perc_(1), usePerc_(true),
                                  errorCheck_(false), lpad_(0), rpad_(0), leftMost_(0),
