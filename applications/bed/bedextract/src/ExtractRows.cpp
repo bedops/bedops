@@ -1,10 +1,7 @@
-//=========
-// Author:  Shane Neph & Alex Reynolds
-// Date:    Mon Jan 23 06:29:10 PST 2012
-// Project: bed-extract
-// ID:      $Id$
-//=========
-
+/*
+  Author:  Shane Neph & Alex Reynolds
+  Date:    Mon Jan 23 06:29:10 PST 2012
+*/
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds

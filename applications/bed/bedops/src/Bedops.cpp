@@ -1,10 +1,7 @@
-//=========
-// Author:  Shane Neph & Scott Kuehn
-// Date:    Fri Aug 13 15:00:25 PDT 2010
-// Project: bedops
-// ID:      $Id$
-//=========
-
+/*
+  Author:  Shane Neph & Scott Kuehn
+  Date:    Fri Aug 13 15:00:25 PDT 2010
+*/
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -24,7 +21,6 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Files included
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>

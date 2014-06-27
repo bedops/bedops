@@ -76,9 +76,9 @@ namespace BedMap {
         percOvr_(0.0), isPercMap_(false), isPercRef_(false), isPercEither_(false),
         isPercBoth_(false), isRangeBP_(false), isOverlapBP_(false), isExact_(false),
         precision_(6), useScientific_(false), setPrec_(false), numFiles_(0),
-        minRefFields_(0), minMapFields_(0), errorCheck_(false), outDelim_("|"),
-        multiDelim_(";"), fastMode_(false), rangeAlias_(false), chrom_("all"),
-        skipUnmappedRows_(false) {
+        minRefFields_(0), minMapFields_(0), errorCheck_(false), sweepAll_(false),
+        outDelim_("|"), multiDelim_(";"), fastMode_(false), rangeAlias_(false),
+        chrom_("all"), skipUnmappedRows_(false) {
 
       // Process user's operation options
       if ( argc <= 1 )
@@ -104,6 +104,8 @@ namespace BedMap {
           errorCheck_ = true;
         } else if ( next == "faster" ) {
           fastMode_ = true;
+        } else if ( next == "all" ) { // --> sweep through all of second file
+          sweepAll_ = true;
         } else if ( next == "delim" ) {
           Ext::Assert<ArgError>(outDelim_ == "|", "--delim specified multiple times");
           Ext::Assert<ArgError>(argcntr < argc, "No output delimiter given");
@@ -373,6 +375,7 @@ namespace BedMap {
     unsigned int minRefFields_;
     unsigned int minMapFields_;
     bool errorCheck_;
+    bool sweepAll_;
     std::string outDelim_;
     std::string multiDelim_;
     bool fastMode_;
@@ -444,6 +447,7 @@ namespace BedMap {
     usage << "                                                                                                    \n";
     usage << "    Process Flags:                                                                                  \n";
     usage << "     --------                                                                                       \n";
+    usage << "      --all                 Ensure <map-file> is read completely (helps to prevent broken pipes).   \n";
     usage << "      --chrom <chromosome>  Jump to and process data for given <chromosome> only.                   \n";
     usage << "      --delim <delim>       Change output delimiter from '|' to <delim> between columns (e.g. \'\\t\').\n";
     usage << "      --ec                  Error check all input files (slower).                                   \n";

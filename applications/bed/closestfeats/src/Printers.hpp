@@ -1,10 +1,7 @@
-//=========
+/*
 // Author:  Shane Neph & Scott Kuehn
 // Date:    Fri Aug 13 15:00:25 PDT 2010
-// Project: featdist
-// ID:      $Id$
-//=========
-
+*/
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -24,19 +21,15 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef _FEATDIST_PRINTERTYPES_H
 #define _FEATDIST_PRINTERTYPES_H
 
-// Files included
 #include <limits>
 
-// Files included
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
 #include "suite/BEDOPS.Constants.hpp"
 #include "utility/PrintTypes.hpp"
 #include "utility/Typify.hpp"
-
 
 namespace FeatDist {
   extern const char* none;

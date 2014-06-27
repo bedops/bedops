@@ -1,10 +1,8 @@
 /*
-  File: SortDetails.cpp
-  AUTHOR: Scott Kuehn
-    MODS: Shane Neph
-  CREATE DATE: Tue May 16 10:06:58 PDT 2006
+  Author: Scott Kuehn
+    Mods: Shane Neph
+  Date:   Thu Sep  7 08:48:35 PDT 2006
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds

@@ -1,10 +1,7 @@
-//=========
-// Author:  Shane Neph & Scott Kuehn
-// Date:    Fri Aug 13 15:00:25 PDT 2010
-// Project: bedops
-// ID:      $Id$
-//=========
-
+/*
+  Author:  Shane Neph & Scott Kuehn
+  Date:    Fri Aug 13 15:00:25 PDT 2010
+*/
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -24,11 +21,9 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef BED_PAD_READER_BEDOPS_H
 #define BED_PAD_READER_BEDOPS_H
 
-// Files included
 #include <algorithm>
 #include <cmath>
 #include <deque>
@@ -45,7 +40,6 @@
 
 
 namespace BedOperations {
-
 
 template <typename T>
 struct NoPtr;

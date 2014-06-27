@@ -1,10 +1,7 @@
-//=========
-// Author:  Shane Neph & Scott Kuehn
-// Date:    Fri Aug 13 15:00:25 PDT 2010
-// Project: bedops
-// ID:      $Id$
-//=========
-
+/*
+  Author:  Shane Neph & Scott Kuehn
+  Date:    Fri Aug 13 15:00:25 PDT 2010
+*/
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -24,20 +21,15 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef BED_READER_FEATDIST_H
 #define BED_READER_FEATDIST_H
 
-// Files included
 #include <vector>
 
 #include "utility/Assertion.hpp"
 #include "utility/ByLine.hpp"
 
-
-
 namespace FeatDist {
-
 
 template <typename T>
 struct NoPtr;
@@ -46,7 +38,6 @@ template <typename T>
 struct NoPtr<T*> {
   typedef T Type;
 };
-
 
 //===========
 // BedReader

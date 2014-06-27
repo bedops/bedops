@@ -1,10 +1,8 @@
 /*
-  FILE: Sort.cpp
-  AUTHOR: Scott Kuehn
-    MODS: Shane Neph
-  CREATE DATE: Thu Sep  7 08:48:35 PDT 2006
+  Author: Scott Kuehn
+    Mods: Shane Neph
+  Date:   Thu Sep  7 08:48:35 PDT 2006
 */
-
 //
 //    BEDOPS
 //    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
@@ -41,7 +39,6 @@ using namespace std;
 static const char *name = "sort-bed";
 static const char *authors = "Scott Kuehn";
 static const char *usage = "\nUSAGE: sort-bed [--help] [--version] [--max-mem <val>] [--tmpdir <path>] <file1.bed> <file2.bed> <...>\n        Sort BED file(s).\n        May use '-' to indicate stdin.\n        Results are sent to stdout.\n\n        <val> for --max-mem may be 8G, 8000M, or 8000000000 to specify 8 GB of memory.\n        --tmpdir is useful only with --max-mem.\n";
-
 
 static void 
 getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, double* maxMem, char **tmpPath)
