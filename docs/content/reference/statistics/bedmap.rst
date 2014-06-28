@@ -76,6 +76,7 @@ The ``--help`` option describes the various mapping and analytical operations an
         --prec <int>          Change the post-decimal precision of scores to <int>.  0 <= <int>.      
         --sci                 Use scientific notation for score outputs.                              
         --skip-unmapped       Print no output for a row with no mapped elements.                      
+        --sweep-all           Ensure <map-file> is read completely (helps to prevent broken pipes).   
         --version             Print program information.                                              
                                                                                                     
                                                                                                     
