@@ -104,7 +104,7 @@ namespace BedMap {
           errorCheck_ = true;
         } else if ( next == "faster" ) {
           fastMode_ = true;
-        } else if ( next == "all" ) { // --> sweep through all of second file
+        } else if ( next == "sweep-all" ) { // --> sweep through all of second file
           sweepAll_ = true;
         } else if ( next == "delim" ) {
           Ext::Assert<ArgError>(outDelim_ == "|", "--delim specified multiple times");
@@ -447,7 +447,6 @@ namespace BedMap {
     usage << "                                                                                                    \n";
     usage << "    Process Flags:                                                                                  \n";
     usage << "     --------                                                                                       \n";
-    usage << "      --all                 Ensure <map-file> is read completely (helps to prevent broken pipes).   \n";
     usage << "      --chrom <chromosome>  Jump to and process data for given <chromosome> only.                   \n";
     usage << "      --delim <delim>       Change output delimiter from '|' to <delim> between columns (e.g. \'\\t\').\n";
     usage << "      --ec                  Error check all input files (slower).                                   \n";
@@ -459,6 +458,7 @@ namespace BedMap {
     usage << "      --prec <int>          Change the post-decimal precision of scores to <int>.  0 <= <int>.      \n";
     usage << "      --sci                 Use scientific notation for score outputs.                              \n";
     usage << "      --skip-unmapped       Print no output for a row with no mapped elements.                      \n";
+    usage << "      --sweep-all           Ensure <map-file> is read completely (helps to prevent broken pipes).   \n";
     usage << "      --version             Print program information.                                              \n";
     usage << "                                                                                                    \n";
     usage << "                                                                                                    \n";
