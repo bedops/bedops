@@ -34,8 +34,10 @@ set queue = "-q all.q"
 set misc_opts = "-V -cwd -w e -r yes -now no"
 set soundoff = "-j n -e /dev/null -o /dev/null"
 set sge_opts = "$queue $shell $misc_opts $soundoff"
+set samtools_bin = "/net/lebowski/vol1/sw/samtools/0.1.19/samtools"
 set python_bin = "/net/lebowski/vol1/sw/python/2.7.3/bin/python"
 set bam2bed_script = "/net/lebowski/vol1/sw/bedops/2.4.2/bin/bam2bed"
+set bedops_bin = "/net/lebowski/vol1/sw/bedops/2.4.2/bin/bedops"
 
 ############################
 # some input error checking
@@ -133,9 +135,9 @@ endif
 set files = ()
 set jids = ()
 @ cntr = 0
-foreach chrom (`samtools idxstats $input | cut -f1`)
+foreach chrom (`$samtools_bin idxstats $input | cut -f1`)
   qsub $sge_opts -N $nm.$cntr > /dev/stderr << __EXTRACTION__
-    samtools view -b $input $chrom | $python_bin $bam2bed_script > $here/$nm/$cntr
+    $samtools_bin view -b $input $chrom | $python_bin $bam2bed_script > $here/$nm/$cntr
 __EXTRACTION__
 
   set jids = ($jids $nm.$cntr)
@@ -153,7 +155,7 @@ endif
 ##################################################
 
 qsub $sge_opts -N $nm.union -hold_jid `echo $jids | tr ' ' ','` > /dev/stderr << __CATTED__
-  bedops --everything $files > $output
+  $bedops_bin --everything $files > $output
   cd $here
   rm -rf $nm
 
