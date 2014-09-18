@@ -511,7 +511,7 @@ The ``--intersect`` operation determines genomic regions common to all input set
 Merge (-m, --merge)
 -------------------
 
-The ``--merge`` operation flattens all overlapping and adjoining elements into contiguous regions:
+The ``--merge`` operation flattens all disjoint, overlapping, and adjoining element regions into contiguous, disjoint regions:
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_merge_ab.png
    :width: 99%

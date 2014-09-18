@@ -474,7 +474,8 @@ private:
     } else if ( mode == MERGE ) {
       msg += "        Using the -m or --merge option requires at least 1 BED file input.\n";
       msg += "        The output consists of the first 3 columns of the BED specification.\n";
-      msg += "        Merges together all overlapping and adjacent intervals from the input files.\n\n";
+      msg += "        Merges together (flattens) all disjoint, overlapping, and adjoining intervals from all input files into\n";
+      msg += "          contiguous, disjoint regions.\n\n";
       msg += example1();
       msg += "        Output:\n";
       msg += "          chr1   10    125\n";
