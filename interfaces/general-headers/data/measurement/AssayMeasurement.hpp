@@ -41,7 +41,7 @@ namespace Signal {
     struct AssayMeasurementImpl; // Forward Decl
 
     template <typename T>
-    struct AssayMeasurementImpl< T, typename std::enable_if<std::is_arithmetic<T>::value, T>::type> {
+    struct AssayMeasurementImpl<T, typename std::enable_if<std::is_arithmetic<T>::value, T>::type> {
       typedef T value_type;
 
       explicit AssayMeasurementImpl(T m = 0) : measurement_(m)  { }
