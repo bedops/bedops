@@ -66,6 +66,12 @@ namespace Visitors {
         { return "echo"; }
     };
 
+    template <typename B>
+    struct VisitorName< Visitors::Echo<Visitors::BedHelpers::PrintLength,B> > {
+      static std::string Name()
+        { return "echo-ref-size"; }
+    };
+
     template <typename A, typename B>
     struct VisitorName< Visitors::Indicator<A,B> > {
       static std::string Name()
