@@ -1733,4 +1733,60 @@
           -p
         </CALL>
     </TEST>
+
+    <!-- *******CHROME TEST with -u******* -->
+    <!-- This test depends upon complement3L.results -->
+    <!-- Creates chrom-test1.results -->
+    <TEST order="55">
+        <ANSWER>
+            chr6	11	16
+            chr6	118	119
+        </ANSWER>
+        <CALL>
+          --chrom chr6 -u complement3L.results
+        </CALL>
+        <OUTPUT name="chrom-test1.results"/>
+    </TEST>
+
+    <!-- *******CHROME TEST with -m******* -->
+    <!-- This test depends upon complement3L.results -->
+    <!-- Creates chrom-test1.results -->
+    <TEST order="56">
+        <ANSWER>
+            chr4	0	5
+            chr4	11	16
+        </ANSWER>
+        <CALL>
+          --chrom chr4 -m complement3L.results
+        </CALL>
+        <OUTPUT name="chrom-test2.results"/>
+    </TEST>
+
+    <!-- *******CHROME TEST with -c******* -->
+    <!-- This test depends upon complement3L.results -->
+    <!-- Creates chrom-test1.results -->
+    <TEST order="57">
+        <ANSWER>
+            chr7	2	102
+            chr7	105	116
+        </ANSWER>
+        <CALL>
+          --chrom chr7 -c complement3L.results
+        </CALL>
+        <OUTPUT name="chrom-test3.results"/>
+    </TEST>
+
+    <!-- *******CHROME TEST with -c, -L, and ec******* -->
+    <!-- This test depends upon complement3L.results -->
+    <!-- Creates chrom-test1.results -->
+    <TEST order="57">
+        <ANSWER>
+            chr7	2	102
+            chr7	105	116
+        </ANSWER>
+        <CALL>
+          --ec --chrom chr7 -c -L complement3L.results
+        </CALL>
+        <OUTPUT name="ec-chrom-test1.results"/>
+    </TEST>
 </TEST_PLAN>
