@@ -24,6 +24,8 @@
 #ifndef SIMPLE_C_FORMATS_H
 #define SIMPLE_C_FORMATS_H
 
+#include <cinttypes>
+
 namespace Formats {
 
   extern char const* Format(char const*);
@@ -38,6 +40,7 @@ namespace Formats {
   extern char const* Format(unsigned long long int);
   extern char const* Format(short);
   extern char const* Format(unsigned short);
+  extern char const* Format(uint64_t);
 
   extern char const* Format(double d, int precision, bool scientific);
 

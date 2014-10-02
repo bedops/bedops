@@ -222,6 +222,8 @@ namespace BedMap {
           hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoRefAll>());
         else if ( next == details::name<typename VT::EchoRefLength>() )
           hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoRefLength>());
+        else if ( next == details::name<typename VT::EchoRefSpan>() )
+          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoRefSpan>());
         else if ( next == details::name<typename VT::EchoMapAll>() )
           hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoMapAll>());
         else if ( next == details::name<typename VT::EchoMapID>() )
@@ -397,6 +399,7 @@ namespace BedMap {
       static unsigned int num(Ext::Type2Type<typename VT::EchoMapUniqueID>) { return 4; }
       static unsigned int num(Ext::Type2Type<typename VT::EchoRefAll>) { return 3; }
       static unsigned int num(Ext::Type2Type<typename VT::EchoRefLength>) { return 3; }
+      static unsigned int num(Ext::Type2Type<typename VT::EchoRefSpan>) { return 3; }
       static unsigned int num(Ext::Type2Type<typename VT::Indicator>) { return 3; }
       static unsigned int num(Ext::Type2Type<typename VT::OvrAgg>) { return 3; }
       static unsigned int num(Ext::Type2Type<typename VT::OvrUniq>) { return 3; }
@@ -519,6 +522,7 @@ namespace BedMap {
     usage << "      --" + details::name<VT::Count>() + "             The number of overlapping elements in <map-file>.\n";
     usage << "      --" + details::name<VT::EchoRefAll>() + "              Print each line from <ref-file>.\n";
     usage << "      --" + details::name<VT::EchoRefLength>() + "     Print the length of each line from <ref-file>.\n";
+    usage << "      --" + details::name<VT::EchoRefSpan>() + "     Print the first 3 fields of <ref-file> using chrom:start-end format.\n";
     usage << "      --" + details::name<VT::EchoMapAll>() + "          List all overlapping elements from <map-file>.\n";
     usage << "      --" + details::name<VT::EchoMapID>() +  "       List IDs from all overlapping <map-file> elements.\n";
     usage << "      --" + details::name<VT::EchoMapUniqueID>() +  "  List unique IDs from overlapping <map-file> elements.\n";

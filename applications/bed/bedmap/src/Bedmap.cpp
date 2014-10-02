@@ -390,6 +390,8 @@ namespace BedMap {
         rtn = new typename VTypes::EchoRefAll;
       else if ( nm == visName<typename VTypes::EchoRefLength>() )
         rtn = new typename VTypes::EchoRefLength;
+      else if ( nm == visName<typename VTypes::EchoRefSpan>() )
+        rtn = new typename VTypes::EchoRefSpan;
       else if ( nm == visName<typename VTypes::Indicator>() )
         rtn = new typename VTypes::Indicator;
       else if ( nm == visName<typename VTypes::OvrAgg>() )

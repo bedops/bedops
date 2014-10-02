@@ -43,6 +43,7 @@ namespace BedMap {
     typedef Visitors::BedHelpers::PrintLength ProcessLength;
     typedef Visitors::Helpers::Print ProcessIntegerLength;
     typedef Visitors::BedHelpers::PrintScore ProcessScore;
+    typedef Visitors::BedHelpers::PrintSpanName ProcessSpanName;
     typedef Visitors::BedHelpers::PrintScorePrecision ProcessScorePrecision;
     typedef Visitors::BedHelpers::PrintBED3 ProcessBED3;
     typedef Visitors::Helpers::PrintRangeDelim<ProcessAll> ProcessRangeDelimAll;
@@ -85,6 +86,7 @@ namespace BedMap {
     typedef Visitors::BedSpecific::EchoMapIntersectLength<ProcessRangeDelimIntersectLength, BaseClass> EchoMapIntersectLength;
     typedef Visitors::Echo<ProcessAll, BaseClass> EchoRefAll;
     typedef Visitors::Echo<ProcessLength, BaseClass> EchoRefLength;
+    typedef Visitors::Echo<ProcessSpanName, BaseClass> EchoRefSpan;
     typedef Visitors::BedSpecific::OvrAggregate<ProcessScore, BaseClass> OvrAgg;
     typedef Visitors::BedSpecific::OvrUnique<ProcessScore, BaseClass> OvrUniq;
     typedef Visitors::BedSpecific::OvrUniqueFract<ProcessScorePrecision, BaseClass> OvrUniqFract;

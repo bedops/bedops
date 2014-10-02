@@ -281,6 +281,20 @@ namespace Visitors {
       }
     };
 
+    //=================
+    // PrintSpanName()
+    //=================
+    struct PrintSpanName {
+      template <typename T>
+      void operator()(T* t) const {
+        PrintTypes::Print(t->chrom());
+        PrintTypes::Print(':');
+        PrintTypes::Print(t->start());
+        PrintTypes::Print('-');
+        PrintTypes::Print(t->end());
+      }
+    };
+
     //=======================
     // PrintUniqueRangeIDs()
     //  : sorting and uniquing -> will not be in genomic order
