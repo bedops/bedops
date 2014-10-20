@@ -17,23 +17,18 @@ Loosely speaking, consider the following five overlap cases for pairings of gene
 
 ::
 
-   1:
    [------)
    [------)
 
-   2:
    [--------)
      [------)
 
-   3:
    [-------)
       [-------)
 
-   4:
    [-----)
    [--------)
 
-   5:
    [-----------)
      [-----)
 
