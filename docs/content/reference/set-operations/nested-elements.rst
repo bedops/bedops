@@ -13,9 +13,35 @@ Definition
 
 A *nested element* is defined as a BED element from a sorted BED file, where a genomic range is entirely enclosed by the previous element's range.
 
-More rigorously, we define two BED elements :math:`A` and :math:`B`, both located on the same chromosome :math:`N`, and each with ranges :math:`{(a_{start}, a_{stop}]}` and :math:`{(b_{start}, b_{stop}]}`, respectively.
+Loosely speaking, consider the following five overlap cases for pairings of generic, half-open intervals:
 
-These two elements :math:`A` and :math:`B` meet the following conditions:
+::
+
+   1:
+   [------)
+   [------)
+
+   2:
+   [--------)
+     [------)
+
+   3:
+   [-------)
+      [-------)
+
+   4:
+   [-----)
+   [--------)
+
+   5:
+   [-----------)
+     [-----)
+
+Of these five interval pairs, the fifth overlap pairing identifies a nested element, where the second interval is nested within the first. 
+
+More rigorously, we define two generic half-open BED elements :math:`A` and :math:`B`, both located on the same chromosome :math:`N`, each with ranges :math:`{[a_{start}, a_{stop})}` and :math:`{[b_{start}, b_{stop})}`, respectively.
+
+These two elements :math:`A` and :math:`B` have the following relations:
 
  1. :math:`a_{start} < a_{stop}`
  2. :math:`b_{start} < b_{stop}` 
@@ -24,7 +50,7 @@ These two elements :math:`A` and :math:`B` meet the following conditions:
 
 .. note:: The third and fourth conditions place elements :math:`A` and :math:`B` into sort order, as applied by the :ref:`sort-bed <sort-bed>` application.
 
-If we further restrict these ranges: :math:`a_{start} < b_{start}` and :math:`b_{stop} < a_{stop}`, then for the purposes of BEDOPS we call the element :math:`B` a *nested element*, which is contained within element :math:`A`.
+If we further restrict these ranges: :math:`a_{start} < b_{start}` and :math:`b_{stop} < a_{stop}`, then for the purposes of BEDOPS we call the element :math:`B` a *nested element*, one which is contained or *nested* within element :math:`A`.
 
 .. _example_of_a_nested_element:
 
@@ -32,7 +58,7 @@ If we further restrict these ranges: :math:`a_{start} < b_{start}` and :math:`b_
 Example
 =======
 
-An example of a sorted BED file which contains a nested element follows:
+A more concrete example of a sorted BED file which contains a nested element follows. Consider the following simple, sorted BED dataset:
 
 ::
 
@@ -41,7 +67,7 @@ An example of a sorted BED file which contains a nested element follows:
   chr1    125    150
   chr1    150    1000
 
-While this dataset is sorted, the element ``chr1:125-150`` is entirely nested within ``chr1:100-200``:
+Here, the element ``chr1:125-150`` is entirely nested within ``chr1:100-200``:
 
 .. image:: ../../../assets/reference/set-operations/reference_bedextract_nested_elements.png
    :width: 99%
