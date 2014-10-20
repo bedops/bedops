@@ -34,7 +34,7 @@ Loosely speaking, consider the following five overlap cases for pairings of gene
 
 Of these five interval pairs, the fifth overlap pairing identifies a nested element, where the second interval is nested within the first. 
 
-More rigorously, we define two generic half-open BED elements :math:`A` and :math:`B`, both located on the same chromosome :math:`N`, each with ranges :math:`{[a_{start}, a_{stop})}` and :math:`{[b_{start}, b_{stop})}`, respectively.
+More rigorously, we define two generic, half-open BED elements :math:`A` and :math:`B`, both located on the same generic chromosome :math:`N`, each with ranges :math:`{[a_{start}, a_{stop})}` and :math:`{[b_{start}, b_{stop})}`, respectively.
 
 These two elements :math:`A` and :math:`B` have the following relations:
 
