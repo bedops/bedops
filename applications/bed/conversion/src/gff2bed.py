@@ -25,7 +25,7 @@
 # Project:      Converts 1-based, closed [a, b] GFF3 input
 #               into 0-based, half-open [a-1, b) six-column extended BED
 #
-# Version:      2.5.0
+# Version:      2.4.3
 #
 # Notes:        The GFF3 specification (http://www.sequenceontology.org/gff3.shtml) 
 #               contains columns that do not map directly to common or UCSC BED columns.
@@ -93,7 +93,7 @@ def printUsage(stream):
     usage = ("Usage:\n"
              "  %s [ --help ] [ --keep-header ] [ --do-not-sort | --max-mem <value> (--sort-tmpdir <dir>) ] < foo.gff\n\n"
              "Version:\n"
-             "  v2.5.0\n\n"
+             "  v2.4.3\n\n"
              "Options:\n"
              "  --help                 Print this help message and exit\n"
              "  --keep-header          Preserve metadata and header fields as pseudo-BED elements\n"

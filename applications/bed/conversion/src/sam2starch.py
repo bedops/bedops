@@ -26,7 +26,7 @@
 #               into 0-based, half-open [a-1, b) extended BED that is subsequently 
 #               compressed into a Starch v2 archive.
 #
-# Version:      2.5.0
+# Version:      2.4.3
 #
 # Notes:        The SAM format is Sequence Alignment/Map file that is a 1-based, closed 
 #               [a, b]. This script converts this indexing back to 0-based, half-
@@ -484,7 +484,7 @@ def printUsage(stream):
     usage = ("Usage:\n"
              "  %s [ --help ] [ --keep-header ] [ --split ] [ --all-reads ] [ --do-not-sort | --max-mem <value> (--sort-tmpdir <dir>) ] [ --starch-format <bzip2|gzip> ] < foo.sam\n\n"
              "Version:\n"
-             "  v2.5.0\n\n"
+             "  v2.4.3\n\n"
              "Options:                                                                            \n"
              "  --help                 Print this help message and exit                           \n"
              "  --keep-header          Preserve header section as pseudo-BED elements             \n"

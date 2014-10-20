@@ -25,7 +25,7 @@
 # Project:      Converts 1-based, closed [a, b] GTF2.2 input
 #               into 0-based, half-open [a-1, b) six-column extended BED
 #
-# Version:      2.5.0
+# Version:      2.4.3
 #
 # Notes:        The GTF2.2 specification (http://mblab.wustl.edu/GTF22.html)
 #               contains columns that do not map directly to common or UCSC BED columns.
@@ -90,7 +90,7 @@ def printUsage(stream):
     usage = ("Usage:\n"
              "  %s [ --help ] [ --do-not-sort | --max-mem <value> (--sort-tmpdir <dir>) ] < foo.gtf\n\n"
              "Version:\n"
-             "  v2.5.0\n\n"
+             "  v2.4.3\n\n"
              "Options:\n"
              "  --help                 Print this help message and exit\n\n"
              "  --do-not-sort          Do not sort converted data with BEDOPS sort-bed\n"

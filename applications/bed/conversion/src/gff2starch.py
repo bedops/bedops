@@ -27,7 +27,7 @@
 #               and thence compressed into a BEDOPS Starch archive sent
 #               to standard output.
 #
-# Version:      2.5.0
+# Version:      2.4.3
 #
 # Notes:        The GFF3 specification (http://www.sequenceontology.org/gff3.shtml) 
 #               contains columns that do not map directly to common or UCSC BED columns.
@@ -95,7 +95,7 @@ def printUsage(stream):
     usage = ("Usage:\n"
              "  %s [ --help ] [ --keep-header ] [ --do-not-sort | --max-mem <value> (--sort-tmpdir <dir>) ] [ --starch-format <bzip2|gzip> ] < foo.gff > sorted-foo.gff.bed.starch\n\n"
              "Version:\n"
-             "  v2.5.0\n\n"
+             "  v2.4.3\n\n"
              "Options:\n"
              "  --help                        Print this help message and exit\n"
              "  --keep-header                 Preserve metadata and header fields as pseudo-BED elements\n"

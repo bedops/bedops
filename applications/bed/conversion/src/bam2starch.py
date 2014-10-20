@@ -26,7 +26,7 @@
 #               into 0-based, half-open [a-1,b) extended BED that is subsequently
 #               compressed into a Starch v2 archive.
 #
-# Version:      2.5.0
+# Version:      2.4.3
 #
 # Notes:        The BAM format is an indexed, binary representation of a SAM (Sequence
 #               Alignment/Map) file. Internally, it is a 0-based, half-open [a-1,b)
@@ -492,7 +492,7 @@ def printUsage(stream):
     usage = ("Usage:\n"
              "  %s [ --help ] [ --keep-header ] [ --split ] [ --all-reads ] [ --do-not-sort | --max-mem <value> (--sort-tmpdir <dir>) ] [ --starch-format <bzip2|gzip> ] < foo.bam > sorted-foo.bam.bed.starch\n\n"
              "Version:\n"
-             "  v2.5.0\n\n"
+             "  v2.4.3\n\n"
              "Options:\n"
              "  --help                        Print this help message and exit\n"
              "  --keep-header                 Preserve header section as pseudo-BED elements\n"
