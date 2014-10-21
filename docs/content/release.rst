@@ -15,7 +15,7 @@ Preparing a major, minor or maintenance release of BEDOPS from a development bra
 
    a. Close out open documentation or feature issues, making necessary pushes to the current development branch.
 
-   b. If any issues can't be closed out, rename the assigned version tag to the next release version (*e.g.*, *v2p4p3* to *v2p5p0*, etc.)
+   b. If any issues can't be closed out, rename the assigned version tag to the next anticipated release version (*e.g.*, *v2p4p3* to *v2p5p0*, etc.)
 
 2. Pull the most recent commit for the development branch to a local folder on build hosts (Linux with sufficiently old kernel, current OS X, etc.).
 
