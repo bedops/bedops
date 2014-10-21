@@ -44,7 +44,7 @@ Preparing a major, minor or maintenance release of BEDOPS from a development bra
 
    The *X.Y.Z* scheme should follow the development branch name, *e.g.* 2.4.3, etc.
 
-3. Collect tarballs for all platforms in one location for later addition via Github site.
+3. Collect tarballs for all platforms in one location for later addition with web browser, via BEDOPS Github web site.
 
 =======
 Release
