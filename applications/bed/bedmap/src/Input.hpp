@@ -521,14 +521,14 @@ namespace BedMap {
     usage << "                            overlapping elements in <map-file>.\n";
     usage << "      --" + details::name<VT::Count>() + "             The number of overlapping elements in <map-file>.\n";
     usage << "      --" + details::name<VT::EchoRefAll>() + "              Print each line from <ref-file>.\n";
-    usage << "      --" + details::name<VT::EchoRefLength>() + "     Print the length of each line from <ref-file>.\n";
-    usage << "      --" + details::name<VT::EchoRefSpan>() + "     Print the first 3 fields of <ref-file> using chrom:start-end format.\n";
     usage << "      --" + details::name<VT::EchoMapAll>() + "          List all overlapping elements from <map-file>.\n";
     usage << "      --" + details::name<VT::EchoMapID>() +  "       List IDs from all overlapping <map-file> elements.\n";
     usage << "      --" + details::name<VT::EchoMapUniqueID>() +  "  List unique IDs from overlapping <map-file> elements.\n";
     usage << "      --" + details::name<VT::EchoMapRange>() + "    Print genomic range of overlapping elements from <map-file>.\n";
     usage << "      --" + details::name<VT::EchoMapScore>() + "    List scores from overlapping <map-file> elements.\n";
     usage << "      --" + details::name<VT::EchoMapLength>() + "     List the full length of every overlapping element.\n";
+    usage << "      --" + details::name<VT::EchoRefSpan>() + "     Print the first 3 fields of <ref-file> using chrom:start-end format.\n";
+    usage << "      --" + details::name<VT::EchoRefLength>() + "     Print the length of each line from <ref-file>.\n";
     usage << "      --" + details::name<VT::EchoMapIntersectLength>() + " List lengths of overlaps.\n";
     usage << "      --" + details::name<VT::Indicator>() + "         Print 1 if there exists an overlapping element in <map-file>, 0 otherwise.\n";
     usage << "\n";
