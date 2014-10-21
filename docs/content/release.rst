@@ -3,6 +3,8 @@
 Release
 =======
 
+This document attempts to enumerate steps to get from a development branch to a final release, with all associate packages and documention changes.
+
 ===========
 Preparation
 ===========
