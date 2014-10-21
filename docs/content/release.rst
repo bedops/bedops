@@ -100,7 +100,7 @@ e. Click the *Publish Release* button.
 
 3. After at least 5-10 minutes from pushing the development branch to the master branch, check the `BEDOPS documentation site <http://bedops.readthedocs.org/en/latest/>`_ to ensure that the "latest" or default documenation shown is for the new version. 
 
-   If not, take a look at the `build <https://readthedocs.org/builds/bedops/>` page to manually trigger document rebuilds, or examine error logs, as necessary.
+   If not, take a look at the `build <https://readthedocs.org/builds/bedops/>`_ page to manually trigger document rebuilds, or examine error logs, as necessary.
 
 4. Push fixes to any documentation errors in the master branch. 
 
