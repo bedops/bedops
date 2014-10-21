@@ -3,7 +3,7 @@
 Release
 =======
 
-This document attempts to enumerate steps to get from a development branch to a final release, with all associate packages and documention changes.
+This document attempts to enumerate steps to get from a development branch to a final release, with all associated packages and documentation changes.
 
 ===========
 Preparation
@@ -107,6 +107,10 @@ Release
 4. Push fixes to any documentation errors in the master branch. 
 
 .. note:: We should aim to fix typos and other errors as soon after a new release as possible, because then shortly afterwards we can simply pull a new development branch off the current state of the master branch with minimal commit losses.
+
+5. Visit the `BEDOPS documentation administration site <https://readthedocs.org/dashboard/bedops/edit/>`_ to disable documentation for the development branch. 
+
+   Click on the `versions <https://readthedocs.org/dashboard/bedops/versions/>`_ tab to deactivate the old development branch. (Likewise, when adding a new development branch, add a active link here so that edits to documentation for the new development branch are available.)
 
 =========
 Celebrate
