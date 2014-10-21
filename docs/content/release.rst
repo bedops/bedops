@@ -11,21 +11,21 @@ Preparing a major, minor or maintenance releases of BEDOPS from a development br
 
 1. Review the `Github issues list <https://github.com/bedops/bedops/issues>`_
 
-a. Close out open documentation or feature issues, making necessary pushes to the current development branch.
+   a. Close out open documentation or feature issues, making necessary pushes to the current development branch.
 
-b. If any issues can't be closed out, rename the assigned version tag to the next release version (*e.g.*, *v2p4p3* to *v2p5p0*, etc.)
+   b. If any issues can't be closed out, rename the assigned version tag to the next release version (*e.g.*, *v2p4p3* to *v2p5p0*, etc.)
 
 2. Pull the most recent commit for the development branch to a local folder on build hosts (Linux with sufficiently old kernel, current OS X, etc.).
 
-a. Follow the :ref:`Installation (via source code) <installation_via_source_code>` documentation to build BEDOPS for the given platform. 
+   a. Follow the :ref:`Installation (via source code) <installation_via_source_code>` documentation to build BEDOPS for the given platform. 
 
-1) For Linux, we build two versions, one 64-bit and one 32-bit. It may help to use `VirtualBox <https://www.virtualbox.org>`_ or a similar virtualization host to set up and run different (and consistent) versions of Linux build hosts.
+      1) For Linux, we build two versions, one 64-bit and one 32-bit. It may help to use `VirtualBox <https://www.virtualbox.org>`_ or a similar virtualization host to set up and run different (and consistent) versions of Linux build hosts.
 
-2) For Mac OS X, we currently build the Mac target with whatever the modern Xcode and current OS X release happens to be (currently, command-line tools that ship with Xcode 6 and OS X Yosemite/10.10). If things work correctly, build flags generate "fat" binaries that should run on 10.7 and newer OS releases.
+      2) For Mac OS X, we currently build the Mac target with whatever the modern Xcode and current OS X release happens to be (currently, command-line tools that ship with Xcode 6 and OS X Yosemite/10.10). If things work correctly, build flags generate "fat" binaries that should run on 10.7 and newer OS releases.
 
-b. For all platforms, run test suites for various tools and conversion scripts; tests should pass on supported platforms. If not, add an Issue ticket, fix it, close it and start over with the build/test process.
+   b. For all platforms, run test suites for various tools and conversion scripts; tests should pass on supported platforms. If not, add an Issue ticket, fix it, close it and start over with the build/test process.
 
-c. If things work properly, make a bzip2-compressed tarball from the compiled binaries. 
+   c. If things work properly, make a bzip2-compressed tarball from the compiled binaries. 
 
    The naming scheme we currently use for Linux packages is as follows:
 
@@ -65,13 +65,13 @@ Release
 
    Fill out the resulting form, as described below:
 
-a. *Tag version* should be of the form *vX.Y.Z* (using the "semantic versioning" naming scheme triggers Github to set up useful and automatic package features). 
+   a. *Tag version* should be of the form *vX.Y.Z* (using the "semantic versioning" naming scheme triggers Github to set up useful and automatic package features). 
 
    Tags should be applied to the *master* branch, since we pushed the development branch up to the master branch.
 
-b. *Release title* can be of the form *BEDOPS vX.Y.Z*.
+   b. *Release title* can be of the form *BEDOPS vX.Y.Z*.
 
-c. *Describe this release* can be populated with the following Markdown-formatted boilerplate:
+   c. *Describe this release* can be populated with the following Markdown-formatted boilerplate:
 
    ::
 
@@ -94,9 +94,9 @@ c. *Describe this release* can be populated with the following Markdown-formatte
 
      For installation instructions, please read [§2.1.2. Mac OS X] (http://bedops.readthedocs.org/en/latest/content/installation.html#mac-os-x) of the BEDOPS Installation document.
 
-d. Attach per-platform binaries to this release by dragging each of them into the field underneath the description text. It can take a few moments for the web browser to upload each binary into the release page, so be patient. There should be at least three binaries: two for Linux 64- and 32-bit, and one for (fat) Mac OS X.
+   d. Attach per-platform binaries to this release by dragging each of them into the field underneath the description text. It can take a few moments for the web browser to upload each binary into the release page, so be patient. There should be at least three binaries: two for Linux 64- and 32-bit, and one for (fat) Mac OS X.
 
-e. Click the *Publish Release* button.
+   e. Click the *Publish Release* button.
 
 3. After at least 5-10 minutes from pushing the development branch to the master branch, check the `BEDOPS documentation site <http://bedops.readthedocs.org/en/latest/>`_ to ensure that the "latest" or default documenation shown is for the new version. 
 
