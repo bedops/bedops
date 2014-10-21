@@ -9,7 +9,7 @@ This document attempts to enumerate steps to get from a development branch to a 
 Preparation
 ===========
 
-Preparing a major, minor or maintenance releases of BEDOPS from a development branch involves several steps, which we outline here:
+Preparing a major, minor or maintenance release of BEDOPS from a development branch involves several steps, which we outline here:
 
 1. Review the `Github issues list <https://github.com/bedops/bedops/issues>`_
 
