@@ -110,7 +110,7 @@ Release
 
 5. Visit the `BEDOPS documentation administration site <https://readthedocs.org/dashboard/bedops/edit/>`_ to disable documentation for the development branch. 
 
-   Specifically, click on the `versions <https://readthedocs.org/dashboard/bedops/versions/>`_ tab to deactivate the old development branch. (Likewise, when adding a new development branch, add a active link here so that edits to documentation for the new development branch are available.)
+   Specifically, click on the `versions <https://readthedocs.org/dashboard/bedops/versions/>`_ tab to deactivate the old development branch. (Likewise, when adding a new development branch, add an active link here, so that edits to the documentation folder in the new development branch are available.)
 
 =========
 Celebrate
