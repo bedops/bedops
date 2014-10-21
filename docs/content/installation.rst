@@ -274,6 +274,8 @@ Cygwin
 
    Change this destination folder, as needed.
 
+.. _installation_os_x_installer_construction:
+
 =====================================================
 Building an OS X installer package for redistribution
 =====================================================

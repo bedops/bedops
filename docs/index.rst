@@ -134,5 +134,6 @@ Table of contents
    <li><a href="content/reference/file-management/compression/starch-specification.html">Starch v2.1</a> format specification</li>
    <li><a href="content/reference/set-operations/nested-elements.html">About nested elements</a>
    <li><a href="content/revision-history.html">Revision history</a></li>
+   <li><a href="content/release.html">Github release instructions</a></li>
    <li><a href="https://github.com/bedops/bedops">Github repository</a></li>
    </ul>
