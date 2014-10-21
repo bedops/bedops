@@ -471,8 +471,7 @@ namespace BedMap {
     usage << "    Overlap Options (At most, one may be selected.  By default, --bp-ovr 1 is used):                \n";
     usage << "     --------                                                                                       \n";
     usage << "      --bp-ovr <int>           Require <int> bp overlap between elements of input files.            \n";
-    usage << "      --range <int>            Grab <map-file> elements within <int> bp of <ref-file>'s element,    \n";
-    usage << "                                 where 0 <= int.  --range 0 is an alias for --bp-ovr 1.             \n";
+    usage << "      --exact                  First 3 fields from <map-file> must be identical to <ref-file>'s.    \n";
     usage << "      --fraction-ref <val>     The fraction of the element's size from <ref-file> that must overlap \n";
     usage << "                                 the element in <map-file>.  Expect 0 < val <= 1.                   \n";
     usage << "      --fraction-map <val>     The fraction of the element's size from <map-file> that must overlap \n";
@@ -481,7 +480,8 @@ namespace BedMap {
     usage << "                                 qualify as overlapping.  Expect 0 < val <= 1.                      \n";
     usage << "      --fraction-either <val>  Either --fraction-ref <val> or --fraction-map <val> must be true to  \n";
     usage << "                                 qualify as overlapping.  Expect 0 < val <= 1.                      \n";
-    usage << "      --exact                  First 3 fields from <map-file> must be identical to <ref-file>'s.    \n";
+    usage << "      --range <int>            Grab <map-file> elements within <int> bp of <ref-file>'s element,    \n";
+    usage << "                                 where 0 <= int.  --range 0 is an alias for --bp-ovr 1.             \n";
     usage << "                                                                                                    \n";
     usage << "                                                                                                    \n";
     usage << "    Operations:  (Any number of operations may be used any number of times.)                        \n";
@@ -521,14 +521,14 @@ namespace BedMap {
     usage << "                            overlapping elements in <map-file>.\n";
     usage << "      --" + details::name<VT::Count>() + "             The number of overlapping elements in <map-file>.\n";
     usage << "      --" + details::name<VT::EchoRefAll>() + "              Print each line from <ref-file>.\n";
-    usage << "      --" + details::name<VT::EchoRefLength>() + "     Print the length of each line from <ref-file>.\n";
-    usage << "      --" + details::name<VT::EchoRefSpan>() + "     Print the first 3 fields of <ref-file> using chrom:start-end format.\n";
     usage << "      --" + details::name<VT::EchoMapAll>() + "          List all overlapping elements from <map-file>.\n";
     usage << "      --" + details::name<VT::EchoMapID>() +  "       List IDs from all overlapping <map-file> elements.\n";
     usage << "      --" + details::name<VT::EchoMapUniqueID>() +  "  List unique IDs from overlapping <map-file> elements.\n";
     usage << "      --" + details::name<VT::EchoMapRange>() + "    Print genomic range of overlapping elements from <map-file>.\n";
     usage << "      --" + details::name<VT::EchoMapScore>() + "    List scores from overlapping <map-file> elements.\n";
     usage << "      --" + details::name<VT::EchoMapLength>() + "     List the full length of every overlapping element.\n";
+    usage << "      --" + details::name<VT::EchoRefSpan>() + "     Print the first 3 fields of <ref-file> using chrom:start-end format.\n";
+    usage << "      --" + details::name<VT::EchoRefLength>() + "     Print the length of each line from <ref-file>.\n";
     usage << "      --" + details::name<VT::EchoMapIntersectLength>() + " List lengths of overlaps.\n";
     usage << "      --" + details::name<VT::Indicator>() + "         Print 1 if there exists an overlapping element in <map-file>, 0 otherwise.\n";
     usage << "\n";
