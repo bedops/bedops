@@ -1,7 +1,7 @@
 /*
   Author: Scott Kuehn
     Mods: Shane Neph
-  Date:   Thu Sep  7 08:48:35 PDT 2006
+    Date: Thu Sep  7 08:48:35 PDT 2006
 */
 //
 //    BEDOPS
@@ -66,7 +66,7 @@ namespace dbug_help
     int
     parseLine(char* line)
     {
-        int i = (int) strlen(line); // perhaps better to cast strlen to an int, in order to fulfill parseline contract
+        int i = static_cast<int>( strlen(line) ); // perhaps better to cast strlen to an int, in order to fulfill parseline contract
         while (*line < '0' || *line > '9') line++;
         line[i-3] = '\0';
         i = atoi(line);
@@ -125,7 +125,7 @@ createTmpFile(char const* path, char** fileName)
             return tmpfile();
         }
 
-    tmpl = (char*)malloc(1 + strlen(path) + L_tmpnam);
+    tmpl = static_cast<char*>( malloc(1 + strlen(path) + L_tmpnam) );
     strcpy(tmpl, path);
     strcpy(tmpl+strlen(path), "/sb.XXXXXX");
     fd = mkstemp(tmpl);
@@ -135,7 +135,7 @@ createTmpFile(char const* path, char** fileName)
             return NULL;
         }
     fp = fdopen(fd, "wb+");
-    *fileName = (char*)malloc(strlen(tmpl) + 1);
+    *fileName = static_cast<char*>( malloc(strlen(tmpl) + 1) );
     strcpy(*fileName, tmpl);
     free(tmpl);
     return fp;
@@ -205,7 +205,7 @@ initializeBedData(double *bytes)
 
     BedData * beds;
 
-    beds = (BedData*)malloc(sizeof(BedData));
+    beds = static_cast<BedData*>( malloc(sizeof(BedData)) );
     *bytes += sizeof(BedData);
 
     if (beds == NULL) 
@@ -213,7 +213,7 @@ initializeBedData(double *bytes)
             return NULL;
         }
     beds->numChroms = 0;
-    beds->chroms = (ChromBedData**)malloc(sizeof(ChromBedData *) * (NUM_CHROM_EST));
+    beds->chroms = static_cast<ChromBedData**>( malloc(sizeof(ChromBedData *) * (NUM_CHROM_EST)) );
     *bytes += (sizeof(ChromBedData*) * NUM_CHROM_EST);
     if (beds->chroms == NULL) 
         {
@@ -234,7 +234,7 @@ initializeChromBedData(char *chromBuf, double *bytes) {
             return NULL;
         }
 
-    chrom = (ChromBedData*)malloc(sizeof(ChromBedData));
+    chrom = static_cast<ChromBedData*>( malloc(sizeof(ChromBedData)) );
     *bytes += sizeof(ChromBedData);
     if(chrom == NULL) 
         {
@@ -279,7 +279,7 @@ appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::Sig
     // requires INIT_NUM_BED_ITEMS_EST < NUM_BED_ITEMS_EST
     if (index == 0)
         { // first initialization
-            chrom->coords = (BedCoordData*)malloc(sizeof(BedCoordData) * INIT_NUM_BED_ITEMS_EST);
+            chrom->coords = static_cast<BedCoordData*>( malloc(sizeof(BedCoordData) * INIT_NUM_BED_ITEMS_EST) );
             if(chrom->coords == NULL)
                 {
                     fprintf(stderr, "Error: %s, %d: Unable to create BedCoordData structure. Out of memory.\n", __FILE__, __LINE__);
@@ -290,7 +290,7 @@ appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::Sig
     else if (index == (INIT_NUM_BED_ITEMS_EST-1))
         {
             newSize = sizeof(BedCoordData) * static_cast<size_t>(NUM_BED_ITEMS_EST);
-            chrom->coords = (BedCoordData*)realloc(chrom->coords, newSize);
+            chrom->coords = static_cast<BedCoordData*>( realloc(chrom->coords, newSize) );
             if(chrom->coords == NULL)
                 {
                     fprintf(stderr, "Error: %s, %d: Unable to create BED structure. Out of memory.\n", __FILE__, __LINE__);
@@ -310,7 +310,7 @@ appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::Sig
         {
             //fprintf(stderr, "Reallocating...\n");
             newSize = sizeof(BedCoordData) * static_cast<size_t>(index + NUM_BED_ITEMS_EST);
-            chrom->coords = (BedCoordData*)realloc(chrom->coords, newSize);
+            chrom->coords = static_cast<BedCoordData*>( realloc(chrom->coords, newSize) );
             if(chrom->coords == NULL)
                 {
                     fprintf(stderr, "Error: %s, %d: Unable to create BED structure. Out of memory.\n", __FILE__, __LINE__);
@@ -339,7 +339,7 @@ appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::Sig
                     fprintf(stderr, "Error: %s, %d: Bad 'data' variable.\n", __FILE__, __LINE__);
                     return static_cast<Bed::SignedCoordType>(-1);
                 }
-            dataPtr = (char*)calloc(dataBufLen + 1, sizeof(char));
+            dataPtr = static_cast<char*>( calloc(dataBufLen + 1, sizeof(char)) );
             *bytes += dataBufLen + 1;
             if(dataPtr == NULL) 
                 {
@@ -390,33 +390,33 @@ mergeSort(FILE* output, FILE **tmpFiles, unsigned int numFiles)
     /* error checking in processData() has already been performed, headers and empty rows removed, etc. */
     unsigned int i = 0U;
     int done = 0, currMin = 0, val = 0;
-    char **chroms = (char**)malloc(sizeof(char*) * static_cast<size_t>(numFiles));
+    char **chroms = static_cast<char**>( malloc(sizeof(char*) * static_cast<size_t>(numFiles)) );
 
     if(chroms == NULL)
         return -1;
 
-    Bed::SignedCoordType *starts = (Bed::SignedCoordType*)malloc(sizeof(Bed::SignedCoordType) * static_cast<size_t>(numFiles));
+    Bed::SignedCoordType *starts = static_cast<Bed::SignedCoordType*>( malloc(sizeof(Bed::SignedCoordType) * static_cast<size_t>(numFiles)) );
     if(starts == NULL)
         return -1;
 
-    Bed::SignedCoordType *ends = (Bed::SignedCoordType*)malloc(sizeof(Bed::SignedCoordType) * static_cast<size_t>(numFiles));
+    Bed::SignedCoordType *ends = static_cast<Bed::SignedCoordType*>( malloc(sizeof(Bed::SignedCoordType) * static_cast<size_t>(numFiles)) );
     if(ends == NULL)
         return -1;
 
-    int *fields = (int*)malloc(sizeof(int) * static_cast<size_t>(numFiles));
+    int *fields = static_cast<int*>( malloc(sizeof(int) * static_cast<size_t>(numFiles)) );
     if(fields == NULL)
         return -1;
 
-    char **rests = (char**)malloc(sizeof(char*) * static_cast<size_t>(numFiles));
+    char **rests = static_cast<char**>( malloc(sizeof(char*) * static_cast<size_t>(numFiles)) );
     if(rests == NULL)
         return -1;
 
     for(i=0; i < numFiles; ++i) {
         fseek(tmpFiles[i], 0, SEEK_SET);
-        chroms[i] = (char*)malloc(sizeof(char) * (CHROM_NAME_LEN+1));
+        chroms[i] = static_cast<char*>( malloc(sizeof(char) * (CHROM_NAME_LEN+1)) );
         if(chroms[i] == NULL)
             return -1;
-        rests[i] = (char*)malloc(sizeof(char) * (BED_LINE_LEN+1));
+        rests[i] = static_cast<char*>( malloc(sizeof(char) * (BED_LINE_LEN+1)) );
         if(rests[i] == NULL)
             return -1;
     } /* for */
@@ -567,7 +567,7 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
             return EXIT_FAILURE;
         }
 
-    chromBytes = (double**)malloc(sizeof(double *));
+    chromBytes = static_cast<double**>( malloc(sizeof(double *)) );
     if(chromBytes == NULL)
         {
             fprintf(stderr, "Error: %s, %d: Unable to create double* array. Out of memory.\n", __FILE__, __LINE__);
@@ -667,7 +667,7 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                                     lines, bedFileNames[iidx]);
                             return EXIT_FAILURE;
                         }
-                    if(dptr - cptr > (double)Bed::MAX_DEC_INTEGERS)
+                    if(dptr - cptr > static_cast<double>( Bed::MAX_DEC_INTEGERS ))
                         {
                             fprintf(stderr, "Start coordinate is too large.  Max decimal digits allowed is %ld in BEDOPS.Constants.hpp.  See line %" PRIu64 " in %s.\n",
                                     Bed::MAX_DEC_INTEGERS, lines, bedFileNames[iidx]);
@@ -710,7 +710,7 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                                     return EXIT_FAILURE;
                                 }
                         }
-                    if(cptr - dptr > (double)Bed::MAX_DEC_INTEGERS)
+                    if(cptr - dptr > static_cast<double>( Bed::MAX_DEC_INTEGERS ))
                         {
                             fprintf(stderr, "End coordinate is too large.  Max decimal digits allowed is %ld in BEDOPS.Constants.hpp.  See line %" PRIu64 " in %s.\n",
                                     Bed::MAX_DEC_INTEGERS, lines, bedFileNames[iidx]);
@@ -825,7 +825,7 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                                                     return EXIT_FAILURE;
                                                 }
                                         }
-                                    else if(cptr - bedLine > (double)ID_NAME_LEN)
+                                    else if(cptr - bedLine > static_cast<double>( ID_NAME_LEN ))
                                         {
                                             fprintf(stderr, "ID field too long at line %" PRIu64 " in %s.\n",
                                                     lines, bedFileNames[iidx]);
@@ -852,10 +852,10 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                     else /* new chrom */
                         {
                             errno = 0;
-                            if(beds->numChroms >= (double)((NUM_CHROM_EST * chromAllocs)))
+                            if(beds->numChroms >= static_cast<double>( ((NUM_CHROM_EST * chromAllocs)) ))
                                 {   /* Resize Chrom Structure */
                                     chromAllocs++;
-                                    beds->chroms = (ChromBedData**)realloc(beds->chroms, sizeof(ChromBedData*) * NUM_CHROM_EST * chromAllocs);
+                                    beds->chroms = static_cast<ChromBedData**>( realloc(beds->chroms, sizeof(ChromBedData*) * NUM_CHROM_EST * chromAllocs) );
                                     totalBytes += sizeof(ChromBedData*) * NUM_CHROM_EST;
                                     if(beds->chroms == NULL)
                                         {
@@ -874,13 +874,13 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                                     return EXIT_FAILURE;
                                 }
                             diffBytes = totalBytes - diffBytes;
-                            chromBytes = (double**)realloc(chromBytes, sizeof(double*) * (static_cast<size_t>(beds->numChroms) + 1));
+                            chromBytes = static_cast<double**>( realloc(chromBytes, sizeof(double*) * (static_cast<size_t>(beds->numChroms) + 1)) );
                             if(chromBytes == NULL)
                                 {
                                     fprintf(stderr, "Error: %s, %d: Unable to create double* array. Out of memory.\n", __FILE__, __LINE__);
                                     return EXIT_FAILURE;
                                 }
-                            chromBytes[beds->numChroms] = (double*)malloc(sizeof(double));
+                            chromBytes[beds->numChroms] = static_cast<double*>( malloc(sizeof(double)) );
                             if(chromBytes[beds->numChroms] == NULL)
                                 {
                                     fprintf(stderr, "Error: %s, %d: Unable to create double. Out of memory.\n", __FILE__, __LINE__);
@@ -903,7 +903,7 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                                                     return EXIT_FAILURE;
                                                 }
                                         }
-                                    else if(cptr - bedLine > (double)ID_NAME_LEN)
+                                    else if(cptr - bedLine > static_cast<double>( ID_NAME_LEN ))
                                         {
                                             fprintf(stderr, "ID field too long at line %" PRIu64 " in %s.\n",
                                                     lines, bedFileNames[iidx]);
@@ -941,7 +941,7 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                              */
 
                              errno = 0;
-                             tmpFiles = (FILE**)realloc(tmpFiles, sizeof(FILE*) * (tmpFileCount+1));
+                             tmpFiles = static_cast<FILE**>( realloc(tmpFiles, sizeof(FILE*) * (tmpFileCount+1)) );
                              if(tmpFiles == NULL)
                                  {
                                      fprintf(stderr, "Error: %s, %d: Unable to create FILE* array: %s. Out of memory.\n", __FILE__, 
@@ -949,7 +949,7 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                                      return EXIT_FAILURE;
                                  }
                              errno = 0;
-                             tmpFileNames = (char**)realloc(tmpFileNames, sizeof(char*) * (tmpFileCount+1));
+                             tmpFileNames = static_cast<char**>( realloc(tmpFileNames, sizeof(char*) * (tmpFileCount+1)) );
                              if(tmpFileNames == NULL)
                                  {
                                      fprintf(stderr, "Error: %s, %d: Unable to create char* array: %s. Out of memory.\n", __FILE__, 
@@ -978,7 +978,7 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                              chromAllocs = 1;
                              chrNames.clear();
                              firstCross = true;
-                             chromBytes = (double**)malloc(sizeof(double *));
+                             chromBytes = static_cast<double**>( malloc(sizeof(double *)) );
                              if(chromBytes == NULL)
                                  {
                                      fprintf(stderr, "Error: %s, %d: Unable to create double* array. Out of memory.\n", __FILE__, __LINE__);
@@ -1004,13 +1004,13 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                                          }
 
                                      freeTmpFiles(tmpFileCount, tmpFiles, tmpFileNames);
-                                     tmpFiles = (FILE**)malloc(sizeof(FILE *));
+                                     tmpFiles = static_cast<FILE**>( malloc(sizeof(FILE *)) );
                                      if(tmpFiles == NULL)
                                          {
                                              fprintf(stderr, "Error: %s, %d: Unable to create FILE* array. Out of memory.\n", __FILE__, __LINE__);
                                              return EXIT_FAILURE;
                                          }
-                                     tmpFileNames = (char**)malloc(sizeof(char *));
+                                     tmpFileNames = static_cast<char**>( malloc(sizeof(char *)) );
                                      if(tmpFileNames == NULL)
                                          {
                                              fprintf(stderr, "Error: %s, %d: Unable to create char* array. Out of memory.\n", __FILE__, __LINE__);
@@ -1049,14 +1049,14 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
             if(beds->numChroms > 0)
                 { /* sort and spit out what's in memory */
                     errno = 0;
-                    tmpFiles = (FILE **)realloc(tmpFiles, sizeof(FILE*) * (tmpFileCount+1));
+                    tmpFiles = static_cast<FILE **>( realloc(tmpFiles, sizeof(FILE*) * (tmpFileCount+1)) );
                     if(tmpFiles == NULL)
                         {
                             fprintf(stderr, "Error: %s, %d: Unable to expand Chrom structure: %s. Out of memory.\n", __FILE__, 
                                     __LINE__, strerror(errno));
                             return EXIT_FAILURE;
                         }
-                    tmpFileNames = (char**)realloc(tmpFileNames, sizeof(char*) * (tmpFileCount+1));
+                    tmpFileNames = static_cast<char**>( realloc(tmpFileNames, sizeof(char*) * (tmpFileCount+1)) );
                     if(tmpFileNames == NULL)
                         {
                             fprintf(stderr, "Error: %s, %d: Unable to create char* array: %s. Out of memory.\n", __FILE__, 
@@ -1184,17 +1184,19 @@ lexSortBedData(BedData *beds)
 int
 numCompareBedData(const void *pos1, const void *pos2) 
 {
-    Bed::SignedCoordType diff = ((BedCoordData *)pos1)->startCoord - ((BedCoordData *)pos2)->startCoord;
+    Bed::SignedCoordType diff = (static_cast<const BedCoordData *>(pos1))->startCoord - (static_cast<const BedCoordData *>(pos2))->startCoord;
     if(diff)
         {
             return (diff > 0) ? 1 : -1;
         }
-    diff = ((BedCoordData *)pos1)->endCoord - ((BedCoordData *)pos2)->endCoord;
+    diff = (static_cast<const BedCoordData *>(pos1))->endCoord - (static_cast<const BedCoordData *>(pos2))->endCoord;
     return (diff > 0) ? 1 : ((diff < 0) ? -1 : 0);
 }
 
 int 
 lexCompareBedData(const void *chrPos1, const void *chrPos2) 
 {
-    return(strcmp((*((ChromBedData **)chrPos1))->chromName, (*((ChromBedData **)chrPos2))->chromName));
+    ChromBedData **chrPos1Cbd = static_cast<ChromBedData **>(const_cast<void *>(chrPos1));
+    ChromBedData **chrPos2Cbd = static_cast<ChromBedData **>(const_cast<void *>(chrPos2));
+    return strcmp((*chrPos1Cbd)->chromName, (*chrPos2Cbd)->chromName);
 }
