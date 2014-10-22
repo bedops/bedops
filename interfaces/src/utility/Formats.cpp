@@ -23,6 +23,8 @@
 
 #include <cstdio>
 #include <cstring>
+#include <climits>
+#include <cstdint>
 
 #include "utility/Formats.hpp"
 
@@ -37,7 +39,9 @@ namespace Formats {
   char const* Format(uint64_t) { return "%" PRIu64; }
   char const* Format(long int) { return "%ld"; }
   char const* Format(long long int) { return "%lld"; } /* msft doesn't conform to this standard */
+#if ULLONG_MAX != UINT64_MAX
   char const* Format(unsigned long long int) { return "%llu"; } /* msft doesn't conform to this standard */
+#endif
   char const* Format(short) { return "%hd"; }
   char const* Format(unsigned short) { return "%hu"; }
 
