@@ -1,7 +1,7 @@
 /*
   Author: Scott Kuehn
     Mods: Shane Neph
-  Date:   Thu Sep  7 08:48:35 PDT 2006
+    Date: Thu Sep  7 08:48:35 PDT 2006
 */
 //
 //    BEDOPS
@@ -116,7 +116,7 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, d
                                                 }
 
                                             units = 1;
-                                            tmp = (char*)malloc(lng + 1);
+                                            tmp = static_cast<char*>( malloc(lng + 1) );
                                             strncpy(tmp, argv[i], lng);
                                             tmp[lng] = '\0';
                                             *maxMem = factor * strtod(tmp, NULL);
@@ -154,7 +154,7 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, d
                                     fprintf(stderr, "No value given for --tmpdir.\n");
                                     exit(EXIT_FAILURE);
                                 }
-                            *tmpPath = (char*)malloc(strlen(argv[i])+1);
+                            *tmpPath = static_cast<char*>( malloc(strlen(argv[i])+1) );
                             strcpy(*tmpPath, argv[i]);
                             --j;
                             numFiles -= 2;
