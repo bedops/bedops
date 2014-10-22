@@ -38,6 +38,7 @@ namespace Formats {
   char const* Format(unsigned int) { return "%u"; }
   char const* Format(uint64_t) { return "%" PRIu64; }
   char const* Format(long int) { return "%ld"; }
+  char const* Format(unsigned long int) { return "%lu"; }
   char const* Format(long long int) { return "%lld"; } /* msft doesn't conform to this standard */
 #if ULLONG_MAX != UINT64_MAX
   char const* Format(unsigned long long int) { return "%llu"; } /* msft doesn't conform to this standard */
