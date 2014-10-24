@@ -68,7 +68,11 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
     unsigned char zInBuf[STARCH_Z_CHUNK];
     unsigned char zOutBuf[STARCH_Z_CHUNK];
     unsigned char zLineBuf[STARCH_Z_CHUNK];
-    unsigned char *zRemainderBuf = (unsigned char *) malloc(1); 
+#ifdef __cplusplus
+    unsigned char *zRemainderBuf = static_cast<unsigned char *>( malloc(1) ); 
+#else
+    unsigned char *zRemainderBuf = malloc(1); 
+#endif
     z_stream zStream;
     unsigned int zHave, zOutBufIdx;
     size_t zBufIdx, zBufOffset;
@@ -88,7 +92,11 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
         pLength = 0;
         lastEnd = 0;
 
+#ifdef __cplusplus
+        if (STARCH_fseeko(*inFp, static_cast<off_t>( cumulativeSize + mdOffset ), SEEK_SET) != 0) {
+#else
         if (STARCH_fseeko(*inFp, (off_t)(cumulativeSize + mdOffset), SEEK_SET) != 0) {
+#endif
             fprintf(stderr, "ERROR: Could not seek data in archive at chromosome (%s) and offset (%" PRIu64 ")\n", chromosome, cumulativeSize + mdOffset);
             return UNSTARCH_FATAL_ERROR;
         }
@@ -116,7 +124,11 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
     
             /* while stream is open, read line from stream, and reverse transform */
             do {
-                zStream.avail_in = (uInt) fread(zInBuf, 1, STARCH_Z_CHUNK, *inFp);
+#ifdef __cplusplus
+                zStream.avail_in = static_cast<unsigned int>( fread(zInBuf, 1, STARCH_Z_CHUNK, *inFp) );
+#else
+                zStream.avail_in = (unsigned int) fread(zInBuf, 1, STARCH_Z_CHUNK, *inFp);
+#endif
                 if (zStream.avail_in == 0)
                     break;
                 zStream.next_in = zInBuf;
@@ -134,8 +146,13 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
 
                     /* copy remainder buffer onto line buffer, if not NULL */
                     if (zRemainderBuf) {
+#ifdef __cplusplus
+                        strncpy(reinterpret_cast<char *>( zLineBuf ), reinterpret_cast<const char *>( zRemainderBuf ), strlen(reinterpret_cast<const char *>( zRemainderBuf )));
+                        zBufOffset = strlen(reinterpret_cast<const char *>( zRemainderBuf ));
+#else
                         strncpy((char *) zLineBuf, (const char *) zRemainderBuf, strlen((const char *) zRemainderBuf));
                         zBufOffset = strlen((const char *) zRemainderBuf);
+#endif
                     }
                     else 
                         zBufOffset = 0;
@@ -145,7 +162,11 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
                         zLineBuf[zBufIdx] = zOutBuf[zOutBufIdx];
                         if (zLineBuf[zBufIdx] == '\n') {
                             zLineBuf[zBufIdx] = '\0';
+#ifdef __cplusplus
+                            zBufIdx = static_cast<size_t>( -1 );
+#else
                             zBufIdx = (size_t) -1;
+#endif
                             (!headerFlag) ? \
                                     UNSTARCH_reverseTransformHeaderlessInput(chromosome, zLineBuf, '\t', &start, &pLength, &lastEnd, firstInputToken, secondInputToken, outFp):\
                                 UNSTARCH_reverseTransformInput(chromosome, zLineBuf, '\t', &start, &pLength, &lastEnd, firstInputToken, secondInputToken, outFp);
@@ -155,12 +176,24 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
                     }
 
                     /* copy some of line buffer onto the remainder buffer, if there are remnants from the z-stream */
+#ifdef __cplusplus
+                    if (strlen(reinterpret_cast<const char *>( zLineBuf )) > 0) {
+#else
                     if (strlen((const char *) zLineBuf) > 0) {
+#endif
 
+#ifdef __cplusplus
+                        if (strlen(reinterpret_cast<const char *>( zLineBuf )) > strlen(reinterpret_cast<const char *>( zRemainderBuf ))) {
+#else
                         if (strlen((const char *) zLineBuf) > strlen((const char *) zRemainderBuf)) {
+#endif
                             /* to minimize the chance of doing another (expensive) malloc, we double the length of zRemainderBuf */
                             free(zRemainderBuf);
-                            zRemainderBuf = (unsigned char *) malloc(strlen((const char *) zLineBuf) * 2);
+#ifdef __cplusplus
+                            zRemainderBuf = static_cast<unsigned char *>( malloc(strlen((const char *) zLineBuf) * 2) );
+#else
+                            zRemainderBuf = malloc(strlen((const char *) zLineBuf) * 2);
+#endif
                         }
 
                         /* it is necessary to copy only that part of zLineBuf up to zBufIdx characters  */
@@ -169,7 +202,11 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
                         /* zRemainderBuf, so that any cruft from a previous iteration is ignored in the */
                         /* next iteration of parsing the chromosome's z-stream                          */
 
+#ifdef __cplusplus
+                        strncpy(reinterpret_cast<char *>( zRemainderBuf ), reinterpret_cast<const char *>( zLineBuf ), zBufIdx);
+#else
                         strncpy((char *) zRemainderBuf, (const char *) zLineBuf, zBufIdx);
+#endif
                         zRemainderBuf[zBufIdx] = '\0';
 
                         /* we should only at most have to do this every STARCH_Z_CHUNK chars, and once  */
@@ -237,7 +274,11 @@ UNSTARCH_extractDataWithBzip2(FILE **inFp, FILE *outFp, const char *whichChr, co
         pLength = 0;
         lastEnd = 0;
 
+#ifdef __cplusplus
+        if (STARCH_fseeko(*inFp, static_cast<off_t>( cumulativeSize + mdOffset ), SEEK_SET) != 0) {
+#else
         if (STARCH_fseeko(*inFp, (off_t) (cumulativeSize + mdOffset), SEEK_SET) != 0) {
+#endif
             fprintf(stderr, "ERROR: Could not seek data in archve\n");
             return UNSTARCH_FATAL_ERROR;
         }
@@ -254,7 +295,12 @@ UNSTARCH_extractDataWithBzip2(FILE **inFp, FILE *outFp, const char *whichChr, co
                 return UNSTARCH_FATAL_ERROR;
             }
 
-            bzOutput = (unsigned char *) malloc(bzOutputLength);
+#ifdef __cplusplus
+            bzOutput = static_cast<unsigned char *>( malloc(bzOutputLength) );
+#else
+            bzOutput = malloc(bzOutputLength);
+#endif
+
             do {
                 UNSTARCH_bzReadLine(bzFp, &bzOutput);                
                 if (bzOutput) {
@@ -312,7 +358,11 @@ UNSTARCH_bzReadLine(BZFILE *input, unsigned char **output)
         runFlag = kStarchTrue;
         if (offset + 1 == len) {
             len += UNSTARCH_COMPRESSED_BUFFER_MAX_LENGTH;
-            outputCopy = (unsigned char *) realloc(*output, len);
+#ifdef __cplusplus
+            outputCopy = static_cast<unsigned char *>( realloc(*output, len) );
+#else
+            outputCopy = realloc(*output, len);
+#endif
             if (! outputCopy) {
                 fprintf(stderr, "ERROR: Could not reallocate space for compressed buffer.\n");
                 exit(-1);
@@ -355,6 +405,18 @@ UNSTARCH_reverseTransformInput(const char *chr, const unsigned char *str, char d
     /* if *str begins with a reserved header name, then we
        shortcut and print the line without transformation */
 
+#ifdef __cplusplus
+    if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedHeaderTrack, strlen(kStarchBedHeaderTrack)) == 0)
+        fprintf(outFp, "%s\n", str);
+    else if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedHeaderBrowser, strlen(kStarchBedHeaderBrowser)) == 0)
+        fprintf(outFp, "%s\n", str);
+    else if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedHeaderSAM, strlen(kStarchBedHeaderSAM)) == 0)
+        fprintf(outFp, "%s\n", str);
+    else if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedHeaderVCF, strlen(kStarchBedHeaderVCF)) == 0)
+        fprintf(outFp, "%s\n", str);
+    else if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedGenericComment, strlen(kStarchBedGenericComment)) == 0)
+        fprintf(outFp, "%s\n", str);
+#else
     if (strncmp((const char *) str, kStarchBedHeaderTrack, strlen(kStarchBedHeaderTrack)) == 0)
         fprintf(outFp, "%s\n", str);
     else if (strncmp((const char *) str, kStarchBedHeaderBrowser, strlen(kStarchBedHeaderBrowser)) == 0)
@@ -365,6 +427,7 @@ UNSTARCH_reverseTransformInput(const char *chr, const unsigned char *str, char d
         fprintf(outFp, "%s\n", str);
     else if (strncmp((const char *) str, kStarchBedGenericComment, strlen(kStarchBedGenericComment)) == 0)
         fprintf(outFp, "%s\n", str);
+#endif
 
     /* otherwise, we transform *str back into printable tokens */
 
@@ -372,30 +435,57 @@ UNSTARCH_reverseTransformInput(const char *chr, const unsigned char *str, char d
 
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
+#ifdef __cplusplus
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+                *lastEnd = *start + *pLength;
+                fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, static_cast<SignedCoordType>( *start ), static_cast<SignedCoordType>( *lastEnd ), elemTok2);
+#else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
                 *lastEnd = *start + *pLength;
                 fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (SignedCoordType) *start, (SignedCoordType) *lastEnd, elemTok2);
+#endif
             }
             else {
+#ifdef __cplusplus
+                *lastEnd = static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) ) + *pLength;
+                fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) ), static_cast<SignedCoordType>( *lastEnd ), elemTok2);
+#else
                 *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
                 fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX), (SignedCoordType) *lastEnd, elemTok2);
+#endif
             }
         }
         else {
             pTest = NULL;
+#ifdef __cplusplus
+            pTest = UNSTARCH_strnstr(reinterpret_cast<const char *>( elemTok1 ), pTestParam, 1);
+#else
             pTest = UNSTARCH_strnstr((const char *)elemTok1, pTestParam, 1);
+#endif
             if (pTest) {
                 pTestChars = NULL;
-                pTestChars = (char *) malloc(strlen(elemTok1));
+#ifdef __cplusplus
+                pTestChars = static_cast<char *>( malloc(strlen(elemTok1)) );
+#else
+                pTestChars = malloc(strlen(elemTok1));
+#endif
                 strncpy(pTestChars, elemTok1 + 1, strlen(elemTok1));
                 if (!pTestChars)
                     return UNSTARCH_FATAL_ERROR;
+#ifdef __cplusplus
+                *pLength = static_cast<SignedCoordType>( strtoull(pTestChars, NULL, UNSTARCH_RADIX) );
+#else
                 *pLength = (SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
+#endif
                 free(pTestChars); 
                 pTestChars = NULL;
             }
             else {
+#ifdef __cplusplus
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+#else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+#endif
                 *lastEnd = *start + *pLength;
                 fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\n", chr, *start, *lastEnd);
             }
@@ -430,6 +520,18 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
     
     char out[1024];
 
+#ifdef __cplusplus
+    if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedHeaderTrack, strlen(kStarchBedHeaderTrack)) == 0)
+        sprintf(out, "%s\n", str);
+    else if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedHeaderBrowser, strlen(kStarchBedHeaderBrowser)) == 0)
+        sprintf(out, "%s\n", str);
+    else if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedHeaderSAM, strlen(kStarchBedHeaderSAM)) == 0)
+        sprintf(out, "%s\n", str);
+    else if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedHeaderVCF, strlen(kStarchBedHeaderVCF)) == 0)
+        sprintf(out, "%s\n", str);
+    else if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedGenericComment, strlen(kStarchBedGenericComment)) == 0)
+        sprintf(out, "%s\n", str);
+#else
     if (strncmp((const char *) str, kStarchBedHeaderTrack, strlen(kStarchBedHeaderTrack)) == 0)
         sprintf(out, "%s\n", str);
     else if (strncmp((const char *) str, kStarchBedHeaderBrowser, strlen(kStarchBedHeaderBrowser)) == 0)
@@ -440,6 +542,7 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
         sprintf(out, "%s\n", str);
     else if (strncmp((const char *) str, kStarchBedGenericComment, strlen(kStarchBedGenericComment)) == 0)
         sprintf(out, "%s\n", str);
+#endif
 
     /* otherwise, we transform *str back into printable tokens */
 
@@ -447,14 +550,26 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
 
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
+#ifdef __cplusplus
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+#else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+#endif
                 *lastEnd = *start + *pLength;
                 if (! *currentChr) {
-                    *currentChr = (char *) malloc(strlen(chr) + 1);
+#ifdef __cplusplus
+                    *currentChr = static_cast<char *>( malloc(strlen(chr) + 1) );
+#else
+                    *currentChr = malloc(strlen(chr) + 1);
+#endif
                     *currentChrLen = strlen(chr) + 1;
                 }
                 else if ((strlen(chr) + 1) > *currentChrLen) {
-                    currentChrCopy = (char *) realloc(*currentChr, strlen(chr) * 2);
+#ifdef __cplusplus
+                    currentChrCopy = static_cast<char *>( realloc(*currentChr, strlen(chr) * 2) );
+#else
+                    currentChrCopy = realloc(*currentChr, strlen(chr) * 2);
+#endif
                     if (!currentChrCopy) {
                         fprintf(stderr, "ERROR: Ran out of memory while extending chr token\n");
                         return UNSTARCH_FATAL_ERROR;
@@ -470,11 +585,19 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
                 *currentStart = *start;
                 *currentStop = *lastEnd;
                 if (! *currentRemainder) {
-                    *currentRemainder = (char *) malloc(strlen(elemTok2) + 1);
+#ifdef __cplusplus
+                    *currentRemainder = static_cast<char *>( malloc(strlen(elemTok2) + 1) );
+#else
+                    *currentRemainder = malloc(strlen(elemTok2) + 1);
+#endif
                     *currentRemainderLen = strlen(elemTok2) + 1;
                 }
                 else if ((strlen(elemTok2) + 1) > *currentRemainderLen) {
-                    currentRemainderCopy = (char *) realloc(*currentRemainder, strlen(elemTok2) * 2);
+#ifdef __cplusplus
+                    currentRemainderCopy = static_cast<char *>( realloc(*currentRemainder, strlen(elemTok2) * 2) );
+#else
+                    currentRemainderCopy = realloc(*currentRemainder, strlen(elemTok2) * 2);
+#endif
                     if (!currentRemainderCopy) {
 #ifdef __cplusplus
                         /* why can't c++ standardize on a format specifier for a simple std::size_t ? */
@@ -495,13 +618,25 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
                 }
            }
             else {
+#ifdef __cplusplus
+                *lastEnd = static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) ) + *pLength;
+#else
                 *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
+#endif
                 if (! *currentChr) {
-                    *currentChr = (char *) malloc(strlen(chr) + 1);
+#ifdef __cplusplus
+                    *currentChr = static_cast<char *>( malloc(strlen(chr) + 1) );
+#else
+                    *currentChr = malloc(strlen(chr) + 1);
+#endif
                     *currentChrLen = strlen(chr) + 1;
                 }
                 else if ((strlen(chr) + 1) > *currentChrLen) {
-                    currentChrCopy = (char *) realloc(*currentChr, strlen(chr) * 2);
+#ifdef __cplusplus
+                    currentChrCopy = static_cast<char *>( realloc(*currentChr, strlen(chr) * 2) );
+#else
+                    currentChrCopy = realloc(*currentChr, strlen(chr) * 2);
+#endif
                     if (!currentChrCopy) {
                         fprintf(stderr, "ERROR: Ran out of memory while extending chr token\n");
                         return UNSTARCH_FATAL_ERROR;
@@ -514,14 +649,26 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
                     fprintf(stderr, "ERROR: Current chromosome name could not be copied\n");
                     return UNSTARCH_FATAL_ERROR;                
                 }
+#ifdef __cplusplus
+                *currentStart = static_cast<int64_t>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+#else
                 *currentStart = (int64_t) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+#endif
                 *currentStop = *lastEnd;
                 if (! *currentRemainder) {
-                    *currentRemainder = (char *) malloc(strlen(elemTok2) + 1);
+#ifdef __cplusplus
+                    *currentRemainder = static_cast<char *>( malloc(strlen(elemTok2) + 1) );
+#else
+                    *currentRemainder = malloc(strlen(elemTok2) + 1);
+#endif
                     *currentRemainderLen = strlen(elemTok2) + 1;
                 }
                 else if ((strlen(elemTok2) + 1) > *currentRemainderLen) {
-                    currentRemainderCopy = (char *) realloc(*currentRemainder, strlen(elemTok2) * 2);
+#ifdef __cplusplus
+                    currentRemainderCopy = static_cast<char *>( realloc(*currentRemainder, strlen(elemTok2) * 2) );
+#else
+                    currentRemainderCopy = realloc(*currentRemainder, strlen(elemTok2) * 2);
+#endif
                     if (!currentRemainderCopy) {
                         fprintf(stderr, "ERROR: Ran out of memory while extending remainder token\n");
                         return UNSTARCH_FATAL_ERROR;
@@ -532,32 +679,56 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
                 strncpy(*currentRemainder, elemTok2, strlen(elemTok2) + 1);
                 if (!*currentRemainder) {
                     fprintf(stderr, "ERROR: Current remainder token could not be copied\n");
-                    return UNSTARCH_FATAL_ERROR;                
+                    return UNSTARCH_FATAL_ERROR;
                 }
             }
         }
         else {
             pTest = NULL;
+#ifdef __cplusplus
+            pTest = UNSTARCH_strnstr(reinterpret_cast<const char *>( elemTok1 ), pTestParam, 1);
+#else
             pTest = UNSTARCH_strnstr((const char *)elemTok1, pTestParam, 1);
+#endif
             if (pTest) {
                 pTestChars = NULL;
-                pTestChars = (char *) malloc(strlen(elemTok1));
+#ifdef __cplusplus
+                pTestChars = static_cast<char *>( malloc(strlen(elemTok1)) );
+#else
+                pTestChars = malloc(strlen(elemTok1));
+#endif
                 strncpy(pTestChars, elemTok1 + 1, strlen(elemTok1));
                 if (!pTestChars)
                     return UNSTARCH_FATAL_ERROR;
+#ifdef __cplusplus
+                *pLength = static_cast<SignedCoordType>( strtoull(pTestChars, NULL, UNSTARCH_RADIX) );
+#else
                 *pLength = (SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
+#endif
                 free(pTestChars); 
                 pTestChars = NULL;
             }
             else {
+#ifdef __cplusplus
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+#else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+#endif
                 *lastEnd = *start + *pLength;
                 if (! *currentChr) {
-                    *currentChr = (char *) malloc(strlen(chr) + 1);
+#ifdef __cplusplus
+                    *currentChr = static_cast<char *>( malloc(strlen(chr) + 1) );
+#else
+                    *currentChr = malloc(strlen(chr) + 1);
+#endif
                     *currentChrLen = strlen(chr) + 1;
                 }
                 else if ((strlen(chr) + 1) > *currentChrLen) {
-                    currentChrCopy = (char *) realloc(*currentChr, strlen(chr) * 2);
+#ifdef __cplusplus
+                    currentChrCopy = static_cast<char *>( realloc(*currentChr, strlen(chr) * 2) );
+#else
+                    currentChrCopy = realloc(*currentChr, strlen(chr) * 2);
+#endif
                     if (!currentChrCopy) {
                         fprintf(stderr, "ERROR: Ran out of memory while extending chr token\n");
                         return UNSTARCH_FATAL_ERROR;
@@ -596,6 +767,18 @@ UNSTARCH_reverseTransformIgnoringHeaderedInput(const char *chr, const unsigned c
     /* if *str begins with a reserved header name, then we
        shortcut and do nothing */
 
+#ifdef __cplusplus
+    if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedHeaderTrack, strlen(kStarchBedHeaderTrack)) == 0)
+        ;
+    else if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedHeaderBrowser, strlen(kStarchBedHeaderBrowser)) == 0)
+        ;
+    else if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedHeaderSAM, strlen(kStarchBedHeaderSAM)) == 0)
+        ;
+    else if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedHeaderVCF, strlen(kStarchBedHeaderVCF)) == 0)
+        ;
+    else if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedGenericComment, strlen(kStarchBedGenericComment)) == 0)
+        ;
+#else
     if (strncmp((const char *) str, kStarchBedHeaderTrack, strlen(kStarchBedHeaderTrack)) == 0)
         ;
     else if (strncmp((const char *) str, kStarchBedHeaderBrowser, strlen(kStarchBedHeaderBrowser)) == 0)
@@ -606,6 +789,7 @@ UNSTARCH_reverseTransformIgnoringHeaderedInput(const char *chr, const unsigned c
         ;
     else if (strncmp((const char *) str, kStarchBedGenericComment, strlen(kStarchBedGenericComment)) == 0)
         ;
+#endif
 
     /* otherwise, we transform *str back into printable tokens */
 
@@ -613,30 +797,55 @@ UNSTARCH_reverseTransformIgnoringHeaderedInput(const char *chr, const unsigned c
 
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
+#ifdef __cplusplus
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+#else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+#endif
                 *lastEnd = *start + *pLength;
                 fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, *start, *lastEnd, elemTok2);
             }
             else {
+#ifdef __cplusplus
+                *lastEnd = static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) ) + *pLength;
+                fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) ), *lastEnd, elemTok2);
+#else
                 *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
                 fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX), *lastEnd, elemTok2);
+#endif
             }
         }
         else {
             pTest = NULL;
+#ifdef __cplusplus
+            pTest = UNSTARCH_strnstr(reinterpret_cast<const char *>(elemTok1), pTestParam, 1);
+#else
             pTest = UNSTARCH_strnstr((const char *)elemTok1, pTestParam, 1);
+#endif
             if (pTest) {
                 pTestChars = NULL;
-                pTestChars = (char *) malloc(strlen(elemTok1));
+#ifdef __cplusplus
+                pTestChars = static_cast<char *>( malloc(strlen(elemTok1)) );
+#else
+                pTestChars = malloc(strlen(elemTok1));
+#endif
                 strncpy(pTestChars, elemTok1 + 1, strlen(elemTok1));
                 if (!pTestChars)
                     return UNSTARCH_FATAL_ERROR;
+#ifdef __cplusplus
+                *pLength = static_cast<SignedCoordType>( strtoull(pTestChars, NULL, UNSTARCH_RADIX) );
+#else
                 *pLength = (SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
+#endif
                 free(pTestChars); 
                 pTestChars = NULL;
             }
             else {
+#ifdef __cplusplus
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+#else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+#endif
                 *lastEnd = *start + *pLength;
                 fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\n", chr, *start, *lastEnd);
             }
@@ -681,6 +890,18 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
 
     /* fprintf(stdout, "UNSTARCH_sReverseTransformIgnoringHeaderedInput - str: %s\n", str); */
 
+#ifdef __cplusplus
+    if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedHeaderTrack, strlen(kStarchBedHeaderTrack)) == 0)
+        return -1;
+    else if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedHeaderBrowser, strlen(kStarchBedHeaderBrowser)) == 0)
+        return -1;
+    else if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedHeaderSAM, strlen(kStarchBedHeaderSAM)) == 0)
+        return -1;
+    else if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedHeaderVCF, strlen(kStarchBedHeaderVCF)) == 0)
+        return -1;
+    else if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedGenericComment, strlen(kStarchBedGenericComment)) == 0)
+        return -1;
+#else
     if (strncmp((const char *) str, kStarchBedHeaderTrack, strlen(kStarchBedHeaderTrack)) == 0)
         return -1;
     else if (strncmp((const char *) str, kStarchBedHeaderBrowser, strlen(kStarchBedHeaderBrowser)) == 0)
@@ -691,6 +912,7 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
         return -1;
     else if (strncmp((const char *) str, kStarchBedGenericComment, strlen(kStarchBedGenericComment)) == 0)
         return -1;
+#endif
 
     /* otherwise, we transform *str back into printable tokens */
 
@@ -698,17 +920,29 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
 
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
+#ifdef __cplusplus
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+#else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+#endif
                 *lastEnd = *start + *pLength;
 #ifdef DEBUG
                 fprintf(stderr, "A: %s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, *start, *lastEnd, elemTok2);
 #endif
                 if (! *currentChr) {
-                    *currentChr = (char *) malloc(strlen(chr) + 1);
+#ifdef __cplusplus
+                    *currentChr = static_cast<char *>( malloc(strlen(chr) + 1) );
+#else
+                    *currentChr = malloc(strlen(chr) + 1);
+#endif
                     *currentChrLen = strlen(chr) + 1;
                 }
                 else if ((strlen(chr) + 1) > *currentChrLen) {
-                    currentChrCopy = (char *) realloc(*currentChr, strlen(chr) * 2);
+#ifdef __cplusplus
+                    currentChrCopy = static_cast<char *>( realloc(*currentChr, strlen(chr) * 2) );
+#else
+                    currentChrCopy = realloc(*currentChr, strlen(chr) * 2);
+#endif
                     if (!currentChrCopy) {
                         fprintf(stderr, "ERROR: Ran out of memory while extending chr token\n");
                         return UNSTARCH_FATAL_ERROR;
@@ -724,11 +958,19 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
                 *currentStart = *start;
                 *currentStop = *lastEnd;                
                 if (! *currentRemainder) {
-                    *currentRemainder = (char *) malloc(strlen(elemTok2) + 1);
+#ifdef __cplusplus
+                    *currentRemainder = static_cast<char *>( malloc(strlen(elemTok2) + 1) );
+#else
+                    *currentRemainder = malloc(strlen(elemTok2) + 1);
+#endif
                     *currentRemainderLen = strlen(elemTok2) + 1;
                 }
                 else if ((strlen(elemTok2) + 1) > *currentRemainderLen) {
-                    currentRemainderCopy = (char *) realloc(*currentRemainder, strlen(elemTok2) * 2);
+#ifdef __cplusplus
+                    currentRemainderCopy = static_cast<char *>( realloc(*currentRemainder, strlen(elemTok2) * 2) );
+#else
+                    currentRemainderCopy = realloc(*currentRemainder, strlen(elemTok2) * 2);
+#endif
                     if (!currentRemainderCopy) {
                         fprintf(stderr, "ERROR: Ran out of memory while extending remainder token\n");
                         return UNSTARCH_FATAL_ERROR;
@@ -759,16 +1001,28 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
                 }
             }
             else {
+#ifdef __cplusplus
+                *lastEnd = static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) ) + *pLength;
+#else
                 *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
+#endif
 #ifdef DEBUG
                 /* fprintf(stderr, "B: %s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (int64_t) strtoull(elemTok1, NULL, UNSTARCH_RADIX), *lastEnd, elemTok2); */
 #endif
                 if (! *currentChr) {
+#ifdef __cplusplus
+                    *currentChr = static_cast<char *>( malloc(strlen(chr) + 1) );
+#else
                     *currentChr = (char *) malloc(strlen(chr) + 1);
+#endif
                     *currentChrLen = strlen(chr) + 1;
                 }
                 else if (strlen(chr) > *currentChrLen) {
-                    currentChrCopy = (char *) realloc(*currentChr, strlen(chr) * 2);
+#ifdef __cplusplus
+                    currentChrCopy = static_cast<char *>( realloc(*currentChr, strlen(chr) * 2) );
+#else
+                    currentChrCopy = realloc(*currentChr, strlen(chr) * 2);
+#endif
                     if (!currentChrCopy) {
                         fprintf(stderr, "ERROR: Ran out of memory while extending chr token\n");
                         return UNSTARCH_FATAL_ERROR;
@@ -781,14 +1035,26 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
                     fprintf(stderr, "ERROR: Current chromosome name could not be copied\n");
                     return UNSTARCH_FATAL_ERROR;                
                 }
+#ifdef __cplusplus
+                *currentStart = static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+#else
                 *currentStart = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+#endif
                 *currentStop = *lastEnd;
                 if (! *currentRemainder) {
-                    *currentRemainder = (char *) malloc(strlen(elemTok2) + 1);
+#ifdef __cplusplus
+                    *currentRemainder = static_cast<char *>( malloc(strlen(elemTok2) + 1) );
+#else
+                    *currentRemainder = malloc(strlen(elemTok2) + 1);
+#endif
                     *currentRemainderLen = strlen(elemTok2) + 1;
                 }
                 else if ((strlen(elemTok2) + 1) > *currentRemainderLen) {
-                    currentRemainderCopy = (char *) realloc(*currentRemainder, strlen(elemTok2) * 2);
+#ifdef __cplusplus
+                    currentRemainderCopy = static_cast<char *>( realloc(*currentRemainder, strlen(elemTok2) * 2) );
+#else
+                    currentRemainderCopy = realloc(*currentRemainder, strlen(elemTok2) * 2);
+#endif
                     if (!currentRemainderCopy) {
                         fprintf(stderr, "ERROR: Ran out of memory while extending remainder token\n");
                         return UNSTARCH_FATAL_ERROR;
@@ -805,7 +1071,11 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
         }
         else {
             if (! *currentChr) {
-                *currentChr = (char *) malloc(strlen(chr) + 1);
+#ifdef __cplusplus
+                *currentChr = static_cast<char *>( malloc(strlen(chr) + 1) );
+#else
+                *currentChr = malloc(strlen(chr) + 1);
+#endif
                 if (! *currentChr) {
                     fprintf(stderr, "ERROR: Ran out of memory while allocating chr token\n");
                     return UNSTARCH_FATAL_ERROR;
@@ -813,7 +1083,11 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
                 *currentChrLen = strlen(chr) + 1;
             }
             else if ((strlen(chr) + 1) > *currentChrLen) {
-                currentChrCopy = (char *) realloc(*currentChr, strlen(chr) * 2);
+#ifdef __cplusplus
+                currentChrCopy = static_cast<char *>( realloc(*currentChr, strlen(chr) * 2) );
+#else
+                currentChrCopy = realloc(*currentChr, strlen(chr) * 2);
+#endif
                 if (!currentChrCopy) {
                     fprintf(stderr, "ERROR: Ran out of memory while extending chr token\n");
                     return UNSTARCH_FATAL_ERROR;
@@ -829,10 +1103,18 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
 
             if (elemTok1[0] == 'p') {
                 strncpy(pTestChars, elemTok1 + 1, strlen(elemTok1));
+#ifdef __cplusplus
+                *pLength = static_cast<SignedCoordType>( strtoull(pTestChars, NULL, UNSTARCH_RADIX) );
+#else
                 *pLength = (SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
+#endif
             }
             else {
+#ifdef __cplusplus
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+#else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+#endif
                 *lastEnd = *start + *pLength;
 #ifdef DEBUG
                 /* fprintf(stderr, "D: %s\t%" PRId64 "\t%" PRId64 "\n", chr, *start, *lastEnd); */
@@ -872,30 +1154,54 @@ UNSTARCH_reverseTransformHeaderlessInput(const char *chr, const unsigned char *s
     { 
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
+#ifdef __cplusplus
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+#else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+#endif
                 *lastEnd = *start + *pLength;
                 fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, *start, *lastEnd, elemTok2);
             }
             else {
+#ifdef __cplusplus
+                *lastEnd = static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) ) + *pLength;
+#else
                 *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
+#endif
                 fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX), *lastEnd, elemTok2);
             }
         }
         else {
             pTest = NULL;
+#ifdef __cplusplus
+            pTest = UNSTARCH_strnstr(reinterpret_cast<const char *>( elemTok1 ), pTestParam, 1);
+#else
             pTest = UNSTARCH_strnstr((const char *)elemTok1, pTestParam, 1);
+#endif
             if (pTest) {
                 pTestChars = NULL;
-                pTestChars = (char *) malloc(strlen(elemTok1));
+#ifdef __cplusplus
+                pTestChars = static_cast<char *>( malloc(strlen(elemTok1)) );
+#else
+                pTestChars = malloc(strlen(elemTok1));
+#endif
                 strncpy(pTestChars, elemTok1 + 1, strlen(elemTok1));
                 if (!pTestChars)
                     return UNSTARCH_FATAL_ERROR;
+#ifdef __cplusplus
+                *pLength = static_cast<SignedCoordType>( strtoull(pTestChars, NULL, UNSTARCH_RADIX) );
+#else
                 *pLength = (SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
+#endif
                 free(pTestChars); 
                 pTestChars = NULL;
             }
             else {
+#ifdef __cplusplus
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+#else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+#endif
                 *lastEnd = *start + *pLength;
                 fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\n", chr, *start, *lastEnd);
             }
@@ -1005,15 +1311,27 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
     { 
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
+#ifdef __cplusplus
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+#else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+#endif
                 *lastEnd = *start + *pLength;
                 //sprintf(out, "%s\t%lld\t%lld\t%s\n", chr, *start, *lastEnd, elemTok2);
                 if (! *currentChr) {
-                    *currentChr = (char *) malloc(strlen(chr) + 1);
+#ifdef __cplusplus
+                    *currentChr = static_cast<char *>( malloc(strlen(chr) + 1) );
+#else
+                    *currentChr = malloc(strlen(chr) + 1);
+#endif
                     *currentChrLen = strlen(chr) + 1;
                 }
                 else if ((strlen(chr) + 1) > *currentChrLen) {
-                    currentChrCopy = (char *) realloc(*currentChr, strlen(chr) * 2);
+#ifdef __cplusplus
+                    currentChrCopy = static_cast<char *>( realloc(*currentChr, strlen(chr) * 2) );
+#else
+                    currentChrCopy = realloc(*currentChr, strlen(chr) * 2);
+#endif
                     if (!currentChrCopy) {
                         fprintf(stderr, "ERROR: Ran out of memory while extending chr token\n");
                         return UNSTARCH_FATAL_ERROR;
@@ -1029,11 +1347,19 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
                 *currentStart = *start;
                 *currentStop = *lastEnd;
                 if (! *currentRemainder) {
-                    *currentRemainder = (char *) malloc(strlen(elemTok2) + 1);
+#ifdef __cplusplus
+                    *currentRemainder = static_cast<char *>( malloc(strlen(elemTok2) + 1) );
+#else
+                    *currentRemainder = malloc(strlen(elemTok2) + 1);
+#endif
                     *currentRemainderLen = strlen(elemTok2) + 1;
                 }
                 else if ((strlen(elemTok2) + 1) > *currentRemainderLen) {
-                    currentRemainderCopy = (char *) realloc(*currentRemainder, strlen(elemTok2) * 2);
+#ifdef __cplusplus
+                    currentRemainderCopy = static_cast<char *>( realloc(*currentRemainder, strlen(elemTok2) * 2) );
+#else
+                    currentRemainderCopy = realloc(*currentRemainder, strlen(elemTok2) * 2);
+#endif
                     if (!currentRemainderCopy) {
                         fprintf(stderr, "ERROR: Ran out of memory while extending remainder token\n");
                         return UNSTARCH_FATAL_ERROR;
@@ -1048,14 +1374,26 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
                 }
             }
             else {
+#ifdef __cplusplus
+                *lastEnd = static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) ) + *pLength;
+#else
                 *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
+#endif
                 //sprintf(out, "%s\t%lld\t%lld\t%s\n", chr, (int64_t) strtoull(elemTok1, NULL, UNSTARCH_RADIX), *lastEnd, elemTok2);
                 if (! *currentChr) {
-                    *currentChr = (char *) malloc(strlen(chr) + 1);
+#ifdef __cplusplus
+                    *currentChr = static_cast<char *>( malloc(strlen(chr) + 1) );
+#else
+                    *currentChr = malloc(strlen(chr) + 1);
+#endif
                     *currentChrLen = strlen(chr) + 1;
                 }
                 else if ((strlen(chr) + 1) > *currentChrLen) {
-                    currentChrCopy = (char *) realloc(*currentChr, strlen(chr) * 2);
+#ifdef __cplusplus
+                    currentChrCopy = static_cast<char *>( realloc(*currentChr, strlen(chr) * 2) );
+#else
+                    currentChrCopy = realloc(*currentChr, strlen(chr) * 2);
+#endif
                     if (!currentChrCopy) {
                         fprintf(stderr, "ERROR: Ran out of memory while extending chr token\n");
                         return UNSTARCH_FATAL_ERROR;
@@ -1068,14 +1406,26 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
                     fprintf(stderr, "ERROR: Current chromosome name could not be copied\n");
                     return UNSTARCH_FATAL_ERROR;                
                 }
+#ifdef __cplusplus
+                *currentStart = static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+#else
                 *currentStart = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+#endif
                 *currentStop = *lastEnd;
                 if (! *currentRemainder) {
-                    *currentRemainder = (char *) malloc(strlen(elemTok2) + 1);
+#ifdef __cplusplus
+                    *currentRemainder = static_cast<char *>( malloc(strlen(elemTok2) + 1) );
+#else
+                    *currentRemainder = malloc(strlen(elemTok2) + 1);
+#endif
                     *currentRemainderLen = strlen(elemTok2) + 1;
                 }
                 else if ((strlen(elemTok2) + 1) > *currentRemainderLen) {
-                    currentRemainderCopy = (char *) realloc(*currentRemainder, strlen(elemTok2) * 2);
+#ifdef __cplusplus
+                    currentRemainderCopy = static_cast<char *>( realloc(*currentRemainder, strlen(elemTok2) * 2) );
+#else
+                    currentRemainderCopy = realloc(*currentRemainder, strlen(elemTok2) * 2);
+#endif
                     if (!currentRemainderCopy) {
                         fprintf(stderr, "ERROR: Ran out of memory while extending remainder token\n");
                         return UNSTARCH_FATAL_ERROR;
@@ -1095,24 +1445,44 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
             pTest = UNSTARCH_strnstr((const char *)elemTok1, pTestParam, 1);
             if (pTest) {
                 pTestChars = NULL;
-                pTestChars = (char *) malloc(strlen(elemTok1));
+#ifdef __cplusplus
+                pTestChars = static_cast<char *>( malloc(strlen(elemTok1)) );
+#else
+                pTestChars = malloc(strlen(elemTok1));
+#endif
                 strncpy(pTestChars, elemTok1 + 1, strlen(elemTok1));
                 if (!pTestChars)
                     return UNSTARCH_FATAL_ERROR;
+#ifdef __cplusplus
+                *pLength = static_cast<SignedCoordType>( strtoull(pTestChars, NULL, UNSTARCH_RADIX) );
+#else
                 *pLength = (SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
+#endif
                 free(pTestChars); 
                 pTestChars = NULL;
             }
             else {
+#ifdef __cplusplus
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+#else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
+#endif
                 *lastEnd = *start + *pLength;
                 //sprintf(out, "%s\t%lld\t%lld\n", chr, *start, *lastEnd);
                 if (! *currentChr) {
-                    *currentChr = (char *) malloc(strlen(chr) + 1);
+#ifdef __cplusplus
+                    *currentChr = static_cast<char *>( malloc(strlen(chr) + 1) );
+#else
+                    *currentChr = malloc(strlen(chr) + 1);
+#endif
                     *currentChrLen = strlen(chr) + 1;
                 }
                 else if ((strlen(chr) + 1) > *currentChrLen) {
-                    currentChrCopy = (char *) realloc(*currentChr, strlen(chr) * 2);
+#ifdef __cplusplus
+                    currentChrCopy = static_cast<char *>( realloc(*currentChr, strlen(chr) * 2) );
+#else
+                    currentChrCopy = realloc(*currentChr, strlen(chr) * 2);
+#endif
                     if (!currentChrCopy) {
                         fprintf(stderr, "ERROR: Ran out of memory while extending chr token\n");
                         return UNSTARCH_FATAL_ERROR;
@@ -1156,7 +1526,11 @@ UNSTARCH_createInverseTransformTokens(const unsigned char *s, const char delim, 
         if (buffer[(charCnt - 1)] == delim) {
             if (elemCnt == 0) { 
                 buffer[(charCnt - 1)] = '\0';
+#ifdef __cplusplus
+                strncpy(elemTok1, reinterpret_cast<const char *>( buffer ), strlen(reinterpret_cast<const char *>( buffer )) + 1); 
+#else
                 strncpy(elemTok1, (const char *) buffer, strlen((const char *) buffer) + 1); 
+#endif
                 elemCnt++; 
                 charCnt = 0;
             }
@@ -1165,11 +1539,19 @@ UNSTARCH_createInverseTransformTokens(const unsigned char *s, const char delim, 
 
     if (elemCnt == 0) {
         buffer[charCnt] = '\0';
+#ifdef __cplusplus
+        strncpy(elemTok1, reinterpret_cast<const char *>( buffer ), strlen(reinterpret_cast<const char *>( buffer )) + 1);
+#else
         strncpy(elemTok1, (const char *) buffer, strlen((const char *) buffer) + 1);
+#endif
     }
     if (elemCnt == 1) {
         buffer[charCnt] = '\0';
+#ifdef __cplusplus
+        strncpy(elemTok2, reinterpret_cast<const char *>( buffer ), strlen(reinterpret_cast<const char *>( buffer )) + 1);
+#else
         strncpy(elemTok2, (const char *) buffer, strlen((const char *) buffer) + 1);
+#endif
     }
 
     return 0;
@@ -1185,12 +1567,26 @@ UNSTARCH_strnstr(const char *haystack, const char *needle, size_t haystackLen)
     size_t pLen;
     size_t len = strlen(needle);
 
-    if (*needle == '\0')    /* everything matches empty string */
+    if (*needle == '\0') {    
+	/* everything matches empty string */
+#ifdef __cplusplus
+        return const_cast<char *>( haystack );
+#else
         return (char *) haystack;
+#endif
+    }
 
     pLen = haystackLen;
+#ifdef __cplusplus
+    for (p = const_cast<char *>( haystack ); p != NULL; p = static_cast<char *>( memchr(p + 1, *needle, pLen-1) )) {
+#else
     for (p = (char *) haystack; p != NULL; p = (char *) memchr(p + 1, *needle, pLen-1)) {
+#endif
+#ifdef __cplusplus
+        pLen = haystackLen - static_cast<size_t>( p - const_cast<char *>( haystack ) );
+#else
         pLen = haystackLen - (size_t) (p - haystack);
+#endif
         if (pLen < len) 
             return NULL;
         if (strncmp(p, needle, len) == 0)
@@ -1212,12 +1608,22 @@ UNSTARCH_strndup(const char *s, size_t n)
     if (n < len)
         len = n;
 
-    result = (char *) malloc(len + 1);
+#ifdef __cplusplus
+    result = static_cast<char *>( malloc(len + 1) );
+#else
+    result = malloc(len + 1);
+#endif
+
     if (!result)
         return 0;
 
     result[len] = '\0';
+
+#ifdef __cplusplus
+    return static_cast<char *>( memcpy (result, s, len) );
+#else
     return (char *) memcpy (result, s, len);
+#endif
 }
 
 LineCountType
@@ -1234,7 +1640,11 @@ UNSTARCH_lineCountForChromosome(const Metadata *md, const char *chr)
         }
     }
 
+#ifdef __cplusplus
+    return static_cast<LineCountType>( 0 );
+#else
     return (LineCountType) 0;
+#endif
 }
 
 void
@@ -1279,7 +1689,11 @@ UNSTARCH_nonUniqueBaseCountForChromosome(const Metadata *md, const char *chr)
         }
     }
 
+#ifdef __cplusplus
+    return static_cast<BaseCountType>( 0 );
+#else
     return (BaseCountType) 0;
+#endif
 }
 
 void 
@@ -1417,7 +1831,11 @@ UNSTARCH_printDuplicateElementExistsIntegerForChromosome(const Metadata *md, con
         UNSTARCH_printDuplicateElementExistsIntegersForAllChromosomes(md);
     else {
         res = UNSTARCH_duplicateElementExistsForChromosome(md, chr);
+#ifdef __cplusplus
+        fprintf(stdout, "%d\n", static_cast<int>( res ));
+#else
         fprintf(stdout, "%d\n", (int) res);
+#endif
     }
 }
 
@@ -1431,12 +1849,20 @@ UNSTARCH_printDuplicateElementExistsIntegersForAllChromosomes(const Metadata *md
 
     for (iter = md; iter != NULL; iter = iter->next) {
         if (UNSTARCH_duplicateElementExistsForChromosome(md, iter->chromosome) == kStarchTrue) {
+#ifdef __cplusplus
+            fprintf(stdout, "%d\n", static_cast<int>( kStarchTrue ));
+#else
             fprintf(stdout, "%d\n", (int) kStarchTrue);
+#endif
             return;
         }
     }
 
+#ifdef __cplusplus
+    fprintf(stdout, "%d\n", static_cast<int>( kStarchFalse ));
+#else
     fprintf(stdout, "%d\n", (int) kStarchFalse);
+#endif
 }
 
 Boolean
@@ -1501,7 +1927,11 @@ UNSTARCH_printNestedElementExistsIntegerForChromosome(const Metadata *md, const 
         UNSTARCH_printNestedElementExistsIntegersForAllChromosomes(md);
     else {
         res = UNSTARCH_nestedElementExistsForChromosome(md, chr);
+#ifdef __cplusplus
+        fprintf(stdout, "%d\n", static_cast<int>( res ));
+#else
         fprintf(stdout, "%d\n", (int) res);
+#endif
     }
 }
 
@@ -1515,12 +1945,20 @@ UNSTARCH_printNestedElementExistsIntegersForAllChromosomes(const Metadata *md)
 
     for (iter = md; iter != NULL; iter = iter->next) {
         if (UNSTARCH_nestedElementExistsForChromosome(md, iter->chromosome) == kStarchTrue) {
+#ifdef __cplusplus
+            fprintf(stdout, "%d\n", static_cast<int>( kStarchTrue ));
+#else
             fprintf(stdout, "%d\n", (int) kStarchTrue);
+#endif
             return;
         }
     }
 
+#ifdef __cplusplus
+    fprintf(stdout, "%d\n", static_cast<int>( kStarchFalse ));
+#else
     fprintf(stdout, "%d\n", (int) kStarchFalse);
+#endif
 }
 
 const char *
@@ -1553,7 +1991,11 @@ UNSTARCH_reverseTransformCoordinates(const LineCountType lineIdx, SignedCoordTyp
     /* offset */
     if (coordDiff != *lcDiff) {
         *lcDiff = coordDiff;
+#ifdef __cplusplus
+        *nLineBuf = sprintf(reinterpret_cast<char *>(lineBuf) + *nLineBufPos, "p%" PRId64 "\n", coordDiff);
+#else
         *nLineBuf = sprintf((char *)lineBuf + *nLineBufPos, "p%" PRId64 "\n", coordDiff);
+#endif
         if (*nLineBuf < 0) {
             fprintf(stderr, "ERROR: Could not copy reverse-transformed extracted stream buffer to line buffer.\n");
             return UNSTARCH_FATAL_ERROR;
@@ -1563,10 +2005,20 @@ UNSTARCH_reverseTransformCoordinates(const LineCountType lineIdx, SignedCoordTyp
 
     /* line + remainder */
     if (*lastPosition != 0) {
-        if (*currRemainder)
+        if (*currRemainder) {
+#ifdef __cplusplus
+            *nLineBuf = sprintf(reinterpret_cast<char *>(lineBuf) + *nLineBufPos, "%" PRId64 "\t%s\n", (*currStart - *lastPosition), *currRemainder);
+#else
             *nLineBuf = sprintf((char *)lineBuf + *nLineBufPos, "%" PRId64 "\t%s\n", (*currStart - *lastPosition), *currRemainder);
-        else
+#endif
+	}
+        else {
+#ifdef __cplusplus
+            *nLineBuf = sprintf(reinterpret_cast<char *>(lineBuf) + *nLineBufPos, "%" PRId64 "\n", *currStart - *lastPosition);
+#else
             *nLineBuf = sprintf((char *)lineBuf + *nLineBufPos, "%" PRId64 "\n", *currStart - *lastPosition);
+#endif
+	}
 
         if (*nLineBuf < 0) {
             fprintf(stderr, "ERROR: Could not copy reverse-transformed extracted stream buffer to line buffer.\n");
@@ -1575,10 +2027,20 @@ UNSTARCH_reverseTransformCoordinates(const LineCountType lineIdx, SignedCoordTyp
         *nLineBufPos += *nLineBuf;
     }
     else {
-        if (*currRemainder)
+        if (*currRemainder) {
+#ifdef __cplusplus
+            *nLineBuf = sprintf(reinterpret_cast<char *>(lineBuf) + *nLineBufPos, "%" PRId64 "\t%s\n", *currStart, *currRemainder);
+#else
             *nLineBuf = sprintf((char *)lineBuf + *nLineBufPos, "%" PRId64 "\t%s\n", *currStart, *currRemainder);
-        else
+#endif
+	}
+        else {
+#ifdef __cplusplus
+            *nLineBuf = sprintf(reinterpret_cast<char *>(lineBuf) + *nLineBufPos, "%" PRId64 "\n", *currStart);
+#else
             *nLineBuf = sprintf((char *)lineBuf + *nLineBufPos, "%" PRId64 "\n", *currStart);
+#endif
+        }
 
         if (*nLineBuf < 0) {
             fprintf(stderr, "ERROR: Could not copy reverse-transformed extracted stream buffer to line buffer.\n");
