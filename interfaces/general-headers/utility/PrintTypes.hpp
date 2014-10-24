@@ -26,6 +26,8 @@
 
 #include <type_traits>
 
+#include "utility/Formats.hpp"
+
 namespace PrintTypes {
 
   namespace Details {
@@ -33,55 +35,82 @@ namespace PrintTypes {
     struct check {
       static const bool value = 
               std::is_arithmetic<T>::value ||
-              std::is_same<typename std::remove_const<T>::type, char*>::value ||
-              std::is_same<typename std::remove_const<T>::type, char const*>::value;
+              std::is_same<typename std::remove_cv<T>::type, char*>::value ||
+              std::is_same<typename std::remove_cv<T>::type, char const*>::value;
     };
   }
 
   template <typename T>
   extern typename std::enable_if<Details::check<T>::value>::type
-  Print(T);
+  Print(T t) {
+    static std::string f = Formats::Format(t);
+    static char const* format = f.c_str();
+    std::printf(format, t);
+  }
 
   template <typename T>
   extern typename std::enable_if<Details::check<T>::value>::type
-  Println(T);
+  Println(T t) {
+    static std::string end = Formats::Format(t) + std::string("\n");
+    static char const* format = end.c_str();
+    std::printf(format, t);
+  }
 
   template <typename T>
   extern typename std::enable_if<std::is_arithmetic<T>::value>::type
-  Print(T, int, bool);
+  Print(T t, int precision, bool scientific) {
+    std::string f = Formats::Format(t, precision, scientific);
+    char const* format = f.c_str();
+    std::printf(format, t);
+  }
 
   template <typename T>
   extern typename std::enable_if<std::is_arithmetic<T>::value>::type
-  Println(T, int, bool);
+  Println(T t, int precision, bool scientific) {
+    std::string end = Formats::Format(t, precision, scientific) + std::string("\n");
+    char const* format = end.c_str();
+    std::printf(format, t);
+  }
 
   template <typename T>
   extern typename std::enable_if<Details::check<T>::value>::type
-  Print(FILE* out, T t);
+  Print(FILE* out, T t) {
+    static std::string f = Formats::Format(t);
+    static char const* format = f.c_str();
+    std::fprintf(out, format, t);
+  }
 
   template <typename T>
   extern typename std::enable_if<Details::check<T>::value>::type
-  Println(FILE* out, T t);
-
+  Println(FILE* out, T t) {
+    static std::string end = Formats::Format(t) + std::string("\n");
+    static char const* format = end.c_str();
+    std::fprintf(out, format, t);
+  }
 
 
   template <typename T>
   extern typename std::enable_if<!Details::check<T>::value>::type
-  Print(const T& t);
+  Print(const T& t)
+    { t.print(); }
 
   template <typename T>
   extern typename std::enable_if<!Details::check<T>::value>::type
-  Println(const T& t);
+  Println(const T& t)
+    { t.println(); }
 
   template <typename T>
   extern typename std::enable_if<!Details::check<T>::value>::type
-  Print(FILE* out, const T& t);
+  Print(FILE* out, const T& t)
+    { t.print(out); }
 
   template <typename T>
   extern typename std::enable_if<!Details::check<T>::value>::type
-  Println(FILE* out, const T& t);
+  Println(FILE* out, const T& t)
+    { t.println(out); }
 
 } // namespace PrintTypes
 
-#include "../../src/utility/PrintTypes.cpp"
+//#include "../../src/utility/PrintTypes.cpp"
 
 #endif // SIMPLE_PRINT_FORMATS_H

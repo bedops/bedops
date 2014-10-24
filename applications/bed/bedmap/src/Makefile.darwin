@@ -30,11 +30,11 @@ LIBRARIES            = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 STDFLAGS             = -Wall -pedantic -std=c++11 -stdlib=libc++
 BLDFLAGS             = -O3 ${STDFLAGS}
 
-FLAGS                = $(BLDFLAGS) $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
+FLAGS                = $(BLDFLAGS) $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
 
-DFLAGS               = -g -O0 ${STDFLAGS} $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
+DFLAGS               = -g -O0 ${STDFLAGS} $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
 
-GPROFFLAGS           = -O -pg ${STDFLAGS} $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
+GPROFFLAGS           = -O -pg ${STDFLAGS} $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
 
 SOURCE1              = Bedmap.cpp
 BINDIR               = ../bin
@@ -53,7 +53,6 @@ dependencies:
 	rm -rf $(OBJDIR)
 	mkdir $(OBJDIR)
 	$(CXX) -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB1)/NaN.cpp -o $(OBJDIR)/NaN.o ${INCLUDES}
-	$(CXX) -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB2)/Formats.cpp -o $(OBJDIR)/Formats.o ${INCLUDES}
 	$(CXX) -x c++ -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchConstants.c -o $(OBJDIR)/starchConstants.o ${INCLUDES}
 	$(CXX) -x c++ -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchFileHelpers.c -o $(OBJDIR)/starchFileHelpers.o ${INCLUDES}
 	$(CXX) -x c++ -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchHelpers.c -o $(OBJDIR)/starchHelpers.o ${INCLUDES}
