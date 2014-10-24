@@ -442,7 +442,7 @@ namespace BedMap {
     usage << " USAGE: bedmap [process-flags] [overlap-option] <operation(s)...> <ref-file> [map-file]             \n";
     usage << "     Any input file must be sorted per the sort-bed utility.                                        \n";
     usage << "     The program accepts BED and Starch file formats.                                               \n";
-    usage << "     May use '-' for a file to indicate reading from standard input (BED format only).              \n";
+    usage << "     You may use '-' for a BED file to indicate the input comes from stdin.                         \n";
     usage << "                                                                                                    \n";
     usage << "     Traverse <ref-file>, while applying <operation(s)> on qualified, overlapping elements from     \n";
     usage << "       <map-file>.  Output is one line for each line in <ref-file>, sent to standard output.  There \n";
@@ -527,9 +527,9 @@ namespace BedMap {
     usage << "      --" + details::name<VT::EchoMapRange>() + "    Print genomic range of overlapping elements from <map-file>.\n";
     usage << "      --" + details::name<VT::EchoMapScore>() + "    List scores from overlapping <map-file> elements.\n";
     usage << "      --" + details::name<VT::EchoMapLength>() + "     List the full length of every overlapping element.\n";
+    usage << "      --" + details::name<VT::EchoMapIntersectLength>() + " List lengths of overlaps.\n";
     usage << "      --" + details::name<VT::EchoRefSpan>() + "     Print the first 3 fields of <ref-file> using chrom:start-end format.\n";
     usage << "      --" + details::name<VT::EchoRefLength>() + "     Print the length of each line from <ref-file>.\n";
-    usage << "      --" + details::name<VT::EchoMapIntersectLength>() + " List lengths of overlaps.\n";
     usage << "      --" + details::name<VT::Indicator>() + "         Print 1 if there exists an overlapping element in <map-file>, 0 otherwise.\n";
     usage << "\n";
 

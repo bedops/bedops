@@ -64,19 +64,17 @@ namespace Formats {
   Format(T) { return "%" PRIu64; }
 
   template <typename T>
-  typename std::enable_if <Details::check<T, unsigned long long int>::value &&
-                           Details::check<T, unsigned long long int>::not_uint64_t, char const*>::type
+  typename std::enable_if<Details::check<T, unsigned long long int>::value &&
+                          Details::check<T, unsigned long long int>::not_uint64_t, char const*>::type
   Format(T) { return "%llu"; } /* msft doesn't conform to this standard */
 
   template <typename T>
-  typename std::enable_if <Details::check<T, unsigned long int>::value &&
-                           Details::check<T, unsigned long int>::not_uint64_t &&
-                           !Details::check<T, unsigned int>::value,
-                           char const*>::type
+  typename std::enable_if<Details::check<T, unsigned long int>::value &&
+                          Details::check<T, unsigned long int>::not_uint64_t &&
+                          !Details::check<T, unsigned int>::value,
+                          char const*>::type
   Format(T) { return "%lu"; }
 
 } // namespace Formats
-
-//#include "../../src/utility/Formats.cpp"
 
 #endif // SIMPLE_C_FORMATS_H
