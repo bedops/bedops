@@ -146,7 +146,11 @@ STARCH_fopen(const char *filename, const char *type)
                 fprintf(stderr, "ERROR: ETXTBSY - The file is a pure procedure (shared text) file that is being executed and mode requires write access\n");
                 break;
             default:
-                fprintf(stderr, "ERROR: UNKNOWN - Run into unknown file access error (%d)\n", (int)errno);               
+#ifdef __cplusplus
+                fprintf(stderr, "ERROR: UNKNOWN - Run into unknown file access error (%d)\n", static_cast<int>( errno ));
+#else
+                fprintf(stderr, "ERROR: UNKNOWN - Run into unknown file access error (%d)\n", (int) errno);
+#endif
         }
         return NULL;
     }
@@ -173,13 +177,22 @@ STARCH_gzip_deflate(FILE *source, FILE *dest, int level)
 
     /* deflateInit2 allows creation of archive with gzip header, i.e. a gzip file */
     /* cf. http://www.zlib.net/manual.html */
+#ifdef __cplusplus
+    ret = deflateInit2cpp(&strm, level, Z_DEFLATED, (15+16), 8, Z_DEFAULT_STRATEGY);
+#else
     ret = deflateInit2(&strm, level, Z_DEFLATED, (15+16), 8, Z_DEFAULT_STRATEGY);
+#endif
     if (ret != Z_OK) 
         return ret;
 
     /* compress until end of file */
     do {
-        strm.avail_in = (uInt) fread(in, 1, STARCH_Z_CHUNK, source);
+#ifdef __cplusplus
+        strm.avail_in = static_cast<unsigned int>( fread(in, 1, STARCH_Z_CHUNK, source) );
+#else
+	strm.avail_in = (unsigned int) fread(in, 1, STARCH_Z_CHUNK, source);
+#endif   
+
         if (ferror(source)) {
             (void) deflateEnd(&strm);
             return Z_ERRNO;
