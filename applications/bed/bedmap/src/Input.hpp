@@ -472,14 +472,14 @@ namespace BedMap {
     usage << "     --------                                                                                       \n";
     usage << "      --bp-ovr <int>           Require <int> bp overlap between elements of input files.            \n";
     usage << "      --exact                  First 3 fields from <map-file> must be identical to <ref-file>'s.    \n";
-    usage << "      --fraction-ref <val>     The fraction of the element's size from <ref-file> that must overlap \n";
-    usage << "                                 the element in <map-file>.  Expect 0 < val <= 1.                   \n";
-    usage << "      --fraction-map <val>     The fraction of the element's size from <map-file> that must overlap \n";
-    usage << "                                 the element in <ref-file>.  Expect 0 < val <= 1.                   \n";
     usage << "      --fraction-both <val>    Both --fraction-ref <val> and --fraction-map <val> must be true to   \n";
     usage << "                                 qualify as overlapping.  Expect 0 < val <= 1.                      \n";
     usage << "      --fraction-either <val>  Either --fraction-ref <val> or --fraction-map <val> must be true to  \n";
     usage << "                                 qualify as overlapping.  Expect 0 < val <= 1.                      \n";
+    usage << "      --fraction-map <val>     The fraction of the element's size from <map-file> that must overlap \n";
+    usage << "                                 the element in <ref-file>.  Expect 0 < val <= 1.                   \n";
+    usage << "      --fraction-ref <val>     The fraction of the element's size from <ref-file> that must overlap \n";
+    usage << "                                 an element in <map-file>.  Expect 0 < val <= 1.                    \n";
     usage << "      --range <int>            Grab <map-file> elements within <int> bp of <ref-file>'s element,    \n";
     usage << "                                 where 0 <= int.  --range 0 is an alias for --bp-ovr 1.             \n";
     usage << "                                                                                                    \n";
