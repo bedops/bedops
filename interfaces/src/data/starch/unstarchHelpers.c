@@ -190,7 +190,7 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
                             /* to minimize the chance of doing another (expensive) malloc, we double the length of zRemainderBuf */
                             free(zRemainderBuf);
 #ifdef __cplusplus
-                            zRemainderBuf = static_cast<unsigned char *>( malloc(strlen((const char *) zLineBuf) * 2) );
+                            zRemainderBuf = static_cast<unsigned char *>( malloc(strlen(reinterpret_cast<const char *>( zLineBuf )) * 2) );
 #else
                             zRemainderBuf = malloc(strlen((const char *) zLineBuf) * 2);
 #endif
@@ -1165,10 +1165,11 @@ UNSTARCH_reverseTransformHeaderlessInput(const char *chr, const unsigned char *s
             else {
 #ifdef __cplusplus
                 *lastEnd = static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) ) + *pLength;
+		fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) ), *lastEnd, elemTok2);
 #else
                 *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
+		fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX), *lastEnd, elemTok2);
 #endif
-                fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX), *lastEnd, elemTok2);
             }
         }
         else {
@@ -1442,7 +1443,11 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
         }
         else {
             pTest = NULL;
+#ifdef __cplusplus
+            pTest = UNSTARCH_strnstr(reinterpret_cast<const char *>( elemTok1 ), pTestParam, 1);
+#else
             pTest = UNSTARCH_strnstr((const char *)elemTok1, pTestParam, 1);
+#endif
             if (pTest) {
                 pTestChars = NULL;
 #ifdef __cplusplus
@@ -1737,7 +1742,11 @@ UNSTARCH_uniqueBaseCountForChromosome(const Metadata *md, const char *chr)
             return iter->totalUniqueBases;
     }
 
+#ifdef __cplusplus
+    return static_cast<BaseCountType>( 0 );
+#else
     return (BaseCountType) 0;
+#endif
 }
 
 void 
