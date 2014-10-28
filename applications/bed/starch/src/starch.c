@@ -85,19 +85,36 @@ main (int argc, char **argv)
         {
             /* process stdin */
             if ((bedHeaderFlag == kStarchTrue) &&
+#ifdef __cplusplus
+     	        (STARCH_transformInput(&metadata, 
+                                       NULL, 
+                                       static_cast<const CompressionType>( type ), 
+                                       reinterpret_cast<const char *>( tag ), 
+                                       reinterpret_cast<const char *>( note )) != 0))
+#else
      	        (STARCH_transformInput(&metadata, 
                                        NULL, 
                                        (const CompressionType) type, 
                                        (const char *) tag, 
                                        (const char *) note) != 0))
+#endif
                 exit (EXIT_FAILURE);
             else if ((bedHeaderFlag == kStarchFalse) &&
+#ifdef __cplusplus
+                (STARCH_transformHeaderlessInput(&metadata, 
+                                                 NULL, 
+                                                 static_cast<const CompressionType>( type ), 
+                                                 reinterpret_cast<const char *>( tag ), 
+                                                 static_cast<const Boolean>( kStarchFinalizeTransformTrue ), 
+                                                 reinterpret_cast<const char *>( note )) != 0))
+#else
                 (STARCH_transformHeaderlessInput(&metadata, 
                                                  NULL, 
                                                  (const CompressionType) type, 
                                                  (const char *) tag, 
                                                  (const Boolean) kStarchFinalizeTransformTrue, 
                                                  (const char *) note) != 0))
+#endif
                 exit (EXIT_FAILURE);
         }
         else {
@@ -108,19 +125,36 @@ main (int argc, char **argv)
                 exit (EXIT_FAILURE);
             }
             if ((bedHeaderFlag == kStarchTrue) &&
+#ifdef __cplusplus
+                (STARCH_transformInput(&metadata, 
+                                       reinterpret_cast<const FILE *>( bedFnPtr ), 
+                                       static_cast<const CompressionType>( type ), 
+                                       reinterpret_cast<const char *>( tag ), 
+                                       reinterpret_cast<const char *>( note )) != 0))
+#else
                 (STARCH_transformInput(&metadata, 
                                        (const FILE *) bedFnPtr, 
                                        (const CompressionType) type, 
                                        (const char *) tag, 
                                        (const char *) note) != 0))
+#endif
                 exit (EXIT_FAILURE);
             else if ((bedHeaderFlag == kStarchFalse) &&
+#ifdef __cplusplus
+                (STARCH_transformHeaderlessInput(&metadata, 
+                                                 reinterpret_cast<const FILE *>( bedFnPtr ), 
+                                                 static_cast<const CompressionType>( type ), 
+                                                 reinterpret_cast<const char *>( tag ), 
+                                                 static_cast<const Boolean>( kStarchFinalizeTransformTrue ), 
+                                                 reinterpret_cast<const char *>( note )) != 0))
+#else
                 (STARCH_transformHeaderlessInput(&metadata, 
                                                  (const FILE *) bedFnPtr, 
                                                  (const CompressionType) type, 
                                                  (const char *) tag, 
                                                  (const Boolean) kStarchFinalizeTransformTrue, 
                                                  (const char *) note) != 0))
+#endif
                 exit (EXIT_FAILURE);
         }
     }
@@ -135,6 +169,18 @@ main (int argc, char **argv)
 	        }
 	    }
 
+#ifdef __cplusplus
+        if (STARCH2_transformInput(&starchHeader, 
+                                   &metadata, 
+				   reinterpret_cast<const FILE *>( bedFnPtr ), 
+				   static_cast<const CompressionType>( type ), 
+				   reinterpret_cast<const char *>( tag ), 
+				   reinterpret_cast<const char *>( note ), 
+				   static_cast<const Boolean>( bedHeaderFlag )) != STARCH_EXIT_SUCCESS) 
+        {
+            exit (EXIT_FAILURE);
+        }
+#else
         if (STARCH2_transformInput(&starchHeader, 
                                    &metadata, 
                     (const FILE *) bedFnPtr, 
@@ -145,6 +191,7 @@ main (int argc, char **argv)
         {
             exit (EXIT_FAILURE);
         }
+#endif
     }
     
     else if (STARCH_MAJOR_VERSION > 2) {
@@ -235,7 +282,11 @@ STARCH_parseCommandLineOptions (int argc, char **argv)
     STARCH_buildProcessIDTag (&(starch_client_global_args.uniqueTag));
 
     starch_client_global_args.inputFiles = argv + optind;
+#ifdef __cplusplus
+    starch_client_global_args.numberInputFiles = static_cast<size_t>( argc - optind );
+#else
     starch_client_global_args.numberInputFiles = (size_t) (argc - optind);
+#endif
 
     switch (starch_client_global_args.numberInputFiles) {
         case 0: {
@@ -255,7 +306,11 @@ STARCH_parseCommandLineOptions (int argc, char **argv)
             break;
     }
 
+#ifdef __cplusplus
+    return static_cast<int>( kStarchTrue );
+#else
     return (int) kStarchTrue;
+#endif
 }
 
 void
@@ -265,7 +320,11 @@ STARCH_printUsage (int errorType)
     fprintf (stderr, "\n--- STARCH_printUsage() ---\n");
 #endif
     char *avStr = NULL;
-    avStr = (char *) malloc (STARCH_ARCHIVE_VERSION_STRING_LENGTH);
+#ifdef __cplusplus
+    avStr = static_cast<char *>( malloc (STARCH_ARCHIVE_VERSION_STRING_LENGTH) );
+#else
+    avStr = malloc (STARCH_ARCHIVE_VERSION_STRING_LENGTH);
+#endif
     if (avStr != NULL) {
         int result = sprintf (avStr, "%d.%d.%d", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION);
         if (result != -1) {
@@ -289,7 +348,11 @@ STARCH_printRevision ()
     fprintf (stderr, "\n--- STARCH_printRevision() ---\n");
 #endif
     char *avStr = NULL;
-    avStr = (char *) malloc (STARCH_ARCHIVE_VERSION_STRING_LENGTH);
+#ifdef __cplusplus
+    avStr = static_cast<char *>( malloc (STARCH_ARCHIVE_VERSION_STRING_LENGTH) );
+#else
+    avStr = malloc (STARCH_ARCHIVE_VERSION_STRING_LENGTH);
+#endif
     if (avStr != NULL) {
         int result = sprintf (avStr, "%d.%d.%d", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION);
         if (result != -1)
