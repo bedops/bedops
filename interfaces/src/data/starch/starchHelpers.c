@@ -194,7 +194,11 @@ STARCH_compressFileWithBzip2(const char *inFn, char **outFn, off_t *outFnSize)
     }
     /* write out remainder of bzip2 buffer to output */
     bzBuf[idx] = '\0';
+#ifdef __cplusplus
+    BZ2_bzWrite(&bzError, bzFp, bzBuf, static_cast<int>( idx ));
+#else
     BZ2_bzWrite(&bzError, bzFp, bzBuf, (int) idx);
+#endif
     if (bzError == BZ_IO_ERROR) {   
         BZ2_bzWriteClose ( &bzError, bzFp, 0, NULL, NULL );
         fprintf(stderr, "ERROR: Could not write to bzip2 file handle\n");
@@ -278,17 +282,18 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
                     }
                     /* convert element string to start coordinate */
 #ifdef __cplusplus
-                    *start = static_cast<int64_t>( strtoull((const char *)buffer, NULL, STARCH_RADIX) );
+                    *start = static_cast<int64_t>( strtoull(reinterpret_cast<const char *>( buffer ), NULL, STARCH_RADIX) );
 #else
                     *start = (int64_t) strtoull((const char *)buffer, NULL, STARCH_RADIX);
 #endif
                     /* test if start coordinate is larger than allowed bounds */
 #ifdef __cplusplus
                     if (*start > static_cast<int64_t>( MAX_COORD_VALUE )) {
+                        fprintf(stderr, "ERROR: Start coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *start, static_cast<int64_t>( MAX_COORD_VALUE ));
 #else
                     if (*start > (int64_t) MAX_COORD_VALUE) {
-#endif
                         fprintf(stderr, "ERROR: Start coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *start, (int64_t) MAX_COORD_VALUE);
+#endif
                         return STARCH_FATAL_ERROR;
                     }
                     break;
@@ -301,17 +306,18 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
                     }
                     /* convert element string to stop coordinate */
 #ifdef __cplusplus
-                    *stop = static_cast<int64_t>( strtoull((const char *)buffer, NULL, STARCH_RADIX) );
+                    *stop = static_cast<int64_t>( strtoull(reinterpret_cast<const char *>( buffer ), NULL, STARCH_RADIX) );
 #else
                     *stop = (int64_t) strtoull((const char *)buffer, NULL, STARCH_RADIX);
 #endif
                     /* test if stop coordinate is larger than allowed bounds */
 #ifdef __cplusplus
                     if (*stop > static_cast<int64_t>( MAX_COORD_VALUE )) {
+                        fprintf(stderr, "ERROR: Stop coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *stop, static_cast<int64_t>( MAX_COORD_VALUE ));
 #else
                     if (*stop > (int64_t) MAX_COORD_VALUE) {
-#endif
                         fprintf(stderr, "ERROR: Stop coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *stop, (int64_t) MAX_COORD_VALUE);
+#endif
                         return STARCH_FATAL_ERROR;
                     }
                     break;
@@ -501,10 +507,11 @@ STARCH_createTransformTokensForHeaderlessInput(const char *s, const char delim, 
                     /* test if start coordinate is larger than allowed bounds */
 #ifdef __cplusplus
                     if (*start > static_cast<int64_t>( MAX_COORD_VALUE )) {
+                        fprintf(stderr, "ERROR: Start coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *start, static_cast<int64_t>( MAX_COORD_VALUE ));
 #else
                     if (*start > (int64_t) MAX_COORD_VALUE) {
-#endif
                         fprintf(stderr, "ERROR: Start coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *start, (int64_t) MAX_COORD_VALUE);
+#endif
                         return STARCH_FATAL_ERROR;
                     }
                     break;
@@ -527,12 +534,15 @@ STARCH_createTransformTokensForHeaderlessInput(const char *s, const char delim, 
                     /* test if stop coordinate is larger than allowed bounds */
 #ifdef __cplusplus
                     if (*stop > static_cast<int64_t>( MAX_COORD_VALUE )) {
+                        fprintf(stderr, "ERROR: Stop coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *stop, static_cast<int64_t>( MAX_COORD_VALUE ));
+                        return STARCH_FATAL_ERROR;
+                    }
 #else
                     if (*stop > (int64_t) MAX_COORD_VALUE) {
-#endif
                         fprintf(stderr, "ERROR: Stop coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *stop, (int64_t) MAX_COORD_VALUE);
                         return STARCH_FATAL_ERROR;
                     }
+#endif
                     break;
                 }
                 /* just keep filling the buffer until we reach s[sCnt]'s null -- we do tests later */
@@ -652,7 +662,7 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
 
     if (!streamPtr)
         streamPtr = stdin;
-
+    
     while ((c = fgetc(streamPtr)) != EOF) {
 #ifdef __cplusplus
         buffer[cIdx] = static_cast<char>( c );
@@ -662,17 +672,15 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
         if (c == '\n') {
             lineIdx++;
             buffer[cIdx] = '\0';
-            if (STARCH_createTransformTokens(buffer, '\t', &chromosome, &start, &stop, &remainder, &lineType) == 0) 
-            {
-                /* 
-                   Either previous chromosome is NULL, or current chromosome does 
+            if (STARCH_createTransformTokens(buffer, '\t', &chromosome, &start, &stop, &remainder, &lineType) == 0) {
+		/* 
+		   Either previous chromosome is NULL, or current chromosome does 
                    not equal previous chromosome, but the line must be of the 
                    type 'kBedLineCoordinates' (cf. 'starchMetadataHelpers.h')
                 */
-
-                if ( (lineType == kBedLineCoordinates) && ((!prevChromosome) || (strcmp(chromosome, prevChromosome) != 0)) ) 
-                {
-                    /* close old output file pointer */
+		
+                if ( (lineType == kBedLineCoordinates) && ((!prevChromosome) || (strcmp(chromosome, prevChromosome) != 0)) ) {
+		    /* close old output file pointer */
                     if (outFnPtr != NULL) {
                         fclose(outFnPtr); 
                         outFnPtr = NULL;
@@ -681,23 +689,29 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                             /* bzip-compress the previous file */
 #ifdef __cplusplus
                             if (STARCH_compressFileWithBzip2(reinterpret_cast<const char *>( outFn ), &outCompressedFn, static_cast<off_t *>( &outCompressedFnSize ) ) != 0) {
-#else
-                            if (STARCH_compressFileWithBzip2((const char *)outFn, &outCompressedFn, (off_t *) &outCompressedFnSize ) != 0) {
-#endif
                                 fprintf(stderr, "ERROR: Could not bzip2 compress per-chromosome output file %s\n", outFn);
                                 return STARCH_FATAL_ERROR;
                             }
+#else
+			    if (STARCH_compressFileWithBzip2((const char *)outFn, &outCompressedFn, (off_t *) &outCompressedFnSize ) != 0) {
+                                fprintf(stderr, "ERROR: Could not bzip2 compress per-chromosome output file %s\n", outFn);
+                                return STARCH_FATAL_ERROR;
+                            }
+#endif
                         }
                         else if (type == kGzip) {
                             /* gzip-compress file */
 #ifdef __cplusplus
                             if (STARCH_compressFileWithGzip(reinterpret_cast<const char*>( outFn ), &outCompressedFn, static_cast<off_t *>( &outCompressedFnSize ) ) != 0) {
-#else
-                            if (STARCH_compressFileWithGzip((const char*) outFn, &outCompressedFn, (off_t *) &outCompressedFnSize ) != 0) {
-#endif
                                 fprintf(stderr, "ERROR: Could not gzip compress per-chromosome output file %s\n", outFn);
                                 return STARCH_FATAL_ERROR;
                             }
+#else
+			    if (STARCH_compressFileWithGzip((const char*) outFn, &outCompressedFn, (off_t *) &outCompressedFnSize ) != 0) {
+				fprintf(stderr, "ERROR: Could not gzip compress per-chromosome output file %s\n", outFn);
+                                return STARCH_FATAL_ERROR;
+                            }
+#endif
                         }
                         else {
                             fprintf(stderr, "ERROR: Unknown compression regime\n");
@@ -730,12 +744,19 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                         /* cleanup */
                         free(outCompressedFn); outCompressedFn = NULL;
                     }
-
+			    
 		    /* test if current chromosome is already a Metadata record */
+#ifdef __cplusplus
+		    if (STARCH_chromosomeInMetadataRecords(reinterpret_cast<const Metadata *>( *md ), chromosome) == STARCH_EXIT_SUCCESS) {
+		        fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+                        return STARCH_FATAL_ERROR;
+		    }
+#else
 		    if (STARCH_chromosomeInMetadataRecords((const Metadata *)*md, chromosome) == STARCH_EXIT_SUCCESS) {
 		        fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
                         return STARCH_FATAL_ERROR;
 		    }
+#endif
 
                     /* open new output file pointer */
                     if (!outFnPtr) {
@@ -1305,29 +1326,39 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
         outFnPtr = NULL;
         
         if (type == kBzip2) {
-            if (STARCH_compressFileWithBzip2((const char *)outFn, 
-                                             &outCompressedFn, 
 #ifdef __cplusplus
+            if (STARCH_compressFileWithBzip2(reinterpret_cast<const char *>( outFn ), 
+                                             &outCompressedFn, 
                                              static_cast<off_t *>( &outCompressedFnSize )) != 0) {
-#else
-                                             (off_t *) &outCompressedFnSize) != 0) {
-#endif
                 fprintf(stderr, "ERROR: Could not bzip2 compress per-chromosome output file %s\n", outFn);
                 return STARCH_FATAL_ERROR;
             }
+#else
+            if (STARCH_compressFileWithBzip2((const char *)outFn, 
+                                             &outCompressedFn, 
+                                             (off_t *) &outCompressedFnSize) != 0) {
+                fprintf(stderr, "ERROR: Could not bzip2 compress per-chromosome output file %s\n", outFn);
+                return STARCH_FATAL_ERROR;
+            }
+#endif
         }
         else if (type == kGzip) {
             /* gzip-compress file */
-            if (STARCH_compressFileWithGzip((const char*)outFn, 
-                                            &outCompressedFn, 
 #ifdef __cplusplus
+            if (STARCH_compressFileWithGzip(reinterpret_cast<const char*>( outFn ), 
+                                            &outCompressedFn, 
                                             static_cast<off_t *>( &outCompressedFnSize )) != 0) {
-#else
-                                            (off_t *) &outCompressedFnSize) != 0) {
-#endif
                 fprintf(stderr, "ERROR: Could not gzip compress per-chromosome output file %s\n", outFn);
                 return STARCH_FATAL_ERROR;
             }
+#else
+            if (STARCH_compressFileWithGzip((const char*)outFn, 
+                                            &outCompressedFn, 
+                                            (off_t *) &outCompressedFnSize) != 0) {
+                fprintf(stderr, "ERROR: Could not gzip compress per-chromosome output file %s\n", outFn);
+                return STARCH_FATAL_ERROR;
+            }
+#endif
         }
         else {
             fprintf(stderr, "ERROR: Unknown compression regime\n");
@@ -1370,7 +1401,6 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
     if (finalizeFlag == kStarchFalse)
         return 0;
 
-
     /*
         Otherwise, we wrap things up. In the future, this will go into its 
         own function for clarity...
@@ -1390,9 +1420,17 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
         if (legacyMdBuf != NULL) {
             /* headerless input was not supported in this version, so it is set to FALSE */
 #ifdef __cplusplus
-            if (STARCH_writeJSONMetadata(reinterpret_cast<const Metadata *>( *md ), &legacyMdBuf, const_cast<CompressionType *>( &type ), kStarchFalse, reinterpret_cast<const char *>( note )) != STARCH_EXIT_SUCCESS) {
+            if (STARCH_writeJSONMetadata(reinterpret_cast<const Metadata *>( *md ), 
+					 &legacyMdBuf, 
+					 const_cast<CompressionType *>( &type ), 
+					 kStarchFalse, 
+					 reinterpret_cast<const char *>( note )) != STARCH_EXIT_SUCCESS) {
 #else
-            if (STARCH_writeJSONMetadata((const Metadata *)*md, &legacyMdBuf, (CompressionType *) &type, kStarchFalse, (const char *) note) != STARCH_EXIT_SUCCESS) {
+            if (STARCH_writeJSONMetadata((const Metadata *) *md, 
+					 &legacyMdBuf, 
+					 (CompressionType *) &type, 
+					 kStarchFalse, 
+					 (const char *) note) != STARCH_EXIT_SUCCESS) {
 #endif
                 fprintf(stderr, "ERROR: Could not write metadata to buffer\n");
                 return STARCH_FATAL_ERROR;
@@ -1400,7 +1438,7 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
 #ifdef __cplusplus
             if (STARCH_mergeMetadataWithCompressedFiles(reinterpret_cast<const Metadata *>( *md ), legacyMdBuf) != STARCH_EXIT_SUCCESS) {
 #else
-            if (STARCH_mergeMetadataWithCompressedFiles((const Metadata *)*md, legacyMdBuf) != STARCH_EXIT_SUCCESS) {
+            if (STARCH_mergeMetadataWithCompressedFiles((const Metadata *) *md, legacyMdBuf) != STARCH_EXIT_SUCCESS) {
 #endif
                 fprintf(stderr, "ERROR: Could not merge metadata with compressed streams\n");
                 return STARCH_FATAL_ERROR;
@@ -1414,9 +1452,17 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
     else {
         /* headerless input means headerFlag is FALSE */
 #ifdef __cplusplus
-        if (STARCH_writeJSONMetadata(reinterpret_cast<const Metadata *>( *md ), &dynamicMdBuf, const_cast<CompressionType *>( &type ), kStarchFalse, reinterpret_cast<const char *>( note )) != STARCH_EXIT_SUCCESS) {
+        if (STARCH_writeJSONMetadata(reinterpret_cast<const Metadata *>( *md ), 
+				     &dynamicMdBuf, 
+				     const_cast<CompressionType *>( &type ), 
+				     kStarchFalse, 
+				     reinterpret_cast<const char *>( note )) != STARCH_EXIT_SUCCESS) {
 #else
-        if (STARCH_writeJSONMetadata((const Metadata *)*md, &dynamicMdBuf, (CompressionType *) &type, kStarchFalse, (const char *) note) != STARCH_EXIT_SUCCESS) {
+        if (STARCH_writeJSONMetadata((const Metadata *) *md, 
+				     &dynamicMdBuf, 
+				     (CompressionType *) &type, 
+				     kStarchFalse, 
+				     (const char *) note) != STARCH_EXIT_SUCCESS) {
 #endif
             fprintf(stderr, "ERROR: Could not write metadata to buffer\n");
             return STARCH_FATAL_ERROR;
@@ -1424,7 +1470,7 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
 #ifdef __cplusplus
         if (STARCH_mergeMetadataWithCompressedFiles(reinterpret_cast<const Metadata *>( *md ), dynamicMdBuf) != STARCH_EXIT_SUCCESS) {
 #else
-        if (STARCH_mergeMetadataWithCompressedFiles((const Metadata *)*md, dynamicMdBuf) != STARCH_EXIT_SUCCESS) {
+        if (STARCH_mergeMetadataWithCompressedFiles((const Metadata *) *md, dynamicMdBuf) != STARCH_EXIT_SUCCESS) {
 #endif
             fprintf(stderr, "ERROR: Could not merge metadata with compressed streams\n");
             return STARCH_FATAL_ERROR;
