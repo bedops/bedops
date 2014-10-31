@@ -65,8 +65,8 @@ install_gprof: prep_c install_conversion_scripts install_starchcluster_scripts
 	-cp ${APPDIR}/conversion/bin/gprof.wig2bed_bin ${BINDIR}/
 
 install_starchcluster_scripts: prep_c
-	-cp ${APPDIR}/starch/bin/starchcluster_sge ${BINDIR}/starchcluster_sge
-	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel ${BINDIR}/starchcluster_gnuparallel
+	-cp ${APPDIR}/starch/bin/starchcluster_sge.tcsh ${BINDIR}/starchcluster_sge
+	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel.tcsh ${BINDIR}/starchcluster_gnuparallel
 
 install_conversion_scripts: prep_c
 	-cp ${APPDIR}/conversion/src/bam2bed.py ${BINDIR}/bam2bed
