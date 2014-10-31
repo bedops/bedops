@@ -112,6 +112,8 @@ Release
 
    Specifically, click on the `versions <https://readthedocs.org/dashboard/bedops/versions/>`_ tab to deactivate the old development branch. (Likewise, when adding a new development branch, add an active link here, so that edits to the documentation folder in the new development branch are available.)
 
+6. Update local fork's `homebrew-science <https://github.com/Homebrew/homebrew-science>`_ BEDOPS formula and submit pull request to homebrew-science folks.
+
 =========
 Celebrate
 =========
