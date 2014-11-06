@@ -96,24 +96,26 @@ def which(program):
 
 def printUsage(stream):
     usage = ("Usage:\n"
-             "  %s [ --help ] [ --keep-header ] [ --snvs | --insertions | --deletions ] [ --do-not-sort | --max-mem <value> (--sort-tmpdir <dir>) ] < foo.vcf\n\n"
+             "  %s [ --help ] [ --keep-header ] [ --snvs | --insertions | --deletions ] [ --do-not-split-alt-alleles ] [ --do-not-sort | --max-mem <value> (--sort-tmpdir <dir>) ] < foo.vcf\n\n"
              "Version:\n"
              "  v2.4.3\n\n"
              "Options:\n"
-             "  --help                 Print this help message and exit\n"
-             "  --keep-header          Preserve metadata and header information as pseudo-BED elements\n"
-             "  --snvs                 Report only single nucleotide variants\n"
-             "  --insertions           Report only insertion variants\n"
-             "  --deletions            Report only deletion variants\n"
-             "  --do-not-sort          Do not sort converted data with BEDOPS sort-bed\n"
-             "  --max-mem <value>      Sets aside <value> memory for sorting BED output. For example,\n"
-             "                         <value> can be 8G, 8000M or 8000000000 to specify 8 GB of memory\n"
-             "                         (default: 2G).\n"
-             "  --sort-tmpdir <dir>    Optionally sets <dir> as temporary directory for sort data, when\n"
-             "                         used in conjunction with --max-mem <value>. For example, <dir> can\n"
-             "                         be $PWD to store intermediate sort data in the current working\n"
-             "                         directory, in place of the host operating system default\n"
-             "                         temporary directory.\n\n"             
+             "  --help                      Print this help message and exit\n"
+             "  --keep-header               Preserve metadata and header information as pseudo-BED elements\n"
+             "  --snvs                      Report only single nucleotide variants\n"
+             "  --insertions                Report only insertion variants\n"
+             "  --deletions                 Report only deletion variants\n"
+             "  --do-not-split-alt-alleles  By default, this script prints multiple BED elements for each alternate\n"
+             "                              allele. Use this flag to print one BED element for all alternate alleles\n"
+             "  --do-not-sort               Do not sort converted data with BEDOPS sort-bed\n"
+             "  --max-mem <value>           Sets aside <value> memory for sorting BED output. For example,\n"
+             "                              <value> can be 8G, 8000M or 8000000000 to specify 8 GB of memory\n"
+             "                              (default: 2G).\n"
+             "  --sort-tmpdir <dir>         Optionally sets <dir> as temporary directory for sort data, when\n"
+             "                              used in conjunction with --max-mem <value>. For example, <dir> can\n"
+             "                              be $PWD to store intermediate sort data in the current working\n"
+             "                              directory, in place of the host operating system default\n"
+             "                              temporary directory.\n\n"             
              "About:\n"
              "  This script converts 1-based, closed [a, b] VCF v4 data from standard input\n"
              "  into 0-based, half-open [a-1, b) extended BED, sent to standard output.\n\n"
@@ -131,6 +133,8 @@ def printUsage(stream):
              "  -- If present, genotype data in FORMAT and subsequence sample IDs\n"
              "     are placed into tenth and subsequent columns\n\n"
              "  -- Data rows must also be tab-delimited.\n\n"
+             "  -- BED annotations are printed for multiple alternate alleles; use the --do-not-split-alt-alleles option\n"
+             "     to print one annotation for all alternate alleles.\n\n"
              "  -- Any missing data or non-standard delimiters may cause\n"
              "     problems. It may be useful to validate the VCF v4 input\n"
              "     before conversion.\n\n"
@@ -191,12 +195,12 @@ def consumeVCF(from_stream, to_stream, params):
             from_stream.close()
             to_stream.close()
             break
-        bed_line = convertVCFToBed(vcf_line, params, to_stream)
+        bed_line = convertVCFToBED(vcf_line, params, to_stream)
         if bed_line:
             to_stream.write(bed_line)
             to_stream.flush()
 
-def convertVCFToBed(line, params, stream):
+def convertVCFToBED(line, params, stream):
     convertedLine = None
 
     chomped_line = line.rstrip(os.linesep)
@@ -254,10 +258,10 @@ def convertVCFToBed(line, params, stream):
         except IndexError:
             pass
 
-        if isMixedRecord(elem_alt):
+        if isMixedRecord(elem_alt) and params.splitAltAlleles:
             # write each variant in mixed record to separate BED element
-            alt_alleles = elem_alt.split(",")
             convertedLine = ""
+            alt_alleles = elem_alt.split(",")
             for alt_allele in alt_alleles:
                 elem_alt = alt_allele
                 if params.filterCount != 0 and not params.filterOnInsertions:
@@ -309,6 +313,7 @@ class Parameters:
         self._sortOutput = True
         self._sortTmpdir = None
         self._sortTmpdirSet = False
+        self._splitAltAlleles = True
         self._maxMem = "2G"
         self._maxMemChanged = False
         self._filterOnSnvs = False
@@ -364,6 +369,13 @@ class Parameters:
     @sortTmpdirSet.setter
     def sortTmpdirSet(self, flag):
         self._sortTmpdirSet = flag
+
+    @property
+    def splitAltAlleles(self):
+        return self._splitAltAlleles
+    @splitAltAlleles.setter
+    def splitAltAlleles(self, flag):
+        self._splitAltAlleles = flag
 
     @property
     def maxMem(self):
@@ -425,7 +437,7 @@ def main(*args):
     #
 
     optstr = ""
-    longopts = ["help", "keep-header", "do-not-sort", "max-mem=", "snvs", "insertions", "deletions", "sort-tmpdir="]
+    longopts = ["help", "keep-header", "do-not-split-alt-alleles", "do-not-sort", "max-mem=", "snvs", "insertions", "deletions", "sort-tmpdir="]
     try:
         (options, args) = getopt.getopt(sys.argv[1:], optstr, longopts)
     except getopt.GetoptError as error:
@@ -438,6 +450,8 @@ def main(*args):
             return os.EX_OK
         elif key in ("--keep-header"):
             params.keepHeader = True
+        elif key in ("--do-not-split-alt-alleles"):
+            params.splitAltAlleles = False
         elif key in ("--do-not-sort"):
             params.sortOutput = False
         elif key in ("--sort-tmpdir"):

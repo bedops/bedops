@@ -33,6 +33,8 @@ The ``vcf2bed`` script parses VCF from standard input and prints sorted BED to s
 
 The header data of a VCF file is usually discarded, unless you add the ``--keep-header`` option. In this case, BED elements are created from these data, using the chromosome name ``_header`` to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field).
 
+.. note:: By default, multiple BED annotations are printed if there are multiple alternate alleles in a variant call. Use the ``--do-not-split-alt-alleles`` option to preserve the alternate allele string and print only one BED element for the variant call.
+
 .. tip:: By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the ``--do-not-sort`` option. Run the script with the ``--help`` option for more details.
 
 .. tip:: If you are sorting data larger than system memory, use the ``--max-mem`` option to limit sort memory usage to a reasonable fraction of available memory, *e.g.*, ``--max-mem 2G`` or similar. See ``--help`` for more details.
@@ -196,6 +198,8 @@ If present in the VCF v4 input, the following columns are also mapped:
 +---------------------------+---------------------+---------------+
 
 When using ``--deletions``, the stop value of the BED output is determined by the length difference between ALT and REF alleles. Use of ``--insertions`` or ``--snvs`` yields a one-base BED element.
+
+If the ALT field contains more than one allele, multiple BED records will be printed. Use the ``--do-not-split-alt-allele`` option if you only want one BED record per variant call.
 
 The "meta-information" (starting with ``##``) and "header" lines (starting with ``#``) are discarded, unless the ``--keep-headers`` options is specified.
 
