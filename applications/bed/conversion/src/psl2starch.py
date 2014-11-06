@@ -40,6 +40,9 @@
 #               should not cause any collision problems since PSL data should use the UCSC chromosome
 #               naming convention.
 #
+#               Use of the --split option will create two or more separate BED elements, based on the 
+#               number of elements in the tStarts field.
+#
 #               We describe below how we map columns to BED, so that BLAT results can be losslessly
 #               transformed back into PSL format with a simple awk statement or other similar
 #               command that permutes columns into PSL-ordering.
@@ -112,12 +115,13 @@ def which(program):
 
 def printUsage(stream):
     usage = ("Usage:\n"
-             "  %s [ --help ] [ --keep-header ] [ --headered ] [ --do-not-sort | --max-mem <value> (--sort-tmpdir <dir>) ] [ --starch-format <bzip2|gzip> ] < foo.psl > sorted-foo.psl.bed.starch\n\n"
+             "  %s [ --help ] [ --keep-header ] [ --split ] [ --headered ] [ --do-not-sort | --max-mem <value> (--sort-tmpdir <dir>) ] [ --starch-format <bzip2|gzip> ] < foo.psl > sorted-foo.psl.bed.starch\n\n"
              "Version:\n"
              "  v2.4.3\n\n"
              "Options:\n"
              "  --help                        Print this help message and exit\n"
              "  --keep-header                 Preserve header information as pseudo-BED elements (requires --headered)\n"
+             "  --split                       Split record into multiple BED elements, based on tStarts field value\n"
              "  --do-not-sort                 Do not sort converted data with BEDOPS sort-bed\n"
              "  --max-mem <value>             Sets aside <value> memory for sorting BED output.\n"
              "                                For example, <value> can be 8G, 8000M or 8000000000\n"
@@ -138,6 +142,8 @@ def printUsage(stream):
              "  PSL input can contain a header or be headerless, if the BLAT search was\n"
              "  performed with the -noHead option. By default, we assume the PSL input is headerless.\n"
              "  If your PSL data contains a header, use the --headered option with this script.\n\n"
+             "  If your PSL data contain a search result with multiple tStart values, you can use\n"
+             "  the --split option to write multiple BED records.\n\n"
              "  We describe below how we map columns to BED, so that BLAT results can be losslessly\n"
              "  transformed back into PSL format with a simple awk statement or other similar\n"
              "  command that permutes columns into PSL-ordering.\n\n"
@@ -201,7 +207,7 @@ def consumePSL(from_stream, to_stream, params):
             from_stream.close()
             to_stream.close()
             break
-        bed_line = convertPSLToBed(psl_line, params)
+        bed_line = convertPSLToBED(psl_line, params)
         # bed_line could be None if --headered but not --keep-header, so we only print to output stream if it is not None
         if bed_line: 
             try:
@@ -222,7 +228,7 @@ def consumeBED(from_stream, to_stream, params):
         to_stream.write(bed_line)
         to_stream.flush()
 
-def convertPSLToBed(line, params):
+def convertPSLToBED(line, params):
     convertedLine = None
 
     params.lineCounter += 1
@@ -274,27 +280,60 @@ def convertPSLToBed(line, params):
             sys.stderr.write ('[%s] - Error: Corrupt input on line %d? Start coordinate must be less than end coordinate.\n' % (sys.argv[0], params.lineCounter) )
             return os.EX_DATAERR
 
-        convertedLine = '\t'.join([cols['tName'],
-                                   cols['tStart'],
-                                   cols['tEnd'],
-                                   cols['qName'],
-                                   cols['qSize'],
-                                   cols['strand'],
-                                   cols['matches'],
-                                   cols['misMatches'],
-                                   cols['repMatches'],
-                                   cols['nCount'],
-                                   cols['qNumInsert'],
-                                   cols['qBaseInsert'],
-                                   cols['tNumInsert'],
-                                   cols['tBaseInsert'],
-                                   cols['qStart'],
-                                   cols['qEnd'],
-                                   cols['tSize'],
-                                   cols['blockCount'],
-                                   cols['blockSizes'],
-                                   cols['qStarts'],
-                                   cols['tStarts']]) + '\n'
+        if not params.inputNeedsSplitting:
+            convertedLine = '\t'.join([cols['tName'],
+                                       cols['tStart'],
+                                       cols['tEnd'],
+                                       cols['qName'],
+                                       cols['qSize'],
+                                       cols['strand'],
+                                       cols['matches'],
+                                       cols['misMatches'],
+                                       cols['repMatches'],
+                                       cols['nCount'],
+                                       cols['qNumInsert'],
+                                       cols['qBaseInsert'],
+                                       cols['tNumInsert'],
+                                       cols['tBaseInsert'],
+                                       cols['qStart'],
+                                       cols['qEnd'],
+                                       cols['tSize'],
+                                       cols['blockCount'],
+                                       cols['blockSizes'],
+                                       cols['qStarts'],
+                                       cols['tStarts']]) + '\n'
+            
+        elif params.inputNeedsSplitting:
+            tStarts = cols['tStarts'].split(',')
+            blockSizes = cols['blockSizes'].split(',')
+            convertedLine = ""
+            for blockIdx in range(int(cols['blockCount'])):
+                tStart = int(tStarts[blockIdx])
+                tEnd = tStart + int(blockSizes[blockIdx])
+                blockName = ""
+                if int(cols['blockCount']) > 1:
+                    blockName = ":" + str(blockIdx).zfill(3)
+                convertedLine += '\t'.join([cols['tName'],
+                                            str(tStart),
+                                            str(tEnd),
+                                            cols['qName'] + blockName,
+                                            cols['qSize'],
+                                            cols['strand'],
+                                            cols['matches'],
+                                            cols['misMatches'],
+                                            cols['repMatches'],
+                                            cols['nCount'],
+                                            cols['qNumInsert'],
+                                            cols['qBaseInsert'],
+                                            cols['tNumInsert'],
+                                            cols['tBaseInsert'],
+                                            cols['qStart'],
+                                            cols['qEnd'],
+                                            cols['tSize'],
+                                            cols['blockCount'],
+                                            cols['blockSizes'],
+                                            cols['qStarts'],
+                                            cols['tStarts']]) + '\n'
 
     return convertedLine
 
@@ -308,6 +347,7 @@ class Parameters:
         self._sortOutput = True
         self._sortTmpdir = None
         self._sortTmpdirSet = False
+        self._inputNeedsSplitting = False
         self._maxMem = "2G"
         self._maxMemChanged = False
         self._starchFormat = "--bzip2"
@@ -369,6 +409,13 @@ class Parameters:
         self._sortTmpdirSet = flag
 
     @property
+    def inputNeedsSplitting(self):
+        return self._inputNeedsSplitting
+    @inputNeedsSplitting.setter
+    def inputNeedsSplitting(self, flag):
+        self._inputNeedsSplitting = flag
+
+    @property
     def maxMem(self):
         return self._maxMem
     @maxMem.setter
@@ -408,7 +455,7 @@ def main(*args):
     #
 
     optstr = ""
-    longopts = ["do-not-sort", "keep-header", "headered", "help", "max-mem=", "starch-format=", "sort-tmpdir="]
+    longopts = ["do-not-sort", "keep-header", "split", "headered", "help", "max-mem=", "starch-format=", "sort-tmpdir="]
     try:
         (options, args) = getopt.getopt(sys.argv[1:], optstr, longopts)
     except getopt.GetoptError as error:
@@ -423,6 +470,8 @@ def main(*args):
             params.keepHeader = True
         elif key in ("--headered"):
             params.inputIsHeadered = True
+        elif key in ("--split"):
+            params.inputNeedsSplitting = True
         elif key in ("--do-not-sort"):
             params.sortOutput = False
         elif key in ("--sort-tmpdir"):
@@ -438,6 +487,11 @@ def main(*args):
         sys.stderr.write( "[%s] - Error: Cannot specify --keep-header without --headered\n" % sys.argv[0] )
         printUsage("stderr")
         return os.EX_USAGE
+
+    if params.inputNeedsSplitting and not params.sortOutput:
+        sys.stderr.write( "[%s] - Error: Cannot specify both --do-not-sort and --split parameters\n" % sys.argv[0] )
+        printUsage("stderr")
+        return os.EX_USAGE 
 
     if params.maxMemChanged and not params.sortOutput:
         sys.stderr.write( "[%s] - Error: Cannot specify both --do-not-sort and --max-mem parameters\n" % sys.argv[0] )

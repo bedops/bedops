@@ -647,7 +647,7 @@ def convertSAMToBED(line, params):
                 # otherwise, if we need to split reads, then we write two converted
                 # strings with adjusted coordinates and qname/ID value
 
-            elif inputNeedsSplitting:
+            elif params.inputNeedsSplitting:
                 samRecordBlockIdx = 1
                 samRecordPreviousOp = ""
                 samRecord.originalQname = samRecord.qname

@@ -31,6 +31,8 @@ The ``psl2bed`` script parses PSL from standard input and prints sorted BED to s
 
 The header data of a headered PSL file is usually discarded, unless you add the ``--keep-header`` option. In this case, BED elements are created from these data, using the chromosome name ``_header`` to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field).
 
+If your data contains a record with multiple blocks (``block count`` is greater than one, and the ``tStarts`` field has multiple target start positions), you can use the ``--split`` option to print that record to separate BED elements, each with a start position defined by ``tStarts`` and a length defined by the associated value in the ``blockSizes`` string.
+
 .. tip:: By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the ``--do-not-sort`` option. Run the script with the ``--help`` option for more details.
 
 .. tip:: If you are sorting data larger than system memory, use the ``--max-mem`` option to limit sort memory usage to a reasonable fraction of available memory, *e.g.*, ``--max-mem 2G`` or similar. See ``--help`` for more details.
@@ -101,7 +103,11 @@ Here is a demonstration of conversion of the same headered input, adding the ``-
 
 With this option, the ``psl2bed`` and ``psl2starch`` scripts are completely "non-lossy". Use of ``awk`` or other scripting tools can munge these data back into a PSL-formatted file.
 
+This example PSL file contains one record with a block count of 2. If we were to add the ``--split`` option, this record would be split into two separate BED elements that have start positions ``32933028`` and ``32933032``, with lengths ``4`` and ``31``, respectively. These elements fall within the genomic range already defined by the ``tStart`` and ``tEnd`` fields (``32933028`` and ``32933063``).
+
 .. note:: By default, the ``psl2bed`` and ``psl2starch`` scripts work with headerless PSL data. If you have headered PSL output, use the ``--headered`` operator with either conversion script, as shown in the example above.
+
+.. note:: By default, the ``psl2bed`` and ``psl2starch`` scripts assume that PSL data do not need splitting. If you expect your data to contain multiple blocks, add the ``--split`` option.
 
 .. _psl2bed_column_mapping:
 
@@ -116,9 +122,9 @@ In this section, we describe how PSL columns are mapped to BED columns. We start
 +===========================+=====================+===============+
 | tName                     | 1                   | chromosome    |
 +---------------------------+---------------------+---------------+
-| tStart                    | 2                   | start         |
+| tStart(*)                 | 2                   | start         |
 +---------------------------+---------------------+---------------+
-| tEnd                      | 3                   | stop          |
+| tEnd(*)                   | 3                   | stop          |
 +---------------------------+---------------------+---------------+
 | qName                     | 4                   | id            |
 +---------------------------+---------------------+---------------+
@@ -168,6 +174,8 @@ This is a lossless mapping. Because we have mapped all columns, we can translate
 ::
 
   $ awk 'BEGIN { OFS = "\t" } { print $7" "$8" "$9" "$10" "$11" "$12" "$13" "$14" "$6" "$4" "$5" "$15" "$16" "$1" "$17" "$2" "$3" "$18" "$19" "$20" "$21 }' converted.bed > original.psl
+
+In the case where the ``--split`` option is added, the ``tStart`` and ``tEnd`` fields are replaced with each of the values in the larger ``tStarts`` string, added to the respective values in the larger ``blockSizes`` string.
 
 .. _psl2bed_downloads:
 
