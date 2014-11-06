@@ -102,17 +102,21 @@ Release
 
 3. After at least 5-10 minutes from pushing the development branch to the master branch, check the `BEDOPS documentation site <http://bedops.readthedocs.org/en/latest/>`_ to ensure that the "latest" or default documenation shown is for the new version. 
 
-   If not, take a look at the `build <https://readthedocs.org/builds/bedops/>`_ page to manually trigger document rebuilds, or examine error logs, as necessary.
+   If not, take a look at the `build <https://readthedocs.org/builds/bedops/>`_ page to manually trigger document rebuilds, or examine error logs, if necessary.
 
-4. Push fixes to any documentation errors in the master branch. 
+4. Update the Github bedops/bedops master `README.md <https://github.com/bedops/bedops/blob/v2p5p0/README.md>`_ file to note the current version number, if necessary.
+
+5. Push fixes to any documentation errors in the master branch. 
 
 .. note:: We should aim to fix typos and other errors as soon after a new release as possible, because then shortly afterwards we can simply pull a new development branch off the current state of the master branch with minimal commit losses.
 
-5. Visit the `BEDOPS documentation administration site <https://readthedocs.org/dashboard/bedops/edit/>`_ to disable documentation for the development branch. 
+6. Visit the `BEDOPS documentation administration site <https://readthedocs.org/dashboard/bedops/edit/>`_ to disable documentation for the development branch. 
 
    Specifically, click on the `versions <https://readthedocs.org/dashboard/bedops/versions/>`_ tab to deactivate the old development branch. (Likewise, when adding a new development branch, add an active link here, so that edits to the documentation folder in the new development branch are available.)
 
-6. Update a local fork of `homebrew-science <https://github.com/Homebrew/homebrew-science>`_ with details for the BEDOPS `formula <https://github.com/Homebrew/homebrew-science/blob/master/bedops.rb>`_. Submit pull request to homebrew-science folks.
+7. Update a local fork of `homebrew-science <https://github.com/Homebrew/homebrew-science>`_ with details for the BEDOPS `formula <https://github.com/Homebrew/homebrew-science/blob/master/bedops.rb>`_. Submit pull request to homebrew-science folks.
+
+8. Consider closing out or deleting the development branch, as well as setting up the next development branch.
 
 =========
 Celebrate
