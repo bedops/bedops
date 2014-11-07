@@ -79,7 +79,7 @@ The ``--help`` option describes the various mapping and analytical operations an
         --sweep-all           Ensure <map-file> is read completely (helps to prevent broken pipes).
         --version             Print program information.
 
-      overlap options (At most, one may be selected.  By default, --bp-ovr 1 is used):
+      Overlap Options (At most, one may be selected.  By default, --bp-ovr 1 is used):
        --------
         --bp-ovr <int>           Require <int> bp overlap between elements of input files.
         --exact                  First 3 fields from <map-file> must be identical to <ref-file>'s.
@@ -742,6 +742,24 @@ You can use the ``--multidelim`` option to replace the semi-colon with another d
   chr1    4534150 4534300 ref-1|-V_GRE_C$-V_STAT_Q6$+V_HNF4_Q6_01
 
 .. note:: Grouped results derived with the ``--echo-map``, ``--echo-map-id``, and ``--echo-map-score`` options are listed in identical order. In other words, ID results line up at the same position as their score result counterparts when both ``--echo-map-id`` and ``--echo-map-score`` are chosen together. The same applies to the ``--echo-map`` option.
+
+.. _bedmap_io_event_handling
+
+==================
+I/O event handling
+==================
+
+During normal use of ``bedmap``, the application will usually terminate when it is determined that no more map data needs to be processed. This improves performance by limiting execution time to only that which is required to do actual work. However, closing early can trigger ``SIGPIPE`` or broken pipe errors that can cause batch scripts that use the standard input stream to pass data to ``bedmap`` to terminate early with an error state (even though there is often no functional problem from this early termination of ``bedmap``).
+
+When adding ``--ec``, ``bedmap`` will go into :ref:`error checking mode <bedmap_error_checking>` and read through the entire map dataset. 
+
+One method for dealing with this is to override how SIGPIPE errors are caught by the interpreter (bash, Python, etc.) and retrapping them or ignoring them. However, it may not a good idea to do this as other situations may arise in production pipelines where it is ideal to trap and handle all I/O errors in a default manner.
+
+Until now, we have proposed using ``--ec`` has been one way to prevent ``SIGPIPE`` events and early script termination specifically with the use of ``bedmap``. One problem with ``--ec`` is that its use doubles the overall execution time. To address this, the end user can now remove ``--ec`` and add ``--sweep-all`` in its place. 
+
+The ``--sweep-all`` option reads through the entire map file without early termination and can help deal with SIGPIPE errors. It adds to execution time, but the penalty is not as severe as with the use of ``--ec``.
+
+.. note:: Using ``--ec`` alone will enable error checking, but will now no longer read through the entire map file. The ``--ec`` option can be used in conjunction with ``--sweep-all``, with the associated time penalties.
 
 .. _bedmap_per_chromosome_operations:
 

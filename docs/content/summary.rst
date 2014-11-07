@@ -129,6 +129,9 @@ Set operation and statistical utilities
 | ``--sum``                     | Reports the accumulated value from scores of overlapping elements in | 1                | 2                | 5                |
 |                               | ``map-file``.                                                        |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--sweep-all``               | Reads through entire ``map-file`` dataset to avoid early termination | 1                | 2                | 3                |
+|                               | that may cause SIGPIPE or other I/O errors.                          |                  |                  |                  |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--tmean <low> <hi>``        | Reports the mean score from overlapping elements in ``map-file``,    | 1                | 2                | 5                |
 |                               | after ignoring the bottom ``<low>`` and top ``<hi>`` fractions of    |                  |                  |                  |
 |                               | those scores. (``0 <= low <= 1``, ``0 <= hi <= 1``, ``low + hi <=    |                  |                  |                  |
