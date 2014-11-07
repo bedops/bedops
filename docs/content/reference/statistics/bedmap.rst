@@ -755,11 +755,9 @@ When adding ``--ec``, ``bedmap`` will go into :ref:`error checking mode <bedmap_
 
 One method for dealing with this is to override how SIGPIPE errors are caught by the interpreter (bash, Python, etc.) and retrapping them or ignoring them. However, it may not a good idea to do this as other situations may arise in production pipelines where it is ideal to trap and handle all I/O errors in a default manner.
 
-Until now, we have proposed using ``--ec`` has been one way to prevent ``SIGPIPE`` events and early script termination specifically with the use of ``bedmap``. One problem with ``--ec`` is that its use doubles the overall execution time. To address this, the end user can now remove ``--ec`` and add ``--sweep-all`` in its place. 
+Until now, we have proposed using ``--ec`` (error checking) as one way to prevent ``SIGPIPE`` events and early script termination specifically with the use of ``bedmap``. This hidden feature of ``--ec`` has been replaced with the explicit option ``--sweep-all``.  The ``--ec`` and ``--sweep-all`` options work independently, and ``--ec`` no longer has the ``--sweep-all`` side-effect.  These options may be used in conjunction.
 
-The ``--sweep-all`` option reads through the entire map file without early termination and can help deal with SIGPIPE errors. It adds to execution time, but the penalty is not as severe as with the use of ``--ec``.
-
-.. note:: Using ``--ec`` alone will enable error checking, but will now no longer read through the entire map file. The ``--ec`` option can be used in conjunction with ``--sweep-all``, with the associated time penalties.
+The ``--sweep-all`` option reads through the entire map file without early termination and can help deal with SIGPIPE errors. It can add significant execution time in cases where early termination is possible.
 
 .. _bedmap_per_chromosome_operations:
 
