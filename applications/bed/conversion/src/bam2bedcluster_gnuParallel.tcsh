@@ -2,7 +2,7 @@
 
 # author  : sjn and apr
 # date    : June 2014
-# version : v2.5.0
+# version : v2.4.3
 
 #
 #    BEDOPS

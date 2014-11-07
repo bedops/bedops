@@ -2,7 +2,7 @@
 
 # author  : sjn and apr
 # date    : June 2014
-# version : v2.5.0
+# version : v2.4.3
 
 #
 #    BEDOPS
@@ -36,8 +36,8 @@ set soundoff = "-j n -e /dev/null -o /dev/null"
 set sge_opts = "$queue $shell $misc_opts $soundoff"
 set samtools_bin = "/net/lebowski/vol1/sw/samtools/0.1.19/samtools"
 set python_bin = "/net/lebowski/vol1/sw/python/2.7.3/bin/python"
-set bam2bed_script = "/net/lebowski/vol1/sw/bedops/2.4.2/bin/bam2bed"
-set bedops_bin = "/net/lebowski/vol1/sw/bedops/2.4.2/bin/bedops"
+set bam2bed_script = "/net/lebowski/vol1/sw/bedops/2.4.3/bin/bam2bed"
+set bedops_bin = "/net/lebowski/vol1/sw/bedops/2.4.3/bin/bedops"
 
 ############################
 # some input error checking
