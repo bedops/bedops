@@ -3,7 +3,7 @@
 `bam2starchcluster`
 ===================
 
-The ``bam2starchcluster`` script uses a Sun or Oracle Grid Engine (SGE/OGE) or `GNU Parallel <https://en.wikipedia.org/wiki/GNU_parallel>`_ job scheduler to parallelize the work of ``bam2starch``, which converts an **indexed**, 0-based, half-open ``[start-1, end)`` `Binary (Sequence) Alignment/Map <http://samtools.sourceforge.net/SAM1.pdf>`_ (BAM) file to a sorted, 0-based, half-open ``[start-1, end)`` UCSC BED dataset, and thence converts this to a :ref:`Starch-formatted <starch_specification>` archive.
+The ``bam2starchcluster`` scripts use a Sun or Oracle Grid Engine (SGE/OGE) or `GNU Parallel <https://en.wikipedia.org/wiki/GNU_parallel>`_ job scheduler to parallelize the work of ``bam2starch``, which converts an **indexed**, 0-based, half-open ``[start-1, end)`` `Binary (Sequence) Alignment/Map <http://samtools.sourceforge.net/SAM1.pdf>`_ (BAM) file to a sorted, 0-based, half-open ``[start-1, end)`` UCSC BED dataset, and thence converts this to a :ref:`Starch-formatted <starch_specification>` archive.
 
 This script splits the indexed BAM file by chromosome name. Each chromosome of BAM records is converted to a :ref:`Starch-formatted <starch_specification>` archive with ``bam2starch``. Once all per-chromosome archives are made, they are collated into one final Starch archive with :ref:`starchcat <starchcat>`.
 
@@ -19,7 +19,7 @@ This shell script is dependent upon a working computational grid that is managed
 Source
 ======
 
-The ``bam2starchcluster`` conversion script is part of the binary and source downloads of BEDOPS. See the :ref:`Installation <installation>` documentation for more details.
+The ``bam2starchcluster`` conversion scripts are part of the binary and source downloads of BEDOPS. See the :ref:`Installation <installation>` documentation for more details.
 
 =====
 Usage
@@ -27,8 +27,8 @@ Usage
 
 .. note:: Please review and edit the contents of this script before use with your data. Customization may be required to match your SGE/OGE or GNU Parallel installation and environment, as well as the nature of your BAM data.
 
-At minimum, use of this script with an SGE/OGE computational cluster will require editing of the ``queue`` parameter, and possibly adjustments to ``qsub`` options.
+At minimum, use of this script with an SGE/OGE computational cluster will require editing of the ``queue`` parameter, possible adjustments to ``qsub`` options, and adjustments to paths to working BEDOPS binaries.
 
-You will also need to make sure your BAM data are indexed. There should be a second BAI file with the same name as the BAM file you wish to compress, located in the same working directory. If this index file is not present, the script will exit early with an error.
+You will also need to make sure your BAM data are indexed. There must be a second BAI file with the same name as the BAM file you wish to compress, located in the same working directory. If this index file is not present, the script will exit early with an error.
 
 Further, if your indexed BAM data contain custom tags, edit the ``bam2starch`` call within this script to append the ``--custom-tags <value>`` argument (see the :ref:`bam2bed <bam2bed>` documentation for more details). You may also wish to review other parameters available with the ``bam2starch`` script, applying them in this script as needed.

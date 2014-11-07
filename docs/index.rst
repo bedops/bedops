@@ -111,6 +111,7 @@ Table of contents
 .. |performance| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
+   <li><a href="content/reference/file-management/compression/bam2bedcluster.html"><tt>bam2bedcluster</tt></a> and <a href="content/reference/file-management/compression/bam2starchcluster.html"><tt>bam2starchcluster</tt></a> - parallelize the conversion and compression of BAM data</li>
    <li><a href="content/performance.html#set-operations-with-bedops">Set operations with <tt>bedops</tt></li>
    <li><a href="content/performance.html#compression-characteristics-of-starch">Compression characteristics of <tt>starch</tt></li>
    <li><a href="content/performance.html#independent-testing">Independent testing</a></li>
