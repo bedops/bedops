@@ -198,8 +198,8 @@ void selectWork(const Input&, RefFile&, NonRefFiles&);
 //=================
 // createWork<T,U>
 //=================
-// This structure is specialized for cases where bed_check_iterator<T*>
-//  should be used in lieu of allocate_iterator<T*>.  Further specializations
+// This structure is specialized for cases where bed_check_iterator<T*> should
+//  be used in lieu of allocate_iterator_starch_bed<T*>.  Further specializations
 //  include cases where there is a reference file of a different BED type
 //  compared to all others.  Specifically, element-of and non-element-of need
 //  B3Rest for the reference file and B3NoRest for the remaining files.  While
@@ -427,6 +427,44 @@ void doWork(const Input& input) {
   }
 }
 
+//==========
+// doChop()
+//==========
+template <typename BedFiles>
+typename GetType<BedFiles>::BedType* nextMergeAllLines(int start, int end, BedFiles&);
+
+template <typename BedFiles>
+void doChop(BedFiles& bedFiles, Bed::CoordType chunkSize, Bed::CoordType stagger, bool excludeEndShort) {
+  typedef typename GetType<BedFiles>::BedType BedType;
+  static BedType* const zero = static_cast<BedType*>(0);
+  BedType c;
+  BedType* r = zero;
+  bool done = false;
+  while ( !done ) {
+    r = nextMergeAllLines(0, bedFiles.size(), bedFiles);
+    if ( !r )
+      break;
+    for ( auto i = r->start(); i < r->end(); ) {
+      if ( 0 != std::strcmp(c.chrom(), r->chrom()) )
+        c.chrom(r->chrom());
+      c.start(i);
+      c.end(i+chunkSize);
+      if ( c.end() > r->end() ) {
+        if ( excludeEndShort ) // final section < chunkSize
+          break;
+        c.end(r->end());
+      }
+      record(&c);
+
+      if ( 0 == stagger )
+        i += chunkSize;
+      else
+        i += stagger;
+    } // for
+    delete r;
+  } // while
+}
+
 //================
 // doComplement()
 //================
@@ -452,9 +490,6 @@ void doComplement(BedFiles& bedFiles, bool fullLeft) {
 //================
 // doDifference()
 //================
-template <typename BedFiles>
-typename GetType<BedFiles>::BedType* nextMergeAllLines(int start, int end, BedFiles&);
-
 template <typename BedFiles>
 std::pair<bool, typename GetType<BedFiles>::BedType*>
   nextDifferenceLine(BedFiles&,
@@ -565,6 +600,7 @@ void doMerge(BedFiles& bedFiles) {
       break;
     record(r);
     delete r;
+    r = zero;
   } // while
 }
 
@@ -1476,6 +1512,8 @@ void selectWork(const Input& input, BedFiles& bedFiles) {
   // Iterate through all input files and output results
   ModeType modeType = input.GetModeType();
   switch ( modeType ) {
+    case CHOP:
+      doChop(bedFiles, input.ChopChunkSize(), input.ChopStaggerSize(), input.ChopExcludeShort());
     case COMPLEMENT:
       doComplement(bedFiles, input.ComplementFullLeft());
       break;
