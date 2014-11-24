@@ -486,7 +486,7 @@ private:
       msg += "          chr21  900   1000\n\n";
 
       msg += "        Additional options --stagger <bp> and -x may be used to modify --chop's behavior.\n";
-      msg += "        The -x option simply excludes from output, rows that were shortened and are not chunk-size in length.\n";
+      msg += "        The -x option simply excludes from output all rows that were shortened to less than chunk-size bps.\n";
       msg += "        The above output results would be modified with the -x option as follows:\n\n";
 
       msg += "          chr1   10    110\n";
