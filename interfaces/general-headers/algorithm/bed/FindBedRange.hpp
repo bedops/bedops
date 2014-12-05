@@ -39,13 +39,20 @@ namespace Bed {
   typedef Bed::SignedCoordType ByteOffset;
 
   namespace extract_details {
+
     template <typename BedType>
     struct CompBed {
       bool operator()(const BedType& b1, const BedType& b2) const {
         static Bed::GenomicCompare<BedType, BedType> gc;
-        return(gc(&b1,&b2));
+        return gc(&b1,&b2);
       }
     };
+
+    template <typename BT1, typename BT2>
+    bool check_overlap(BT1 const* b1, BT2 const* b2) {
+      static Bed::Overlapping overlap;
+      return overlap(b1, b2) == 0;
+    }
 
     typedef Bed::B3Rest QueryBedType;   // file 1
     typedef QueryBedType TargetBedType; // file 2 -> must be same type as QueryBedType
@@ -77,7 +84,6 @@ namespace Bed {
 
     while ( titer != teof ) {
       extract_details::TargetBedType* const refelement = *titer++;
-
       if ( donequery ) { // read through and delete items in [titer,teof) for posterity
         delete refelement;
         continue;
@@ -86,22 +92,33 @@ namespace Bed {
         continue;
       }
 
+      // only use reference where you need to compare to starting base.  Otherwise, use refelement.
       reference = *refelement;
       reference.end(reference.start()+1);
 
       start_pos = std::ftell(qfile);
-      extract_details::MType::iterator miter = bounds.upper_bound(*refelement); // define end_pos
-      if ( miter == bounds.end() ) {
-        end_pos = at_end;
-        bounds.clear();
-      } else {
-        if ( bounds.begin() != miter )
+      while ( true ) {
+        extract_details::MType::iterator miter = bounds.upper_bound(*refelement); // define end_pos
+        if ( miter == bounds.end() ) {
+          end_pos = at_end;
+          bounds.clear();
+          break;
+        } else {
+          // it's possible that miter->first and refelement overlap but are not picked up in
+          //   bounds.upper_bound() search b/c bounds is ordered by the analog of "<", where
+          //   start coord takes precedence.  Consider when refelement is less than miter->first
+          //   but refelement->end() > miter->first.start().  In such a case miter->first would
+          //   not be a proper upper bound.  Remove it and try again.
           bounds.erase(bounds.begin(), miter);
-        end_pos = miter->second;
-      }
+          end_pos = miter->second;
+          if ( extract_details::check_overlap(refelement, &miter->first) )
+            bounds.erase(miter);
+          else
+            break;
+        }
+      } // while
       count = end_pos - start_pos; // how many bytes between positions
       didWork = false;
-
 
       while ( count > 0 ) {
         std::fseek(qfile, start_pos, SEEK_SET);
@@ -127,6 +144,7 @@ namespace Bed {
         // compare 'current' to starting base
         if ( lessthan(&current, &reference) < 0 ) {
           count = (end_pos - cur_pos);
+
           start_pos = cur_pos;
           if ( 0 == count ) {
             if ( end_pos != at_end ) {
@@ -145,10 +163,10 @@ namespace Bed {
 
         didWork = true;
       } // while
-  
+
       // spit elements in range
       if ( didWork ) {
-        while ( prev_pos != at_end && overlap(&current, refelement) == 0 ) {
+        while ( prev_pos != at_end && extract_details::check_overlap(&current, refelement) ) {
           op(&current);
           prev_pos = std::ftell(qfile);
           if ( prev_pos != at_end )
