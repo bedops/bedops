@@ -184,7 +184,7 @@ namespace Bed {
       first = false;
     } // while
 
-    return(std::make_pair(!first, prev_pos));
+    return std::make_pair(!first, prev_pos);
   }
 
 
