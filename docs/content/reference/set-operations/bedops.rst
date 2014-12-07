@@ -83,12 +83,12 @@ The ``--help`` option describes the set operation and other options available to
         Operations: (choose one of)
             -c, --complement [-L] File1 [File]*
             -d, --difference ReferenceFile File2 [File]*
-            -e, --element-of [-number% | -number] ReferenceFile File2 [File]*
-                   by default, -e -100% is used.  'bedops -e -1' is also popular.
+            -e, --element-of [number% | number] ReferenceFile File2 [File]*
+                   by default, -e 100% is used.  'bedops -e 1' is also popular.
             -i, --intersect File1 File2 [File]*
             -m, --merge File1 [File]*
-            -n, --not-element-of [-number% | -number] ReferenceFile File2 [File]*
-                   by default, -n -100% is used.  'bedops -n -1' is also popular.
+            -n, --not-element-of [number% | number] ReferenceFile File2 [File]*
+                   by default, -n 100% is used.  'bedops -n 1' is also popular.
             -p, --partition File1 [File]*
             -s, --symmdiff File1 File2 [File]*
             -u, --everything File1 [File]*
@@ -187,7 +187,7 @@ Elements that are returned are always from the reference set (in this case, set 
 
    The argument to ``--element-of`` is a value that species to degree of overlap for elements. The value is either integral for per-base overlap,  or fractional for overlap measured by length.
 
-   Here is a demonstration of the use of ``--element-of -1`` on two sorted sets ``First.bed`` and ``Second.bed``, which looks for elements in the ``First`` set that overlap elements in the ``Second`` set by one or more bases:
+   Here is a demonstration of the use of ``--element-of 1`` on two sorted sets ``First.bed`` and ``Second.bed``, which looks for elements in the ``First`` set that overlap elements in the ``Second`` set by one or more bases:
  
    .. code:: bash
 
@@ -209,7 +209,7 @@ Elements that are returned are always from the reference set (in this case, set 
 
    .. code:: bash
       
-      $ bedops --element-of -1 First.bed Second.bed > Result.bed
+      $ bedops --element-of 1 First.bed Second.bed > Result.bed
 
    .. code:: bash
       
@@ -222,7 +222,7 @@ Elements that are returned are always from the reference set (in this case, set 
 
    .. code:: bash
       
-      $ bedops --element-of -15 First.bed Second.bed > Result.bed
+      $ bedops --element-of 15 First.bed Second.bed > Result.bed
 
    .. code:: bash
       
@@ -235,7 +235,7 @@ Elements that are returned are always from the reference set (in this case, set 
 
    .. code:: bash
 
-      $ bedops --element-of -50% First.bed Second.bed > Result.bed
+      $ bedops --element-of 50% First.bed Second.bed > Result.bed
 
    .. code:: bash
       
@@ -254,7 +254,7 @@ Note that `--element-of` is *not* a symmetric operation, as demonstrated by reve
  
    .. code:: bash
 
-      $ bedops --element-of -1 Second.bed First.bed > Result.bed
+      $ bedops --element-of 1 Second.bed First.bed > Result.bed
 
    .. code:: bash
       
@@ -302,7 +302,7 @@ The ``--not-element-of`` operation shows elements in the reference file which do
 
    .. code:: bash
       
-      $ bedops --not-element-of -1 First.bed Second.bed > Result.bed
+      $ bedops --not-element-of 1 First.bed Second.bed > Result.bed
 
    .. code:: bash
       
@@ -505,7 +505,7 @@ The ``--intersect`` operation determines genomic regions common to all input set
       chr1	150	160
       chr1	460	470
 
-   Notice how this computed result is quite different from that of ``--element-of -N``, which functions more like a LEFT JOIN operation in SQL.
+   Notice how this computed result is quite different from that of ``--element-of N``, which functions more like a LEFT JOIN operation in SQL.
 
 -------------------
 Merge (-m, --merge)

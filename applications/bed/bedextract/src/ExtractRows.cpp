@@ -186,7 +186,7 @@ namespace {
      msg += "   1) --list-chr <input.bed>        Print all unique chromosome names found in <input.bed>\n";
      msg += "   2) <chromosome> <input.bed>      Retrieve all rows for chr8 with:  bedextract chr8 <input.bed>\n";
      msg += "   3) <query.bed> <target>          Grab elements from the <query.bed> that overlap elements in <target>. Same as\n";
-     msg += "                                     `bedops -e -1 <query.bed> <target>`, except that this option fails silently\n";
+     msg += "                                     `bedops -e 1 <query.bed> <target>`, except that this option fails silently\n";
      msg += "                                      if <query.bed> contains fully-nested BED elements.  If no fully-nested\n";
      msg += "                                      element exists, bedextract can vastly improve upon the performance of bedops.\n";
      msg += "                                      <target> may be a BED or Starch file (with or without fully-nested elements).\n";

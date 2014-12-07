@@ -70,7 +70,7 @@ The ``--help`` option describes the functionality available to the end user:
      1) --list-chr <input.bed>        Print all unique chromosome names found in <input.bed>.
      2) <chromosome> <input.bed>      Retrieve all rows for chr8 with:  bedextract chr8 <input.bed>.
      3) <query.bed> <target>          Grab elements from the <query.bed> that overlap elements in <target>. Same as
-                                       `bedops -e -1 <query.bed> <target>`, except that this option fails silently
+                                       `bedops -e 1 <query.bed> <target>`, except that this option fails silently
                                         if <query.bed> contains fully-nested BED elements.  If no fully-nested
                                         element exists, bedextract can vastly improve upon the performance of bedops.
                                         <target> may be a BED or Starch file (with or without fully-nested elements).
@@ -121,13 +121,24 @@ Retrieving elements which overlap target elements
 
 A common :ref:`bedops` query involves asking which elements overlap one or more bases between two BED datasets, which we will call here ``Query`` and ``Target``. 
 
-One can already use ``bedops --element-of -1`` to accomplish this task, but if certain specific criteria are met (which we will describe shortly) then a much faster result can often be obtained by instead using :ref:`bedextract`. 
+One can already use ``bedops --element-of 1`` to accomplish this task, but if certain specific criteria are met (which we will describe shortly) then a much faster result can often be obtained by instead using :ref:`bedextract`. 
 
 Three criteria make the use of :ref:`bedextract` in this mode very successful in practice, with potentially massive speed improvements:
 
 1. ``Query`` is a huge file.
 2. There are relatively few regions of interest in ``Target`` (say, roughly 30,000 or fewer).
 3. There are **no fully-nested elements** in ``Query`` (but duplicate coordinates are fine).
+
+.. note: With some extra work, it is possible to use this mode of bedextract with a huge ``Query`` BED file that includes fully-nested elements.  The technique requires that you create a merged version of ``Query`` and keep that result, ``Query-Index`` around along with ``Query``.
+
+::
+  $ bedops -m Query > Query-Index
+  $ bedextract Query-Index Target \
+      | bedextract Query - \
+      | bedops --element-of 1 - Target \
+      > answer.bed
+
+.. note: You may change the final overlap criterion to the `bedops --element-of` as you see fit for your final answer.
 
 .. _bedextract_nested_elements:
 
@@ -206,11 +217,11 @@ Instead of an *ad-hoc* element as in this example, however, target elements coul
 
 .. tip:: The output of this particular use of :ref:`bedextract` is made up of elements from the ``Query`` dataset and is therefore :ref:`sorted <sort-bed>` BED data, which can be piped to :ref:`bedops`, :ref:`bedmap` and other BEDOPS utilities for further downstream processing.
 
-.. note:: Though :ref:`bedextract` only supports the overlap equivalent of ``bedops --element-of -1``, other overlap criteria are efficiently supported by combining :ref:`bedextract` with :ref:`bedops`. 
+.. note:: Though :ref:`bedextract` only supports the overlap equivalent of ``bedops --element-of 1``, other overlap criteria are efficiently supported by combining :ref:`bedextract` with :ref:`bedops`. 
 
    Specifically, we can quickly filter through just the results given by :ref:`bedextract` and implement other overlap criteria with :ref:`bedops`, *e.g.*:
 
-   ``$ bedextract query.bed target.bed | bedops -e -50% - target.bed``
+   ``$ bedextract query.bed target.bed | bedops -e 50% - target.bed``
 
 .. _bedextract_downloads:
 
