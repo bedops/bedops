@@ -73,7 +73,7 @@ Script
 
       ## Are there any elements that don't overlap the current master
       ## list?  If so, add those in, and repeat.  If not, we're done.
-      bedops -n -1 $tmpd/tmp.bed $tmpd/$iters.bed \
+      bedops -n 1 $tmpd/tmp.bed $tmpd/$iters.bed \
          > $tmpd/tmp2.bed
 
       mv $tmpd/tmp2.bed $tmpd/tmp.bed
