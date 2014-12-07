@@ -79,6 +79,11 @@ Set operation and statistical utilities
 | ``--echo-overlap-size``       | Calculates size of overlap between each mapped element and its       | 1                | 2                | 3                |
 |                               | reference element.                                                   |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--echo-ref-name``           | Reports the first 3 fields of ``ref-file`` element in                | 1                | 2                | 3                |
+|                               | chrom:start-end format.                                              |                  |                  |                  |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--echo-ref-size``           | Reports the length of the ``ref-file`` element.                      | 1                | 2                | 3                |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--faster``                  | **(Advanced)** Strong input assumptions are made. Review documents   | 1                | 2                | 5                |
 |                               | before use. Compatible with ``--bp-ovr`` and ``--range`` overlap     |                  |                  |                  |
 |                               | options only.                                                        |                  |                  |                  |
@@ -155,6 +160,9 @@ Set operation and statistical utilities
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--complement``, ``-c``      | Reports the intervening intervals between the input coordinate       | 1                | No imposed limit | 3                |
 |                               | segments.                                                            |                  |                  |                  |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--chop``, ``-w``            | Breaks up merged regions into fixed-size chunks, optionally anchored | 1                | No imposed limit | 3                |
+|                               | on start coordinates a fixed distance apart.                         |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--difference``, ``-d``      | Reports the intervals found in the first file that are not present   | 2                | No imposed limit | 3                |
 |                               | in any other input file.                                             |                  |                  |                  |
