@@ -76,7 +76,7 @@ The ``--help`` option describes the set operation and other options available to
                                    coordinates. Either value may be + or - to grow or
                                    shrink regions.  With the -e/-n operations, the first
                                    (reference) file is not padded, unlike all other files.
-            --range S            Pad input file(s) coordinates symmetrically by S.
+            --range S            Pad or shink input file(s) coordinates symmetrically by S.
                                    This is shorthand for: --range -S:S.
             --version            Print program information.
 

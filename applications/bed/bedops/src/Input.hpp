@@ -753,7 +753,7 @@ private:
     msg += "                                 coordinates. Either value may be + or - to grow or\n";
     msg += "                                 shrink regions.  With the -e/-n operations, the first\n";
     msg += "                                 (reference) file is not padded, unlike all other files.\n";
-    msg += "          --range S            Pad input file(s) coordinates symmetrically by S.\n";
+    msg += "          --range S            Pad or shrink input file(s) coordinates symmetrically by S.\n";
     msg += "                                 This is shorthand for: --range -S:S.\n";
     msg += "          --version            Print program information.\n\n";
 
