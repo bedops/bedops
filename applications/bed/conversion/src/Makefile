@@ -12,12 +12,6 @@ PROG                      = convert2bed
 SOURCE                    = convert2bed.c
 SFLAGS                    = -static
 
-ifneq ($(shell uname -s),CYGWIN_NT-6.1)
-	BLDFLAGS += -ansi
-else
-	BLDFLAGS += -U__STRICT_ANSI__
-endif
-
 all: setup build
 
 .PHONY: setup build debug profile clean
