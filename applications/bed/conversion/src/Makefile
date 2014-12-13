@@ -22,16 +22,16 @@ setup:
 
 build: setup
 	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CFLAGS) -c $(SOURCE) -o $(OBJDIR)/$(PROG).o $(INCLUDES)
-	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CFLAGS) $(SFLAGS) $(OBJDIR)/$(PROG).o -o $(PROG) $(LIBS)
+	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CFLAGS) $(SFLAGS) $(OBJDIR)/$(PROG).o -o $(DISTDIR)/$(PROG) $(LIBS)
 
 debug: setup
 	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CDFLAGS) -c $(SOURCE) -o $(OBJDIR)/$(PROG).o $(INCLUDES)
-	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CDFLAGS) $(SFLAGS) $(OBJDIR)/$(PROG).o -o $(PROG) $(LIBS)
+	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CDFLAGS) $(SFLAGS) $(OBJDIR)/$(PROG).o -o $(DISTDIR)/$(PROG) $(LIBS)
 
 profile: setup
 	$(CC) -shared -fPIC gprof-helper.c -o gprof-helper.so $(LIBS) -ldl
 	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CPFLAGS) -c $(SOURCE) -o $(OBJDIR)/$(PROG).o $(INCLUDES)
-	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CPFLAGS) $(SFLAGS)  $(OBJDIR)/$(PROG).o -o $(PROG) $(LIBS)
+	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CPFLAGS) $(SFLAGS)  $(OBJDIR)/$(PROG).o -o $(DISTDIR)/$(PROG) $(LIBS)
 	@echo "\nNote: To profile convert2bed with gprof/pthreads, run:\n\t$$ LD_PRELOAD=/path/to/gprof-helper.so convert2bed"
 
 clean:
