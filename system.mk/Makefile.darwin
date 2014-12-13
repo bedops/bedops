@@ -22,7 +22,7 @@ X86_64           = darwin_intel_x86_64
 default: support
 	$(MAKE) build -f $(SELF)
 
-SUBDIRS = bedmap/src sort-bed/src bedops/src closestfeats/src bedextract/src starch/src conversion/src/wig2bed
+SUBDIRS = bedmap/src sort-bed/src bedops/src closestfeats/src bedextract/src starch/src conversion/src
 SUBDIRS_FULL := $(patsubst %,${APPDIR}/%,$(SUBDIRS))
 SUBDIRS_I386 := $(patsubst %,%_i386,$(SUBDIRS))
 SUBDIRS_X86_64 := $(patsubst %,%_x86_64,$(SUBDIRS))
@@ -53,12 +53,12 @@ all: $(SUBDIRS_I386) $(SUBDIRS_X86_64)
 build: all
 	$(MAKE) build_fat -f $(SELF)
 
-build_fat: sort_c_intel_fat bedops_c_intel_fat closestfeatures_c_intel_fat bedmap_c_intel_fat bedextract_c_intel_fat wig2bed_c_intel_fat starch_c_intel_fat
+build_fat: sort_c_intel_fat bedops_c_intel_fat closestfeatures_c_intel_fat bedmap_c_intel_fat bedextract_c_intel_fat convert2bed_c_intel_fat starch_c_intel_fat
 
 debug: all
 	$(MAKE) dbg_build_fat -f $(SELF)
 
-dbg_build_fat: dbg_sort_c_intel_fat dbg_bedops_c_intel_fat dbg_closestfeatures_c_intel_fat dbg_bedmap_c_intel_fat dbg_bedextract_c_intel_fat dbg_wig2bed_c_intel_fat dbg_starch_c_intel_fat
+dbg_build_fat: dbg_sort_c_intel_fat dbg_bedops_c_intel_fat dbg_closestfeatures_c_intel_fat dbg_bedmap_c_intel_fat dbg_bedextract_c_intel_fat dbg_convert2bed_c_intel_fat dbg_starch_c_intel_fat
 
 #
 # clean ups
@@ -74,16 +74,16 @@ clean: clean_debug clean_gprof all
 	rm -f ${BINDIR}/starchcat
 	rm -f ${BINDIR}/starchcluster*
 	rm -f ${BINDIR}/bam2bed
-	rm -f ${BINDIR}/bam2bedcluster*
+	rm -f ${BINDIR}/bam2bed*
 	rm -f ${BINDIR}/gff2bed
 	rm -f ${BINDIR}/gtf2bed
 	rm -f ${BINDIR}/psl2bed
 	rm -f ${BINDIR}/sam2bed
 	rm -f ${BINDIR}/vcf2bed
 	rm -f ${BINDIR}/wig2bed
-	rm -f ${BINDIR}/wig2bed_bin
+	rm -f ${BINDIR}/convert2bed
 	rm -f ${BINDIR}/bam2starch
-	rm -f ${BINDIR}/bam2starchcluster*
+	rm -f ${BINDIR}/bam2starch*
 	rm -f ${BINDIR}/gff2starch
 	rm -f ${BINDIR}/gtf2starch
 	rm -f ${BINDIR}/psl2starch
@@ -114,16 +114,16 @@ clean_debug:
 	rm -f ${BINDIR}/debug.starchcat
 	rm -f ${BINDIR}/starchcluster*
 	rm -f ${BINDIR}/bam2bed
-	rm -f ${BINDIR}/bam2bedcluster*
+	rm -f ${BINDIR}/bam2bed*
 	rm -f ${BINDIR}/gff2bed
 	rm -f ${BINDIR}/gtf2bed
 	rm -f ${BINDIR}/psl2bed
 	rm -f ${BINDIR}/sam2bed
 	rm -f ${BINDIR}/vcf2bed
 	rm -f ${BINDIR}/wig2bed
-	rm -f ${BINDIR}/debug.wig2bed_bin
+	rm -f ${BINDIR}/debug.convert2bed
 	rm -f ${BINDIR}/bam2starch
-	rm -f ${BINDIR}/bam2starchcluster*
+	rm -f ${BINDIR}/bam2starch*
 	rm -f ${BINDIR}/gff2starch
 	rm -f ${BINDIR}/gtf2starch
 	rm -f ${BINDIR}/psl2starch
@@ -142,16 +142,16 @@ clean_gprof:
 	rm -f ${BINDIR}/gprof.starchcat
 	rm -f ${BINDIR}/starchcluster*
 	rm -f ${BINDIR}/bam2bed
-	rm -f ${BINDIR}/bam2bedcluster*
+	rm -f ${BINDIR}/bam2bed*
 	rm -f ${BINDIR}/gff2bed
 	rm -f ${BINDIR}/gtf2bed
 	rm -f ${BINDIR}/psl2bed
 	rm -f ${BINDIR}/sam2bed
 	rm -f ${BINDIR}/vcf2bed
 	rm -f ${BINDIR}/wig2bed
-	rm -f ${BINDIR}/gprof.wig2bed_bin
+	rm -f ${BINDIR}/gprof.convert2bed
 	rm -f ${BINDIR}/bam2starch
-	rm -f ${BINDIR}/bam2starchcluster*
+	rm -f ${BINDIR}/bam2starch*
 	rm -f ${BINDIR}/gff2starch
 	rm -f ${BINDIR}/gtf2starch
 	rm -f ${BINDIR}/psl2starch
@@ -231,8 +231,8 @@ bedmap_c_intel_fat:
 bedextract_c_intel_fat:
 	-test -e ${APPDIR}/bedextract/bin/bedextract_i386 && test -e ${APPDIR}/bedextract/bin/bedextract_x86_64 && { lipo -create ${APPDIR}/bedextract/bin/bedextract_i386 ${APPDIR}/bedextract/bin/bedextract_x86_64 -output ${APPDIR}/bedextract/bin/bedextract; }
 
-wig2bed_c_intel_fat:
-	-test -e ${APPDIR}/conversion/bin/wig2bed_bin_i386 && test -e ${APPDIR}/conversion/bin/wig2bed_bin_x86_64 && { lipo -create ${APPDIR}/conversion/bin/wig2bed_bin_i386 ${APPDIR}/conversion/bin/wig2bed_bin_x86_64 -output ${APPDIR}/conversion/bin/wig2bed_bin; }
+convert2bed_c_intel_fat:
+	-test -e ${APPDIR}/conversion/bin/convert2bed_i386 && test -e ${APPDIR}/conversion/bin/convert2bed_x86_64 && { lipo -create ${APPDIR}/conversion/bin/convert2bed_i386 ${APPDIR}/conversion/bin/convert2bed_x86_64 -output ${APPDIR}/conversion/bin/convert2bed; }
 
 starch_c_intel_fat:
 	cp ${APPDIR}/starch/src/starchcluster_sge.tcsh ${APPDIR}/starch/bin/starchcluster_sge
@@ -261,8 +261,8 @@ dbg_bedmap_c_intel_fat:
 dbg_bedextract_c_intel_fat:
 	-test -e ${APPDIR}/bedextract/bin/debug.bedextract_i386 && test -e ${APPDIR}/bedextract/bin/debug.bedextract_x86_64 && { lipo -create ${APPDIR}/bedextract/bin/debug.bedextract_i386 ${APPDIR}/bedextract/bin/debug.bedextract_x86_64 -output ${APPDIR}/bedextract/bin/debug.bedextract; }
 
-dbg_wig2bed_c_intel_fat:
-	-test -e ${APPDIR}/conversion/bin/debug.wig2bed_bin_i386 && test -e ${APPDIR}/conversion/bin/debug.wig2bed_bin_x86_64 && { lipo -create ${APPDIR}/conversion/bin/debug.wig2bed_bin_i386 ${APPDIR}/conversion/bin/debug.wig2bed_bin_x86_64 -output ${APPDIR}/conversion/bin/debug.wig2bed_bin; }
+dbg_convert2bed_c_intel_fat:
+	-test -e ${APPDIR}/conversion/bin/debug.convert2bed_i386 && test -e ${APPDIR}/conversion/bin/debug.convert2bed_x86_64 && { lipo -create ${APPDIR}/conversion/bin/debug.convert2bed_i386 ${APPDIR}/conversion/bin/debug.convert2bed_x86_64 -output ${APPDIR}/conversion/bin/debug.convert2bed; }
 
 dbg_starch_c_intel_fat:
 	cp ${APPDIR}/starch/src/starchcluster_sge.tcsh ${APPDIR}/starch/bin/starchcluster_sge.tcsh

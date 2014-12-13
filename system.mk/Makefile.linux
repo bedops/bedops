@@ -19,7 +19,7 @@ SELF             = ${WDIR}/system.mk/Makefile.linux
 default: support
 	$(MAKE) build -f $(SELF)
 
-SUBDIRS = ${APPDIR}/bedmap/src ${APPDIR}/sort-bed/src ${APPDIR}/bedops/src ${APPDIR}/closestfeats/src ${APPDIR}/bedextract/src ${APPDIR}/starch/src ${APPDIR}/conversion/src/wig2bed
+SUBDIRS = ${APPDIR}/bedmap/src ${APPDIR}/sort-bed/src ${APPDIR}/bedops/src ${APPDIR}/closestfeats/src ${APPDIR}/bedextract/src ${APPDIR}/starch/src ${APPDIR}/conversion/src
 
 .PHONY: $(SUBDIRS)
 
@@ -43,16 +43,16 @@ clean: clean_debug clean_gprof $(SUBDIRS)
 	rm -f ${BINDIR}/starchcat
 	rm -f ${BINDIR}/starchcluster*
 	rm -f ${BINDIR}/bam2bed
-	rm -f ${BINDIR}/bam2bedcluster*
+	rm -f ${BINDIR}/bam2bed*
 	rm -f ${BINDIR}/gff2bed
 	rm -f ${BINDIR}/gtf2bed
 	rm -f ${BINDIR}/psl2bed
 	rm -f ${BINDIR}/sam2bed
 	rm -f ${BINDIR}/vcf2bed
 	rm -f ${BINDIR}/wig2bed
-	rm -f ${BINDIR}/wig2bed_bin
+	rm -f ${BINDIR}/convert2bed
 	rm -f ${BINDIR}/bam2starch
-	rm -f ${BINDIR}/bam2starchcluster*
+	rm -f ${BINDIR}/bam2starch*
 	rm -f ${BINDIR}/gff2starch
 	rm -f ${BINDIR}/gtf2starch
 	rm -f ${BINDIR}/psl2starch
@@ -80,16 +80,16 @@ clean_debug:
 	rm -f ${BINDIR}/debug.starchcat
 	rm -f ${BINDIR}/starchcluster*
 	rm -f ${BINDIR}/bam2bed
-	rm -f ${BINDIR}/bam2bedcluster*
+	rm -f ${BINDIR}/bam2bed*
 	rm -f ${BINDIR}/gff2bed
 	rm -f ${BINDIR}/gtf2bed
 	rm -f ${BINDIR}/psl2bed
 	rm -f ${BINDIR}/sam2bed
 	rm -f ${BINDIR}/vcf2bed
 	rm -f ${BINDIR}/wig2bed
-	rm -f ${BINDIR}/debug.wig2bed_bin
+	rm -f ${BINDIR}/debug.convert2bed
 	rm -f ${BINDIR}/bam2starch
-	rm -f ${BINDIR}/bam2starchcluster*
+	rm -f ${BINDIR}/bam2starch*
 	rm -f ${BINDIR}/gff2starch
 	rm -f ${BINDIR}/gtf2starch
 	rm -f ${BINDIR}/psl2starch
@@ -108,16 +108,16 @@ clean_gprof:
 	rm -f ${BINDIR}/gprof.starchcat
 	rm -f ${BINDIR}/starchcluster*
 	rm -f ${BINDIR}/bam2bed
-	rm -f ${BINDIR}/bam2bedcluster*
+	rm -f ${BINDIR}/bam2bed*
 	rm -f ${BINDIR}/gff2bed
 	rm -f ${BINDIR}/gtf2bed
 	rm -f ${BINDIR}/psl2bed
 	rm -f ${BINDIR}/sam2bed
 	rm -f ${BINDIR}/vcf2bed
 	rm -f ${BINDIR}/wig2bed
-	rm -f ${BINDIR}/gprof.wig2bed_bin
+	rm -f ${BINDIR}/gprof.convert2bed
 	rm -f ${BINDIR}/bam2starch
-	rm -f ${BINDIR}/bam2starchcluster*
+	rm -f ${BINDIR}/bam2starch*
 	rm -f ${BINDIR}/gff2starch
 	rm -f ${BINDIR}/gtf2starch
 	rm -f ${BINDIR}/psl2starch
