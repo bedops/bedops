@@ -2545,7 +2545,7 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
             sprintf(c2b_globals.wig->id, 
                     "%s.%u",
                     c2b_globals.wig->basename, 
-                    c2b_globals.wig->section);
+                    ++c2b_globals.wig->section);
         }
         if (c2b_globals.keep_header_flag) { 
             /* copy header line to destination stream buffer */
@@ -2584,7 +2584,7 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
             sprintf(c2b_globals.wig->id,
                     "%s.%u",
                     c2b_globals.wig->basename,
-                    c2b_globals.wig->section);
+                    ++c2b_globals.wig->section);
         }
         if (c2b_globals.keep_header_flag) { 
             /* copy header line to destination stream buffer */
@@ -2635,7 +2635,7 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
             sprintf(c2b_globals.wig->id,
                     "%s.%u",
                     c2b_globals.wig->basename,
-                    c2b_globals.wig->section);
+                    ++c2b_globals.wig->section);
         }
         if (c2b_globals.keep_header_flag) { 
             /* copy header line to destination stream buffer */

@@ -36,6 +36,7 @@ starch_note=""
 starch_not_set=false
 
 # format-specific
+keep_header=false
 multisplit=""
 multisplit_set=false
 
@@ -45,7 +46,7 @@ help()
     exit $1
 }
 
-optspec=":e:zgr:m:dhb:-:"
+optspec=":e:zgr:m:dhkb:-:"
 while getopts "$optspec" optchar; do
     case "${optchar}" in
         -)
@@ -103,6 +104,9 @@ while getopts "$optspec" optchar; do
                 help-wig)
                     help 0
                     ;;
+                keep-header)
+                    keep_header=true
+                    ;;
                 multisplit)
                     val="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
                     multisplit=${val}
@@ -142,6 +146,9 @@ while getopts "$optspec" optchar; do
         h)
             help 0
             ;;
+        k)
+            keep_header=true
+            ;;
         b)
             multisplit=${OPTARG}
             multisplit_set=true
@@ -168,6 +175,7 @@ if [ "${starch_note_set}" = true ]; then options="${options} --starch-note=\"${s
 
 # format-specific
 
-if [ "${multisplit_set}" = true ]; then options="${options} --multisplit=\"${multisplit}\""; fi
+if [ "${keep_header}" = true ]; then options="${options} --keep-header"; fi
+if [ "${multisplit_set}" = true ]; then options="${options} --multisplit=${multisplit}"; fi
 
 ${cmd} ${options} - <&0
