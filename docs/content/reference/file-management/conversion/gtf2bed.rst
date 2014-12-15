@@ -11,7 +11,7 @@ For convenience, we also offer ``gtf2starch``, which performs the extra step of 
 Dependencies
 ============
 
-The ``gtf2bed`` script requires Python, version 2.6.2 or greater (and less than Python3).
+The ``gtf2bed`` script requires :ref:`convert2bed <convert2bed>`. The ``gtf2starch`` script requires :ref:`starch <starch>`. Both dependencies are part of a typical BEDOPS installation.
 
 This script is also dependent on input that follows the GTF 2.2 specification. A GTF-format validator is available `here <http://mblab.wustl.edu/software.html>`_ to ensure your input follows specification.
 
@@ -31,7 +31,7 @@ The ``gtf2bed`` script parses GTF from standard input and prints sorted BED to s
 
 .. tip:: By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the ``--do-not-sort`` option. Run the script with the ``--help`` option for more details.
 
-.. tip:: If you are sorting data larger than system memory, use the ``--max-mem`` option to limit sort memory usage to a reasonable fraction of available memory, *e.g.*, ``--max-mem 2G`` or similar. See ``--help`` for more details.
+.. tip:: If sorting converted data larger than system memory, use the ``--max-mem`` option to limit sort memory usage to a reasonable fraction of available memory, *e.g.*, ``--max-mem 2G`` or similar. See ``--help`` for more details.
 
 =======
 Example

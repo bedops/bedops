@@ -11,7 +11,7 @@ For convenience, we also offer ``psl2starch``, which performs the extra step of 
 Dependencies
 ============
 
-The ``psl2bed`` script requires Python, version 2.6.2 or greater (and less than Python3).
+The ``psl2bed`` script requires :ref:`convert2bed <convert2bed>`. The ``psl2starch`` script requires :ref:`starch <starch>`. Both dependencies are part of a typical BEDOPS installation.
 
 This script is also dependent on input that follows the `PSL specification <http://genome.ucsc.edu/FAQ/FAQformat.html#format2>`_. 
 
@@ -64,7 +64,7 @@ We can convert it to sorted BED data in the following manner:
 
 ::
 
-  $ psl2bed --headered < foo.psl
+  $ psl2bed < foo.psl
   chr1    30571100        30571135        foo     50      -       35      0       0       0       0       0       0       0       15      50      249250621       1       35,     0,      30571100,
   chr1    69592160        69592195        foo     50      -       34      1       0       0       0       0       0       0       15      50      249250621       1       35,     0,      69592160,
   chr1    107200050       107200100       foo     50      +       50      0       0       0       0       0       0       0       0       50      249250621       1       50,     0,      107200050,
@@ -83,7 +83,7 @@ Here is a demonstration of conversion of the same headered input, adding the ``-
 
 ::
 
-  $ psl2bed --headered --keep-header < foo.psl
+  $ psl2bed --keep-header < foo.psl
   _header 0       1       psLayout version 3
   _header 1       2
   _header 2       3       match   mis-    rep.    N's     Q gap   Q gap   T gap   T gap   strand  Q               Q       Q       Q       T               T       T       T       block   blockSizes      qStarts  tStarts
@@ -105,9 +105,9 @@ With this option, the ``psl2bed`` and ``psl2starch`` scripts are completely "non
 
 This example PSL file contains one record with a block count of 2. If we were to add the ``--split`` option, this record would be split into two separate BED elements that have start positions ``32933028`` and ``32933032``, with lengths ``4`` and ``31``, respectively. These elements fall within the genomic range already defined by the ``tStart`` and ``tEnd`` fields (``32933028`` and ``32933063``).
 
-.. note:: By default, the ``psl2bed`` and ``psl2starch`` scripts work with headerless PSL data. If you have headered PSL output, use the ``--headered`` operator with either conversion script, as shown in the example above.
+.. note:: The ``psl2bed`` and ``psl2starch`` scripts work with headered or headerless PSL data. 
 
-.. note:: By default, the ``psl2bed`` and ``psl2starch`` scripts assume that PSL data do not need splitting. If you expect your data to contain multiple blocks, add the ``--split`` option.
+.. note:: By default, the ``psl2bed`` and ``psl2starch`` scripts assume that PSL data do *not* need splitting. If you expect your data to contain multiple blocks, add the ``--split`` option.
 
 .. _psl2bed_column_mapping:
 
@@ -175,7 +175,7 @@ This is a lossless mapping. Because we have mapped all columns, we can translate
 
   $ awk 'BEGIN { OFS = "\t" } { print $7" "$8" "$9" "$10" "$11" "$12" "$13" "$14" "$6" "$4" "$5" "$15" "$16" "$1" "$17" "$2" "$3" "$18" "$19" "$20" "$21 }' converted.bed > original.psl
 
-In the case where the ``--split`` option is added, the ``tStart`` and ``tEnd`` fields are replaced with each of the values in the larger ``tStarts`` string, added to the respective values in the larger ``blockSizes`` string.
+In the case where the ``--split`` option is added, the ``tStart`` and ``tEnd`` fields are replaced with each of the values in the larger ``tStarts`` string, added to the respective values in the larger ``blockSizes`` string. This is still a lossless conversion, but modifications to the ``awk`` script printed above would be required to rebuild the original PSL.
 
 .. _psl2bed_downloads:
 

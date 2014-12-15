@@ -59,8 +59,8 @@ Table of contents
 .. |linux_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><a href="https://github.com/bedops/bedops/releases/download/v2.5.0/bedops_linux_x86_64-v2.5.0.tar.bz2">x86-64 (64-bit)</a> binaries</li>
-   <li><a href="https://github.com/bedops/bedops/releases/download/v2.5.0/bedops_linux_i386-v2.5.0.tar.bz2">i386 (32-bit)</a> binaries</li>
+   <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.3/bedops_linux_x86_64-v2.4.3.tar.bz2">x86-64 (64-bit)</a> binaries</li>
+   <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.3/bedops_linux_i386-v2.4.3.tar.bz2">i386 (32-bit)</a> binaries</li>
    <li><a href="content/installation.html#linux">Installation instructions</a> for Linux hosts</li>
    </ul>
 
@@ -68,7 +68,7 @@ Table of contents
 .. |macosx_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><a href="https://github.com/bedops/bedops/releases/download/v2.5.0/BEDOPS.2.5.0.mpkg.zip">Intel (32-/64-bit, 10.7-10.9)</a> installer package</li>
+   <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.3/BEDOPS.2.4.3.mpkg.zip">Intel (32-/64-bit, 10.7-10.9)</a> installer package</li>
    <li><a href="content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
    </ul>
 
@@ -76,8 +76,8 @@ Table of contents
 .. |source_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><a href="https://github.com/bedops/bedops/archive/v2.5.0.tar.gz">Source code</a> (tar.gz)</li>
-   <li><a href="https://github.com/bedops/bedops/archive/v2.5.0.zip">Source code</a> (zip)</li>
+   <li><a href="https://github.com/bedops/bedops/archive/v2.4.3.tar.gz">Source code</a> (tar.gz)</li>
+   <li><a href="https://github.com/bedops/bedops/archive/v2.4.3.zip">Source code</a> (zip)</li>
    <li><a href="content/installation.html#installation-via-source-code">Compilation instructions</a></li>
    </ul>
 
@@ -111,7 +111,7 @@ Table of contents
 .. |performance| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><a href="content/reference/file-management/compression/bam2bedcluster.html"><tt>bam2bedcluster</tt></a> and <a href="content/reference/file-management/compression/bam2starchcluster.html"><tt>bam2starchcluster</tt></a> - parallelize the conversion and compression of BAM data</li>
+   <li>Parallel <a href="content/reference/file-management/compression/parallel_bam2bed.html"><tt>bam2bed</tt></a> and <a href="content/reference/file-management/compression/parallel_bam2starch.html"><tt>bam2starch</tt></a> - parallelized conversion and compression of BAM data</li>
    <li><a href="content/performance.html#set-operations-with-bedops">Set operations with <tt>bedops</tt></li>
    <li><a href="content/performance.html#compression-characteristics-of-starch">Compression characteristics of <tt>starch</tt></li>
    <li><a href="content/performance.html#independent-testing">Independent testing</a></li>

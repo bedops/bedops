@@ -7,7 +7,7 @@ The ``bam2bed`` script converts 0-based, half-open ``[start-1, end)`` `Binary (S
 
 For convenience, we also offer ``bam2starch``, which performs the extra step of creating a :ref:`Starch-formatted <starch_specification>` archive.
 
-The ``bam2bed`` script is "non-lossy" (with the use of specific options, described below). Similar tools in the world tend to throw out information from the original BAM input upon conversion; ``bam2bed`` can retain everything, facilitating reuse of converted data and conversion to other formats.
+The ``bam2bed`` script is "non-lossy" (with the use of specific options, described below). Other toolkits tend to throw out information from the original BAM input upon conversion; ``bam2bed`` can retain everything, facilitating reuse of converted data and conversion to other formats.
 
 .. tip:: Doing the extra step of creating a :ref:`Starch-formatted <starch_specification>` archive can save a lot of space relative to the original BAM format, up to 33% of the original BAM dataset, while offering per-chromosome random access.
 
@@ -15,7 +15,7 @@ The ``bam2bed`` script is "non-lossy" (with the use of specific options, describ
 Dependencies
 ============
 
-This ``python`` shell script is dependent upon the installation of `SAMtools <http://samtools.sourceforge.net/>`_ and Python, version 2.6.2 or greater (and less than Python3).
+The ``bam2bed`` wrapper script is dependent upon the installation of `SAMtools <http://samtools.sourceforge.net/>`_ and :ref:`convert2bed <convert2bed>`. The ``bam2starch`` wrapper script is further dependent on the installation of the :ref:`starch <starch>` binary, part of a typical BEDOPS installation.
 
 ======
 Source
@@ -31,13 +31,11 @@ The ``bam2bed`` script parses BAM data from standard input and prints :ref:`sort
 
 The header data of a BAM file is usually discarded, unless you add the ``--keep-header`` option. In this case, BED elements are created from these data, using the chromosome name ``_header`` to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field).
 
-.. note:: If you modify the BAM data such that it includes tags not already in the SAM specification, use the ``--custom-tags <value>`` operator to specify a comma-delimited list of custom tags.
-
-.. tip:: If you work with RNA-seq data, you can use the ``--split`` option to process reads with ``N``-CIGAR operations, splitting them into separate BED elements.
+.. tip:: If you work with RNA-seq data, you may use the ``--split`` option to process reads with ``N``-CIGAR operations, splitting them into separate BED elements.
 
 .. tip:: By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the ``--do-not-sort`` option. Run the script with the ``--help`` option for more details.
 
-.. tip:: If you are sorting data larger than system memory, use the ``--max-mem`` option to limit sort memory usage to a reasonable fraction of available memory, *e.g.*, ``--max-mem 2G`` or similar. See ``--help`` for more details.
+.. tip:: If sorting converted data larger than system memory, use the ``--max-mem`` option to limit sort memory usage to a reasonable fraction of available memory, *e.g.*, ``--max-mem 2G`` or similar. See ``--help`` for more details.
 
 =======
 Example
@@ -49,30 +47,28 @@ We can convert it to sorted BED data in the following manner (omitting standard 
 
 ::
 
-  $ bam2bed --custom-tags MF,Aq < foo.bam
-  seq1    0       36      B7_591:4:96:693:509     73      +       99      36M     *       0       0       CACTAGTGGCTCATTGTAAATGTGTGGTTTAACTCG    <<<<<<<<<<<<<<<;<<<<<<<<<5<<<<<;:<;7    MF:i:18 Aq:i:73 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
-  seq1    2       37      EAS54_65:7:152:368:113  73      +       99      35M     *       0       0       CTAGTGGCTCATTGTAAATGTGTGGTTTAACTCGT     <<<<<<<<<<0<<<<655<<7<<<:9<<3/:<6):     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
-  seq1    4       39      EAS51_64:8:5:734:57     137     +       99      35M     *       0       0       AGTGGCTCATTGTAAATGTGTGGTTTAACTCGTCC     <<<<<<<<<<<7;71<<;<;;<7;<<3;);3*8/5     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
-  seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     *       0       0       GTGGCTCATTGTAATTTTTTGTTTTAACTCTTCTCT    (-&----,----)-)-),'--)---',+-,),''*,    MF:i:130        Aq:i:63 NM:i:5  UQ:i:38 H0:i:0  H1:i:0
+  $ bam2bed < foo.bam
+  seq1    0       36      B7_591:4:96:693:509     99      +       73       36M     *       0       0       CACTAGTGGCTCATTGTAAATGTGTGGTTTAACTCG    <<<<<<<<<<<<<<<;<<<<<<<<<5<<<<<;:<;7    MF:i:18 Aq:i:73 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
+  seq1    2       37      EAS54_65:7:152:368:113  99      +       73       35M     *       0       0       CTAGTGGCTCATTGTAAATGTGTGGTTTAACTCGT     <<<<<<<<<<0<<<<655<<7<<<:9<<3/:<6):     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
+  seq1    4       39      EAS51_64:8:5:734:57     99      +       137      35M     *       0       0       AGTGGCTCATTGTAAATGTGTGGTTTAACTCGTCC     <<<<<<<<<<<7;71<<;<;;<7;<<3;);3*8/5     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
+  seq1    5       41      B7_591:1:289:587:906    63      +       137      36M     *       0       0       GTGGCTCATTGTAATTTTTTGTTTTAACTCTTCTCT    (-&----,----)-)-),'--)---',+-,),''*,    MF:i:130        Aq:i:63 NM:i:5  UQ:i:38 H0:i:0  H1:i:0
   ...
 
-.. note:: We are using the ``--custom-tags`` option with the comma-separated string ``MF,Aq`` in order to include reads which use tags that are not in the SAMTools specification.
-
-Note also that we strip the header section from the output. If we want to keep this, the use of the ``--keep-header`` option will preserve the BAM file's header, turning it into BED elements that use ``_header`` as a chromosome name. 
+Note that we strip the header section from the output. If we want to keep this, the use of the ``--keep-header`` option will preserve the BAM file's header, turning it into BED elements that use ``_header`` as a chromosome name. 
 
 Here's an example:
 
 ::
 
-  $ bam2bed --custom-tags MF,Aq --keep-header < foo.bam
+  $ bam2bed --keep-header < foo.bam
   _header 0       1       @HD     VN:1.0 SO:coordinate
   _header 1       2       @SQ     SN:seq1 LN:5000
   _header 2       3       @SQ     SN:seq2 LN:5000
   _header 3       4       @CO     Example of SAM/BAM file format.
-  seq1    0       36      B7_591:4:96:693:509     73      +       99      36M     *       0       0       CACTAGTGGCTCATTGTAAATGTGTGGTTTAACTCG    <<<<<<<<<<<<<<<;<<<<<<<<<5<<<<<;:<;7    MF:i:18 Aq:i:73 NM:i:0  UQ:i:0      H0:i:1  H1:i:0
-  seq1    2       37      EAS54_65:7:152:368:113  73      +       99      35M     *       0       0       CTAGTGGCTCATTGTAAATGTGTGGTTTAACTCGT     <<<<<<<<<<0<<<<655<<7<<<:9<<3/:<6):     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0      H0:i:1  H1:i:0
-  seq1    4       39      EAS51_64:8:5:734:57     137     +       99      35M     *       0       0       AGTGGCTCATTGTAAATGTGTGGTTTAACTCGTCC     <<<<<<<<<<<7;71<<;<;;<7;<<3;);3*8/5     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0      H0:i:1  H1:i:0
-  seq1    5       41      B7_591:1:289:587:906    137     +       63      36M     *       0       0       GTGGCTCATTGTAATTTTTTGTTTTAACTCTTCTCT    (-&----,----)-)-),'--)---',+-,),''*,    MF:i:130        Aq:i:63 NM:i:5      UQ:i:38 H0:i:0  H1:i:0
+  seq1    0       36      B7_591:4:96:693:509     99      +       73       36M     *       0       0       CACTAGTGGCTCATTGTAAATGTGTGGTTTAACTCG    <<<<<<<<<<<<<<<;<<<<<<<<<5<<<<<;:<;7    MF:i:18 Aq:i:73 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
+  seq1    2       37      EAS54_65:7:152:368:113  99      +       73       35M     *       0       0       CTAGTGGCTCATTGTAAATGTGTGGTTTAACTCGT     <<<<<<<<<<0<<<<655<<7<<<:9<<3/:<6):     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
+  seq1    4       39      EAS51_64:8:5:734:57     99      +       137      35M     *       0       0       AGTGGCTCATTGTAAATGTGTGGTTTAACTCGTCC     <<<<<<<<<<<7;71<<;<;;<7;<<3;);3*8/5     MF:i:18 Aq:i:66 NM:i:0  UQ:i:0  H0:i:1  H1:i:0
+  seq1    5       41      B7_591:1:289:587:906    63      +       137      36M     *       0       0       GTGGCTCATTGTAATTTTTTGTTTTAACTCTTCTCT    (-&----,----)-)-),'--)---',+-,),''*,    MF:i:130        Aq:i:63 NM:i:5  UQ:i:38 H0:i:0  H1:i:0
   ...
 
 With this option, the ``bam2bed`` and ``bam2starch`` scripts are completely "non-lossy" (with the exception of unmapped reads; see note below). Use of ``awk`` or other scripting tools can munge these data back into a SAM-formatted file.
@@ -98,7 +94,7 @@ In this section, we describe how non-header BAM data (converted to SAM columns) 
 +---------------------------+---------------------+---------------+
 | QNAME                     | 4                   | id            |
 +---------------------------+---------------------+---------------+
-| FLAG                      | 5                   | score         |
+| MAPQ                      | 5                   | score         |
 +---------------------------+---------------------+---------------+
 | 16 & FLAG                 | 6                   | strand        |
 +---------------------------+---------------------+---------------+
@@ -108,7 +104,7 @@ The remaining SAM-converted columns are mapped as-is, in same order, to adjacent
 +---------------------------+---------------------+---------------+
 | SAM field                 | BED column index    | BED field     |
 +===========================+=====================+===============+
-| MAPQ                      | 7                   |               |
+| FLAG                      | 7                   |               |
 +---------------------------+---------------------+---------------+
 | CIGAR                     | 8                   |               |
 +---------------------------+---------------------+---------------+

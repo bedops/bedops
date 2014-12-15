@@ -3,7 +3,7 @@
 `vcf2bed`
 =========
 
-The ``vcf2bed`` script converts 1-based, closed ``[start, end]`` `Variant Call Format v4 <http://vcftools.sourceforge.net/specs.html>`_ (VCF) to sorted, 0-based, half-open ``[start-1, start)`` extended BED data.
+The ``vcf2bed`` script converts 1-based, closed ``[start, end]`` `Variant Call Format v4.2 <http://vcftools.sourceforge.net/specs.html>`_ (VCF) to sorted, 0-based, half-open ``[start-1, start)`` extended BED data.
 
 .. note:: Note that this script converts from ``[start, end]`` to ``[start-1, start)``. Unless the ``--snvs``, ``--insertions`` or ``--deletions`` options are added, we perform the equivalent of a *single-base insertion* to make BED output that is guaranteed to work with BEDOPS, **regardless of what the actual variant may be**, to allow operations to be performed. The converted output contains additional columns which allow reconstruction of the original VCF data and associated variant parameters.
 
@@ -13,9 +13,9 @@ For convenience, we also offer ``vcf2starch``, which performs the extra step of 
 Dependencies
 ============
 
-The ``vcf2bed`` script requires Python, version 2.6.2 or greater (and less than Python3).
+The ``vcf2bed`` script requires :ref:`convert2bed <convert2bed>`. The ``vcf2starch`` script requires :ref:`starch <starch>`. Both dependencies are part of a typical BEDOPS installation.
 
-This script is also dependent on input that follows the VCF specification.
+This script is also dependent on input that follows the VCF v4.2 specification.
 
 .. tip:: Conversion of data which are VCF-like, but which do not follow the specification can cause ``IOError`` and other runtime exceptions. If you run into problems, please check that your input follows the VCF specification using validation tools, such as those packaged with `VCFTools <http://vcftools.sourceforge.net/perl_module.html#vcf-validator>`_.
 
@@ -47,7 +47,7 @@ Customized variant handling
 
 By default, the ``vcf2bed`` script translates all variants to single-base positions in the resulting BED output. Depending on the category of variant you are interested in, however, you may want more specific categories handled differently. 
 
-Based on the VCF v4 specification, we also provide three custom options for filtering input for each of the three types of variants listed: ``--snvs``, ``--insertions`` and ``--deletions``. In each case, we use the length of the reference and alternate alleles to determine which type of variant is being handled. 
+Based on the VCF v4.2 specification, we also provide three custom options for filtering input for each of the three types of variants listed: ``--snvs``, ``--insertions`` and ``--deletions``. In each case, we use the length of the reference and alternate alleles to determine which type of variant is being handled. 
 
 In addition, using any of these three custom options automatically results in processing of mixed variant records for a microsatellite, where present. For instance, the following record contains a mixture of a deletion and insertion variant (``GTC -> G`` and ``GTC -> GTCT``, respectively):
 
@@ -153,10 +153,10 @@ With this option, the ``vcf2*`` scripts are completely "non-lossy". Use of ``awk
 Column mapping
 ==============
 
-In this section, we describe how VCF v4 columns are mapped to BED columns. We start with the first five UCSC BED columns as follows:
+In this section, we describe how VCF v4.2 columns are mapped to BED columns. We start with the first five UCSC BED columns as follows:
 
 +---------------------------+---------------------+---------------+
-| VCF v4 field              | BED column index    | BED field     |
+| VCF v4.2 field            | BED column index    | BED field     |
 +===========================+=====================+===============+
 | #CHROM                    | 1                   | chromosome    |
 +---------------------------+---------------------+---------------+
@@ -172,7 +172,7 @@ In this section, we describe how VCF v4 columns are mapped to BED columns. We st
 The remaining columns are mapped as follows:
 
 +---------------------------+---------------------+---------------+
-| VCF v4 field              | BED column index    | BED field     |
+| VCF v4.2 field            | BED column index    | BED field     |
 +===========================+=====================+===============+
 | REF                       | 6                   |               |
 +---------------------------+---------------------+---------------+
@@ -183,10 +183,10 @@ The remaining columns are mapped as follows:
 | INFO                      | 9                   |               |
 +---------------------------+---------------------+---------------+
 
-If present in the VCF v4 input, the following columns are also mapped:
+If present in the VCF v4.2 input, the following columns are also mapped:
 
 +---------------------------+---------------------+---------------+
-| VCF v4 field              | BED column index    | BED field     |
+| VCF v4.2 field            | BED column index    | BED field     |
 +===========================+=====================+===============+
 | FORMAT                    | 10                  |               |
 +---------------------------+---------------------+---------------+
@@ -199,7 +199,7 @@ If present in the VCF v4 input, the following columns are also mapped:
 
 When using ``--deletions``, the stop value of the BED output is determined by the length difference between ALT and REF alleles. Use of ``--insertions`` or ``--snvs`` yields a one-base BED element.
 
-If the ALT field contains more than one allele, multiple BED records will be printed. Use the ``--do-not-split-alt-allele`` option if you only want one BED record per variant call.
+If the ALT field contains more than one allele, multiple BED records will be printed. Use the ``--do-not-split`` option if you only want one BED record per variant call.
 
 The "meta-information" (starting with ``##``) and "header" lines (starting with ``#``) are discarded, unless the ``--keep-headers`` options is specified.
 
