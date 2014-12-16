@@ -159,7 +159,7 @@ Table of contents
 .. |performance| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li>Parallel <a href="content/reference/file-management/compression/parallel_bam2bed.html"><tt>bam2bed</tt></a> and <a href="content/reference/file-management/compression/parallel_bam2starch.html"><tt>bam2starch</tt></a> - parallelized conversion and compression of BAM data</li>
+   <li>Parallel <a href="content/reference/file-management/conversion/parallel_bam2bed.html"><tt>bam2bed</tt></a> and <a href="content/reference/file-management/conversion/parallel_bam2starch.html"><tt>bam2starch</tt></a> - parallelized conversion and compression of BAM data</li>
    <li><a href="content/performance.html#set-operations-with-bedops">Set operations with <tt>bedops</tt></li>
    <li><a href="content/performance.html#compression-characteristics-of-starch">Compression characteristics of <tt>starch</tt></li>
    <li><a href="content/performance.html#independent-testing">Independent testing</a></li>
