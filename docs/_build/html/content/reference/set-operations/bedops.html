@@ -143,7 +143,7 @@
 <div class="section" id="operations">
 <h2>6.1.1.3. Operations<a class="headerlink" href="#operations" title="Permalink to this headline">¶</a></h2>
 <p>To demonstrate the various operations in <a class="reference internal" href="#bedops"><em>bedops</em></a>, we start with two simple datasets <code class="docutils literal"><span class="pre">A</span></code> and <code class="docutils literal"><span class="pre">B</span></code>, containing genomic elements on generic chromsome <code class="docutils literal"><span class="pre">chrN</span></code>:</p>
-<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_inputs.png"><img alt="../../../_images/reference_setops_bedops_inputs.png" src="../../../_images/reference_setops_bedops_inputs.png" style="width: 99%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_inputs&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_inputs&#64;2x.png" src="../../../_images/reference_setops_bedops_inputs&#64;2x.png" style="width: 99%;" /></a>
 <p>These datasets can be <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED or <a class="reference internal" href="../file-management/compression/starch.html#starch"><em>Starch-formatted</em></a> files or streams.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -152,7 +152,7 @@
 <div class="section" id="everything-u-everything">
 <span id="bedops-everything"></span><h3>6.1.1.3.1. Everything (-u, &#8211;everything)<a class="headerlink" href="#everything-u-everything" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal"><span class="pre">--everything</span></code> option is equivalent to concatenating and sorting BED elements from multiple files, but works much faster:</p>
-<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_everything.png"><img alt="../../../_images/reference_setops_bedops_everything.png" src="../../../_images/reference_setops_bedops_everything.png" style="width: 99%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_everything&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_everything&#64;2x.png" src="../../../_images/reference_setops_bedops_everything&#64;2x.png" style="width: 99%;" /></a>
 <p>As with all BEDOPS tools and operations, the output of this operation is <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -197,7 +197,7 @@ chr3      150     350
 <h3>6.1.1.3.2. Element-of (-e, &#8211;element-of)<a class="headerlink" href="#element-of-e-element-of" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal"><span class="pre">--element-of</span></code> operation shows the elements of the first (&#8220;<em>reference</em>&#8221;) file that overlap elements in the second and subsequent &#8220;<em>query</em>&#8221; files by the specified length (in bases) or by percentage of length.</p>
 <p>In the following example, we search for elements in the reference set <code class="docutils literal"><span class="pre">A</span></code> which overlap elements in query set <code class="docutils literal"><span class="pre">B</span></code> by at least one base:</p>
-<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_elementof_ab.png"><img alt="../../../_images/reference_setops_bedops_elementof_ab.png" src="../../../_images/reference_setops_bedops_elementof_ab.png" style="width: 99%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_elementof_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_elementof_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_elementof_ab&#64;2x.png" style="width: 99%;" /></a>
 <p>Elements that are returned are always from the reference set (in this case, set <code class="docutils literal"><span class="pre">A</span></code>).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -251,7 +251,7 @@ chr1      150     160
 </div>
 </div>
 <p>Note that <cite>&#8211;element-of</cite> is <em>not</em> a symmetric operation, as demonstrated by reversing the order of the reference and query set:</p>
-<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_elementof_ba.png"><img alt="../../../_images/reference_setops_bedops_elementof_ba.png" src="../../../_images/reference_setops_bedops_elementof_ba.png" style="width: 99%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_elementof_ba&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_elementof_ba&#64;2x.png" src="../../../_images/reference_setops_bedops_elementof_ba&#64;2x.png" style="width: 99%;" /></a>
 <div class="admonition-example admonition">
 <p class="first admonition-title">Example</p>
 <p>As we show here, by inverting the usual order of our sample sets <code class="docutils literal"><span class="pre">First</span></code> and <code class="docutils literal"><span class="pre">Second</span></code>, we retrieve elements from the <code class="docutils literal"><span class="pre">Second</span></code> set:</p>
@@ -275,7 +275,7 @@ chr1      460     470
 <div class="section" id="not-element-of-n-not-element-of">
 <h3>6.1.1.3.3. Not-element-of (-n, &#8211;not-element-of)<a class="headerlink" href="#not-element-of-n-not-element-of" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal"><span class="pre">--not-element-of</span></code> operation shows elements in the reference file which do not overlap elements in all other sets. For example:</p>
-<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_notelementof_ab.png"><img alt="../../../_images/reference_setops_bedops_notelementof_ab.png" src="../../../_images/reference_setops_bedops_notelementof_ab.png" style="width: 99%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_notelementof_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_notelementof_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_notelementof_ab&#64;2x.png" style="width: 99%;" /></a>
 <div class="admonition-example admonition">
 <p class="first admonition-title">Example</p>
 <p>We again use sorted sets <code class="docutils literal"><span class="pre">First.bed</span></code> and <code class="docutils literal"><span class="pre">Second.bed</span></code> to demonstrate <code class="docutils literal"><span class="pre">--not-element-of</span></code>, in order to look for elements in the <code class="docutils literal"><span class="pre">First</span></code> set that <em>do not</em> overlap elements in the <code class="docutils literal"><span class="pre">Second</span></code> set by one or more bases:</p>
@@ -318,7 +318,7 @@ chr1      500     550
 <div class="section" id="complement-c-complement">
 <h3>6.1.1.3.4. Complement (-c, &#8211;complement)<a class="headerlink" href="#complement-c-complement" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal"><span class="pre">--complement</span></code> operation calculates the genomic regions in the gaps between the contiguous per-chromosome ranges defined by one or more inputs. The following example shows the use of two inputs:</p>
-<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_complement_ab.png"><img alt="../../../_images/reference_setops_bedops_complement_ab.png" src="../../../_images/reference_setops_bedops_complement_ab.png" style="width: 99%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_complement_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_complement_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_complement_ab&#64;2x.png" style="width: 99%;" /></a>
 <p>Note this <strong>computed result</strong> will lack ID, score and other columnar data other than the first three columns that contain positional data. That is, computed elements will not come from any of the input sets, but are new elements created from the input set space.</p>
 <div class="admonition-example admonition">
 <p class="first admonition-title">Example</p>
@@ -357,7 +357,7 @@ chr1      475     490
 <div class="section" id="difference-d-difference">
 <h3>6.1.1.3.5. Difference (-d, &#8211;difference)<a class="headerlink" href="#difference-d-difference" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal"><span class="pre">--difference</span></code> operation calculates the genomic regions found within the first (reference) input file, excluding regions in all other input files:</p>
-<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_difference_ab.png"><img alt="../../../_images/reference_setops_bedops_difference_ab.png" src="../../../_images/reference_setops_bedops_difference_ab.png" style="width: 99%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_difference_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_difference_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_difference_ab&#64;2x.png" style="width: 99%;" /></a>
 <div class="admonition-example admonition">
 <p class="first admonition-title">Example</p>
 <p>To demonstrate <code class="docutils literal"><span class="pre">--difference</span></code>, we use sorted sets <code class="docutils literal"><span class="pre">First.bed</span></code> and <code class="docutils literal"><span class="pre">Second.bed</span></code> and compute the genomic space in <code class="docutils literal"><span class="pre">First</span></code> that excludes (or &#8220;subtracts&#8221;) ranges from <code class="docutils literal"><span class="pre">Second</span></code>:</p>
@@ -398,7 +398,7 @@ chr1      500     550
 <div class="section" id="symmetric-difference-s-symmdiff">
 <h3>6.1.1.3.6. Symmetric difference (-s, &#8211;symmdiff)<a class="headerlink" href="#symmetric-difference-s-symmdiff" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal"><span class="pre">--symmdiff</span></code> operation calculates the genomic range that is exclusive to each input, excluding any ranges shared across inputs:</p>
-<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_symmetricdifference_ab.png"><img alt="../../../_images/reference_setops_bedops_symmetricdifference_ab.png" src="../../../_images/reference_setops_bedops_symmetricdifference_ab.png" style="width: 99%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_symmetricdifference_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_symmetricdifference_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_symmetricdifference_ab&#64;2x.png" style="width: 99%;" /></a>
 <div class="admonition-example admonition">
 <p class="first admonition-title">Example</p>
 <p>To demonstrate <code class="docutils literal"><span class="pre">--symmdiff</span></code>, we use sorted sets <code class="docutils literal"><span class="pre">First.bed</span></code> and <code class="docutils literal"><span class="pre">Second.bed</span></code> and compute the genomic space that is unique to <code class="docutils literal"><span class="pre">First</span></code> and <code class="docutils literal"><span class="pre">Second</span></code>:</p>
@@ -439,7 +439,7 @@ chr1      490     550
 <div class="section" id="intersect-i-intersect">
 <h3>6.1.1.3.7. Intersect (-i, &#8211;intersect)<a class="headerlink" href="#intersect-i-intersect" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal"><span class="pre">--intersect</span></code> operation determines genomic regions common to all input sets:</p>
-<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_intersect_ab.png"><img alt="../../../_images/reference_setops_bedops_intersect_ab.png" src="../../../_images/reference_setops_bedops_intersect_ab.png" style="width: 99%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_intersect_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_intersect_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_intersect_ab&#64;2x.png" style="width: 99%;" /></a>
 <div class="admonition-example admonition">
 <p class="first admonition-title">Example</p>
 <p>To demonstrate <code class="docutils literal"><span class="pre">--intersect</span></code>, we use sorted sets <code class="docutils literal"><span class="pre">First.bed</span></code> and <code class="docutils literal"><span class="pre">Second.bed</span></code> and compute the genomic space that is common to both <code class="docutils literal"><span class="pre">First</span></code> and <code class="docutils literal"><span class="pre">Second</span></code>:</p>
@@ -474,7 +474,7 @@ chr1      460     470
 <div class="section" id="merge-m-merge">
 <h3>6.1.1.3.8. Merge (-m, &#8211;merge)<a class="headerlink" href="#merge-m-merge" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal"><span class="pre">--merge</span></code> operation flattens all disjoint, overlapping, and adjoining element regions into contiguous, disjoint regions:</p>
-<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_merge_ab.png"><img alt="../../../_images/reference_setops_bedops_merge_ab.png" src="../../../_images/reference_setops_bedops_merge_ab.png" style="width: 99%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_merge_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_merge_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_merge_ab&#64;2x.png" style="width: 99%;" /></a>
 <div class="admonition-example admonition">
 <p class="first admonition-title">Example</p>
 <p>To demonstrate <code class="docutils literal"><span class="pre">--merge</span></code>, we use sorted sets <code class="docutils literal"><span class="pre">First.bed</span></code> and <code class="docutils literal"><span class="pre">Second.bed</span></code> and compute the contiguous genomic space across both <code class="docutils literal"><span class="pre">First</span></code> and <code class="docutils literal"><span class="pre">Second</span></code>:</p>

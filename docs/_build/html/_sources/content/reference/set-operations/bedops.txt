@@ -106,7 +106,7 @@ Operations
 
 To demonstrate the various operations in :ref:`bedops`, we start with two simple datasets ``A`` and ``B``, containing genomic elements on generic chromsome ``chrN``:
 
-.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_inputs.png
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_inputs@2x.png
    :width: 99%
 
 These datasets can be :ref:`sorted <sort-bed>` BED or :ref:`Starch-formatted <starch>` files or streams.
@@ -121,7 +121,7 @@ Everything (-u, --everything)
 
 The ``--everything`` option is equivalent to concatenating and sorting BED elements from multiple files, but works much faster:
 
-.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_everything.png
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_everything@2x.png
    :width: 99%
 
 As with all BEDOPS tools and operations, the output of this operation is :ref:`sorted <sort-bed>`.
@@ -177,7 +177,7 @@ The ``--element-of`` operation shows the elements of the first ("*reference*") f
 
 In the following example, we search for elements in the reference set ``A`` which overlap elements in query set ``B`` by at least one base:
 
-.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_elementof_ab.png
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_elementof_ab@2x.png
    :width: 99%
 
 Elements that are returned are always from the reference set (in this case, set ``A``).
@@ -246,7 +246,7 @@ Elements that are returned are always from the reference set (in this case, set 
 
 Note that `--element-of` is *not* a symmetric operation, as demonstrated by reversing the order of the reference and query set:
 
-.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_elementof_ba.png
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_elementof_ba@2x.png
    :width: 99%
 
 .. admonition:: Example
@@ -276,7 +276,7 @@ Not-element-of (-n, --not-element-of)
 
 The ``--not-element-of`` operation shows elements in the reference file which do not overlap elements in all other sets. For example:
 
-.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_notelementof_ab.png
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_notelementof_ab@2x.png
    :width: 99%
 
 .. admonition:: Example
@@ -326,7 +326,7 @@ Complement (-c, --complement)
 
 The ``--complement`` operation calculates the genomic regions in the gaps between the contiguous per-chromosome ranges defined by one or more inputs. The following example shows the use of two inputs:
 
-.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_complement_ab.png
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_complement_ab@2x.png
    :width: 99%
 
 Note this **computed result** will lack ID, score and other columnar data other than the first three columns that contain positional data. That is, computed elements will not come from any of the input sets, but are new elements created from the input set space.
@@ -374,7 +374,7 @@ Difference (-d, --difference)
 
 The ``--difference`` operation calculates the genomic regions found within the first (reference) input file, excluding regions in all other input files:
 
-.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_difference_ab.png
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_difference_ab@2x.png
    :width: 99%
 
 .. admonition:: Example
@@ -422,7 +422,7 @@ Symmetric difference (-s, --symmdiff)
 
 The ``--symmdiff`` operation calculates the genomic range that is exclusive to each input, excluding any ranges shared across inputs:
 
-.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_symmetricdifference_ab.png
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_symmetricdifference_ab@2x.png
    :width: 99%
 
 .. admonition:: Example
@@ -470,7 +470,7 @@ Intersect (-i, --intersect)
 
 The ``--intersect`` operation determines genomic regions common to all input sets:
 
-.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_intersect_ab.png
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_intersect_ab@2x.png
    :width: 99%
 
 .. admonition:: Example
@@ -515,7 +515,7 @@ Merge (-m, --merge)
 
 The ``--merge`` operation flattens all disjoint, overlapping, and adjoining element regions into contiguous, disjoint regions:
 
-.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_merge_ab.png
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_merge_ab@2x.png
    :width: 99%
 
 .. admonition:: Example
