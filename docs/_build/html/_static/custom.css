@@ -25,6 +25,8 @@ div.tip {
   background-color: #B2E0C2;
 }
 
-img {
-  border-bottom: 2px solid #123456;
+a {
+    color: #999;
+    text-decoration: none;
+    border-bottom: 3px solid #ccc;
 }
