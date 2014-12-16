@@ -54,9 +54,8 @@ Table of contents
    content/reference
    content/summary
 
-.. |downloads_png| raw:: html
-
-   <img src="_images/downloads_v2.png" style="width:99%;">
+.. |downloads_png| image:: assets/index/downloads_v2.png
+   :scale: 50%
 
 .. |linux_png| image:: assets/index/linux_v2.png
 .. |linux_downloads| raw:: html
