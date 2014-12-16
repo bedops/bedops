@@ -81,7 +81,7 @@ Table of contents
    <li><a href="content/installation.html#installation-via-source-code">Compilation instructions</a></li>
    </ul>
 
-.. |set_operations_png| image:: assets/index/set_operations.png
+.. |set_operations_png| image:: assets/index/set_operations_v2.png
 .. |set_operations| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
