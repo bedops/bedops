@@ -13,9 +13,6 @@ You can read more about **BEDOPS** and how it can be useful for your research in
 +-----------------------+-----------------------+------------------------+
 | |linux_downloads|     | |macosx_downloads|    | |source_downloads|     |
 +-----------------------+-----------------------+------------------------+
-
-
-+-----------------------+-----------------------+------------------------+
 | |reference_png|                               |                        |
 +-----------------------+-----------------------+------------------------+
 | |set_operations_png|  | |statistics_png|      | |file_management_png|  |
