@@ -53,7 +53,7 @@ Table of contents
 
 .. |downloads_html| raw:: html
 
-   <img src="assets/index/downloads_v2.png">
+   <img src="_images/downloads_v2.png">
 
 .. |linux_png| image:: assets/index/linux_v2.png
                :height: 26px
