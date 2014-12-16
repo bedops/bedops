@@ -9,7 +9,7 @@ You can read more about **BEDOPS** and how it can be useful for your research in
 +-----------------------+-----------------------+------------------------+
 | |downloads_html|                              |                        |
 +-----------------------+-----------------------+------------------------+
-| |linux_png|           | |macosx_png|          | |source_png|           |
+| |linux_html|          | |macosx_html|         | |source_html|          |
 +-----------------------+-----------------------+------------------------+
 | |linux_downloads|     | |macosx_downloads|    | |source_downloads|     |
 +-----------------------+-----------------------+------------------------+
@@ -57,6 +57,11 @@ Table of contents
 
 .. |linux_png| image:: assets/index/linux_v2.png
                :height: 26px
+
+.. |linux_html| raw:: html
+
+   <img src="_images/linux_v2.png" style="height:26px;">
+
 .. |linux_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
@@ -67,6 +72,11 @@ Table of contents
 
 .. |macosx_png| image:: assets/index/macosx_v2.png
                 :height: 26px
+
+.. |macosx_html| raw:: html
+
+   <img src="_images/macosx_v2.png" style="height:26px;">
+
 .. |macosx_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
@@ -76,6 +86,11 @@ Table of contents
 
 .. |source_png| image:: assets/index/source_v2.png
                 :height: 26px
+
+.. |source_html| raw:: html
+
+   <img src="_images/source_v2.png" style="height:26px;">
+
 .. |source_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
