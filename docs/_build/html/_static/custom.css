@@ -26,5 +26,5 @@ div.tip {
 }
 
 a {
-  text-decoration: none;
+  border-bottom: 0px !important;
 }
