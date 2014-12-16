@@ -92,6 +92,8 @@ The ``--help`` option describes the set operation and other options available to
             -p, --partition File1 [File]*
             -s, --symmdiff File1 File2 [File]*
             -u, --everything File1 [File]*
+            -w, --chop [bp] [--stagger [bp]] [-x] File1 [File]*
+                   by default, -w 1 is used with no staggering.
 
         Example: bedops --range 10 -u file1.bed
         NOTE: Only operations -e|n|u preserve all columns (no flattening)
