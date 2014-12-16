@@ -608,6 +608,8 @@ The ``--partition`` operator splits all overlapping input regions into a set of 
 
 .. note:: As with ``--merge``, ``--complement`` and other "computing" operations, note the lack of ID, score and other columnar data in this computed result.
 
+.. _bedops_chop:
+
 -----------------
 Chop (-w, --chop)
 -----------------
