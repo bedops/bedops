@@ -14,12 +14,9 @@ You can read more about **BEDOPS** and how it can be useful for your research in
 | |linux_downloads|     | |macosx_downloads|    | |source_downloads|     |
 +-----------------------+-----------------------+------------------------+
 
-| 
 
-=========
-Reference
-=========
-
++-----------------------+-----------------------+------------------------+
+| |refererence_png|     |                       |                        |
 +-----------------------+-----------------------+------------------------+
 | |set_operations_png|  | |statistics_png|      | |file_management_png|  |
 +-----------------------+-----------------------+------------------------+
@@ -80,6 +77,8 @@ Table of contents
    <li><a href="https://github.com/bedops/bedops/archive/v2.4.3.zip">Source code</a> (zip)</li>
    <li><a href="content/installation.html#installation-via-source-code">Compilation instructions</a></li>
    </ul>
+
+.. |reference_png| image:: assets/index/reference_v2.png
 
 .. |set_operations_png| image:: assets/index/set_operations_v2.png
 .. |set_operations| raw:: html
