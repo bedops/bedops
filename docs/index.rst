@@ -49,11 +49,11 @@ Table of contents
    content/release
 
 .. |downloads_png| image:: assets/index/downloads_v2.png
-                   :height: 45px
+                   :height: 30px
 
 .. |downloads_html| raw:: html
 
-   <img src="_images/downloads_v2.png" style="height:45px;">
+   <img src="_images/downloads_v2.png" style="height:30px;">
 
 .. |linux_png| image:: assets/index/linux_v2.png
                :height: 26px
@@ -100,11 +100,11 @@ Table of contents
    </ul>
 
 .. |reference_png| image:: assets/index/reference_v2.png
-                   :height: 54px
+                   :height: 36px
 
 .. |reference_html| raw:: html
 
-   <img src="_images/reference_v2.png" style="height:54px;">
+   <img src="_images/reference_v2.png" style="height:36px;">
 
 .. |set_operations_png| image:: assets/index/set_operations_v2.png
                         :height: 130px
