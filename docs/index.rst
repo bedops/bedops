@@ -55,7 +55,7 @@ Table of contents
    content/reference
    content/summary
 
-.. |linux_png| image:: assets/index/linux.png
+.. |linux_png| image:: assets/index/linux_v2.png
 .. |linux_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
@@ -64,7 +64,7 @@ Table of contents
    <li><a href="content/installation.html#linux">Installation instructions</a> for Linux hosts</li>
    </ul>
 
-.. |macosx_png| image:: assets/index/macosx.png
+.. |macosx_png| image:: assets/index/macosx_v2.png
 .. |macosx_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
@@ -72,7 +72,7 @@ Table of contents
    <li><a href="content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
    </ul>
 
-.. |source_png| image:: assets/index/source.png
+.. |source_png| image:: assets/index/source_v2.png
 .. |source_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
