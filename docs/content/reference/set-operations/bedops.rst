@@ -560,7 +560,7 @@ Partition (-p, --partition)
 
 The ``--partition`` operator splits all overlapping input regions into a set of disjoint segments. One or more input files may be provided; this option will segment regions from all inputs:
 
-.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_partition_ab.png
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_partition_ab@2x.png
    :width: 99%
 
 .. admonition:: Example
