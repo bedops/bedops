@@ -608,6 +608,49 @@ The ``--partition`` operator splits all overlapping input regions into a set of 
 
 .. note:: As with ``--merge``, ``--complement`` and other "computing" operations, note the lack of ID, score and other columnar data in this computed result.
 
+-----------------
+Chop (-w, --chop)
+-----------------
+
+The ``--chop`` operator merges all overlapping input regions and "chops" them up into a set of disjoint segments of identical length (with a default of one base). One or more input files may be provided; this option will segment regions from all inputs:
+
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_chop_ab.png
+   :width: 99%
+
+.. admonition:: Example
+   :class: admonition-example
+
+   To demonstrate ``--chop``, we use a sorted set called ``Regions.bed`` and compute a set of one-base genomic regions across both elements in this set:
+
+   .. code:: bash
+
+      $ more Regions.bed
+      chr1	100	105
+      chr1	120	127
+      chr1	122	124
+
+   .. code:: bash
+      
+      $ bedops --chop 1 Regions.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	100	101
+      chr1	101	102
+      chr1	102	103
+      chr1	103	104
+      chr1	104	105
+      chr1	120	121
+      chr1	121	122
+      chr1	122	123
+      chr1	123	124
+      chr1	124	125
+      chr1	125	126
+      chr1	126	127
+
+.. note:: Overlapping and nested regions are merged into a contiguous range before chopping; the result contains unique elements.
+
 .. _bedops_chrom:
 
 -----------------------------------
