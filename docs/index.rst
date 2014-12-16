@@ -53,6 +53,7 @@ Table of contents
 .. |downloads_png| image:: assets/index/downloads_v2.png
 
 .. |linux_png| image:: assets/index/linux_v2.png
+               :height: 26px
 .. |linux_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
@@ -62,6 +63,7 @@ Table of contents
    </ul>
 
 .. |macosx_png| image:: assets/index/macosx_v2.png
+                :height: 26px
 .. |macosx_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
@@ -70,6 +72,7 @@ Table of contents
    </ul>
 
 .. |source_png| image:: assets/index/source_v2.png
+                :height: 26px
 .. |source_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
@@ -81,18 +84,16 @@ Table of contents
 .. |reference_png| image:: assets/index/reference_v2.png
 
 .. |set_operations_png| image:: assets/index/set_operations_v2.png
-                        :width: 33%
                         :height: 130px
 .. |set_operations| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><a href="content/reference/set-operations/bedops.html"><tt>bedops</tt></a> - apply set operations on any number of BED inputs</li>
+   <li><a href="content/reference/set-operations/bedops.html"><tt>bedops</tt></a> - apply set operations on<br/>any number of BED inputs</li>
    <li><a href="content/reference/set-operations/bedextract.html"><tt>bedextract</tt></a> - efficiently extract BED features</li>
    <li><a href="content/reference/set-operations/closest-features.html"><tt>closest-features</tt></a> - matches nearest features between BED files</li>
    </ul>
 
 .. |statistics_png| image:: assets/index/statistics_v2.png
-                    :width: 33%
                     :height: 130px
 .. |statistics| raw:: html
 
