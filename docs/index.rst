@@ -55,7 +55,8 @@ Table of contents
    content/summary
 
 .. |downloads_png| image:: assets/index/downloads_v2.png
-   :width: 99%
+   :padding: 0
+   :margin: 0
 
 .. |linux_png| image:: assets/index/linux_v2.png
 .. |linux_downloads| raw:: html
