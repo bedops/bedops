@@ -19,7 +19,7 @@ You can read more about **BEDOPS** and how it can be useful for your research in
 +-----------------------+-----------------------+------------------------+
 | |set_operations|      | |statistics|          | |file_management|      |
 +-----------------------+-----------------------+------------------------+
-| |performance_png|     | |support_png|         | |other_png|            |
+| |performance_html|    | |support_html|        | |other_html|           |
 +-----------------------+-----------------------+------------------------+
 | |performance|         | |support|             | |other|                |
 +-----------------------+-----------------------+------------------------+
@@ -150,7 +150,12 @@ Table of contents
    <li><a href="content/reference/file-management/conversion.html">Conversion tools</a> - convert common genomic formats to BED</li>
    </ul>
 
-.. |performance_png| image:: assets/index/performance.png
+.. |performance_png| image:: assets/index/performance_v2.png
+
+.. |performance_html| raw:: html
+
+   <img src="_images/performance_v2.png" style="height:130px;">
+
 .. |performance| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
@@ -160,7 +165,12 @@ Table of contents
    <li><a href="content/performance.html#independent-testing">Independent testing</a></li>
    </ul>
 
-.. |support_png| image:: assets/index/support.png
+.. |support_png| image:: assets/index/support_v2.png
+
+.. |support_html| raw:: html
+
+   <img src="_images/support_v2.png" style="height:130px;">
+
 .. |support| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
@@ -170,7 +180,12 @@ Table of contents
    <li><a href="http://groups.google.com/group/bedops-discuss"><strong>BEDOPS</strong> discusssion mailing list</li>
    </ul>
 
-.. |other_png| image:: assets/index/other.png
+.. |other_png| image:: assets/index/toc_v2.png
+
+.. |other_html| raw:: html
+
+   <img src="_images/toc_v2.png" style="height:130px;">
+
 .. |other| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
