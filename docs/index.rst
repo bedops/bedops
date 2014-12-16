@@ -89,7 +89,7 @@ Table of contents
    <li><a href="content/reference/set-operations/closest-features.html"><tt>closest-features</tt></a> - matches nearest features between BED files</li>
    </ul>
 
-.. |statistics_png| image:: assets/index/statistics.png
+.. |statistics_png| image:: assets/index/statistics_v2.png
 .. |statistics| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
