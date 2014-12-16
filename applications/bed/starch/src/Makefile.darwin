@@ -33,7 +33,7 @@ LIBRARIES                 = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 BINDIR                    = ../bin_${ARCH}
 WARNINGS                  = -Weverything -Wno-c++98-compat-pedantic -Wno-padded
 ARCH_VERSION              = v2.1
-BIN_VERSION               = v2.5.0
+BIN_VERSION               = v2.4.3
 TEST                      = ../test
 TEST_OSX_BINDIR           = ${TEST}/binaries/osx/${ARCH_VERSION}/bin
 
@@ -43,7 +43,7 @@ CDFLAGS                   = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_L
 CXXDFLAGS                 = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g ${WARNINGS} -std=c++11 -stdlib=libc++ -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH}
 
 
-build: dependencies starchLibrary starch unstarch starchcat
+build: dependencies starchLibrary starch unstarch starchcat starchcluster
 	rm -f *~
 
 # dependencies-related recipes all have mkdirs prereqs
@@ -93,8 +93,8 @@ unstarch_debug: starchLibrary_debug
 	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.unstarch.o -o ${BINDIR}/debug.unstarch ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
 
 starchcluster: starchcat
-	touch starchcluster_sge.tcsh && cp starchcluster_sge.tcsh ${BINDIR}/starchcluster_sge
-	touch starchcluster_gnuParallel.tcsh && cp starchcluster_gnuParallel.tcsh ${BINDIR}/starchcluster_gnuParallel
+	cp starchcluster_sge.tcsh ${BINDIR}/starchcluster_sge
+	cp starchcluster_gnuParallel.tcsh ${BINDIR}/starchcluster_gnuParallel
 
 starchcat: starchLibrary
 	${CC} ${CFLAGS} -c starchcat.c -o $(LOCALOBJDIR)/starchcat.o ${INCLUDES}

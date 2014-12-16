@@ -32,7 +32,7 @@ LOCALOBJDIR               = objects
 INCLUDES                  = -iquote${MAIN} -iquote${HEAD} -iquote${PARTY3} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 LIBRARIES                 = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 ARCH_VERSION              = v2.1
-BIN_VERSION               = v2.5.0
+BIN_VERSION               = v2.4.3
 TEST                      = ../test
 TEST_LINUX_BINDIR         = ${TEST}/binaries/linux/${ARCH_VERSION}/bin
 TEST_OSX_BINDIR           = ${TEST}/binaries/osx/${ARCH_VERSION}/bin
@@ -47,7 +47,6 @@ CXXGFLAGS                 = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_L
 
 build: dependencies starchLibrary starch unstarch starchcat starchcluster
 	rm -f *~
-
 
 # dependencies-related recipes all have mkdirs prereqs
 #   and pretty much everything else has dependencies-related prereqs at some level
