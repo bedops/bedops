@@ -46,6 +46,7 @@ Table of contents
    content/performance
    content/reference
    content/summary
+   content/release
 
 .. |downloads_png| image:: assets/index/downloads_v2.png
                    :height: 45px

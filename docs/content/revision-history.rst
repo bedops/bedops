@@ -33,7 +33,7 @@ Released: **May 2, 2014**
 
 * :ref:`conversion scripts <conversion_scripts>`
 
-  * Added :ref:`bam2starchcluster` script, which parallelizes creation of :ref:`Starch <starch_specification>` archive from very large BAM files in SGE environments.
+  * Added :ref:`parallel_bam2starch` script, which parallelizes creation of :ref:`Starch <starch_specification>` archive from very large BAM files in SGE environments.
 
   * Added bug fix for missing code in :ref:`starchcluster.gnu_parallel <starchcluster>` script, where the final collation step was missing.
 

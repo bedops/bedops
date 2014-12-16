@@ -132,6 +132,7 @@ Three criteria make the use of :ref:`bedextract` in this mode very successful in
 .. note: With some extra work, it is possible to use this mode of bedextract with a huge ``Query`` BED file that includes fully-nested elements.  The technique requires that you create a merged version of ``Query`` and keep that result, ``Query-Index``, around along with ``Query``.
 
 ::
+
   $ bedops -m Query > Query-Index
   $ bedextract Query-Index Target \
       | bedextract Query - \

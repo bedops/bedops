@@ -1,7 +1,7 @@
 .. _parallel_bam2starch:
 
 Parallel `bam2starch`
-===================
+=====================
 
 The ``bam2starch_sge`` and ``bam2starch_gnuParallel`` scripts use a Sun or Oracle Grid Engine (SGE/OGE) or `GNU Parallel <https://en.wikipedia.org/wiki/GNU_parallel>`_ job scheduler to parallelize the work of ``bam2starch``, which converts an **indexed**, 0-based, half-open ``[start-1, end)`` `Binary (Sequence) Alignment/Map <http://samtools.sourceforge.net/SAM1.pdf>`_ (BAM) file to a sorted, 0-based, half-open ``[start-1, end)`` UCSC BED dataset, and thence converts this to a :ref:`Starch-formatted <starch_specification>` archive.
 

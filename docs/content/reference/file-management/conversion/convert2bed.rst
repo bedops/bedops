@@ -1,7 +1,7 @@
 .. _convert2bed:
 
 `convert2bed`
-=========
+=============
 
 The ``convert2bed`` binary converts common binary and text genomic formats (BAM, GFF, GTF, PSL, SAM, VCF and WIG) to unsorted or sorted, extended BED or :ref:`BEDOPS Starch <starch_specification>` (compressed BED) with additional per-format options.
 

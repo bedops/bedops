@@ -743,7 +743,7 @@ You can use the ``--multidelim`` option to replace the semi-colon with another d
 
 .. note:: Grouped results derived with the ``--echo-map``, ``--echo-map-id``, and ``--echo-map-score`` options are listed in identical order. In other words, ID results line up at the same position as their score result counterparts when both ``--echo-map-id`` and ``--echo-map-score`` are chosen together. The same applies to the ``--echo-map`` option.
 
-.. _bedmap_io_event_handling
+.. _bedmap_io_event_handling:
 
 ==================
 I/O event handling
