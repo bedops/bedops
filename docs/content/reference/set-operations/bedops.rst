@@ -653,7 +653,7 @@ The ``--chop`` operator merges all overlapping input regions and "chops" them up
       chr1	125	126
       chr1	126	127
 
-.. note:: Overlapping and nested regions are merged into a contiguous range before chopping; the result contains unique elements.
+.. note:: Overlapping and nested regions are merged into contiguous ranges before chopping. The end result contains unique, non-overlapping elements.
 
 .. _bedops_chrom:
 
