@@ -661,7 +661,7 @@ Per-chromosome operations (--chrom)
 
 All operations on inputs can be restricted to one chromosome, by adding the ``--chrom <val>`` operator. 
 
-.. note:: This operator is highly useful for cluster-based work, where operations on large BED inputs can be split up by chromosome and pushed to separate cluster nodes. See the :ref:`starchcluster` documentation for a demonstration of this technique in action.
+.. note:: This operator is highly useful for parallelization, where operations on large BED inputs can be split up by chromosome and pushed to separate nodes on a computational cluster. See the :ref:`starchcluster` documentation for a demonstration of this technique in action.
 
 .. admonition:: Example
    :class: admonition-example
