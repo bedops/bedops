@@ -62,6 +62,8 @@ Table of contents
 
 .. |macosx_png| image:: assets/index/macosx_v2.png
                 :height: 26px
+                :text-decoration: none
+
 .. |macosx_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
