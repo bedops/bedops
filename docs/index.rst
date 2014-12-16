@@ -51,6 +51,7 @@ Table of contents
    content/summary
 
 .. |downloads_png| image:: assets/index/downloads_v2.png
+                   :height: 30px
 
 .. |linux_png| image:: assets/index/linux_v2.png
                :height: 26px
@@ -82,6 +83,7 @@ Table of contents
    </ul>
 
 .. |reference_png| image:: assets/index/reference_v2.png
+                   :height: 36px
 
 .. |set_operations_png| image:: assets/index/set_operations_v2.png
                         :height: 130px
