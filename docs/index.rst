@@ -48,8 +48,9 @@ Table of contents
    content/summary
    content/release
 
-.. |downloads_png| image:: assets/index/downloads_v2.png
-                   :height: 45px
+.. |downloads_png| raw:: html
+
+   <img src="_static/downloads_v2.png" height="45px">
 
 .. |linux_png| image:: assets/index/linux_v2.png
                :height: 26px
