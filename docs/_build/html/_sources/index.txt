@@ -13,9 +13,9 @@ You can read more about **BEDOPS** and how it can be useful for your research in
 +-----------------------+-----------------------+------------------------+
 | |linux_downloads|     | |macosx_downloads|    | |source_downloads|     |
 +-----------------------+-----------------------+------------------------+
-| |reference_png|                               |                        |
+| |reference_html|                              |                        |
 +-----------------------+-----------------------+------------------------+
-| |set_operations_png|  | |statistics_png|      | |file_management_png|  |
+| |set_operations_html| | |statistics_html|     | |file_management_html| |
 +-----------------------+-----------------------+------------------------+
 | |set_operations|      | |statistics|          | |file_management|      |
 +-----------------------+-----------------------+------------------------+
@@ -102,8 +102,17 @@ Table of contents
 .. |reference_png| image:: assets/index/reference_v2.png
                    :height: 54px
 
+.. |reference_html| raw:: html
+
+   <img src="_images/reference_v2.png" style="height:54px;">
+
 .. |set_operations_png| image:: assets/index/set_operations_v2.png
                         :height: 130px
+
+.. |set_operations_html| raw:: html
+
+   <img src="_images/set_operations_v2.png" style="height:130px;">
+
 .. |set_operations| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
@@ -114,6 +123,11 @@ Table of contents
 
 .. |statistics_png| image:: assets/index/statistics_v2.png
                     :height: 130px
+
+.. |statistics_html| raw:: html
+
+   <img src="_images/statistics_v2.png" style="height:130px;">
+
 .. |statistics| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
@@ -122,6 +136,11 @@ Table of contents
 
 .. |file_management_png| image:: assets/index/file_management_v2.png
                          :height: 130px
+
+.. |file_management_html| raw:: html
+
+   <img src="_images/file_management_v2.png" style="height:130px;">
+
 .. |file_management| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
