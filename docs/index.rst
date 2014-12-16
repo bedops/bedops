@@ -96,7 +96,7 @@ Table of contents
    <li><a href="content/reference/statistics/bedmap.html"><tt>bedmap</tt></a> - map overlapping BED elements onto target regions<br/>and optionally compute any number of common statistical operations</li>
    </ul>
 
-.. |file_management_png| image:: assets/index/file_management.png
+.. |file_management_png| image:: assets/index/file_management_v2.png
 .. |file_management| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
