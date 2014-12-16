@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
     <link rel="top" title="BEDOPS 2.5.0 documentation" href="../../../../index.html" />
@@ -32,8 +32,8 @@
     <link rel="next" title="6.3.2.4. Starch (v2.x) specification" href="starch-specification.html" />
     <link rel="prev" title="6.3.2.2. unstarch" href="unstarch.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -55,11 +55,11 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="starchcat">
 <span id="id1"></span><h1>6.3.2.3. <cite>starchcat</cite><a class="headerlink" href="#starchcat" title="Permalink to this headline">¶</a></h1>
-<p>The <tt class="docutils literal"><span class="pre">starchcat</span></tt> utility efficiently merges per-chromosome records contained within one or more BEDOPS <a class="reference internal" href="starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archives. This is an equivalent operation to <tt class="docutils literal"><span class="pre">bedops</span> <span class="pre">--everything</span></tt> or <tt class="docutils literal"><span class="pre">bedops</span> <span class="pre">-u</span></tt> (a <a class="reference internal" href="../../set-operations/bedops.html#bedops-everything"><em>multiset union</em></a>), but inputs are <a class="reference internal" href="starch.html#starch"><em>starch</em></a> archives rather than uncompressed BED files.</p>
+<p>The <code class="docutils literal"><span class="pre">starchcat</span></code> utility efficiently merges per-chromosome records contained within one or more BEDOPS <a class="reference internal" href="starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archives. This is an equivalent operation to <code class="docutils literal"><span class="pre">bedops</span> <span class="pre">--everything</span></code> or <code class="docutils literal"><span class="pre">bedops</span> <span class="pre">-u</span></code> (a <a class="reference internal" href="../../set-operations/bedops.html#bedops-everything"><em>multiset union</em></a>), but inputs are <a class="reference internal" href="starch.html#starch"><em>starch</em></a> archives rather than uncompressed BED files.</p>
 <p>As a further advantage to using this over <a class="reference internal" href="../../set-operations/bedops.html#bedops"><em>bedops</em></a>, in the case where a <a class="reference internal" href="starch.html#starch"><em>starch</em></a> input contains BED elements exclusive to one chromosome, this utility will directly and quickly copy over compressed elements to a new archive, avoiding the need for costly and wasteful extraction and re-compression.</p>
 <p>In the general case, where two or more <a class="reference internal" href="starch.html#starch"><em>starch</em></a> inputs contain BED elements from the same chromosome, a <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sorted</em></a> merge is performed and the stream reprocessed into a <a class="reference internal" href="starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive.</p>
 <div class="section" id="parallelization">
@@ -89,7 +89,7 @@
 <div class="section" id="output">
 <h3>6.3.2.3.2.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
 <p>The <a class="reference internal" href="#starchcat"><em>starchcat</em></a> tool outputs a <a class="reference internal" href="starch.html#starch"><em>starch</em></a> -formatted archive to standard output, which is usually redirected to a file.</p>
-<p>Additionally, an optional compression flag specifies if the final <a class="reference internal" href="starch.html#starch"><em>starch</em></a> output should be compressed with either the <tt class="docutils literal"><span class="pre">bzip2</span></tt> or <tt class="docutils literal"><span class="pre">gzip</span></tt> method (the default being <tt class="docutils literal"><span class="pre">bzip2</span></tt>).</p>
+<p>Additionally, an optional compression flag specifies if the final <a class="reference internal" href="starch.html#starch"><em>starch</em></a> output should be compressed with either the <code class="docutils literal"><span class="pre">bzip2</span></code> or <code class="docutils literal"><span class="pre">gzip</span></code> method (the default being <code class="docutils literal"><span class="pre">bzip2</span></code>).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">If <a class="reference internal" href="starch.html#starch"><em>starch</em></a> inputs use a different backend compression method, the input stream is re-compressed before integrated into the larger archive. This will incur extra processing overhead.</p>
@@ -98,7 +98,7 @@
 </div>
 <div class="section" id="usage">
 <h2>6.3.2.3.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<p>Use the <tt class="docutils literal"><span class="pre">--help</span></tt> option to list all options:</p>
+<p>Use the <code class="docutils literal"><span class="pre">--help</span></code> option to list all options:</p>
 <div class="highlight-python"><div class="highlight"><pre>starchcat
   citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
   version:  2.4.3
@@ -124,11 +124,11 @@ USAGE: starchcat [ --note=&quot;...&quot; ] [ --bzip2 | --gzip ] &lt;starch-file
 </div>
 <div class="section" id="example">
 <h3>6.3.2.3.3.1. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
-<p>Let&#8217;s say we have a set of 23 <a class="reference internal" href="starch.html#starch"><em>starch</em></a> archives, one for each chromosome of the human genome: <tt class="docutils literal"><span class="pre">chr1.starch</span></tt>, <tt class="docutils literal"><span class="pre">chr2.starch</span></tt>, and so on, to <tt class="docutils literal"><span class="pre">chrY.starch</span></tt>. (To simplify this example, we leave out mitochondrial, random, pseudo- and other chromosomes.) We would like to build a new <a class="reference internal" href="starch.html#starch"><em>starch</em></a> archive from these 23 separate files:</p>
+<p>Let&#8217;s say we have a set of 23 <a class="reference internal" href="starch.html#starch"><em>starch</em></a> archives, one for each chromosome of the human genome: <code class="docutils literal"><span class="pre">chr1.starch</span></code>, <code class="docutils literal"><span class="pre">chr2.starch</span></code>, and so on, to <code class="docutils literal"><span class="pre">chrY.starch</span></code>. (To simplify this example, we leave out mitochondrial, random, pseudo- and other chromosomes.) We would like to build a new <a class="reference internal" href="starch.html#starch"><em>starch</em></a> archive from these 23 separate files:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ starchcat chr1.starch chr2.starch ... chrY.starch &gt; humanGenome.starch
 </pre></div>
 </div>
-<p>The <a class="reference internal" href="#starchcat"><em>starchcat</em></a> utility parses the metadata from each of the 23 inputs, determines what data to either simple copy or reprocess, and then it performs the merge. Cleanup is performed afterwards, as necessary, and the output is a brand new <a class="reference internal" href="starch.html#starch"><em>starch</em></a> file, written to <tt class="docutils literal"><span class="pre">humanGenome.starch</span></tt>.</p>
+<p>The <a class="reference internal" href="#starchcat"><em>starchcat</em></a> utility parses the metadata from each of the 23 inputs, determines what data to either simple copy or reprocess, and then it performs the merge. Cleanup is performed afterwards, as necessary, and the output is a brand new <a class="reference internal" href="starch.html#starch"><em>starch</em></a> file, written to <code class="docutils literal"><span class="pre">humanGenome.starch</span></code>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>No filtering or processing is performed on extracted BED elements, before they are written to the final output. Thus, <em>it is possible for duplicate BED elements to occur</em>.</p>
@@ -146,7 +146,7 @@ USAGE: starchcat [ --note=&quot;...&quot; ] [ --bzip2 | --gzip ] &lt;starch-file
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../../index.html">
               <img class="logo" src="../../../../_static/logo_with_label_v3.png" alt="Logo"/>
@@ -174,12 +174,14 @@ USAGE: starchcat [ --note=&quot;...&quot; ] [ --bzip2 | --gzip ] &lt;starch-file
   <h4>Next topic</h4>
   <p class="topless"><a href="starch-specification.html"
                         title="next chapter">6.3.2.4. Starch (v2.x) specification</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../../../_sources/content/reference/file-management/compression/starchcat.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../../_sources/content/reference/file-management/compression/starchcat.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../../search.html" method="get">
       <input type="text" name="q" />
@@ -196,7 +198,7 @@ USAGE: starchcat [ --note=&quot;...&quot; ] [ --bzip2 | --gzip ] &lt;starch-file
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -214,9 +216,9 @@ USAGE: starchcat [ --note=&quot;...&quot; ] [ --bzip2 | --gzip ] &lt;starch-file
           <li><a href="../compression.html" >6.3.2. Compression</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3b2.
     </div>
   </body>
 </html>

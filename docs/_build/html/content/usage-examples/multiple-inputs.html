@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="top" title="BEDOPS 2.5.0 documentation" href="../../index.html" />
@@ -32,8 +32,8 @@
     <link rel="next" title="5. Performance" href="../performance.html" />
     <link rel="prev" title="4.6. Efficiently creating Starch-formatted archives with a cluster" href="starchcluster.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -53,14 +53,14 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="working-with-many-input-files-at-once-with-bedops-and-bedmap">
-<span id="multiple-inputs"></span><h1>4.7. Working with many input files at once with <tt class="docutils literal"><span class="pre">bedops</span></tt> and <tt class="docutils literal"><span class="pre">bedmap</span></tt><a class="headerlink" href="#working-with-many-input-files-at-once-with-bedops-and-bedmap" title="Permalink to this headline">¶</a></h1>
+<span id="multiple-inputs"></span><h1>4.7. Working with many input files at once with <code class="docutils literal"><span class="pre">bedops</span></code> and <code class="docutils literal"><span class="pre">bedmap</span></code><a class="headerlink" href="#working-with-many-input-files-at-once-with-bedops-and-bedmap" title="Permalink to this headline">¶</a></h1>
 <p>BEDOPS is designed to work with as many input files at once as you need, either through the <a class="reference internal" href="../reference/set-operations/bedops.html#bedops"><em>bedops</em></a> program, or through a combined use of that program with others in the suite.</p>
 <div class="section" id="discussion">
 <h2>4.7.1. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
-<p>Say we have five input BED files (<tt class="docutils literal"><span class="pre">A</span></tt>, <tt class="docutils literal"><span class="pre">B</span></tt>, <tt class="docutils literal"><span class="pre">C</span></tt>, <tt class="docutils literal"><span class="pre">D</span></tt>, <tt class="docutils literal"><span class="pre">E</span></tt>), and we need to identify those regions where any two (or more) of the input files (<tt class="docutils literal"><span class="pre">{A,B}</span></tt>, <tt class="docutils literal"><span class="pre">{A,C}</span></tt>, <tt class="docutils literal"><span class="pre">{A,D}</span></tt>, <tt class="docutils literal"><span class="pre">{A,E}</span></tt>, <tt class="docutils literal"><span class="pre">{B,C}</span></tt>, ...) overlap reciprocally by 30% or more.</p>
+<p>Say we have five input BED files (<code class="docutils literal"><span class="pre">A</span></code>, <code class="docutils literal"><span class="pre">B</span></code>, <code class="docutils literal"><span class="pre">C</span></code>, <code class="docutils literal"><span class="pre">D</span></code>, <code class="docutils literal"><span class="pre">E</span></code>), and we need to identify those regions where any two (or more) of the input files (<code class="docutils literal"><span class="pre">{A,B}</span></code>, <code class="docutils literal"><span class="pre">{A,C}</span></code>, <code class="docutils literal"><span class="pre">{A,D}</span></code>, <code class="docutils literal"><span class="pre">{A,E}</span></code>, <code class="docutils literal"><span class="pre">{B,C}</span></code>, ...) overlap reciprocally by 30% or more.</p>
 <p>One concrete application may be where we have multiple biological replicates, and we take any repeatable result (in two or more inputs, in this case) as true signal. Similarly, we might be interested in a problem like this if we have multiple related (or even unrelated) cell type samples and we want to be confident in peak calls for DNaseI sequencing of ChIP-seq experiments.</p>
 <p>These sorts of problems often have efficient solutions in BEDOPS. Here, the solution is independent of how many inputs we start with, what overlap criteria we use, and whether the requirement calls for two or more files of overlap (or whether it is 4 or more files in the overlap, or 9, or whatever).</p>
 <p>Consider a case study of one such problem that utilizes both <a class="reference internal" href="../reference/set-operations/bedops.html#bedops"><em>bedops</em></a> and <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> together to create an efficient solution:</p>
@@ -70,8 +70,8 @@
     &gt; answer.bed
 </pre></div>
 </div>
-<p>Here, we pass in as many files as we have to <a class="reference internal" href="../reference/set-operations/bedops.html#bedops"><em>bedops</em></a>. The requirement of elements overlapping reciprocally is met by using <tt class="docutils literal"><span class="pre">--fraction-both</span></tt>, and the requirement that overlapping elements must come from two or more (distinct) files is satisfied by checking how many elements there are via the <tt class="docutils literal"><span class="pre">--echo-map-id-uniq</span></tt> operator.</p>
-<p>The requirements for <tt class="docutils literal"><span class="pre">file1.bed</span></tt> through <tt class="docutils literal"><span class="pre">fileN.bed</span></tt> are that each is properly <a class="reference internal" href="../reference/file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a> (as expected for any BEDOPS input) and that their respective fourth-column ID fields identify the file. For example:</p>
+<p>Here, we pass in as many files as we have to <a class="reference internal" href="../reference/set-operations/bedops.html#bedops"><em>bedops</em></a>. The requirement of elements overlapping reciprocally is met by using <code class="docutils literal"><span class="pre">--fraction-both</span></code>, and the requirement that overlapping elements must come from two or more (distinct) files is satisfied by checking how many elements there are via the <code class="docutils literal"><span class="pre">--echo-map-id-uniq</span></code> operator.</p>
+<p>The requirements for <code class="docutils literal"><span class="pre">file1.bed</span></code> through <code class="docutils literal"><span class="pre">fileN.bed</span></code> are that each is properly <a class="reference internal" href="../reference/file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a> (as expected for any BEDOPS input) and that their respective fourth-column ID fields identify the file. For example:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ head -2 file1.bed
 chr1 1   50   1  anything-else
 chr1 230 400  1  whatever-you-like
@@ -81,7 +81,7 @@ chr1 23  78  2  other-fields
 chr1 56  98  2  5.678  +  peak-2
 </pre></div>
 </div>
-<p>As a nice side-effect, <tt class="docutils literal"><span class="pre">answer.bed</span></tt> will show from which file each entry originated. If we don&#8217;t want that extra information, we simply cut it out:</p>
+<p>As a nice side-effect, <code class="docutils literal"><span class="pre">answer.bed</span></code> will show from which file each entry originated. If we don&#8217;t want that extra information, we simply cut it out:</p>
 <div class="highlight-python"><div class="highlight"><pre>cut -f1-3,5- answer.bed &gt;! my-final-answer.bed
 </pre></div>
 </div>
@@ -99,14 +99,14 @@ chr1 56  98  2  5.678  +  peak-2
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/logo_with_label_v3.png" alt="Logo"/>
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">4.7. Working with many input files at once with <tt class="docutils literal"><span class="pre">bedops</span></tt> and <tt class="docutils literal"><span class="pre">bedmap</span></tt></a><ul>
+<li><a class="reference internal" href="#">4.7. Working with many input files at once with <code class="docutils literal"><span class="pre">bedops</span></code> and <code class="docutils literal"><span class="pre">bedmap</span></code></a><ul>
 <li><a class="reference internal" href="#discussion">4.7.1. Discussion</a></li>
 </ul>
 </li>
@@ -118,12 +118,14 @@ chr1 56  98  2  5.678  +  peak-2
   <h4>Next topic</h4>
   <p class="topless"><a href="../performance.html"
                         title="next chapter">5. Performance</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/content/usage-examples/multiple-inputs.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/content/usage-examples/multiple-inputs.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -140,7 +142,7 @@ chr1 56  98  2  5.678  +  peak-2
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -156,9 +158,9 @@ chr1 56  98  2  5.678  +  peak-2
           <li><a href="../usage-examples.html" >4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3b2.
     </div>
   </body>
 </html>
