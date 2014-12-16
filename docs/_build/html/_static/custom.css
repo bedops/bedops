@@ -24,3 +24,7 @@ div.tip p.admonition-title {
 div.tip {
   background-color: #B2E0C2;
 }
+
+a {
+  text-decoration: none;
+}
