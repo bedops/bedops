@@ -616,7 +616,7 @@ The ``--partition`` operator splits all overlapping input regions into a set of 
 Chop (-w, --chop)
 -----------------
 
-The ``--chop`` operator merges all overlapping input regions and "chops" them up into a set of disjoint segments of identical length (with a default of one base). One or more input files may be provided; this option will segment regions from all inputs:
+The ``--chop`` operator merges all overlapping input regions and "chops" them up into a set of contiguous, disjoint segments of identical length (with a default of one base). One or more input files may be provided; this option will segment regions from all inputs:
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_chop_ab@2x.png
    :width: 99%
