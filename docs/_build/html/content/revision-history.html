@@ -10,6 +10,7 @@
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -57,8 +58,8 @@
 <p>This page summarizes some of the more important changes between releases.</p>
 <div class="section" id="current-version">
 <span id="revision-history-of-current-version"></span><h2>3.1. Current version<a class="headerlink" href="#current-version" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="v2-5-0">
-<h3>3.1.1. v2.5.0<a class="headerlink" href="#v2-5-0" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="v2-4-3">
+<h3>3.1.1. v2.4.3<a class="headerlink" href="#v2-4-3" title="Permalink to this headline">¶</a></h3>
 <p>Released: <strong>May 2, 2014</strong></p>
 <ul class="simple">
 <li><a class="reference internal" href="reference/file-management/compression/starch-specification.html#starch-specification"><em>Starch</em></a> archival format and compression/extraction tools<ul>
@@ -73,7 +74,7 @@
 </ul>
 </li>
 <li><a class="reference internal" href="reference/file-management/conversion.html#conversion-scripts"><em>conversion scripts</em></a><ul>
-<li>Added <a class="reference internal" href="reference/file-management/conversion/bam2starchcluster.html#bam2starchcluster"><em>bam2starchcluster</em></a> script, which parallelizes creation of <a class="reference internal" href="reference/file-management/compression/starch-specification.html#starch-specification"><em>Starch</em></a> archive from very large BAM files in SGE environments.</li>
+<li>Added <em class="xref std std-ref">bam2starchcluster</em> script, which parallelizes creation of <a class="reference internal" href="reference/file-management/compression/starch-specification.html#starch-specification"><em>Starch</em></a> archive from very large BAM files in SGE environments.</li>
 <li>Added bug fix for missing code in <a class="reference internal" href="usage-examples/starchcluster.html#starchcluster"><em>starchcluster.gnu_parallel</em></a> script, where the final collation step was missing.</li>
 </ul>
 </li>
@@ -201,7 +202,7 @@
 </li>
 <li><p class="first"><a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a></p>
 <ul class="simple">
-<li>Adds support for the new <tt class="docutils literal"><span class="pre">--skip-unmapped</span></tt> option, which filters out reference elements which do not have mapped elements associated with them. See the end of the <em class="xref std std-ref">score operations</em> section of the <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> documentation for more detail.</li>
+<li>Adds support for the new <tt class="docutils literal"><span class="pre">--skip-unmapped</span></tt> option, which filters out reference elements which do not have mapped elements associated with them. See the end of the <a class="reference internal" href="reference/statistics/bedmap.html#bedmap-score-operations"><em>score operations</em></a> section of the <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> documentation for more detail.</li>
 <li>General <tt class="docutils literal"><span class="pre">--ec</span></tt> performance improvements.</li>
 </ul>
 </li>
@@ -437,13 +438,13 @@
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/logo_with_label_v2.png" alt="Logo"/>
+              <img class="logo" src="../_static/logo_with_label_v3.png" alt="Logo"/>
             </a></p>
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">3. Revision history</a><ul>
 <li><a class="reference internal" href="#current-version">3.1. Current version</a><ul>
-<li><a class="reference internal" href="#v2-5-0">3.1.1. v2.5.0</a></li>
+<li><a class="reference internal" href="#v2-4-3">3.1.1. v2.4.3</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#previous-versions">3.2. Previous versions</a><ul>

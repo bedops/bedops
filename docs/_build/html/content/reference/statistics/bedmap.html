@@ -10,6 +10,7 @@
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -85,13 +86,13 @@
 <p>The <tt class="docutils literal"><span class="pre">--help</span></tt> option describes the various mapping and analytical operations and other options available to the end user:</p>
 <div class="highlight-python"><div class="highlight"><pre>bedmap
   citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-  version:  2.5.0
+  version:  2.4.3
   authors:  Shane Neph &amp; Scott Kuehn
 
  USAGE: bedmap [process-flags] [overlap-option] &lt;operation(s)...&gt; &lt;ref-file&gt; [map-file]
      Any input file must be sorted per the sort-bed utility.
      The program accepts BED and Starch file formats.
-     May use &#39;-&#39; for a file to indicate reading from standard input (BED format only).
+     You may use &#39;-&#39; for a BED file to indicate the input comes from stdin.
 
      Traverse &lt;ref-file&gt;, while applying &lt;operation(s)&gt; on qualified, overlapping elements from
        &lt;map-file&gt;.  Output is one line for each line in &lt;ref-file&gt;, sent to standard output.  There
@@ -113,14 +114,13 @@
       --prec &lt;int&gt;          Change the post-decimal precision of scores to &lt;int&gt;.  0 &lt;= &lt;int&gt;.
       --sci                 Use scientific notation for score outputs.
       --skip-unmapped       Print no output for a row with no mapped elements.
+      --sweep-all           Ensure &lt;map-file&gt; is read completely (helps to prevent broken pipes).
       --version             Print program information.
-
 
     Overlap Options (At most, one may be selected.  By default, --bp-ovr 1 is used):
      --------
       --bp-ovr &lt;int&gt;           Require &lt;int&gt; bp overlap between elements of input files.
-      --range &lt;int&gt;            Grab &lt;map-file&gt; elements within &lt;int&gt; bp of &lt;ref-file&gt;&#39;s element,
-                                 where 0 &lt;= int.  --range 0 is an alias for --bp-ovr 1.
+      --exact                  First 3 fields from &lt;map-file&gt; must be identical to &lt;ref-file&gt;&#39;s.
       --fraction-ref &lt;val&gt;     The fraction of the element&#39;s size from &lt;ref-file&gt; that must overlap
                                  the element in &lt;map-file&gt;.  Expect 0 &lt; val &lt;= 1.
       --fraction-map &lt;val&gt;     The fraction of the element&#39;s size from &lt;map-file&gt; that must overlap
@@ -129,9 +129,8 @@
                                  qualify as overlapping.  Expect 0 &lt; val &lt;= 1.
       --fraction-either &lt;val&gt;  Either --fraction-ref &lt;val&gt; or --fraction-map &lt;val&gt; must be true to
                                  qualify as overlapping.  Expect 0 &lt; val &lt;= 1.
-      --exact                  Shorthand for --fraction-both 1.  First 3 fields from &lt;map-file&gt; must
-                                 be identical to &lt;ref-file&gt;&#39;s element.
-
+      --range &lt;int&gt;            Grab &lt;map-file&gt; elements within &lt;int&gt; bp of &lt;ref-file&gt;&#39;s element,
+                                 where 0 &lt;= int.  --range 0 is an alias for --bp-ovr 1.
 
     Operations:  (Any number of operations may be used any number of times.)
      ----------
@@ -178,6 +177,8 @@
       --echo-map-score    List scores from overlapping &lt;map-file&gt; elements.
       --echo-map-size     List the full length of every overlapping element.
       --echo-overlap-size List lengths of overlaps.
+      --echo-ref-name     Print the first 3 fields of &lt;ref-file&gt; using chrom:start-end format.
+      --echo-ref-size     Print the length of each line from &lt;ref-file&gt;.
       --indicator         Print 1 if there exists an overlapping element in &lt;map-file&gt;, 0 otherwise.
 </pre></div>
 </div>
@@ -380,7 +381,7 @@ chr21   33031900    33032000    ref-3|154.500000|9.311283|138.000000|165.000000
 <div class="section" id="echo">
 <span id="bedmap-echo"></span><h4>6.2.1.3.3.1. Echo<a class="headerlink" href="#echo" title="Permalink to this headline">¶</a></h4>
 <p>The ID, score and coordinate columns of the reference and map files are very useful for reading and debugging results, or reporting a more detailed mapping.</p>
-<p>We can use the <tt class="docutils literal"><span class="pre">--echo</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-id</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-id-uniq</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-score</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-range</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-size</span></tt> and <tt class="docutils literal"><span class="pre">--echo-overlap-size</span></tt> flags to tell <a class="reference internal" href="#bedmap"><em>bedmap</em></a> to report additional details about the reference and map elements.</p>
+<p>We can use the <tt class="docutils literal"><span class="pre">--echo</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-id</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-id-uniq</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-score</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-range</span></tt>, <tt class="docutils literal"><span class="pre">--echo-map-size</span></tt>, <tt class="docutils literal"><span class="pre">--echo-overlap-size</span></tt>, <tt class="docutils literal"><span class="pre">--echo-ref-name</span></tt>, and <tt class="docutils literal"><span class="pre">echo-ref-size</span></tt> flags to tell <a class="reference internal" href="#bedmap"><em>bedmap</em></a> to report additional details about the reference and map elements.</p>
 <p>The <tt class="docutils literal"><span class="pre">--echo</span></tt> flag reports each reference element. We have already seen the application of <tt class="docutils literal"><span class="pre">--echo</span></tt> in earlier examples. The option helps to clearly associate results from other chosen operations with specific reference elements. Additionally, <tt class="docutils literal"><span class="pre">--echo</span></tt> enables the output from <a class="reference internal" href="#bedmap"><em>bedmap</em></a> to be used as input to additional BEDOPS utilities, including <a class="reference internal" href="#bedmap"><em>bedmap</em></a> itself.</p>
 <p>The <tt class="docutils literal"><span class="pre">--echo-map</span></tt> flag gathers overlapping mapped elements for every reference element. The option is useful for debugging and detailed downstream processing needs. This is the most general operation in <a class="reference internal" href="#bedmap"><em>bedmap</em></a> in that overlapping elements are returned in full detail, for every reference element. While results are well-defined and easily parsed, the output can be very large and difficult to read.</p>
 <p>As an example of using the <tt class="docutils literal"><span class="pre">--echo-map-id</span></tt> operator in a biological context, we examine a <a class="reference external" href="http://meme.nbcr.net/meme/fimo-intro.html">FIMO</a> analysis that returns a subset of transcription factor binding sites in BED format, with <a class="reference external" href="http://en.wikipedia.org/wiki/TRANSFAC">TRANSFAC</a> motif names listed in the ID column:</p>
@@ -429,7 +430,8 @@ chr21   33031900    33032000    ref-3|chr21 33031885    33032005
 <p class="first admonition-title">Note</p>
 <p class="last">The <tt class="docutils literal"><span class="pre">--echo-map-range</span></tt> option produces three-column BED results that are not always guaranteed to be sorted. The <tt class="docutils literal"><span class="pre">--echo</span></tt> operation is independent, and it produces reference elements in proper BEDOPS order, as shown. If the results of the <tt class="docutils literal"><span class="pre">--echo-map-range</span></tt> option will be used directly as BED coordinates in downstream BEDOPS analyses (<em>i.e.</em>, no <tt class="docutils literal"><span class="pre">--echo</span></tt> operator), first pipe them to <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> to ensure proper sort order.</p>
 </div>
-<p>Finally, the <tt class="docutils literal"><span class="pre">--echo-map-size</span></tt> flag reports the difference of the start and stop coordinates of each mapped element, while the <tt class="docutils literal"><span class="pre">--echo-overlap-size</span></tt> flag reports the length of the overlap between the reference element and each mapped element.</p>
+<p>The <tt class="docutils literal"><span class="pre">--echo-ref-size</span></tt> flag reports the difference between the stop and start coordinates of the reference element.  The <tt class="docutils literal"><span class="pre">--echo-ref-name</span></tt> flag produces a converted format for the first 3 BED fields, A:B-C, where A is the chromosome name, B is the start coordinate, and C is the stop coordinate for that reference element.</p>
+<p>Finally, the <tt class="docutils literal"><span class="pre">--echo-map-size</span></tt> flag reports the difference between the stop and start coordinates of each mapped element, while the <tt class="docutils literal"><span class="pre">--echo-overlap-size</span></tt> flag reports the length of the overlap between the reference element and each mapped element.</p>
 </div>
 <div class="section" id="element-and-overlap-statistics">
 <span id="bedmap-element-and-overlap-statistics"></span><h4>6.2.1.3.3.2. Element and overlap statistics<a class="headerlink" href="#element-and-overlap-statistics" title="Permalink to this headline">¶</a></h4>
@@ -641,8 +643,16 @@ chr1    4534150 4534300 ref-1|-V_GRE_C$-V_STAT_Q6$+V_HNF4_Q6_01
 </div>
 </div>
 </div>
+<div class="section" id="i-o-event-handling">
+<h2>6.2.1.4. I/O event handling<a class="headerlink" href="#i-o-event-handling" title="Permalink to this headline">¶</a></h2>
+<p>During normal use of <tt class="docutils literal"><span class="pre">bedmap</span></tt>, the application will usually terminate when it is determined that no more map data needs to be processed. This improves performance by limiting execution time to only that which is required to do actual work. However, closing early can trigger <tt class="docutils literal"><span class="pre">SIGPIPE</span></tt> or broken pipe errors that can cause batch scripts that use the standard input stream to pass data to <tt class="docutils literal"><span class="pre">bedmap</span></tt> to terminate early with an error state (even though there is often no functional problem from this early termination of <tt class="docutils literal"><span class="pre">bedmap</span></tt>).</p>
+<p>When adding <tt class="docutils literal"><span class="pre">--ec</span></tt>, <tt class="docutils literal"><span class="pre">bedmap</span></tt> will go into <a class="reference internal" href="#bedmap-error-checking"><em>error checking mode</em></a> and read through the entire map dataset.</p>
+<p>One method for dealing with this is to override how SIGPIPE errors are caught by the interpreter (bash, Python, etc.) and retrapping them or ignoring them. However, it may not a good idea to do this as other situations may arise in production pipelines where it is ideal to trap and handle all I/O errors in a default manner.</p>
+<p>Until now, we have proposed using the <tt class="docutils literal"><span class="pre">--ec</span></tt> (error checking) option in <tt class="docutils literal"><span class="pre">bedmap</span></tt> as one way to prevent raising <tt class="docutils literal"><span class="pre">SIGPIPE</span></tt> events when chaining commands via pipes, by forcing all inputs to be read entirely.  Early pipe termination can cause scripts to stop processing when certain flags are set (for example, when -e is used with tcsh).  This hidden behavior of <tt class="docutils literal"><span class="pre">--ec</span></tt> has been replaced with the explicit option <tt class="docutils literal"><span class="pre">--sweep-all</span></tt>.</p>
+<p>The <tt class="docutils literal"><span class="pre">--ec</span></tt> and <tt class="docutils literal"><span class="pre">--sweep-all</span></tt> options work independently, and <tt class="docutils literal"><span class="pre">--ec</span></tt> no longer has the <tt class="docutils literal"><span class="pre">--sweep-all</span></tt> side-effect.  These options may be used in conjunction.  The <tt class="docutils literal"><span class="pre">--sweep-all</span></tt> option can add significant execution time in cases where early termination is possible.</p>
+</div>
 <div class="section" id="per-chromosome-operations-chrom">
-<span id="bedmap-per-chromosome-operations"></span><h2>6.2.1.4. Per-chromosome operations (&#8211;chrom)<a class="headerlink" href="#per-chromosome-operations-chrom" title="Permalink to this headline">¶</a></h2>
+<span id="bedmap-per-chromosome-operations"></span><h2>6.2.1.5. Per-chromosome operations (&#8211;chrom)<a class="headerlink" href="#per-chromosome-operations-chrom" title="Permalink to this headline">¶</a></h2>
 <p>All operations on inputs described so far can be restricted to one chromosome, by adding the <tt class="docutils literal"><span class="pre">--chrom</span> <span class="pre">&lt;val&gt;</span></tt> operator. This is highly useful for cluster-based work, where operations on large BED inputs can be split up by chromosome and pushed to separate cluster nodes.</p>
 <p>Here, we use the <tt class="docutils literal"><span class="pre">--echo</span></tt> and <tt class="docutils literal"><span class="pre">--echo-map-id</span></tt> operators on our <tt class="docutils literal"><span class="pre">Motifs</span></tt> dataset, but we limit operations to those on elements on chromosome <tt class="docutils literal"><span class="pre">chr2</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ echo -e &quot;chr2\t1000000\t5000000\tref-1&quot; | bedmap --chrom chr2 --echo --echo-map-id - motifs.bed
@@ -656,7 +666,7 @@ $
 </div>
 </div>
 <div class="section" id="starch-support">
-<span id="bedmap-starch-support"></span><h2>6.2.1.5. Starch support<a class="headerlink" href="#starch-support" title="Permalink to this headline">¶</a></h2>
+<span id="bedmap-starch-support"></span><h2>6.2.1.6. Starch support<a class="headerlink" href="#starch-support" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="#bedmap"><em>bedmap</em></a> application supports use of <a class="reference internal" href="../file-management/compression/starch.html#starch"><em>Starch-formatted archives</em></a> as inputs, as well as text-based BED data. One or multiple inputs may be Starch archives.</p>
 <p>For example, we can repeat the overlapping-motif example from the <a class="reference internal" href="#bedmap-echo"><em>Echo section</em></a>, using a Starch archive made from the regions in <tt class="docutils literal"><span class="pre">Motifs</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ echo -e &quot;chr1\t4534150\t4534300\tref-1&quot; | bedmap --echo --echo-map-id - motifs.bed.starch
@@ -666,7 +676,7 @@ chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01
 <p>By combining the <tt class="docutils literal"><span class="pre">--chrom</span></tt> operator with operations on Starch archives, the end user can achieve improved computing performance and disk space savings, particularly where <a class="reference internal" href="../set-operations/bedops.html#bedops"><em>bedops</em></a>, <a class="reference internal" href="#bedmap"><em>bedmap</em></a> and <a class="reference internal" href="../set-operations/closest-features.html#closest-features"><em>closest-features</em></a> operations are applied with a computational cluster on separate chromosomes.</p>
 </div>
 <div class="section" id="error-checking">
-<span id="bedmap-error-checking"></span><h2>6.2.1.6. Error checking<a class="headerlink" href="#error-checking" title="Permalink to this headline">¶</a></h2>
+<span id="bedmap-error-checking"></span><h2>6.2.1.7. Error checking<a class="headerlink" href="#error-checking" title="Permalink to this headline">¶</a></h2>
 <p>The bedmap program does not perform error checking by default, but it offers an <tt class="docutils literal"><span class="pre">--ec</span></tt> option for comprehensive checks.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -674,7 +684,7 @@ chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01
 </div>
 </div>
 <div class="section" id="endlines">
-<span id="bedmap-endlines"></span><h2>6.2.1.7. Endlines<a class="headerlink" href="#endlines" title="Permalink to this headline">¶</a></h2>
+<span id="bedmap-endlines"></span><h2>6.2.1.8. Endlines<a class="headerlink" href="#endlines" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="#bedmap"><em>bedmap</em></a> program expects endlines (<tt class="docutils literal"><span class="pre">\n</span></tt>) appropriate to Linux and Mac OS X operating systems. Microsoft Windows uses different characters for endlines. In UNIX-like environments, you can quickly check to see if your file contains the native endlines with this command:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ head myData.bed | cat -et
 </pre></div>
@@ -682,7 +692,7 @@ chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01
 <p>The appropriate endlines will show up as a <tt class="docutils literal"><span class="pre">$</span></tt> character at the end of each line. See the <tt class="docutils literal"><span class="pre">dos2unix</span></tt> program (sometimes called <tt class="docutils literal"><span class="pre">fromdos</span></tt>) to convert newlines from files saved on Microsoft Windows. The <tt class="docutils literal"><span class="pre">unix2dos</span></tt> (or <tt class="docutils literal"><span class="pre">todos</span></tt>) program can convert files in the other direction, if needed.</p>
 </div>
 <div class="section" id="downloads">
-<span id="bedmap-downloads"></span><h2>6.2.1.8. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
+<span id="bedmap-downloads"></span><h2>6.2.1.9. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Sample <tt class="docutils literal"><span class="pre">Reference</span></tt> dataset: <a class="reference download internal" href="../../../_downloads/reference_bedmap_reference.bed"><tt class="xref download docutils literal"><span class="pre">reference</span> <span class="pre">elements</span></tt></a></li>
 <li>Sample <tt class="docutils literal"><span class="pre">Map</span></tt> dataset: <a class="reference download internal" href="../../../_downloads/reference_bedmap_map.bed"><tt class="xref download docutils literal"><span class="pre">map</span> <span class="pre">elements</span></tt></a></li>
@@ -698,7 +708,7 @@ chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
-              <img class="logo" src="../../../_static/logo_with_label_v2.png" alt="Logo"/>
+              <img class="logo" src="../../../_static/logo_with_label_v3.png" alt="Logo"/>
             </a></p>
   <h3><a href="../../../index.html">Table Of Contents</a></h3>
   <ul>
@@ -730,11 +740,12 @@ chr1    4534150 4534300 ref-1|-V_GRE_C;-V_STAT_Q6;+V_HNF4_Q6_01
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#per-chromosome-operations-chrom">6.2.1.4. Per-chromosome operations (&#8211;chrom)</a></li>
-<li><a class="reference internal" href="#starch-support">6.2.1.5. Starch support</a></li>
-<li><a class="reference internal" href="#error-checking">6.2.1.6. Error checking</a></li>
-<li><a class="reference internal" href="#endlines">6.2.1.7. Endlines</a></li>
-<li><a class="reference internal" href="#downloads">6.2.1.8. Downloads</a></li>
+<li><a class="reference internal" href="#i-o-event-handling">6.2.1.4. I/O event handling</a></li>
+<li><a class="reference internal" href="#per-chromosome-operations-chrom">6.2.1.5. Per-chromosome operations (&#8211;chrom)</a></li>
+<li><a class="reference internal" href="#starch-support">6.2.1.6. Starch support</a></li>
+<li><a class="reference internal" href="#error-checking">6.2.1.7. Error checking</a></li>
+<li><a class="reference internal" href="#endlines">6.2.1.8. Endlines</a></li>
+<li><a class="reference internal" href="#downloads">6.2.1.9. Downloads</a></li>
 </ul>
 </li>
 </ul>

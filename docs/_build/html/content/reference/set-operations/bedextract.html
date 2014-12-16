@@ -10,6 +10,7 @@
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -104,7 +105,7 @@
 <p>The <tt class="docutils literal"><span class="pre">--help</span></tt> option describes the functionality available to the end user:</p>
 <div class="highlight-python"><div class="highlight"><pre>bedextract
   citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-  version:  2.5.0
+  version:  2.4.3
   authors:  Shane Neph &amp; Alex Reynolds
 
     Every input file must be sorted per sort-bed.
@@ -114,7 +115,7 @@
    1) --list-chr &lt;input.bed&gt;        Print all unique chromosome names found in &lt;input.bed&gt;.
    2) &lt;chromosome&gt; &lt;input.bed&gt;      Retrieve all rows for chr8 with:  bedextract chr8 &lt;input.bed&gt;.
    3) &lt;query.bed&gt; &lt;target&gt;          Grab elements from the &lt;query.bed&gt; that overlap elements in &lt;target&gt;. Same as
-                                     `bedops -e -1 &lt;query.bed&gt; &lt;target&gt;`, except that this option fails silently
+                                     `bedops -e 1 &lt;query.bed&gt; &lt;target&gt;`, except that this option fails silently
                                       if &lt;query.bed&gt; contains fully-nested BED elements.  If no fully-nested
                                       element exists, bedextract can vastly improve upon the performance of bedops.
                                       &lt;target&gt; may be a BED or Starch file (with or without fully-nested elements).
@@ -159,13 +160,26 @@ chrX    6777790 6777799 +V_CKROX_Q2     8.90515e-06     +       TCCCTCCCC
 <div class="section" id="retrieving-elements-which-overlap-target-elements">
 <h3>6.1.2.3.3. Retrieving elements which overlap target elements<a class="headerlink" href="#retrieving-elements-which-overlap-target-elements" title="Permalink to this headline">¶</a></h3>
 <p>A common <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a> query involves asking which elements overlap one or more bases between two BED datasets, which we will call here <tt class="docutils literal"><span class="pre">Query</span></tt> and <tt class="docutils literal"><span class="pre">Target</span></tt>.</p>
-<p>One can already use <tt class="docutils literal"><span class="pre">bedops</span> <span class="pre">--element-of</span> <span class="pre">-1</span></tt> to accomplish this task, but if certain specific criteria are met (which we will describe shortly) then a much faster result can often be obtained by instead using <a class="reference internal" href="#bedextract"><em>bedextract</em></a>.</p>
+<p>One can already use <tt class="docutils literal"><span class="pre">bedops</span> <span class="pre">--element-of</span> <span class="pre">1</span></tt> to accomplish this task, but if certain specific criteria are met (which we will describe shortly) then a much faster result can often be obtained by instead using <a class="reference internal" href="#bedextract"><em>bedextract</em></a>.</p>
 <p>Three criteria make the use of <a class="reference internal" href="#bedextract"><em>bedextract</em></a> in this mode very successful in practice, with potentially massive speed improvements:</p>
 <ol class="arabic simple">
 <li><tt class="docutils literal"><span class="pre">Query</span></tt> is a huge file.</li>
 <li>There are relatively few regions of interest in <tt class="docutils literal"><span class="pre">Target</span></tt> (say, roughly 30,000 or fewer).</li>
 <li>There are <strong>no fully-nested elements</strong> in <tt class="docutils literal"><span class="pre">Query</span></tt> (but duplicate coordinates are fine).</li>
 </ol>
+<dl class="docutils">
+<dt>::</dt>
+<dd><p class="first">$ bedops -m Query &gt; Query-Index
+$ bedextract Query-Index Target </p>
+<blockquote class="last">
+<div><div class="line-block">
+<div class="line">bedextract Query - </div>
+<div class="line">bedops &#8211;element-of 1 - Target </div>
+</div>
+<p>&gt; answer.bed</p>
+</div></blockquote>
+</dd>
+</dl>
 <div class="section" id="what-are-nested-elements">
 <span id="bedextract-nested-elements"></span><h4>6.1.2.3.3.1. What are nested elements?<a class="headerlink" href="#what-are-nested-elements" title="Permalink to this headline">¶</a></h4>
 <p>For a precise definition of a nested element, refer to the <a class="reference internal" href="nested-elements.html#nested-elements"><em>documentation on nested elements</em></a>.</p>
@@ -229,9 +243,9 @@ chr21   33031585        33031605        map-22  26.000000
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>Though <a class="reference internal" href="#bedextract"><em>bedextract</em></a> only supports the overlap equivalent of <tt class="docutils literal"><span class="pre">bedops</span> <span class="pre">--element-of</span> <span class="pre">-1</span></tt>, other overlap criteria are efficiently supported by combining <a class="reference internal" href="#bedextract"><em>bedextract</em></a> with <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a>.</p>
+<p>Though <a class="reference internal" href="#bedextract"><em>bedextract</em></a> only supports the overlap equivalent of <tt class="docutils literal"><span class="pre">bedops</span> <span class="pre">--element-of</span> <span class="pre">1</span></tt>, other overlap criteria are efficiently supported by combining <a class="reference internal" href="#bedextract"><em>bedextract</em></a> with <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a>.</p>
 <p>Specifically, we can quickly filter through just the results given by <a class="reference internal" href="#bedextract"><em>bedextract</em></a> and implement other overlap criteria with <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a>, <em>e.g.</em>:</p>
-<p class="last"><tt class="docutils literal"><span class="pre">$</span> <span class="pre">bedextract</span> <span class="pre">query.bed</span> <span class="pre">target.bed</span> <span class="pre">|</span> <span class="pre">bedops</span> <span class="pre">-e</span> <span class="pre">-50%</span> <span class="pre">-</span> <span class="pre">target.bed</span></tt></p>
+<p class="last"><tt class="docutils literal"><span class="pre">$</span> <span class="pre">bedextract</span> <span class="pre">query.bed</span> <span class="pre">target.bed</span> <span class="pre">|</span> <span class="pre">bedops</span> <span class="pre">-e</span> <span class="pre">50%</span> <span class="pre">-</span> <span class="pre">target.bed</span></tt></p>
 </div>
 </div>
 </div>
@@ -253,7 +267,7 @@ chr21   33031585        33031605        map-22  26.000000
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
-              <img class="logo" src="../../../_static/logo_with_label_v2.png" alt="Logo"/>
+              <img class="logo" src="../../../_static/logo_with_label_v3.png" alt="Logo"/>
             </a></p>
   <h3><a href="../../../index.html">Table Of Contents</a></h3>
   <ul>

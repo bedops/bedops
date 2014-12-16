@@ -10,6 +10,7 @@
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -88,7 +89,7 @@
 <p>The <tt class="docutils literal"><span class="pre">--help</span></tt> option describes the set operation and other options available to the end user:</p>
 <div class="highlight-python"><div class="highlight"><pre>bedops
   citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-  version:  2.5.0
+  version:  2.4.3
   authors:  Shane Neph &amp; Scott Kuehn
 
       USAGE: bedops [process-flags] &lt;operation&gt; &lt;File(s)&gt;*
@@ -111,22 +112,24 @@
                                  coordinates. Either value may be + or - to grow or
                                  shrink regions.  With the -e/-n operations, the first
                                  (reference) file is not padded, unlike all other files.
-          --range S            Pad input file(s) coordinates symmetrically by S.
+          --range S            Pad or shink input file(s) coordinates symmetrically by S.
                                  This is shorthand for: --range -S:S.
           --version            Print program information.
 
       Operations: (choose one of)
           -c, --complement [-L] File1 [File]*
           -d, --difference ReferenceFile File2 [File]*
-          -e, --element-of [-number% | -number] ReferenceFile File2 [File]*
-                 by default, -e -100% is used.  &#39;bedops -e -1&#39; is also popular.
+          -e, --element-of [number% | number] ReferenceFile File2 [File]*
+                 by default, -e 100% is used.  &#39;bedops -e 1&#39; is also popular.
           -i, --intersect File1 File2 [File]*
           -m, --merge File1 [File]*
-          -n, --not-element-of [-number% | -number] ReferenceFile File2 [File]*
-                 by default, -n -100% is used.  &#39;bedops -n -1&#39; is also popular.
+          -n, --not-element-of [number% | number] ReferenceFile File2 [File]*
+                 by default, -n 100% is used.  &#39;bedops -n 1&#39; is also popular.
           -p, --partition File1 [File]*
           -s, --symmdiff File1 File2 [File]*
           -u, --everything File1 [File]*
+          -w, --chop [bp] [--stagger [bp]] [-x] File1 [File]*
+                 by default, -w 1 is used with no staggering.
 
       Example: bedops --range 10 -u file1.bed
       NOTE: Only operations -e|n|u preserve all columns (no flattening)
@@ -203,7 +206,7 @@ chr3      150     350
 <div class="admonition-example admonition">
 <p class="first admonition-title">Example</p>
 <p>The argument to <tt class="docutils literal"><span class="pre">--element-of</span></tt> is a value that species to degree of overlap for elements. The value is either integral for per-base overlap,  or fractional for overlap measured by length.</p>
-<p>Here is a demonstration of the use of <tt class="docutils literal"><span class="pre">--element-of</span> <span class="pre">-1</span></tt> on two sorted sets <tt class="docutils literal"><span class="pre">First.bed</span></tt> and <tt class="docutils literal"><span class="pre">Second.bed</span></tt>, which looks for elements in the <tt class="docutils literal"><span class="pre">First</span></tt> set that overlap elements in the <tt class="docutils literal"><span class="pre">Second</span></tt> set by one or more bases:</p>
+<p>Here is a demonstration of the use of <tt class="docutils literal"><span class="pre">--element-of</span> <span class="pre">1</span></tt> on two sorted sets <tt class="docutils literal"><span class="pre">First.bed</span></tt> and <tt class="docutils literal"><span class="pre">Second.bed</span></tt>, which looks for elements in the <tt class="docutils literal"><span class="pre">First</span></tt> set that overlap elements in the <tt class="docutils literal"><span class="pre">Second</span></tt> set by one or more bases:</p>
 <div class="code bash highlight-python"><div class="highlight"><pre>$ more First.bed
 chr1      100     200
 chr1      150     160
@@ -220,7 +223,7 @@ chr1      460     470
 chr1      490     500
 </pre></div>
 </div>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --element-of -1 First.bed Second.bed &gt; Result.bed
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --element-of 1 First.bed Second.bed &gt; Result.bed
 </pre></div>
 </div>
 <div class="code bash highlight-python"><div class="highlight"><pre>$ more Result.bed
@@ -230,7 +233,7 @@ chr1      400     475
 </pre></div>
 </div>
 <p>One base is the least stringent (default) integral criterion. We can be more restrictive about our overlap requirement by increasing this value, say to 15 bases:</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --element-of -15 First.bed Second.bed &gt; Result.bed
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --element-of 15 First.bed Second.bed &gt; Result.bed
 </pre></div>
 </div>
 <div class="code bash highlight-python"><div class="highlight"><pre>$ more Result.bed
@@ -239,7 +242,7 @@ chr1      100     200
 </div>
 <p>Only this element from the <tt class="docutils literal"><span class="pre">First</span></tt> set overlaps one or more elements in the <tt class="docutils literal"><span class="pre">Second</span></tt> set by a total of fifteen or more bases.</p>
 <p>We can also use percentage of overlap as our argument. Let&#8217;s say that we only want elements from the <tt class="docutils literal"><span class="pre">First</span></tt> set, which overlap half their length or more of a qualifying element in the <tt class="docutils literal"><span class="pre">Second</span></tt> set:</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --element-of -50% First.bed Second.bed &gt; Result.bed
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --element-of 50% First.bed Second.bed &gt; Result.bed
 </pre></div>
 </div>
 <div class="code bash last highlight-python"><div class="highlight"><pre>$ more Result.bed
@@ -252,7 +255,7 @@ chr1      150     160
 <div class="admonition-example admonition">
 <p class="first admonition-title">Example</p>
 <p>As we show here, by inverting the usual order of our sample sets <tt class="docutils literal"><span class="pre">First</span></tt> and <tt class="docutils literal"><span class="pre">Second</span></tt>, we retrieve elements from the <tt class="docutils literal"><span class="pre">Second</span></tt> set:</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --element-of -1 Second.bed First.bed &gt; Result.bed
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --element-of 1 Second.bed First.bed &gt; Result.bed
 </pre></div>
 </div>
 <div class="code bash last highlight-python"><div class="highlight"><pre>$ more Result.bed
@@ -292,7 +295,7 @@ chr1      460     470
 chr1      490     500
 </pre></div>
 </div>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --not-element-of -1 First.bed Second.bed &gt; Result.bed
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --not-element-of 1 First.bed Second.bed &gt; Result.bed
 </pre></div>
 </div>
 <div class="code bash last highlight-python"><div class="highlight"><pre>$ more Result.bed
@@ -465,12 +468,12 @@ chr1      150     160
 chr1      460     470
 </pre></div>
 </div>
-<p class="last">Notice how this computed result is quite different from that of <tt class="docutils literal"><span class="pre">--element-of</span> <span class="pre">-N</span></tt>, which functions more like a LEFT JOIN operation in a SQL database.</p>
+<p class="last">Notice how this computed result is quite different from that of <tt class="docutils literal"><span class="pre">--element-of</span> <span class="pre">N</span></tt>, which functions more like a LEFT JOIN operation in SQL.</p>
 </div>
 </div>
 <div class="section" id="merge-m-merge">
 <h3>6.1.1.3.8. Merge (-m, &#8211;merge)<a class="headerlink" href="#merge-m-merge" title="Permalink to this headline">¶</a></h3>
-<p>The <tt class="docutils literal"><span class="pre">--merge</span></tt> operation flattens all overlapping and adjoining elements into contiguous regions:</p>
+<p>The <tt class="docutils literal"><span class="pre">--merge</span></tt> operation flattens all disjoint, overlapping, and adjoining element regions into contiguous, disjoint regions:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_merge_ab.png"><img alt="../../../_images/reference_setops_bedops_merge_ab.png" src="../../../_images/reference_setops_bedops_merge_ab.png" style="width: 99%;" /></a>
 <div class="admonition-example admonition">
 <p class="first admonition-title">Example</p>
@@ -554,12 +557,49 @@ chr1      500     550
 <p class="last">As with <tt class="docutils literal"><span class="pre">--merge</span></tt>, <tt class="docutils literal"><span class="pre">--complement</span></tt> and other &#8220;computing&#8221; operations, note the lack of ID, score and other columnar data in this computed result.</p>
 </div>
 </div>
+<div class="section" id="chop-w-chop">
+<span id="bedops-chop"></span><h3>6.1.1.3.10. Chop (-w, &#8211;chop)<a class="headerlink" href="#chop-w-chop" title="Permalink to this headline">¶</a></h3>
+<p>The <tt class="docutils literal"><span class="pre">--chop</span></tt> operator merges all overlapping input regions and &#8220;chops&#8221; them up into a set of disjoint segments of identical length (with a default of one base). One or more input files may be provided; this option will segment regions from all inputs:</p>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_chop_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_chop_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_chop_ab&#64;2x.png" style="width: 99%;" /></a>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate <tt class="docutils literal"><span class="pre">--chop</span></tt>, we use a sorted set called <tt class="docutils literal"><span class="pre">Regions.bed</span></tt> and compute a set of one-base genomic regions across both elements in this set:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Regions.bed
+chr1      100     105
+chr1      120     127
+chr1      122     124
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --chop 1 Regions.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash last highlight-python"><div class="highlight"><pre>$ more Result.bed
+chr1      100     101
+chr1      101     102
+chr1      102     103
+chr1      103     104
+chr1      104     105
+chr1      120     121
+chr1      121     122
+chr1      122     123
+chr1      123     124
+chr1      124     125
+chr1      125     126
+chr1      126     127
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Overlapping and nested regions are merged into contiguous ranges before chopping. The end result contains unique, non-overlapping elements.</p>
+</div>
+</div>
 <div class="section" id="per-chromosome-operations-chrom">
-<span id="bedops-chrom"></span><h3>6.1.1.3.10. Per-chromosome operations (&#8211;chrom)<a class="headerlink" href="#per-chromosome-operations-chrom" title="Permalink to this headline">¶</a></h3>
+<span id="bedops-chrom"></span><h3>6.1.1.3.11. Per-chromosome operations (&#8211;chrom)<a class="headerlink" href="#per-chromosome-operations-chrom" title="Permalink to this headline">¶</a></h3>
 <p>All operations on inputs can be restricted to one chromosome, by adding the <tt class="docutils literal"><span class="pre">--chrom</span> <span class="pre">&lt;val&gt;</span></tt> operator.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This operator is highly useful for cluster-based work, where operations on large BED inputs can be split up by chromosome and pushed to separate cluster nodes. See the <a class="reference internal" href="../../usage-examples/starchcluster.html#starchcluster"><em>Efficiently creating Starch-formatted archives with a cluster</em></a> documentation for a demonstration of this technique in action.</p>
+<p class="last">This operator is highly useful for parallelization, where operations on large BED inputs can be split up by chromosome and pushed to separate nodes on a computational cluster. See the <a class="reference internal" href="../../usage-examples/starchcluster.html#starchcluster"><em>Efficiently creating Starch-formatted archives with a cluster</em></a> documentation for a demonstration of this technique in action.</p>
 </div>
 <div class="admonition-example admonition">
 <p class="first admonition-title">Example</p>
@@ -591,7 +631,7 @@ chr3      150     350
 </div>
 </div>
 <div class="section" id="range-range">
-<span id="bedops-range"></span><h3>6.1.1.3.11. Range (&#8211;range)<a class="headerlink" href="#range-range" title="Permalink to this headline">¶</a></h3>
+<span id="bedops-range"></span><h3>6.1.1.3.12. Range (&#8211;range)<a class="headerlink" href="#range-range" title="Permalink to this headline">¶</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">--range</span></tt> operation works in conjunction with other operations.</p>
 <p>When used with one value (<tt class="docutils literal"><span class="pre">--range</span> <span class="pre">S</span></tt>), this operation <strong>symmetrically</strong> pads all elements of input sets by the specified integral value <tt class="docutils literal"><span class="pre">S</span></tt>. When the specified value is positive, every genomic segment grows in size. An element will grow asymmetrically to prevent growth beyond base position 0, if needed. Otherwise, when negative, elements shrink, and any element with zero (or less) length is discarded.</p>
 <p>Alternatively, when used with two values (<tt class="docutils literal"><span class="pre">--range</span> <span class="pre">L:R</span></tt>), this operation <strong>asymmetrically</strong> pads elements, adding <tt class="docutils literal"><span class="pre">L</span></tt> to each start coordinate, and adding <tt class="docutils literal"><span class="pre">R</span></tt> to each stop coordinate. Negative values may be specified to grow or shrink the region, accordingly.</p>
@@ -665,7 +705,7 @@ See row: 3
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
-              <img class="logo" src="../../../_static/logo_with_label_v2.png" alt="Logo"/>
+              <img class="logo" src="../../../_static/logo_with_label_v3.png" alt="Logo"/>
             </a></p>
   <h3><a href="../../../index.html">Table Of Contents</a></h3>
   <ul>
@@ -686,8 +726,9 @@ See row: 3
 <li><a class="reference internal" href="#intersect-i-intersect">6.1.1.3.7. Intersect (-i, &#8211;intersect)</a></li>
 <li><a class="reference internal" href="#merge-m-merge">6.1.1.3.8. Merge (-m, &#8211;merge)</a></li>
 <li><a class="reference internal" href="#partition-p-partition">6.1.1.3.9. Partition (-p, &#8211;partition)</a></li>
-<li><a class="reference internal" href="#per-chromosome-operations-chrom">6.1.1.3.10. Per-chromosome operations (&#8211;chrom)</a></li>
-<li><a class="reference internal" href="#range-range">6.1.1.3.11. Range (&#8211;range)</a></li>
+<li><a class="reference internal" href="#chop-w-chop">6.1.1.3.10. Chop (-w, &#8211;chop)</a></li>
+<li><a class="reference internal" href="#per-chromosome-operations-chrom">6.1.1.3.11. Per-chromosome operations (&#8211;chrom)</a></li>
+<li><a class="reference internal" href="#range-range">6.1.1.3.12. Range (&#8211;range)</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#starch-support">6.1.1.4. Starch support</a></li>

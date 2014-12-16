@@ -53,7 +53,7 @@ The ``--help`` option describes the set operation and other options available to
 
   bedops
     citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-    version:  2.5.0
+    version:  2.4.3
     authors:  Shane Neph & Scott Kuehn
 
         USAGE: bedops [process-flags] <operation> <File(s)>*
@@ -76,22 +76,24 @@ The ``--help`` option describes the set operation and other options available to
                                    coordinates. Either value may be + or - to grow or
                                    shrink regions.  With the -e/-n operations, the first
                                    (reference) file is not padded, unlike all other files.
-            --range S            Pad input file(s) coordinates symmetrically by S.
+            --range S            Pad or shink input file(s) coordinates symmetrically by S.
                                    This is shorthand for: --range -S:S.
             --version            Print program information.
 
         Operations: (choose one of)
             -c, --complement [-L] File1 [File]*
             -d, --difference ReferenceFile File2 [File]*
-            -e, --element-of [-number% | -number] ReferenceFile File2 [File]*
-                   by default, -e -100% is used.  'bedops -e -1' is also popular.
+            -e, --element-of [number% | number] ReferenceFile File2 [File]*
+                   by default, -e 100% is used.  'bedops -e 1' is also popular.
             -i, --intersect File1 File2 [File]*
             -m, --merge File1 [File]*
-            -n, --not-element-of [-number% | -number] ReferenceFile File2 [File]*
-                   by default, -n -100% is used.  'bedops -n -1' is also popular.
+            -n, --not-element-of [number% | number] ReferenceFile File2 [File]*
+                   by default, -n 100% is used.  'bedops -n 1' is also popular.
             -p, --partition File1 [File]*
             -s, --symmdiff File1 File2 [File]*
             -u, --everything File1 [File]*
+            -w, --chop [bp] [--stagger [bp]] [-x] File1 [File]*
+                   by default, -w 1 is used with no staggering.
 
         Example: bedops --range 10 -u file1.bed
         NOTE: Only operations -e|n|u preserve all columns (no flattening)
@@ -187,7 +189,7 @@ Elements that are returned are always from the reference set (in this case, set 
 
    The argument to ``--element-of`` is a value that species to degree of overlap for elements. The value is either integral for per-base overlap,  or fractional for overlap measured by length.
 
-   Here is a demonstration of the use of ``--element-of -1`` on two sorted sets ``First.bed`` and ``Second.bed``, which looks for elements in the ``First`` set that overlap elements in the ``Second`` set by one or more bases:
+   Here is a demonstration of the use of ``--element-of 1`` on two sorted sets ``First.bed`` and ``Second.bed``, which looks for elements in the ``First`` set that overlap elements in the ``Second`` set by one or more bases:
  
    .. code:: bash
 
@@ -209,7 +211,7 @@ Elements that are returned are always from the reference set (in this case, set 
 
    .. code:: bash
       
-      $ bedops --element-of -1 First.bed Second.bed > Result.bed
+      $ bedops --element-of 1 First.bed Second.bed > Result.bed
 
    .. code:: bash
       
@@ -222,7 +224,7 @@ Elements that are returned are always from the reference set (in this case, set 
 
    .. code:: bash
       
-      $ bedops --element-of -15 First.bed Second.bed > Result.bed
+      $ bedops --element-of 15 First.bed Second.bed > Result.bed
 
    .. code:: bash
       
@@ -235,7 +237,7 @@ Elements that are returned are always from the reference set (in this case, set 
 
    .. code:: bash
 
-      $ bedops --element-of -50% First.bed Second.bed > Result.bed
+      $ bedops --element-of 50% First.bed Second.bed > Result.bed
 
    .. code:: bash
       
@@ -254,7 +256,7 @@ Note that `--element-of` is *not* a symmetric operation, as demonstrated by reve
  
    .. code:: bash
 
-      $ bedops --element-of -1 Second.bed First.bed > Result.bed
+      $ bedops --element-of 1 Second.bed First.bed > Result.bed
 
    .. code:: bash
       
@@ -302,7 +304,7 @@ The ``--not-element-of`` operation shows elements in the reference file which do
 
    .. code:: bash
       
-      $ bedops --not-element-of -1 First.bed Second.bed > Result.bed
+      $ bedops --not-element-of 1 First.bed Second.bed > Result.bed
 
    .. code:: bash
       
@@ -505,13 +507,13 @@ The ``--intersect`` operation determines genomic regions common to all input set
       chr1	150	160
       chr1	460	470
 
-   Notice how this computed result is quite different from that of ``--element-of -N``, which functions more like a LEFT JOIN operation in a SQL database.
+   Notice how this computed result is quite different from that of ``--element-of N``, which functions more like a LEFT JOIN operation in SQL.
 
 -------------------
 Merge (-m, --merge)
 -------------------
 
-The ``--merge`` operation flattens all overlapping and adjoining elements into contiguous regions:
+The ``--merge`` operation flattens all disjoint, overlapping, and adjoining element regions into contiguous, disjoint regions:
 
 .. image:: ../../../assets/reference/set-operations/reference_setops_bedops_merge_ab.png
    :width: 99%
@@ -608,6 +610,51 @@ The ``--partition`` operator splits all overlapping input regions into a set of 
 
 .. note:: As with ``--merge``, ``--complement`` and other "computing" operations, note the lack of ID, score and other columnar data in this computed result.
 
+.. _bedops_chop:
+
+-----------------
+Chop (-w, --chop)
+-----------------
+
+The ``--chop`` operator merges all overlapping input regions and "chops" them up into a set of disjoint segments of identical length (with a default of one base). One or more input files may be provided; this option will segment regions from all inputs:
+
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_chop_ab@2x.png
+   :width: 99%
+
+.. admonition:: Example
+   :class: admonition-example
+
+   To demonstrate ``--chop``, we use a sorted set called ``Regions.bed`` and compute a set of one-base genomic regions across both elements in this set:
+
+   .. code:: bash
+
+      $ more Regions.bed
+      chr1	100	105
+      chr1	120	127
+      chr1	122	124
+
+   .. code:: bash
+      
+      $ bedops --chop 1 Regions.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	100	101
+      chr1	101	102
+      chr1	102	103
+      chr1	103	104
+      chr1	104	105
+      chr1	120	121
+      chr1	121	122
+      chr1	122	123
+      chr1	123	124
+      chr1	124	125
+      chr1	125	126
+      chr1	126	127
+
+.. note:: Overlapping and nested regions are merged into contiguous ranges before chopping. The end result contains unique, non-overlapping elements.
+
 .. _bedops_chrom:
 
 -----------------------------------
@@ -616,7 +663,7 @@ Per-chromosome operations (--chrom)
 
 All operations on inputs can be restricted to one chromosome, by adding the ``--chrom <val>`` operator. 
 
-.. note:: This operator is highly useful for cluster-based work, where operations on large BED inputs can be split up by chromosome and pushed to separate cluster nodes. See the :ref:`starchcluster` documentation for a demonstration of this technique in action.
+.. note:: This operator is highly useful for parallelization, where operations on large BED inputs can be split up by chromosome and pushed to separate nodes on a computational cluster. See the :ref:`starchcluster` documentation for a demonstration of this technique in action.
 
 .. admonition:: Example
    :class: admonition-example
@@ -740,3 +787,4 @@ For unsorted input, be sure to first use :ref:`sort-bed` to presort the data str
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
    :trim:
+.. role:: admonition-example-title

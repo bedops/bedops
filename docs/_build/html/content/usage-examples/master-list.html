@@ -10,6 +10,7 @@
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -59,7 +60,7 @@
 <p>Given a list of five-column UCSC BED files, where scores are kept in the fifth column, we want to build a &#8220;master list&#8221; of non-overlapping elements from all the inputs. Elements that initially overlap are ranked by score, and the highest scoring element is added to the master list.</p>
 <div class="section" id="bedops-tools-in-use">
 <h2>4.2.1. BEDOPS tools in use<a class="headerlink" href="#bedops-tools-in-use" title="Permalink to this headline">¶</a></h2>
-<p>In the following example, we want to merge hotspot peaks for five fetal adrenal tissues, picking the highest scoring element where there are matches. We&#8217;ll use a mix of <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> and its <tt class="docutils literal"><span class="pre">--max</span></tt> operation with <a class="reference internal" href="../reference/set-operations/bedops.html#bedops"><em>bedops</em></a> set operations to accomplish this.</p>
+<p>In the following example, we want to merge hotspot peaks for five fetal adrenal tissues, picking the highest scoring element where there are overlapping peaks. We&#8217;ll use a mix of <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> and its <tt class="docutils literal"><span class="pre">--max-element</span></tt> operation with <a class="reference internal" href="../reference/set-operations/bedops.html#bedops"><em>bedops</em></a> set operations to accomplish this.</p>
 </div>
 <div class="section" id="script">
 <h2>4.2.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
@@ -119,7 +120,7 @@ do
 
     ## Are there any elements that don&#39;t overlap the current master
     ## list?  If so, add those in, and repeat.  If not, we&#39;re done.
-    bedops -n -1 $tmpd/tmp.bed $tmpd/$iters.bed \
+    bedops -n 1 $tmpd/tmp.bed $tmpd/$iters.bed \
        &gt; $tmpd/tmp2.bed
 
     mv $tmpd/tmp2.bed $tmpd/tmp.bed
@@ -160,7 +161,7 @@ exit 0
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
-              <img class="logo" src="../../_static/logo_with_label_v2.png" alt="Logo"/>
+              <img class="logo" src="../../_static/logo_with_label_v3.png" alt="Logo"/>
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>

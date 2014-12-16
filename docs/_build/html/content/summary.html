@@ -10,6 +10,7 @@
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -27,7 +28,7 @@
     <script type="text/javascript" src="../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="top" title="BEDOPS 2.5.0 documentation" href="../index.html" />
-    <link rel="prev" title="6.3.3.8. wig2bed" href="reference/file-management/conversion/wig2bed.html" /> 
+    <link rel="prev" title="6.3.3.10. wig2bed" href="reference/file-management/conversion/wig2bed.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,7 +38,7 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="reference/file-management/conversion/wig2bed.html" title="6.3.3.8. wig2bed"
+          <a href="reference/file-management/conversion/wig2bed.html" title="6.3.3.10. wig2bed"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li> 
       </ul>
@@ -227,6 +228,19 @@ reference element.</td>
 <td>2</td>
 <td>3</td>
 </tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--echo-ref-name</span></tt></td>
+<td>Reports the first 3 fields of <tt class="docutils literal"><span class="pre">ref-file</span></tt> element in
+chrom:start-end format.</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--echo-ref-size</span></tt></td>
+<td>Reports the length of the <tt class="docutils literal"><span class="pre">ref-file</span></tt> element.</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
 <tr class="row-even"><td><tt class="docutils literal"><span class="pre">--faster</span></tt></td>
 <td><strong>(Advanced)</strong> Strong input assumptions are made. Review documents
 before use. Compatible with <tt class="docutils literal"><span class="pre">--bp-ovr</span></tt> and <tt class="docutils literal"><span class="pre">--range</span></tt> overlap
@@ -349,7 +363,14 @@ mapped elements.</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--tmean</span> <span class="pre">&lt;low&gt;</span> <span class="pre">&lt;hi&gt;</span></tt></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--sweep-all</span></tt></td>
+<td>Reads through entire <tt class="docutils literal"><span class="pre">map-file</span></tt> dataset to avoid early termination
+that may cause SIGPIPE or other I/O errors.</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--tmean</span> <span class="pre">&lt;low&gt;</span> <span class="pre">&lt;hi&gt;</span></tt></td>
 <td>Reports the mean score from overlapping elements in <tt class="docutils literal"><span class="pre">map-file</span></tt>,
 after ignoring the bottom <tt class="docutils literal"><span class="pre">&lt;low&gt;</span></tt> and top <tt class="docutils literal"><span class="pre">&lt;hi&gt;</span></tt> fractions of
 those scores. (<tt class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">low</span> <span class="pre">&lt;=</span> <span class="pre">1</span></tt>, <tt class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">hi</span> <span class="pre">&lt;=</span> <span class="pre">1</span></tt>, <tt class="docutils literal"><span class="pre">low</span> <span class="pre">+</span> <span class="pre">hi</span> <span class="pre">&lt;=</span>
@@ -358,7 +379,7 @@ those scores. (<tt class="docutils literal"><span class="pre">0</span> <span cla
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--variance</span></tt></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--variance</span></tt></td>
 <td>Reports the variance of scores from overlapping elements in
 <tt class="docutils literal"><span class="pre">map-file</span></tt>.</td>
 <td>1</td>
@@ -404,20 +425,27 @@ segments.</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--difference</span></tt>, <tt class="docutils literal"><span class="pre">-d</span></tt></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--chop</span></tt>, <tt class="docutils literal"><span class="pre">-w</span></tt></td>
+<td>Breaks up merged regions into fixed-size chunks, optionally anchored
+on start coordinates a fixed distance apart.</td>
+<td>1</td>
+<td>No imposed limit</td>
+<td>3</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--difference</span></tt>, <tt class="docutils literal"><span class="pre">-d</span></tt></td>
 <td>Reports the intervals found in the first file that are not present
 in any other input file.</td>
 <td>2</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--ec</span></tt></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--ec</span></tt></td>
 <td>Error-check input files (slower).</td>
 <td>1</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--element-of</span></tt>, <tt class="docutils literal"><span class="pre">-e</span></tt></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--element-of</span></tt>, <tt class="docutils literal"><span class="pre">-e</span></tt></td>
 <td>Reports rows from the first file that overlap, by a specified
 percentage or number of base pairs, the merged segments from all
 other input files.</td>
@@ -425,40 +453,40 @@ other input files.</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--header</span></tt></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--header</span></tt></td>
 <td>Accept headers (VCF, GFF, SAM, BED, WIG) in any input file.</td>
 <td>1</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--intersect</span></tt>, <tt class="docutils literal"><span class="pre">-i</span></tt></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--intersect</span></tt>, <tt class="docutils literal"><span class="pre">-i</span></tt></td>
 <td>Reports the intervals common to all input files.</td>
 <td>2</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--merge</span></tt>, <tt class="docutils literal"><span class="pre">-m</span></tt></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--merge</span></tt>, <tt class="docutils literal"><span class="pre">-m</span></tt></td>
 <td>Reports intervals from all input files, after merging overlapping
 and adjoining segments.</td>
 <td>1</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--not-element-of</span></tt>, <tt class="docutils literal"><span class="pre">-n</span></tt></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--not-element-of</span></tt>, <tt class="docutils literal"><span class="pre">-n</span></tt></td>
 <td>Reports exactly everything that <tt class="docutils literal"><span class="pre">--element-of</span></tt> does not, given the
 same overlap criterion.</td>
 <td>2</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--partition</span></tt>, <tt class="docutils literal"><span class="pre">-p</span></tt></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--partition</span></tt>, <tt class="docutils literal"><span class="pre">-p</span></tt></td>
 <td>Reports all disjoint intervals from all input files. Overlapping
 segments are cut up into pieces at all segment boundaries.</td>
 <td>1</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--range</span> <span class="pre">L:R</span></tt></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--range</span> <span class="pre">L:R</span></tt></td>
 <td>Add <tt class="docutils literal"><span class="pre">L</span></tt> bases to all start coordinates and <tt class="docutils literal"><span class="pre">R</span></tt> base to end
 coordinates. Either value may be positive or negative to grow or
 shrink regions, respectively. With the <tt class="docutils literal"><span class="pre">-e</span></tt> or <tt class="docutils literal"><span class="pre">-n</span></tt> operation,
@@ -467,20 +495,20 @@ the first (reference) file is not padded, unlike all other files.</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--range</span> <span class="pre">S</span></tt></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--range</span> <span class="pre">S</span></tt></td>
 <td>Pad input file(s) coordinates symmetrically by <tt class="docutils literal"><span class="pre">S</span></tt> bases. This is
 shorthand for <tt class="docutils literal"><span class="pre">--range</span> <span class="pre">-S:S</span></tt>.</td>
 <td>1</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--symmdiff</span></tt>, <tt class="docutils literal"><span class="pre">-s</span></tt></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--symmdiff</span></tt>, <tt class="docutils literal"><span class="pre">-s</span></tt></td>
 <td>Reports the intervals found in exactly one input file.</td>
 <td>2</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--everything</span></tt>, <tt class="docutils literal"><span class="pre">-u</span></tt></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--everything</span></tt>, <tt class="docutils literal"><span class="pre">-u</span></tt></td>
 <td>Reports the intervals from all input files in sorted order.
 Duplicates are retained in the output.</td>
 <td>1</td>
@@ -839,7 +867,7 @@ extraction time performance.</td>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/logo_with_label_v2.png" alt="Logo"/>
+              <img class="logo" src="../_static/logo_with_label_v3.png" alt="Logo"/>
             </a></p>
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
@@ -867,7 +895,7 @@ extraction time performance.</td>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="reference/file-management/conversion/wig2bed.html"
-                        title="previous chapter">6.3.3.8. <cite>wig2bed</cite></a></p>
+                        title="previous chapter">6.3.3.10. <cite>wig2bed</cite></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/content/summary.txt"
@@ -897,7 +925,7 @@ extraction time performance.</td>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="reference/file-management/conversion/wig2bed.html" title="6.3.3.8. wig2bed"
+          <a href="reference/file-management/conversion/wig2bed.html" title="6.3.3.10. wig2bed"
              >previous</a> |</li>
         <li><a href="../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li> 
       </ul>
