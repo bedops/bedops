@@ -81,6 +81,7 @@ Table of contents
 .. |reference_png| image:: assets/index/reference_v2.png
 
 .. |set_operations_png| image:: assets/index/set_operations_v2.png
+                        :height: 130px
 .. |set_operations| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
@@ -90,6 +91,7 @@ Table of contents
    </ul>
 
 .. |statistics_png| image:: assets/index/statistics_v2.png
+                    :height: 130px
 .. |statistics| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
@@ -97,6 +99,7 @@ Table of contents
    </ul>
 
 .. |file_management_png| image:: assets/index/file_management_v2.png
+                         :height: 130px
 .. |file_management| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
