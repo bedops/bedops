@@ -15,7 +15,25 @@ Current version
 v2.4.3
 ------
 
-Released: **May 2, 2014**
+Released: **December 17, 2014**
+
+* Compilation improvements
+
+  * Shane Neph put in a great deal of work to enable parallel builds (*e.g.*, ``make -j N`` to build various targets in parallel). Depending on the end user's environment, this can speed up compilation time by a factor of 2, 4 or more.
+
+  * Fixed numerous compilation warnings of debug builds of :ref:`starch` toolkit under RHEL6/GCC and OS X 10.10.1/LLVM.
+
+* New :ref:`bedops` features
+
+  * Added ``--chop`` and ``--stagger`` options to "melt" inputs into contiguous or staggered disjoint regions of equivalent size.
+
+* :ref:`conversion scripts <conversion_scripts>`
+
+  * Brand new C99 binary called :ref:`convert2bed`, which wrapper scripts (``bam2bed``, etc.) now call. No more Python version dependencies, and the C-based rewrite offers massive performance improvements over old Python-based scripts.
+
+  * Added :ref:`parallel_bam2starch` script, which parallelizes creation of :ref:`Starch <starch_specification>` archive from very large BAM files in SGE environments.
+
+  * Added bug fix for missing code in :ref:`starchcluster.gnu_parallel <starchcluster>` script, where the final collation step was missing.
 
 * :ref:`Starch <starch_specification>` archival format and compression/extraction tools
 
@@ -25,17 +43,9 @@ Released: **May 2, 2014**
  
   * Added bug fix for compressing BED files with :ref:`starch`, where the archive would not include the last element of the BED input, if the BED input lacked a trailing newline. The compression tools now include a routine for capturing the last line, if there is no newline.
 
-* Compilation improvements
+* Documentation improvements
 
-  * Shane Neph put in a great deal of work to enable parallel builds (*e.g.*, ``make -j N`` to build various targets in parallel). Depending on the end user's environment, this can speed up compilation time by a factor of 2, 4 or more.
-
-  * Fixed compilation warnings of debug builds of :ref:`starch` toolkit under RHEL6/GCC and OS X 10.9.2/LLVM.
-
-* :ref:`conversion scripts <conversion_scripts>`
-
-  * Added :ref:`parallel_bam2starch` script, which parallelizes creation of :ref:`Starch <starch_specification>` archive from very large BAM files in SGE environments.
-
-  * Added bug fix for missing code in :ref:`starchcluster.gnu_parallel <starchcluster>` script, where the final collation step was missing.
+  * Remade some image assets throughout the documents to support Retina-grade displays
 
 =================
 Previous versions

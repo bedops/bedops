@@ -60,22 +60,31 @@
 <span id="revision-history-of-current-version"></span><h2>3.1. Current version<a class="headerlink" href="#current-version" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="v2-4-3">
 <h3>3.1.1. v2.4.3<a class="headerlink" href="#v2-4-3" title="Permalink to this headline">¶</a></h3>
-<p>Released: <strong>May 2, 2014</strong></p>
+<p>Released: <strong>December 17, 2014</strong></p>
 <ul class="simple">
+<li>Compilation improvements<ul>
+<li>Shane Neph put in a great deal of work to enable parallel builds (<em>e.g.</em>, <code class="docutils literal"><span class="pre">make</span> <span class="pre">-j</span> <span class="pre">N</span></code> to build various targets in parallel). Depending on the end user&#8217;s environment, this can speed up compilation time by a factor of 2, 4 or more.</li>
+<li>Fixed numerous compilation warnings of debug builds of <a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a> toolkit under RHEL6/GCC and OS X 10.10.1/LLVM.</li>
+</ul>
+</li>
+<li>New <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> features<ul>
+<li>Added <code class="docutils literal"><span class="pre">--chop</span></code> and <code class="docutils literal"><span class="pre">--stagger</span></code> options to &#8220;melt&#8221; inputs into contiguous or staggered disjoint regions of equivalent size.</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/file-management/conversion.html#conversion-scripts"><em>conversion scripts</em></a><ul>
+<li>Brand new C99 binary called <a class="reference internal" href="reference/file-management/conversion/convert2bed.html#convert2bed"><em>convert2bed</em></a>, which wrapper scripts (<code class="docutils literal"><span class="pre">bam2bed</span></code>, etc.) now call. No more Python version dependencies, and the C-based rewrite offers massive performance improvements over old Python-based scripts.</li>
+<li>Added <a class="reference internal" href="reference/file-management/conversion/parallel_bam2starch.html#parallel-bam2starch"><em>Parallel bam2starch</em></a> script, which parallelizes creation of <a class="reference internal" href="reference/file-management/compression/starch-specification.html#starch-specification"><em>Starch</em></a> archive from very large BAM files in SGE environments.</li>
+<li>Added bug fix for missing code in <a class="reference internal" href="usage-examples/starchcluster.html#starchcluster"><em>starchcluster.gnu_parallel</em></a> script, where the final collation step was missing.</li>
+</ul>
+</li>
 <li><a class="reference internal" href="reference/file-management/compression/starch-specification.html#starch-specification"><em>Starch</em></a> archival format and compression/extraction tools<ul>
 <li>Added duplicate- and <a class="reference internal" href="reference/set-operations/nested-elements.html#nested-elements"><em>nested-element</em></a> flags in v2.1 of Starch metadata, which denote if a chromosome contains one or more duplicate and/or nested elements. BED files compressed with <a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a> v2.5 or greater, or Starch archives updated with <a class="reference internal" href="reference/file-management/compression/starchcat.html#starchcat"><em>starchcat</em></a> v2.5 or greater will include these values in the archive metadata. The <a class="reference internal" href="reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a> extraction tool offers <code class="docutils literal"><span class="pre">--has-duplicate</span></code> and <code class="docutils literal"><span class="pre">--has-nested</span></code> options to retrieve these flag values for a specified chromosome (or for all chromosomes).</li>
 <li>Added <code class="docutils literal"><span class="pre">--is-starch</span></code> option to <a class="reference internal" href="reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a> to test if specified input file is a Starch v1 or v2 archive.</li>
 <li>Added bug fix for compressing BED files with <a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a>, where the archive would not include the last element of the BED input, if the BED input lacked a trailing newline. The compression tools now include a routine for capturing the last line, if there is no newline.</li>
 </ul>
 </li>
-<li>Compilation improvements<ul>
-<li>Shane Neph put in a great deal of work to enable parallel builds (<em>e.g.</em>, <code class="docutils literal"><span class="pre">make</span> <span class="pre">-j</span> <span class="pre">N</span></code> to build various targets in parallel). Depending on the end user&#8217;s environment, this can speed up compilation time by a factor of 2, 4 or more.</li>
-<li>Fixed compilation warnings of debug builds of <a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a> toolkit under RHEL6/GCC and OS X 10.9.2/LLVM.</li>
-</ul>
-</li>
-<li><a class="reference internal" href="reference/file-management/conversion.html#conversion-scripts"><em>conversion scripts</em></a><ul>
-<li>Added <a class="reference internal" href="reference/file-management/conversion/parallel_bam2starch.html#parallel-bam2starch"><em>Parallel bam2starch</em></a> script, which parallelizes creation of <a class="reference internal" href="reference/file-management/compression/starch-specification.html#starch-specification"><em>Starch</em></a> archive from very large BAM files in SGE environments.</li>
-<li>Added bug fix for missing code in <a class="reference internal" href="usage-examples/starchcluster.html#starchcluster"><em>starchcluster.gnu_parallel</em></a> script, where the final collation step was missing.</li>
+<li>Documentation improvements<ul>
+<li>Remade some image assets throughout the documents to support Retina-grade displays</li>
 </ul>
 </li>
 </ul>
