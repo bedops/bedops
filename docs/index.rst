@@ -81,6 +81,7 @@ Table of contents
 .. |reference_png| image:: assets/index/reference_v2.png
 
 .. |set_operations_png| image:: assets/index/set_operations_v2.png
+                        :width: 33%
                         :height: 130px
 .. |set_operations| raw:: html
 
@@ -91,6 +92,7 @@ Table of contents
    </ul>
 
 .. |statistics_png| image:: assets/index/statistics_v2.png
+                    :width: 33%
                     :height: 130px
 .. |statistics| raw:: html
 
