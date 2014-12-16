@@ -56,7 +56,7 @@ Table of contents
 
 .. |downloads_png| raw:: html
 
-   <img src="assets/index/downloads_v2.png" style="width:99%;">
+   <img src="_images/downloads_v2.png" style="width:99%;">
 
 .. |linux_png| image:: assets/index/linux_v2.png
 .. |linux_downloads| raw:: html
