@@ -55,7 +55,7 @@ Table of contents
    content/reference
    content/summary
 
-.. |linux_png| image:: assets/index/linux_v2.png
+.. |linux_png| image:: assets/index/linux.png
 .. |linux_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
