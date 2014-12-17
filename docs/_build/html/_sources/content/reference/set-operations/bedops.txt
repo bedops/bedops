@@ -624,7 +624,7 @@ The ``--chop`` operator merges all overlapping input regions and "chops" them up
 .. admonition:: Example
    :class: admonition-example
 
-   To demonstrate ``--chop``, we use a sorted set called ``Regions.bed`` and compute a set of one-base genomic regions across both elements in this set:
+   To demonstrate ``--chop``, we use a sorted set called ``Regions.bed`` and compute a set of one-base genomic regions constructed from the merged input elements:
 
    .. code:: bash
 
@@ -654,6 +654,42 @@ The ``--chop`` operator merges all overlapping input regions and "chops" them up
       chr1	126	127
 
 .. note:: Overlapping and nested regions are merged into contiguous ranges before chopping. The end result contains unique, non-overlapping elements.
+
+-----------------------
+Stagger (-x, --stagger)
+-----------------------
+
+The ``--stagger`` operator works in conjunction with :ref:`--chop <bedops_chop>`. While ``--chop`` sets the size of each cut, the ``--stagger`` operator moves the start position of each cut by the specified number of bases.
+
+.. image:: ../../../assets/reference/set-operations/reference_setops_bedops_stagger_ab@2x.png
+   :width: 99%
+
+.. admonition:: Example
+   :class: admonition-example
+
+   To demonstrate ``--stagger``, we use a sorted set called ``Regions.bed`` and compute a set of one-base genomic regions constructed from the merged input elements, but move the start position across the merged regions by three bases, before generating the next chop:
+
+   .. code:: bash
+
+      $ more Regions.bed
+      chr1	100	105
+      chr1	120	127
+      chr1	122	124
+
+   .. code:: bash
+      
+      $ bedops --chop 1 --stagger 3 Regions.bed > Result.bed
+
+   .. code:: bash
+      
+      $ more Result.bed
+      chr1	100	101
+      chr1	103	104
+      chr1	120	121
+      chr1	123	124
+      chr1	126	127
+
+.. note:: Overlapping and nested regions are merged into contiguous ranges before chopping and staggering. The end result contains unique, non-overlapping elements.
 
 .. _bedops_chrom:
 

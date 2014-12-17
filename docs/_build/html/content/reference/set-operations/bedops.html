@@ -563,7 +563,7 @@ chr1      500     550
 <a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_chop_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_chop_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_chop_ab&#64;2x.png" style="width: 99%;" /></a>
 <div class="admonition-example admonition">
 <p class="first admonition-title">Example</p>
-<p>To demonstrate <code class="docutils literal"><span class="pre">--chop</span></code>, we use a sorted set called <code class="docutils literal"><span class="pre">Regions.bed</span></code> and compute a set of one-base genomic regions across both elements in this set:</p>
+<p>To demonstrate <code class="docutils literal"><span class="pre">--chop</span></code>, we use a sorted set called <code class="docutils literal"><span class="pre">Regions.bed</span></code> and compute a set of one-base genomic regions constructed from the merged input elements:</p>
 <div class="code bash highlight-python"><div class="highlight"><pre>$ more Regions.bed
 chr1      100     105
 chr1      120     127
@@ -594,8 +594,38 @@ chr1      126     127
 <p class="last">Overlapping and nested regions are merged into contiguous ranges before chopping. The end result contains unique, non-overlapping elements.</p>
 </div>
 </div>
+<div class="section" id="stagger-x-stagger">
+<h3>6.1.1.3.11. Stagger (-x, &#8211;stagger)<a class="headerlink" href="#stagger-x-stagger" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">--stagger</span></code> operator works in conjunction with <a class="reference internal" href="#bedops-chop"><em>&#8211;chop</em></a>. While <code class="docutils literal"><span class="pre">--chop</span></code> sets the size of each cut, the <code class="docutils literal"><span class="pre">--stagger</span></code> operator moves the start position of each cut by the specified number of bases.</p>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_stagger_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_stagger_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_stagger_ab&#64;2x.png" style="width: 99%;" /></a>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate <code class="docutils literal"><span class="pre">--stagger</span></code>, we use a sorted set called <code class="docutils literal"><span class="pre">Regions.bed</span></code> and compute a set of one-base genomic regions constructed from the merged input elements, but move the start position across the merged regions by three bases, before generating the next chop:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ more Regions.bed
+chr1      100     105
+chr1      120     127
+chr1      122     124
+</pre></div>
+</div>
+<div class="code bash highlight-python"><div class="highlight"><pre>$ bedops --chop 1 --stagger 3 Regions.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash last highlight-python"><div class="highlight"><pre>$ more Result.bed
+chr1      100     101
+chr1      103     104
+chr1      120     121
+chr1      123     124
+chr1      126     127
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Overlapping and nested regions are merged into contiguous ranges before chopping and staggering. The end result contains unique, non-overlapping elements.</p>
+</div>
+</div>
 <div class="section" id="per-chromosome-operations-chrom">
-<span id="bedops-chrom"></span><h3>6.1.1.3.11. Per-chromosome operations (&#8211;chrom)<a class="headerlink" href="#per-chromosome-operations-chrom" title="Permalink to this headline">¶</a></h3>
+<span id="bedops-chrom"></span><h3>6.1.1.3.12. Per-chromosome operations (&#8211;chrom)<a class="headerlink" href="#per-chromosome-operations-chrom" title="Permalink to this headline">¶</a></h3>
 <p>All operations on inputs can be restricted to one chromosome, by adding the <code class="docutils literal"><span class="pre">--chrom</span> <span class="pre">&lt;val&gt;</span></code> operator.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -631,7 +661,7 @@ chr3      150     350
 </div>
 </div>
 <div class="section" id="range-range">
-<span id="bedops-range"></span><h3>6.1.1.3.12. Range (&#8211;range)<a class="headerlink" href="#range-range" title="Permalink to this headline">¶</a></h3>
+<span id="bedops-range"></span><h3>6.1.1.3.13. Range (&#8211;range)<a class="headerlink" href="#range-range" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal"><span class="pre">--range</span></code> operation works in conjunction with other operations.</p>
 <p>When used with one value (<code class="docutils literal"><span class="pre">--range</span> <span class="pre">S</span></code>), this operation <strong>symmetrically</strong> pads all elements of input sets by the specified integral value <code class="docutils literal"><span class="pre">S</span></code>. When the specified value is positive, every genomic segment grows in size. An element will grow asymmetrically to prevent growth beyond base position 0, if needed. Otherwise, when negative, elements shrink, and any element with zero (or less) length is discarded.</p>
 <p>Alternatively, when used with two values (<code class="docutils literal"><span class="pre">--range</span> <span class="pre">L:R</span></code>), this operation <strong>asymmetrically</strong> pads elements, adding <code class="docutils literal"><span class="pre">L</span></code> to each start coordinate, and adding <code class="docutils literal"><span class="pre">R</span></code> to each stop coordinate. Negative values may be specified to grow or shrink the region, accordingly.</p>
@@ -727,8 +757,9 @@ See row: 3
 <li><a class="reference internal" href="#merge-m-merge">6.1.1.3.8. Merge (-m, &#8211;merge)</a></li>
 <li><a class="reference internal" href="#partition-p-partition">6.1.1.3.9. Partition (-p, &#8211;partition)</a></li>
 <li><a class="reference internal" href="#chop-w-chop">6.1.1.3.10. Chop (-w, &#8211;chop)</a></li>
-<li><a class="reference internal" href="#per-chromosome-operations-chrom">6.1.1.3.11. Per-chromosome operations (&#8211;chrom)</a></li>
-<li><a class="reference internal" href="#range-range">6.1.1.3.12. Range (&#8211;range)</a></li>
+<li><a class="reference internal" href="#stagger-x-stagger">6.1.1.3.11. Stagger (-x, &#8211;stagger)</a></li>
+<li><a class="reference internal" href="#per-chromosome-operations-chrom">6.1.1.3.12. Per-chromosome operations (&#8211;chrom)</a></li>
+<li><a class="reference internal" href="#range-range">6.1.1.3.13. Range (&#8211;range)</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#starch-support">6.1.1.4. Starch support</a></li>
