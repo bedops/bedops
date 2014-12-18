@@ -15,7 +15,7 @@ Current version
 v2.4.3
 ------
 
-Released: **December 17, 2014**
+Released: **December 18, 2014**
 
 * Compilation improvements
 
@@ -27,6 +27,18 @@ Released: **December 17, 2014**
 
   * Added ``--chop`` and ``--stagger`` options to "melt" inputs into contiguous or staggered disjoint regions of equivalent size.
 
+  * For less confusion, arguments for ``--element-of``, ``--chop`` and other ``bedops`` operations that take numerical modifiers no longer require a leading hyphen character. For instance, ``--element-of 1`` is now equivalent to the former usage of ``--element-of -1``.
+
+* New :ref:`bedmap` features
+
+  * The ``--sweep-all`` option reads through the entire map file without early termination and can help deal with ``SIGPIPE`` errors. It adds to execution time, but the penalty is not as severe as with the use of ``--ec``. Using ``--ec`` alone will enable error checking, but will now no longer read through the entire map file. The ``--ec`` option can be used in conjunction with ``--sweep-all``, with the associated time penalties. (Another method for dealing with issue this is to override how ``SIGPIPE`` errors are caught by the interpreter (bash, Python, etc.) and retrapping them or ignoring them. However, it may not a good idea to do this as other situations may arise in production pipelines where it is ideal to trap and handle all I/O errors in a default manner.)
+
+  * New ``--echo-ref-size`` and ``--echo-ref-name`` operations report genomic length of reference element, and rename the reference element in ``chrom:start-end`` (useful for labeling rows for input for ``matrix2png`` or ``R`` or other applications).
+
+* :ref:`bedextract`
+
+  * Fixed upper bound bug that would cause incorrect output in some cases
+
 * :ref:`conversion scripts <conversion_scripts>`
 
   * Brand new C99 binary called :ref:`convert2bed`, which wrapper scripts (``bam2bed``, etc.) now call. No more Python version dependencies, and the C-based rewrite offers massive performance improvements over old Python-based scripts.
@@ -34,6 +46,8 @@ Released: **December 17, 2014**
   * Added :ref:`parallel_bam2starch` script, which parallelizes creation of :ref:`Starch <starch_specification>` archive from very large BAM files in SGE environments.
 
   * Added bug fix for missing code in :ref:`starchcluster.gnu_parallel <starchcluster>` script, where the final collation step was missing.
+
+  * The :ref:`vcf2bed` script now accepts the ``--do-not-split`` option, which prints one BED element for all alternate alleles.
 
 * :ref:`Starch <starch_specification>` archival format and compression/extraction tools
 

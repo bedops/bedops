@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3. Revision history &mdash; BEDOPS 2.5.0 documentation</title>
+    <title>3. Revision history &mdash; BEDOPS 2.4.3 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2.5.0',
+        VERSION:     '2.4.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.5.0 documentation" href="../index.html" />
+    <link rel="top" title="BEDOPS 2.4.3 documentation" href="../index.html" />
     <link rel="next" title="4. Usage examples" href="usage-examples.html" />
     <link rel="prev" title="2. Installation" href="installation.html" /> 
   </head>
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="installation.html" title="2. Installation"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -60,7 +60,7 @@
 <span id="revision-history-of-current-version"></span><h2>3.1. Current version<a class="headerlink" href="#current-version" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="v2-4-3">
 <h3>3.1.1. v2.4.3<a class="headerlink" href="#v2-4-3" title="Permalink to this headline">¶</a></h3>
-<p>Released: <strong>December 17, 2014</strong></p>
+<p>Released: <strong>December 18, 2014</strong></p>
 <ul class="simple">
 <li>Compilation improvements<ul>
 <li>Shane Neph put in a great deal of work to enable parallel builds (<em>e.g.</em>, <code class="docutils literal"><span class="pre">make</span> <span class="pre">-j</span> <span class="pre">N</span></code> to build various targets in parallel). Depending on the end user&#8217;s environment, this can speed up compilation time by a factor of 2, 4 or more.</li>
@@ -69,12 +69,23 @@
 </li>
 <li>New <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> features<ul>
 <li>Added <code class="docutils literal"><span class="pre">--chop</span></code> and <code class="docutils literal"><span class="pre">--stagger</span></code> options to &#8220;melt&#8221; inputs into contiguous or staggered disjoint regions of equivalent size.</li>
+<li>For less confusion, arguments for <code class="docutils literal"><span class="pre">--element-of</span></code>, <code class="docutils literal"><span class="pre">--chop</span></code> and other <code class="docutils literal"><span class="pre">bedops</span></code> operations that take numerical modifiers no longer require a leading hyphen character. For instance, <code class="docutils literal"><span class="pre">--element-of</span> <span class="pre">1</span></code> is now equivalent to the former usage of <code class="docutils literal"><span class="pre">--element-of</span> <span class="pre">-1</span></code>.</li>
+</ul>
+</li>
+<li>New <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> features<ul>
+<li>The <code class="docutils literal"><span class="pre">--sweep-all</span></code> option reads through the entire map file without early termination and can help deal with <code class="docutils literal"><span class="pre">SIGPIPE</span></code> errors. It adds to execution time, but the penalty is not as severe as with the use of <code class="docutils literal"><span class="pre">--ec</span></code>. Using <code class="docutils literal"><span class="pre">--ec</span></code> alone will enable error checking, but will now no longer read through the entire map file. The <code class="docutils literal"><span class="pre">--ec</span></code> option can be used in conjunction with <code class="docutils literal"><span class="pre">--sweep-all</span></code>, with the associated time penalties. (Another method for dealing with issue this is to override how <code class="docutils literal"><span class="pre">SIGPIPE</span></code> errors are caught by the interpreter (bash, Python, etc.) and retrapping them or ignoring them. However, it may not a good idea to do this as other situations may arise in production pipelines where it is ideal to trap and handle all I/O errors in a default manner.)</li>
+<li>New <code class="docutils literal"><span class="pre">--echo-ref-size</span></code> and <code class="docutils literal"><span class="pre">--echo-ref-name</span></code> operations report genomic length of reference element, and rename the reference element in <code class="docutils literal"><span class="pre">chrom:start-end</span></code> (useful for labeling rows for input for <code class="docutils literal"><span class="pre">matrix2png</span></code> or <code class="docutils literal"><span class="pre">R</span></code> or other applications).</li>
+</ul>
+</li>
+<li><a class="reference internal" href="reference/set-operations/bedextract.html#bedextract"><em>bedextract</em></a><ul>
+<li>Fixed upper bound bug that would cause incorrect output in some cases</li>
 </ul>
 </li>
 <li><a class="reference internal" href="reference/file-management/conversion.html#conversion-scripts"><em>conversion scripts</em></a><ul>
 <li>Brand new C99 binary called <a class="reference internal" href="reference/file-management/conversion/convert2bed.html#convert2bed"><em>convert2bed</em></a>, which wrapper scripts (<code class="docutils literal"><span class="pre">bam2bed</span></code>, etc.) now call. No more Python version dependencies, and the C-based rewrite offers massive performance improvements over old Python-based scripts.</li>
 <li>Added <a class="reference internal" href="reference/file-management/conversion/parallel_bam2starch.html#parallel-bam2starch"><em>Parallel bam2starch</em></a> script, which parallelizes creation of <a class="reference internal" href="reference/file-management/compression/starch-specification.html#starch-specification"><em>Starch</em></a> archive from very large BAM files in SGE environments.</li>
 <li>Added bug fix for missing code in <a class="reference internal" href="usage-examples/starchcluster.html#starchcluster"><em>starchcluster.gnu_parallel</em></a> script, where the final collation step was missing.</li>
+<li>The <a class="reference internal" href="reference/file-management/conversion/vcf2bed.html#vcf2bed"><em>vcf2bed</em></a> script now accepts the <code class="docutils literal"><span class="pre">--do-not-split</span></code> option, which prints one BED element for all alternate alleles.</li>
 </ul>
 </li>
 <li><a class="reference internal" href="reference/file-management/compression/starch-specification.html#starch-specification"><em>Starch</em></a> archival format and compression/extraction tools<ul>
@@ -518,7 +529,7 @@
         <li class="right" >
           <a href="installation.html" title="2. Installation"
              >previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.5.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
