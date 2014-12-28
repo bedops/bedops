@@ -50,7 +50,7 @@ Table of contents
 
 .. |about_html| raw:: html
 
-   <strong>BEDOPS</strong> is an open-source command-line toolkit that performs highly efficient and scalable Boolean and other set operations, statistical calculations, archiving, conversion and other management of genomic data of arbitrary scale. Tasks can be easily split by chromosome for distributing whole-genome analyses across a computational cluster.
+   <br><strong>BEDOPS</strong> is an open-source command-line toolkit that performs highly efficient and scalable Boolean and other set operations, statistical calculations, archiving, conversion and other management of genomic data of arbitrary scale. Tasks can be easily split by chromosome for distributing whole-genome analyses across a computational cluster.
 
    <p>You can read more about <strong>BEDOPS</strong> and how it can be useful for your research in the <a href="content/overview.html">Overview</a> documentation, as well as in the <a href="http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract">original manuscript</a>.</p>
 
@@ -58,7 +58,7 @@ Table of contents
 
 .. |quick_start_html| raw:: html
 
-   <img src="_images/quick_start.png" style="height:130px;">
+   <br><img src="_images/quick_start.png" style="height:130px;">
 
 .. |downloads_png| image:: assets/index/downloads_v2.png
                    :height: 30px
