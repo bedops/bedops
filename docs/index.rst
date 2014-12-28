@@ -44,11 +44,9 @@ Table of contents
    content/summary
    content/release
 
-.. |header| 
+.. |header| raw:: html
 
-   ===================================================================================
-   BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis toolkit
-   ===================================================================================
+   <h1>BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis toolkit</h1>
 
 .. |about_html| raw:: html
 
