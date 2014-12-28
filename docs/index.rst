@@ -52,7 +52,7 @@ Table of contents
 
    <br><strong>BEDOPS</strong> is an open-source command-line toolkit that performs highly efficient and scalable Boolean and other set operations, statistical calculations, archiving, conversion and other management of genomic data of arbitrary scale. Tasks can be easily split by chromosome for distributing whole-genome analyses across a computational cluster.
 
-   <p>You can read more about <strong>BEDOPS</strong> and how it can be useful for your research in the <a href="content/overview.html">Overview</a> documentation, as well as in the <a href="http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract">original manuscript</a>.</p>
+   <p>You can read more about <strong>BEDOPS</strong> and how it can be useful for your research in the <a href="content/overview.html">Overview</a> documentation, as well as in the <a href="http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract">original manuscript</a>.</p><br>
 
 .. |quick_start| image:: assets/index/quick_start.png
 
