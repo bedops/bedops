@@ -58,7 +58,7 @@ Table of contents
 
 .. |quick_start_html| raw:: html
 
-   <br><img src="_images/quick_start.png" style="height:130px;">
+   <br><img src="_images/quick_start.png" style="height:160px;">
 
 .. |downloads_png| image:: assets/index/downloads_v2.png
                    :height: 30px
