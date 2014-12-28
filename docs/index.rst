@@ -53,7 +53,6 @@ Table of contents
    You can read more about <strong>BEDOPS</strong> and how it can be useful for your research in the <a href="content/overview.html">Overview</a> documentation, as well as in the <a href="http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract">original manuscript</a>.
 
 .. |quick_start| image:: assets/index/quick_start.png
-                 :height: 30px
 
 .. |downloads_png| image:: assets/index/downloads_v2.png
                    :height: 30px
