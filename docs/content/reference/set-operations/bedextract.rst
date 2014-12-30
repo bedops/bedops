@@ -143,7 +143,7 @@ Three criteria make the use of :ref:`bedextract` in this mode very successful in
       | bedops --element-of 1 - Target \
       > answer.bed
 
-.. note: You may change the final overlap criterion to the `bedops --element-of` as you see fit for your final answer.
+.. note:: You may change the final overlap criterion to the `bedops --element-of` as you see fit for your final answer.
 
 .. _bedextract_nested_elements:
 
