@@ -98,8 +98,8 @@ install_osx_packaging_bins: prep_c
 	-cp ${APPDIR}/starch/bin/starch ${OSXPKGDIR}/
 	-cp ${APPDIR}/starch/bin/unstarch ${OSXPKGDIR}/
 	-cp ${APPDIR}/starch/bin/starchcat ${OSXPKGDIR}/
-	-cp ${APPDIR}/starch/bin/starchcluster_sge.tcsh ${OSXPKGDIR}/starchcluster_sge
-	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel.tcsh ${OSXPKGDIR}/starchcluster_gnuParallel
+	-cp ${APPDIR}/starch/bin/starchcluster_sge ${OSXPKGDIR}/starchcluster_sge
+	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel ${OSXPKGDIR}/starchcluster_gnuParallel
 	-cp ${APPDIR}/conversion/bin/convert2bed ${OSXPKGDIR}/
 	-cp ${APPDIR}/conversion/src/wrappers/bam2bed ${OSXPKGDIR}/bam2bed
 	-cp ${APPDIR}/conversion/src/wrappers/gff2bed ${OSXPKGDIR}/gff2bed
