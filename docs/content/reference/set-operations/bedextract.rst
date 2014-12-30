@@ -129,11 +129,9 @@ Three criteria make the use of :ref:`bedextract` in this mode very successful in
 2. There are relatively few regions of interest in ``Target`` (say, roughly 30,000 or fewer).
 3. There are **no fully-nested elements** in ``Query`` (but duplicate coordinates are fine).
 
-<<<<<<< HEAD
 .. note: With some extra work, it is possible to use this mode of bedextract with a huge ``Query`` BED file that includes fully-nested elements.  The technique requires that you create a merged version of ``Query`` and keep that result, ``Query-Index``, around along with ``Query``.
 =======
 .. note:: With some extra work, it is possible to use this mode of bedextract with a huge ``Query`` BED file that includes fully-nested elements.  The technique requires that you create a merged version of ``Query`` and keep that result, ``Query-Index``, around along with ``Query``.
->>>>>>> updated work-around info for nested elements
 
 ::
 
