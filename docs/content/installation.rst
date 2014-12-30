@@ -41,12 +41,12 @@ Mac OS X
 1. Download the current Mac OS X package for BEDOPS from `Github BEDOPS Releases <https://github.com/bedops/bedops/releases>`_.
 2. Locate the installer package (usually located in ``~/Downloads`` |--| this will depend on your web browser configuration):
 
-.. image:: ../assets/installation/bedops_macosx_installer_icon.png
+   .. image:: ../assets/installation/bedops_macosx_installer_icon.png
 
 3. Double-click to open the installer package. It will look something like this:
 
-.. image:: ../assets/installation/bedops_macosx_installer_screen_v2.png
-   :width: 99%
+   .. image:: ../assets/installation/bedops_macosx_installer_screen_v2.png
+      :width: 99%
 
 4. Follow the instructions to install BEDOPS and library dependencies to your Mac. (If you are upgrading from a previous version, components will be overwritten or removed, as needed.)
 
