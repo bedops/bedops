@@ -9,7 +9,7 @@ Given a list of five-column UCSC BED files, where scores are kept in the fifth c
 BEDOPS tools in use
 ===================
 
-In the following example, we want to merge hotspot peaks for five fetal adrenal tissues, picking the highest scoring element where there are matches. We'll use a mix of :ref:`bedmap` and its ``--max`` operation with :ref:`bedops` set operations to accomplish this.
+In the following example, we want to merge hotspot peaks for five fetal adrenal tissues, picking the highest scoring element where there are overlapping peaks. We'll use a mix of :ref:`bedmap` and its ``--max-element`` operation with :ref:`bedops` set operations to accomplish this.
 
 ======
 Script
@@ -73,7 +73,7 @@ Script
 
       ## Are there any elements that don't overlap the current master
       ## list?  If so, add those in, and repeat.  If not, we're done.
-      bedops -n -1 $tmpd/tmp.bed $tmpd/$iters.bed \
+      bedops -n 1 $tmpd/tmp.bed $tmpd/$iters.bed \
          > $tmpd/tmp2.bed
 
       mv $tmpd/tmp2.bed $tmpd/tmp.bed

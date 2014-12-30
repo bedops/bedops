@@ -8,7 +8,7 @@
 
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -39,8 +39,8 @@ namespace Visitors {
   struct Echo : BaseVisitor {
     typedef BaseVisitor BaseClass;
     typedef Process ProcessType;
-    typedef typename BaseVisitor::reference_type RefType;
-    typedef typename BaseVisitor::mapping_type MapType;
+    typedef typename BaseVisitor::RefType RefType;
+    typedef typename BaseVisitor::MapType MapType;
 
     explicit Echo(const ProcessType& pt = ProcessType())
       : pt_(pt),  ref_(0)

@@ -1,14 +1,10 @@
 /*
-  FILE: StdevVisitor.hpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Wed Oct  3 09:25:51 PDT 2007
-  PROJECT: utility
-  ID: $Id$
+  Author: Scott Kuehn, Shane Neph
+  Date:   Wed Oct  3 09:25:51 PDT 2007
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -25,11 +21,9 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef STDEVVISITOR_HPP
 #define STDEVVISITOR_HPP
 
-// Files included
 #include <cmath>
 
 #include "data/measurement/NaN.hpp"
@@ -44,8 +38,8 @@ namespace Visitors {
 
     typedef BaseVisitor BaseClass;
     typedef Process ProcessType;
-    typedef typename BaseClass::reference_type RefType;
-    typedef typename BaseClass::mapping_type MapType;
+    typedef typename BaseClass::RefType RefType;
+    typedef typename BaseClass::MapType MapType;
 
     explicit StdDev(const ProcessType& pt = ProcessType())
         : pt_(pt), sum_(0), squareSum_(0), count_(0)

@@ -1,13 +1,11 @@
 /*
-  FILE: Structures.hpp
-  AUTHOR: Scott Kuehn
-   MODS: Shane Neph
-  CREATE DATE: Tue May 16 09:15:54 PDT 2006
+  Author: Scott Kuehn
+   Mods:  Shane Neph
+  Date:   Tue May 16 09:15:54 PDT 2006
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by

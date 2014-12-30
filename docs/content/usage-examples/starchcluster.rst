@@ -17,7 +17,7 @@ Script
 
 Two versions of the ``starchcluster`` script are included with the source and package distributions of BEDOPS (see :ref:`Installation <installation>` for more detail). 
 
-One version makes use of an `Oracle Grid Engine <http://en.wikipedia.org/wiki/Oracle_Grid_Engine>`_ (or Sun Grid Engine) cluster environment to distribute per-chromosome tasks, while the other script uses `GNU Parallel <http://www.gnu.org/software/parallel/>`_ to split the workload over cores or processors on the local host. 
+One version makes use of an `Oracle Grid Engine <http://en.wikipedia.org/wiki/Oracle_Grid_Engine>`_ (or Sun Grid Engine) cluster environment to distribute per-chromosome tasks, while the other script uses `GNU Parallel <http://www.gnu.org/software/parallel/>`_ to split the workload over cores or processors on the local host.
 
 ==========
 Discussion

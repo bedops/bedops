@@ -1,13 +1,10 @@
-//=========
-// Author:  Shane Neph & Scott Kuehn
-// Date:    Fri Aug 13 15:00:25 PDT 2010
-// Project: featdist
-// ID:      $Id$
-//=========
-
+/*
+  Author:  Shane Neph & Scott Kuehn
+  Date:    Fri Aug 13 15:00:25 PDT 2010
+*/
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -24,7 +21,6 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Files included
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
@@ -39,13 +35,11 @@
 #include <utility>
 #include <vector>
 
-
 #include "data/bed/AllocateIterator_BED_starch.hpp"
 #include "data/bed/BedCheckIterator.hpp"
 #include "data/bed/BedTypes.hpp"
 #include "suite/BEDOPS.Constants.hpp"
 #include "suite/BEDOPS.Version.hpp"
-#include "data/starch/starchApi.hpp"
 #include "utility/Exception.hpp"
 #include "utility/FPWrap.hpp"
 #include "utility/Typify.hpp"

@@ -6,7 +6,7 @@
 
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -59,7 +59,11 @@ STARCH_strdup(const char *str)
   /* Cygwin does not include support for strdup() so we include our own implementation here */
     char *dup = NULL;
     if (str) {
-        dup = (char *) malloc(strlen(str) + 1); /* sizeof(char) = 1, of course */
+#ifdef __cplusplus
+        dup = static_cast<char *>( malloc(strlen(str) + 1) ); /* sizeof(char) = 1, of course */
+#else
+        dup = malloc(strlen(str) + 1); /* sizeof(char) = 1, of course */
+#endif
         if (!dup) {
             fprintf(stderr, "ERROR: Out of memory\n");
             exit(EXIT_FAILURE);
@@ -80,7 +84,11 @@ STARCH_compressFileWithGzip(const char *inFn, char **outFn, off_t *outFnSize)
     struct stat outSt;
 
     /* create output file handle */
-    *outFn = (char *) malloc((strlen(inFn) + 4) * sizeof(**outFn)); /* 4 <- ".gz\0" */
+#ifdef __cplusplus
+    *outFn = static_cast<char *>( malloc((strlen(inFn) + 4) * sizeof(**outFn)) ); /* 4 <- ".gz\0" */
+#else
+    *outFn = malloc((strlen(inFn) + 4) * sizeof(**outFn)); /* 4 <- ".gz\0" */
+#endif
     if (! *outFn) {
         fprintf(stderr, "ERROR: Out of memory\n");
         return STARCH_FATAL_ERROR;
@@ -108,7 +116,11 @@ STARCH_compressFileWithGzip(const char *inFn, char **outFn, off_t *outFnSize)
     fclose(outFnPtr);
 
     /* get gzip file size */
+#ifdef __cplusplus
+    if (stat(reinterpret_cast<const char *>( *outFn ), &outSt) != 0) {
+#else
     if (stat((const char *)*outFn, &outSt) != 0) {
+#endif
         fprintf(stderr, "ERROR: Could not get gzip file attributes\n");
         return STARCH_FATAL_ERROR;
     }
@@ -134,7 +146,11 @@ STARCH_compressFileWithBzip2(const char *inFn, char **outFn, off_t *outFnSize)
     struct stat outSt;
 
     /* create output file handle */
-    *outFn = (char *) malloc((strlen(inFn) + 5) * sizeof(**outFn)); /* 5 <- ".bz2\0" */
+#ifdef __cplusplus
+    *outFn = static_cast<char *>( malloc((strlen(inFn) + 5) * sizeof(**outFn)) ); /* 5 <- ".bz2\0" */
+#else
+    *outFn = malloc((strlen(inFn) + 5) * sizeof(**outFn)); /* 5 <- ".bz2\0" */
+#endif
     if (! *outFn) {
         fprintf(stderr, "ERROR: Out of memory\n");
         return STARCH_FATAL_ERROR;
@@ -161,7 +177,11 @@ STARCH_compressFileWithBzip2(const char *inFn, char **outFn, off_t *outFnSize)
 
     /* compress to bz stream */
     while ((c = fgetc(inFnPtr)) != EOF) { 
+#ifdef __cplusplus
+        bzBuf[idx++] = static_cast<char>( c );
+#else
         bzBuf[idx++] = (char) c;
+#endif
         if (idx == STARCH_BZ_BUFFER_MAX_LENGTH) {
             BZ2_bzWrite( &bzError, bzFp, bzBuf, nBzBuf );
             if (bzError == BZ_IO_ERROR) {
@@ -174,7 +194,11 @@ STARCH_compressFileWithBzip2(const char *inFn, char **outFn, off_t *outFnSize)
     }
     /* write out remainder of bzip2 buffer to output */
     bzBuf[idx] = '\0';
+#ifdef __cplusplus
+    BZ2_bzWrite(&bzError, bzFp, bzBuf, static_cast<int>( idx ));
+#else
     BZ2_bzWrite(&bzError, bzFp, bzBuf, (int) idx);
+#endif
     if (bzError == BZ_IO_ERROR) {   
         BZ2_bzWriteClose ( &bzError, bzFp, 0, NULL, NULL );
         fprintf(stderr, "ERROR: Could not write to bzip2 file handle\n");
@@ -195,7 +219,11 @@ STARCH_compressFileWithBzip2(const char *inFn, char **outFn, off_t *outFnSize)
     fclose(outFnPtr);
 
     /* get bzip2 file size */
+#ifdef __cplusplus
+    if (stat(reinterpret_cast<const char *>( *outFn ), &outSt) != 0) {
+#else
     if (stat((const char *)*outFn, &outSt) != 0) {
+#endif
         fprintf(stderr, "ERROR: Could not get bzip2 file attributes\n");
         return STARCH_FATAL_ERROR;
     }
@@ -230,12 +258,20 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
                 case 0: {
                     /* we do field validation tests after we determine what kind of BED line this is */
                     /* copy element to chromosome variable, if memory is available */
-                    *chr = (char *) malloc((strlen(buffer) + 1) * sizeof(**chr));
+#ifdef __cplusplus
+                    *chr = static_cast<char *>( malloc((strlen(buffer) + 1) * sizeof(**chr)) );
+#else
+                    *chr = malloc((strlen(buffer) + 1) * sizeof(**chr));
+#endif
                     if (! *chr) {
                         fprintf(stderr, "ERROR: Ran out of memory while creating transform tokens\n");
                         return STARCH_FATAL_ERROR;
                     }
-                    strncpy(*chr, (const char *)buffer, strlen(buffer) + 1);                    
+#ifdef __cplusplus
+                    strncpy(*chr, reinterpret_cast<const char *>( buffer ), strlen(buffer) + 1);
+#else
+                    strncpy(*chr, (const char *)buffer, strlen(buffer) + 1);
+#endif
                     break;
                 }
                 case 1: {
@@ -245,10 +281,19 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
                         return STARCH_FATAL_ERROR;
                     }
                     /* convert element string to start coordinate */
+#ifdef __cplusplus
+                    *start = static_cast<int64_t>( strtoull(reinterpret_cast<const char *>( buffer ), NULL, STARCH_RADIX) );
+#else
                     *start = (int64_t) strtoull((const char *)buffer, NULL, STARCH_RADIX);
+#endif
                     /* test if start coordinate is larger than allowed bounds */
+#ifdef __cplusplus
+                    if (*start > static_cast<int64_t>( MAX_COORD_VALUE )) {
+                        fprintf(stderr, "ERROR: Start coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *start, static_cast<int64_t>( MAX_COORD_VALUE ));
+#else
                     if (*start > (int64_t) MAX_COORD_VALUE) {
                         fprintf(stderr, "ERROR: Start coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *start, (int64_t) MAX_COORD_VALUE);
+#endif
                         return STARCH_FATAL_ERROR;
                     }
                     break;
@@ -260,10 +305,19 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
                         return STARCH_FATAL_ERROR;
                     }
                     /* convert element string to stop coordinate */
+#ifdef __cplusplus
+                    *stop = static_cast<int64_t>( strtoull(reinterpret_cast<const char *>( buffer ), NULL, STARCH_RADIX) );
+#else
                     *stop = (int64_t) strtoull((const char *)buffer, NULL, STARCH_RADIX);
+#endif
                     /* test if stop coordinate is larger than allowed bounds */
+#ifdef __cplusplus
+                    if (*stop > static_cast<int64_t>( MAX_COORD_VALUE )) {
+                        fprintf(stderr, "ERROR: Stop coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *stop, static_cast<int64_t>( MAX_COORD_VALUE ));
+#else
                     if (*stop > (int64_t) MAX_COORD_VALUE) {
                         fprintf(stderr, "ERROR: Stop coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *stop, (int64_t) MAX_COORD_VALUE);
+#endif
                         return STARCH_FATAL_ERROR;
                     }
                     break;
@@ -274,23 +328,43 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
             }
 
             /* determine what type of BED input line we're working with */
+#ifdef __cplusplus
+            if (strncmp(reinterpret_cast<const char *>( *chr ), kStarchBedHeaderTrack, strlen(kStarchBedHeaderTrack)) == 0) {
+#else
             if (strncmp((const char *) *chr, kStarchBedHeaderTrack, strlen(kStarchBedHeaderTrack)) == 0) {
+#endif
                 *lineType = kBedLineHeaderTrack;
                 elemCnt = 3;
             }
+#ifdef __cplusplus
+            else if (strncmp(reinterpret_cast<const char *>( *chr ), kStarchBedHeaderBrowser, strlen(kStarchBedHeaderBrowser)) == 0) {
+#else
             else if (strncmp((const char *) *chr, kStarchBedHeaderBrowser, strlen(kStarchBedHeaderBrowser)) == 0) {
+#endif
                 *lineType = kBedLineHeaderBrowser;
                 elemCnt = 3;
             }
+#ifdef __cplusplus
+            else if (strncmp(reinterpret_cast<const char *>( *chr ), kStarchBedHeaderSAM, strlen(kStarchBedHeaderSAM)) == 0) {
+#else
             else if (strncmp((const char *) *chr, kStarchBedHeaderSAM, strlen(kStarchBedHeaderSAM)) == 0) {
+#endif
                 *lineType = kBedLineHeaderSAM;
                 elemCnt = 3;
             }
+#ifdef __cplusplus
+            else if (strncmp(reinterpret_cast<const char *>( *chr ), kStarchBedHeaderVCF, strlen(kStarchBedHeaderVCF)) == 0) {
+#else
             else if (strncmp((const char *) *chr, kStarchBedHeaderVCF, strlen(kStarchBedHeaderVCF)) == 0) {
+#endif
                 *lineType = kBedLineHeaderVCF;
                 elemCnt = 3;
             }
+#ifdef __cplusplus
+            else if (strncmp(reinterpret_cast<const char *>( *chr ), kStarchBedGenericComment, strlen(kStarchBedGenericComment)) == 0) {
+#else
             else if (strncmp((const char *) *chr, kStarchBedGenericComment, strlen(kStarchBedGenericComment)) == 0) {
+#endif
                 *lineType = kBedLineGenericComment;
                 elemCnt = 3;
             }
@@ -332,12 +406,20 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
                 return STARCH_FATAL_ERROR;
             }
         }
-        *remainder = (char *) malloc((strlen(buffer) + 1) * sizeof(**remainder));
+#ifdef __cplusplus
+        *remainder = static_cast<char *>( malloc((strlen(buffer) + 1) * sizeof(**remainder)) );
+#else
+        *remainder = malloc((strlen(buffer) + 1) * sizeof(**remainder));
+#endif
         if (! *remainder) {
             fprintf(stderr, "ERROR: Ran out of memory handling token remainder\n");
             return STARCH_FATAL_ERROR;
         }
+#ifdef __cplusplus
+        strncpy(*remainder, reinterpret_cast<const char *>( buffer ), strlen(buffer) + 1);        
+#else
         strncpy(*remainder, (const char *)buffer, strlen(buffer) + 1);        
+#endif
     }
 
     return 0;
@@ -379,9 +461,17 @@ STARCH_createTransformTokensForHeaderlessInput(const char *s, const char delim, 
                     }
                     /* copy element to chromosome variable, if memory is available */
                     if (! *chr)
-                        *chr = (char *) malloc((strlen(buffer) + 1) * sizeof(**chr));
+#ifdef __cplusplus
+                        *chr = static_cast<char *>( malloc((strlen(buffer) + 1) * sizeof(**chr)) );
+#else
+                        *chr = malloc((strlen(buffer) + 1) * sizeof(**chr));
+#endif
                     else if (strlen(buffer) > strlen(*chr)) {
-                        chrCopy = (char *) realloc(*chr, strlen(buffer) * 2);
+#ifdef __cplusplus
+                        chrCopy = static_cast<char *>( realloc(*chr, strlen(buffer) * 2) );
+#else
+                        chrCopy = realloc(*chr, strlen(buffer) * 2);
+#endif
                         if (!chrCopy) {
                             fprintf(stderr, "ERROR: Ran out of memory while extending chr token\n");
                             return STARCH_FATAL_ERROR;
@@ -392,7 +482,11 @@ STARCH_createTransformTokensForHeaderlessInput(const char *s, const char delim, 
                         fprintf(stderr, "ERROR: Ran out of memory while creating transform tokens\n");
                         return STARCH_FATAL_ERROR;
                     }
-                    strncpy(*chr, (const char *)buffer, strlen(buffer) + 1);                    
+#ifdef __cplusplus
+                    strncpy(*chr, reinterpret_cast<const char *>( buffer ), strlen(buffer) + 1);
+#else
+                    strncpy(*chr, (const char *)buffer, strlen(buffer) + 1);
+#endif
                     break;
                 }
                 case 1: {
@@ -405,10 +499,19 @@ STARCH_createTransformTokensForHeaderlessInput(const char *s, const char delim, 
                         return STARCH_FATAL_ERROR;
                     }
                     /* convert element string to start coordinate */
+#ifdef __cplusplus
+                    *start = static_cast<int64_t>( strtoll(reinterpret_cast<const char *>( buffer ), NULL, STARCH_RADIX) );
+#else
                     *start = (int64_t) strtoll((const char *)buffer, NULL, STARCH_RADIX);
+#endif
                     /* test if start coordinate is larger than allowed bounds */
+#ifdef __cplusplus
+                    if (*start > static_cast<int64_t>( MAX_COORD_VALUE )) {
+                        fprintf(stderr, "ERROR: Start coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *start, static_cast<int64_t>( MAX_COORD_VALUE ));
+#else
                     if (*start > (int64_t) MAX_COORD_VALUE) {
                         fprintf(stderr, "ERROR: Start coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *start, (int64_t) MAX_COORD_VALUE);
+#endif
                         return STARCH_FATAL_ERROR;
                     }
                     break;
@@ -423,12 +526,23 @@ STARCH_createTransformTokensForHeaderlessInput(const char *s, const char delim, 
                         return STARCH_FATAL_ERROR;
                     }
                     /* convert element string to stop coordinate */
+#ifdef __cplusplus
+                    *stop = static_cast<int64_t>( strtoll(reinterpret_cast<const char *>( buffer ), NULL, STARCH_RADIX) );
+#else
                     *stop = (int64_t) strtoll((const char *)buffer, NULL, STARCH_RADIX);
+#endif
                     /* test if stop coordinate is larger than allowed bounds */
+#ifdef __cplusplus
+                    if (*stop > static_cast<int64_t>( MAX_COORD_VALUE )) {
+                        fprintf(stderr, "ERROR: Stop coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *stop, static_cast<int64_t>( MAX_COORD_VALUE ));
+                        return STARCH_FATAL_ERROR;
+                    }
+#else
                     if (*stop > (int64_t) MAX_COORD_VALUE) {
                         fprintf(stderr, "ERROR: Stop coordinate field value (%" PRId64 ") is too great (must be less than %" PRId64 ")\n", *stop, (int64_t) MAX_COORD_VALUE);
                         return STARCH_FATAL_ERROR;
                     }
+#endif
                     break;
                 }
                 /* just keep filling the buffer until we reach s[sCnt]'s null -- we do tests later */
@@ -462,12 +576,20 @@ STARCH_createTransformTokensForHeaderlessInput(const char *s, const char delim, 
         }
         /* resize remainder, if needed */
         if (! *remainder)
-            *remainder = (char *) malloc((strlen(buffer) + 1) * sizeof(**remainder));
+#ifdef __cplusplus
+            *remainder = static_cast<char *>( malloc((strlen(buffer) + 1) * sizeof(**remainder)) );
+#else
+            *remainder = malloc((strlen(buffer) + 1) * sizeof(**remainder));
+#endif
         else if (strlen(buffer) > strlen(*remainder)) {
 #ifdef DEBUG
             fprintf(stderr, "\tresizing remainder...\n");
 #endif
-            remainderCopy = (char *) realloc(*remainder, strlen(buffer) * 2);
+#ifdef __cplusplus
+            remainderCopy = static_cast<char *>( realloc(*remainder, strlen(buffer) * 2) );
+#else
+            remainderCopy = realloc(*remainder, strlen(buffer) * 2);
+#endif
             if (!remainderCopy) {
                 fprintf(stderr, "ERROR: Ran out of memory extending remainder token\n");
                 return STARCH_FATAL_ERROR;
@@ -478,7 +600,11 @@ STARCH_createTransformTokensForHeaderlessInput(const char *s, const char delim, 
             fprintf(stderr, "ERROR: Ran out of memory handling remainder token\n");
             return STARCH_FATAL_ERROR;
         }
+#ifdef __cplusplus
+        strncpy(*remainder, reinterpret_cast<const char *>( buffer ), strlen(buffer) + 1);
+#else
         strncpy(*remainder, (const char *)buffer, strlen(buffer) + 1);
+#endif
     }
     else if (elemCnt < 2) {
         fprintf(stderr, "ERROR: BED data is missing chromosome and/or coordinate data\n");
@@ -504,7 +630,11 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
     char buffer[STARCH_BUFFER_MAX_LENGTH];
     char *outFn = NULL;
     FILE *outFnPtr = NULL;
+#ifdef __cplusplus
+    FILE *streamPtr = const_cast<FILE *>( fp );
+#else
     FILE *streamPtr = (FILE *) fp;
+#endif
     char *outCompressedFn = NULL;
     char *remainder = NULL;
     char *prevChromosome = NULL;
@@ -519,7 +649,7 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
     uint64_t outFnSize = 0;
     Boolean withinChr = kStarchFalse;
     unsigned long lineIdx = 0UL;
-    int64_t outCompressedFnSize = 0;
+    off_t outCompressedFnSize = 0;
     char *legacyMdBuf = NULL; 
     char *dynamicMdBuf = NULL;
     BedLineType lineType = kBedLineTypeUndefined;
@@ -527,43 +657,61 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
     Boolean nonCoordLineBufNeedsPrinting = kStarchFalse;
     BaseCountType totalNonUniqueBases = 0;
     BaseCountType totalUniqueBases = 0;
+    Boolean duplicateElementExistsFlag = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+    Boolean nestedElementExistsFlag = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
 
     if (!streamPtr)
         streamPtr = stdin;
-
+    
     while ((c = fgetc(streamPtr)) != EOF) {
-        buffer[cIdx] = (char)c;
+#ifdef __cplusplus
+        buffer[cIdx] = static_cast<char>( c );
+#else
+        buffer[cIdx] = (char) c;
+#endif
         if (c == '\n') {
             lineIdx++;
             buffer[cIdx] = '\0';
-            if (STARCH_createTransformTokens(buffer, '\t', &chromosome, &start, &stop, &remainder, &lineType) == 0) 
-            {
-                /* 
-                   Either previous chromosome is NULL, or current chromosome does 
+            if (STARCH_createTransformTokens(buffer, '\t', &chromosome, &start, &stop, &remainder, &lineType) == 0) {
+		/* 
+		   Either previous chromosome is NULL, or current chromosome does 
                    not equal previous chromosome, but the line must be of the 
                    type 'kBedLineCoordinates' (cf. 'starchMetadataHelpers.h')
                 */
-
-                if ( (lineType == kBedLineCoordinates) && ((!prevChromosome) || (strcmp(chromosome, prevChromosome) != 0)) ) 
-                {
-                    /* close old output file pointer */
+		
+                if ( (lineType == kBedLineCoordinates) && ((!prevChromosome) || (strcmp(chromosome, prevChromosome) != 0)) ) {
+		    /* close old output file pointer */
                     if (outFnPtr != NULL) {
                         fclose(outFnPtr); 
                         outFnPtr = NULL;
 
                         if (type == kBzip2) {
                             /* bzip-compress the previous file */
-                            if (STARCH_compressFileWithBzip2((const char *)outFn, &outCompressedFn, (off_t *) &outCompressedFnSize ) != 0) {
+#ifdef __cplusplus
+                            if (STARCH_compressFileWithBzip2(reinterpret_cast<const char *>( outFn ), &outCompressedFn, static_cast<off_t *>( &outCompressedFnSize ) ) != 0) {
                                 fprintf(stderr, "ERROR: Could not bzip2 compress per-chromosome output file %s\n", outFn);
                                 return STARCH_FATAL_ERROR;
                             }
+#else
+			    if (STARCH_compressFileWithBzip2((const char *)outFn, &outCompressedFn, (off_t *) &outCompressedFnSize ) != 0) {
+                                fprintf(stderr, "ERROR: Could not bzip2 compress per-chromosome output file %s\n", outFn);
+                                return STARCH_FATAL_ERROR;
+                            }
+#endif
                         }
                         else if (type == kGzip) {
                             /* gzip-compress file */
-                            if (STARCH_compressFileWithGzip((const char*) outFn, &outCompressedFn, (off_t *) &outCompressedFnSize ) != 0) {
+#ifdef __cplusplus
+                            if (STARCH_compressFileWithGzip(reinterpret_cast<const char*>( outFn ), &outCompressedFn, static_cast<off_t *>( &outCompressedFnSize ) ) != 0) {
                                 fprintf(stderr, "ERROR: Could not gzip compress per-chromosome output file %s\n", outFn);
                                 return STARCH_FATAL_ERROR;
                             }
+#else
+			    if (STARCH_compressFileWithGzip((const char*) outFn, &outCompressedFn, (off_t *) &outCompressedFnSize ) != 0) {
+				fprintf(stderr, "ERROR: Could not gzip compress per-chromosome output file %s\n", outFn);
+                                return STARCH_FATAL_ERROR;
+                            }
+#endif
                         }
                         else {
                             fprintf(stderr, "ERROR: Unknown compression regime\n");
@@ -576,13 +724,19 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                         }
 
                         /* update metadata with compressed file attributes */
-                        if (STARCH_updateMetadataForChromosome(md, 
+                        if (STARCH_updateMetadataForChromosome(md,
                                                                prevChromosome, 
                                                                outCompressedFn, 
+#ifdef __cplusplus
+                                                               static_cast<uint64_t>( outCompressedFnSize ), 
+#else
                                                                (uint64_t) outCompressedFnSize, 
+#endif
                                                                lineIdx, 
                                                                totalNonUniqueBases, 
-                                                               totalUniqueBases) != STARCH_EXIT_SUCCESS) {
+                                                               totalUniqueBases,
+                                                               duplicateElementExistsFlag,
+                                                               nestedElementExistsFlag) != STARCH_EXIT_SUCCESS) {
                             fprintf(stderr, "ERROR: Could not update metadata%s\n", outFn);
                             return STARCH_FATAL_ERROR;
                         }
@@ -590,16 +744,27 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                         /* cleanup */
                         free(outCompressedFn); outCompressedFn = NULL;
                     }
-
+			    
 		    /* test if current chromosome is already a Metadata record */
+#ifdef __cplusplus
+		    if (STARCH_chromosomeInMetadataRecords(reinterpret_cast<const Metadata *>( *md ), chromosome) == STARCH_EXIT_SUCCESS) {
+		        fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+                        return STARCH_FATAL_ERROR;
+		    }
+#else
 		    if (STARCH_chromosomeInMetadataRecords((const Metadata *)*md, chromosome) == STARCH_EXIT_SUCCESS) {
 		        fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
                         return STARCH_FATAL_ERROR;
 		    }
+#endif
 
                     /* open new output file pointer */
                     if (!outFnPtr) {
-                        outFn = (char *) malloc(strlen(chromosome) + strlen(tag) + 2);
+#ifdef __cplusplus
+                        outFn = static_cast<char *>( malloc(strlen(chromosome) + strlen(tag) + 2) );
+#else
+                        outFn = malloc(strlen(chromosome) + strlen(tag) + 2);
+#endif
                         sprintf(outFn, "%s.%s", chromosome, tag);
                         outFnPtr = STARCH_fopen(outFn, "a");
                         if (!outFnPtr) {
@@ -619,7 +784,9 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                                                     outFnSize, 
                                                     lineIdx, 
                                                     totalNonUniqueBases, 
-                                                    totalUniqueBases);
+                                                    totalUniqueBases,
+                                                    duplicateElementExistsFlag,
+                                                    nestedElementExistsFlag);
                         firstRecord = *md;
                     }
                     else {
@@ -629,7 +796,9 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                                                  outFnSize, 
                                                  lineIdx, 
                                                  totalNonUniqueBases, 
-                                                 totalUniqueBases);
+                                                 totalUniqueBases,
+                                                 duplicateElementExistsFlag,
+                                                 nestedElementExistsFlag);
                     }
 
                     /* make previous chromosome the current chromosome */
@@ -637,8 +806,13 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                         free(prevChromosome);
                         prevChromosome = NULL;
                     }
-                    prevChromosome = (char *) malloc(strlen(chromosome) + 1);
+#ifdef __cplusplus
+                    prevChromosome = static_cast<char *>( malloc(strlen(chromosome) + 1) );
+                    strncpy(prevChromosome, reinterpret_cast<const char *>( chromosome ), strlen(chromosome) + 1);
+#else
+                    prevChromosome = malloc(strlen(chromosome) + 1);
                     strncpy(prevChromosome, (const char *)chromosome, strlen(chromosome) + 1);
+#endif
 
                     /* reset flag, lastPosition and lcDiff, increment record index */
                     withinChr = kStarchFalse;
@@ -648,6 +822,8 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                     lineIdx = 0UL;
                     totalNonUniqueBases = 0UL;
                     totalUniqueBases = 0UL;
+                    duplicateElementExistsFlag = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+                    nestedElementExistsFlag = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
                     recIdx++;
                 }
                 else if (lineType == kBedLineCoordinates) {
@@ -668,7 +844,11 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                        to be a dangerous assumption, but probably not, as 1 MB is a lot of custom 
                        track data in one contiguous block. This situation seems fairly unlikely.
                     */
+#ifdef __cplusplus
+                    strncat(nonCoordLineBuf, reinterpret_cast<const char *>( chromosome ), strlen(chromosome) + 1);
+#else
                     strncat(nonCoordLineBuf, (const char *)chromosome, strlen(chromosome) + 1);
+#endif
                     nonCoordLineBuf[strlen(nonCoordLineBuf)] = '\n';
                     nonCoordLineBufNeedsPrinting = kStarchTrue;
                 }
@@ -704,11 +884,19 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                         else
                             fprintf( outFnPtr, "%" PRId64 "\n", start );
                     }
+#ifdef __cplusplus
+                    totalNonUniqueBases += static_cast<BaseCountType>( stop - start );
+                    if (previousStop <= start)
+                        totalUniqueBases += static_cast<BaseCountType>( stop - start );
+                    else if (previousStop < stop)
+                        totalUniqueBases += static_cast<BaseCountType>( stop - previousStop );
+#else
                     totalNonUniqueBases += (BaseCountType) (stop - start);
                     if (previousStop <= start)
                         totalUniqueBases += (BaseCountType) (stop - start);
                     else if (previousStop < stop)
                         totalUniqueBases += (BaseCountType) (stop - previousStop);
+#endif
                     lastPosition = stop;
                     previousStop = (stop > previousStop) ? stop : previousStop;
                 }
@@ -735,14 +923,22 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
     if (outFnPtr != NULL) {
         fclose(outFnPtr); outFnPtr = NULL;
         if (type == kBzip2) {
+#ifdef __cplusplus
+            if (STARCH_compressFileWithBzip2(reinterpret_cast<const char *>( outFn ), &outCompressedFn, static_cast<off_t *>( &outCompressedFnSize ) ) != 0) {
+#else
             if (STARCH_compressFileWithBzip2((const char *)outFn, &outCompressedFn, (off_t *) &outCompressedFnSize ) != 0) {
+#endif
                 fprintf(stderr, "ERROR: Could not bzip2 compress per-chromosome output file %s\n", outFn);
                 return STARCH_FATAL_ERROR;
             }
         }
         else if (type == kGzip) {
             /* gzip-compress file */
+#ifdef __cplusplus
+            if (STARCH_compressFileWithGzip(reinterpret_cast<const char*>( outFn ), &outCompressedFn, static_cast<off_t *>( &outCompressedFnSize ) ) != 0) {
+#else
             if (STARCH_compressFileWithGzip((const char*)outFn, &outCompressedFn, (off_t *) &outCompressedFnSize ) != 0) {
+#endif
                 fprintf(stderr, "ERROR: Could not gzip compress per-chromosome output file %s\n", outFn);
                 return STARCH_FATAL_ERROR;
             }
@@ -759,12 +955,18 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
         /* update metadata with compressed file attributes */
         lineIdx++;
         STARCH_updateMetadataForChromosome(md, 
-                                           prevChromosome, 
-                                           outCompressedFn, 
+                                           prevChromosome,
+                                           outCompressedFn,
+#ifdef __cplusplus
+                                           static_cast<uint64_t>( outCompressedFnSize ),
+#else
                                            (uint64_t) outCompressedFnSize, 
+#endif
                                            lineIdx, 
                                            totalNonUniqueBases, 
-                                           totalUniqueBases);
+                                           totalUniqueBases,
+                                           duplicateElementExistsFlag,
+                                           nestedElementExistsFlag);
         free(outCompressedFn); outCompressedFn = NULL; 
     }
 
@@ -774,13 +976,25 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
     /* write metadata header to buffer */
     /* and concatenate metadata header with compressed files */
     if ((STARCH_MAJOR_VERSION == 1) && (STARCH_MINOR_VERSION == 0) && (STARCH_REVISION_VERSION == 0)) {
-        legacyMdBuf = (char *) malloc(STARCH_LEGACY_METADATA_SIZE + 1);
+#ifdef __cplusplus
+        legacyMdBuf = static_cast<char *>( malloc(STARCH_LEGACY_METADATA_SIZE + 1) );
+#else
+        legacyMdBuf = malloc(STARCH_LEGACY_METADATA_SIZE + 1);
+#endif
         if (legacyMdBuf != NULL) {
+#ifdef __cplusplus
+            if (STARCH_writeJSONMetadata(reinterpret_cast<const Metadata *>( *md ), &legacyMdBuf, const_cast<CompressionType *>( &type ), kStarchFalse, reinterpret_cast<const char *>( note )) != STARCH_EXIT_SUCCESS) {
+#else
             if (STARCH_writeJSONMetadata((const Metadata *)*md, &legacyMdBuf, (CompressionType *) &type, kStarchFalse, (const char *) note) != STARCH_EXIT_SUCCESS) {
+#endif
                 fprintf(stderr, "ERROR: Could not write metadata to buffer\n");
                 return STARCH_FATAL_ERROR;
             }
+#ifdef __cplusplus
+            if (STARCH_mergeMetadataWithCompressedFiles(reinterpret_cast<const Metadata *>( *md ), legacyMdBuf) != STARCH_EXIT_SUCCESS) {
+#else
             if (STARCH_mergeMetadataWithCompressedFiles((const Metadata *)*md, legacyMdBuf) != STARCH_EXIT_SUCCESS) {
+#endif
                 fprintf(stderr, "ERROR: Could not merge metadata with compressed streams\n");
                 return STARCH_FATAL_ERROR;
             }
@@ -792,11 +1006,19 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
     }
     else {
         /* this is the custom header version of the parser, so we set headerFlag to TRUE */
+#ifdef __cplusplus
+        if (STARCH_writeJSONMetadata(reinterpret_cast<const Metadata *>( *md ), &dynamicMdBuf, const_cast<CompressionType *>( &type ), kStarchTrue, reinterpret_cast<const char *>( note )) != STARCH_EXIT_SUCCESS) {
+#else
         if (STARCH_writeJSONMetadata((const Metadata *)*md, &dynamicMdBuf, (CompressionType *) &type, kStarchTrue, (const char *) note) != STARCH_EXIT_SUCCESS) {
+#endif
             fprintf(stderr, "ERROR: Could not write metadata to buffer\n");
             return STARCH_FATAL_ERROR;
         }
+#ifdef __cplusplus
+        if (STARCH_mergeMetadataWithCompressedFiles(reinterpret_cast<const Metadata *>( *md ), dynamicMdBuf) != STARCH_EXIT_SUCCESS) {
+#else
         if (STARCH_mergeMetadataWithCompressedFiles((const Metadata *)*md, dynamicMdBuf) != STARCH_EXIT_SUCCESS) {
+#endif
             fprintf(stderr, "ERROR: Could not merge metadata with compressed streams\n");
             return STARCH_FATAL_ERROR;
         }
@@ -809,7 +1031,11 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
     }
 
     /* remove compressed files */
+#ifdef __cplusplus
+    if (STARCH_deleteCompressedFiles(reinterpret_cast<const Metadata *>( *md )) != STARCH_EXIT_SUCCESS) {
+#else
     if (STARCH_deleteCompressedFiles((const Metadata *)*md) != STARCH_EXIT_SUCCESS) {
+#endif
         fprintf(stderr, "ERROR: Could not delete compressed streams\n");
         return STARCH_FATAL_ERROR;
     }
@@ -832,7 +1058,11 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
     char buffer[STARCH_BUFFER_MAX_LENGTH];
     char *outFn = NULL;
     FILE *outFnPtr = NULL;
+#ifdef __cplusplus
+    FILE *streamPtr = const_cast<FILE *>( fp );
+#else
     FILE *streamPtr = (FILE *) fp;
+#endif
     char *outCompressedFn = NULL;
     char *remainder = NULL;
     char *prevChromosome = NULL;
@@ -847,17 +1077,23 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
     uint64_t outFnSize = 0;
     Boolean withinChr = kStarchFalse;
     unsigned long lineIdx = 0UL;
-    int64_t outCompressedFnSize = 0;
+    off_t outCompressedFnSize = 0;
     char *legacyMdBuf = NULL; 
     char *dynamicMdBuf = NULL;
     BaseCountType totalNonUniqueBases = 0;
     BaseCountType totalUniqueBases = 0;
+    Boolean duplicateElementExistsFlag = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+    Boolean nestedElementExistsFlag = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
 
     if (!streamPtr)
         streamPtr = stdin;
 
     while ((c = fgetc(streamPtr)) != EOF) {
+#ifdef __cplusplus
+        buffer[cIdx] = static_cast<char>( c );
+#else
         buffer[cIdx] = (char) c;
+#endif
         if (c == '\n') {
             lineIdx++;
             buffer[cIdx] = '\0';
@@ -877,14 +1113,22 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
 
                         if (type == kBzip2) {
                             /* bzip-compress the previous file */
+#ifdef __cplusplus
+                            if (STARCH_compressFileWithBzip2(reinterpret_cast<const char *>( outFn ), &outCompressedFn, static_cast<off_t *>( &outCompressedFnSize ) ) != 0) {
+#else
                             if (STARCH_compressFileWithBzip2((const char *)outFn, &outCompressedFn, (off_t *) &outCompressedFnSize ) != 0) {
+#endif
                                 fprintf(stderr, "ERROR: Could not bzip2 compress per-chromosome output file %s\n", outFn);
                                 return STARCH_FATAL_ERROR;
                             }
                         }
                         else if (type == kGzip) {
                             /* gzip-compress file */
+#ifdef __cplusplus
+                            if (STARCH_compressFileWithGzip(reinterpret_cast<const char*>( outFn ), &outCompressedFn, static_cast<off_t *>( &outCompressedFnSize ) ) != 0) {
+#else
                             if (STARCH_compressFileWithGzip((const char*) outFn, &outCompressedFn, (off_t *) &outCompressedFnSize ) != 0) {
+#endif
                                 fprintf(stderr, "ERROR: Could not gzip compress per-chromosome output file %s\n", outFn);
                                 return STARCH_FATAL_ERROR;
                             }
@@ -903,10 +1147,16 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
                         if (STARCH_updateMetadataForChromosome(md, 
                                                                prevChromosome, 
                                                                outCompressedFn, 
+#ifdef __cplusplus
+                                                               static_cast<uint64_t>( outCompressedFnSize ), 
+#else
                                                                (uint64_t) outCompressedFnSize, 
+#endif
                                                                lineIdx, 
                                                                totalNonUniqueBases, 
-                                                               totalUniqueBases) != STARCH_EXIT_SUCCESS) {
+                                                               totalUniqueBases,
+                                                               duplicateElementExistsFlag,
+                                                               nestedElementExistsFlag) != STARCH_EXIT_SUCCESS) {
                             fprintf(stderr, "ERROR: Could not update metadata%s\n", outFn);
                             return STARCH_FATAL_ERROR;
                         }
@@ -916,14 +1166,22 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
                     }
 
 		    /* test if current chromosome is already a Metadata record */
+#ifdef __cplusplus
+		    if (STARCH_chromosomeInMetadataRecords(reinterpret_cast<const Metadata *>( *md ), chromosome) == STARCH_EXIT_SUCCESS) {
+#else
 		    if (STARCH_chromosomeInMetadataRecords((const Metadata *)*md, chromosome) == STARCH_EXIT_SUCCESS) {
+#endif
 		        fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
                         return STARCH_FATAL_ERROR;
 		    }
 
                     /* open new output file pointer */
                     if (!outFnPtr) {
-                        outFn = (char *) malloc(strlen(chromosome) + strlen(tag) + 2);
+#ifdef __cplusplus
+                        outFn = static_cast<char *>( malloc(strlen(chromosome) + strlen(tag) + 2) );
+#else
+                        outFn = malloc(strlen(chromosome) + strlen(tag) + 2);
+#endif
                         sprintf(outFn, "%s.%s", chromosome, tag);
                         outFnPtr = STARCH_fopen(outFn, "a");
                         if (!outFnPtr) {
@@ -938,11 +1196,26 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
 
                     /* add chromosome to metadata */
                     if (! *md) {
-                        *md = STARCH_createMetadata(chromosome, outFn, outFnSize, lineIdx, totalNonUniqueBases, totalUniqueBases);
+                        *md = STARCH_createMetadata(chromosome, 
+                                                    outFn, 
+                                                    outFnSize, 
+                                                    lineIdx, 
+                                                    totalNonUniqueBases, 
+                                                    totalUniqueBases, 
+                                                    duplicateElementExistsFlag,
+                                                    nestedElementExistsFlag);
                         firstRecord = *md;
                     }
                     else {
-                        *md = STARCH_addMetadata(*md, chromosome, outFn, outFnSize, lineIdx, totalNonUniqueBases, totalUniqueBases);
+                        *md = STARCH_addMetadata(*md, 
+                                                 chromosome, 
+                                                 outFn, 
+                                                 outFnSize, 
+                                                 lineIdx, 
+                                                 totalNonUniqueBases, 
+                                                 totalUniqueBases,
+                                                 duplicateElementExistsFlag,
+                                                 nestedElementExistsFlag);
                     }
 
                     /* make previous chromosome the current chromosome */
@@ -950,8 +1223,13 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
                         free(prevChromosome);
                         prevChromosome = NULL;
                     }
-                    prevChromosome = (char *) malloc(strlen(chromosome) + 1);
+#ifdef __cplusplus
+                    prevChromosome = static_cast<char *>( malloc(strlen(chromosome) + 1) );
+                    strncpy(prevChromosome, reinterpret_cast<const char *>( chromosome ), strlen(chromosome) + 1);
+#else
+                    prevChromosome = malloc(strlen(chromosome) + 1);
                     strncpy(prevChromosome, (const char *)chromosome, strlen(chromosome) + 1);
+#endif
 
                     /* reset flag, lastPosition and lcDiff, increment record index */
                     withinChr = kStarchFalse;
@@ -961,6 +1239,8 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
                     lineIdx = 0UL;
                     totalNonUniqueBases = 0UL;
                     totalUniqueBases = 0UL;
+                    duplicateElementExistsFlag = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+                    nestedElementExistsFlag = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
                     recIdx++;
                 }
                 else
@@ -1008,11 +1288,19 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
                         fprintf(outFnPtr, "%" PRId64 "\n", start );
                     }
                 }
+#ifdef __cplusplus
+                totalNonUniqueBases += static_cast<BaseCountType>( stop - start );
+                if (previousStop <= start)
+                    totalUniqueBases += static_cast<BaseCountType>( stop - start );
+                else if (previousStop < stop)
+                    totalUniqueBases += static_cast<BaseCountType>( stop - previousStop );
+#else
                 totalNonUniqueBases += (BaseCountType) (stop - start);
                 if (previousStop <= start)
                     totalUniqueBases += (BaseCountType) (stop - start);
                 else if (previousStop < stop)
                     totalUniqueBases += (BaseCountType) (stop - previousStop);
+#endif
                 lastPosition = stop;
                 previousStop = (stop > previousStop) ? stop : previousStop;
 
@@ -1038,21 +1326,39 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
         outFnPtr = NULL;
         
         if (type == kBzip2) {
+#ifdef __cplusplus
+            if (STARCH_compressFileWithBzip2(reinterpret_cast<const char *>( outFn ), 
+                                             &outCompressedFn, 
+                                             static_cast<off_t *>( &outCompressedFnSize )) != 0) {
+                fprintf(stderr, "ERROR: Could not bzip2 compress per-chromosome output file %s\n", outFn);
+                return STARCH_FATAL_ERROR;
+            }
+#else
             if (STARCH_compressFileWithBzip2((const char *)outFn, 
                                              &outCompressedFn, 
                                              (off_t *) &outCompressedFnSize) != 0) {
                 fprintf(stderr, "ERROR: Could not bzip2 compress per-chromosome output file %s\n", outFn);
                 return STARCH_FATAL_ERROR;
             }
+#endif
         }
         else if (type == kGzip) {
             /* gzip-compress file */
+#ifdef __cplusplus
+            if (STARCH_compressFileWithGzip(reinterpret_cast<const char*>( outFn ), 
+                                            &outCompressedFn, 
+                                            static_cast<off_t *>( &outCompressedFnSize )) != 0) {
+                fprintf(stderr, "ERROR: Could not gzip compress per-chromosome output file %s\n", outFn);
+                return STARCH_FATAL_ERROR;
+            }
+#else
             if (STARCH_compressFileWithGzip((const char*)outFn, 
                                             &outCompressedFn, 
                                             (off_t *) &outCompressedFnSize) != 0) {
                 fprintf(stderr, "ERROR: Could not gzip compress per-chromosome output file %s\n", outFn);
                 return STARCH_FATAL_ERROR;
             }
+#endif
         }
         else {
             fprintf(stderr, "ERROR: Unknown compression regime\n");
@@ -1070,10 +1376,16 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
         STARCH_updateMetadataForChromosome(md, 
                                            prevChromosome, 
                                            outCompressedFn, 
+#ifdef __cplusplus
+                                           static_cast<uint64_t>( outCompressedFnSize ),
+#else
                                            (uint64_t) outCompressedFnSize, 
+#endif
                                            lineIdx, 
                                            totalNonUniqueBases, 
-                                           totalUniqueBases);
+                                           totalUniqueBases,
+                                           duplicateElementExistsFlag,
+                                           nestedElementExistsFlag);
 
         free(outCompressedFn); outCompressedFn = NULL; 
         free(outFn); outFn = NULL;
@@ -1089,7 +1401,6 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
     if (finalizeFlag == kStarchFalse)
         return 0;
 
-
     /*
         Otherwise, we wrap things up. In the future, this will go into its 
         own function for clarity...
@@ -1101,14 +1412,34 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
     /* write metadata header to buffer */
     /* concatenate metadata header with compressed files */
     if ((STARCH_MAJOR_VERSION == 1) && (STARCH_MINOR_VERSION == 0) && (STARCH_REVISION_VERSION == 0)) {
-        legacyMdBuf = (char *) malloc(STARCH_LEGACY_METADATA_SIZE + 1);
+#ifdef __cplusplus
+        legacyMdBuf = static_cast<char *>( malloc(STARCH_LEGACY_METADATA_SIZE + 1) );
+#else
+        legacyMdBuf = malloc(STARCH_LEGACY_METADATA_SIZE + 1);
+#endif
         if (legacyMdBuf != NULL) {
             /* headerless input was not supported in this version, so it is set to FALSE */
-            if (STARCH_writeJSONMetadata((const Metadata *)*md, &legacyMdBuf, (CompressionType *) &type, kStarchFalse, (const char *) note) != STARCH_EXIT_SUCCESS) {
+#ifdef __cplusplus
+            if (STARCH_writeJSONMetadata(reinterpret_cast<const Metadata *>( *md ), 
+					 &legacyMdBuf, 
+					 const_cast<CompressionType *>( &type ), 
+					 kStarchFalse, 
+					 reinterpret_cast<const char *>( note )) != STARCH_EXIT_SUCCESS) {
+#else
+            if (STARCH_writeJSONMetadata((const Metadata *) *md, 
+					 &legacyMdBuf, 
+					 (CompressionType *) &type, 
+					 kStarchFalse, 
+					 (const char *) note) != STARCH_EXIT_SUCCESS) {
+#endif
                 fprintf(stderr, "ERROR: Could not write metadata to buffer\n");
                 return STARCH_FATAL_ERROR;
             }
-            if (STARCH_mergeMetadataWithCompressedFiles((const Metadata *)*md, legacyMdBuf) != STARCH_EXIT_SUCCESS) {
+#ifdef __cplusplus
+            if (STARCH_mergeMetadataWithCompressedFiles(reinterpret_cast<const Metadata *>( *md ), legacyMdBuf) != STARCH_EXIT_SUCCESS) {
+#else
+            if (STARCH_mergeMetadataWithCompressedFiles((const Metadata *) *md, legacyMdBuf) != STARCH_EXIT_SUCCESS) {
+#endif
                 fprintf(stderr, "ERROR: Could not merge metadata with compressed streams\n");
                 return STARCH_FATAL_ERROR;
             }
@@ -1120,11 +1451,27 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
     }
     else {
         /* headerless input means headerFlag is FALSE */
-        if (STARCH_writeJSONMetadata((const Metadata *)*md, &dynamicMdBuf, (CompressionType *) &type, kStarchFalse, (const char *) note) != STARCH_EXIT_SUCCESS) {
+#ifdef __cplusplus
+        if (STARCH_writeJSONMetadata(reinterpret_cast<const Metadata *>( *md ), 
+				     &dynamicMdBuf, 
+				     const_cast<CompressionType *>( &type ), 
+				     kStarchFalse, 
+				     reinterpret_cast<const char *>( note )) != STARCH_EXIT_SUCCESS) {
+#else
+        if (STARCH_writeJSONMetadata((const Metadata *) *md, 
+				     &dynamicMdBuf, 
+				     (CompressionType *) &type, 
+				     kStarchFalse, 
+				     (const char *) note) != STARCH_EXIT_SUCCESS) {
+#endif
             fprintf(stderr, "ERROR: Could not write metadata to buffer\n");
             return STARCH_FATAL_ERROR;
         }
-        if (STARCH_mergeMetadataWithCompressedFiles((const Metadata *)*md, dynamicMdBuf) != STARCH_EXIT_SUCCESS) {
+#ifdef __cplusplus
+        if (STARCH_mergeMetadataWithCompressedFiles(reinterpret_cast<const Metadata *>( *md ), dynamicMdBuf) != STARCH_EXIT_SUCCESS) {
+#else
+        if (STARCH_mergeMetadataWithCompressedFiles((const Metadata *) *md, dynamicMdBuf) != STARCH_EXIT_SUCCESS) {
+#endif
             fprintf(stderr, "ERROR: Could not merge metadata with compressed streams\n");
             return STARCH_FATAL_ERROR;
         }
@@ -1138,7 +1485,11 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
     }
 
     /* remove compressed files */
+#ifdef __cplusplus
+    if (STARCH_deleteCompressedFiles(reinterpret_cast<const Metadata *>( *md )) != STARCH_EXIT_SUCCESS) {
+#else
     if (STARCH_deleteCompressedFiles((const Metadata *)*md) != STARCH_EXIT_SUCCESS) {
+#endif
         fprintf(stderr, "ERROR: Could not delete compressed streams\n");
         return STARCH_FATAL_ERROR;
     }
@@ -1185,12 +1536,21 @@ STARCH_strndup(const char *s, size_t n)
     if (n < len)
         len = n;
 
-    result = (char *) malloc(len + 1);
+#ifdef __cplusplus
+    result = static_cast<char *>( malloc(len + 1) );
+#else
+    result = malloc(len + 1);
+#endif
+
     if (!result)
         return NULL;    
 
     result[len] = '\0';
+#ifdef __cplusplus
+    return static_cast<char *>( memcpy (result, s, len) );
+#else
     return (char *) memcpy (result, s, len);
+#endif
 }
 
 int 
@@ -1292,6 +1652,8 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     unsigned long lineIdx = 0UL;
     int64_t start = 0;
     int64_t stop = 0;
+    int64_t pStart = 0;
+    int64_t pStop = 0;
     int64_t previousStop = 0;
     int64_t lastPosition = 0;
     int64_t lcDiff = 0;
@@ -1302,6 +1664,8 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     Boolean withinChr = kStarchFalse;
     unsigned long totalNonUniqueBases = 0UL;
     unsigned long totalUniqueBases = 0UL;
+    Boolean duplicateElementExistsFlag = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+    Boolean nestedElementExistsFlag = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
     size_t intermediateBufferLength = 0U;
     size_t currentTransformedBufferLength = 0U;
     size_t recIdx = 0U;
@@ -1337,7 +1701,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 #endif
     cumulativeRecSize += STARCH2_MD_HEADER_BYTE_LENGTH;
 
-    compressedFn = (char *) malloc(STARCH_STREAM_METADATA_FILENAME_MAX_LENGTH);
+#ifdef __cplusplus
+    compressedFn = static_cast<char *>( malloc(STARCH_STREAM_METADATA_FILENAME_MAX_LENGTH) );
+#else
+    compressedFn = malloc(STARCH_STREAM_METADATA_FILENAME_MAX_LENGTH);
+#endif
     if (!compressedFn) {
         fprintf(stderr, "ERROR: Could not allocate space to compressed filename stub\n");
         return STARCH_EXIT_FAILURE;
@@ -1408,8 +1776,13 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     }
 
     /* fill up a "transformation" buffer with data and then compress it */
+#ifdef __cplusplus
+    while ((c = fgetc(const_cast<FILE *>( inFp ))) != EOF) {
+        untransformedBuffer[cIdx] = static_cast<char>( c );
+#else
     while ((c = fgetc((FILE *)inFp)) != EOF) {
         untransformedBuffer[cIdx] = (char) c;
+#endif
         if (c == '\n') {
             lineIdx++;
             untransformedBuffer[cIdx] = '\0';
@@ -1420,7 +1793,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                 {
                     if (prevChromosome) 
                     {
+#ifdef __cplusplus
+		        if (STARCH_chromosomeInMetadataRecords(reinterpret_cast<const Metadata *>( firstRecord ), chromosome) == STARCH_EXIT_SUCCESS) {
+#else
 		        if (STARCH_chromosomeInMetadataRecords((const Metadata *)firstRecord, chromosome) == STARCH_EXIT_SUCCESS) {
+#endif
 	    	            fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
                             return STARCH_FATAL_ERROR;
                         }
@@ -1433,7 +1810,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                             fprintf(stderr, "\t(final-between-chromosome) finalizing current chromosome: %s\n", prevChromosome);
 #endif
                             /* write transformed buffer to output stream */
+#ifdef __cplusplus
+                            BZ2_bzWrite(&bzError, bzFp, transformedBuffer, static_cast<int>( currentTransformedBufferLength ));
+#else
                             BZ2_bzWrite(&bzError, bzFp, transformedBuffer, (int) currentTransformedBufferLength);
+#endif
                             if (bzError != BZ_OK) {
                                 switch (bzError) {
                                     case BZ_PARAM_ERROR: {
@@ -1478,7 +1859,15 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                             bzBytesWritten = 0U;
                             bzFp = NULL;
 
-                            if (STARCH_updateMetadataForChromosome(md, prevChromosome, compressedFn, currentRecSize, lineIdx, totalNonUniqueBases, totalUniqueBases) != STARCH_EXIT_SUCCESS) {
+                            if (STARCH_updateMetadataForChromosome(md, 
+                                                                   prevChromosome, 
+                                                                   compressedFn, 
+                                                                   currentRecSize, 
+                                                                   lineIdx, 
+                                                                   totalNonUniqueBases, 
+                                                                   totalUniqueBases, 
+                                                                   duplicateElementExistsFlag, 
+                                                                   nestedElementExistsFlag) != STARCH_EXIT_SUCCESS) {
                                 fprintf(stderr, "ERROR: Could not update metadata %s\n", compressedFn);
                                 return STARCH_FATAL_ERROR;
                             }
@@ -1524,11 +1913,20 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                             fprintf(stderr, "\t(final-between-chromosome) current chromosome: %s\n", prevChromosome);
                             fprintf(stderr, "\t(final-between-chromosome) transformedBuffer:\n%s\n", transformedBuffer);
 #endif
+#ifdef __cplusplus
+                            zStream.next_in = reinterpret_cast<unsigned char *>( transformedBuffer );
+                            zStream.avail_in = static_cast<unsigned int>( currentTransformedBufferLength );
+#else
                             zStream.next_in = (unsigned char *) transformedBuffer;
-                            zStream.avail_in = (uInt) currentTransformedBufferLength;
+                            zStream.avail_in = (unsigned int) currentTransformedBufferLength;
+#endif
                             do {
                                 zStream.avail_out = STARCH_Z_BUFFER_MAX_LENGTH;
+#ifdef __cplusplus
+                                zStream.next_out = reinterpret_cast<unsigned char *>( zBuffer );
+#else
                                 zStream.next_out = (unsigned char *) zBuffer;
+#endif
                                 zError = deflate (&zStream, Z_FINISH);
                                 switch (zError) {
                                     case Z_MEM_ERROR: {
@@ -1571,7 +1969,15 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                             fprintf(stderr, "\t(final-between-chromosome) closed z-stream...\n");
                             fprintf(stderr, "\t(final-between-chromosome) updating metadata...\n");
 #endif
-                            if (STARCH_updateMetadataForChromosome(md, prevChromosome, compressedFn, currentRecSize, lineIdx, totalNonUniqueBases, totalUniqueBases) != STARCH_EXIT_SUCCESS) {
+                            if (STARCH_updateMetadataForChromosome(md, 
+                                                                   prevChromosome, 
+                                                                   compressedFn, 
+                                                                   currentRecSize, 
+                                                                   lineIdx, 
+                                                                   totalNonUniqueBases, 
+                                                                   totalUniqueBases, 
+                                                                   duplicateElementExistsFlag, 
+                                                                   nestedElementExistsFlag) != STARCH_EXIT_SUCCESS) {
                                 fprintf(stderr, "ERROR: Could not update metadata %s\n", compressedFn);
                                 return STARCH_FATAL_ERROR;
                             }
@@ -1618,7 +2024,14 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 #endif
                     if (recIdx == 0) {
                         *md = NULL;
-                        *md = STARCH_createMetadata(chromosome, compressedFn, 0, 0UL, 0UL, 0UL);
+                        *md = STARCH_createMetadata(chromosome, 
+                                                    compressedFn, 
+                                                    0, 
+                                                    0UL, 
+                                                    0UL, 
+                                                    0UL, 
+                                                    STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE, 
+                                                    STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE);
                         if (!*md) { 
                             fprintf(stderr, "ERROR: Not enough memory is available\n");
                             return STARCH_EXIT_FAILURE;
@@ -1626,7 +2039,15 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                         firstRecord = *md;
                     }
                     else {
-                        *md = STARCH_addMetadata(*md, chromosome, compressedFn, 0, 0UL, 0UL, 0UL);
+                        *md = STARCH_addMetadata(*md, 
+                                                 chromosome, 
+                                                 compressedFn, 
+                                                 0, 
+                                                 0UL, 
+                                                 0UL, 
+                                                 0UL, 
+                                                 STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE, 
+                                                 STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE);
                     }
 
                     /* make previous chromosome the current chromosome */
@@ -1634,12 +2055,20 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                         free(prevChromosome);
                         prevChromosome = NULL;
                     }
-                    prevChromosome = (char *) malloc(strlen(chromosome) + 1);
+#ifdef __cplusplus
+                    prevChromosome = static_cast<char *>( malloc(strlen(chromosome) + 1) );
+#else
+                    prevChromosome = malloc(strlen(chromosome) + 1);
+#endif
                     if (!prevChromosome) {
                         fprintf(stderr, "ERROR: Could not allocate space for previous chromosome marker.");
                         return STARCH_FATAL_ERROR;
                     }
+#ifdef __cplusplus
+                    strncpy(prevChromosome, reinterpret_cast<const char *>( chromosome ), strlen(chromosome) + 1);
+#else
                     strncpy(prevChromosome, (const char *) chromosome, strlen(chromosome) + 1);
+#endif
 
                     /* reset flag, lastPosition and lcDiff, increment record index */
 #ifdef DEBUG
@@ -1647,11 +2076,15 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 #endif
                     withinChr = kStarchFalse;
                     lastPosition = 0;
+                    pStart = 0;
+                    pStop = 0;
                     previousStop = 0;
                     lcDiff = 0;
                     lineIdx = 0UL;
                     totalNonUniqueBases = 0UL;
                     totalUniqueBases = 0UL;
+                    duplicateElementExistsFlag = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+                    nestedElementExistsFlag = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
                     recIdx++;
                     currentRecSize = 0UL;
                     transformedBuffer[currentTransformedBufferLength] = '\0';
@@ -1661,7 +2094,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                     withinChr = kStarchTrue;
 
                 if (lineType != kBedLineCoordinates) {
+#ifdef __cplusplus
+                    strncat(nonCoordLineBuf, reinterpret_cast<const char *>( chromosome ), strlen(chromosome) + 1);
+#else
                     strncat(nonCoordLineBuf, (const char *)chromosome, strlen(chromosome) + 1);
+#endif
                     nonCoordLineBuf[strlen(nonCoordLineBuf)] = '\n';
                     nonCoordLineBufNeedsPrinting = kStarchTrue;
                 }
@@ -1693,7 +2130,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                         else 
                             sprintf(intermediateBuffer + strlen(intermediateBuffer), "%" PRId64 "\n", start);
                     }
-                    intermediateBufferLength = strlen(intermediateBuffer);                
+                    intermediateBufferLength = strlen(intermediateBuffer);
 
                     if ((currentTransformedBufferLength + intermediateBufferLength) < STARCH_BUFFER_MAX_LENGTH) {
                         /* append intermediateBuffer to transformedBuffer */
@@ -1714,7 +2151,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 #ifdef DEBUG
                             fprintf(stderr, "\t(intermediate) current chromosome: %s\n", prevChromosome);
 #endif
+#ifdef __cplusplus
+                            BZ2_bzWrite(&bzError, bzFp, transformedBuffer, static_cast<int>( currentTransformedBufferLength ));
+#else
                             BZ2_bzWrite(&bzError, bzFp, transformedBuffer, (int) currentTransformedBufferLength);
+#endif
                             if (bzError != BZ_OK) {
                                 switch (bzError) {
                                     case BZ_PARAM_ERROR: {
@@ -1740,11 +2181,20 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 #ifdef DEBUG
                             fprintf(stderr, "\t(intermediate) current chromosome: %s\n", prevChromosome);
 #endif
+#ifdef __cplusplus
+                            zStream.next_in = reinterpret_cast<unsigned char *>( transformedBuffer );
+                            zStream.avail_in = static_cast<unsigned int>( currentTransformedBufferLength );
+#else
                             zStream.next_in = (unsigned char *) transformedBuffer;
-                            zStream.avail_in = (uInt) currentTransformedBufferLength;
+                            zStream.avail_in = (unsigned int) currentTransformedBufferLength;
+#endif
                             do {
                                 zStream.avail_out = STARCH_Z_BUFFER_MAX_LENGTH;
+#ifdef __cplusplus
+                                zStream.next_out = reinterpret_cast<unsigned char *>( zBuffer );
+#else
                                 zStream.next_out = (unsigned char *) zBuffer;
+#endif
                                 zError = deflate (&zStream, Z_NO_FLUSH);
                                 switch (zError) {
                                     case Z_MEM_ERROR: {
@@ -1765,11 +2215,20 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                                 fflush(stdout);
                             } while (zStream.avail_out == 0);
 
+#ifdef __cplusplus
+                            zStream.next_in = reinterpret_cast<unsigned char *>( intermediateBuffer );
+                            zStream.avail_in = static_cast<unsigned int>( strlen(intermediateBuffer) );
+#else
                             zStream.next_in = (unsigned char *) intermediateBuffer;
-                            zStream.avail_in = (uInt) strlen(intermediateBuffer);
+                            zStream.avail_in = (unsigned int) strlen(intermediateBuffer);
+#endif
                             do {
                                 zStream.avail_out = STARCH_Z_BUFFER_MAX_LENGTH;
+#ifdef __cplusplus
+                                zStream.next_out = reinterpret_cast<unsigned char *>( zBuffer );
+#else
                                 zStream.next_out = (unsigned char *) zBuffer;
+#endif
                                 zError = deflate (&zStream, Z_NO_FLUSH);
                                 switch (zError) {
                                     case Z_MEM_ERROR: {
@@ -1801,12 +2260,37 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                     }
 
                     lastPosition = stop;
+#ifdef __cplusplus
+                    totalNonUniqueBases += static_cast<BaseCountType>( stop - start );
+                    if (previousStop <= start)
+                        totalUniqueBases += static_cast<BaseCountType>( stop - start );
+                    else if (previousStop < stop)
+                        totalUniqueBases += static_cast<BaseCountType>( stop - previousStop );
+#else
                     totalNonUniqueBases += (BaseCountType) (stop - start);
                     if (previousStop <= start)
                         totalUniqueBases += (BaseCountType) (stop - start);
                     else if (previousStop < stop)
                         totalUniqueBases += (BaseCountType) (stop - previousStop);
+#endif
                     previousStop = (stop > previousStop) ? stop : previousStop;
+
+#ifdef DEBUG
+                    fprintf(stderr, "\t(intermediate) start: %" PRId64 "\tpStart: %" PRId64 "\tstop: %" PRId64 "\tpStop: %" PRId64 "\n", start, pStart, stop, pStop);
+                    fprintf(stderr, "\t(intermediate) duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", (int) duplicateElementExistsFlag, (int) nestedElementExistsFlag);
+#endif
+
+                    /* test for duplicate element */
+                    if ((pStart == start) && (pStop == stop))
+                        duplicateElementExistsFlag = kStarchTrue;
+                    
+                    /* test for nested element */
+                    if ((pStart < start) && (pStop > stop))
+                        nestedElementExistsFlag = kStarchTrue;
+                
+                    /* set pElement values */
+                    pStart = start;
+                    pStop = stop;
                 }
 
                 if (withinChr == kStarchTrue) 
@@ -1822,7 +2306,83 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
         }
         else
             cIdx++;
-     }
+    }
+
+    /* if we don't have a trailing newline in BED input, then we have reached EOF before we can process a line, so we try that now */
+
+    if (cIdx > 0) {
+        untransformedBuffer[cIdx] = '\0';
+        if (STARCH_createTransformTokensForHeaderlessInput(untransformedBuffer, '\t', &chromosome, &start, &stop, &remainder) == 0)  {
+#ifdef DEBUG
+            fprintf(stderr, "\t(just-before-last-pass) untransformedBuffer:\n%s\n", untransformedBuffer);
+#endif
+
+            /* transform */
+            if (stop > start)
+                coordDiff = stop - start;
+            else {
+                fprintf(stderr, "ERROR: BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
+                return STARCH_FATAL_ERROR;
+            }
+            if (coordDiff != lcDiff) {
+                lcDiff = coordDiff;
+                sprintf(intermediateBuffer + strlen(intermediateBuffer), "p%" PRId64 "\n", coordDiff);
+            }
+            if (lastPosition != 0) {
+                if (remainder)
+                    sprintf(intermediateBuffer + strlen(intermediateBuffer), "%" PRId64 "\t%s\n", (start - lastPosition), remainder);
+                else
+                    sprintf(intermediateBuffer + strlen(intermediateBuffer), "%" PRId64 "\n", (start - lastPosition));
+            }
+            else {
+                if (remainder)
+                    sprintf(intermediateBuffer + strlen(intermediateBuffer), "%" PRId64 "\t%s\n", start, remainder);
+                else
+                    sprintf(intermediateBuffer + strlen(intermediateBuffer), "%" PRId64 "\n", start);
+            }
+            intermediateBufferLength = strlen(intermediateBuffer);
+            
+            /* append intermediateBuffer to transformedBuffer */
+
+            memcpy(transformedBuffer + currentTransformedBufferLength, intermediateBuffer, intermediateBufferLength);
+            currentTransformedBufferLength += intermediateBufferLength;
+            transformedBuffer[currentTransformedBufferLength] = '\0';
+            memset(intermediateBuffer, 0, intermediateBufferLength + 1);
+            
+            lastPosition = stop;
+#ifdef __cplusplus
+            totalNonUniqueBases += static_cast<BaseCountType>( stop - start );
+            if (previousStop <= start)
+                totalUniqueBases += static_cast<BaseCountType>( stop - start );
+            else if (previousStop < stop) 
+                totalUniqueBases += static_cast<BaseCountType>( stop - previousStop );
+#else
+            totalNonUniqueBases += (BaseCountType) (stop - start);
+            if (previousStop <= start)
+                totalUniqueBases += (BaseCountType) (stop - start);
+            else if (previousStop < stop) 
+                totalUniqueBases += (BaseCountType) (stop - previousStop);
+#endif
+            previousStop = (stop > previousStop) ? stop : previousStop;
+
+#ifdef DEBUG
+            fprintf(stderr, "\t(just-before-last-pass) start: %" PRId64 "\tpStart: %" PRId64 "\tstop: %" PRId64 "\tpStop: %" PRId64 "\n", start, pStart, stop, pStop);
+            fprintf(stderr, "\t(just-before-last-pass) duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", (int) duplicateElementExistsFlag, (int) nestedElementExistsFlag);
+#endif
+
+            /* test for duplicate element */
+            if ((pStart == start) && (pStop == stop))
+                duplicateElementExistsFlag = kStarchTrue;
+
+            /* test for nested element */
+            if ((pStart < start) && (pStop > stop))
+                nestedElementExistsFlag = kStarchTrue;
+        }
+        else {
+            fprintf(stderr, "ERROR: BED data is corrupt at line %lu\n", lineIdx);
+            return STARCH_FATAL_ERROR;
+        }
+    }
     
     lineIdx++;
     sprintf(compressedFn, "%s.%s", prevChromosome, tag);
@@ -1838,7 +2398,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 #endif
         if (currentTransformedBufferLength > 0) 
         {
+#ifdef __cplusplus
+            BZ2_bzWrite(&bzError, bzFp, transformedBuffer, static_cast<int>( currentTransformedBufferLength ));
+#else
             BZ2_bzWrite(&bzError, bzFp, transformedBuffer, (int) currentTransformedBufferLength);
+#endif
             if (bzError != BZ_OK) {
                 switch (bzError) {
                     case BZ_PARAM_ERROR: {
@@ -1902,11 +2466,20 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 #ifdef DEBUG
             fprintf(stderr, "\t(last-pass) current chromosome: %s\n", prevChromosome);
 #endif
+#ifdef __cplusplus
+            zStream.next_in = reinterpret_cast<unsigned char *>( transformedBuffer );
+            zStream.avail_in = static_cast<unsigned int>( currentTransformedBufferLength );
+#else
             zStream.next_in = (unsigned char *) transformedBuffer;
-            zStream.avail_in = (uInt) currentTransformedBufferLength;
+            zStream.avail_in = (unsigned int) currentTransformedBufferLength;
+#endif
             do {
                 zStream.avail_out = STARCH_Z_BUFFER_MAX_LENGTH;
+#ifdef __cplusplus
+                zStream.next_out = reinterpret_cast<unsigned char *>( zBuffer );
+#else
                 zStream.next_out = (unsigned char *) zBuffer;
+#endif
                 zError = deflate(&zStream, Z_FINISH);
                 switch (zError) {
                     case Z_MEM_ERROR: {
@@ -1939,14 +2512,22 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 #ifdef DEBUG
     fprintf(stderr, "\t(last-pass) updating last md record...\n");
 #endif
-    if (STARCH_updateMetadataForChromosome(md, prevChromosome, compressedFn, currentRecSize, lineIdx,  totalNonUniqueBases, totalUniqueBases) != STARCH_EXIT_SUCCESS) {
+    if (STARCH_updateMetadataForChromosome(md, 
+                                           prevChromosome, 
+                                           compressedFn, 
+                                           currentRecSize, 
+                                           lineIdx, 
+                                           totalNonUniqueBases, 
+                                           totalUniqueBases, 
+                                           duplicateElementExistsFlag, 
+                                           nestedElementExistsFlag) != STARCH_EXIT_SUCCESS) {
         /* 
            If the stream or input file contains no BED records, then the Metadata pointer md will
            be NULL, as will the char pointer prevChromosome. So we put in a stub metadata record.
         */
         lineIdx = 0;
         *md = NULL;
-        *md = STARCH_createMetadata(nullChr, nullCompressedFn, currentRecSize, lineIdx, 0UL, 0UL);
+        *md = STARCH_createMetadata(nullChr, nullCompressedFn, currentRecSize, lineIdx, 0UL, 0UL, STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE, STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE);
         if (!*md) {
             fprintf(stderr, "ERROR: Not enough memory is available\n");
             return STARCH_EXIT_FAILURE;
@@ -1970,26 +2551,42 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 #ifdef DEBUG
     fprintf(stderr, "\twriting md signature...\n");
 #endif
+#ifdef __cplusplus
+    STARCH_SHA1_All(reinterpret_cast<const unsigned char *>( json ), strlen(json), sha1Digest);
+#else
     STARCH_SHA1_All((const unsigned char *)json, strlen(json), sha1Digest);
+#endif
 
     /* encode signature in base64 encoding */
 #ifdef DEBUG
     fprintf(stderr, "\tencoding md signature...\n");
 #endif
+#ifdef __cplusplus
+    STARCH_encodeBase64(&base64EncodedSha1Digest, static_cast<size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), reinterpret_cast<const unsigned char *>( sha1Digest ), static_cast<size_t>( STARCH2_MD_FOOTER_SHA1_LENGTH ));
+#else
     STARCH_encodeBase64(&base64EncodedSha1Digest, (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, (const unsigned char *) sha1Digest, (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
+#endif
 
     /* build footer */
 #ifdef DEBUG
     fprintf(stderr, "\tWARNING:\nmdLength: %llu\nmd   - [%s]\nsha1 - [%s]\n", (unsigned long long) strlen(json), json, sha1Digest);
     fprintf(stderr, "\twriting offset and signature to output stream...\n");
 #endif
+#ifdef __cplusplus
+    sprintf(footerCumulativeRecordSizeBuffer, "%020llu", static_cast<unsigned long long>( cumulativeRecSize )); /* we cast this size_t to an unsigned long long in order to allow warning-free compilation with an ISO C++ compiler like g++ */
+#else
     sprintf(footerCumulativeRecordSizeBuffer, "%020llu", (unsigned long long) cumulativeRecSize); /* we cast this size_t to an unsigned long long in order to allow warning-free compilation with an ISO C++ compiler like g++ */
+#endif
 #ifdef DEBUG
     fprintf(stderr, "\tfooterCumulativeRecordSizeBuffer: %s\n", footerCumulativeRecordSizeBuffer);
 #endif
     memcpy(footerBuffer, footerCumulativeRecordSizeBuffer, strlen(footerCumulativeRecordSizeBuffer));
     memcpy(footerBuffer + STARCH2_MD_FOOTER_CUMULATIVE_RECORD_SIZE_LENGTH, base64EncodedSha1Digest, STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH - 1); /* strip trailing null */
+#ifdef __cplusplus
+    memset(footerRemainderBuffer, STARCH2_MD_FOOTER_REMAINDER_UNUSED_CHAR, static_cast<size_t>( STARCH2_MD_FOOTER_REMAINDER_LENGTH ));
+#else
     memset(footerRemainderBuffer, STARCH2_MD_FOOTER_REMAINDER_UNUSED_CHAR, (size_t) STARCH2_MD_FOOTER_REMAINDER_LENGTH);
+#endif
 #ifdef DEBUG
     fprintf(stderr, "\tfooterRemainderBuffer: [%s]\n", footerRemainderBuffer);
 #endif
@@ -2025,6 +2622,8 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     unsigned long lineIdx = 0UL;
     int64_t start = 0;
     int64_t stop = 0;
+    int64_t pStart = 0;
+    int64_t pStop = 0;
     int64_t previousStop = 0;
     int64_t lastPosition = 0;
     int64_t lcDiff = 0;
@@ -2035,6 +2634,8 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     Boolean withinChr = kStarchFalse;
     unsigned long totalNonUniqueBases = 0UL;
     unsigned long totalUniqueBases = 0UL;
+    Boolean duplicateElementExistsFlag = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+    Boolean nestedElementExistsFlag = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
     size_t intermediateBufferLength = 0U;
     size_t currentTransformedBufferLength = 0U;
     size_t recIdx = 0U;
@@ -2068,7 +2669,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #endif
     cumulativeRecSize += STARCH2_MD_HEADER_BYTE_LENGTH;
 
-    compressedFn = (char *) malloc(STARCH_STREAM_METADATA_FILENAME_MAX_LENGTH);
+#ifdef __cplusplus
+    compressedFn = static_cast<char *>( malloc(STARCH_STREAM_METADATA_FILENAME_MAX_LENGTH) );
+#else
+    compressedFn = malloc(STARCH_STREAM_METADATA_FILENAME_MAX_LENGTH);
+#endif
     if (!compressedFn) {
         fprintf(stderr, "ERROR: Could not allocate space to compressed filename stub\n");
         return STARCH_EXIT_FAILURE;
@@ -2139,8 +2744,13 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     }
 
     /* fill up a "transformation" buffer with data and then compress it */
+#ifdef __cplusplus
+    while ((c = fgetc(const_cast<FILE *>( inFp ))) != EOF) {
+        untransformedBuffer[cIdx] = static_cast<char>( c );
+#else
     while ((c = fgetc((FILE *)inFp)) != EOF) {
         untransformedBuffer[cIdx] = (char) c;
+#endif
         if (c == '\n') {
             lineIdx++;
             untransformedBuffer[cIdx] = '\0';
@@ -2148,8 +2758,12 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
             if (STARCH_createTransformTokensForHeaderlessInput(untransformedBuffer, '\t', &chromosome, &start, &stop, &remainder) == 0) 
             {
                 if ( (!prevChromosome) || (strcmp(chromosome, prevChromosome) != 0) ) {
-                    if (prevChromosome) {                        
+                    if (prevChromosome) {
+#ifdef __cplusplus
+		        if (STARCH_chromosomeInMetadataRecords(reinterpret_cast<const Metadata *>( firstRecord ), chromosome) == STARCH_EXIT_SUCCESS) {
+#else
 		        if (STARCH_chromosomeInMetadataRecords((const Metadata *)firstRecord, chromosome) == STARCH_EXIT_SUCCESS) {
+#endif
 	    	            fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
                             return STARCH_FATAL_ERROR;
                         }
@@ -2162,7 +2776,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                             fprintf(stderr, "\t(final-between-chromosome) finalizing current chromosome: %s\n", prevChromosome);
 #endif
                             /* write transformed buffer to output stream */
+#ifdef __cplusplus
+                            BZ2_bzWrite(&bzError, bzFp, transformedBuffer, static_cast<int>( currentTransformedBufferLength ));
+#else
                             BZ2_bzWrite(&bzError, bzFp, transformedBuffer, (int) currentTransformedBufferLength);
+#endif
                             if (bzError != BZ_OK) {
                                 switch (bzError) {
                                     case BZ_PARAM_ERROR: {
@@ -2207,7 +2825,15 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                             bzBytesWritten = 0U;
                             bzFp = NULL;
 
-                            if (STARCH_updateMetadataForChromosome(md, prevChromosome, compressedFn, currentRecSize, lineIdx, totalNonUniqueBases, totalUniqueBases) != STARCH_EXIT_SUCCESS) {
+                            if (STARCH_updateMetadataForChromosome(md, 
+                                                                   prevChromosome, 
+                                                                   compressedFn, 
+                                                                   currentRecSize, 
+                                                                   lineIdx, 
+                                                                   totalNonUniqueBases, 
+                                                                   totalUniqueBases, 
+                                                                   duplicateElementExistsFlag, 
+                                                                   nestedElementExistsFlag) != STARCH_EXIT_SUCCESS) {
                                 fprintf(stderr, "ERROR: Could not update metadata %s\n", compressedFn);
                                 return STARCH_FATAL_ERROR;
                             }
@@ -2253,11 +2879,20 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                             fprintf(stderr, "\t(final-between-chromosome) current chromosome: %s\n", prevChromosome);
                             fprintf(stderr, "\t(final-between-chromosome) transformedBuffer:\n%s\n", transformedBuffer);
 #endif
+#ifdef __cplusplus
+                            zStream.next_in = reinterpret_cast<unsigned char *>( transformedBuffer );
+                            zStream.avail_in = static_cast<unsigned int>( currentTransformedBufferLength );
+#else
                             zStream.next_in = (unsigned char *) transformedBuffer;
-                            zStream.avail_in = (uInt) currentTransformedBufferLength;
+                            zStream.avail_in = (unsigned int) currentTransformedBufferLength;
+#endif
                             do {
                                 zStream.avail_out = STARCH_Z_BUFFER_MAX_LENGTH;
+#ifdef __cplusplus
+                                zStream.next_out = reinterpret_cast<unsigned char *>( zBuffer );
+#else
                                 zStream.next_out = (unsigned char *) zBuffer;
+#endif
                                 zError = deflate (&zStream, Z_FINISH);
                                 switch (zError) {
                                     case Z_MEM_ERROR: {
@@ -2300,7 +2935,15 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                             fprintf(stderr, "\t(final-between-chromosome) closed z-stream...\n");
                             fprintf(stderr, "\t(final-between-chromosome) updating metadata...\n");
 #endif
-                            if (STARCH_updateMetadataForChromosome(md, prevChromosome, compressedFn, currentRecSize, lineIdx, totalNonUniqueBases, totalUniqueBases) != STARCH_EXIT_SUCCESS) {
+                            if (STARCH_updateMetadataForChromosome(md, 
+                                                                   prevChromosome, 
+                                                                   compressedFn, 
+                                                                   currentRecSize, 
+                                                                   lineIdx, 
+                                                                   totalNonUniqueBases, 
+                                                                   totalUniqueBases, 
+                                                                   duplicateElementExistsFlag, 
+                                                                   nestedElementExistsFlag) != STARCH_EXIT_SUCCESS) {
                                 fprintf(stderr, "ERROR: Could not update metadata %s\n", compressedFn);
                                 return STARCH_FATAL_ERROR;
                             }
@@ -2347,7 +2990,14 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #endif
                     if (recIdx == 0) {
                         *md = NULL;
-                        *md = STARCH_createMetadata(chromosome, compressedFn, 0, 0UL, 0UL, 0UL);
+                        *md = STARCH_createMetadata(chromosome, 
+                                                    compressedFn, 
+                                                    0, 
+                                                    0UL, 
+                                                    0UL, 
+                                                    0UL, 
+                                                    STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE, 
+                                                    STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE);
                         if (!*md) { 
                             fprintf(stderr, "ERROR: Not enough memory is available\n");
                             return STARCH_EXIT_FAILURE;
@@ -2355,7 +3005,15 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                         firstRecord = *md;
                     }
                     else {
-                        *md = STARCH_addMetadata(*md, chromosome, compressedFn, 0, 0UL, 0UL, 0UL);
+                        *md = STARCH_addMetadata(*md, 
+                                                 chromosome, 
+                                                 compressedFn, 
+                                                 0, 
+                                                 0UL, 
+                                                 0UL, 
+                                                 0UL, 
+                                                 STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE,
+                                                 STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE);
                     }
 
                     /* make previous chromosome the current chromosome */
@@ -2363,12 +3021,20 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                         free(prevChromosome);
                         prevChromosome = NULL;
                     }
-                    prevChromosome = (char *) malloc(strlen(chromosome) + 1);
+#ifdef __cplusplus
+                    prevChromosome = static_cast<char *>( malloc(strlen(chromosome) + 1) );
+#else
+                    prevChromosome = malloc(strlen(chromosome) + 1);
+#endif
                     if (!prevChromosome) {
                         fprintf(stderr, "ERROR: Could not allocate space for previous chromosome marker.");
                         return STARCH_FATAL_ERROR;
                     }
+#ifdef __cplusplus
+                    strncpy(prevChromosome, reinterpret_cast<const char *>( chromosome ), strlen(chromosome) + 1);
+#else
                     strncpy(prevChromosome, (const char *) chromosome, strlen(chromosome) + 1);
+#endif
 
                     /* reset flag, lastPosition and lcDiff, increment record index */
 #ifdef DEBUG
@@ -2376,11 +3042,15 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #endif
                     withinChr = kStarchFalse;
                     lastPosition = 0;
+                    pStart = 0;
+                    pStop = 0;
                     previousStop = 0;
                     lcDiff = 0;
                     lineIdx = 0UL;
                     totalNonUniqueBases = 0UL;
                     totalUniqueBases = 0UL;
+                    duplicateElementExistsFlag = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+                    nestedElementExistsFlag = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
                     recIdx++;
                     currentRecSize = 0UL;
                     transformedBuffer[currentTransformedBufferLength] = '\0';
@@ -2431,11 +3101,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                         sprintf(intermediateBuffer + strlen(intermediateBuffer), "%" PRId64 "\n", start);
                     }
                 }
-                intermediateBufferLength = strlen(intermediateBuffer);
                 
+                intermediateBufferLength = strlen(intermediateBuffer);
 #ifdef DEBUG
                 fprintf(stderr, "\t(intermediate) state of intermediateBuffer before test:\n%s\n", intermediateBuffer);
-#endif                
+#endif
 
                 if ((currentTransformedBufferLength + intermediateBufferLength) < STARCH_BUFFER_MAX_LENGTH) {
                     /* append intermediateBuffer to transformedBuffer */
@@ -2456,7 +3126,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #ifdef DEBUG
                         fprintf(stderr, "\t(intermediate) current chromosome: %s\n", prevChromosome);
 #endif
+#ifdef __cplusplus
+                        BZ2_bzWrite(&bzError, bzFp, transformedBuffer, static_cast<int>( currentTransformedBufferLength ));
+#else
                         BZ2_bzWrite(&bzError, bzFp, transformedBuffer, (int) currentTransformedBufferLength);
+#endif
                         if (bzError != BZ_OK) {
                             switch (bzError) {
                                 case BZ_PARAM_ERROR: {
@@ -2482,11 +3156,20 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #ifdef DEBUG
                         fprintf(stderr, "\t(intermediate) current chromosome: %s\n", prevChromosome);
 #endif
+#ifdef __cplusplus
+                        zStream.next_in = reinterpret_cast<unsigned char *>( transformedBuffer );
+                        zStream.avail_in = static_cast<unsigned int>( currentTransformedBufferLength );
+#else
                         zStream.next_in = (unsigned char *) transformedBuffer;
-                        zStream.avail_in = (uInt) currentTransformedBufferLength;
+                        zStream.avail_in = (unsigned int) currentTransformedBufferLength;
+#endif
                         do {
                             zStream.avail_out = STARCH_Z_BUFFER_MAX_LENGTH;
+#ifdef __cplusplus
+                            zStream.next_out = reinterpret_cast<unsigned char *>( zBuffer );
+#else
                             zStream.next_out = (unsigned char *) zBuffer;
+#endif
                             zError = deflate (&zStream, Z_NO_FLUSH);
                             switch (zError) {
                                 case Z_MEM_ERROR: {
@@ -2518,12 +3201,43 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                 }
 
                 lastPosition = stop;
+#ifdef __cplusplus
+                totalNonUniqueBases += static_cast<BaseCountType>( stop - start );
+#else
                 totalNonUniqueBases += (BaseCountType) (stop - start);
-                if (previousStop <= start)
+#endif
+                if (previousStop <= start) {
+#ifdef __cplusplus
+                    totalUniqueBases += static_cast<BaseCountType>( stop - start );
+#else
                     totalUniqueBases += (BaseCountType) (stop - start);
-                else if (previousStop < stop)
+#endif
+		}
+                else if (previousStop < stop) {
+#ifdef __cplusplus
+                    totalUniqueBases += static_cast<BaseCountType>( stop - previousStop );
+#else
                     totalUniqueBases += (BaseCountType) (stop - previousStop);
-                previousStop = (stop > previousStop) ? stop : previousStop;                
+#endif
+		}
+                previousStop = (stop > previousStop) ? stop : previousStop;
+
+#ifdef DEBUG
+                fprintf(stderr, "\t(intermediate) start: %" PRId64 "\tpStart: %" PRId64 "\tstop: %" PRId64 "\tpStop: %" PRId64 "\n", start, pStart, stop, pStop);
+                fprintf(stderr, "\t(intermediate) duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", (int) duplicateElementExistsFlag, (int) nestedElementExistsFlag);
+#endif
+
+                /* test for duplicate element */
+                if ((pStart == start) && (pStop == stop))
+                    duplicateElementExistsFlag = kStarchTrue;
+
+                /* test for nested element */
+                if ((pStart < start) && (pStop > stop))
+                    nestedElementExistsFlag = kStarchTrue;
+                
+                /* set pElement values */
+                pStart = start;
+                pStop = stop;
 
                 if (withinChr == kStarchTrue) 
                     free(chromosome), chromosome = NULL;
@@ -2539,6 +3253,112 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
         else
             cIdx++;
     }
+
+    /* if we don't have a trailing newline in BED input, then we have reached EOF before we can process a line, so we try that now */
+
+    if (cIdx > 0) {
+        untransformedBuffer[cIdx] = '\0';
+        if (STARCH_createTransformTokensForHeaderlessInput(untransformedBuffer, '\t', &chromosome, &start, &stop, &remainder) == 0)  {
+#ifdef DEBUG
+            fprintf(stderr, "\t(just-before-last-pass) untransformedBuffer:\n%s\n", untransformedBuffer);
+#endif
+
+            /* transform */
+            if (stop > start)
+                coordDiff = stop - start;
+            else {
+                fprintf(stderr, "ERROR: BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
+                return STARCH_FATAL_ERROR;
+            }
+            if (coordDiff != lcDiff) {
+                lcDiff = coordDiff;
+#ifdef DEBUG
+                fprintf(stderr, "\t(intermediate) A -- \np%" PRId64 "\n", coordDiff);
+#endif
+                sprintf(intermediateBuffer + strlen(intermediateBuffer), "p%" PRId64 "\n", coordDiff);
+            }
+            if (lastPosition != 0) {
+                if (remainder) {                        
+#ifdef DEBUG
+                    fprintf(stderr, "\t(intermediate) B --\n%" PRId64 "\t%s\n", (start - lastPosition), remainder);
+#endif
+                    sprintf(intermediateBuffer + strlen(intermediateBuffer), "%" PRId64 "\t%s\n", (start - lastPosition), remainder);
+                }
+                else {
+#ifdef DEBUG
+                    fprintf(stderr, "\t(intermediate) C --\n%" PRId64 "\n", (start - lastPosition));
+#endif
+                    sprintf(intermediateBuffer + strlen(intermediateBuffer), "%" PRId64 "\n", (start - lastPosition));
+                }
+            }
+            else {
+                if (remainder) {
+#ifdef DEBUG
+                    fprintf(stderr, "\t(intermediate) D --\n%" PRId64 "\t%s\n", start, remainder);
+#endif
+                    sprintf(intermediateBuffer + strlen(intermediateBuffer), "%" PRId64 "\t%s\n", start, remainder);
+                }
+                else {
+#ifdef DEBUG
+                    fprintf(stderr, "\t(intermediate) E --\n%" PRId64 "\n", start);
+#endif
+                    sprintf(intermediateBuffer + strlen(intermediateBuffer), "%" PRId64 "\n", start);
+                }
+            }
+            intermediateBufferLength = strlen(intermediateBuffer);
+#ifdef DEBUG
+            fprintf(stderr, "\t(intermediate) state of intermediateBuffer before test:\n%s\n", intermediateBuffer);
+#endif
+            
+            /* append intermediateBuffer to transformedBuffer */
+#ifdef DEBUG
+            fprintf(stderr, "\t(intermediate) appending intermediateBuffer to transformedBuffer\n");
+#endif
+            memcpy(transformedBuffer + currentTransformedBufferLength, intermediateBuffer, intermediateBufferLength);
+            currentTransformedBufferLength += intermediateBufferLength;
+            transformedBuffer[currentTransformedBufferLength] = '\0';
+            memset(intermediateBuffer, 0, intermediateBufferLength + 1);
+            
+            lastPosition = stop;
+#ifdef __cplusplus
+            totalNonUniqueBases += static_cast<BaseCountType>( stop - start );
+#else
+            totalNonUniqueBases += (BaseCountType) (stop - start);
+#endif
+            if (previousStop <= start) {
+#ifdef __cplusplus
+                totalUniqueBases += static_cast<BaseCountType>( stop - start );
+#else
+                totalUniqueBases += (BaseCountType) (stop - start);
+#endif
+	    }
+            else if (previousStop < stop) {
+#ifdef __cplusplus
+                totalUniqueBases += static_cast<BaseCountType>( stop - previousStop );
+#else
+                totalUniqueBases += (BaseCountType) (stop - previousStop);
+#endif
+	    }
+            previousStop = (stop > previousStop) ? stop : previousStop;
+
+#ifdef DEBUG
+            fprintf(stderr, "\t(intermediate) start: %" PRId64 "\tpStart: %" PRId64 "\tstop: %" PRId64 "\tpStop: %" PRId64 "\n", start, pStart, stop, pStop);
+            fprintf(stderr, "\t(intermediate) duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", (int) duplicateElementExistsFlag, (int) nestedElementExistsFlag);
+#endif
+
+            /* test for duplicate element */
+            if ((pStart == start) && (pStop == stop))
+                duplicateElementExistsFlag = kStarchTrue;
+
+            /* test for nested element */
+            if ((pStart < start) && (pStop > stop))
+                nestedElementExistsFlag = kStarchTrue;
+        }
+        else {
+            fprintf(stderr, "ERROR: BED data is corrupt at line %lu\n", lineIdx);
+            return STARCH_FATAL_ERROR;
+        }
+    }
     
     lineIdx++;
     sprintf(compressedFn, "%s.%s", prevChromosome, tag);
@@ -2553,7 +3373,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #endif
         if (currentTransformedBufferLength > 0) 
         {
+#ifdef __cplusplus
+            BZ2_bzWrite(&bzError, bzFp, transformedBuffer, static_cast<int>( currentTransformedBufferLength ));
+#else
             BZ2_bzWrite(&bzError, bzFp, transformedBuffer, (int) currentTransformedBufferLength);
+#endif
             if (bzError != BZ_OK) {
                 switch (bzError) {
                     case BZ_PARAM_ERROR: {
@@ -2618,11 +3442,20 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #ifdef DEBUG
             fprintf(stderr, "\t(last-pass) current chromosome: %s\n", prevChromosome);
 #endif
+#ifdef __cplusplus
+            zStream.next_in = reinterpret_cast<unsigned char *>( transformedBuffer );
+            zStream.avail_in = static_cast<unsigned int>( currentTransformedBufferLength );
+#else
             zStream.next_in = (unsigned char *) transformedBuffer;
-            zStream.avail_in = (uInt) currentTransformedBufferLength;
+            zStream.avail_in = (unsigned int) currentTransformedBufferLength;
+#endif
             do {
                 zStream.avail_out = STARCH_Z_BUFFER_MAX_LENGTH;
+#ifdef __cplusplus
+                zStream.next_out = reinterpret_cast<unsigned char *>( zBuffer );
+#else
                 zStream.next_out = (unsigned char *) zBuffer;
+#endif
                 zError = deflate(&zStream, Z_FINISH);
                 switch (zError) {
                     case Z_MEM_ERROR: {
@@ -2654,15 +3487,31 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 
 #ifdef DEBUG
     fprintf(stderr, "\t(last-pass) updating last md record...\n");
+    fprintf(stderr, "\t(last-pass) flag state: duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", (int) duplicateElementExistsFlag, (int) nestedElementExistsFlag);
 #endif
-    if (STARCH_updateMetadataForChromosome(md, prevChromosome, compressedFn, currentRecSize, lineIdx,  totalNonUniqueBases, totalUniqueBases) != STARCH_EXIT_SUCCESS) {
+    if (STARCH_updateMetadataForChromosome(md, 
+                                           prevChromosome, 
+                                           compressedFn, 
+                                           currentRecSize, 
+                                           lineIdx, 
+                                           totalNonUniqueBases, 
+                                           totalUniqueBases,
+                                           duplicateElementExistsFlag,
+                                           nestedElementExistsFlag) != STARCH_EXIT_SUCCESS) {
         /* 
            If the stream or input file contains no BED records, then the Metadata pointer md will
            be NULL, as will the char pointer prevChromosome. So we put in a stub metadata record.
         */
         lineIdx = 0;
         *md = NULL;
-        *md = STARCH_createMetadata(nullChr, nullCompressedFn, currentRecSize, lineIdx, 0UL, 0UL);
+        *md = STARCH_createMetadata(nullChr, 
+                                    nullCompressedFn, 
+                                    currentRecSize, 
+                                    lineIdx, 
+                                    0UL, 
+                                    0UL,
+                                    STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE,
+                                    STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE);
         if (!*md) { 
             fprintf(stderr, "ERROR: Not enough memory is available\n");
             return STARCH_EXIT_FAILURE;
@@ -2686,27 +3535,44 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     fprintf(stderr, "\twriting md signature...\n");
 #endif
     jsonCopy = STARCH_strdup(json);
+#ifdef __cplusplus
+    STARCH_SHA1_All(reinterpret_cast<const unsigned char *>( jsonCopy ), strlen(jsonCopy), sha1Digest);
+#else
     STARCH_SHA1_All((const unsigned char *)jsonCopy, strlen(jsonCopy), sha1Digest);
+#endif
     free(jsonCopy);
 
     /* encode signature in base64 encoding */
 #ifdef DEBUG
     fprintf(stderr, "\tencoding md signature...\n");
 #endif
+
+#ifdef __cplusplus
+    STARCH_encodeBase64(&base64EncodedSha1Digest, static_cast<size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), reinterpret_cast<const unsigned char *>( sha1Digest ), static_cast<size_t>( STARCH2_MD_FOOTER_SHA1_LENGTH ) );
+#else
     STARCH_encodeBase64(&base64EncodedSha1Digest, (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, (const unsigned char *) sha1Digest, (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
+#endif
 
     /* build footer */
 #ifdef DEBUG
     fprintf(stderr, "\tWARNING:\nmdLength: %llu\nmd   - [%s]\nsha1 - [%s]\n", (unsigned long long) strlen(json), json, sha1Digest);
     fprintf(stderr, "\twriting offset and signature to output stream...\n");
 #endif
+#ifdef __cplusplus
+    sprintf(footerCumulativeRecordSizeBuffer, "%020llu", static_cast<unsigned long long>( cumulativeRecSize )); /* size_t cast to unsigned long long to avoid compilation warnings from ISO C++ compiler */
+#else
     sprintf(footerCumulativeRecordSizeBuffer, "%020llu", (unsigned long long) cumulativeRecSize); /* size_t cast to unsigned long long to avoid compilation warnings from ISO C++ compiler */
+#endif
 #ifdef DEBUG
     fprintf(stderr, "\tfooterCumulativeRecordSizeBuffer: %s\n", footerCumulativeRecordSizeBuffer);
 #endif
     memcpy(footerBuffer, footerCumulativeRecordSizeBuffer, strlen(footerCumulativeRecordSizeBuffer));
     memcpy(footerBuffer + STARCH2_MD_FOOTER_CUMULATIVE_RECORD_SIZE_LENGTH, base64EncodedSha1Digest, STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH - 1); /* strip trailing null */
+#ifdef __cplusplus
+    memset(footerRemainderBuffer, STARCH2_MD_FOOTER_REMAINDER_UNUSED_CHAR, static_cast<size_t>( STARCH2_MD_FOOTER_REMAINDER_LENGTH ));
+#else
     memset(footerRemainderBuffer, STARCH2_MD_FOOTER_REMAINDER_UNUSED_CHAR, (size_t) STARCH2_MD_FOOTER_REMAINDER_LENGTH);
+#endif
 #ifdef DEBUG
     fprintf(stderr, "\tfooterRemainderBuffer: [%s]\n", footerRemainderBuffer);
 #endif
@@ -2741,7 +3607,11 @@ STARCH2_writeStarchHeaderToOutputFp(const unsigned char *header, const FILE *out
         return STARCH_EXIT_FAILURE;
     }
 
+#ifdef __cplusplus
+    if (fwrite(header, STARCH2_MD_HEADER_BYTE_LENGTH, 1, const_cast<FILE *>( outFp )) != 1) {
+#else
     if (fwrite(header, STARCH2_MD_HEADER_BYTE_LENGTH, 1, (FILE *)outFp) != 1) {
+#endif
         fprintf(stderr, "ERROR: Could not write all of starch header items to output file pointer.\n");
         return STARCH_EXIT_FAILURE;
     }
@@ -2757,7 +3627,11 @@ STARCH2_initializeStarchHeader(unsigned char **header)
 #endif
     int idx;
 
-    *header = (unsigned char *) malloc (STARCH2_MD_HEADER_BYTE_LENGTH);
+#ifdef __cplusplus
+    *header = static_cast<unsigned char *>( malloc (STARCH2_MD_HEADER_BYTE_LENGTH) );
+#else
+    *header = malloc (STARCH2_MD_HEADER_BYTE_LENGTH);
+#endif
     if (!*header) {
         fprintf(stderr, "ERROR: Could not allocate space for header.\n");
         return STARCH_EXIT_FAILURE;

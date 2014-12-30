@@ -1,15 +1,10 @@
 /*
-  FILE: NaN.cpp
-  AUTHOR: Scott Kuehn, Shane Neph
-
-  CREATE DATE: Mon Sep 10 15:17:47 PDT 2007
-  PROJECT: utility
-  ID: $Id$
+  Author: Scott Kuehn, Shane Neph
+  Date:   Mon Sep 10 15:17:47 PDT 2007
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -30,4 +25,4 @@
 
 namespace Signal {
   NaN::Type NaN::nan_ = "NAN";
-} // Signal
+} // namespace Signal

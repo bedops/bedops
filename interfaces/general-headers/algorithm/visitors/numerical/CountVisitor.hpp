@@ -1,14 +1,10 @@
 /*
-  FILE: CountVisitor.hpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Wed Sep  5 09:23:00 PDT 2007
-  PROJECT: utility
-  ID: $Id$
+  Author: Scott Kuehn, Shane Neph
+  Date:   Wed Sep  5 09:23:00 PDT 2007
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -28,7 +24,6 @@
 #ifndef COUNT_VISITOR_HPP
 #define COUNT_VISITOR_HPP
 
-
 namespace Visitors {
 
   // Count the occurrence of overlaps
@@ -40,17 +35,17 @@ namespace Visitors {
 
     typedef BaseVisitor BaseClass;
     typedef Process ProcessType;
-    typedef typename BaseClass::reference_type T;
-    typedef typename BaseClass::mapping_type V;
+    typedef typename BaseClass::RefType RefType;
+    typedef typename BaseClass::MapType MapType;
 
     explicit Count(const ProcessType& pt = ProcessType())
         : pt_(pt), count_(0)
       { /* */ }
 
-    inline void Add(V*)
+    inline void Add(MapType*)
       { ++count_; }
 
-    inline void Delete(V*)
+    inline void Delete(MapType*)
       { --count_; }
 
     inline void DoneReference() {

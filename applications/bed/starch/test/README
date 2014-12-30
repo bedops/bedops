@@ -41,6 +41,7 @@ This directory contains the following subdirectories:
   / compression_and_extraction
   / concatenation
   / metadata_integrity
+  / nesteds_and_duplicates
   / original_data
   / timing
   / updating
@@ -49,15 +50,29 @@ This directory contains the following subdirectories:
 
 Binaries
 ====================================================================================
-The "binaries" folder contains platform-specific starch binaries. The archive-v1.2 binaries 
-are sourced from our Google Code site. The archive-v1.5 binaries were compiled from a 
-private source repository through version edits to starchMetadataHelpers.h. The 
-archive-v2.0 binaries were sourced from our Google Code site (generally the latest version
-that creates a v2.0 Starch archive -- on May 21 2013 this would be a v2.2 binary release) and
-are now sourced from the Github site. As of December 19, 2013 this would be a v2.4 binary.
+To explain the version numbering applied to starch/starchcat/unstarch binaries, we make the 
+distinction between "archive version" and "binary version". 
 
-For architecture, we currently offer tests of 64-bit binaries for Linux and OS X platforms. 
-We will work in tests for 32-bit binaries at a later time, as well as Cygwin-based tests. 
+The "binary version" value will always be concurrent with the rest of the BEDOPS toolkit.
+As of April 30 2014, this is v2.5.0.
+
+The "archive version" value refers to the version of metadata contained within a Starch archive
+file. Different archive versions provide access to different metadata. As of April 30 2014, the
+current archive version is v2.1.0. 
+
+Starch binaries that can open archives containing v2.1 and older metadata are also called 
+"v2.1-metadata" binaries. Similarly, binaries that can open and access v2.0 and older metadata 
+properties are called "v2.0-metadata" binaries, and so on.
+
+The "binaries" folder in this test suite contains platform-specific starch binaries. The 
+v1.2-metadata binaries are sourced from our old Google Code site. The v1.5-metadata binaries 
+were compiled from a private source repository through version edits to starchMetadataHelpers.h. 
+The archive-v2.0 binaries were sourced from our Github site (generally the latest version
+that creates a v2.0 Starch archive; on April 30 2014 this would be a v2.4.2 binary release). 
+As of April 30, 2014 we support v2.1-metadata archives with v2.5.0 binaries.
+
+For architecture, we currently offer tests of 64-bit binaries for Linux and universal ("fat")
+binaries on the OS X platforms. We do not offer Cygwin tests at this time.
 
 
 
@@ -66,13 +81,14 @@ Original Data
 The "original_data" folder contains the "original" BED data that goes into testing the 
 functionality of starch, unstarch and starchcat. This consists of a 1M-element BED file
 created from randomly-selected hg19 chromosomes from data obtained via the UCSC Genome 
-Browser MySQL service. 
+Browser MySQL service.
 
 This file is roughly 45 Mb in size and should do a decent job in testing how we handle 
 streaming input on a typical workstation, because that file size will easily cut across 
 the size of the buffers used when handling input, compressing, and extracting data (the
-intermediate buffers used in starch, unstarch and starchcat are delicate areas where 
-compression, extraction and concatenation can easily go wrong).
+intermediate buffers used in starch, unstarch and starchcat are "delicate" areas where 
+compression, extraction and concatenation can easily go wrong -- having input data go
+over the size of these buffers is a good stress test).
 
 To create a sorted, random BED input file only, without running tests, run:
 
@@ -88,10 +104,10 @@ The remaining folders are described below and represent test categories.
 Compression and Extraction
 ====================================================================================
 To ensure backwards compatibility, this tests whether data compressed with (at this 
-time, May 21 2013, archive version v1.2, v1.5 and v2.0) starch binaries can each be 
-extracted with the two versions of unstarch: the version that created the archive, and 
-the current version of unstarch (binary v2.4). Finally, we use 'diff' to ensure that 
-the BED input and extracted output are identical.
+time, April 30 2014, archive version v1.2, v1.5, v2.0 and v2.1) starch binaries can 
+each be extracted with the versions of unstarch: the version that created the archive, 
+and  the current version of unstarch (binary v2.5). Finally, we use 'diff' to ensure 
+that the BED input and extracted output are identical.
 
 To run these tests directly:
 
@@ -112,9 +128,10 @@ For the first test, we start with the different versions of archives created in 
 "compression-and-extraction" test category. The original BED file has 1M elements, so
 we take, say, 250K elements from the first v1.2 archive and recompress them. We take 
 the next 250K elements from the next v1.5 archive and recompress those. We take the 
-remaining 500K elements from the third and final v2.0 archive and recompress them. 
+remaining 500K elements from the third and fourth v2.0 and v2.1 archives, resp. and 
+recompress them. 
 
-If we concatenate these three smaller archives, we expect that the final archive will 
+If we concatenate these smaller archives, we expect that the final archive will 
 contain all 1M original elements and in the same sort order. (If there are more, fewer 
 or different elements, or if elements are out of order, then this test fails.)
 
@@ -127,7 +144,7 @@ The third test is similar to the first, except that we work within one version o
 archive. We split the original file into 100K-element subfiles, compress them, and
 attempt to concatenate them. We expect that the final archive will have all 1M original
 elements in preserved order. This test shows that a set of starch files that contain 
-records that span multiple chromosomes can be reconstituted correctly.
+records that span multiple chromosomes can be reconstructed correctly.
 
 To run these tests directly:
 
@@ -138,7 +155,7 @@ To run these tests directly:
 Metadata Integrity
 ====================================================================================
 We extract the JSON-formatted metadata (with --list-json-no-trailing-newline) from a 
-v2.0 archive and create a Base64-encoded SHA-1 hash of that data, using OpenSSL, xxd,
+v2.1 archive and create a Base64-encoded SHA-1 hash of that data, using OpenSSL, xxd,
 and base64 command-line utilities. This is compared with the result stored in the 
 archive via --sha1-signature. If the hashes are identical, this provides assurance of
 the integrity of the metadata.
@@ -155,11 +172,27 @@ To run these tests directly:
 
 
 
+Nested and Duplicate Elements
+====================================================================================
+Starch v2.1 metadata (written by starch/starchcat v2.5 or greater, and read by unstarch
+v2.5 or greater) include flags that indicate if a nested or duplicate element is located 
+in a specified chromosome (or if the chromosome is omitted, if the condition is present 
+in any chromosome contained within the archive). Here, we test if a given BED file 
+compressed and extracted with v2.5 or greater tools display condition flags with 
+expected values.
+
+To run these tests directly:
+
+  $ make nested_and_duplicate_element_tests
+
+
+
+
 Updating
 ====================================================================================
-Starchcat can also update older archives to current archive version, writing new
-metadata in the process. We test whether v1.2 and v1.5 archives can be updated to
-v2.0 Starch archives. Additionally, we compare extracted BED streams.
+Starchcat can also update older archives to current archive version, writing fresh
+metadata in the process. We test whether v1.2, v1.5 and v2.0 archives can be updated 
+to v2.1 Starch archives. Additionally, we compare extracted BED streams.
 
 To run these tests directly:
 
@@ -167,7 +200,7 @@ To run these tests directly:
 
 
 
-Timing (to be written)
+Timing (TBD)
 ====================================================================================
 Here we will provide tests for the amount of time it takes to compress and extract 
 archives using the three versions of starch and unstarch. This should give us an idea 

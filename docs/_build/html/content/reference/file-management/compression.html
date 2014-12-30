@@ -6,15 +6,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.3.2. Compression &mdash; BEDOPS 2.4.1 documentation</title>
+    <title>6.3.2. Compression &mdash; BEDOPS 2.4.3 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/test.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '2.4.1',
+        VERSION:     '2.4.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,16 +24,16 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.3 documentation" href="../../../index.html" />
     <link rel="up" title="6.3. File management" href="../file-management.html" />
     <link rel="next" title="6.3.2.1. starch" href="compression/starch.html" />
     <link rel="prev" title="6.3.1.1. sort-bed" href="sorting/sort-bed.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -44,7 +45,7 @@
         <li class="right" >
           <a href="sorting/sort-bed.html" title="6.3.1.1. sort-bed"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li>
           <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../file-management.html" accesskey="U">6.3. File management</a> &raquo;</li> 
       </ul>
@@ -53,7 +54,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="compression">
 <h1>6.3.2. Compression<a class="headerlink" href="#compression" title="Permalink to this headline">¶</a></h1>
@@ -97,6 +98,8 @@
 <li class="toctree-l3"><a class="reference internal" href="compression/unstarch.html#whole-file-or-per-chromosome-attributes">6.3.2.2.3.3. Whole-file or per-chromosome attributes</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="compression/unstarch.html#elements">6.3.2.2.3.3.1. Elements</a></li>
 <li class="toctree-l4"><a class="reference internal" href="compression/unstarch.html#bases">6.3.2.2.3.3.2. Bases</a></li>
+<li class="toctree-l4"><a class="reference internal" href="compression/unstarch.html#duplicate-element-s">6.3.2.2.3.3.3. Duplicate element(s)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="compression/unstarch.html#nested-element-s">6.3.2.2.3.3.4. Nested element(s)</a></li>
 </ul>
 </li>
 </ul>
@@ -117,7 +120,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="compression/starch-specification.html">6.3.2.4. Starch (v2) specification</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="compression/starch-specification.html">6.3.2.4. Starch (v2.x) specification</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="compression/starch-specification.html#archive-structure">6.3.2.4.1. Archive structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compression/starch-specification.html#magic-bytes">6.3.2.4.2. Magic bytes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compression/starch-specification.html#chromosome-streams">6.3.2.4.3. Chromosome streams</a></li>
@@ -142,10 +145,10 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
-              <img class="logo" src="../../../_static/logo_with_label_v2.png" alt="Logo"/>
+              <img class="logo" src="../../../_static/logo_with_label_v3.png" alt="Logo"/>
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="sorting/sort-bed.html"
@@ -153,12 +156,14 @@
   <h4>Next topic</h4>
   <p class="topless"><a href="compression/starch.html"
                         title="next chapter">6.3.2.1. <cite>starch</cite></a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../../_sources/content/reference/file-management/compression.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../_sources/content/reference/file-management/compression.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -175,7 +180,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -187,14 +192,14 @@
         <li class="right" >
           <a href="sorting/sort-bed.html" title="6.3.1.1. sort-bed"
              >previous</a> |</li>
-        <li><a href="../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li>
           <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../file-management.html" >6.3. File management</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3b2.
     </div>
   </body>
 </html>

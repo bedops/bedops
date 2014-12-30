@@ -1,11 +1,10 @@
-// File: ByLine.hpp
-// Author: Shane Neph & Scott Kuehn
-// Date: Sun Aug 19 19:31:30 PDT 2007
-// Project: general utilities
-
+/*
+  Author: Shane Neph & Scott Kuehn
+  Date: Sun Aug 19 19:31:30 PDT 2007
+*/
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -22,11 +21,9 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro guard
 #ifndef BYLINE_H
 #define BYLINE_H
 
-// Files included
 #include <istream>
 #include <string>
 
@@ -36,15 +33,14 @@
 //   rather than by whitespace by default.
 //==============================================================================
 
-namespace Ext
-{
+namespace Ext {
   struct ByLine : public std::string {
     friend std::istream& operator>>(std::istream& is, ByLine& b) {
       std::getline(is, b);
       return(is);
     }
   };
-}
+} // namespace Ext
 
 #endif // BYLINE_H
 

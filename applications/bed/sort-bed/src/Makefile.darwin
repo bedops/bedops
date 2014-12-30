@@ -1,23 +1,19 @@
-MIN_OSX_VERSION         = 10.7
+MIN_OSX_VERSION = 10.7
 
-MAIN                    = ../../../..
-MAINAPPDIR              = ../..
-HEAD                    = $(MAIN)/interfaces/general-headers
-PROG                    = sort-bed
-DIST_DIR                = ../bin
-OBJ_DIR                 = objects
-OPTIMIZE                = -O3 -std=c++11 -stdlib=libc++
-WARNINGS                = -Weverything
-MAIN                    = ../../../..
-HEAD                    = ${MAIN}/interfaces/general-headers
-PARTY3                  = $(MAIN)/third-party
-THISDIR	                = ${shell pwd}
+MAIN            = ../../../..
+MAINAPPDIR      = ../..
+HEAD            = $(MAIN)/interfaces/general-headers
+PROG            = sort-bed
+DIST_DIR        = ../bin
+OBJ_DIR         = objects_${ARCH}
+OPTIMIZE        = -O3 -std=c++11 -stdlib=libc++
+WARNINGS        = -Weverything
+MAIN            = ../../../..
+HEAD            = ${MAIN}/interfaces/general-headers
+PARTY3          = $(MAIN)/third-party
 
-ifneq ($(wildcard .forcestatic),)
-	SFLAGS	= -static
-endif
 
-all: sort
+build: sort
 
 sort: sortbuild
 	${CXX} -o ${DIST_DIR}/${PROG}_${ARCH} ${SFLAGS} ${WARNINGS} ${OPTIMIZE} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -lc++ ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o
@@ -27,15 +23,13 @@ sortbuild: prep
 	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${PFLAGS} ${WARNINGS} ${OPTIMIZE} -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
 
 prep:
-ifneq ($(wildcard .forcestatic),)
-	rm -rf .forcestatic
-endif
-	mkdir -p ${DIST_DIR}
+	rm -rf ${OBJ_DIR}
 	mkdir -p ${OBJ_DIR}
 
 clean:
-	rm -rf ${OBJ_DIR}/*.o
-	rm -rf ${DIST_DIR}/${PROG}_${ARCH}
+	rm -rf ${OBJ_DIR}*
+	rm -rf ${DIST_DIR}/${PROG}*
+	rm -rf ${DIST_DIR}/*.${PROG}*
 
 nonstatic: sortbuild
 	${CXX} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${WARNINGS} ${OPTIMIZE} -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}

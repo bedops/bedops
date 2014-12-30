@@ -1,14 +1,10 @@
 /*
-  FILE: EchoMapIntersectLengthVisitor.hpp
-  AUTHOR: Shane Neph
-  CREATE DATE: Mon Dec  9 16:07:08 PST 2013
-  PROJECT: utility
-  ID: $Id$
+  Author: Shane Neph
+  Date:   Mon Dec  9 16:07:08 PST 2013
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -29,6 +25,7 @@
 #define INTERSECT_REF_VISITOR_HPP
 
 #include <set>
+#include <type_traits>
 
 #include "data/bed/Bed.hpp"
 #include "data/bed/BedCompare.hpp"
@@ -45,21 +42,21 @@ namespace Visitors {
              >
     struct EchoMapIntersectLength : BaseVisitor {
       typedef BaseVisitor BaseClass;
-      typedef typename BaseClass::reference_type T;
-      typedef typename BaseClass::mapping_type V;
+      typedef typename BaseClass::RefType RefType;
+      typedef typename BaseClass::MapType MapType;
   
       EchoMapIntersectLength(const ProcessType& pt = ProcessType()) : refItem_(0), pt_(pt)
         { /* */ }
   
-      inline void SetReference(T* t) { 
+      inline void SetReference(RefType* t) { 
         refItem_ = t; 
       }
   
-      inline void Delete(V* v) {
+      inline void Delete(MapType* v) {
         win_.erase(v);
       }
   
-      inline void Add(V* v) {
+      inline void Add(MapType* v) {
         win_.insert(v);
       }
   
@@ -67,7 +64,7 @@ namespace Visitors {
         std::vector<long> vec;
         typename SType::const_iterator i = win_.begin();
         while ( i != win_.end() ) {
-          T c = *refItem_;
+          typename std::remove_const<RefType>::type c = *refItem_;
           c.intersection(**i++);
           vec.push_back(c.length());
         } // while
@@ -77,10 +74,10 @@ namespace Visitors {
       virtual ~EchoMapIntersectLength() { }
   
     protected:
-      typedef Bed::GenomicAddressCompare<V, V> Comp;
-      typedef std::set<V*, Comp> SType;
+      typedef Bed::GenomicAddressCompare<MapType, MapType> Comp;
+      typedef std::set<MapType*, Comp> SType;
   
-      T* refItem_;
+      RefType* refItem_;
       ProcessType pt_;
       SType win_;
     };

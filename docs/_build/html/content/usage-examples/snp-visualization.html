@@ -6,15 +6,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.1. Visualizing the relationship of SNPs and generic genomic features &mdash; BEDOPS 2.4.1 documentation</title>
+    <title>4.1. Visualizing the relationship of SNPs and generic genomic features &mdash; BEDOPS 2.4.3 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/test.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '2.4.1',
+        VERSION:     '2.4.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,16 +24,16 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.3 documentation" href="../../index.html" />
     <link rel="up" title="4. Usage examples" href="../usage-examples.html" />
     <link rel="next" title="4.2. Collapsing multiple BED files into a master list by signal" href="master-list.html" />
     <link rel="prev" title="4. Usage examples" href="../usage-examples.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -44,7 +45,7 @@
         <li class="right" >
           <a href="../usage-examples.html" title="4. Usage examples"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li>
           <li><a href="../usage-examples.html" accesskey="U">4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>  
@@ -52,7 +53,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="visualizing-the-relationship-of-snps-and-generic-genomic-features">
 <h1>4.1. Visualizing the relationship of SNPs and generic genomic features<a class="headerlink" href="#visualizing-the-relationship-of-snps-and-generic-genomic-features" title="Permalink to this headline">¶</a></h1>
@@ -65,33 +66,33 @@
 </div>
 <div class="section" id="script">
 <h2>4.1.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python"><pre>#!/bin/tcsh -efx
+<div class="highlight-python"><div class="highlight"><pre>#!/bin/tcsh -efx
 
 sort-bed GWAS_SNPs.bed &gt; GWAS_SNPs.sorted.bed
-bedmap --ec --delim "\t" --bp-ovr 1 --echo --count GWAS_SNPs.sorted.bed LNCaP_DHS.bed &gt; SNP_DHS_matrix.bed
+bedmap --ec --delim &quot;\t&quot; --bp-ovr 1 --echo --count GWAS_SNPs.sorted.bed LNCaP_DHS.bed &gt; SNP_DHS_matrix.bed
 
 # add PrEC DHS overlap counts to matrix
-bedmap --ec --delim "\t" --bp-ovr 1 --count GWAS_SNPs.sorted.bed PrEC_DHS.bed &gt; counts.txt
+bedmap --ec --delim &quot;\t&quot; --bp-ovr 1 --count GWAS_SNPs.sorted.bed PrEC_DHS.bed &gt; counts.txt
 paste SNP_DHS_matrix.bed counts.txt &gt; new_SNP_DHS_matrix.bed
 mv new_SNP_DHS_matrix.bed SNP_DHS_matrix.bed
 
 # add CACO2 DHS overlap counts to matrix
-bedmap --ec --delim "\t" --bp-ovr 1 --count GWAS_SNPs.sorted.bed CACO2_DHS.bed &gt; counts.txt
+bedmap --ec --delim &quot;\t&quot; --bp-ovr 1 --count GWAS_SNPs.sorted.bed CACO2_DHS.bed &gt; counts.txt
 paste SNP_DHS_matrix.bed counts.txt &gt; new_SNP_DHS_matrix.bed
 mv new_SNP_DHS_matrix.bed SNP_DHS_matrix.bed
 
 # add HEPG2 DHS overlap counts to matrix
-bedmap --ec --delim "\t" --bp-ovr 1 --count GWAS_SNPs.sorted.bed HEPG2_DHS.bed &gt; counts.txt
+bedmap --ec --delim &quot;\t&quot; --bp-ovr 1 --count GWAS_SNPs.sorted.bed HEPG2_DHS.bed &gt; counts.txt
 paste SNP_DHS_matrix.bed counts.txt &gt; new_SNP_DHS_matrix.bed
 mv new_SNP_DHS_matrix.bed SNP_DHS_matrix.bed
 
 # add K562 DHS overlap counts to matrix
-bedmap --ec --delim "\t" --bp-ovr 1 --count GWAS_SNPs.sorted.bed K562_DHS.bed &gt; counts.txt
+bedmap --ec --delim &quot;\t&quot; --bp-ovr 1 --count GWAS_SNPs.sorted.bed K562_DHS.bed &gt; counts.txt
 paste SNP_DHS_matrix.bed counts.txt &gt; new_SNP_DHS_matrix.bed
 mv new_SNP_DHS_matrix.bed SNP_DHS_matrix.bed
 
 # add MCF7 DHS overlap counts to matrix
-bedmap --ec --delim "\t" --bp-ovr 1 --count GWAS_SNPs.sorted.bed MCF7_DHS.bed &gt; counts.txt
+bedmap --ec --delim &quot;\t&quot; --bp-ovr 1 --count GWAS_SNPs.sorted.bed MCF7_DHS.bed &gt; counts.txt
 paste SNP_DHS_matrix.bed counts.txt &gt; new_SNP_DHS_matrix.bed
 mv new_SNP_DHS_matrix.bed SNP_DHS_matrix.bed
 
@@ -101,25 +102,26 @@ sort -k5d SNP_DHS_matrix.bed &gt; new_SNP_DHS_matrix.bed
 mv new_SNP_DHS_matrix.bed SNP_DHS_matrix.bed
 
 # condense data fields into matrix2png form
-awk '{print $1":"$2"-"$3"_"$4"_"$5"_"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12}' SNP_DHS_matrix.bed &gt; new_SNP_DHS_matrix.txt
+awk &#39;{print $1&quot;:&quot;$2&quot;-&quot;$3&quot;_&quot;$4&quot;_&quot;$5&quot;_&quot;$6&quot;\t&quot;$7&quot;\t&quot;$8&quot;\t&quot;$9&quot;\t&quot;$10&quot;\t&quot;$11&quot;\t&quot;$12}&#39; SNP_DHS_matrix.bed &gt; new_SNP_DHS_matrix.txt
 mv new_SNP_DHS_matrix.txt SNP_DHS_matrix.txt
 
 # add header
-echo -e "0\tLNCaP\tPrEC\tCACO\tHEPG2\tK562\tMCF7" | cat - SNP_DHS_matrix.txt &gt; new_SNP_DHS_matrix.txt
+echo -e &quot;0\tLNCaP\tPrEC\tCACO\tHEPG2\tK562\tMCF7&quot; | cat - SNP_DHS_matrix.txt &gt; new_SNP_DHS_matrix.txt
 mv new_SNP_DHS_matrix.txt SNP_DHS_matrix.txt
 
 # make heatmap
-matrix2png -r -c -g -size 16:16 -mincolor yellow -midcolor black -maxcolor red -data SNP_DHS_matrix.txt &gt; SNP_DHS_matrix.png</pre>
+matrix2png -r -c -g -size 16:16 -mincolor yellow -midcolor black -maxcolor red -data SNP_DHS_matrix.txt &gt; SNP_DHS_matrix.png
+</pre></div>
 </div>
 </div>
 <div class="section" id="discussion">
 <h2>4.1.3. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
-<p>Each use of <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> is identical: the options <tt class="docutils literal"><span class="pre">--ec</span> <span class="pre">--delim</span> <span class="pre">&quot;\t&quot;</span> <span class="pre">--bp-ovr</span> <span class="pre">1</span> <span class="pre">--count</span></tt> add several settings:</p>
+<p>Each use of <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> is identical: the options <code class="docutils literal"><span class="pre">--ec</span> <span class="pre">--delim</span> <span class="pre">&quot;\t&quot;</span> <span class="pre">--bp-ovr</span> <span class="pre">1</span> <span class="pre">--count</span></code> add several settings:</p>
 <ul class="simple">
-<li>Error checking/correction (<tt class="docutils literal"><span class="pre">--ec</span></tt>)</li>
-<li>Use of the tab character as a custom field delimiter (<tt class="docutils literal"><span class="pre">--delim</span> <span class="pre">&quot;\t&quot;</span></tt>) to make results easier to parse with <tt class="docutils literal"><span class="pre">awk</span></tt> further downstream</li>
-<li>Manual specification of a single base-pair criteria for overlap (<tt class="docutils literal"><span class="pre">--bp-ovr</span> <span class="pre">1</span></tt>, although this is the default)</li>
-<li>Using <tt class="docutils literal"><span class="pre">--count</span></tt>, counting the number of mapping elements (DHSs) which overlap a reference instance (a given SNP)</li>
+<li>Error checking/correction (<code class="docutils literal"><span class="pre">--ec</span></code>)</li>
+<li>Use of the tab character as a custom field delimiter (<code class="docutils literal"><span class="pre">--delim</span> <span class="pre">&quot;\t&quot;</span></code>) to make results easier to parse with <code class="docutils literal"><span class="pre">awk</span></code> further downstream</li>
+<li>Manual specification of a single base-pair criteria for overlap (<code class="docutils literal"><span class="pre">--bp-ovr</span> <span class="pre">1</span></code>, although this is the default)</li>
+<li>Using <code class="docutils literal"><span class="pre">--count</span></code>, counting the number of mapping elements (DHSs) which overlap a reference instance (a given SNP)</li>
 </ul>
 <p>These results are calculated for each of the seven cell types and collated into matrix form to run through <a class="reference external" href="http://www.chibi.ubc.ca/matrix2png/">matrix2png</a>. We show it here to give an idea of what kind of data <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> generates, to help create these quantitative visualizations:</p>
 <a class="reference internal image-reference" href="../../_images/SNP_DHS_matrix.png"><img alt="../../_images/SNP_DHS_matrix.png" src="../../_images/SNP_DHS_matrix.png" style="width: 99%;" /></a>
@@ -131,8 +133,8 @@ matrix2png -r -c -g -size 16:16 -mincolor yellow -midcolor black -maxcolor red -
 <div class="section" id="downloads">
 <h2>4.1.4. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>The <a class="reference download internal" href="../../_downloads/SNP_DHS_heatmap.tcsh"><tt class="xref download docutils literal"><span class="pre">example</span></tt></a> script, after modification to use loops and other shell features.</li>
-<li><a class="reference download internal" href="../../_downloads/SNP_DHS_data.tgz"><tt class="xref download docutils literal"><span class="pre">Data</span></tt></a> for this example are contained in a tarball (use <tt class="docutils literal"><span class="pre">tar</span> <span class="pre">-xzf</span></tt> to extract files).</li>
+<li>The <a class="reference download internal" href="../../_downloads/SNP_DHS_heatmap.tcsh"><code class="xref download docutils literal"><span class="pre">example</span></code></a> script, after modification to use loops and other shell features.</li>
+<li><a class="reference download internal" href="../../_downloads/SNP_DHS_data.tgz"><code class="xref download docutils literal"><span class="pre">Data</span></code></a> for this example are contained in a tarball (use <code class="docutils literal"><span class="pre">tar</span> <span class="pre">-xzf</span></code> to extract files).</li>
 </ul>
 <p>The <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> tool can operate directly on Starch-formatted archives. Alternatively, use the <a class="reference internal" href="../reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a> tool to decompress Starch data files to sorted BED format.</p>
 <p>Note that these are not the full datasets that went into the original research, but snippets that should otherwise demonstrate the disease-DHS association phenomenon and the use of parts of the BEDOPS toolset.</p>
@@ -143,10 +145,10 @@ matrix2png -r -c -g -size 16:16 -mincolor yellow -midcolor black -maxcolor red -
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
-              <img class="logo" src="../../_static/logo_with_label_v2.png" alt="Logo"/>
+              <img class="logo" src="../../_static/logo_with_label_v3.png" alt="Logo"/>
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
@@ -165,12 +167,14 @@ matrix2png -r -c -g -size 16:16 -mincolor yellow -midcolor black -maxcolor red -
   <h4>Next topic</h4>
   <p class="topless"><a href="master-list.html"
                         title="next chapter">4.2. Collapsing multiple BED files into a master list by signal</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/content/usage-examples/snp-visualization.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/content/usage-examples/snp-visualization.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -187,7 +191,7 @@ matrix2png -r -c -g -size 16:16 -mincolor yellow -midcolor black -maxcolor red -
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -199,13 +203,13 @@ matrix2png -r -c -g -size 16:16 -mincolor yellow -midcolor black -maxcolor red -
         <li class="right" >
           <a href="../usage-examples.html" title="4. Usage examples"
              >previous</a> |</li>
-        <li><a href="../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li>
           <li><a href="../usage-examples.html" >4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3b2.
     </div>
   </body>
 </html>

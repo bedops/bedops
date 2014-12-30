@@ -1,14 +1,11 @@
 /*
-  FILE: BedTypes.hpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Tue Aug 14 14:44:45 PDT 2007
-  PROJECT: wg-pro
-  ID: $Id$
+  Author: Scott Kuehn, Shane Neph
+  Date:   Tue Aug 14 14:44:45 PDT 2007
 */
 
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -28,7 +25,6 @@
 #ifndef BEDTYPES_HPP
 #define BEDTYPES_HPP
 
-// Files included
 #include "data/bed/Bed.hpp"
 
 namespace Bed {

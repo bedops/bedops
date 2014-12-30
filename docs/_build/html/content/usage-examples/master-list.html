@@ -6,15 +6,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.2. Collapsing multiple BED files into a master list by signal &mdash; BEDOPS 2.4.1 documentation</title>
+    <title>4.2. Collapsing multiple BED files into a master list by signal &mdash; BEDOPS 2.4.3 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/test.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '2.4.1',
+        VERSION:     '2.4.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,16 +24,16 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.3 documentation" href="../../index.html" />
     <link rel="up" title="4. Usage examples" href="../usage-examples.html" />
     <link rel="next" title="4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes" href="distance-frequencies.html" />
     <link rel="prev" title="4.1. Visualizing the relationship of SNPs and generic genomic features" href="snp-visualization.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -44,7 +45,7 @@
         <li class="right" >
           <a href="snp-visualization.html" title="4.1. Visualizing the relationship of SNPs and generic genomic features"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li>
           <li><a href="../usage-examples.html" accesskey="U">4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>  
@@ -52,18 +53,18 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="collapsing-multiple-bed-files-into-a-master-list-by-signal">
 <span id="master-list"></span><h1>4.2. Collapsing multiple BED files into a master list by signal<a class="headerlink" href="#collapsing-multiple-bed-files-into-a-master-list-by-signal" title="Permalink to this headline">¶</a></h1>
 <p>Given a list of five-column UCSC BED files, where scores are kept in the fifth column, we want to build a &#8220;master list&#8221; of non-overlapping elements from all the inputs. Elements that initially overlap are ranked by score, and the highest scoring element is added to the master list.</p>
 <div class="section" id="bedops-tools-in-use">
 <h2>4.2.1. BEDOPS tools in use<a class="headerlink" href="#bedops-tools-in-use" title="Permalink to this headline">¶</a></h2>
-<p>In the following example, we want to merge hotspot peaks for five fetal adrenal tissues, picking the highest scoring element where there are matches. We&#8217;ll use a mix of <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> and its <tt class="docutils literal"><span class="pre">--max</span></tt> operation with <a class="reference internal" href="../reference/set-operations/bedops.html#bedops"><em>bedops</em></a> set operations to accomplish this.</p>
+<p>In the following example, we want to merge hotspot peaks for five fetal adrenal tissues, picking the highest scoring element where there are overlapping peaks. We&#8217;ll use a mix of <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> and its <code class="docutils literal"><span class="pre">--max-element</span></code> operation with <a class="reference internal" href="../reference/set-operations/bedops.html#bedops"><em>bedops</em></a> set operations to accomplish this.</p>
 </div>
 <div class="section" id="script">
 <h2>4.2.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python"><pre>#!/bin/bash
+<div class="highlight-python"><div class="highlight"><pre>#!/bin/bash
 # author : Bob Thurman
 
 beds=(fAdrenal-DS12528.dhs.bed
@@ -78,10 +79,10 @@ tmpd=/tmp/tmp$$
 mkdir -p $tmpd
 
 ## First, union all the peaks together into a single file.
-bedlist=""
+bedlist=&quot;&quot;
 for bed in ${beds[*]}
 do
-    bedlist="$bedlist $bed"
+    bedlist=&quot;$bedlist $bed&quot;
 done
 
 bedops -u $bedlist &gt; $tmpd/tmp.bed
@@ -94,14 +95,14 @@ bedops -u $bedlist &gt; $tmpd/tmp.bed
 ## Anything that overlaps the selected element is thrown out, and the
 ## process then repeats.
 iters=1
-solns=""
+solns=&quot;&quot;
 stop=0
 while [ $stop == 0 ]
 do
-    echo "merge steps..."
+    echo &quot;merge steps...&quot;
 
     ## Condense the union into merged intervals. This klugey bit
-    ## before and after the merging is because we don't want to merge
+    ## before and after the merging is because we don&#39;t want to merge
     ## regions that are simply adjacent but not overlapping
     bedops -m --range 0:-1 $tmpd/tmp.bed \
         | bedops -u --range 0:1 - \
@@ -109,17 +110,17 @@ do
 
     ## Grab the element with the highest score among all elements forming each interval.
     ## If multiple elements tie for the highest score, just grab one of them.
-    ## Result is the current master list.  Probably don't need to sort, but do it anyway
-    ## to be safe since we're not using --echo with bedmap call.
+    ## Result is the current master list.  Probably don&#39;t need to sort, but do it anyway
+    ## to be safe since we&#39;re not using --echo with bedmap call.
     bedmap --max-element $tmpd/tmpm.bed $tmpd/tmp.bed \
         | sort-bed - \
         &gt; $tmpd/$iters.bed
-    solns="$solns $tmpd/$iters.bed"
-    echo "Adding `awk 'END { print NR }' $tmpd/$iters.bed` elements"
+    solns=&quot;$solns $tmpd/$iters.bed&quot;
+    echo &quot;Adding `awk &#39;END { print NR }&#39; $tmpd/$iters.bed` elements&quot;
 
-    ## Are there any elements that don't overlap the current master
-    ## list?  If so, add those in, and repeat.  If not, we're done.
-    bedops -n -1 $tmpd/tmp.bed $tmpd/$iters.bed \
+    ## Are there any elements that don&#39;t overlap the current master
+    ## list?  If so, add those in, and repeat.  If not, we&#39;re done.
+    bedops -n 1 $tmpd/tmp.bed $tmpd/$iters.bed \
        &gt; $tmpd/tmp2.bed
 
     mv $tmpd/tmp2.bed $tmpd/tmp.bed
@@ -139,7 +140,8 @@ bedops -u $solns \
 ## Clean up
 rm -r $tmpd
 
-exit 0</pre>
+exit 0
+</pre></div>
 </div>
 </div>
 <div class="section" id="discussion">
@@ -148,7 +150,7 @@ exit 0</pre>
 <ul class="simple">
 <li><a class="reference external" href="http://genome.ucsc.edu/cgi-bin/hgFileUi?db=hg19&amp;g=wgEncodeUwDnase">http://genome.ucsc.edu/cgi-bin/hgFileUi?db=hg19&amp;g=wgEncodeUwDnase</a></li>
 </ul>
-<p>This includes hotspot data for <tt class="docutils literal"><span class="pre">DS12528</span></tt>, <tt class="docutils literal"><span class="pre">DS15123</span></tt>, <tt class="docutils literal"><span class="pre">DS17319</span></tt>, <tt class="docutils literal"><span class="pre">DS17677</span></tt> and <tt class="docutils literal"><span class="pre">DS20343</span></tt> lines.</p>
+<p>This includes hotspot data for <code class="docutils literal"><span class="pre">DS12528</span></code>, <code class="docutils literal"><span class="pre">DS15123</span></code>, <code class="docutils literal"><span class="pre">DS17319</span></code>, <code class="docutils literal"><span class="pre">DS17677</span></code> and <code class="docutils literal"><span class="pre">DS20343</span></code> lines.</p>
 </div>
 </div>
 
@@ -156,10 +158,10 @@ exit 0</pre>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
-              <img class="logo" src="../../_static/logo_with_label_v2.png" alt="Logo"/>
+              <img class="logo" src="../../_static/logo_with_label_v3.png" alt="Logo"/>
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
@@ -177,12 +179,14 @@ exit 0</pre>
   <h4>Next topic</h4>
   <p class="topless"><a href="distance-frequencies.html"
                         title="next chapter">4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/content/usage-examples/master-list.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/content/usage-examples/master-list.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -199,7 +203,7 @@ exit 0</pre>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -211,13 +215,13 @@ exit 0</pre>
         <li class="right" >
           <a href="snp-visualization.html" title="4.1. Visualizing the relationship of SNPs and generic genomic features"
              >previous</a> |</li>
-        <li><a href="../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li>
           <li><a href="../usage-examples.html" >4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3b2.
     </div>
   </body>
 </html>

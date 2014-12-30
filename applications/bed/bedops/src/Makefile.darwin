@@ -6,97 +6,59 @@ HEAD                 = $(MAIN)/interfaces/general-headers
 LIB1                 = $(MAIN)/interfaces/src/data/measurement
 LIB2                 = $(MAIN)/interfaces/src/utility
 LIB3                 = $(MAIN)/interfaces/src/data/starch
-THISDIR	             = ${shell pwd}
+THISDIR              = ${shell pwd}
 PARTY3               = ${THISDIR}/$(MAIN)/third-party
-OBJDIR               = objects
 LIBJANSSON           = libjansson.a
 LIBBZIP2             = libbz2.a
 LIBZLIB              = libz.a
-LOCALJANSSONDIR      = ${PARTY3}/jansson
+LOCALJANSSONDIR      = ${PARTY3}/darwin_intel_${ARCH}/jansson
 LOCALJANSSONLIBDIR   = ${LOCALJANSSONDIR}/lib
 LOCALJANSSONINCDIR   = ${LOCALJANSSONDIR}/include
-LOCALJANSSONLIBPATH  = ${LOCALJANSSONLIBDIR}/${LIBJANSSON}
-BOOSTLIBDIR          = $(PARTY3)/boost
-LOCALBZIP2DIR        = ${PARTY3}/bzip2
+LOCALJANSSONLIB      = ${LOCALJANSSONLIBDIR}/${LIBJANSSON}
+LOCALBZIP2DIR        = ${PARTY3}/darwin_intel_${ARCH}/bzip2
 LOCALBZIP2LIBDIR     = ${LOCALBZIP2DIR}
-LOCALBZIP2LIBPATH    = ${LOCALBZIP2LIBDIR}/${LIBBZIP2}
+LOCALBZIP2LIB        = ${LOCALBZIP2LIBDIR}/${LIBBZIP2}
 LOCALBZIP2INCDIR     = ${LOCALBZIP2DIR}
-LOCALZLIBDIR         = ${PARTY3}/zlib
-LOCALZLIBLIBDIR      = ${LOCALZLIBDIR}
-LOCALZLIBLIBPATH     = ${LOCALZLIBLIBDIR}/${LIBZLIB}
+LOCALZLIBDIR         = ${PARTY3}/darwin_intel_${ARCH}/zlib
+LOCALZLIBLIB         = ${LOCALZLIBDIR}/${LIBZLIB}
 LOCALZLIBINCDIR      = ${LOCALZLIBDIR}
-INCLUDES             = -iquote$(HEAD) -I$(BOOSTLIBDIR) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
+OBJDIR               = objects_$(ARCH)
+INCLUDES             = -iquote$(HEAD) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
+LIBLOCATION          = -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBDIR}
+LIBRARIES            = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
+STDFLAGS             = -Wall -pedantic -std=c++11 -stdlib=libc++
+BLDFLAGS             = -O3 ${STDFLAGS}
 
-NONSTATICFLAGS       = -Wall -pedantic -O3 ${INCLUDES} -std=c++11 -stdlib=libc++
+FLAGS                = $(BLDFLAGS) $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
 
-ifeq ($(wildcard .forcestatic),)
-	SFLAGS = -I$(HEAD)
-else
-	SFLAGS = -static -I$(HEAD)
-endif
+DFLAGS               = -g -O0 ${STDFLAGS} $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
 
-FLAGS               = $(SFLAGS) $(NONSTATICFLAGS) $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBLIBDIR}
+GPROFFLAGS           = -O -pg ${STDFLAGS} $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
 
-DFLAGS              = $(SFLAGS) -g -O0 -std=c++11 -Wall -pedantic $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBLIBDIR}
+SOURCE1              = Bedops.cpp
+BINDIR               = ../bin
+PROG                 = bedops
 
-GPROFFLAGS           = $(SFLAGS) -O -std=c++11 -Wall -pedantic -pg $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBLIBDIR}
-
-SOURCE1             = Bedops.cpp
-BIN                 = ../bin
-PROG                = bedops
-
-.cpp.o:; $(CC) -c $(FLAGS) $<
-
-run: dependencies
-	mkdir -p $(BIN) && $(CXX) -o $(BIN)/$(PROG)_$(ARCH) $(FLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LOCALJANSSONLIBPATH} ${LOCALBZIP2LIBPATH} ${LOCALZLIBLIBPATH} $(SOURCE1)
-	cd ${LOCALJANSSONDIR} && make clean && cd ${THISDIR}
-	cd ${LOCALBZIP2DIR} && make clean && cd ${THISDIR}
-	cd ${LOCALZLIBDIR} && make clean && cd ${THISDIR}
+build: dependencies
+	$(CXX) -o $(BINDIR)/$(PROG)_$(ARCH) $(FLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIBRARIES} $(SOURCE1)
 
 debug: dependencies
-	mkdir -p $(BIN) && $(CXX) -o $(BIN)/debug.$(PROG)_$(ARCH) $(DFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LOCALJANSSONLIBPATH} ${LOCALBZIP2LIBPATH} ${LOCALZLIBLIBPATH} $(SOURCE1)
-	cd ${LOCALJANSSONDIR} && make clean && cd ${THISDIR}
-	cd ${LOCALBZIP2DIR} && make clean && cd ${THISDIR}
-	cd ${LOCALZLIBDIR} && make clean && cd ${THISDIR}
+	$(CXX) -o $(BINDIR)/debug.$(PROG)_$(ARCH) $(DFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIBRARIES} $(SOURCE1)
 
 gprof: dependencies
-	mkdir -p $(BIN) && $(CXX) -o $(BIN)/gprof.$(PROG)_$(ARCH) $(FLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LOCALJANSSONLIBPATH} ${LOCALBZIP2LIBPATH} ${LOCALZLIBLIBPATH} $(SOURCE1)
-	cd ${LOCALJANSSONDIR} && make clean && cd ${THISDIR}
-	cd ${LOCALBZIP2DIR} && make clean && cd ${THISDIR}
-	cd ${LOCALZLIBDIR} && make clean && cd ${THISDIR}
+	$(CXX) -o $(BINDIR)/gprof.$(PROG)_$(ARCH) $(FLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIBRARIES} $(SOURCE1)
 
-nonstatic: dependencies
-	mkdir -p $(BIN) && $(CXX) -o $(BIN)/$(PROG).nonstatic_$(ARCH) $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(SOURCE1) $(OBJDIR)/NaN.o $(OBJDIR)/Formats.o
-	cd ${LOCALJANSSONDIR} && make clean && cd ${THISDIR}
-	cd ${LOCALBZIP2DIR} && make clean && cd ${THISDIR}
-	cd ${LOCALZLIBDIR} && make clean && cd ${THISDIR}
-
-jansson:
-	test -d ${LOCALJANSSONDIR} || { cd ${MAIN} && make jansson_support_c && cd ${THISDIR}; }
-	rm -rf ${LOCALJANSSONLIBDIR}/*
-	cd ${LOCALJANSSONDIR} && CC="${CC}" ./configure --prefix=${LOCALJANSSONDIR} CFLAGS="-arch $(ARCH)" --build="$(ARCH)" && make clean && make && make install && cd ${THISDIR}
-
-bzip2:
-	rm -rf ${LOCALBZIP2LIBPATH}
-	test -s ${LOCALBZIP2LIBPATH} || { cd ${MAIN} && make bzip2_support_c && cd ${LOCALBZIP2DIR} && make clean && export CC=${CC} && export CPP=${CXX} && export CXX=${CXX} && export ARCH=${ARCH} && make -f Makefile.darwin_${ARCH} libbz2.a && cd ${THISDIR}; }
-
-zlib:
-	test -s ${LOCALZLIBLIBPATH} || { cd ${MAIN} && make zlib_support_c && cd ${LOCALZLIBDIR} && echo ${PWD} && make -f ${LOCALZLIBDIR}/Makefile.in clean && CC=${CC} CPP=${CXX} CXX=${CXX} ${LOCALZLIBDIR}/configure --static --archs="-arch ${ARCH}" && make && cd ${THISDIR}; }
-
-boost:
-	test -d ${BOOSTLIBDIR} || { cd ${MAIN} && export CC=${CC} && export CXX=${CXX} && make boost_support_c && cd ${THISDIR}; }
-
-dependencies: jansson bzip2 zlib boost
+dependencies:
+	rm -rf $(OBJDIR)
 	mkdir -p $(OBJDIR)
-	$(CXX) -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB1)/NaN.cpp -o $(OBJDIR)/NaN.o -iquote${HEAD}
-	$(CXX) -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB2)/Formats.cpp -o $(OBJDIR)/Formats.o -iquote${HEAD}
-	$(CXX) -x c++ -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchConstants.c -o $(OBJDIR)/starchConstants.o ${INCLUDES}
-	$(CXX) -x c++ -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchFileHelpers.c -o $(OBJDIR)/starchFileHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchHelpers.c -o $(OBJDIR)/starchHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchMetadataHelpers.c -o $(OBJDIR)/starchMetadataHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -c $(NONSTATICFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/unstarchHelpers.c -o $(OBJDIR)/unstarchHelpers.o ${INCLUDES}
-	${CXX} -x c++ -c ${NONSTATICFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIB3}/starchSha1Digest.c -o  ${OBJDIR}/starchSha1Digest.o ${INCLUDES}
-	${CXX} -x c++ -c ${NONSTATICFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIB3}/starchBase64Coding.c -o  ${OBJDIR}/starchBase64Coding.o ${INCLUDES}
+	$(CXX) -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB1)/NaN.cpp -o $(OBJDIR)/NaN.o ${INCLUDES}
+	$(CXX) -x c++ -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchConstants.c -o $(OBJDIR)/starchConstants.o ${INCLUDES}
+	$(CXX) -x c++ -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchFileHelpers.c -o $(OBJDIR)/starchFileHelpers.o ${INCLUDES}
+	$(CXX) -x c++ -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchHelpers.c -o $(OBJDIR)/starchHelpers.o ${INCLUDES}
+	$(CXX) -x c++ -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchMetadataHelpers.c -o $(OBJDIR)/starchMetadataHelpers.o ${INCLUDES}
+	$(CXX) -x c++ -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/unstarchHelpers.c -o $(OBJDIR)/unstarchHelpers.o ${INCLUDES}
+	${CXX} -x c++ -c ${BLDFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIB3}/starchSha1Digest.c -o  ${OBJDIR}/starchSha1Digest.o ${INCLUDES}
+	${CXX} -x c++ -c ${BLDFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIB3}/starchBase64Coding.c -o  ${OBJDIR}/starchBase64Coding.o ${INCLUDES}
 
 test:
 	mkdir -p $(TMPTESTDIR)
@@ -105,10 +67,9 @@ test:
 	printf "\n\nTo run regression tests: cd $(TMPTESTDIR) && java Regression TestPlan.xml\n"
 
 clean:
-	rm -rf $(OBJDIR) $(BIN)/$(PROG)_$(ARCH)
-	cd ${LOCALJANSSONDIR} && make clean && cd ${THISDIR}
-	cd ${LOCALBZIP2DIR} && make clean && cd ${THISDIR}
-	cd ${LOCALZLIBDIR} && make -f ${LOCALZLIBDIR}/Makefile.in clean && cd ${THISDIR}
+	rm -rf $(OBJDIR)
+	rm -rf $(BINDIR)/$(PROG)*
+	rm -rf $(BINDIR)/*.$(PROG)*
 
 clean_test:
 	rm -rf $(TMPTESTDIR)

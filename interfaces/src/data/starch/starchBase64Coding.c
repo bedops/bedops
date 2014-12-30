@@ -6,7 +6,7 @@
 
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -68,7 +68,11 @@ const short kStarchBase64DecodingTable[256] = {
 void 
 STARCH_encodeBase64(char **output, const size_t outputLength, const unsigned char *inputBytes, const size_t inputLength) 
 {
+#ifdef __cplusplus
+    unsigned char *inputPointer = const_cast<unsigned char *>( inputBytes );
+#else
     unsigned char *inputPointer = (unsigned char *) inputBytes;
+#endif
     char *objPointer = NULL;
     char *strResult = NULL;
     size_t bytesLength = inputLength;
@@ -82,7 +86,11 @@ STARCH_encodeBase64(char **output, const size_t outputLength, const unsigned cha
 #endif
 
     // Setup the String-based Result placeholder and pointer within that placeholder
-    strResult = (char *) calloc(outputLength, sizeof(char));
+#ifdef __cplusplus
+    strResult = static_cast<char *>( calloc(outputLength, sizeof(char)) );
+#else
+    strResult = calloc(outputLength, sizeof(char));
+#endif
     if (!strResult) {
         fprintf(stderr, "ERROR: Could not allocate space for base64-encoded string\n");
         return;
@@ -135,7 +143,11 @@ STARCH_decodeBase64(char *input, unsigned char **output, size_t *outputLength)
     size_t intLength = strlen(objPointer);
     int intCurrent;
     int i = 0, j = 0, k;
-    unsigned char *objResult = (unsigned char *) calloc(intLength, sizeof(unsigned char));
+#ifdef __cplusplus
+    unsigned char *objResult = static_cast<unsigned char *>( calloc(intLength, sizeof(unsigned char)) );
+#else
+    unsigned char *objResult = calloc(intLength, sizeof(unsigned char));
+#endif
 
     // Run through the whole string, converting as we go
     while ( ((intCurrent = *objPointer++) != '\0') && (intLength-- > 0) ) {
@@ -158,6 +170,28 @@ STARCH_decodeBase64(char *input, unsigned char **output, size_t *outputLength)
             return;
         }
 
+#ifdef __cplusplus
+        switch (i % 4) {
+            case 0: {
+                objResult[j] = static_cast<unsigned char>( intCurrent << 2 );
+                break;
+            }
+            case 1: {
+                objResult[j++] |= intCurrent >> 4;
+                objResult[j] = static_cast<unsigned char>( (intCurrent & 0x0f) << 4 );
+                break;
+            }
+            case 2: {
+                objResult[j++] |= intCurrent >>2;
+                objResult[j] = static_cast<unsigned char>( (intCurrent & 0x03) << 6 );
+                break;
+            }
+            case 3: {
+                objResult[j++] |= intCurrent;
+                break;
+            }
+        }
+#else
         switch (i % 4) {
             case 0: {
                 objResult[j] = (unsigned char) (intCurrent << 2);
@@ -178,6 +212,7 @@ STARCH_decodeBase64(char *input, unsigned char **output, size_t *outputLength)
                 break;
             }
         }
+#endif
         i++;
     }
 
@@ -203,7 +238,11 @@ STARCH_decodeBase64(char *input, unsigned char **output, size_t *outputLength)
     }
 
     // Cleanup and setup the return bytes
+#ifdef __cplusplus
+    *outputLength = static_cast<size_t>( j );
+#else
     *outputLength = (size_t) j;
+#endif
     memcpy(*output, objResult, *outputLength);
     free(objResult);
 }

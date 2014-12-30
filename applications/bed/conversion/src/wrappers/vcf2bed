@@ -1,0 +1,164 @@
+#!/bin/bash
+
+#
+# convert2bed
+# Copyright (C) 2014 Alex Reynolds
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+
+cmd="convert2bed"
+input_format="vcf"
+output_format="bed"
+
+# general
+
+do_not_sort=false
+max_mem_set=false
+max_mem="2G"
+sort_tmpdir_set=false
+sort_tmpdir="/tmp"
+
+# format-specific
+
+do_not_split=false
+snvs=false
+insertions=false
+deletions=false
+keep_header=false
+
+help()
+{
+    ${cmd} --help-vcf
+    exit $1
+}
+
+optspec=":r:m:dhpvtnk-:"
+while getopts "$optspec" optchar; do
+    case "${optchar}" in
+        -)
+            case "${OPTARG}" in
+                sort-tmpdir)
+                    val="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                    sort_tmpdir=${val}
+                    sort_tmpdir_set=true
+                    ;;
+                sort-tmpdir=*)
+                    val=${OPTARG#*=}
+                    sort_tmpdir=${val}
+                    sort_tmpdir_set=true
+                    ;;
+                max-mem)
+                    val="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                    max_mem=${val}
+                    max_mem_set=true
+                    ;;
+                max-mem=*)
+                    val=${OPTARG#*=}
+                    max_mem=${val}
+                    max_mem_set=true
+                    ;;
+                help)
+                    val="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+                    #echo "Parsing option: '--${OPTARG}', value: '${val}'" >&2;
+                    help 0
+                    ;;
+                help=*)
+                    val=${OPTARG#*=}
+                    opt=${OPTARG%=$val}
+                    #echo "Parsing option: '--${opt}', value: '${val}'" >&2
+                    help 0
+                    ;;
+                do-not-sort)
+                    do_not_sort=true
+                    ;;
+                help-vcf)
+                    help 0
+                    ;;
+                do-not-split)
+                    do_not_split=true
+                    ;;
+                snvs)
+                    snvs=true
+                    ;;
+                insertions)
+                    insertions=true
+                    ;;
+                deletions)
+                    deletions=true
+                    ;;
+                keep-header)
+                    keep_header=true
+                    ;;
+                *)
+                    help 1
+                    #if [ "$OPTERR" = 1 ] && [ "${optspec:0:1}" != ":" ]; then echo "Unknown option --${OPTARG}" >&2; fi
+                    ;;
+            esac;;
+        r)
+            sort_tmpdir=${OPTARG}
+            sort_tmpdir_set=true
+            ;;
+        m)
+            max_mem=${OPTARG}
+            max_mem_set=true
+            ;;
+        d)
+            do_not_sort=true
+            ;;
+        h)
+            help 0
+            ;;
+        p)
+            do_not_split=true
+            ;;
+        v)
+            snvs=true
+            ;;
+        t)
+            insertions=true
+            ;;
+        n)
+            deletions=true
+            ;;
+        k)
+            keep_header=true
+            ;;
+        *)
+            help 1
+            #if [ "$OPTERR" != 1 ] || [ "${optspec:0:1}" = ":" ]; then echo "Non-option argument: '-${OPTARG}'" >&2; fi
+            ;;
+    esac
+done
+
+# base options
+
+options="--input=${input_format} --output=${output_format}"
+
+# general
+
+if [ "${max_mem_set}" = true ]; then options="${options} --max-mem=${max_mem}"; fi
+if [ "${sort_tmpdir_set}" = true ]; then options="${options} --sort-tmpdir=${sort_tmpdir}"; fi
+if [ "${do_not_sort}" = true ]; then options="${options} --do-not-sort"; fi
+
+# format-specific
+
+if [ "${do_not_split}" = true ]; then options="${options} --do-not-split"; fi
+if [ "${snvs}" = true ]; then options="${options} --snvs"; fi
+if [ "${insertions}" = true ]; then options="${options} --insertions"; fi
+if [ "${deletions}" = true ]; then options="${options} --deletions"; fi
+if [ "${keep_header}" = true ]; then options="${options} --keep-header"; fi
+
+${cmd} ${options} - <&0

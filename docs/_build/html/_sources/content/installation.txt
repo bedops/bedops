@@ -96,12 +96,14 @@ Compilation of BEDOPS on Linux requires GCC 4.8.x (both ``gcc`` and ``g++`` and 
   
      $ git clone https://github.com/bedops/bedops.git
   
-4. Enter the top-level of the local copy of the BEDOPS repository and run ``make static`` to begin the build process:
+4. Enter the top-level of the local copy of the BEDOPS repository and run ``make`` to begin the build process:
 
    ::
 
      $ cd bedops
-     $ make static
+     $ make
+
+.. tip:: BEDOPS now supports parallel builds. If you are compiling on a multicore or multiprocessor workstation, use ``make -j N`` where ``N`` is ``2``, ``4`` or however many cores or processors you have, in order to parallelize and speed up the build process.
 
 5. Once the build is complete, install compiled binaries and scripts to a local ``bin`` folder: 
 
@@ -154,7 +156,9 @@ Manual compilation
    ::
 
      $ cd bedops
-     $ make build_all_darwin_intel_fat
+     $ make
+
+.. tip:: BEDOPS now supports parallel builds. If you are compiling on a multicore or multiprocessor workstation, use ``make -j N`` where ``N`` is ``2``, ``4`` or however many cores or processors you have, in order to parallelize and speed up the build process.
 
 5. Once the build is complete, install compiled binaries and scripts to a local ``bin`` folder: 
 
@@ -247,12 +251,14 @@ Cygwin
 
      $ git clone https://github.com/bedops/bedops.git
 
-4. Enter the top-level of the local copy of the BEDOPS repository and run ``make static`` to begin the build process:
+4. Enter the top-level of the local copy of the BEDOPS repository and run ``make`` to begin the build process:
 
    ::
 
      $ cd bedops
-     $ make static
+     $ make
+
+.. tip:: BEDOPS now supports parallel builds. If you are compiling on a multicore or multiprocessor workstation, use ``make -j N`` where ``N`` is ``2``, ``4`` or however many cores or processors you have, in order to parallelize and speed up the build process.
 
 5. Once the build is complete, install compiled binaries and scripts to a local ``bin`` folder: 
 
@@ -267,6 +273,8 @@ Cygwin
      $ cp bin/* /usr/bin
 
    Change this destination folder, as needed.
+
+.. _installation_os_x_installer_construction:
 
 =====================================================
 Building an OS X installer package for redistribution

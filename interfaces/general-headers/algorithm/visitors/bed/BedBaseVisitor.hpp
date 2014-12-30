@@ -1,14 +1,10 @@
 /*
-  FILE: BedBaseVisitor.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Dec. 7, 2009
-  PROJECT: utility
-  ID: $Id$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Dec. 7, 2009
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -30,9 +26,11 @@
 
 #include <list>
 #include <set>
+#include <type_traits>
 
 #include "algorithm/WindowSweep.hpp"
 #include "data/bed/BedCompare.hpp"
+#include "data/bed/BedDistances.hpp"
 #include "utility/Assertion.hpp"
 #include "utility/Exception.hpp"
 
@@ -119,38 +117,32 @@ namespace Visitors {
 
   template <typename BedDist, typename Ref, typename Map = Ref>
   struct BedBaseVisitor {
-     typedef BedDist dist_type;
-     typedef Ref reference_type;
-     typedef Map mapping_type;
-  
-   protected:
-     // friends
-     template <class I, class R, class E>
-     friend void WindowSweep::sweep(I, I, R&, E&);
-  
-     template <class I, class J, class R, class E>
-     friend void WindowSweep::sweep(I, I, J, J, R&, E&, bool);
-  
+     typedef BedDist DistType;
+     typedef const Ref RefType;
+     typedef const Map MapType;
+
+  protected:
      // typedefs
-     typedef std::set< mapping_type*, Bed::GenomicAddressCompare<mapping_type> > OrderLesser;
+     typedef std::set<MapType*, Bed::CoordAddressCompare<MapType>> OrderLesser;
      typedef OrderLesser OrderCache;
      typedef OrderLesser OrderWin;
-  
-     // Implement what WindowSweep::sweep() needs
+
+  public:
+     // Interface for sweep()
      inline bool ManagesOwnMemory() const { return(false); }
-  
-     inline void OnStart(reference_type* t) {
+
+     inline void OnStart(RefType* t) {
        // Give derived class the new reference
        SetReference(t);
        ref_ = t;
      }
-  
-     inline void OnAdd(mapping_type* u) {
+
+     inline void OnAdd(MapType* u) {
        // Add(u); Do not add until deletions done in fixWindow()
        cache_.insert(u);
      }
-  
-     inline void OnDelete(mapping_type* u) {
+
+     inline void OnDelete(MapType* u) {
        static typename OrderWin::iterator winIter;
        winIter = win_.find(u);
        if ( winIter != win_.end() ) { // update
@@ -160,12 +152,12 @@ namespace Visitors {
          cache_.erase(u);
        }
      }
-  
+
      void OnDone() {
        fixWindow(); // deletions before insertions
        DoneReference();
      }
-  
+
      inline void OnEnd() {
        End();
        win_.clear();
@@ -175,18 +167,17 @@ namespace Visitors {
      inline void OnPurge() {
        // bed types can violate sweep's OnPurge() checks and they aren't really needed
      }
-  
-   public:
-     explicit BedBaseVisitor(const dist_type& d = dist_type()) : dist_(d)
+
+     explicit BedBaseVisitor(const DistType& d = DistType()) : dist_(d)
        { /* */ }
   
      virtual ~BedBaseVisitor() { /* */ }
-  
+
      // Derived Class interface : Must be public due to MultiVisitor-type usage
-     virtual void Delete(mapping_type*) = 0;
-     virtual void Add(mapping_type*) = 0;
+     virtual void Delete(MapType*) = 0;
+     virtual void Add(MapType*) = 0;
      virtual void DoneReference() = 0;
-     virtual inline void SetReference(reference_type*) { /* */ }
+     virtual inline void SetReference(RefType*) { /* */ }
      virtual inline void End() { /* */ }
   
    private:
@@ -196,8 +187,8 @@ namespace Visitors {
        //  checks are necessary
   
        // Are any items in the window really out of range of 't'?  See problem 2.
-       static std::list<typename OrderWin::value_type> lst;
-       typename OrderWin::iterator winIter = win_.begin();
+       static std::list<MapType*> lst;
+       auto winIter = win_.begin();
        while ( winIter != win_.end() ) {
          if ( dist_.Map2Ref(*winIter, ref_) != 0 ) {
            Delete(*winIter);
@@ -208,7 +199,7 @@ namespace Visitors {
          }
        } // while
   
-       typename OrderCache::iterator cacheIter = cache_.begin();
+       auto cacheIter = cache_.begin();
        while ( cacheIter != cache_.end() ) {
          if ( 0 == dist_.Map2Ref(*cacheIter, ref_) ) {
            Add(*cacheIter);
@@ -227,8 +218,8 @@ namespace Visitors {
      // MUST use a set with value/address compare here instead of a std::multiset
      //  This is for deleting elements and making sure multiple rows with the
      //  same coordinates each receive Delete() calls to derived classes.
-     dist_type dist_;
-     reference_type* ref_;
+     DistType dist_;
+     RefType* ref_;
      OrderCache cache_;
      OrderWin win_;
   };

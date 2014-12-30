@@ -1,14 +1,10 @@
 /*
-  FILE: OvrUniqueVisitor.hpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Wed Sep  5 09:33:15 PDT 2007
-  PROJECT: utility
-  ID: $Id$
+  Author: Scott Kuehn, Shane Neph
+  Date:   Wed Sep  5 09:33:15 PDT 2007
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -29,7 +25,7 @@
 #define OVR_UNIQUE_VISITOR_HPP
 
 #include <set>
-#include <string>
+#include <type_traits>
 
 #include "data/bed/BedCompare.hpp"
 
@@ -43,8 +39,8 @@ namespace Visitors {
              >
     struct OvrUnique : BaseVisitor {
       typedef BaseVisitor BaseClass;
-      typedef typename BaseClass::reference_type RefType;
-      typedef typename BaseClass::mapping_type MapType;
+      typedef typename BaseClass::RefType RefType;
+      typedef typename BaseClass::MapType MapType;
   
       OvrUnique(const ProcessType& pt = ProcessType()) : pt_(pt), refItem_(0)
         { /* */ }
@@ -66,7 +62,7 @@ namespace Visitors {
       inline void DoneReference() {
         unsigned int ovr = 0;
         if ( !cache_.empty() ) {
-          MapType tmpOvrRange = **cache_.begin();
+          typename std::remove_const<MapType>::type tmpOvrRange = **cache_.begin();
           cacheI i = cache_.begin();
           for ( ++i; i != cache_.end(); ++i ) {
             if ( tmpOvrRange.overlap(**i) )

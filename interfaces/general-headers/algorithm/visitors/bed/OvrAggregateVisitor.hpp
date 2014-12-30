@@ -1,14 +1,10 @@
 /*
-  FILE: OvrAggregateVisitor.hpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Wed Sep  5 09:40:33 PDT 2007
-  PROJECT: utility
-  ID: $Id$
+  Author: Scott Kuehn, Shane Neph
+  Date:   Wed Sep  5 09:40:33 PDT 2007
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -32,7 +28,6 @@
 
 #include "data/bed/BedCompare.hpp"
 
-
 namespace Visitors {
 
     namespace BedSpecific {
@@ -45,13 +40,13 @@ namespace Visitors {
              >
     struct OvrAggregate : BaseVisitor {
       typedef BaseVisitor BaseClass;
-      typedef typename BaseClass::reference_type T;
-      typedef typename BaseClass::mapping_type V;
+      typedef typename BaseClass::RefType RefType;
+      typedef typename BaseClass::MapType MapType;
   
       OvrAggregate(const ProcessType& pt = ProcessType()) : ovr_(0), refItem_(0), pt_(pt)
         { /* */ }
   
-      inline void SetReference(T* t) { 
+      inline void SetReference(RefType* t) { 
         refItem_ = t; 
         ovr_ = 0;
         if ( !cache_.empty() ) {
@@ -60,14 +55,14 @@ namespace Visitors {
         }
       }
   
-      inline void Delete(V* v) {
+      inline void Delete(MapType* v) {
         cacheI iter = cache_.find(v);
         if ( iter != cache_.end() )
           ovr_ -= coordCompare(refItem_, v);
         cache_.erase(v);
       }
   
-      inline void Add(V* v) {
+      inline void Add(MapType* v) {
         cache_.insert(v);
         ovr_ += coordCompare(refItem_, v);
       }
@@ -79,7 +74,7 @@ namespace Visitors {
       virtual ~OvrAggregate() { }
   
      protected:
-      inline unsigned long coordCompare(T* t, V* v) {
+      inline unsigned long coordCompare(RefType* t, MapType* v) {
         if ( t->start() >= v->start() ) {
           if ( v->end() > t->start() ) {
             if( v->end() > t->end() )
@@ -102,12 +97,12 @@ namespace Visitors {
       }
   
     protected:
-      typedef Bed::GenomicAddressCompare<V, V> Comp;
-      typedef std::set<V*, Comp> SType;
+      typedef Bed::GenomicAddressCompare<MapType, MapType> Comp;
+      typedef std::set<MapType*, Comp> SType;
       typedef typename SType::const_iterator cacheI;
   
       unsigned long ovr_;
-      T* refItem_;
+      RefType* refItem_;
       ProcessType pt_;
       SType cache_;
     };

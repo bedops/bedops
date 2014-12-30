@@ -6,15 +6,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.3. File management &mdash; BEDOPS 2.4.1 documentation</title>
+    <title>6.3. File management &mdash; BEDOPS 2.4.3 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/test.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '2.4.1',
+        VERSION:     '2.4.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,16 +24,16 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.3 documentation" href="../../index.html" />
     <link rel="up" title="6. Reference" href="../reference.html" />
     <link rel="next" title="6.3.1. Sorting" href="file-management/sorting.html" />
     <link rel="prev" title="6.2.1. bedmap" href="statistics/bedmap.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -44,7 +45,7 @@
         <li class="right" >
           <a href="statistics/bedmap.html" title="6.2.1. bedmap"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li>
           <li><a href="../reference.html" accesskey="U">6. Reference</a> &raquo;</li> 
       </ul>
     </div>  
@@ -52,7 +53,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="file-management">
 <h1>6.3. File management<a class="headerlink" href="#file-management" title="Permalink to this headline">¶</a></h1>
@@ -109,6 +110,8 @@
 <li class="toctree-l4"><a class="reference internal" href="file-management/compression/unstarch.html#whole-file-or-per-chromosome-attributes">6.3.2.2.3.3. Whole-file or per-chromosome attributes</a><ul>
 <li class="toctree-l5"><a class="reference internal" href="file-management/compression/unstarch.html#elements">6.3.2.2.3.3.1. Elements</a></li>
 <li class="toctree-l5"><a class="reference internal" href="file-management/compression/unstarch.html#bases">6.3.2.2.3.3.2. Bases</a></li>
+<li class="toctree-l5"><a class="reference internal" href="file-management/compression/unstarch.html#duplicate-element-s">6.3.2.2.3.3.3. Duplicate element(s)</a></li>
+<li class="toctree-l5"><a class="reference internal" href="file-management/compression/unstarch.html#nested-element-s">6.3.2.2.3.3.4. Nested element(s)</a></li>
 </ul>
 </li>
 </ul>
@@ -129,7 +132,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="file-management/compression/starch-specification.html">6.3.2.4. Starch (v2) specification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file-management/compression/starch-specification.html">6.3.2.4. Starch (v2.x) specification</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="file-management/compression/starch-specification.html#archive-structure">6.3.2.4.1. Archive structure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="file-management/compression/starch-specification.html#magic-bytes">6.3.2.4.2. Magic bytes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="file-management/compression/starch-specification.html#chromosome-streams">6.3.2.4.3. Chromosome streams</a></li>
@@ -149,66 +152,85 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="file-management/conversion.html">6.3.3. Data conversion</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/bam2bed.html">6.3.3.1. <cite>bam2bed</cite></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/bam2bed.html#dependencies">6.3.3.1.1. Dependencies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/bam2bed.html#source">6.3.3.1.2. Source</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/bam2bed.html#usage">6.3.3.1.3. Usage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/bam2bed.html#example">6.3.3.1.4. Example</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/bam2bed.html#column-mapping">6.3.3.1.5. Column mapping</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/bam2bed.html#downloads">6.3.3.1.6. Downloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/convert2bed.html">6.3.3.1. <cite>convert2bed</cite></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/convert2bed.html#dependencies">6.3.3.1.1. Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/convert2bed.html#source">6.3.3.1.2. Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/convert2bed.html#usage">6.3.3.1.3. Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/convert2bed.html#example">6.3.3.1.4. Example</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/gff2bed.html">6.3.3.2. <cite>gff2bed</cite></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gff2bed.html#dependencies">6.3.3.2.1. Dependencies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gff2bed.html#source">6.3.3.2.2. Source</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gff2bed.html#usage">6.3.3.2.3. Usage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gff2bed.html#example">6.3.3.2.4. Example</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gff2bed.html#column-mapping">6.3.3.2.5. Column mapping</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gff2bed.html#downloads">6.3.3.2.6. Downloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/bam2bed.html">6.3.3.2. <cite>bam2bed</cite></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/bam2bed.html#dependencies">6.3.3.2.1. Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/bam2bed.html#source">6.3.3.2.2. Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/bam2bed.html#usage">6.3.3.2.3. Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/bam2bed.html#example">6.3.3.2.4. Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/bam2bed.html#column-mapping">6.3.3.2.5. Column mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/bam2bed.html#downloads">6.3.3.2.6. Downloads</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/gtf2bed.html">6.3.3.3. <cite>gtf2bed</cite></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gtf2bed.html#dependencies">6.3.3.3.1. Dependencies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gtf2bed.html#source">6.3.3.3.2. Source</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gtf2bed.html#usage">6.3.3.3.3. Usage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gtf2bed.html#example">6.3.3.3.4. Example</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gtf2bed.html#column-mapping">6.3.3.3.5. Column mapping</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gtf2bed.html#downloads">6.3.3.3.6. Downloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/parallel_bam2bed.html">6.3.3.3. Parallel <cite>bam2bed</cite></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/parallel_bam2bed.html#dependencies">6.3.3.3.1. Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/parallel_bam2bed.html#source">6.3.3.3.2. Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/parallel_bam2bed.html#usage">6.3.3.3.3. Usage</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/psl2bed.html">6.3.3.4. <cite>psl2bed</cite></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/psl2bed.html#dependencies">6.3.3.4.1. Dependencies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/psl2bed.html#source">6.3.3.4.2. Source</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/psl2bed.html#usage">6.3.3.4.3. Usage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/psl2bed.html#example">6.3.3.4.4. Example</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/psl2bed.html#column-mapping">6.3.3.4.5. Column mapping</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/psl2bed.html#downloads">6.3.3.4.6. Downloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/parallel_bam2starch.html">6.3.3.4. Parallel <cite>bam2starch</cite></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/parallel_bam2starch.html#dependencies">6.3.3.4.1. Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/parallel_bam2starch.html#source">6.3.3.4.2. Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/parallel_bam2starch.html#usage">6.3.3.4.3. Usage</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/sam2bed.html">6.3.3.5. <cite>sam2bed</cite></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/sam2bed.html#dependencies">6.3.3.5.1. Dependencies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/sam2bed.html#source">6.3.3.5.2. Source</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/sam2bed.html#usage">6.3.3.5.3. Usage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/sam2bed.html#example">6.3.3.5.4. Example</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/sam2bed.html#column-mapping">6.3.3.5.5. Column mapping</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/sam2bed.html#downloads">6.3.3.5.6. Downloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/gff2bed.html">6.3.3.5. <cite>gff2bed</cite></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gff2bed.html#dependencies">6.3.3.5.1. Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gff2bed.html#source">6.3.3.5.2. Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gff2bed.html#usage">6.3.3.5.3. Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gff2bed.html#example">6.3.3.5.4. Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gff2bed.html#column-mapping">6.3.3.5.5. Column mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gff2bed.html#downloads">6.3.3.5.6. Downloads</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/vcf2bed.html">6.3.3.6. <cite>vcf2bed</cite></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/vcf2bed.html#dependencies">6.3.3.6.1. Dependencies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/vcf2bed.html#source">6.3.3.6.2. Source</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/vcf2bed.html#usage">6.3.3.6.3. Usage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/vcf2bed.html#customized-variant-handling">6.3.3.6.4. Customized variant handling</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/vcf2bed.html#example">6.3.3.6.5. Example</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/vcf2bed.html#column-mapping">6.3.3.6.6. Column mapping</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/vcf2bed.html#downloads">6.3.3.6.7. Downloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/gtf2bed.html">6.3.3.6. <cite>gtf2bed</cite></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gtf2bed.html#dependencies">6.3.3.6.1. Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gtf2bed.html#source">6.3.3.6.2. Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gtf2bed.html#usage">6.3.3.6.3. Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gtf2bed.html#example">6.3.3.6.4. Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gtf2bed.html#column-mapping">6.3.3.6.5. Column mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/gtf2bed.html#downloads">6.3.3.6.6. Downloads</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/wig2bed.html">6.3.3.7. <cite>wig2bed</cite></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/wig2bed.html#source">6.3.3.7.1. Source</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/wig2bed.html#usage">6.3.3.7.2. Usage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/wig2bed.html#example">6.3.3.7.3. Example</a></li>
-<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/wig2bed.html#downloads">6.3.3.7.4. Downloads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/psl2bed.html">6.3.3.7. <cite>psl2bed</cite></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/psl2bed.html#dependencies">6.3.3.7.1. Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/psl2bed.html#source">6.3.3.7.2. Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/psl2bed.html#usage">6.3.3.7.3. Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/psl2bed.html#example">6.3.3.7.4. Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/psl2bed.html#column-mapping">6.3.3.7.5. Column mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/psl2bed.html#downloads">6.3.3.7.6. Downloads</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/sam2bed.html">6.3.3.8. <cite>sam2bed</cite></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/sam2bed.html#dependencies">6.3.3.8.1. Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/sam2bed.html#source">6.3.3.8.2. Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/sam2bed.html#usage">6.3.3.8.3. Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/sam2bed.html#example">6.3.3.8.4. Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/sam2bed.html#column-mapping">6.3.3.8.5. Column mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/sam2bed.html#downloads">6.3.3.8.6. Downloads</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/vcf2bed.html">6.3.3.9. <cite>vcf2bed</cite></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/vcf2bed.html#dependencies">6.3.3.9.1. Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/vcf2bed.html#source">6.3.3.9.2. Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/vcf2bed.html#usage">6.3.3.9.3. Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/vcf2bed.html#customized-variant-handling">6.3.3.9.4. Customized variant handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/vcf2bed.html#example">6.3.3.9.5. Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/vcf2bed.html#column-mapping">6.3.3.9.6. Column mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/vcf2bed.html#downloads">6.3.3.9.7. Downloads</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file-management/conversion/wig2bed.html">6.3.3.10. <cite>wig2bed</cite></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/wig2bed.html#source">6.3.3.10.1. Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/wig2bed.html#usage">6.3.3.10.2. Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/wig2bed.html#example">6.3.3.10.3. Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file-management/conversion/wig2bed.html#downloads">6.3.3.10.4. Downloads</a></li>
 </ul>
 </li>
 </ul>
@@ -221,10 +243,10 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
-              <img class="logo" src="../../_static/logo_with_label_v2.png" alt="Logo"/>
+              <img class="logo" src="../../_static/logo_with_label_v3.png" alt="Logo"/>
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="statistics/bedmap.html"
@@ -232,12 +254,14 @@
   <h4>Next topic</h4>
   <p class="topless"><a href="file-management/sorting.html"
                         title="next chapter">6.3.1. Sorting</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/content/reference/file-management.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/content/reference/file-management.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -254,7 +278,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -266,13 +290,13 @@
         <li class="right" >
           <a href="statistics/bedmap.html" title="6.2.1. bedmap"
              >previous</a> |</li>
-        <li><a href="../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li>
           <li><a href="../reference.html" >6. Reference</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3b2.
     </div>
   </body>
 </html>

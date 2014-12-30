@@ -1,13 +1,10 @@
-//=========
-// Author:  Shane Neph & Alex Reynolds
-// Date:    Mon Jan 23 06:29:10 PST 2012
-// Project: bed-extract
-// ID:      $Id$
-//=========
-
+/*
+  Author:  Shane Neph & Alex Reynolds
+  Date:    Mon Jan 23 06:29:10 PST 2012
+*/
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -123,7 +120,7 @@ namespace {
         if ( f1_ == NULL )
           throw("Unable to find file: " + fn);
         else if ( starch::Starch::isStarch(f1_) )
-          throw("starch format is not supported with first file given to " + prognm + std::string("\nProblem file: ") + fn);
+          throw("Starch format is not supported with first file given to " + prognm + std::string("\nProblem file: ") + fn);
       } else {
         m_ = TWOFILE;
         std::string fn = argv[argcntr];
@@ -153,7 +150,7 @@ namespace {
         }
 
         if ( starch::Starch::isStarch(f1_) )
-          throw("starch format is not supported with first file given to " + prognm + std::string("\nProblem file: ") + fn);
+          throw("Starch format is not supported with first file given to " + prognm + std::string("\nProblem file: ") + fn);
       }
     }
 
@@ -189,7 +186,7 @@ namespace {
      msg += "   1) --list-chr <input.bed>        Print all unique chromosome names found in <input.bed>\n";
      msg += "   2) <chromosome> <input.bed>      Retrieve all rows for chr8 with:  bedextract chr8 <input.bed>\n";
      msg += "   3) <query.bed> <target>          Grab elements from the <query.bed> that overlap elements in <target>. Same as\n";
-     msg += "                                     `bedops -e -1 <query.bed> <target>`, except that this option fails silently\n";
+     msg += "                                     `bedops -e 1 <query.bed> <target>`, except that this option fails silently\n";
      msg += "                                      if <query.bed> contains fully-nested BED elements.  If no fully-nested\n";
      msg += "                                      element exists, bedextract can vastly improve upon the performance of bedops.\n";
      msg += "                                      <target> may be a BED or Starch file (with or without fully-nested elements).\n";

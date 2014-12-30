@@ -1,14 +1,11 @@
 /*
-  FILE: WindowedVisitors.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Tue Aug 14 23:11:19 PDT 2007
-  PROJECT: windowing-visitors
-  ID: $Id$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Tue Aug 14 23:11:19 PDT 2007
 */
 
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -25,11 +22,9 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef _OTHER_WINDOW_VISITOR_TYPES_H
 #define _OTHER_WINDOW_VISITOR_TYPES_H
 
-// Files included
 #include "other/EchoVisitor.hpp"
 #include "other/MultiVisitor.hpp"
 

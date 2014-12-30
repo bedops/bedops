@@ -1,14 +1,10 @@
 /*
-  FILE: SelectMeasureType.hpp
-  AUTHOR: Shane Neph, Scott Kuen
-  CREATE DATE: Dec.2013
-  PROJECT: data/measurement
-  ID: $Id: SelectMeasureType.hpp $
+  Author: Shane Neph, Scott Kuehn
+  Date: Dec.2013
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -28,7 +24,7 @@
 #ifndef _MEASURE_SELECTOR_HPP
 #define _MEASURE_SELECTOR_HPP
 
-#include <boost/type_traits.hpp>
+#include <type_traits>
 
 namespace Signal {
   namespace Details {
@@ -42,7 +38,7 @@ namespace Signal {
 
     // built-ins
     template <typename BuiltIn>
-    struct SelectMeasureImpl<BuiltIn, typename boost::enable_if<boost::is_arithmetic<BuiltIn>, BuiltIn>::type> {
+    struct SelectMeasureImpl<BuiltIn, typename std::enable_if<std::is_arithmetic<BuiltIn>::value, BuiltIn>::type> {
       typedef BuiltIn MeasureType;
     };
 

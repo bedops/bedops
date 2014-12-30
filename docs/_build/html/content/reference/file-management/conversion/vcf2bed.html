@@ -6,15 +6,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.3.3.6. vcf2bed &mdash; BEDOPS 2.4.1 documentation</title>
+    <title>6.3.3.9. vcf2bed &mdash; BEDOPS 2.4.3 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/test.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.4.1',
+        VERSION:     '2.4.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,28 +24,28 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.3 documentation" href="../../../../index.html" />
     <link rel="up" title="6.3.3. Data conversion" href="../conversion.html" />
-    <link rel="next" title="6.3.3.7. wig2bed" href="wig2bed.html" />
-    <link rel="prev" title="6.3.3.5. sam2bed" href="sam2bed.html" /> 
+    <link rel="next" title="6.3.3.10. wig2bed" href="wig2bed.html" />
+    <link rel="prev" title="6.3.3.8. sam2bed" href="sam2bed.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="wig2bed.html" title="6.3.3.7. wig2bed"
+          <a href="wig2bed.html" title="6.3.3.10. wig2bed"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="sam2bed.html" title="6.3.3.5. sam2bed"
+          <a href="sam2bed.html" title="6.3.3.8. sam2bed"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../conversion.html" accesskey="U">6.3.3. Data conversion</a> &raquo;</li> 
@@ -54,135 +55,143 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="vcf2bed">
-<span id="id1"></span><h1>6.3.3.6. <cite>vcf2bed</cite><a class="headerlink" href="#vcf2bed" title="Permalink to this headline">¶</a></h1>
-<p>The <tt class="docutils literal"><span class="pre">vcf2bed</span></tt> script converts 1-based, closed <tt class="docutils literal"><span class="pre">[start,</span> <span class="pre">end]</span></tt> <a class="reference external" href="http://vcftools.sourceforge.net/specs.html">Variant Call Format v4</a> (VCF) to sorted, 0-based, half-open <tt class="docutils literal"><span class="pre">[start-1,</span> <span class="pre">start)</span></tt> extended BED data.</p>
+<span id="id1"></span><h1>6.3.3.9. <cite>vcf2bed</cite><a class="headerlink" href="#vcf2bed" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal"><span class="pre">vcf2bed</span></code> script converts 1-based, closed <code class="docutils literal"><span class="pre">[start,</span> <span class="pre">end]</span></code> <a class="reference external" href="http://vcftools.sourceforge.net/specs.html">Variant Call Format v4.2</a> (VCF) to sorted, 0-based, half-open <code class="docutils literal"><span class="pre">[start-1,</span> <span class="pre">start)</span></code> extended BED data.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Note that this script converts from <tt class="docutils literal"><span class="pre">[start,</span> <span class="pre">end]</span></tt> to <tt class="docutils literal"><span class="pre">[start-1,</span> <span class="pre">start)</span></tt>. We perform the equivalent of a <em>single-base insertion</em> to make BED output that is guaranteed to work with BEDOPS, <strong>regardless of what the actual variant may be</strong>, to allow operations to be performed. The converted output contains additional columns which allow reconstruction of the original VCF data and associated variant parameters.</p>
+<p class="last">Note that this script converts from <code class="docutils literal"><span class="pre">[start,</span> <span class="pre">end]</span></code> to <code class="docutils literal"><span class="pre">[start-1,</span> <span class="pre">start)</span></code>. Unless the <code class="docutils literal"><span class="pre">--snvs</span></code>, <code class="docutils literal"><span class="pre">--insertions</span></code> or <code class="docutils literal"><span class="pre">--deletions</span></code> options are added, we perform the equivalent of a <em>single-base insertion</em> to make BED output that is guaranteed to work with BEDOPS, <strong>regardless of what the actual variant may be</strong>, to allow operations to be performed. The converted output contains additional columns which allow reconstruction of the original VCF data and associated variant parameters.</p>
 </div>
-<p>For convenience, we also offer <tt class="docutils literal"><span class="pre">vcf2starch</span></tt>, which performs the extra step of creating a <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive.</p>
+<p>For convenience, we also offer <code class="docutils literal"><span class="pre">vcf2starch</span></code>, which performs the extra step of creating a <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive.</p>
 <div class="section" id="dependencies">
-<h2>6.3.3.6.1. Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">vcf2bed</span></tt> script requires Python, version 2.7 or greater (and less than Python3).</p>
-<p>This script is also dependent on input that follows the VCF specification.</p>
+<h2>6.3.3.9.1. Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">vcf2bed</span></code> script requires <a class="reference internal" href="convert2bed.html#convert2bed"><em>convert2bed</em></a>. The <code class="docutils literal"><span class="pre">vcf2starch</span></code> script requires <a class="reference internal" href="../compression/starch.html#starch"><em>starch</em></a>. Both dependencies are part of a typical BEDOPS installation.</p>
+<p>This script is also dependent on input that follows the VCF v4.2 specification.</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
-<p class="last">Conversion of data which are VCF-like, but which do not follow the specification can cause <tt class="docutils literal"><span class="pre">IOError</span></tt> and other runtime exceptions. If you run into problems, please check that your input follows the VCF specification using validation tools, such as those packaged with <a class="reference external" href="http://vcftools.sourceforge.net/perl_module.html#vcf-validator">VCFTools</a>.</p>
+<p class="last">Conversion of data which are VCF-like, but which do not follow the specification can cause <code class="docutils literal"><span class="pre">IOError</span></code> and other runtime exceptions. If you run into problems, please check that your input follows the VCF specification using validation tools, such as those packaged with <a class="reference external" href="http://vcftools.sourceforge.net/perl_module.html#vcf-validator">VCFTools</a>.</p>
 </div>
 </div>
 <div class="section" id="source">
-<h2>6.3.3.6.2. Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">vcf2bed</span></tt> and <tt class="docutils literal"><span class="pre">vcf2starch</span></tt> conversion scripts are part of the binary and source downloads of BEDOPS. See the <a class="reference internal" href="../../../installation.html#installation"><em>Installation</em></a> documentation for more details.</p>
+<h2>6.3.3.9.2. Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">vcf2bed</span></code> and <code class="docutils literal"><span class="pre">vcf2starch</span></code> conversion scripts are part of the binary and source downloads of BEDOPS. See the <a class="reference internal" href="../../../installation.html#installation"><em>Installation</em></a> documentation for more details.</p>
 </div>
 <div class="section" id="usage">
-<h2>6.3.3.6.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">vcf2bed</span></tt> script parses VCF from standard input and prints sorted BED to standard output. The <tt class="docutils literal"><span class="pre">vcf2starch</span></tt> script uses an extra step to parse VCF to a compressed BEDOPS <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive, which is also directed to standard output.</p>
-<p>The header data of a VCF file is usually discarded, unless you add the <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option. In this case, BED elements are created from these data, using the chromosome name <tt class="docutils literal"><span class="pre">_header</span></tt> to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field).</p>
-<div class="admonition tip">
-<p class="first admonition-title">Tip</p>
-<p class="last">By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the <tt class="docutils literal"><span class="pre">--do-not-sort</span></tt> option. Run the script with the <tt class="docutils literal"><span class="pre">--help</span></tt> option for more details.</p>
+<h2>6.3.3.9.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">vcf2bed</span></code> script parses VCF from standard input and prints sorted BED to standard output. The <code class="docutils literal"><span class="pre">vcf2starch</span></code> script uses an extra step to parse VCF to a compressed BEDOPS <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>Starch-formatted</em></a> archive, which is also directed to standard output.</p>
+<p>The header data of a VCF file is usually discarded, unless you add the <code class="docutils literal"><span class="pre">--keep-header</span></code> option. In this case, BED elements are created from these data, using the chromosome name <code class="docutils literal"><span class="pre">_header</span></code> to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, multiple BED annotations are printed if there are multiple alternate alleles in a variant call. Use the <code class="docutils literal"><span class="pre">--do-not-split-alt-alleles</span></code> option to preserve the alternate allele string and print only one BED element for the variant call.</p>
 </div>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
-<p class="last">If you are sorting data larger than system memory, use the <tt class="docutils literal"><span class="pre">--max-mem</span></tt> option to limit sort memory usage to a reasonable fraction of available memory, <em>e.g.</em>, <tt class="docutils literal"><span class="pre">--max-mem</span> <span class="pre">2G</span></tt> or similar. See <tt class="docutils literal"><span class="pre">--help</span></tt> for more details.</p>
+<p class="last">By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the <code class="docutils literal"><span class="pre">--do-not-sort</span></code> option. Run the script with the <code class="docutils literal"><span class="pre">--help</span></code> option for more details.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">If you are sorting data larger than system memory, use the <code class="docutils literal"><span class="pre">--max-mem</span></code> option to limit sort memory usage to a reasonable fraction of available memory, <em>e.g.</em>, <code class="docutils literal"><span class="pre">--max-mem</span> <span class="pre">2G</span></code> or similar. See <code class="docutils literal"><span class="pre">--help</span></code> for more details.</p>
 </div>
 </div>
 <div class="section" id="customized-variant-handling">
-<span id="vcf2bed-custom-variants"></span><h2>6.3.3.6.4. Customized variant handling<a class="headerlink" href="#customized-variant-handling" title="Permalink to this headline">¶</a></h2>
-<p>By default, the <tt class="docutils literal"><span class="pre">vcf2bed</span></tt> script translates all variants to single-base positions in the resulting BED output. Depending on the category of variant you are interested in, however, you may want more specific categories handled differently.</p>
-<p>Based on the VCF v4 specification, we also provide three custom options for filtering input for each of the three types of variants listed: <tt class="docutils literal"><span class="pre">--snvs</span></tt>, <tt class="docutils literal"><span class="pre">--insertions</span></tt> and <tt class="docutils literal"><span class="pre">--deletions</span></tt>. In each case, we use the length of the reference and alternate alleles to determine which type of variant is being handled.</p>
-<p>In addition, using any of these three custom options automatically results in processing of mixed variant records for a microsatellite, where present. For instance, the following record contains a mixture of a deletion and insertion variant (<tt class="docutils literal"><span class="pre">GTC</span> <span class="pre">-&gt;</span> <span class="pre">G</span></tt> and <tt class="docutils literal"><span class="pre">GTC</span> <span class="pre">-&gt;</span> <span class="pre">GTCT</span></tt>, respectively):</p>
-<div class="highlight-python"><pre>#CHROM POS     ID        REF    ALT     QUAL FILTER INFO                              FORMAT      NA00001        NA00002        NA00003
-20     1234567 microsat1 GTC    G,GTCT  50   PASS   NS=3;DP=9;AA=G                    GT:GQ:DP    0/1:35:4       0/2:17:2       1/1:40:3</pre>
+<span id="vcf2bed-custom-variants"></span><h2>6.3.3.9.4. Customized variant handling<a class="headerlink" href="#customized-variant-handling" title="Permalink to this headline">¶</a></h2>
+<p>By default, the <code class="docutils literal"><span class="pre">vcf2bed</span></code> script translates all variants to single-base positions in the resulting BED output. Depending on the category of variant you are interested in, however, you may want more specific categories handled differently.</p>
+<p>Based on the VCF v4.2 specification, we also provide three custom options for filtering input for each of the three types of variants listed: <code class="docutils literal"><span class="pre">--snvs</span></code>, <code class="docutils literal"><span class="pre">--insertions</span></code> and <code class="docutils literal"><span class="pre">--deletions</span></code>. In each case, we use the length of the reference and alternate alleles to determine which type of variant is being handled.</p>
+<p>In addition, using any of these three custom options automatically results in processing of mixed variant records for a microsatellite, where present. For instance, the following record contains a mixture of a deletion and insertion variant (<code class="docutils literal"><span class="pre">GTC</span> <span class="pre">-&gt;</span> <span class="pre">G</span></code> and <code class="docutils literal"><span class="pre">GTC</span> <span class="pre">-&gt;</span> <span class="pre">GTCT</span></code>, respectively):</p>
+<div class="highlight-python"><div class="highlight"><pre>#CHROM POS     ID        REF    ALT     QUAL FILTER INFO                              FORMAT      NA00001        NA00002        NA00003
+20     1234567 microsat1 GTC    G,GTCT  50   PASS   NS=3;DP=9;AA=G                    GT:GQ:DP    0/1:35:4       0/2:17:2       1/1:40:3
+</pre></div>
 </div>
-<p>When using <tt class="docutils literal"><span class="pre">--snvs</span></tt>, <tt class="docutils literal"><span class="pre">--insertions</span></tt> or <tt class="docutils literal"><span class="pre">--deletions</span></tt>, this record is split into two distinct BED records and filtered depending on which custom option was chosen. The <tt class="docutils literal"><span class="pre">--insertions</span></tt> option would only export the insertion in this mixed variant, while <tt class="docutils literal"><span class="pre">--deletions</span></tt> would show the deletion.</p>
+<p>When using <code class="docutils literal"><span class="pre">--snvs</span></code>, <code class="docutils literal"><span class="pre">--insertions</span></code> or <code class="docutils literal"><span class="pre">--deletions</span></code>, this record is split into two distinct BED records and filtered depending on which custom option was chosen. The <code class="docutils literal"><span class="pre">--insertions</span></code> option would only export the single-base position of the insertion in this mixed variant, while <code class="docutils literal"><span class="pre">--deletions</span></code> would show the deletion.</p>
 <p>In this way, you can control what kinds of variants are translated into BED outputs—most importantly, there is also no confusion about what the length of the BED element signifies.</p>
 </div>
 <div class="section" id="example">
-<h2>6.3.3.6.5. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<p>To demonstrate these scripts, we use a sample VCF input called <tt class="docutils literal"><span class="pre">foo.vcf</span></tt> (see the <a class="reference internal" href="#vcf2bed-downloads"><em>Downloads</em></a> section to grab this file).</p>
+<h2>6.3.3.9.5. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>To demonstrate these scripts, we use a sample VCF input called <code class="docutils literal"><span class="pre">foo.vcf</span></code> (see the <a class="reference internal" href="#vcf2bed-downloads"><em>Downloads</em></a> section to grab this file).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">This data is also publicly available from the <a class="reference external" href="http://www.broadinstitute.org/gsa/wiki/index.php/Understanding_the_Unified_Genotyper's_VCF_files">Broad Institute</a>.</p>
 </div>
-<div class="highlight-python"><pre>##fileformat=VCFv4.0
-##FILTER=&lt;ID=LowQual,Description="QUAL &lt; 50.0"&gt;
-##FORMAT=&lt;ID=AD,Number=.,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed"&gt;
-##FORMAT=&lt;ID=DP,Number=1,Type=Integer,Description="Read Depth (only filtered reads used for calling)"&gt;
-##FORMAT=&lt;ID=GQ,Number=1,Type=Float,Description="Genotype Quality"&gt;
-##FORMAT=&lt;ID=GT,Number=1,Type=String,Description="Genotype"&gt;
-##FORMAT=&lt;ID=PL,Number=3,Type=Float,Description="Normalized, Phred-scaled likelihoods for AA,AB,BB genotypes where A=ref and B=alt; not applicable if site is not biallelic"&gt;
-##INFO=&lt;ID=AC,Number=.,Type=Integer,Description="Allele count in genotypes, for each ALT allele, in the same order as listed"&gt;
-##INFO=&lt;ID=AF,Number=.,Type=Float,Description="Allele Frequency, for each ALT allele, in the same order as listed"&gt;
-##INFO=&lt;ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes"&gt;
-##INFO=&lt;ID=DB,Number=0,Type=Flag,Description="dbSNP Membership"&gt;
-##INFO=&lt;ID=DP,Number=1,Type=Integer,Description="Total Depth"&gt;
-##INFO=&lt;ID=DS,Number=0,Type=Flag,Description="Were any of the samples downsampled?"&gt;
-##INFO=&lt;ID=Dels,Number=1,Type=Float,Description="Fraction of Reads Containing Spanning Deletions"&gt;
-##INFO=&lt;ID=HRun,Number=1,Type=Integer,Description="Largest Contiguous Homopolymer Run of Variant Allele In Either Direction"&gt;
-##INFO=&lt;ID=HaplotypeScore,Number=1,Type=Float,Description="Consistency of the site with two (and only two) segregating haplotypes"&gt;
-##INFO=&lt;ID=MQ,Number=1,Type=Float,Description="RMS Mapping Quality"&gt;
-##INFO=&lt;ID=MQ0,Number=1,Type=Integer,Description="Total Mapping Quality Zero Reads"&gt;
-##INFO=&lt;ID=QD,Number=1,Type=Float,Description="Variant Confidence/Quality by Depth"&gt;
-##INFO=&lt;ID=SB,Number=1,Type=Float,Description="Strand Bias"&gt;
-##INFO=&lt;ID=VQSLOD,Number=1,Type=Float,Description="log10-scaled probability of variant being true under the trained gaussian mixture model"&gt;
-##UnifiedGenotyperV2="analysis_type=UnifiedGenotyperV2 input_file=[TEXT CLIPPED FOR CLARITY]"
+<div class="highlight-python"><div class="highlight"><pre>##fileformat=VCFv4.0
+##FILTER=&lt;ID=LowQual,Description=&quot;QUAL &lt; 50.0&quot;&gt;
+##FORMAT=&lt;ID=AD,Number=.,Type=Integer,Description=&quot;Allelic depths for the ref and alt alleles in the order listed&quot;&gt;
+##FORMAT=&lt;ID=DP,Number=1,Type=Integer,Description=&quot;Read Depth (only filtered reads used for calling)&quot;&gt;
+##FORMAT=&lt;ID=GQ,Number=1,Type=Float,Description=&quot;Genotype Quality&quot;&gt;
+##FORMAT=&lt;ID=GT,Number=1,Type=String,Description=&quot;Genotype&quot;&gt;
+##FORMAT=&lt;ID=PL,Number=3,Type=Float,Description=&quot;Normalized, Phred-scaled likelihoods for AA,AB,BB genotypes where A=ref and B=alt; not applicable if site is not biallelic&quot;&gt;
+##INFO=&lt;ID=AC,Number=.,Type=Integer,Description=&quot;Allele count in genotypes, for each ALT allele, in the same order as listed&quot;&gt;
+##INFO=&lt;ID=AF,Number=.,Type=Float,Description=&quot;Allele Frequency, for each ALT allele, in the same order as listed&quot;&gt;
+##INFO=&lt;ID=AN,Number=1,Type=Integer,Description=&quot;Total number of alleles in called genotypes&quot;&gt;
+##INFO=&lt;ID=DB,Number=0,Type=Flag,Description=&quot;dbSNP Membership&quot;&gt;
+##INFO=&lt;ID=DP,Number=1,Type=Integer,Description=&quot;Total Depth&quot;&gt;
+##INFO=&lt;ID=DS,Number=0,Type=Flag,Description=&quot;Were any of the samples downsampled?&quot;&gt;
+##INFO=&lt;ID=Dels,Number=1,Type=Float,Description=&quot;Fraction of Reads Containing Spanning Deletions&quot;&gt;
+##INFO=&lt;ID=HRun,Number=1,Type=Integer,Description=&quot;Largest Contiguous Homopolymer Run of Variant Allele In Either Direction&quot;&gt;
+##INFO=&lt;ID=HaplotypeScore,Number=1,Type=Float,Description=&quot;Consistency of the site with two (and only two) segregating haplotypes&quot;&gt;
+##INFO=&lt;ID=MQ,Number=1,Type=Float,Description=&quot;RMS Mapping Quality&quot;&gt;
+##INFO=&lt;ID=MQ0,Number=1,Type=Integer,Description=&quot;Total Mapping Quality Zero Reads&quot;&gt;
+##INFO=&lt;ID=QD,Number=1,Type=Float,Description=&quot;Variant Confidence/Quality by Depth&quot;&gt;
+##INFO=&lt;ID=SB,Number=1,Type=Float,Description=&quot;Strand Bias&quot;&gt;
+##INFO=&lt;ID=VQSLOD,Number=1,Type=Float,Description=&quot;log10-scaled probability of variant being true under the trained gaussian mixture model&quot;&gt;
+##UnifiedGenotyperV2=&quot;analysis_type=UnifiedGenotyperV2 input_file=[TEXT CLIPPED FOR CLARITY]&quot;
 #CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO    FORMAT  NA12878
 chr1    873762  .       T       G       5231.78 PASS    AC=1;AF=0.50;AN=2;DP=315;Dels=0.00;HRun=2;HaplotypeScore=15.11;MQ=91.05;MQ0=15;QD=16.61;SB=-1533.02;VQSLOD=-1.5473      GT:AD:DP:GQ:PL  0/1:173,141:282:99:255,0,255
 chr1    877664  rs3828047       A       G       3931.66 PASS    AC=2;AF=1.00;AN=2;DB;DP=105;Dels=0.00;HRun=1;HaplotypeScore=1.59;MQ=92.52;MQ0=4;QD=37.44;SB=-1152.13;VQSLOD=0.1185      GT:AD:DP:GQ:PL  1/1:0,105:94:99:255,255,0
 chr1    899282  rs28548431      C       T       71.77   PASS    AC=1;AF=0.50;AN=2;DB;DP=4;Dels=0.00;HRun=0;HaplotypeScore=0.00;MQ=99.00;MQ0=0;QD=17.94;SB=-46.55;VQSLOD=-1.9148 GT:AD:DP:GQ:PL  0/1:1,3:4:25.92:103,0,26
-chr1    974165  rs9442391       T       C       29.84   LowQual AC=1;AF=0.50;AN=2;DB;DP=18;Dels=0.00;HRun=1;HaplotypeScore=0.16;MQ=95.26;MQ0=0;QD=1.66;SB=-0.98 GT:AD:DP:GQ:PL  0/1:14,4:14:60.91:61,0,255</pre>
+chr1    974165  rs9442391       T       C       29.84   LowQual AC=1;AF=0.50;AN=2;DB;DP=18;Dels=0.00;HRun=1;HaplotypeScore=0.16;MQ=95.26;MQ0=0;QD=1.66;SB=-0.98 GT:AD:DP:GQ:PL  0/1:14,4:14:60.91:61,0,255
+</pre></div>
 </div>
 <p>We can convert VCF to sorted BED data in the following manner:</p>
-<div class="highlight-python"><pre>$ vcf2bed &lt; foo.vcf
+<div class="highlight-python"><div class="highlight"><pre>$ vcf2bed &lt; foo.vcf
 chr1    873761  873762  .       5231.78 T       G       PASS    AC=1;AF=0.50;AN=2;DP=315;Dels=0.00;HRun=2;HaplotypeScore=15.11;MQ=91.05;MQ0=15;QD=16.61;SB=-1533.02;VQSLOD=-1.5473      GT:AD:DP:GQ:PL  0/1:173,141:282:99:255,0,255
 chr1    877663  877664  rs3828047       3931.66 A       G       PASS    AC=2;AF=1.00;AN=2;DB;DP=105;Dels=0.00;HRun=1;HaplotypeScore=1.59;MQ=92.52;MQ0=4;QD=37.44;SB=-1152.13;VQSLOD=0.1185      GT:AD:DP:GQ:PL  1/1:0,105:94:99:255,255,0
 chr1    899281  899282  rs28548431      71.77   C       T       PASS    AC=1;AF=0.50;AN=2;DB;DP=4;Dels=0.00;HRun=0;HaplotypeScore=0.00;MQ=99.00;MQ0=0;QD=17.94;SB=-46.55;VQSLOD=-1.9148 GT:AD:DP:GQ:PL  0/1:1,3:4:25.92:103,0,26
-chr1    974164  974165  rs9442391       29.84   T       C       LowQual AC=1;AF=0.50;AN=2;DB;DP=18;Dels=0.00;HRun=1;HaplotypeScore=0.16;MQ=95.26;MQ0=0;QD=1.66;SB=-0.98 GT:AD:DP:GQ:PL  0/1:14,4:14:60.91:61,0,255</pre>
+chr1    974164  974165  rs9442391       29.84   T       C       LowQual AC=1;AF=0.50;AN=2;DB;DP=18;Dels=0.00;HRun=1;HaplotypeScore=0.16;MQ=95.26;MQ0=0;QD=1.66;SB=-0.98 GT:AD:DP:GQ:PL  0/1:14,4:14:60.91:61,0,255
+</pre></div>
 </div>
-<p>As you see here, the header data of the VCF file is discarded, unless you add the <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option. In this case, BED elements are created from these data, using the chromosome name <tt class="docutils literal"><span class="pre">_header</span></tt> to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field).</p>
-<p>Here we use <tt class="docutils literal"><span class="pre">--keep-header</span></tt> with our example dataset:</p>
-<div class="highlight-python"><pre>$ vcf2bed --keep-header &lt; foo.vcf
+<p>As you see here, the header data of the VCF file is discarded, unless you add the <code class="docutils literal"><span class="pre">--keep-header</span></code> option. In this case, BED elements are created from these data, using the chromosome name <code class="docutils literal"><span class="pre">_header</span></code> to denote content. Line numbers are specified in the start and stop coordinates, and unmodified header data are placed in the fourth column (ID field).</p>
+<p>Here we use <code class="docutils literal"><span class="pre">--keep-header</span></code> with our example dataset:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ vcf2bed --keep-header &lt; foo.vcf
 _header 0       1       ##fileformat=VCFv4.0
-_header 1       2       ##FILTER=&lt;ID=LowQual,Description="QUAL &lt; 50.0"&gt;
-_header 2       3       ##FORMAT=&lt;ID=AD,Number=.,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed"&gt;
-_header 3       4       ##FORMAT=&lt;ID=DP,Number=1,Type=Integer,Description="Read Depth (only filtered reads used for calling)"&gt;
-_header 4       5       ##FORMAT=&lt;ID=GQ,Number=1,Type=Float,Description="Genotype Quality"&gt;
-_header 5       6       ##FORMAT=&lt;ID=GT,Number=1,Type=String,Description="Genotype"&gt;
-_header 6       7       ##FORMAT=&lt;ID=PL,Number=3,Type=Float,Description="Normalized, Phred-scaled likelihoods for AA,AB,BB genotypes where A=ref and B=alt; not applicable if site is not biallelic"&gt;
-_header 7       8       ##INFO=&lt;ID=AC,Number=.,Type=Integer,Description="Allele count in genotypes, for each ALT allele, in the same order as listed"&gt;
-_header 8       9       ##INFO=&lt;ID=AF,Number=.,Type=Float,Description="Allele Frequency, for each ALT allele, in the same order as listed"&gt;
-_header 9       10      ##INFO=&lt;ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes"&gt;
-_header 10      11      ##INFO=&lt;ID=DB,Number=0,Type=Flag,Description="dbSNP Membership"&gt;
-_header 11      12      ##INFO=&lt;ID=DP,Number=1,Type=Integer,Description="Total Depth"&gt;
-_header 12      13      ##INFO=&lt;ID=DS,Number=0,Type=Flag,Description="Were any of the samples downsampled?"&gt;
-_header 13      14      ##INFO=&lt;ID=Dels,Number=1,Type=Float,Description="Fraction of Reads Containing Spanning Deletions"&gt;
-_header 14      15      ##INFO=&lt;ID=HRun,Number=1,Type=Integer,Description="Largest Contiguous Homopolymer Run of Variant Allele In Either Direction"&gt;
-_header 15      16      ##INFO=&lt;ID=HaplotypeScore,Number=1,Type=Float,Description="Consistency of the site with two (and only two) segregating haplotypes"&gt;
-_header 16      17      ##INFO=&lt;ID=MQ,Number=1,Type=Float,Description="RMS Mapping Quality"&gt;
-_header 17      18      ##INFO=&lt;ID=MQ0,Number=1,Type=Integer,Description="Total Mapping Quality Zero Reads"&gt;
-_header 18      19      ##INFO=&lt;ID=QD,Number=1,Type=Float,Description="Variant Confidence/Quality by Depth"&gt;
-_header 19      20      ##INFO=&lt;ID=SB,Number=1,Type=Float,Description="Strand Bias"&gt;
-_header 20      21      ##INFO=&lt;ID=VQSLOD,Number=1,Type=Float,Description="log10-scaled probability of variant being true under the trained gaussian mixture model"&gt;
-_header 21      22      ##UnifiedGenotyperV2="analysis_type=UnifiedGenotyperV2 input_file=[TEXT CLIPPED FOR CLARITY]"
+_header 1       2       ##FILTER=&lt;ID=LowQual,Description=&quot;QUAL &lt; 50.0&quot;&gt;
+_header 2       3       ##FORMAT=&lt;ID=AD,Number=.,Type=Integer,Description=&quot;Allelic depths for the ref and alt alleles in the order listed&quot;&gt;
+_header 3       4       ##FORMAT=&lt;ID=DP,Number=1,Type=Integer,Description=&quot;Read Depth (only filtered reads used for calling)&quot;&gt;
+_header 4       5       ##FORMAT=&lt;ID=GQ,Number=1,Type=Float,Description=&quot;Genotype Quality&quot;&gt;
+_header 5       6       ##FORMAT=&lt;ID=GT,Number=1,Type=String,Description=&quot;Genotype&quot;&gt;
+_header 6       7       ##FORMAT=&lt;ID=PL,Number=3,Type=Float,Description=&quot;Normalized, Phred-scaled likelihoods for AA,AB,BB genotypes where A=ref and B=alt; not applicable if site is not biallelic&quot;&gt;
+_header 7       8       ##INFO=&lt;ID=AC,Number=.,Type=Integer,Description=&quot;Allele count in genotypes, for each ALT allele, in the same order as listed&quot;&gt;
+_header 8       9       ##INFO=&lt;ID=AF,Number=.,Type=Float,Description=&quot;Allele Frequency, for each ALT allele, in the same order as listed&quot;&gt;
+_header 9       10      ##INFO=&lt;ID=AN,Number=1,Type=Integer,Description=&quot;Total number of alleles in called genotypes&quot;&gt;
+_header 10      11      ##INFO=&lt;ID=DB,Number=0,Type=Flag,Description=&quot;dbSNP Membership&quot;&gt;
+_header 11      12      ##INFO=&lt;ID=DP,Number=1,Type=Integer,Description=&quot;Total Depth&quot;&gt;
+_header 12      13      ##INFO=&lt;ID=DS,Number=0,Type=Flag,Description=&quot;Were any of the samples downsampled?&quot;&gt;
+_header 13      14      ##INFO=&lt;ID=Dels,Number=1,Type=Float,Description=&quot;Fraction of Reads Containing Spanning Deletions&quot;&gt;
+_header 14      15      ##INFO=&lt;ID=HRun,Number=1,Type=Integer,Description=&quot;Largest Contiguous Homopolymer Run of Variant Allele In Either Direction&quot;&gt;
+_header 15      16      ##INFO=&lt;ID=HaplotypeScore,Number=1,Type=Float,Description=&quot;Consistency of the site with two (and only two) segregating haplotypes&quot;&gt;
+_header 16      17      ##INFO=&lt;ID=MQ,Number=1,Type=Float,Description=&quot;RMS Mapping Quality&quot;&gt;
+_header 17      18      ##INFO=&lt;ID=MQ0,Number=1,Type=Integer,Description=&quot;Total Mapping Quality Zero Reads&quot;&gt;
+_header 18      19      ##INFO=&lt;ID=QD,Number=1,Type=Float,Description=&quot;Variant Confidence/Quality by Depth&quot;&gt;
+_header 19      20      ##INFO=&lt;ID=SB,Number=1,Type=Float,Description=&quot;Strand Bias&quot;&gt;
+_header 20      21      ##INFO=&lt;ID=VQSLOD,Number=1,Type=Float,Description=&quot;log10-scaled probability of variant being true under the trained gaussian mixture model&quot;&gt;
+_header 21      22      ##UnifiedGenotyperV2=&quot;analysis_type=UnifiedGenotyperV2 input_file=[TEXT CLIPPED FOR CLARITY]&quot;
 _header 22      23      #CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO    FORMAT  NA12878
 chr1    873761  873762  .       5231.78 T       G       PASS    AC=1;AF=0.50;AN=2;DP=315;Dels=0.00;HRun=2;HaplotypeScore=15.11;MQ=91.05;MQ0=15;QD=16.61;SB=-1533.02;VQSLOD=-1.5473      GT:AD:DP:GQ:PL  0/1:173,141:282:99:255,0,255
 chr1    877663  877664  rs3828047       3931.66 A       G       PASS    AC=2;AF=1.00;AN=2;DB;DP=105;Dels=0.00;HRun=1;HaplotypeScore=1.59;MQ=92.52;MQ0=4;QD=37.44;SB=-1152.13;VQSLOD=0.1185      GT:AD:DP:GQ:PL  1/1:0,105:94:99:255,255,0
 chr1    899281  899282  rs28548431      71.77   C       T       PASS    AC=1;AF=0.50;AN=2;DB;DP=4;Dels=0.00;HRun=0;HaplotypeScore=0.00;MQ=99.00;MQ0=0;QD=17.94;SB=-46.55;VQSLOD=-1.9148 GT:AD:DP:GQ:PL  0/1:1,3:4:25.92:103,0,26
-chr1    974164  974165  rs9442391       29.84   T       C       LowQual AC=1;AF=0.50;AN=2;DB;DP=18;Dels=0.00;HRun=1;HaplotypeScore=0.16;MQ=95.26;MQ0=0;QD=1.66;SB=-0.98 GT:AD:DP:GQ:PL  0/1:14,4:14:60.91:61,0,255</pre>
+chr1    974164  974165  rs9442391       29.84   T       C       LowQual AC=1;AF=0.50;AN=2;DB;DP=18;Dels=0.00;HRun=1;HaplotypeScore=0.16;MQ=95.26;MQ0=0;QD=1.66;SB=-0.98 GT:AD:DP:GQ:PL  0/1:14,4:14:60.91:61,0,255
+</pre></div>
 </div>
-<p>With this option, the <tt class="docutils literal"><span class="pre">vcf2*</span></tt> scripts are completely &#8220;non-lossy&#8221;. Use of <tt class="docutils literal"><span class="pre">awk</span></tt> or other scripting tools can munge these data back into a VCF-formatted file.</p>
+<p>With this option, the <code class="docutils literal"><span class="pre">vcf2*</span></code> scripts are completely &#8220;non-lossy&#8221;. Use of <code class="docutils literal"><span class="pre">awk</span></code> or other scripting tools can munge these data back into a VCF-formatted file.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Note the conversion from 1- to 0-based coordinate indexing, in the transition from VCF to BED. While BEDOPS supports 0- and 1-based coordinate indexing, the coordinate change made here is believed to be convenient for most end users.</p>
 </div>
 </div>
 <div class="section" id="column-mapping">
-<span id="vcf2bed-column-mapping"></span><h2>6.3.3.6.6. Column mapping<a class="headerlink" href="#column-mapping" title="Permalink to this headline">¶</a></h2>
-<p>In this section, we describe how VCF v4 columns are mapped to BED columns. We start with the first five UCSC BED columns as follows:</p>
+<span id="vcf2bed-column-mapping"></span><h2>6.3.3.9.6. Column mapping<a class="headerlink" href="#column-mapping" title="Permalink to this headline">¶</a></h2>
+<p>In this section, we describe how VCF v4.2 columns are mapped to BED columns. We start with the first five UCSC BED columns as follows:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="43%" />
@@ -190,7 +199,7 @@ chr1    974164  974165  rs9442391       29.84   T       C       LowQual AC=1;AF=
 <col width="24%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">VCF v4 field</th>
+<tr class="row-odd"><th class="head">VCF v4.2 field</th>
 <th class="head">BED column index</th>
 <th class="head">BED field</th>
 </tr>
@@ -226,7 +235,7 @@ chr1    974164  974165  rs9442391       29.84   T       C       LowQual AC=1;AF=
 <col width="24%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">VCF v4 field</th>
+<tr class="row-odd"><th class="head">VCF v4.2 field</th>
 <th class="head">BED column index</th>
 <th class="head">BED field</th>
 </tr>
@@ -250,7 +259,7 @@ chr1    974164  974165  rs9442391       29.84   T       C       LowQual AC=1;AF=
 </tr>
 </tbody>
 </table>
-<p>If present in the VCF v4 input, the following columns are also mapped:</p>
+<p>If present in the VCF v4.2 input, the following columns are also mapped:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="43%" />
@@ -258,7 +267,7 @@ chr1    974164  974165  rs9442391       29.84   T       C       LowQual AC=1;AF=
 <col width="24%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">VCF v4 field</th>
+<tr class="row-odd"><th class="head">VCF v4.2 field</th>
 <th class="head">BED column index</th>
 <th class="head">BED field</th>
 </tr>
@@ -282,12 +291,14 @@ chr1    974164  974165  rs9442391       29.84   T       C       LowQual AC=1;AF=
 </tr>
 </tbody>
 </table>
-<p>The &#8220;meta-information&#8221; (starting with <tt class="docutils literal"><span class="pre">##</span></tt>) and &#8220;header&#8221; lines (starting with <tt class="docutils literal"><span class="pre">#</span></tt>) are discarded.</p>
+<p>When using <code class="docutils literal"><span class="pre">--deletions</span></code>, the stop value of the BED output is determined by the length difference between ALT and REF alleles. Use of <code class="docutils literal"><span class="pre">--insertions</span></code> or <code class="docutils literal"><span class="pre">--snvs</span></code> yields a one-base BED element.</p>
+<p>If the ALT field contains more than one allele, multiple BED records will be printed. Use the <code class="docutils literal"><span class="pre">--do-not-split</span></code> option if you only want one BED record per variant call.</p>
+<p>The &#8220;meta-information&#8221; (starting with <code class="docutils literal"><span class="pre">##</span></code>) and &#8220;header&#8221; lines (starting with <code class="docutils literal"><span class="pre">#</span></code>) are discarded, unless the <code class="docutils literal"><span class="pre">--keep-headers</span></code> options is specified.</p>
 </div>
 <div class="section" id="downloads">
-<span id="vcf2bed-downloads"></span><h2>6.3.3.6.7. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
+<span id="vcf2bed-downloads"></span><h2>6.3.3.9.7. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Sample VCF dataset: <a class="reference download internal" href="../../../../_downloads/reference_vcf2bed_foo.vcf"><tt class="xref download docutils literal"><span class="pre">foo.vcf</span></tt></a></li>
+<li>Sample VCF dataset: <a class="reference download internal" href="../../../../_downloads/reference_vcf2bed_foo.vcf"><code class="xref download docutils literal"><span class="pre">foo.vcf</span></code></a></li>
 </ul>
 </div>
 </div>
@@ -296,37 +307,39 @@ chr1    974164  974165  rs9442391       29.84   T       C       LowQual AC=1;AF=
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../../index.html">
-              <img class="logo" src="../../../../_static/logo_with_label_v2.png" alt="Logo"/>
+              <img class="logo" src="../../../../_static/logo_with_label_v3.png" alt="Logo"/>
             </a></p>
   <h3><a href="../../../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">6.3.3.6. <cite>vcf2bed</cite></a><ul>
-<li><a class="reference internal" href="#dependencies">6.3.3.6.1. Dependencies</a></li>
-<li><a class="reference internal" href="#source">6.3.3.6.2. Source</a></li>
-<li><a class="reference internal" href="#usage">6.3.3.6.3. Usage</a></li>
-<li><a class="reference internal" href="#customized-variant-handling">6.3.3.6.4. Customized variant handling</a></li>
-<li><a class="reference internal" href="#example">6.3.3.6.5. Example</a></li>
-<li><a class="reference internal" href="#column-mapping">6.3.3.6.6. Column mapping</a></li>
-<li><a class="reference internal" href="#downloads">6.3.3.6.7. Downloads</a></li>
+<li><a class="reference internal" href="#">6.3.3.9. <cite>vcf2bed</cite></a><ul>
+<li><a class="reference internal" href="#dependencies">6.3.3.9.1. Dependencies</a></li>
+<li><a class="reference internal" href="#source">6.3.3.9.2. Source</a></li>
+<li><a class="reference internal" href="#usage">6.3.3.9.3. Usage</a></li>
+<li><a class="reference internal" href="#customized-variant-handling">6.3.3.9.4. Customized variant handling</a></li>
+<li><a class="reference internal" href="#example">6.3.3.9.5. Example</a></li>
+<li><a class="reference internal" href="#column-mapping">6.3.3.9.6. Column mapping</a></li>
+<li><a class="reference internal" href="#downloads">6.3.3.9.7. Downloads</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="sam2bed.html"
-                        title="previous chapter">6.3.3.5. <cite>sam2bed</cite></a></p>
+                        title="previous chapter">6.3.3.8. <cite>sam2bed</cite></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="wig2bed.html"
-                        title="next chapter">6.3.3.7. <cite>wig2bed</cite></a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../../../_sources/content/reference/file-management/conversion/vcf2bed.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+                        title="next chapter">6.3.3.10. <cite>wig2bed</cite></a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../../_sources/content/reference/file-management/conversion/vcf2bed.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../../search.html" method="get">
       <input type="text" name="q" />
@@ -343,27 +356,27 @@ chr1    974164  974165  rs9442391       29.84   T       C       LowQual AC=1;AF=
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="../../../../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="wig2bed.html" title="6.3.3.7. wig2bed"
+          <a href="wig2bed.html" title="6.3.3.10. wig2bed"
              >next</a> |</li>
         <li class="right" >
-          <a href="sam2bed.html" title="6.3.3.5. sam2bed"
+          <a href="sam2bed.html" title="6.3.3.8. sam2bed"
              >previous</a> |</li>
-        <li><a href="../../../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li>
           <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
           <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
           <li><a href="../conversion.html" >6.3.3. Data conversion</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3b2.
     </div>
   </body>
 </html>

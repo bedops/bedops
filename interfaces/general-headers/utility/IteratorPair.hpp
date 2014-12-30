@@ -1,14 +1,10 @@
-//=========
-// File:    IteratorPair.hpp
-// Author:  Shane Neph & Scott Kuehn
-// Date:    Tue Aug 28 09:36:24 PDT 2007
-// Project: Utility
-// ID: $Id:$
-//=========
-
+/*
+  Author:  Shane Neph & Scott Kuehn
+  Date:    Tue Aug 28 09:36:24 PDT 2007
+*/
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -25,15 +21,12 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef PAIRED_ITERATOR_WRAP_HPP
 #define PAIRED_ITERATOR_WRAP_HPP
 
-// Files
 #include <cstddef>
 #include <iterator>
 #include <utility>
-
 
 namespace Ext {
 
@@ -167,6 +160,5 @@ namespace Ext {
   };
 
 } // namespace Ext
-
 
 #endif // PAIRED_ITERATOR_WRAP_HPP

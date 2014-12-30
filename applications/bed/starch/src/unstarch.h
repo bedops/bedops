@@ -7,7 +7,7 @@
 
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -32,13 +32,17 @@
 static const char *name = "unstarch";
 static const char *authors = "Alex Reynolds and Shane Neph";
 static const char *usage = "\n" \
-    "USAGE: unstarch [ <chromosome> ]  [ --elements | --bases | --bases-uniq | --list | --list-json | --list-chromosomes | --archive-timestamp | --note | --archive-version ] <starch-file>\n" \
+    "USAGE: unstarch [ <chromosome> ]  [ --elements | --bases | --bases-uniq | --has-duplicates | --has-nested | --list | --list-json | --list-chromosomes | --archive-timestamp | --note | --archive-version | --is-starch ] <starch-file>\n" \
     "\n" \
     "    Process Flags:\n\n" \
     "    <chromosome>                     Optional. Either unarchives chromosome-specific records from the starch archive file or restricts action of operator to chromosome (e.g., chr1, chrY, etc.).\n" \
     "    --elements                       Show total element count for archive. If <chromosome> is specified, the result shows the element count for the chromosome.\n" \
     "    --bases,\n" \
     "    --bases-uniq                     Show total and unique base counts, respectively, for archive. If <chromosome> is specified, the count is specific to the chromosome, if available.\n" \
+    "    --has-duplicate,                 Show whether there is one or more duplicate elements in the specified chromosome, either as a numerical (1/0) or string (true/false) value. If no <chromosome> is specified, the value given indicates if there is one or more duplicate elements across all chromosome records.\n" \
+    "    --has-duplicate-as-string \n" \
+    "    --has-nested,                    Show whether there is one ore more nested elements in the specified chromosome, either as a numerical (1/0) or string (true/false) value. If no <chromosome> is specified, the value given indicates if there is one or more nested elements across all chromosome records.\n" \
+    "    --has-nested-as-string \n" \
     "    --list                           List archive metadata (output is in text format). If chromosome is specified, the attributes of the given chromosome are shown.\n" \
     "    --list-json,                     List archive metadata (output is in JSON format)\n" \
     "    --list-json-no-trailing-newline  \n" \
@@ -49,6 +53,7 @@ static const char *usage = "\n" \
     "    --archive-timestamp              Show archive creation timestamp (ISO 8601 format).\n" \
     "    --archive-type                   Show archive compression type.\n" \
     "    --archive-version                Show archive version.\n" \
+    "    --is-starch                      Test if <starch-file> is a valid archive and print 0/1 (false/true) to standard output.\n" \
     "    --version                        Show binary version.\n" \
     "    --help                           Show this usage message.\n";
 

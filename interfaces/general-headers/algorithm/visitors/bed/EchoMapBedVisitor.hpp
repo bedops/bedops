@@ -1,14 +1,10 @@
 /*
-  FILE: EchoMapVisitor.hpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Thu Nov  8 13:31:09 PST 2007
-  PROJECT: utility
-  ID: $Id$
+  Author: Scott Kuehn, Shane Neph
+  Date:   Thu Nov  8 13:31:09 PST 2007
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -43,8 +39,8 @@ namespace Visitors {
     struct EchoMapBed : BaseVisitor {
       typedef BaseVisitor BaseClass;
       typedef Process ProcessType;
-      typedef typename BaseVisitor::reference_type RefType;
-      typedef typename BaseVisitor::mapping_type MapType;
+      typedef typename BaseVisitor::RefType RefType;
+      typedef typename BaseVisitor::MapType MapType;
 
       explicit EchoMapBed(const ProcessType& pt = ProcessType()) : pt_(pt)
         { /* */ }

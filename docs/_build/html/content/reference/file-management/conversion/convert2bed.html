@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>6.3.3.1. convert2bed &mdash; BEDOPS 2.4.3 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/test.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '2.4.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+    <link rel="top" title="BEDOPS 2.4.3 documentation" href="../../../../index.html" />
+    <link rel="up" title="6.3.3. Data conversion" href="../conversion.html" />
+    <link rel="next" title="6.3.3.2. bam2bed" href="bam2bed.html" />
+    <link rel="prev" title="6.3.3. Data conversion" href="../conversion.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="bam2bed.html" title="6.3.3.2. bam2bed"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../conversion.html" title="6.3.3. Data conversion"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li>
+          <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
+          <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
+          <li><a href="../conversion.html" accesskey="U">6.3.3. Data conversion</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="convert2bed">
+<span id="id1"></span><h1>6.3.3.1. <cite>convert2bed</cite><a class="headerlink" href="#convert2bed" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal"><span class="pre">convert2bed</span></code> binary converts common binary and text genomic formats (BAM, GFF, GTF, PSL, SAM, VCF and WIG) to unsorted or sorted, extended BED or <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>BEDOPS Starch</em></a> (compressed BED) with additional per-format options.</p>
+<p>Convenience wrapper bash scripts are provided for each of these input formats, which convert standard input to unsorted or sorted BED, or to BEDOPS Starch (compressed BED). Scripts expose format-specific <code class="docutils literal"><span class="pre">convert2bed</span></code> options.</p>
+<p>We also provide <code class="docutils literal"><span class="pre">bam2bed_sge</span></code>, <code class="docutils literal"><span class="pre">bam2bed_gnuParallel</span></code>, <code class="docutils literal"><span class="pre">bam2starch_sge</span></code> and <code class="docutils literal"><span class="pre">bam2starch_gnuParallel</span></code> convenience scripts, which parallelize the conversion of indexed BAM to BED or to BEDOPS Starch via a Sun Grid Engine-based computational cluster or local GNU Parallel installation.</p>
+<div class="section" id="dependencies">
+<h2>6.3.3.1.1. Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>Conversion of BAM and SAM input is dependent upon the installation of <a class="reference external" href="http://samtools.sourceforge.net/">SAMtools</a> and <a class="reference internal" href="#convert2bed"><em>convert2bed</em></a>. All <code class="docutils literal"><span class="pre">*2starch</span></code> wrapper scripts are further dependent on the installation of the <a class="reference internal" href="../compression/starch.html#starch"><em>starch</em></a> binary, part of a typical BEDOPS installation.</p>
+</div>
+<div class="section" id="source">
+<h2>6.3.3.1.2. Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">convert2bed</span></code> conversion tool is part of the binary and source downloads of BEDOPS. See the <a class="reference internal" href="../../../installation.html#installation"><em>Installation</em></a> documentation for more details.</p>
+</div>
+<div class="section" id="usage">
+<h2>6.3.3.1.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>Generally, to convert data in format <code class="docutils literal"><span class="pre">xyz</span></code> to sorted BED:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ convert2bed -i xyz &lt; input.xyz &gt; output.bed
+</pre></div>
+</div>
+<p>Add the <code class="docutils literal"><span class="pre">-o</span> <span class="pre">starch</span></code> option to write a BEDOPS Starch file, which stores compressed BED data and feature metadata:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ convert2bed -i xyz -o starch &lt; input.xyz &gt; output.starch
+</pre></div>
+</div>
+<p>Wrappers are available for each of the supported formats to convert to BED or Starch, <em>e.g.</em>:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ bam2bed &lt; reads.bam &gt; reads.bed
+$ bam2starch &lt; reads.bam &gt; reads.starch
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Format-specific options are available for each wrapper; use <code class="docutils literal"><span class="pre">--help</span></code> with a wrapper script or <code class="docutils literal"><span class="pre">--help-bam</span></code>, <code class="docutils literal"><span class="pre">--help-gff</span></code> etc. with <code class="docutils literal"><span class="pre">convert2bed</span></code> to get a format-specific description of the conversion procedure and options.</p>
+</div>
+</div>
+<div class="section" id="example">
+<h2>6.3.3.1.4. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>Please review documentation for each wrapper script to see format-specific examples of their use.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/logo_with_label_v3.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">6.3.3.1. <cite>convert2bed</cite></a><ul>
+<li><a class="reference internal" href="#dependencies">6.3.3.1.1. Dependencies</a></li>
+<li><a class="reference internal" href="#source">6.3.3.1.2. Source</a></li>
+<li><a class="reference internal" href="#usage">6.3.3.1.3. Usage</a></li>
+<li><a class="reference internal" href="#example">6.3.3.1.4. Example</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../conversion.html"
+                        title="previous chapter">6.3.3. Data conversion</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="bam2bed.html"
+                        title="next chapter">6.3.3.2. <cite>bam2bed</cite></a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../../_sources/content/reference/file-management/conversion/convert2bed.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="bam2bed.html" title="6.3.3.2. bam2bed"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../conversion.html" title="6.3.3. Data conversion"
+             >previous</a> |</li>
+        <li><a href="../../../../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li>
+          <li><a href="../../../reference.html" >6. Reference</a> &raquo;</li>
+          <li><a href="../../file-management.html" >6.3. File management</a> &raquo;</li>
+          <li><a href="../conversion.html" >6.3.3. Data conversion</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2014, Shane Neph, Alex Reynolds.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3b2.
+    </div>
+  </body>
+</html>

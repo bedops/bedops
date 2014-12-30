@@ -45,12 +45,12 @@ The ``--help`` option describes the various operations and options available to 
 
   closest-features
     citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-    version:  2.4.2
+    version:  2.4.3
     authors:  Shane Neph & Scott Kuehn
 
   USAGE: closest-features [Process-Flags] <input-file> <query-file>
      All input files must be sorted per sort-bed.
-     The program accepts BED and starch file formats
+     The program accepts BED and Starch file formats
      May use '-' for a file to indicate reading from standard input (BED format only).
 
      For every element in <input-file>, determine the two elements from <query-file> falling

@@ -11,7 +11,7 @@ For convenience, we also offer ``gff2starch``, which performs the extra step of 
 Dependencies
 ============
 
-The ``gff2bed`` script requires Python, version 2.6.2 or greater (and less than Python3).
+The ``gff2bed`` script requires :ref:`convert2bed <convert2bed>`. The ``gff2starch`` script requires :ref:`starch <starch>`. Both dependencies are part of a typical BEDOPS installation.
 
 This script is also dependent on input that follows the GFF3 specification. A GFF3-format validator is available `here <http://modencode.oicr.on.ca/cgi-bin/validate_gff3_online>`_ to ensure your input follows specification.
 
@@ -33,7 +33,7 @@ The header data of a GFF file is usually discarded, unless you add the ``--keep-
 
 .. tip:: By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the ``--do-not-sort`` option. Run the script with the ``--help`` option for more details.
 
-.. tip:: If you are sorting data larger than system memory, use the ``--max-mem`` option to limit sort memory usage to a reasonable fraction of available memory, *e.g.*, ``--max-mem 2G`` or similar. See ``--help`` for more details.
+.. tip:: If sorting converted data larger than system memory, use the ``--max-mem`` option to limit sort memory usage to a reasonable fraction of available memory, *e.g.*, ``--max-mem 2G`` or similar. See ``--help`` for more details.
 
 =======
 Example
@@ -85,7 +85,7 @@ As you see here, we strip the header element (``##gff-version 3``), but adding t
    
    ::
      
-     $ awk '{gsub(/;$/,"");print}' badFoo.gff | gff2bed - > goodFoo.bed 
+     $ awk '{gsub(/;$/,"");print}' bad_foo.gff | gff2bed - > good_foo.bed 
 
    This issue is also discussed on the `BEDOPS User Forum <http://bedops.uwencode.org/forum/index.php?topic=34.0>`_.
 

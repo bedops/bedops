@@ -17,17 +17,19 @@ Script
 
 Two versions of the ``starchcluster`` script are included with the source and package distributions of BEDOPS (see :ref:`Installation <installation>` for more detail). 
 
-One version makes use of an `Oracle Grid Engine <http://en.wikipedia.org/wiki/Oracle_Grid_Engine>`_ (or Sun Grid Engine) cluster environment to distribute per-chromosome tasks, while the other script uses `GNU Parallel <http://www.gnu.org/software/parallel/>`_ to split the workload over hosts running SSH. 
+One version makes use of an `Oracle Grid Engine <http://en.wikipedia.org/wiki/Oracle_Grid_Engine>`_ (or Sun Grid Engine) cluster environment to distribute per-chromosome tasks, while the other script uses `GNU Parallel <http://www.gnu.org/software/parallel/>`_ to split the workload over cores or processors on the local host.
 
 ==========
 Discussion
 ==========
 
+The overview that follows applies to the Grid Engine-based version of the `starchcluster` script. However, the general algorithm is identical for both the Grid Engine- and GNU Parallel-based compression scripts.
+
 -------------------
 Splitting BED files
 -------------------
 
-Whole-genome analyses are often "`embarassingly parallel <http://en.wikipedia.org/wiki/Embarrassingly_parallel>`_", in that per-chromosome computations can be placed onto separate work nodes, with results collated at the end in "`map-reduce <http://en.wikipedia.org/wiki/MapReduce>`_" fashion.
+Whole-genome analyses are often "`embarassingly parallel <http://en.wikipedia.org/wiki/Embarrassingly_parallel>`_", in that per-chromosome computations can be placed onto separate work nodes of a computational cluster, with results collated at the end in "`map-reduce <http://en.wikipedia.org/wiki/MapReduce>`_" fashion.
 
 If we want to filter any BED file to retrieve elements from a specific chromosome (say, to compress a BED file, one chromosome at a time), to arrange this kind of analysis, one trivial |---| but very slow |---| way to do this involves sequentially walking line by line through the file to parse and test each element. This can take a while to do. 
 

@@ -1,14 +1,10 @@
 /*
-  FILE: Input.cpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Fri Oct 19 08:20:50 PDT 2007
-  PROJECT: utility
-  ID: $Id$
+  Author: Scott Kuehn, Shane Neph
+  Date:   Fri Oct 19 08:20:50 PDT 2007
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -28,14 +24,10 @@
 #ifndef _BEDMAP_TYPEDEFS_HPP
 #define _BEDMAP_TYPEDEFS_HPP
 
-// Files included
-#include "algorithm/visitors/bed/BedBaseVisitor.hpp"
 #include "algorithm/visitors/BedVisitors.hpp"
 #include "algorithm/visitors/helpers/ProcessBedVisitorRow.hpp"
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
 #include "utility/Exception.hpp"
-
-
 
 namespace BedMap {
 
@@ -51,6 +43,7 @@ namespace BedMap {
     typedef Visitors::BedHelpers::PrintLength ProcessLength;
     typedef Visitors::Helpers::Print ProcessIntegerLength;
     typedef Visitors::BedHelpers::PrintScore ProcessScore;
+    typedef Visitors::BedHelpers::PrintSpanName ProcessSpanName;
     typedef Visitors::BedHelpers::PrintScorePrecision ProcessScorePrecision;
     typedef Visitors::BedHelpers::PrintBED3 ProcessBED3;
     typedef Visitors::Helpers::PrintRangeDelim<ProcessAll> ProcessRangeDelimAll;
@@ -62,7 +55,8 @@ namespace BedMap {
     typedef Visitors::Helpers::PrintRangeDelim<ProcessScorePrecision> ProcessRangeDelimScorePrecision;
     typedef Visitors::BedHelpers::PrintGenomicRange<ProcessBED3> ProcessMapGenomicRange;
 
-    typedef typename BaseClass::mapping_type MapType;
+    typedef typename BaseClass::RefType RefType;
+    typedef typename BaseClass::MapType MapType;
     typedef Ordering::CompValueThenAddressGreater<MapType, MapType> MaxOrder;
     typedef Ordering::CompValueThenAddressLesser<MapType, MapType> MinOrder;
 
@@ -77,7 +71,7 @@ namespace BedMap {
     typedef Visitors::Extreme<ProcessScorePrecision, BaseClass, MinOrder> Min;
     typedef Visitors::StdDev<ProcessScorePrecision, BaseClass> StdDev;
     typedef Visitors::Sum<ProcessScorePrecision, BaseClass> Sum;
-    typedef Visitors::TrimmedMean<ProcessScorePrecision, BaseClass, Ext::ArgumentError> TMeans;
+    typedef Visitors::TrimmedMean<ProcessScorePrecision, BaseClass, Ext::ArgumentError> TMean;
     typedef Visitors::Variance<ProcessScorePrecision, BaseClass> Variance;
 
     typedef Visitors::Extreme<ProcessOne, BaseClass, MaxOrder> MaxElement;
@@ -91,6 +85,8 @@ namespace BedMap {
     typedef Visitors::BedSpecific::EchoMapBed<ProcessUniqueDelimID, BaseClass> EchoMapUniqueID;
     typedef Visitors::BedSpecific::EchoMapIntersectLength<ProcessRangeDelimIntersectLength, BaseClass> EchoMapIntersectLength;
     typedef Visitors::Echo<ProcessAll, BaseClass> EchoRefAll;
+    typedef Visitors::Echo<ProcessLength, BaseClass> EchoRefLength;
+    typedef Visitors::Echo<ProcessSpanName, BaseClass> EchoRefSpan;
     typedef Visitors::BedSpecific::OvrAggregate<ProcessScore, BaseClass> OvrAgg;
     typedef Visitors::BedSpecific::OvrUnique<ProcessScore, BaseClass> OvrUniq;
     typedef Visitors::BedSpecific::OvrUniqueFract<ProcessScorePrecision, BaseClass> OvrUniqFract;

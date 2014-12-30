@@ -1,14 +1,10 @@
 /*
-  FILE: WindowSweep.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Thu Nov 29 18:03:26 PST 2007
-  PROJECT: algorithm
-  ID: $Id$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Thu Nov 29 18:03:26 PST 2007
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -25,12 +21,10 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef WINDOWED_SWEEP_ALGORITHM_H
 #define WINDOWED_SWEEP_ALGORITHM_H
 
-
-
+#include "data/bed/BedDistances.hpp"
 
 namespace WindowSweep {
 
@@ -46,7 +40,14 @@ namespace WindowSweep {
             class EventVisitor
            >
   void sweep(InputIterator start, InputIterator end,
-             RangeComp& inRange, EventVisitor& visitor);
+             RangeComp inRange, EventVisitor& visitor);
+
+  template <
+            class InputIterator,
+            class EventVisitor
+           >
+  void sweep(InputIterator start, InputIterator end,
+             Bed::Overlapping inRange, EventVisitor& visitor);
 
 
   //=================================================================
@@ -63,7 +64,7 @@ namespace WindowSweep {
            >
   void sweep(InputIterator1 refStart, InputIterator1 refEnd,
              InputIterator2 mapFromStart, InputIterator2 mapFromEnd,
-             RangeComp& inRange, EventVisitor& visitor, bool sweepMapAll = false);
+             RangeComp inRange, EventVisitor& visitor, bool sweepMapAll = false);
 
 
   /*
@@ -85,9 +86,9 @@ namespace WindowSweep {
          a string, where the iterators passed in point to strings.
   */
 
-
 } // namespace WindowSweep
 
 #include "../../src/algorithm/sweep/WindowSweepImpl.cpp"
+#include "../../src/algorithm/sweep/WindowSweepImpl.specialize.cpp"
 
 #endif // WINDOWED_SWEEP_ALGORITHM_H

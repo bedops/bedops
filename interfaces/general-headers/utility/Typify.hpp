@@ -1,14 +1,10 @@
 /*
-  FILE: Formats.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Thu Nov 29 15:28:17 PST 2007
-  PROJECT: utility
-  ID: $Id:$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Thu Nov 29 15:28:17 PST 2007
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -25,7 +21,6 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef TYPIFY_CONSTRUCTIONS_H
 #define TYPIFY_CONSTRUCTIONS_H
 

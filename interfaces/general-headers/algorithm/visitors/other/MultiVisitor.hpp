@@ -8,7 +8,7 @@
 
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -46,8 +46,8 @@ namespace Visitors {
     typedef BaseVisitor BaseClass;
     typedef ProcessFields ProcessFieldType;
     typedef ProcessRows ProcessRowType;
-    typedef typename BaseClass::reference_type RefType;
-    typedef typename BaseClass::mapping_type MapType;
+    typedef typename BaseClass::RefType RefType;
+    typedef typename BaseClass::MapType MapType;
     typedef std::vector<BaseClass*> GroupType;
 
     explicit MultiVisitor(GroupType& visitors,
@@ -68,14 +68,14 @@ namespace Visitors {
         pAll_(processAll), cnt_(0)
       { /* */ }
 
-    void Add(MapType* u) {
-      void (BaseClass::*memberFuncPtr)(MapType*) = &BaseClass::Add;
+    void Add(MapType const* u) {
+      void (BaseClass::*memberFuncPtr)(MapType const*) = &BaseClass::Add;
       std::for_each(t_.begin(), t_.end(), std::bind2nd(std::mem_fun(memberFuncPtr), u));
       ++cnt_;
     }
     
-    void Delete(MapType* u) {
-      void (BaseClass::*memberFuncPtr)(MapType*) = &BaseClass::Delete;
+    void Delete(MapType const* u) {
+      void (BaseClass::*memberFuncPtr)(MapType const*) = &BaseClass::Delete;
       std::for_each(t_.begin(), t_.end(), std::bind2nd(std::mem_fun(memberFuncPtr), u));
       --cnt_;
     }
@@ -97,8 +97,8 @@ namespace Visitors {
       pRows_.operator()();
     }
 
-    void SetReference(RefType* t) {
-      void (BaseClass::*memberFuncPtr)(RefType*) = &BaseClass::SetReference;
+    void SetReference(RefType const* t) {
+      void (BaseClass::*memberFuncPtr)(RefType const*) = &BaseClass::SetReference;
       std::for_each(t_.begin(), t_.end(), std::bind2nd(std::mem_fun(memberFuncPtr), t));
     }
 

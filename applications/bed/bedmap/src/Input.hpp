@@ -1,14 +1,10 @@
 /*
-  FILE: Input.cpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Fri Oct 19 08:20:50 PDT 2007
-  PROJECT: utility
-  ID: $Id$
+  Author: Scott Kuehn, Shane Neph
+  Date:   Fri Oct 19 08:20:50 PDT 2007
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -24,7 +20,6 @@
 //    with this program; if not, write to the Free Software Foundation, Inc.,
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
-
 
 #ifndef _BEDMAP_INPUT_HPP
 #define _BEDMAP_INPUT_HPP
@@ -44,10 +39,7 @@
 #include "utility/Assertion.hpp"
 #include "utility/Typify.hpp"
 
-
 #include "TDefs.hpp"
-
-
 
 namespace BedMap {
 
@@ -55,7 +47,8 @@ namespace BedMap {
 
   namespace details {
     struct dummyBase {
-      typedef int mapping_type;
+      typedef int RefType;
+      typedef int MapType;
     };
 
 
@@ -81,10 +74,11 @@ namespace BedMap {
     Input(int argc, char **argv)
       : refFileName_(""), mapFileName_(""), rangeBP_(0), overlapBP_(0),
         percOvr_(0.0), isPercMap_(false), isPercRef_(false), isPercEither_(false),
-        isPercBoth_(false), isRangeBP_(false), isOverlapBP_(false), precision_(6),
-        useScientific_(false), setPrec_(false), numFiles_(0), minRefFields_(0),
-        minMapFields_(0), errorCheck_(false), outDelim_("|"), multiDelim_(";"),
-        fastMode_(false), rangeAlias_(false), chrom_("all"), skipUnmappedRows_(false) {
+        isPercBoth_(false), isRangeBP_(false), isOverlapBP_(false), isExact_(false),
+        precision_(6), useScientific_(false), setPrec_(false), numFiles_(0),
+        minRefFields_(0), minMapFields_(0), errorCheck_(false), sweepAll_(false),
+        outDelim_("|"), multiDelim_(";"), fastMode_(false), rangeAlias_(false),
+        chrom_("all"), skipUnmappedRows_(false) {
 
       // Process user's operation options
       if ( argc <= 1 )
@@ -110,6 +104,8 @@ namespace BedMap {
           errorCheck_ = true;
         } else if ( next == "faster" ) {
           fastMode_ = true;
+        } else if ( next == "sweep-all" ) { // --> sweep through all of second file
+          sweepAll_ = true;
         } else if ( next == "delim" ) {
           Ext::Assert<ArgError>(outDelim_ == "|", "--delim specified multiple times");
           Ext::Assert<ArgError>(argcntr < argc, "No output delimiter given");
@@ -203,7 +199,7 @@ namespace BedMap {
           Ext::Assert<ArgError>(percOvr_ > 0 && percOvr_ <= 1, "--fraction-either value must be: >0-1.0");
           isPercEither_ = true;
         } else if ( next == "fraction-both" ) {
-          Ext::Assert<ArgError>(!isPercBoth_, "multiple --fraction-both/--exact's detected");
+          Ext::Assert<ArgError>(!isPercBoth_, "multiple --fraction-both's detected");
           Ext::Assert<ArgError>(argcntr < argc, "No arg for --fraction-both");
           std::string sval = argv[argcntr++];
           Ext::Assert<ArgError>(sval.find_first_not_of(reals) == std::string::npos,
@@ -213,9 +209,8 @@ namespace BedMap {
           Ext::Assert<ArgError>(percOvr_ > 0 && percOvr_ <= 1, "--fraction-both value must be: >0-1.0");
           isPercBoth_ = true;
         } else if ( next == "exact" ) { // same as --fraction-both 1
-          Ext::Assert<ArgError>(!isPercBoth_, "multiple --fraction-both/--exact's detected");
-          percOvr_ = 1;
-          isPercBoth_ = true;
+          Ext::Assert<ArgError>(!isExact_, "multiple --exact's detected - use one");
+          isExact_ = true;
         }
         else if ( next == details::name<typename VT::OvrAgg>() )
           hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::OvrAgg>());
@@ -225,6 +220,10 @@ namespace BedMap {
           hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::OvrUniqFract>());
         else if ( next == details::name<typename VT::EchoRefAll>() )
           hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoRefAll>());
+        else if ( next == details::name<typename VT::EchoRefLength>() )
+          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoRefLength>());
+        else if ( next == details::name<typename VT::EchoRefSpan>() )
+          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoRefSpan>());
         else if ( next == details::name<typename VT::EchoMapAll>() )
           hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoMapAll>());
         else if ( next == details::name<typename VT::EchoMapID>() )
@@ -291,35 +290,35 @@ namespace BedMap {
           tmpVec.push_back(sval);
           hasVisitor = addVisitor(Ext::Type2Type<typename VT::KthAverage>(), tmpVec);
         }
-        else if ( next == details::name<typename VT::TMeans>() ) {
-          Ext::Assert<ArgError>(argcntr < argc, "No <low> arg given for --" + details::name<typename VT::TMeans>());
+        else if ( next == details::name<typename VT::TMean>() ) {
+          Ext::Assert<ArgError>(argcntr < argc, "No <low> arg given for --" + details::name<typename VT::TMean>());
           std::string svalLow = argv[argcntr++];
           Ext::Assert<ArgError>(svalLow.find_first_not_of(reals) == std::string::npos,
-                                "Non-numeric argument: " + svalLow + " for --" + details::name<typename VT::TMeans>());
+                                "Non-numeric argument: " + svalLow + " for --" + details::name<typename VT::TMean>());
 
-          Ext::Assert<ArgError>(argcntr < argc, "No <hi> arg given for --" + details::name<typename VT::TMeans>());
+          Ext::Assert<ArgError>(argcntr < argc, "No <hi> arg given for --" + details::name<typename VT::TMean>());
           std::string svalHigh = argv[argcntr++];
           Ext::Assert<ArgError>(svalHigh.find_first_not_of(reals) == std::string::npos,
-                                "Non-numeric argument: " + svalHigh + " for --" + details::name<typename VT::TMeans>());
+                                "Non-numeric argument: " + svalHigh + " for --" + details::name<typename VT::TMean>());
 
           std::stringstream convLow(svalLow), convHigh(svalHigh);
           double valLow = 100, valHigh = 100;
           convLow >> valLow; convHigh >> valHigh;
           Ext::Assert<ArgError>(valLow >= 0 && valLow <= 1,
-                                "--" + details::name<typename VT::TMeans>() + " Expect 0 <= low < hi <= 1");
+                                "--" + details::name<typename VT::TMean>() + " Expect 0 <= low < hi <= 1");
           Ext::Assert<ArgError>(valHigh >= 0 && valHigh <= 1,
-                                "--" + details::name<typename VT::TMeans>() + " Expect 0 <= low < hi <= 1");
+                                "--" + details::name<typename VT::TMean>() + " Expect 0 <= low < hi <= 1");
           Ext::Assert<ArgError>(valLow + valHigh <= 1,
-                                "--" + details::name<typename VT::TMeans>() + " Expect (low + hi) <= 1.");
+                                "--" + details::name<typename VT::TMean>() + " Expect (low + hi) <= 1.");
           std::vector<std::string> tmpVec;
           tmpVec.push_back(svalLow); tmpVec.push_back(svalHigh);
-          hasVisitor = addVisitor(Ext::Type2Type<typename VT::TMeans>(), tmpVec);
+          hasVisitor = addVisitor(Ext::Type2Type<typename VT::TMean>(), tmpVec);
         }
         else
           throw(ArgError("Unknown option: --" + next));
       } // while
 
-      if ( !(isPercMap_ || isPercRef_ || isPercEither_ || isPercBoth_ || isRangeBP_ || isOverlapBP_) ) {
+      if ( !(isPercMap_ || isPercRef_ || isPercEither_ || isPercBoth_ || isRangeBP_ || isOverlapBP_ || isExact_) ) {
         // use defaults
         isOverlapBP_ = true;
         overlapBP_ = 1;
@@ -330,13 +329,14 @@ namespace BedMap {
       count += isPercBoth_;
       count += isRangeBP_;
       count += isOverlapBP_;
+      count += isExact_;
       Ext::Assert<ArgError>(1 == count, "More than one overlap specification used.");
 
       Ext::Assert<ArgError>(hasVisitor, "No processing option specified (ie; --max).");
       Ext::Assert<ArgError>(0 <= argc - argcntr, "No files");
       Ext::Assert<ArgError>(3 == minRefFields_, "Program error: Input.hpp::minRefFields_");
       Ext::Assert<ArgError>(3 <= minMapFields_ && 5 >= minMapFields_, "Program error: Input.hpp::minMapFields_");
-      Ext::Assert<ArgError>(!fastMode_ || isOverlapBP_ || isRangeBP_ || isPercBoth_, "--faster compatible with --range, --bp-ovr, --fraction-both, and --exact only");
+      Ext::Assert<ArgError>(!fastMode_ || isOverlapBP_ || isRangeBP_ || isPercBoth_ || isExact_, "--faster compatible with --range, --bp-ovr, --fraction-both, and --exact only");
 
       // Process files inputs
       Ext::Assert<ArgError>(2 >= argc - argcntr, "Need [one or] two input files");
@@ -371,6 +371,7 @@ namespace BedMap {
     bool isPercBoth_;
     bool isRangeBP_;
     bool isOverlapBP_;
+    bool isExact_;
     int precision_;
     bool useScientific_;
     bool setPrec_;
@@ -378,6 +379,7 @@ namespace BedMap {
     unsigned int minRefFields_;
     unsigned int minMapFields_;
     bool errorCheck_;
+    bool sweepAll_;
     std::string outDelim_;
     std::string multiDelim_;
     bool fastMode_;
@@ -396,6 +398,8 @@ namespace BedMap {
       static unsigned int num(Ext::Type2Type<typename VT::EchoMapRange>) { return 3; }
       static unsigned int num(Ext::Type2Type<typename VT::EchoMapUniqueID>) { return 4; }
       static unsigned int num(Ext::Type2Type<typename VT::EchoRefAll>) { return 3; }
+      static unsigned int num(Ext::Type2Type<typename VT::EchoRefLength>) { return 3; }
+      static unsigned int num(Ext::Type2Type<typename VT::EchoRefSpan>) { return 3; }
       static unsigned int num(Ext::Type2Type<typename VT::Indicator>) { return 3; }
       static unsigned int num(Ext::Type2Type<typename VT::OvrAgg>) { return 3; }
       static unsigned int num(Ext::Type2Type<typename VT::OvrUniq>) { return 3; }
@@ -437,8 +441,8 @@ namespace BedMap {
     usage << "                                                                                                    \n";
     usage << " USAGE: bedmap [process-flags] [overlap-option] <operation(s)...> <ref-file> [map-file]             \n";
     usage << "     Any input file must be sorted per the sort-bed utility.                                        \n";
-    usage << "     The program accepts BED and starch file formats.                                               \n";
-    usage << "     May use '-' for a file to indicate reading from standard input (BED format only).              \n";
+    usage << "     The program accepts BED and Starch file formats.                                               \n";
+    usage << "     You may use '-' for a BED file to indicate the input comes from stdin.                         \n";
     usage << "                                                                                                    \n";
     usage << "     Traverse <ref-file>, while applying <operation(s)> on qualified, overlapping elements from     \n";
     usage << "       <map-file>.  Output is one line for each line in <ref-file>, sent to standard output.  There \n";
@@ -460,24 +464,24 @@ namespace BedMap {
     usage << "      --prec <int>          Change the post-decimal precision of scores to <int>.  0 <= <int>.      \n";
     usage << "      --sci                 Use scientific notation for score outputs.                              \n";
     usage << "      --skip-unmapped       Print no output for a row with no mapped elements.                      \n";
+    usage << "      --sweep-all           Ensure <map-file> is read completely (helps to prevent broken pipes).   \n";
     usage << "      --version             Print program information.                                              \n";
     usage << "                                                                                                    \n";
     usage << "                                                                                                    \n";
     usage << "    Overlap Options (At most, one may be selected.  By default, --bp-ovr 1 is used):                \n";
     usage << "     --------                                                                                       \n";
     usage << "      --bp-ovr <int>           Require <int> bp overlap between elements of input files.            \n";
-    usage << "      --range <int>            Grab <map-file> elements within <int> bp of <ref-file>'s element,    \n";
-    usage << "                                 where 0 <= int.  --range 0 is an alias for --bp-ovr 1.             \n";
-    usage << "      --fraction-ref <val>     The fraction of the element's size from <ref-file> that must overlap \n";
-    usage << "                                 the element in <map-file>.  Expect 0 < val <= 1.                   \n";
-    usage << "      --fraction-map <val>     The fraction of the element's size from <map-file> that must overlap \n";
-    usage << "                                 the element in <ref-file>.  Expect 0 < val <= 1.                   \n";
+    usage << "      --exact                  First 3 fields from <map-file> must be identical to <ref-file>'s.    \n";
     usage << "      --fraction-both <val>    Both --fraction-ref <val> and --fraction-map <val> must be true to   \n";
     usage << "                                 qualify as overlapping.  Expect 0 < val <= 1.                      \n";
     usage << "      --fraction-either <val>  Either --fraction-ref <val> or --fraction-map <val> must be true to  \n";
     usage << "                                 qualify as overlapping.  Expect 0 < val <= 1.                      \n";
-    usage << "      --exact                  Shorthand for --fraction-both 1.  First 3 fields from <map-file> must\n";
-    usage << "                                 be identical to <ref-file>'s element.                              \n";
+    usage << "      --fraction-map <val>     The fraction of the element's size from <map-file> that must overlap \n";
+    usage << "                                 the element in <ref-file>.  Expect 0 < val <= 1.                   \n";
+    usage << "      --fraction-ref <val>     The fraction of the element's size from <ref-file> that must overlap \n";
+    usage << "                                 an element in <map-file>.  Expect 0 < val <= 1.                    \n";
+    usage << "      --range <int>            Grab <map-file> elements within <int> bp of <ref-file>'s element,    \n";
+    usage << "                                 where 0 <= int.  --range 0 is an alias for --bp-ovr 1.             \n";
     usage << "                                                                                                    \n";
     usage << "                                                                                                    \n";
     usage << "    Operations:  (Any number of operations may be used any number of times.)                        \n";
@@ -499,7 +503,7 @@ namespace BedMap {
     usage << "      --" + details::name<VT::MinElement>() + "       An element with the lowest score from overlapping elements in <map-file>.\n";
     usage << "      --" + details::name<VT::StdDev>() + "             The square root of the result of --" + details::name<VT::Variance>() + ".\n";
     usage << "      --" + details::name<VT::Sum>() + "               Accumulated scores from overlapping elements in <map-file>.\n";
-    usage << "      --" + details::name<VT::TMeans>() + " <low> <hi>  The mean score from overlapping elements in <map-file>, after\n";
+    usage << "      --" + details::name<VT::TMean>() + " <low> <hi>  The mean score from overlapping elements in <map-file>, after\n";
     usage << "                            ignoring the bottom <low> and top <hi> fractions of those scores.\n";
     usage << "                            0 <= low <= 1.  0 <= hi <= 1.  low+hi <= 1.\n";
     usage << "      --" + details::name<VT::Variance>() + "          The variance of scores from overlapping elements in <map-file>.\n";
@@ -524,6 +528,8 @@ namespace BedMap {
     usage << "      --" + details::name<VT::EchoMapScore>() + "    List scores from overlapping <map-file> elements.\n";
     usage << "      --" + details::name<VT::EchoMapLength>() + "     List the full length of every overlapping element.\n";
     usage << "      --" + details::name<VT::EchoMapIntersectLength>() + " List lengths of overlaps.\n";
+    usage << "      --" + details::name<VT::EchoRefSpan>() + "     Print the first 3 fields of <ref-file> using chrom:start-end format.\n";
+    usage << "      --" + details::name<VT::EchoRefLength>() + "     Print the length of each line from <ref-file>.\n";
     usage << "      --" + details::name<VT::Indicator>() + "         Print 1 if there exists an overlapping element in <map-file>, 0 otherwise.\n";
     usage << "\n";
 

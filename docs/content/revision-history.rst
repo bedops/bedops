@@ -12,6 +12,60 @@ Current version
 ===============
 
 ------
+v2.4.3
+------
+
+Released: **December 18, 2014**
+
+* Compilation improvements
+
+  * Shane Neph put in a great deal of work to enable parallel builds (*e.g.*, ``make -j N`` to build various targets in parallel). Depending on the end user's environment, this can speed up compilation time by a factor of 2, 4 or more.
+
+  * Fixed numerous compilation warnings of debug builds of :ref:`starch` toolkit under RHEL6/GCC and OS X 10.10.1/LLVM.
+
+* New :ref:`bedops` features
+
+  * Added ``--chop`` and ``--stagger`` options to "melt" inputs into contiguous or staggered disjoint regions of equivalent size.
+
+  * For less confusion, arguments for ``--element-of``, ``--chop`` and other ``bedops`` operations that take numerical modifiers no longer require a leading hyphen character. For instance, ``--element-of 1`` is now equivalent to the former usage of ``--element-of -1``.
+
+* New :ref:`bedmap` features
+
+  * The ``--sweep-all`` option reads through the entire map file without early termination and can help deal with ``SIGPIPE`` errors. It adds to execution time, but the penalty is not as severe as with the use of ``--ec``. Using ``--ec`` alone will enable error checking, but will now no longer read through the entire map file. The ``--ec`` option can be used in conjunction with ``--sweep-all``, with the associated time penalties. (Another method for dealing with issue this is to override how ``SIGPIPE`` errors are caught by the interpreter (bash, Python, etc.) and retrapping them or ignoring them. However, it may not a good idea to do this as other situations may arise in production pipelines where it is ideal to trap and handle all I/O errors in a default manner.)
+
+  * New ``--echo-ref-size`` and ``--echo-ref-name`` operations report genomic length of reference element, and rename the reference element in ``chrom:start-end`` (useful for labeling rows for input for ``matrix2png`` or ``R`` or other applications).
+
+* :ref:`bedextract`
+
+  * Fixed upper bound bug that would cause incorrect output in some cases
+
+* :ref:`conversion scripts <conversion_scripts>`
+
+  * Brand new C99 binary called :ref:`convert2bed`, which wrapper scripts (``bam2bed``, etc.) now call. No more Python version dependencies, and the C-based rewrite offers massive performance improvements over old Python-based scripts.
+
+  * Added :ref:`parallel_bam2starch` script, which parallelizes creation of :ref:`Starch <starch_specification>` archive from very large BAM files in SGE environments.
+
+  * Added bug fix for missing code in :ref:`starchcluster.gnu_parallel <starchcluster>` script, where the final collation step was missing.
+
+  * The :ref:`vcf2bed` script now accepts the ``--do-not-split`` option, which prints one BED element for all alternate alleles.
+
+* :ref:`Starch <starch_specification>` archival format and compression/extraction tools
+
+  * Added duplicate- and :ref:`nested-element <nested_elements>` flags in v2.1 of Starch metadata, which denote if a chromosome contains one or more duplicate and/or nested elements. BED files compressed with :ref:`starch` v2.5 or greater, or Starch archives updated with :ref:`starchcat` v2.5 or greater will include these values in the archive metadata. The :ref:`unstarch` extraction tool offers ``--has-duplicate`` and ``--has-nested`` options to retrieve these flag values for a specified chromosome (or for all chromosomes).
+
+  * Added ``--is-starch`` option to :ref:`unstarch` to test if specified input file is a Starch v1 or v2 archive.
+ 
+  * Added bug fix for compressing BED files with :ref:`starch`, where the archive would not include the last element of the BED input, if the BED input lacked a trailing newline. The compression tools now include a routine for capturing the last line, if there is no newline.
+
+* Documentation improvements
+
+  * Remade some image assets throughout the documents to support Retina-grade displays
+
+=================
+Previous versions
+=================
+
+------
 v2.4.2
 ------
 
@@ -26,10 +80,6 @@ Released: **April 10, 2014**
   * Extended support for Python-based conversion scripts to support use with Python v2.6.2 and forwards, except for ``sam2bed`` and ``sam2starch``, which still require Python v2.7 or greater (and under Python3).
 
   * Fixed ``--insertions`` option in :ref:`vcf2bed` to now report a single-base BED element (thanks to Matt Maurano).
-
-=================
-Previous versions
-=================
 
 ------
 v2.4.1
@@ -151,7 +201,7 @@ Released: **October 2, 2013**
 
 * :ref:`bedmap`
 
-  * Adds support for the new ``--skip-unmapped`` option, which filters out reference elements which do not have mapped elements associated with them. See the end of the :ref:`score operations <score_operations>` section of the :ref:`bedmap` documentation for more detail.
+  * Adds support for the new ``--skip-unmapped`` option, which filters out reference elements which do not have mapped elements associated with them. See the end of the :ref:`score operations <bedmap_score_operations>` section of the :ref:`bedmap` documentation for more detail.
 
   * General ``--ec`` performance improvements.
 

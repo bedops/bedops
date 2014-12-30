@@ -6,7 +6,7 @@
 
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -101,12 +101,16 @@ typedef struct transformState {
     char                     r_remainder[UNSTARCH_SECOND_TOKEN_MAX_LENGTH + 1];
     SignedCoordType          r_start;
     SignedCoordType          r_stop;
+    SignedCoordType          r_pStart;
+    SignedCoordType          r_pStop;
     SignedCoordType          r_coordDiff;
     SignedCoordType          r_lcDiff;
     SignedCoordType          r_lastPosition;
     SignedCoordType          r_previousStop;
     uint64_t                 r_totalNonUniqueBases;
     uint64_t                 r_totalUniqueBases;
+    Boolean                  r_duplicateElementExists;
+    Boolean                  r_nestedElementExists;
     size_t                   r_nRetransBuf;
 } TransformState;
 
@@ -326,7 +330,16 @@ int      STARCHCAT2_transformCompressionBuffer (const char *compressionBuffer, c
 int      STARCHCAT2_squeezeRetransformedOutputBufferToBzip2Stream (BZFILE **bzStream, char *transformedBuffer);
 int      STARCHCAT2_squeezeRetransformedOutputBufferToGzipStream (z_stream *zStream, const Boolean flushZStreamFlag, char *transformedBuffer, uint64_t *finalStreamSize, size_t *cumulativeOutputSize);
 int      STARCHCAT2_resetCompressionBuffer (char *compressionBuffer, LineCountType *compressionLineCount);
-int      STARCHCAT2_finalizeMetadata (Metadata **outMd, char *finalChromosome, char *finalOutTagFn, uint64_t finalStreamSize, uint64_t finalLineCount, uint64_t finalTotalNonUniqueBases, uint64_t finalTotalUniqueBases);
+
+int      STARCHCAT2_finalizeMetadata (Metadata **outMd, 
+                                          char *finalChromosome, 
+                                          char *finalOutTagFn, 
+                                      uint64_t finalStreamSize, 
+                                      uint64_t finalLineCount, 
+                                      uint64_t finalTotalNonUniqueBases, 
+                                      uint64_t finalTotalUniqueBases,
+                                       Boolean finalDuplicateElementExists,
+                                       Boolean finalNestedElementExists);
 
 #ifdef __cplusplus
 } // namespace starch

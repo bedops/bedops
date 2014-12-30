@@ -6,7 +6,7 @@
 
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -171,10 +171,14 @@ namespace starch
                 json_t *_mdJSONStreamLineCount = NULL;
                 json_t *_mdJSONStreamNonUniqueBaseCount = NULL;
                 json_t *_mdJSONStreamUniqueBaseCount = NULL;
+                json_t *_mdJSONStreamDuplicateElementExists = NULL;
+                json_t *_mdJSONStreamNestedElementExists = NULL;
                 uint64_t _archStreamSize = 0;
                 Bed::LineCountType _archStreamLineCount = 0;
                 Bed::BaseCountType _archStreamNonUniqueBaseCount = 0;
                 Bed::BaseCountType _archStreamUniqueBaseCount = 0;
+                Boolean _archStreamDuplicateElementExists = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+                Boolean _archStreamNestedElementExists = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
                 Metadata *_testMd = NULL;
                 Metadata *_firstMd = NULL;
                 unsigned int _recIdx = 0U;
@@ -329,7 +333,7 @@ namespace starch
 #endif
                         _mdJSONStreamLineCount = json_object_get(_mdJSONStream, STARCH_METADATA_STREAM_LINECOUNT_KEY);
                         if (!_mdJSONStreamLineCount) {
-                            if ((_archVersion->major >= 1) && (_archVersion->minor >= 3)) {
+                            if ((_archVersion->major >= 2) || ((_archVersion->major == 1) && (_archVersion->minor >= 3))) {
                                 std::fprintf(stderr, "ERROR: Could not retrieve JSON stream's line count attribute\n");
                                 std::fseek(_inFp, 0, SEEK_SET);
                                 return false;
@@ -343,7 +347,7 @@ namespace starch
 
                         _mdJSONStreamNonUniqueBaseCount = json_object_get(_mdJSONStream, STARCH_METADATA_STREAM_TOTALNONUNIQUEBASES_KEY);
                         if (!_mdJSONStreamNonUniqueBaseCount) {
-                            if ((_archVersion->major >= 1) && (_archVersion->minor >= 4)) {
+                            if ((_archVersion->major >= 2) || ((_archVersion->major == 1) && (_archVersion->minor >= 4))) {
                                 std::fprintf(stderr, "ERROR: Could not retrieve JSON stream's non-unique base count attribute\n");
                                 std::fseek(_inFp, 0, SEEK_SET);
                                 return false;
@@ -357,7 +361,7 @@ namespace starch
 
                         _mdJSONStreamUniqueBaseCount = json_object_get(_mdJSONStream, STARCH_METADATA_STREAM_TOTALUNIQUEBASES_KEY);
                         if (!_mdJSONStreamUniqueBaseCount) {
-                            if ((_archVersion->major >= 1) && (_archVersion->minor >= 4)) {
+                            if ((_archVersion->major >= 2) || ((_archVersion->major == 1) && (_archVersion->minor >= 4))) {
                                 std::fprintf(stderr, "ERROR: Could not retrieve unique base count attribute\n");
                                 std::fseek(_inFp, 0, SEEK_SET);
                                 return false;
@@ -369,13 +373,43 @@ namespace starch
                         else 
                             _archStreamUniqueBaseCount = (Bed::BaseCountType) json_integer_value(_mdJSONStreamUniqueBaseCount);
 
+                        _mdJSONStreamDuplicateElementExists = json_object_get(_mdJSONStream, STARCH_METADATA_STREAM_DUPLICATEELEMENTEXISTS_KEY);
+                        if (!_mdJSONStreamDuplicateElementExists) {
+                            if ((_archVersion->major >= 3) || ((_archVersion->major == 2) && (_archVersion->minor >= 0))) {
+                                fprintf(stderr, "ERROR: Could not retrieve stream duplicate-element-exists flag object with compliant version\n");
+                                std::fseek(_inFp, 0, SEEK_SET);
+                                return false;
+                            }
+                            _mdJSONStreamDuplicateElementExists = json_boolean(STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE);
+                            _archStreamDuplicateElementExists = static_cast<Boolean>(json_is_true(_mdJSONStreamDuplicateElementExists));
+                            json_decref(_mdJSONStreamDuplicateElementExists);
+                        }
+                        else 
+                            _archStreamDuplicateElementExists = static_cast<Boolean>(json_is_true(_mdJSONStreamDuplicateElementExists));
+
+                        _mdJSONStreamNestedElementExists = json_object_get(_mdJSONStream, STARCH_METADATA_STREAM_NESTEDELEMENTEXISTS_KEY);
+                        if (!_mdJSONStreamNestedElementExists) {
+                            if ((_archVersion->major >= 3) || ((_archVersion->major == 2) && (_archVersion->minor >= 0))) {
+                                fprintf(stderr, "ERROR: Could not retrieve stream nested-element-exists flag object with compliant version\n");
+                                std::fseek(_inFp, 0, SEEK_SET);
+                                return false;
+                            }
+                            _mdJSONStreamNestedElementExists = json_boolean(STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE);
+                            _archStreamNestedElementExists = static_cast<Boolean>(json_is_true(_mdJSONStreamNestedElementExists));
+                            json_decref(_mdJSONStreamNestedElementExists);
+                        }
+                        else 
+                            _archStreamNestedElementExists = static_cast<Boolean>(json_is_true(_mdJSONStreamNestedElementExists));
+                        
                         if (_recIdx == 0) {
                             _testMd = STARCH_createMetadata(_archStreamChr,
                                                             _archStreamFn,
                                                             _archStreamSize,
                                                             _archStreamLineCount,
                                                             _archStreamNonUniqueBaseCount,
-                                                            _archStreamUniqueBaseCount);
+                                                            _archStreamUniqueBaseCount,
+                                                            _archStreamDuplicateElementExists,
+                                                            _archStreamNestedElementExists);
                             _firstMd = _testMd;
                         }
                         else
@@ -385,7 +419,9 @@ namespace starch
                                                          _archStreamSize,
                                                          _archStreamLineCount,
                                                          _archStreamNonUniqueBaseCount,
-                                                         _archStreamUniqueBaseCount);
+                                                         _archStreamUniqueBaseCount,
+                                                         _archStreamDuplicateElementExists,
+                                                         _archStreamNestedElementExists);
                         _recIdx++;
                         _mdJSONStreamChr = NULL;
                         _mdJSONStreamFn = NULL;
@@ -393,6 +429,8 @@ namespace starch
                         _mdJSONStreamLineCount = NULL;
                         _mdJSONStreamNonUniqueBaseCount = NULL;
                         _mdJSONStreamUniqueBaseCount = NULL;
+                        _mdJSONStreamDuplicateElementExists = NULL;
+                        _mdJSONStreamNestedElementExists = NULL;
                         _mdJSONStream = NULL;
                     }
                 }
@@ -463,6 +501,8 @@ namespace starch
                 Bed::LineCountType _recLineCountValue = 0;
                 Bed::BaseCountType _recNonUniqueBaseCountValue = 0;
                 Bed::BaseCountType _recUniqueBaseCountValue = 0;
+                Boolean _recDuplicateElementExists = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+                Boolean _recNestedElementExists = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
 
                 /* read first 8 kilobytes into buffer */
 
@@ -529,7 +569,9 @@ namespace starch
                                                                 _recFileSize, 
                                                                 _recLineCountValue,
                                                                 _recNonUniqueBaseCountValue,
-                                                                _recUniqueBaseCountValue);
+                                                                _recUniqueBaseCountValue,
+                                                                _recDuplicateElementExists,
+                                                                _recNestedElementExists);
                                 _firstMd = _testMd;
                             }
                             else
@@ -539,32 +581,34 @@ namespace starch
                                                              _recFileSize, 
                                                              _recLineCountValue,
                                                              _recNonUniqueBaseCountValue,
-                                                             _recUniqueBaseCountValue);
+                                                             _recUniqueBaseCountValue,
+                                                             _recDuplicateElementExists,
+                                                             _recNestedElementExists);
                         }
                         else
                             break;
-
+                        
                         _tokBufIdx = -1;
                     }
                     else
                         _tokBuf[_tokBufIdx] = (char) _buf[_bufIdx];
                 }
-    
+                
                 /* if _testMd is not NULL, then we have valid legacy metadata record(s) */
-
+                
                 if (std::fseek(_inFp, 0, SEEK_SET) != 0)
                     return false;
-
+                
                 _testMd = _firstMd;
-
+                
                 if (_testMd) {
                     STARCH_freeMetadata(&_testMd);
                     return true;
                 }
-    
+                
                 return false;
             }
-
+        
             static bool hasStarchRevision1LegacyHeader(std::string& _inFn)
             {
 #ifdef DEBUG
@@ -586,7 +630,7 @@ namespace starch
 
                 return true;
             }
-
+        
             static bool isStarch(FILE *_inFp)
             {
                 /* 
@@ -667,6 +711,10 @@ namespace starch
             Bed::LineCountType              getCurrentChromosomeLineCount() { return (archMdIter) ? archMdIter->lineCount : 0; }
             Bed::BaseCountType              getCurrentChromosomeNonUniqueBaseCount() { return (archMdIter) ? archMdIter->totalNonUniqueBases : 0; }
             Bed::BaseCountType              getCurrentChromosomeUniqueBaseCount() { return (archMdIter) ? archMdIter->totalUniqueBases : 0; }
+            bool                            getCurrentChromosomeHasDuplicateElement() { return (archMdIter) ? (archMdIter->duplicateElementExists == kStarchTrue ? true : false ) : (STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE == kStarchTrue ? true : false ); }
+            bool                            getCurrentChromosomeHasNestedElement() { return (archMdIter) ? (archMdIter->nestedElementExists == kStarchTrue ? true : false ) : (STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE == kStarchTrue ? true : false ); }
+            bool                            getAllChromosomesHaveDuplicateElement() { Metadata *_archMdIter; for (_archMdIter = archMd; _archMdIter != NULL; _archMdIter = _archMdIter->next) { if (UNSTARCH_duplicateElementExistsForChromosome(archMd, _archMdIter->chromosome) == kStarchTrue) return true; } return false; }
+            bool                            getAllChromosomesHaveNestedElement() { Metadata *_archMdIter; for (_archMdIter = archMd; _archMdIter != NULL; _archMdIter = _archMdIter->next) { if (UNSTARCH_nestedElementExistsForChromosome(archMd, _archMdIter->chromosome) == kStarchTrue) return true; } return false; }
             inline bool                     isEOF() { return (!getCurrentChromosome()); }
 
         // ------------        

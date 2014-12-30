@@ -1,14 +1,11 @@
 /*
-  FILE: NamedVisitors.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Sun Dec 13 23:50:58 PST 2009
-  PROJECT: utility
-  ID: $Id$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Sun Dec 13 23:50:58 PST 2009
 */
 
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -28,11 +25,9 @@
 #ifndef _NAMED_VISITORS_HPP
 #define _NAMED_VISITORS_HPP
 
-// File included
 #include <sstream>
 #include <string>
 #include <vector>
-
 
 #include "algorithm/visitors/BedVisitors.hpp"
 #include "algorithm/visitors/NumericalVisitors.hpp"
@@ -69,6 +64,18 @@ namespace Visitors {
     struct VisitorName< Visitors::Echo<A,B> > {
       static std::string Name()
         { return "echo"; }
+    };
+
+    template <typename B>
+    struct VisitorName< Visitors::Echo<Visitors::BedHelpers::PrintLength,B> > {
+      static std::string Name()
+        { return "echo-ref-size"; }
+    };
+
+    template <typename B>
+    struct VisitorName< Visitors::Echo<Visitors::BedHelpers::PrintSpanName,B> > {
+      static std::string Name()
+        { return "echo-ref-name"; }
     };
 
     template <typename A, typename B>

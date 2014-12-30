@@ -1,14 +1,10 @@
 /*
-  FILE: WindowedVisitors.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Thu Dec 17 20:01:34 PST 2009
-  PROJECT: windowing-visitors
-  ID: $Id$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Thu Dec 17 20:01:34 PST 2009
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -28,14 +24,15 @@
 #ifndef _BED_WINDOW_VISITOR_TYPES_HPP
 #define _BED_WINDOW_VISITOR_TYPES_HPP
 
-// Files included
-#include "NumericalVisitors.hpp"
+#include "bed/BedBaseVisitor.hpp"
+#include "bed/EchoMapBedVisitor.hpp" // do not include other/EchoMapVisitor.hpp
 #include "bed/EchoMapIntersectLengthVisitor.hpp"
 #include "bed/OvrAggregateVisitor.hpp"
 #include "bed/OvrUniqueVisitor.hpp"
 #include "bed/OvrUniqueFractionVisitor.hpp"
-#include "bed/EchoMapBedVisitor.hpp" // do not include other/EchoMapVisitor.hpp
+#include "NumericalVisitors.hpp"
 #include "other/EchoVisitor.hpp"
 #include "other/MultiVisitor.hpp"
+#include "Visitors.hpp"
 
 #endif // _BED_WINDOW_VISITOR_TYPES_HPP

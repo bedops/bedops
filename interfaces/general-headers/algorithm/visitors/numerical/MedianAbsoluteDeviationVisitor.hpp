@@ -1,14 +1,10 @@
 /*
-  FILE: MedianAbsoluteVisitor.hpp
-  AUTHOR: Sean Thomas, Shane Neph
-  CREATE DATE: Wed Aug 18 23:28:17 PDT 2010
-  PROJECT: utility
-  ID: $Id$
+  Author: Shane Neph, Sean Thomas
+  Date:   Wed Aug 18 23:28:17 PDT 2010
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -25,11 +21,9 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef _MAD_VISITOR_HPP
 #define _MAD_VISITOR_HPP
 
-// Files included
 #include <algorithm>
 #include <cmath>
 #include <functional>
@@ -41,9 +35,7 @@
 #include "data/measurement/SelectMeasureType.hpp"
 #include "utility/Exception.hpp"
 
-
 namespace Visitors {
-
 
   namespace details {
 
@@ -59,29 +51,25 @@ namespace Visitors {
 
   } // details
 
-
-  
   template <
             typename Process,
             typename BaseVisitor,
             typename ExceptionType = Ext::ArgumentError
            >
   struct MedianAbsoluteDeviation : RollingKthAverage<
-             Helpers::Keep<typename Signal::SelectMeasure<typename BaseVisitor::mapping_type>::MeasureType>,
+             Helpers::Keep<typename Signal::SelectMeasure<typename BaseVisitor::MapType>::MeasureType>,
              BaseVisitor, ExceptionType> {
 
-    typedef typename Signal::SelectMeasure<typename BaseVisitor::mapping_type>::MeasureType MT;
+    typedef typename Signal::SelectMeasure<typename BaseVisitor::MapType>::MeasureType MT;
     typedef RollingKthAverage<Helpers::Keep<MT>, BaseVisitor, ExceptionType> BaseClass;
     typedef Process ProcessType;
-    typedef typename BaseClass::reference_type RefType;
-    typedef typename BaseClass::mapping_type MapType;
-
+    typedef typename BaseClass::RefType RefType;
+    typedef typename BaseClass::MapType MapType;
 
     // Using default multiplier == 1 // see wikipedia
     explicit MedianAbsoluteDeviation(const ProcessType& pt = ProcessType(), double mult = 1)
        : BaseClass(0.5, Helpers::Keep<MT>()), pt_(pt), mult_(mult)
       { /* */ }
-
 
     inline void DoneReference() {
       static const Signal::NaN nan = Signal::NaN();

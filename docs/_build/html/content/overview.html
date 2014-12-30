@@ -6,15 +6,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>1. Overview &mdash; BEDOPS 2.4.1 documentation</title>
+    <title>1. Overview &mdash; BEDOPS 2.4.3 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/test.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2.4.1',
+        VERSION:     '2.4.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,15 +24,15 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../index.html" />
+    <link rel="top" title="BEDOPS 2.4.3 documentation" href="../index.html" />
     <link rel="next" title="2. Installation" href="installation.html" />
     <link rel="prev" title="BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis toolkit" href="../index.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -43,14 +44,14 @@
         <li class="right" >
           <a href="../index.html" title="BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis toolkit"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="overview">
 <span id="id1"></span><h1>1. Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
@@ -67,27 +68,29 @@
 <div class="section" id="bedops-tools-are-flexible">
 <h3>1.2.1. BEDOPS tools are flexible<a class="headerlink" href="#bedops-tools-are-flexible" title="Permalink to this headline">¶</a></h3>
 <p>Our tools fit easily into analysis pipelines, allow practically unlimited inputs, and reduce I/O overhead through standard UNIX input and output streams:</p>
-<div class="highlight-python"><pre>$ bedops --intersect A.bed B.bed C.bed \
+<div class="highlight-python"><div class="highlight"><pre>$ bedops --intersect A.bed B.bed C.bed \
     | bedmap --echo --mean - D.bed \
     | ... \
-    &gt; Answer.bed</pre>
+    &gt; Answer.bed
+</pre></div>
 </div>
 <p>Our <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> core tool offers numerous set operations of all kinds, including those in the slide below:</p>
-<a class="reference internal image-reference" href="../_images/BEDOPS_Presentation_bedops_ops.png"><img alt="../_images/BEDOPS_Presentation_bedops_ops.png" src="../_images/BEDOPS_Presentation_bedops_ops.png" style="width: 99%;" /></a>
+<a class="reference internal image-reference" href="../_images/BEDOPS_Presentation_bedops_ops.png"><img alt="../_images/BEDOPS_Presentation_bedops_ops.png" src="../_images/BEDOPS_Presentation_bedops_ops.png" style="width: 75%;" /></a>
 <p>The <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> core tool applies a wide variety of statistical and mapping operations to genomic inputs:</p>
-<a class="reference internal image-reference" href="../_images/BEDOPS_Presentation_bedmap_ops.png"><img alt="../_images/BEDOPS_Presentation_bedmap_ops.png" src="../_images/BEDOPS_Presentation_bedmap_ops.png" style="width: 99%;" /></a>
+<a class="reference internal image-reference" href="../_images/BEDOPS_Presentation_bedmap_ops.png"><img alt="../_images/BEDOPS_Presentation_bedmap_ops.png" src="../_images/BEDOPS_Presentation_bedmap_ops.png" style="width: 75%;" /></a>
+<p>These and other tools send their results to the output stream, ready for consumption by processes downstream along your pipeline.</p>
 </div>
 <div class="section" id="bedops-tools-are-fast-and-efficient">
 <h3>1.2.2. BEDOPS tools are fast and efficient<a class="headerlink" href="#bedops-tools-are-fast-and-efficient" title="Permalink to this headline">¶</a></h3>
 <p>BEDOPS tools take advantage of the information in a sorted BED file to use only what data are needed to perform the analysis. Our tools are agnostic about genomes: Run BEDOPS tools on genomes as small as <em>Circovirus</em> or as large as <em>Polychaos dubium</em>!</p>
 <p><a class="reference external" href="http://www.ncbi.nlm.nih.gov/pubmed/23277498">Independent tests</a> comparing various kits show that BEDOPS offers the fastest operations with the lowest memory overhead:</p>
-<a class="reference internal image-reference" href="../_images/BEDOPS_Presentation_9_small.png"><img alt="../_images/BEDOPS_Presentation_9_small.png" src="../_images/BEDOPS_Presentation_9_small.png" style="width: 99%;" /></a>
+<a class="reference internal image-reference" href="../_images/BEDOPS_Presentation_grok_tests.png"><img alt="../_images/BEDOPS_Presentation_grok_tests.png" src="../_images/BEDOPS_Presentation_grok_tests.png" style="width: 75%;" /></a>
 <p>BEDOPS also introduces a novel and <strong>lossless</strong> compression format called <a class="reference internal" href="reference/file-management/compression/starch-specification.html#starch-specification"><em>Starch</em></a> that reduces whole-genome BED datasets to <strong>~5%</strong> of their original size (and BAM datasets to roughly 35% of their original size), while adding useful metadata and random access, allowing instantaneous retrieval of any compressed chromosome:</p>
-<a class="reference internal image-reference" href="../_images/BEDOPS_Presentation_10_small.png"><img alt="../_images/BEDOPS_Presentation_10_small.png" src="../_images/BEDOPS_Presentation_10_small.png" style="width: 99%;" /></a>
+<a class="reference internal image-reference" href="../_images/BEDOPS_Presentation_starch_efficiency.png"><img alt="../_images/BEDOPS_Presentation_starch_efficiency.png" src="../_images/BEDOPS_Presentation_starch_efficiency.png" style="width: 75%;" /></a>
 </div>
 <div class="section" id="bedops-tools-make-your-work-embarrassingly-easy-to-parallelize">
 <h3>1.2.3. BEDOPS tools make your work embarrassingly easy to parallelize<a class="headerlink" href="#bedops-tools-make-your-work-embarrassingly-easy-to-parallelize" title="Permalink to this headline">¶</a></h3>
-<p>BEDOPS tools introduce the <tt class="docutils literal"><span class="pre">--chrom</span></tt> option to efficiently locate a specified chromosome within a sorted BED file, useful for “embarrassingly parallel” whole-genome analyses, where work can be logically divided by units of chromosome in a &#8220;map-reduce&#8221; fashion.</p>
+<p>BEDOPS tools introduce the <code class="docutils literal"><span class="pre">--chrom</span></code> option to efficiently locate a specified chromosome within a sorted BED file, useful for “embarrassingly parallel” whole-genome analyses, where work can be logically divided by units of chromosome in a &#8220;map-reduce&#8221; fashion.</p>
 </div>
 <div class="section" id="bedops-tools-are-open-documented-and-supported">
 <h3>1.2.4. BEDOPS tools are open, documented and supported<a class="headerlink" href="#bedops-tools-are-open-documented-and-supported" title="Permalink to this headline">¶</a></h3>
@@ -100,10 +103,10 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/logo_with_label_v2.png" alt="Logo"/>
+              <img class="logo" src="../_static/logo_with_label_v3.png" alt="Logo"/>
             </a></p>
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
@@ -126,12 +129,14 @@
   <h4>Next topic</h4>
   <p class="topless"><a href="installation.html"
                         title="next chapter">2. Installation</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/content/overview.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/content/overview.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
       <input type="text" name="q" />
@@ -148,7 +153,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -160,12 +165,12 @@
         <li class="right" >
           <a href="../index.html" title="BEDOPS: the fast, highly scalable and easily-parallelizable genome analysis toolkit"
              >previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3b2.
     </div>
   </body>
 </html>

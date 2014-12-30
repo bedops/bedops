@@ -1,14 +1,10 @@
 /*
-  FILE: WindowSweepImpl.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Sat Aug 11 09:35:42 PDT 2007
-  PROJECT: algorithm
-  ID: $Id$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Sat Aug 11 09:35:42 PDT 2007
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -25,20 +21,16 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Files included
 #include <cstdlib>
 #include <deque>
-
 
 #include "data/bed/BedCheckIterator.hpp"
 #include "data/bed/AllocateIterator_BED_starch.hpp"
 #include "utility/AllocateIterator.hpp"
 
-
 namespace WindowSweep {
 
   // See WindowSweep.hpp for detailed assumptions of sweep()
-
 
   namespace Details {
 
@@ -68,8 +60,6 @@ namespace WindowSweep {
 
   } // namespace Details
 
-
-
   //===================
   // sweep Overload1 :
   //===================
@@ -79,10 +69,10 @@ namespace WindowSweep {
             class EventVisitor
            >
   void sweep(InputIterator start, InputIterator end,
-             RangeComp& inRange, EventVisitor& visitor) {
+             RangeComp inRange, EventVisitor& visitor) {
 
     // Local typedefs
-    typedef typename EventVisitor::reference_type Type;
+    typedef typename EventVisitor::RefType Type;
     typedef Type* TypePtr;
     typedef std::deque<TypePtr> WindowType;
 
@@ -172,7 +162,6 @@ namespace WindowSweep {
   } // sweep() overload1
 
 
-
   //===================
   // sweep Overload2 :
   //===================
@@ -184,11 +173,11 @@ namespace WindowSweep {
            >
   void sweep(InputIterator1 refStart, InputIterator1 refEnd,
              InputIterator2 mapFromStart, InputIterator2 mapFromEnd,
-             RangeComp& inRange, EventVisitor& visitor, bool sweepMapAll) {
+             RangeComp inRange, EventVisitor& visitor, bool sweepMapAll) {
 
     // Local typedefs
-    typedef typename EventVisitor::reference_type RefType;
-    typedef typename EventVisitor::mapping_type MapType;
+    typedef typename EventVisitor::RefType RefType;
+    typedef typename EventVisitor::MapType MapType;
     typedef MapType* MapTypePtr;
     typedef std::deque<MapTypePtr> WindowType;
     typedef RefType* RefTypePtr;

@@ -14,6 +14,10 @@ rm -f /usr/local/bin/starchcluster
 rm -f /usr/local/bin/starchcluster.gnu_parallel
 rm -f /usr/local/bin/bam2bed
 rm -f /usr/local/bin/bam2starch
+rm -f /usr/local/bin/bam2bed_sge
+rm -f /usr/local/bin/bam2starch_sge
+rm -f /usr/local/bin/bam2bed_gnuParallel
+rm -f /usr/local/bin/bam2starch_gnuParallel
 rm -f /usr/local/bin/gff2bed
 rm -f /usr/local/bin/gff2starch
 rm -f /usr/local/bin/gtf2bed
@@ -27,6 +31,7 @@ rm -f /usr/local/bin/vcf2starch
 rm -f /usr/local/bin/wig2bed
 rm -f /usr/local/bin/wig2bed_bin
 rm -f /usr/local/bin/wig2starch
+rm -f /usr/local/bin/convert2bed
 
 exit 0
 

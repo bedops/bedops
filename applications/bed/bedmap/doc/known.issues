@@ -30,4 +30,4 @@ chr1 1 2|1
 <blank line>
 chr1 7 20|2;3
 
-It's a good idea to use --indicator or --echo to ensure there are no blank lines in the output.
+It's a good idea to use --indicator or --echo to ensure there are no blank lines in the output, or use --skip-unmapped to exclude those on the output.

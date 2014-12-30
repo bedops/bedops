@@ -1,13 +1,10 @@
-//=========
-// Author:  Shane Neph & Scott Kuehn
-// Date:    Fri Aug 13 15:00:25 PDT 2010
-// Project: bedops
-// ID:      $Id$
-//=========
-
+/*
+  Author:  Shane Neph & Scott Kuehn
+  Date:    Fri Aug 13 15:00:25 PDT 2010
+*/
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -24,11 +21,9 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef INPUT_BEDOPS_H
 #define INPUT_BEDOPS_H
 
-// Files included
 #include <map>
 #include <sstream>
 #include <string>
@@ -37,15 +32,12 @@
 #include "utility/Assertion.hpp"
 #include "utility/Exception.hpp"
 
-
-
 namespace BedOperations {
-
 
 // enumerations
 enum ModeType
   { MERGE, INTERSECTION, COMPLEMENT, DIFFERENCE, SYMMETRIC_DIFFERENCE,
-    UNIONALL, ELEMENTOF, NOTELEMENTOF, PARTITION };
+    UNIONALL, ELEMENTOF, NOTELEMENTOF, PARTITION, CHOP };
 
 struct NoInput { /* */ };
 struct HelpException { /* */ };
@@ -55,16 +47,16 @@ struct ExtendedHelpException {
 };
 struct Version { /* */ };
 
+
 //=======
 // Input
 //=======
 struct Input {
-
-  // Constructor
-  Input(int argc, char** argv) : ft_(MERGE), numFiles_(0), minFiles_(1000),
-                                 allFiles_(), perc_(1), usePerc_(true),
-                                 errorCheck_(false), lpad_(0), rpad_(0), leftMost_(0),
-                                 chrSpecific_(false), chr_("all") {
+  Input(int argc, char** argv) : ft_(MERGE), numFiles_(0), minFiles_(1000), allFiles_(),
+                                 subsetPerc_(1), useSubsetPerc_(true), chopBP_(1),
+                                 chopStaggerBP_(0), chopCutShort_(false), errorCheck_(false),
+                                 lpad_(0), rpad_(0), leftMost_(0), chrSpecific_(false),
+                                 chr_("all") {
 
     typedef Ext::UserError UE;
 
@@ -175,11 +167,17 @@ struct Input {
 
           // More argument possibilities for -e, -n, and -c
           if ( ft_ == ELEMENTOF || ft_ == NOTELEMENTOF ) { // extra args?
+            const std::string ints = "1234567890";
             int maxCount = 1, cntr = 0;
             int start = argcntr + 1;
             for ( int i = start; i < argc; ++i ) {
               std::string::size_type sz = std::string(argv[i]).size();
-              if ( argv[i][0] == '-' && sz > 1 ) { // sz of 1 means stdin
+              if ( (argv[i][0] == '-' && sz > 1) // sz of 1 means stdin; legacy usage
+                     ||
+                   (std::string(argv[i]).find_first_not_of(ints) == std::string::npos)
+                     ||
+                   (std::string(argv[i]).find("%") != std::string::npos) ) {
+
                 if ( std::string(argv[i]).find("--") == std::string::npos ) {
                   setSubsetOption(argv[i]);
                   ++argcntr;
@@ -206,6 +204,45 @@ struct Input {
               ++cntr;
             } // for
             std::string msg = "-L specified multiple times with --complement";
+            Ext::Assert<Ext::UserError>(cntr <= maxCount, msg);
+          } else if ( ft_ == CHOP ) {
+            typedef Ext::UserError UE;
+            const std::string ints = "1234567890";
+            int maxCount = 4, cntr = 0;
+            int start = argcntr + 1;
+            bool optionValueSet = false;
+            bool auxOptionsSet = false;
+            bool staggerSet = false;
+
+            for ( int i = start; i < argc; ++i ) {
+              std::string::size_type sz = std::string(argv[i]).size();
+              if ( std::string(argv[i]) == "--stagger" ) {
+                Ext::Assert<UE>(!staggerSet, "chop's --stagger suboption specified multiple times.");
+                Ext::Assert<UE>(++i != argc, "No bp value found for --stagger suboption in --chop");
+                ++argcntr; // extra for required bp value that goes with --stagger
+                Ext::Assert<UE>(std::string(argv[i]).find_first_not_of(ints) == std::string::npos,
+                                "Invalid --stagger suboption bp value in --chop.  Expect a +integer.");
+                std::stringstream s; s << std::string(argv[i]); s >> chopStaggerBP_;
+                Ext::Assert<UE>(chopStaggerBP_ > 0, "bp setting for chop's --stagger suboption must be > 0");
+                staggerSet = true;
+                auxOptionsSet = true;
+              } else if ( std::string(argv[i]) == "-x" ) {
+                Ext::Assert<UE>(!chopCutShort_, "chop's -x suboption specified multiple times.");
+                chopCutShort_ = true;
+                auxOptionsSet = true;
+              } else if ( std::string(argv[i]).find_first_not_of(ints) == std::string::npos ) {
+                Ext::Assert<UE>(!optionValueSet, "Stray integer found (invalid argument for --chop?)");
+                Ext::Assert<UE>(!auxOptionsSet, "Stray integer value found: not valid for --chop");
+                std::stringstream s; s << std::string(argv[i]); s >> chopBP_;
+                Ext::Assert<UE>(chopBP_ > 0, "bp setting for chop must be > 0");
+                optionValueSet = true;
+              }
+              else
+                break;
+              ++argcntr;
+              ++cntr;
+            } // for
+            std::string msg = "Too many arguments for a --chop operation";
             Ext::Assert<Ext::UserError>(cntr <= maxCount, msg);
           }
         }
@@ -249,14 +286,24 @@ struct Input {
   }
 
   // Public methods
+  int ChopChunkSize() const {
+    return(chopBP_);
+  }
+  int ChopStaggerSize() const {
+    return(chopStaggerBP_);
+  }
+  int ChopExcludeShort() const {
+    return(chopCutShort_);
+  }
   std::string Chrom() const {
     return(chr_);
   }
-
   bool ChrSpecific() const {
     return(chrSpecific_);
   }
-
+  bool ComplementFullLeft() const {
+    return(leftMost_);
+  }
   bool ErrorCheck() const {
     return(errorCheck_);
   }
@@ -276,43 +323,42 @@ struct Input {
     return(numFiles_);
   }
   double Threshold() const {
-    return(perc_);
-  }
-  bool ComplementFullLeft() const {
-    return(leftMost_);
+    return(subsetPerc_);
   }
   bool UsePercentage() const {
-    return(usePerc_);
+    return(useSubsetPerc_);
   }
 
   void setSubsetOption(const std::string& str) {
     typedef Ext::UserError UE;
-    std::string l = str.substr(1); // get rid of -
-    std::string::size_type pos = l.find("%");
     const std::string nums = ".1234567890";
     const std::string ints = "1234567890";
+    std::string l = str.substr(1); // allow '-' out front for legacy reasons
+    std::string::size_type pos = str.find("%");
     if ( pos != std::string::npos ) {
-      Ext::Assert<UE>(pos + 1 == l.size(), "Bad placement of %");
-      std::string value = l.substr(0, pos); // get rid of %
-      Ext::Assert<UE>(!value.empty(), "Bad -% value");
+      Ext::Assert<UE>(pos + 1 == str.size(), "Bad placement of %");
+      std::string value = str.substr(0, pos); // get rid of %
+      Ext::Assert<UE>(!value.empty(), "Bad % value");
       std::stringstream conv(value);
       Ext::Assert<UE>(value.find_first_not_of(nums) == std::string::npos,
-                      "Bad: -% value");
-      conv >> perc_;
-      perc_ /= 100.0;
-      if ( perc_ > 1 )
+                      "Bad: % value");
+      conv >> subsetPerc_;
+      subsetPerc_ /= 100.0;
+      if ( subsetPerc_ > 1 )
         throw(Ext::UserError("Expect percentage less than or equal to 100%"));
-      usePerc_ = true;
-      if ( perc_ == 0 ) { // 0% can match *everything*: convert to 1bp
-        perc_ = 1;
-        usePerc_ = false;
+      useSubsetPerc_ = true;
+      if ( subsetPerc_ == 0 ) { // 0% can match *everything*: convert to 1bp
+        subsetPerc_ = 1;
+        useSubsetPerc_ = false;
       }
-    }
-    else if ( l.find_first_not_of(ints) == std::string::npos ) {
-      perc_ = atoi(l.c_str());
-      usePerc_ = false; // pretend perc_ is # of bp
-    }
-    else if ( l.find_first_not_of(nums) == std::string::npos ) {
+    } else if ( str.find_first_not_of(ints) == std::string::npos ) {
+      subsetPerc_ = atoi(str.c_str());
+      useSubsetPerc_ = false; // pretend subsetPerc_ is # of bp
+    } else if ( l.find_first_not_of(ints) == std::string::npos ) {
+      // legacy
+      subsetPerc_ = atoi(l.c_str());
+      useSubsetPerc_ = false; // pretend subsetPerc_ is # of bp
+    } else if ( str.find_first_not_of(nums) == std::string::npos ) {
       throw(Ext::UserError("Fractional amounts require a '%' symbol (e.g.; 5.4% not 5.4 base-pair)"));
     }
     else
@@ -348,6 +394,8 @@ struct Input {
         ft = SYMMETRIC_DIFFERENCE; ++min; break;
       case 'u': case 'U':
         ft = UNIONALL; break;
+      case 'w': case 'W':
+        ft = CHOP; break;
       default:
         throw(Ext::UserError(badInput));
     };
@@ -365,6 +413,7 @@ struct Input {
     options_.insert(std::make_pair("--partition", "-p"));
     options_.insert(std::make_pair("--symmdiff", "-s"));
     options_.insert(std::make_pair("--everything", "-u"));
+    options_.insert(std::make_pair("--chop", "-w"));
   }
 
 private:
@@ -372,8 +421,11 @@ private:
   int numFiles_;
   int minFiles_;
   std::vector<std::string> allFiles_;
-  double perc_;
-  bool usePerc_;
+  double subsetPerc_;
+  bool useSubsetPerc_;
+  int chopBP_;
+  int chopStaggerBP_;
+  bool chopCutShort_;
   bool errorCheck_;
   int lpad_;
   int rpad_;
@@ -382,7 +434,6 @@ private:
   std::string chr_;
   std::map<std::string, std::string> options_;
 };
-
 
 
   //============
@@ -408,8 +459,109 @@ private:
   //=================
   std::string DetailedUsage(ModeType mode) {
     std::string msg = "\n";
-    if ( mode == COMPLEMENT ) {
-      msg += "        Using the -c or --complement option requires at least 1 BED file input.\n";
+    if ( mode == CHOP ) {
+      msg += "        Using the -w or --chop operation requires at least 1 BED file input.\n";
+      msg += "        The output consists of the first 3 columns of the BED specification.\n";
+      msg += "        Produces windowed slices from the merged regions of all input files.\n";
+      msg += "        The integer given with --chop is referred to as the chunk-size.  By default, the chunk-size is 1.\n";
+      msg += "        The chunk-size must be greater than zero.\n";
+      msg += "        Using --chop 100 with inputs\n\n";
+
+      msg += example1();
+
+      msg += "        Produces:\n";
+      msg += "          chr1   10    110\n";
+      msg += "          chr1   110   125\n";
+      msg += "          chr1   250   350\n";
+      msg += "          chr1   350   400\n";
+      msg += "          chr1   2000  2100\n";
+      msg += "          chr1   2100  2200\n";
+      msg += "          chr1   2200  2300\n";
+      msg += "          chr1   2300  2400\n";
+      msg += "          chr1   2400  2500\n";
+      msg += "          chr21  500   600\n";
+      msg += "          chr21  600   700\n";
+      msg += "          chr21  700   800\n";
+      msg += "          chr21  800   900\n";
+      msg += "          chr21  900   1000\n\n";
+
+      msg += "        Additional options --stagger <bp> and -x may be used to modify --chop's behavior.\n";
+      msg += "        The -x option simply excludes from output all rows that were shortened to less than chunk-size bps.\n";
+      msg += "        The above output results would be modified with the -x option as follows:\n\n";
+
+      msg += "          chr1   10    110\n";
+      msg += "          chr1   250   350\n";
+      msg += "          chr1   2000  2100\n";
+      msg += "          chr1   2100  2200\n";
+      msg += "          chr1   2200  2300\n";
+      msg += "          chr1   2300  2400\n";
+      msg += "          chr1   2400  2500\n";
+      msg += "          chr21  500   600\n";
+      msg += "          chr21  600   700\n";
+      msg += "          chr21  700   800\n";
+      msg += "          chr21  800   900\n";
+      msg += "          chr21  900   1000\n\n";
+
+      msg += "        The --stagger <bp> option specifies the number of bp to 'jump' in between output rows, where <bp>.\n";
+      msg += "          must be greater than 0 and it must be specified along with --stagger.  Starting from the previous output\n";
+      msg += "          start coordinate, it adds this number of bp to the next start coordinate output, and the end coordinate\n";
+      msg += "          is adjusted accordingly.\n";
+      msg += "        The --stagger <bp> specification is sometimes referred to as the step-size.\n";
+      msg += "        For example, using --chop 100 --stagger 53, produces:\n\n";
+
+      msg += "          chr1   10    110\n";
+      msg += "          chr1   63    125\n";
+      msg += "          chr1   116   125\n";
+      msg += "          chr1   250   350\n";
+      msg += "          chr1   303   400\n";
+      msg += "          chr1   356   400\n";
+      msg += "          chr1   2000  2100\n";
+      msg += "          chr1   2053  2153\n";
+      msg += "          chr1   2106  2206\n";
+      msg += "          chr1   2159  2259\n";
+      msg += "          chr1   2212  2312\n";
+      msg += "          chr1   2265  2365\n";
+      msg += "          chr1   2318  2418\n";
+      msg += "          chr1   2371  2471\n";
+      msg += "          chr1   2424  2500\n";
+      msg += "          chr1   2477  2500\n";
+      msg += "          chr21  500   600\n";
+      msg += "          chr21  553   653\n";
+      msg += "          chr21  606   706\n";
+      msg += "          chr21  659   759\n";
+      msg += "          chr21  712   812\n";
+      msg += "          chr21  765   865\n";
+      msg += "          chr21  818   918\n";
+      msg += "          chr21  871   971\n";
+      msg += "          chr21  924   1000\n";
+      msg += "          chr21  977   1000\n\n";
+
+      msg += "        Notice the differences between start coordinates differ by 53.\n";
+      msg += "        The -x and --stagger <bp> options may be combined.\n";
+      msg += "        For example, using --chop 100 --stagger 53 -x, produces:\n\n";
+
+      msg += "          chr1   10    110\n";
+      msg += "          chr1   250   350\n";
+      msg += "          chr1   2000  2100\n";
+      msg += "          chr1   2053  2153\n";
+      msg += "          chr1   2106  2206\n";
+      msg += "          chr1   2159  2259\n";
+      msg += "          chr1   2212  2312\n";
+      msg += "          chr1   2265  2365\n";
+      msg += "          chr1   2318  2418\n";
+      msg += "          chr1   2371  2471\n";
+      msg += "          chr21  500   600\n";
+      msg += "          chr21  553   653\n";
+      msg += "          chr21  606   706\n";
+      msg += "          chr21  659   759\n";
+      msg += "          chr21  712   812\n";
+      msg += "          chr21  765   865\n";
+      msg += "          chr21  818   918\n";
+      msg += "          chr21  871   971\n\n";
+
+      msg += "        --range L:R pads the start/end coordinates in all input files by L/R before chopped regions are calculated.\n";
+    } else if ( mode == COMPLEMENT ) {
+      msg += "        Using the -c or --complement operation requires at least 1 BED file input.\n";
       msg += "        The output consists of the first 3 columns of the BED specification.\n";
       msg += "        Reports the intervening intervals in between all coordinates found in the input file(s).\n\n";
       msg += example1();
@@ -443,7 +595,7 @@ private:
 
       msg += "        --range L:R pads the start/end coordinates in all input files by L/R before complements are calculated.\n";
     } else if ( mode == DIFFERENCE ) {
-      msg += "        Using the -d or --difference option requires at least 2 BED file inputs.\n";
+      msg += "        Using the -d or --difference operation requires at least 2 BED file inputs.\n";
       msg += "        The output consists of the first 3 columns of the BED specification.\n";
       msg += "        Reports the intervals found in the first file that are not present in the 2nd (or 3rd or 4th...) files.\n\n";
       msg += example1();
@@ -455,26 +607,28 @@ private:
       msg += "        Notice the 2nd and 3rd rows show coordinates split by file2 over chr1 2000 2500 of input file1.\n";
       msg += "        --range L:R pads the start/end coordinates in all input files by L/R before differences are calculated.\n";
     } else if ( mode == ELEMENTOF ) {
-      msg += "        Using the -e or --element-of option requires at least 2 BED file inputs.\n";
+      msg += "        Using the -e or --element-of operation requires at least 2 BED file inputs.\n";
       msg += "        The output consists of all columns from qualifying rows of the first input file.\n";
       msg += "        -e produces exactly everything that -n does not, given the same overlap criterion.\n";
       msg += "        Reports the BED rows from file1 that overlap, by the specified percentage or number of base-pair, merged\n";
-      msg += "          rows from file2, file3, etc.  By default, -100% is used as the overlap specification.\n";
+      msg += "          rows from file2, file3, etc.  By default, 100% is used as the overlap specification.\n";
       msg += "        The user may specify an overlap criterion by indicating a number of base-pair, or a percentage of the\n";
-      msg += "          length of an input file row.\n";
-      msg += "          For example, bedops -e -5 file1.bed file2.bed will produce an output row where the input row from file1.bed\n";
-      msg += "          overlaps, by at least 5 base-pair, the merged rows from file2.bed.  Similarly,\n";
-      msg += "              bedops -e -50% file1.bed file2.bed\n";
-      msg += "          gives a row from file1.bed that is overlapped by at least 50% of its length by merged rows from file2.bed\n\n";
+      msg += "          length of an input element.\n";
+      msg += "          For example,\n";
+      msg += "              bedops -e 5 file1.bed file2.bed\n";
+      msg += "          will echo an input row on output where the row from file1.bed overlaps, by at least 5bp, the merged\n";
+      msg += "          coordinates from file2.bed.  Similarly,\n";
+      msg += "              bedops -e 50% file1.bed file2.bed\n";
+      msg += "          gives a row from file1.bed that is overlapped by at least 50% of its length by merged rows in file2.bed\n\n";
       msg += example1();
-      msg += "        bedops -e -1 file1.bed file2.bed produces:\n";
+      msg += "        bedops -e 1 file1.bed file2.bed produces:\n";
       msg += "          chr1  2000  2500  id-3  54  +\n\n";
-      msg += "        while bedops -e -75% file1.bed file2.bed produces nothing.\n";
+      msg += "        while bedops -e 75% file1.bed file2.bed produces nothing.\n";
       msg += "        The 3rd row is overlapped by 25 bp, but has length 500.\n";
       msg += "        --range L:R pads the start/end coordinates in file2.bed to fileN.bed by L/R, without padding elements of file1.bed.\n";
       msg += "          The output is a subset of file1.bed\n";
     } else if ( mode == INTERSECTION ) {
-      msg += "        Using the -i or --intersect option requires at least 2 BED file inputs.\n";
+      msg += "        Using the -i or --intersect operation requires at least 2 BED file inputs.\n";
       msg += "        The output consists of the first 3 columns of the BED specification.\n";
       msg += "        Reports the intervals common to all input files.\n\n";
       msg += example1();
@@ -482,9 +636,10 @@ private:
       msg += "          chr1  2100  2125\n\n";
       msg += "        --range L:R pads the start/end coordinates in all input files by L/R before intersections are calculated.\n";
     } else if ( mode == MERGE ) {
-      msg += "        Using the -m or --merge option requires at least 1 BED file input.\n";
+      msg += "        Using the -m or --merge operation requires at least 1 BED file input.\n";
       msg += "        The output consists of the first 3 columns of the BED specification.\n";
-      msg += "        Merges together all overlapping and adjacent intervals from the input files.\n\n";
+      msg += "        Merges together (flattens) all disjoint, overlapping, and adjoining intervals from all input files into\n";
+      msg += "          contiguous, disjoint regions.\n\n";
       msg += example1();
       msg += "        Output:\n";
       msg += "          chr1   10    125\n";
@@ -493,26 +648,28 @@ private:
       msg += "          chr21  500   1000\n\n";
       msg += "        --range L:R pads the start/end coordinates in all input files by L/R before merged regions are calculated.\n";
     } else if ( mode == NOTELEMENTOF ) {
-      msg += "        Using the -n or --not-element-of option requires at least 2 BED file inputs.\n";
+      msg += "        Using the -n or --not-element-of operation requires at least 2 BED file inputs.\n";
       msg += "        The output consists of all columns from qualifying rows of the first input file.\n";
       msg += "        -n produces exactly everything that -e does not, given the same overlap criterion.\n";
       msg += "        Reports the BED rows from file1 that do not overlap, by the specified percentage or number of base-pair, merged\n";
       msg += "          rows from file2, file3, etc.  By default, -100% is used as the overlap specification.\n";
       msg += "        The user may specify an overlap criterion by indicating a number of base-pair, or a percentage\n";
       msg += "          of the length of an input file row.\n";
-      msg += "          For example, bedops -n -5 file1.bed file2.bed will produce an output row where the input row from file1.bed\n";
-      msg += "          does not overlap, by at least 5 base-pair, the merged rows from file2.bed.  Similarly,\n";
-      msg += "              bedops -n -50% file1.bed file2.bed\n";
-      msg += "          gives a row from file1.bed that is not overlapped by at least 50% of its length by merged rows from file2.bed.\n\n";
+      msg += "          For example,\n";
+      msg += "              bedops -n 5 file1.bed file2.bed\n";
+      msg += "          will echo an input row on output where the row from file1.bed does not overlap, by at least 5 bp, the merged\n";
+      msg += "          rows from file2.bed.  Similarly,\n";
+      msg += "              bedops -n 50% file1.bed file2.bed\n";
+      msg += "          gives a row from file1.bed that is not overlapped, by at least 50% of its length, by merged rows from file2.bed.\n\n";
       msg += example1();
-      msg += "        bedops -n -1 file1.bed file2.bed produces:\n";
+      msg += "        bedops -n 1 file1.bed file2.bed produces:\n";
       msg += "            chr1  10  100  id-1  5\n";
       msg += "            chr1  50  125\n\n";
-      msg += "        while bedops -n -75% file1.bed file2.bed produces the entirety of file1.bed.\n";
+      msg += "        while bedops -n 75% file1.bed file2.bed produces the entirety of file1.bed.\n";
       msg += "        --range L:R pads the start/end coordinates in file2.bed to fileN.bed by L/R, without padding elements of file1.bed.\n";
       msg += "          The output is a subset of file1.bed\n";
     } else if ( mode == PARTITION ) {
-      msg += "        Using the -p or --partition option requires at least 1 BED file input.\n";
+      msg += "        Using the -p or --partition operation requires at least 1 BED file input.\n";
       msg += "        The output consists of the first 3 columns of the BED specification.\n";
       msg += "        Breaks up inputs into disjoint (often adjacent) bed intervals.\n\n";
       msg += example1();
@@ -530,7 +687,7 @@ private:
       msg += "        Note that if multiple input rows have identical coordinates, this option outputs only 1 representative.\n";
       msg += "        --range L:R pads the start/end coordinates in all input files by L/R before partition takes place.\n";
     } else if ( mode == SYMMETRIC_DIFFERENCE ) {
-      msg += "        Using the -s or --symmdiff option requires at least 2 BED file inputs.\n";
+      msg += "        Using the -s or --symmdiff operation requires at least 2 BED file inputs.\n";
       msg += "        The output consists of the first 3 columns of the BED specification.\n";
       msg += "        Reports the intervals found in exactly 1 input file.\n\n";
       msg += example1();
@@ -545,7 +702,7 @@ private:
       msg += "        Unlike -d, -s shows the last row of file2.bed since this interval only appears in one input file.\n";
       msg += "        --range L:R pads the start/end coordinates in all input files by L/R before mutually exclusive regions are calculated.\n";
     } else if ( mode == UNIONALL ) {
-      msg += "        Using the -u or --everything option requires at least 1 BED file input.\n";
+      msg += "        Using the -u or --everything operation requires at least 1 BED file input.\n";
       msg += "        The output consists of all columns from all rows of all input files.\n";
       msg += "        If multiple rows are identical, the output will consist of all of them.\n";
       msg += example1();
@@ -582,7 +739,7 @@ private:
     msg += "          Each operation requires a minimum number of files as shown below.\n";
     msg += "            There is no fixed maximum number of files that may be used.\n";
     msg += "          Input files must have at least the first 3 columns of the BED specification.\n";
-    msg += "          The program accepts BED and starch file formats.\n";
+    msg += "          The program accepts BED and Starch file formats.\n";
     msg += "          May use '-' for a file to indicate reading from standard input (BED format only).\n";
     msg += "\n";
     msg += "      Process Flags:\n";
@@ -596,24 +753,25 @@ private:
     msg += "                                 coordinates. Either value may be + or - to grow or\n";
     msg += "                                 shrink regions.  With the -e/-n operations, the first\n";
     msg += "                                 (reference) file is not padded, unlike all other files.\n";
-    msg += "          --range S            Pad input file(s) coordinates symmetrically by S.\n";
+    msg += "          --range S            Pad or shrink input file(s) coordinates symmetrically by S.\n";
     msg += "                                 This is shorthand for: --range -S:S.\n";
     msg += "          --version            Print program information.\n\n";
 
     msg += "      Operations: (choose one of)\n";
     msg += "          -c, --complement [-L] File1 [File]*\n";
     msg += "          -d, --difference ReferenceFile File2 [File]*\n";
-    msg += "          -e, --element-of [-number% | -number (in bp)] ReferenceFile File2 [File]*\n";
-    msg += "                 by default, -e -100% is used.\n";
+    msg += "          -e, --element-of [bp | percentage] ReferenceFile File2 [File]*\n";
+    msg += "                 by default, -e 100% is used.  'bedops -e 1' is also popular.\n";
     msg += "          -i, --intersect File1 File2 [File]*\n";
     msg += "          -m, --merge File1 [File]*\n";
-    msg += "          -n, --not-element-of [-number% | -number (in bp)] ReferenceFile File2 [File]*\n";
-    msg += "                 by default, -n -100% is used.\n";
+    msg += "          -n, --not-element-of [bp | percentage] ReferenceFile File2 [File]*\n";
+    msg += "                 by default, -n 100% is used.  'bedops -n 1' is also popular.\n";
     msg += "          -p, --partition File1 [File]*\n";
     msg += "          -s, --symmdiff File1 File2 [File]*\n";
-    msg += "          -u, --everything File1 [File]*\n\n";
-
-    msg += "      Example: bedops --range 10 -u file1.bed\n";
+    msg += "          -u, --everything File1 [File]*\n";
+    msg += "          -w, --chop [bp] [--stagger [bp]] [-x] File1 [File]*\n";
+    msg += "                 by default, -w 1 is used with no staggering.\n";
+    msg += "      \nExample: bedops --range 10 -u file1.bed\n";
     msg += "      NOTE: Only operations -e|n|u preserve all columns (no flattening)\n";
     return(msg);
   }

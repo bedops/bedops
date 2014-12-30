@@ -1,14 +1,10 @@
 /*
-  FILE: SingletonType.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Fri Aug 10 15:04:51 PDT 2007
-  PROJECT: utility
-  ID: $Id: SingletonType.hpp 1890 2011-01-28 02:20:13Z sjn $
+  Author: Shane Neph & Scott Kuehn
+  Date:   Fri Aug 10 15:04:51 PDT 2007
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -28,10 +24,7 @@
 #ifndef SINGLETONTYPE_H
 #define SINGLETONTYPE_H
 
-//============================================================================//
-
-namespace Ext 
-{
+namespace Ext {
   template <typename T>
   struct SingletonType {
     static T* Instance() {
@@ -39,7 +32,6 @@ namespace Ext
       return(&t);
     }
   };
-}
-
+} // namespace Ext
 
 #endif // SINGLETONTYPE_H

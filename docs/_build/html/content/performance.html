@@ -6,15 +6,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5. Performance &mdash; BEDOPS 2.4.1 documentation</title>
+    <title>5. Performance &mdash; BEDOPS 2.4.3 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/test.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2.4.1',
+        VERSION:     '2.4.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,15 +24,15 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../index.html" />
+    <link rel="top" title="BEDOPS 2.4.3 documentation" href="../index.html" />
     <link rel="next" title="6. Reference" href="reference.html" />
     <link rel="prev" title="4.7. Working with many input files at once with bedops and bedmap" href="usage-examples/multiple-inputs.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -43,14 +44,14 @@
         <li class="right" >
           <a href="usage-examples/multiple-inputs.html" title="4.7. Working with many input files at once with bedops and bedmap"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="performance">
 <h1>5. Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h1>
@@ -61,31 +62,31 @@
 <p>Random subsamples of <a class="reference external" href="http://compgen.bscb.cornell.edu/phast/">phyloP conservation</a> for the human genome were used as inputs for testing whenever the full phyloP results were not used. The full phyloP results were downloaded from <a class="reference external" href="http://hgdownload.cse.ucsc.edu/goldenPath/hg19/phyloP46way/">UCSC</a>.</p>
 </div>
 <div class="section" id="set-operations-with-bedops">
-<h2>5.2. Set operations with <tt class="docutils literal"><span class="pre">bedops</span></tt><a class="headerlink" href="#set-operations-with-bedops" title="Permalink to this headline">¶</a></h2>
+<h2>5.2. Set operations with <code class="docutils literal"><span class="pre">bedops</span></code><a class="headerlink" href="#set-operations-with-bedops" title="Permalink to this headline">¶</a></h2>
 <p>In this section, we provide time and memory measurements of various <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> operations against analogous <a class="reference external" href="http://code.google.com/p/bedtools/">BEDTools</a> utilities.</p>
 <div class="section" id="direct-merge-sorted">
 <h3>5.2.1. Direct merge (sorted)<a class="headerlink" href="#direct-merge-sorted" title="Permalink to this headline">¶</a></h3>
-<p>The performance of the <tt class="docutils literal"><span class="pre">mergeBed</span></tt> program (with the <tt class="docutils literal"><span class="pre">-i</span></tt> option) from the BEDTools suite (v2.12.0) was compared with that of the <tt class="docutils literal"><span class="pre">--merge</span></tt> option of our <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> utility.</p>
+<p>The performance of the <code class="docutils literal"><span class="pre">mergeBed</span></code> program (with the <code class="docutils literal"><span class="pre">-i</span></code> option) from the BEDTools suite (v2.12.0) was compared with that of the <code class="docutils literal"><span class="pre">--merge</span></code> option of our <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> utility.</p>
 <a class="reference internal image-reference" href="../_images/performance_bedops_merge_sorted.png"><img alt="../_images/performance_bedops_merge_sorted.png" src="../_images/performance_bedops_merge_sorted.png" style="width: 99%;" /></a>
-<p>As measured, the <tt class="docutils literal"><span class="pre">mergeBed</span></tt> program loads all data from a file into memory and creates an index before computing results, incurring longer run times and higher memory costs that can lead to failures. The <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> utility minimizes memory consumption by retaining only the information required to compute the next line of output.</p>
+<p>As measured, the <code class="docutils literal"><span class="pre">mergeBed</span></code> program loads all data from a file into memory and creates an index before computing results, incurring longer run times and higher memory costs that can lead to failures. The <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> utility minimizes memory consumption by retaining only the information required to compute the next line of output.</p>
 </div>
 <div class="section" id="complement-and-intersection">
 <h3>5.2.2. Complement and intersection<a class="headerlink" href="#complement-and-intersection" title="Permalink to this headline">¶</a></h3>
-<p>The <tt class="docutils literal"><span class="pre">complementBed</span></tt> (with <tt class="docutils literal"><span class="pre">-i</span></tt> and <tt class="docutils literal"><span class="pre">-g</span></tt> options) and <tt class="docutils literal"><span class="pre">intersectBed</span></tt> (with <tt class="docutils literal"><span class="pre">-u</span></tt>, <tt class="docutils literal"><span class="pre">-a</span></tt>, and <tt class="docutils literal"><span class="pre">-b</span></tt> options) programs from the BEDTools suite (v2.12.0) also were compared to our <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> program.</p>
+<p>The <code class="docutils literal"><span class="pre">complementBed</span></code> (with <code class="docutils literal"><span class="pre">-i</span></code> and <code class="docutils literal"><span class="pre">-g</span></code> options) and <code class="docutils literal"><span class="pre">intersectBed</span></code> (with <code class="docutils literal"><span class="pre">-u</span></code>, <code class="docutils literal"><span class="pre">-a</span></code>, and <code class="docutils literal"><span class="pre">-b</span></code> options) programs from the BEDTools suite (v2.12.0) also were compared to our <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> program.</p>
 <a class="reference internal image-reference" href="../_images/performance_bedops_complement_sorted.png"><img alt="../_images/performance_bedops_complement_sorted.png" src="../_images/performance_bedops_complement_sorted.png" style="width: 99%;" /></a>
 <a class="reference internal image-reference" href="../_images/performance_bedops_intersect_sorted.png"><img alt="../_images/performance_bedops_intersect_sorted.png" src="../_images/performance_bedops_intersect_sorted.png" style="width: 99%;" /></a>
 <p>Both BEDTools programs were unable to complete operations after 51M elements with the allocated 18 GB of memory. The <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> program continued operating on the full dataset.</p>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
-<p>It is our understanding that the BEDTools&#8217; <tt class="docutils literal"><span class="pre">intersectBed</span></tt> program was modified to accept (optionally) sorted data for improved performance some time after these results were published.</p>
-<p class="last">A <a class="reference internal" href="#independent-testing"><em>more recent study</em></a> suggests <tt class="docutils literal"><span class="pre">bedops</span> <span class="pre">--intersect</span></tt> still offers better memory and running time performance characteristics than recent versions of BEDTools.</p>
+<p>It is our understanding that the BEDTools&#8217; <code class="docutils literal"><span class="pre">intersectBed</span></code> program was modified to accept (optionally) sorted data for improved performance some time after these results were published.</p>
+<p class="last">A <a class="reference internal" href="#independent-testing"><em>more recent study</em></a> suggests <code class="docutils literal"><span class="pre">bedops</span> <span class="pre">--intersect</span></code> still offers better memory and running time performance characteristics than recent versions of BEDTools.</p>
 </div>
 </div>
 <div class="section" id="direct-merge-unsorted">
 <h3>5.2.3. Direct merge (unsorted)<a class="headerlink" href="#direct-merge-unsorted" title="Permalink to this headline">¶</a></h3>
 <p>In typical pipelines, where utilities are chained together to perform more complex operations, the performance and scalability gaps between BEDOPS and competitive tool suites widen. We show here the use of <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> on unsorted BED input, piping it to BEDOPS tools:</p>
 <a class="reference internal image-reference" href="../_images/performance_bedops_merge_unsorted.png"><img alt="../_images/performance_bedops_merge_unsorted.png" src="../_images/performance_bedops_merge_unsorted.png" style="width: 99%;" /></a>
-<p>Time performance of <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> stays under that of <tt class="docutils literal"><span class="pre">mergeBed</span></tt> (BEDTools v2.12), while continuing past the point where <tt class="docutils literal"><span class="pre">mergeBed</span></tt> fails. Memory limitations of the system are easily overcome by using the <tt class="docutils literal"><span class="pre">--max-mem</span></tt> operator with <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a>, allowing the <tt class="docutils literal"><span class="pre">--merge</span></tt> operation to continue unimpeded even with ever-larger unsorted BED inputs.</p>
+<p>Time performance of <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> stays under that of <code class="docutils literal"><span class="pre">mergeBed</span></code> (BEDTools v2.12), while continuing past the point where <code class="docutils literal"><span class="pre">mergeBed</span></code> fails. Memory limitations of the system are easily overcome by using the <code class="docutils literal"><span class="pre">--max-mem</span></code> operator with <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a>, allowing the <code class="docutils literal"><span class="pre">--merge</span></code> operation to continue unimpeded even with ever-larger unsorted BED inputs.</p>
 </div>
 <div class="section" id="discussion">
 <h3>5.2.4. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h3>
@@ -94,12 +95,12 @@
 </div>
 </div>
 <div class="section" id="compression-characteristics-of-starch">
-<h2>5.3. Compression characteristics of <tt class="docutils literal"><span class="pre">starch</span></tt><a class="headerlink" href="#compression-characteristics-of-starch" title="Permalink to this headline">¶</a></h2>
+<h2>5.3. Compression characteristics of <code class="docutils literal"><span class="pre">starch</span></code><a class="headerlink" href="#compression-characteristics-of-starch" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a> utility offers high-quality BED compression into a format with a smaller footprint than common alternatives. The format is designed to help manage data bloat in this genomic era. Further, the format actually enables improved access times to the vast majority of datasets, as compared with raw (uncompressed) and naively-compressed data.</p>
-<p>Here, we provide two measures of this format&#8217;s utility: comparing the compression efficiency of the <tt class="docutils literal"><span class="pre">bzip2</span></tt>-backed Starch format against common, &#8220;naive&#8221; <tt class="docutils literal"><span class="pre">bzip2</span></tt>-compression of UCSC <a class="reference external" href="http://genome.ucsc.edu/goldenPath/help/bedgraph.html">BedGraph</a> and <a class="reference external" href="http://genome.ucsc.edu/goldenPath/help/wiggle.html">WIG</a> forms of BED data, and by comparing the time required to extract the records for any one chromosome from these formats as well as from a raw (uncompressed) BED file.</p>
+<p>Here, we provide two measures of this format&#8217;s utility: comparing the compression efficiency of the <code class="docutils literal"><span class="pre">bzip2</span></code>-backed Starch format against common, &#8220;naive&#8221; <code class="docutils literal"><span class="pre">bzip2</span></code>-compression of UCSC <a class="reference external" href="http://genome.ucsc.edu/goldenPath/help/bedgraph.html">BedGraph</a> and <a class="reference external" href="http://genome.ucsc.edu/goldenPath/help/wiggle.html">WIG</a> forms of BED data, and by comparing the time required to extract the records for any one chromosome from these formats as well as from a raw (uncompressed) BED file.</p>
 <div class="section" id="compression-efficiency">
 <h3>5.3.1. Compression efficiency<a class="headerlink" href="#compression-efficiency" title="Permalink to this headline">¶</a></h3>
-<p>After just 10K rows (roughly 300 kB of raw BED data storing phyloP conservation scores), compression into the Starch format begins to consistently outperform <tt class="docutils literal"><span class="pre">bzip2</span></tt> compression of the same data stored in either variable-step WIG or UCSC BedGraph formats.</p>
+<p>After just 10K rows (roughly 300 kB of raw BED data storing phyloP conservation scores), compression into the Starch format begins to consistently outperform <code class="docutils literal"><span class="pre">bzip2</span></code> compression of the same data stored in either variable-step WIG or UCSC BedGraph formats.</p>
 <a class="reference internal image-reference" href="../_images/performance_starch_efficiency.png"><img alt="../_images/performance_starch_efficiency.png" src="../_images/performance_starch_efficiency.png" style="width: 99%;" /></a>
 <p>For very large raw BED datasets, the Starch format stores the original data in approximately 5% of the original input size. These improved compression results generalize to compressed versions of the fixed-step WIG format, as well. For more information, refer to the Supplemental Data in our <a class="reference external" href="http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract">Bioinformatics</a> paper.</p>
 </div>
@@ -131,8 +132,8 @@
 </div>
 <div class="section" id="worst-case-memory-performance">
 <h2>5.5. Worst-case memory performance<a class="headerlink" href="#worst-case-memory-performance" title="Permalink to this headline">¶</a></h2>
-<p>Non-sorting utilities operate efficiently with large inputs by keeping memory overhead low. The worst-case design scenario, however, causes the <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> or <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> programs to load all data from a single chromosome from a single input file into memory. For <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a>, the worst-case scenario applies only to the <tt class="docutils literal"><span class="pre">--element-of</span></tt> and <tt class="docutils literal"><span class="pre">--not-element-of</span></tt> options.</p>
-<p>Fortunately, worst-case situations are conceptually easy to understand, and their underlying questions often require no windowing logic to answer, so simpler approaches can sometimes be used. Conceptually, any summary analysis over an entire chromosome triggers the worst-case scenario. For example, to determine the number of sequencing tags mapped to a given chromosome, <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> loads all tag data for that one chromosome into memory, whereas a one-line <tt class="docutils literal"><span class="pre">awk</span></tt> statement can provide the answer with minimal memory overhead.</p>
+<p>Non-sorting utilities operate efficiently with large inputs by keeping memory overhead low. The worst-case design scenario, however, causes the <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> or <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> programs to load all data from a single chromosome from a single input file into memory. For <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a>, the worst-case scenario applies only to the <code class="docutils literal"><span class="pre">--element-of</span></code> and <code class="docutils literal"><span class="pre">--not-element-of</span></code> options.</p>
+<p>Fortunately, worst-case situations are conceptually easy to understand, and their underlying questions often require no windowing logic to answer, so simpler approaches can sometimes be used. Conceptually, any summary analysis over an entire chromosome triggers the worst-case scenario. For example, to determine the number of sequencing tags mapped to a given chromosome, <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> loads all tag data for that one chromosome into memory, whereas a one-line <code class="docutils literal"><span class="pre">awk</span></code> statement can provide the answer with minimal memory overhead.</p>
 <p>We note that the worst case memory performance of non-sorting BEDOPS utilities still improves upon the best case performance of current alternatives.</p>
 </div>
 </div>
@@ -141,23 +142,23 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/logo_with_label_v2.png" alt="Logo"/>
+              <img class="logo" src="../_static/logo_with_label_v3.png" alt="Logo"/>
             </a></p>
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">5. Performance</a><ul>
 <li><a class="reference internal" href="#test-environment-and-data">5.1. Test environment and data</a></li>
-<li><a class="reference internal" href="#set-operations-with-bedops">5.2. Set operations with <tt class="docutils literal"><span class="pre">bedops</span></tt></a><ul>
+<li><a class="reference internal" href="#set-operations-with-bedops">5.2. Set operations with <code class="docutils literal"><span class="pre">bedops</span></code></a><ul>
 <li><a class="reference internal" href="#direct-merge-sorted">5.2.1. Direct merge (sorted)</a></li>
 <li><a class="reference internal" href="#complement-and-intersection">5.2.2. Complement and intersection</a></li>
 <li><a class="reference internal" href="#direct-merge-unsorted">5.2.3. Direct merge (unsorted)</a></li>
 <li><a class="reference internal" href="#discussion">5.2.4. Discussion</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#compression-characteristics-of-starch">5.3. Compression characteristics of <tt class="docutils literal"><span class="pre">starch</span></tt></a><ul>
+<li><a class="reference internal" href="#compression-characteristics-of-starch">5.3. Compression characteristics of <code class="docutils literal"><span class="pre">starch</span></code></a><ul>
 <li><a class="reference internal" href="#compression-efficiency">5.3.1. Compression efficiency</a></li>
 <li><a class="reference internal" href="#extraction-time">5.3.2. Extraction time</a></li>
 </ul>
@@ -173,16 +174,18 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="usage-examples/multiple-inputs.html"
-                        title="previous chapter">4.7. Working with many input files at once with <tt class="docutils literal"><span class="pre">bedops</span></tt> and <tt class="docutils literal"><span class="pre">bedmap</span></tt></a></p>
+                        title="previous chapter">4.7. Working with many input files at once with <code class="docutils literal"><span class="pre">bedops</span></code> and <code class="docutils literal"><span class="pre">bedmap</span></code></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="reference.html"
                         title="next chapter">6. Reference</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/content/performance.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/content/performance.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
       <input type="text" name="q" />
@@ -199,7 +202,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -211,12 +214,12 @@
         <li class="right" >
           <a href="usage-examples/multiple-inputs.html" title="4.7. Working with many input files at once with bedops and bedmap"
              >previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3b2.
     </div>
   </body>
 </html>

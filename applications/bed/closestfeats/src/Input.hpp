@@ -1,14 +1,10 @@
 /*
-  FILE: Input.cpp
-  AUTHOR: Scott Kuehn, Shane Neph
-  CREATE DATE: Fri Oct 19 08:20:50 PDT 2007
-  PROJECT: utility
-  ID: $Id$
+  Author: Scott Kuehn, Shane Neph
+  Date: Fri Oct 19 08:20:50 PDT 2007
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -148,7 +144,7 @@ namespace FeatDist {
   std::string Usage() {
     std::string msg = "\nUSAGE: closest-features [Process-Flags] <input-file> <query-file>\n";
     msg += "   All input files must be sorted per sort-bed.\n";
-    msg += "   The program accepts BED and starch file formats\n";
+    msg += "   The program accepts BED and Starch file formats\n";
     msg += "   May use '-' for a file to indicate reading from standard input (BED format only).\n";
     msg += "\n";
     msg += "   For every element in <input-file>, determine the two elements from <query-file> falling\n";

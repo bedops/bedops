@@ -1,6 +1,0 @@
-BAM test suite
-----------------------------
-
-via_bowtie.bam -- Exported via bowtie version 0.12.9
-                  $ bowtie -k 3 -v 1 hg19 -S -f test.fa > via_bowtie.sam
-                  $ samtools view -bS via_bowtie.sam > via_bowtie.bam

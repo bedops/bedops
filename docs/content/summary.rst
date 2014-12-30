@@ -79,6 +79,11 @@ Set operation and statistical utilities
 | ``--echo-overlap-size``       | Calculates size of overlap between each mapped element and its       | 1                | 2                | 3                |
 |                               | reference element.                                                   |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--echo-ref-name``           | Reports the first 3 fields of ``ref-file`` element in                | 1                | 2                | 3                |
+|                               | chrom:start-end format.                                              |                  |                  |                  |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--echo-ref-size``           | Reports the length of the ``ref-file`` element.                      | 1                | 2                | 3                |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--faster``                  | **(Advanced)** Strong input assumptions are made. Review documents   | 1                | 2                | 5                |
 |                               | before use. Compatible with ``--bp-ovr`` and ``--range`` overlap     |                  |                  |                  |
 |                               | options only.                                                        |                  |                  |                  |
@@ -129,6 +134,9 @@ Set operation and statistical utilities
 | ``--sum``                     | Reports the accumulated value from scores of overlapping elements in | 1                | 2                | 5                |
 |                               | ``map-file``.                                                        |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--sweep-all``               | Reads through entire ``map-file`` dataset to avoid early termination | 1                | 2                | 3                |
+|                               | that may cause SIGPIPE or other I/O errors.                          |                  |                  |                  |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--tmean <low> <hi>``        | Reports the mean score from overlapping elements in ``map-file``,    | 1                | 2                | 5                |
 |                               | after ignoring the bottom ``<low>`` and top ``<hi>`` fractions of    |                  |                  |                  |
 |                               | those scores. (``0 <= low <= 1``, ``0 <= hi <= 1``, ``low + hi <=    |                  |                  |                  |
@@ -152,6 +160,9 @@ Set operation and statistical utilities
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--complement``, ``-c``      | Reports the intervening intervals between the input coordinate       | 1                | No imposed limit | 3                |
 |                               | segments.                                                            |                  |                  |                  |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--chop``, ``-w``            | Breaks up merged regions into fixed-size chunks, optionally anchored | 1                | No imposed limit | 3                |
+|                               | on start coordinates a fixed distance apart.                         |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--difference``, ``-d``      | Reports the intervals found in the first file that are not present   | 2                | No imposed limit | 3                |
 |                               | in any other input file.                                             |                  |                  |                  |
@@ -288,14 +299,25 @@ Compression and extraction
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``<chromosome>``              | Decompress information for a single ``<chromosome>`` only.           | 1                | 1                | NA               |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--duplicatesExist`` or      | Report if optional ``<chromosome>`` or chromosomes contain duplicate | 1                | 1                | NA               |
+| ``--duplicatesExistAsString`` | elements as 0/1 numbers or false/true strings                        |                  |                  |                  |
+| with ``<chromosome>``         |                                                                      |                  |                  |                  |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--elements <chromosome>``   | Show element count for optional ``<chromosome>`` (omitting           | 1                | 1                | NA               |
 |                               | ``<chromosome>`` shows total element count).                         |                  |                  |                  |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--is-starch``               | Test if the <starch-file> is a valid starch archive, returning 0/1   | 1                | 1                | NA               |
+|                               | for a false/true result                                              |                  |                  |                  | 
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--list`` or ``--list-json`` | Print the metadata for a ``starch`` file, either in tabular form or  | 1                | 1                | NA               |
 |                               | with JSON formatting.                                                |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--list-chr`` or             | List all chromosomes in ``starch`` archive (similar to               | 1                | 1                | NA               |
 | ``--list-chromosomes``        | ``bedextract --list-chr``).                                          |                  |                  |                  |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--nestedsExist`` or         | Report if optional ``<chromosome>`` or chromosomes contain nested    | 1                | 1                | NA               |
+| ``--nestedsExistAsString``    | elements as 0/1 numbers or false/true strings                        |                  |                  |                  |
+| with ``<chromosome>``         |                                                                      |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--note``                    | Show descriptive note (if originally added to archive).              | 1                | 1                | NA               |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+

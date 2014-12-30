@@ -1,13 +1,11 @@
 /*
-  FILE: Sort.cpp
-  AUTHOR: Scott Kuehn
-    MODS: Shane Neph
-  CREATE DATE: Thu Sep  7 08:48:35 PDT 2006
+  Author: Scott Kuehn
+    Mods: Shane Neph
+    Date: Thu Sep  7 08:48:35 PDT 2006
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -41,7 +39,6 @@ using namespace std;
 static const char *name = "sort-bed";
 static const char *authors = "Scott Kuehn";
 static const char *usage = "\nUSAGE: sort-bed [--help] [--version] [--max-mem <val>] [--tmpdir <path>] <file1.bed> <file2.bed> <...>\n        Sort BED file(s).\n        May use '-' to indicate stdin.\n        Results are sent to stdout.\n\n        <val> for --max-mem may be 8G, 8000M, or 8000000000 to specify 8 GB of memory.\n        --tmpdir is useful only with --max-mem.\n";
-
 
 static void 
 getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, double* maxMem, char **tmpPath)
@@ -103,7 +100,7 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, d
                                 {
                                     if(!isdigit(argv[i][k]))
                                         {
-                                            if( k != lng-1 || 0 == k) /* bad number? just G? M? */
+                                            if(0 == k ||  k != lng-1) /* bad number? just G? M? */
                                                 {
                                                     fprintf(stderr, "Bad number for --max-mem.  Expect value to be like 10G (for 10 gigabytes) or 1000M (for 1000 megabytes) or just 1000000000 (for 1 gigabyte).\n");
                                                     exit(EXIT_FAILURE);
@@ -119,7 +116,7 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, d
                                                 }
 
                                             units = 1;
-                                            tmp = (char*)malloc(lng + 1);
+                                            tmp = static_cast<char*>( malloc(lng + 1) );
                                             strncpy(tmp, argv[i], lng);
                                             tmp[lng] = '\0';
                                             *maxMem = factor * strtod(tmp, NULL);
@@ -157,7 +154,7 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, d
                                     fprintf(stderr, "No value given for --tmpdir.\n");
                                     exit(EXIT_FAILURE);
                                 }
-                            *tmpPath = (char*)malloc(strlen(argv[i])+1);
+                            *tmpPath = static_cast<char*>( malloc(strlen(argv[i])+1) );
                             strcpy(*tmpPath, argv[i]);
                             --j;
                             numFiles -= 2;
@@ -196,6 +193,7 @@ main(int argc, char **argv)
     char* tmpPath = NULL;
     bool clean = false;
     int rval = EXIT_FAILURE;
+
     getArgs(argc, argv, inFiles, &numInFiles, &maxMemory, &tmpPath);
 
     if(tmpPath != NULL)

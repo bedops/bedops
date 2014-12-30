@@ -6,15 +6,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes &mdash; BEDOPS 2.4.1 documentation</title>
+    <title>4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes &mdash; BEDOPS 2.4.3 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/test.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '2.4.1',
+        VERSION:     '2.4.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,16 +24,16 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/sidebar.js"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.1 documentation" href="../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.3 documentation" href="../../index.html" />
     <link rel="up" title="4. Usage examples" href="../usage-examples.html" />
     <link rel="next" title="4.4. Finding the subset of SNPs within DHSes" href="snps-within-dhses.html" />
     <link rel="prev" title="4.2. Collapsing multiple BED files into a master list by signal" href="master-list.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -44,7 +45,7 @@
         <li class="right" >
           <a href="master-list.html" title="4.2. Collapsing multiple BED files into a master list by signal"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li>
           <li><a href="../usage-examples.html" accesskey="U">4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>  
@@ -52,39 +53,41 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="measuring-the-frequency-of-signed-distances-between-snps-and-nearest-dhses">
 <span id="distance-frequencies"></span><h1>4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes<a class="headerlink" href="#measuring-the-frequency-of-signed-distances-between-snps-and-nearest-dhses" title="Permalink to this headline">¶</a></h1>
 <p>In this example, we would like to find the <strong>signed</strong> distance between a single nucleotide repeat and the DNase-hypersensitive site nearest to it, as measured in base pairs (bp).</p>
 <div class="section" id="bedops-tools-in-use">
 <h2>4.3.1. BEDOPS tools in use<a class="headerlink" href="#bedops-tools-in-use" title="Permalink to this headline">¶</a></h2>
-<p>To find nearest elements, we will use <a class="reference internal" href="../reference/set-operations/closest-features.html#closest-features"><em>closest-features</em></a> with the <tt class="docutils literal"><span class="pre">--dist</span></tt>, <tt class="docutils literal"><span class="pre">--closest</span></tt>, and <tt class="docutils literal"><span class="pre">--no-ref</span></tt> options.</p>
+<p>To find nearest elements, we will use <a class="reference internal" href="../reference/set-operations/closest-features.html#closest-features"><em>closest-features</em></a> with the <code class="docutils literal"><span class="pre">--dist</span></code>, <code class="docutils literal"><span class="pre">--closest</span></code>, and <code class="docutils literal"><span class="pre">--no-ref</span></code> options.</p>
 </div>
 <div class="section" id="script">
 <h2>4.3.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
-<p>SNPs are in a BED-formatted file called <tt class="docutils literal"><span class="pre">SNPs.bed</span></tt> sorted lexicographically with <a class="reference internal" href="../reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a>. The DNase-hypersensitive sites are stored in a sorted BED-formatted file called <tt class="docutils literal"><span class="pre">DHSs.bed</span></tt>. These two files are available in the <a class="reference internal" href="#distance-frequencies-downloads"><em>Downloads</em></a> section.</p>
-<div class="highlight-python"><pre># author : Eric Rynes
+<p>SNPs are in a BED-formatted file called <code class="docutils literal"><span class="pre">SNPs.bed</span></code> sorted lexicographically with <a class="reference internal" href="../reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a>. The DNase-hypersensitive sites are stored in a sorted BED-formatted file called <code class="docutils literal"><span class="pre">DHSs.bed</span></code>. These two files are available in the <a class="reference internal" href="#distance-frequencies-downloads"><em>Downloads</em></a> section.</p>
+<div class="highlight-python"><div class="highlight"><pre># author : Eric Rynes
 closest-features --dist --closest --no-ref SNPs.bed DHSs.bed \
-    | cut -f2 -d '|' \
-    | grep -w -F -v -e "NA" \
-    &gt; answer.bed</pre>
+    | cut -f2 -d &#39;|&#39; \
+    | grep -w -F -v -e &quot;NA&quot; \
+    &gt; answer.bed
+</pre></div>
 </div>
 </div>
 <div class="section" id="discussion">
 <h2>4.3.3. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">--dist</span></tt> option returns signed distances between input elements and reference elements, <tt class="docutils literal"><span class="pre">--closest</span></tt> chooses the single closest element, and <tt class="docutils literal"><span class="pre">--no-ref</span></tt> keeps SNP coordinates from being printed out.</p>
-<p>The output from <a class="reference internal" href="../reference/set-operations/closest-features.html#closest-features"><em>closest-features</em></a> contains coordinates and the signed distance to the closest DHS, separated by the pipe (<tt class="docutils literal"><span class="pre">|</span></tt>) character. Such output might look something like this:</p>
-<div class="highlight-python"><pre>chr1    2513240 2513390 MCV-11  97.201400|25</pre>
+<p>The <code class="docutils literal"><span class="pre">--dist</span></code> option returns signed distances between input elements and reference elements, <code class="docutils literal"><span class="pre">--closest</span></code> chooses the single closest element, and <code class="docutils literal"><span class="pre">--no-ref</span></code> keeps SNP coordinates from being printed out.</p>
+<p>The output from <a class="reference internal" href="../reference/set-operations/closest-features.html#closest-features"><em>closest-features</em></a> contains coordinates and the signed distance to the closest DHS, separated by the pipe (<code class="docutils literal"><span class="pre">|</span></code>) character. Such output might look something like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>chr1    2513240 2513390 MCV-11  97.201400|25
+</pre></div>
 </div>
-<p>This type of result is chopped up with the standard UNIX utility <tt class="docutils literal"><span class="pre">cut</span></tt> to get at the distances to the closest elements. Finally, we use <tt class="docutils literal"><span class="pre">grep</span> <span class="pre">-v</span></tt> to throw out any non-distance, denoted by <tt class="docutils literal"><span class="pre">NA</span></tt>. This can occur if there exists some chromosome in the SNP dataset that does not exist in the DHSs.</p>
+<p>This type of result is chopped up with the standard UNIX utility <code class="docutils literal"><span class="pre">cut</span></code> to get at the distances to the closest elements. Finally, we use <code class="docutils literal"><span class="pre">grep</span> <span class="pre">-v</span></code> to throw out any non-distance, denoted by <code class="docutils literal"><span class="pre">NA</span></code>. This can occur if there exists some chromosome in the SNP dataset that does not exist in the DHSs.</p>
 <p>Thus, for every SNP, we have a corresponding distance to nearest DHS. As an example, from this data we could build a histogram showing the frequencies of distances-to-nearest-DHS.</p>
 </div>
 <div class="section" id="downloads">
 <span id="distance-frequencies-downloads"></span><h2>4.3.4. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><a class="reference download internal" href="../../_downloads/Frequencies-SNPs.bed.starch"><tt class="xref download docutils literal"><span class="pre">SNP</span></tt></a> elements</li>
-<li><a class="reference download internal" href="../../_downloads/Frequencies-DHSs.bed.starch"><tt class="xref download docutils literal"><span class="pre">DNase-hypersensitive</span></tt></a> elements</li>
+<li><a class="reference download internal" href="../../_downloads/Frequencies-SNPs.bed.starch"><code class="xref download docutils literal"><span class="pre">SNP</span></code></a> elements</li>
+<li><a class="reference download internal" href="../../_downloads/Frequencies-DHSs.bed.starch"><code class="xref download docutils literal"><span class="pre">DNase-hypersensitive</span></code></a> elements</li>
 </ul>
 <p>The <a class="reference internal" href="../reference/set-operations/closest-features.html#closest-features"><em>closest-features</em></a> tool can operate directly on Starch-formatted archives. Alternatively, use the <a class="reference internal" href="../reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a> tool to decompress Starch data files to sorted BED format.</p>
 </div>
@@ -94,10 +97,10 @@ closest-features --dist --closest --no-ref SNPs.bed DHSs.bed \
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
-              <img class="logo" src="../../_static/logo_with_label_v2.png" alt="Logo"/>
+              <img class="logo" src="../../_static/logo_with_label_v3.png" alt="Logo"/>
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
@@ -116,12 +119,14 @@ closest-features --dist --closest --no-ref SNPs.bed DHSs.bed \
   <h4>Next topic</h4>
   <p class="topless"><a href="snps-within-dhses.html"
                         title="next chapter">4.4. Finding the subset of SNPs within DHSes</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/content/usage-examples/distance-frequencies.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/content/usage-examples/distance-frequencies.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -138,7 +143,7 @@ closest-features --dist --closest --no-ref SNPs.bed DHSs.bed \
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -150,13 +155,13 @@ closest-features --dist --closest --no-ref SNPs.bed DHSs.bed \
         <li class="right" >
           <a href="master-list.html" title="4.2. Collapsing multiple BED files into a master list by signal"
              >previous</a> |</li>
-        <li><a href="../../index.html">BEDOPS 2.4.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li>
           <li><a href="../usage-examples.html" >4. Usage examples</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3b2.
     </div>
   </body>
 </html>

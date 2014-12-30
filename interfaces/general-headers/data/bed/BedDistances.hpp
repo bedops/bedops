@@ -1,14 +1,11 @@
 /*
-  FILE: BedDistances.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Tue Aug 14 15:50:16 PDT 2007
-  PROJECT: bed
-  ID: $Id$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Tue Aug 14 15:50:16 PDT 2007
 */
 
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -25,18 +22,16 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-// Macro Guard
 #ifndef BED_DISTANCE_FUNCTIONS_H
 #define BED_DISTANCE_FUNCTIONS_H
 
-// Files included
 #include <algorithm>
 #include <cstddef>
 #include <cstdlib>
 #include <cstring>
 #include <limits>
 
-
+#include "suite/BEDOPS.Constants.hpp"
 
 namespace Bed {
 
@@ -44,9 +39,9 @@ namespace Bed {
   // RangedDist
   //============
   struct RangedDist {
-    enum { PercentBased = false, Symmetric = true };
+    enum { PercentBased = false, Symmetric = true, BP = !PercentBased, Identical = false, Ranged = true };
 
-    explicit RangedDist(std::size_t maxDist = 0)
+    explicit RangedDist(CoordType maxDist = 0)
       : maxDist_(maxDist) { /* */ }
 
     template <typename T1, typename T2>
@@ -68,56 +63,25 @@ namespace Bed {
       return((b->end() + maxDist_ > a->start()) ? 0 : 1);
     }
 
-  private:
-    std::size_t maxDist_;
+    CoordType maxDist_;
   };
-
 
   //=================
   // AsymmRangedDist
   //=================
   /* this does not work well with sweep() because of asymmetry - use bedops --range L:R
        functionality to achieve what you need.
-  struct AsymmRangedDist {
-    enum { PercentBased = false };
-
-    // leftDist_ and rightDist_ apply to reference elements
-    explicit AsymmRangedDist(std::size_t leftDist = 0, std::size_t rightDist = 0)
-      : leftDist_(leftDist), rightDist_(rightDist) { }
-
-    // report 0 if within distance of 'ref'; -1 if 'refptr' < 'mapptr'; 1 otherwise
-    template <typename RefType, typename MapType>
-    inline int Ref2Map(RefType const* refptr, MapType const* mapptr) const {
-      static int v = 0;
-      if ( (v = std::strcmp(refptr->chrom(), mapptr->chrom())) != 0 )
-        return((v > 0) ? 1 : -1);
-      else if ( refptr->start() < mapptr->end() )
-        return((refptr->end() + rightDist_ > mapptr->start()) ? 0 : -1);
-      return((mapptr->end() + leftDist_ > refptr->start()) ? 0 : 1);
-    }
-
-    template <typename MapType, typename RefType>
-    inline int Map2Ref(MapType const* mapptr, RefType const* refptr) const {
-      return(-1 * Ref2Map(refptr, mapptr));
-    }
-
-  private:
-    std::size_t leftDist_, rightDist_;
-  };
+  struct AsymmRangedDist { };
   */
-
 
   //=============
   // Overlapping
   //=============
   struct Overlapping {
-    enum { PercentBased = false, Symmetric = true };
+    enum { PercentBased = false, Symmetric = true, BP = !PercentBased, Identical = false, Ranged = false };
 
-    explicit Overlapping(std::size_t ovrRequired = 0)
-      : ovrRequired_(ovrRequired) {
-          if ( ovrRequired_ > 0 )
-            --ovrRequired_; // due to how ovrRequired_ is used
-        }
+    explicit Overlapping(CoordType ovrRequired = 0)
+      : ovrRequired_(ovrRequired) { /* */ }
 
     template <typename T1, typename T2>
     inline int Ref2Map(T1 const* t1, T2 const* t2) const
@@ -127,39 +91,37 @@ namespace Bed {
     inline int Map2Ref(T2 const* t2, T1 const* t1) const
       { return(this->operator()(t2, t1)); }
 
-    /* report 0 if overlapping "ovrRequired"; +/- 1 otherwise */
+    /* report 0 if overlapping "ovrRequired";
+        -1 if a "<" b, and +1 otherwise */
     template <typename BedType1, typename BedType2>
     inline int operator()(BedType1 const* a, BedType2 const* b) const {
       static int v = 0;
       if ( (v = std::strcmp(a->chrom(), b->chrom())) != 0 )
         return ((v > 0) ? 1 : -1);
-      std::size_t mn = std::max(a->start(), b->start());
-      std::size_t mx = std::min(a->end(), b->end());
+      CoordType mn = std::max(a->start(), b->start());
+      CoordType mx = std::min(a->end(), b->end());
       if ( mx > mn ) { // some overlap
-        if ( mn + ovrRequired_ < mx )
+        if ( mx-mn >= ovrRequired_ )
           return(0);
         if ( a->start() != b->start() )
           return((a->start() < b->start()) ? -1 : 1);
         if ( a->end() != b->end() )
           return((a->end() < b->end()) ? -1 : 1);
-        std::size_t aidx = (a - static_cast<BedType1 const*>(0));
-        std::size_t bidx = (b - static_cast<BedType2 const*>(0));
+        CoordType aidx = (a - static_cast<BedType1 const*>(0));
+        CoordType bidx = (b - static_cast<BedType2 const*>(0));
         return((aidx < bidx) ? -1 : 1); // a==b but still overlap < ovrRequired
       }
       return((a->start() < b->start()) ? -1 : 1); // no overlap
     }
 
-    private:
-      std::size_t ovrRequired_;
+    CoordType ovrRequired_;
   };
-
 
   //========================
   // PercentOverlapMapping : look at % overlap relative to mapType's size
-  //   (think signalmap)
   //========================
   struct PercentOverlapMapping {
-    enum { PercentBased = true, Symmetric = false };
+    enum { PercentBased = true, Symmetric = false, BP = !PercentBased, Identical = false, Ranged = false };
 
     explicit PercentOverlapMapping(double perc = 1.0)
       : perc_(perc) {
@@ -220,20 +182,19 @@ namespace Bed {
     //  else, report -1 if mapType "<" refType or 1 otherwise
     template <typename T2, typename T1>
     inline int Map2Ref(T2 const* mapType, T1 const* refType) const {
-      return(-1 * Ref2Map(refType, mapType));
+      return(-Ref2Map(refType, mapType));
     }
 
   private:
     double perc_;
   };
 
-
   //==========================
   // PercentOverlapReference: looking at % overlap relative to refType's size
-  //   (think setops -e)
+  //   (think bedops -e)
   //==========================
   struct PercentOverlapReference : public PercentOverlapMapping {
-    enum { PercentBased = true, Symmetric = false };
+    enum { PercentBased = true, Symmetric = false, BP = !PercentBased, Identical = false, Ranged = false };
 
     explicit PercentOverlapReference(double perc = 1.0)
       : BaseClass(perc) { }
@@ -242,26 +203,25 @@ namespace Bed {
     //  else, report -1 if refType "<" mapType or 1 otherwise
     template <typename T1, typename T2>
     inline int Ref2Map(T1 const* refType, T2 const* mapType) const {
-      return(-1 * BaseClass::Ref2Map(mapType, refType));
+      return(-BaseClass::Ref2Map(mapType, refType));
     }
 
     // report 0 if refType overlaps mapType by perc or more (relative to refType's length)
     //  else, report -1 if mapType "<" refType or 1 othersise
     template <typename T1, typename T2>
     inline int Map2Ref(T1 const* mapType, T2 const* refType) const {
-      return(-1 * Ref2Map(refType, mapType));
+      return(-Ref2Map(refType, mapType));
     }
 
   protected:
     typedef PercentOverlapMapping BaseClass;
   };
 
-
   //==========================
   // PercentOverlapEither: looking at % overlap relative to refType's OR mapType's size
   //==========================
   struct PercentOverlapEither : public PercentOverlapMapping {
-    enum { PercentBased = true, Symmetric = false };
+    enum { PercentBased = true, Symmetric = false, BP = !PercentBased, Identical = false, Ranged = false };
 
     explicit PercentOverlapEither(double perc = 1.0)
       : BaseClass(perc) { }
@@ -285,19 +245,18 @@ namespace Bed {
     //  else, report -1 if mapType "<" refType or 1 othersise
     template <typename T1, typename T2>
     inline int Map2Ref(T1 const* mapType, T2 const* refType) const {
-      return(-1 * Ref2Map(refType, mapType));
+      return(-Ref2Map(refType, mapType));
     }
 
   protected:
     typedef PercentOverlapMapping BaseClass;
   };
 
-
   //==========================
   // PercentOverlapBoth: looking at % overlap relative to refType's AND mapType's size
   //==========================
   struct PercentOverlapBoth : public PercentOverlapMapping {
-    enum { PercentBased = true, Symmetric = true };
+    enum { PercentBased = true, Symmetric = true, BP = !PercentBased, Identical = false, Ranged = false };
 
     explicit PercentOverlapBoth(double perc = 1.0)
       : BaseClass(perc) { }
@@ -310,7 +269,7 @@ namespace Bed {
       int val1 = BaseClass::Ref2Map(refType, mapType);
       if ( 0 != val1 )
         return(val1);
-      int val2 = -1 * BaseClass::Ref2Map(mapType, refType);
+      int val2 = -BaseClass::Ref2Map(mapType, refType);
       if ( 0 != val2 )
         return(val2);
       return(0);
@@ -321,13 +280,41 @@ namespace Bed {
     //  else, report -1 if mapType "<" refType or 1 othersise
     template <typename T1, typename T2>
     inline int Map2Ref(T1 const* mapType, T2 const* refType) const {
-      return(-1 * Ref2Map(refType, mapType));
+      return(-Ref2Map(refType, mapType));
     }
 
   protected:
     typedef PercentOverlapMapping BaseClass;
   };
 
+  //==============================
+  // Exact: what the name implies
+  //==============================
+  struct Exact {
+    enum { PercentBased = false, Symmetric = true, BP = !PercentBased, Identical = true, Ranged = false };
+
+    Exact() {}
+
+    // report 0 if exact.
+    //  else, report -1 if refType "<" mapType or 1 otherwise
+    template <typename T1, typename T2>
+    inline int Ref2Map(T1 const* refType, T2 const* mapType) const {
+      int v = 0;
+      if ( (v = std::strcmp(refType->chrom(), mapType->chrom())) != 0 )
+        return v < 0 ? -1 : 1;
+      else if ( refType->start() != mapType->start() )
+        return refType->start() < mapType->start() ? -1 : 1;
+      else if ( refType->end() != mapType->end() )
+        return refType->end() < mapType->end() ? -1 : 1;
+      return 0;
+    }
+
+    // invert Ref2Map's result with args switched
+    template <typename T1, typename T2>
+    inline int Map2Ref(T1 const* mapType, T2 const* refType) const {
+      return -Ref2Map(refType, mapType);
+    }
+  };
 
 } // namespace Bed
 

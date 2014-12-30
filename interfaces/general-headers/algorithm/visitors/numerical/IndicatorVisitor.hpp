@@ -1,14 +1,10 @@
 /*
-  FILE: CountVisitor.hpp
-  AUTHOR: Shane Neph, Scott Kuehn
-  CREATE DATE: Fri Jun 15 15:38:10 PDT 2012
-  PROJECT: utility
-  ID: $Id$
+  Author: Shane Neph, Scott Kuehn
+  Date:   Fri Jun 15 15:38:10 PDT 2012
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -31,7 +27,6 @@
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
 #include "algorithm/visitors/numerical/CountVisitor.hpp"
 
-
 namespace Visitors {
 
   // Indicate the occurrence of overlaps
@@ -43,8 +38,8 @@ namespace Visitors {
 
     typedef Count<Visitors::Helpers::DoNothing, BaseVisitor> BaseClass;
     typedef Process ProcessType;
-    typedef typename BaseClass::reference_type T;
-    typedef typename BaseClass::mapping_type V;
+    typedef typename BaseClass::RefType RefType;
+    typedef typename BaseClass::MapType MapType;
 
     explicit Indicator(const ProcessType& = ProcessType())
         : BaseClass(Visitors::Helpers::DoNothing())

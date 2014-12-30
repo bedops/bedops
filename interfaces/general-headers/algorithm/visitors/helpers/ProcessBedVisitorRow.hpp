@@ -1,14 +1,10 @@
 /*
-  FILE: BedBaseVisitor.hpp
-  AUTHOR: Shane Neph & Scott Kuehn
-  CREATE DATE: Dec. 7, 2009
-  PROJECT: utility
-  ID: $Id$
+  Author: Shane Neph & Scott Kuehn
+  Date:   Dec. 7, 2009
 */
-
 //
 //    BEDOPS
-//    Copyright (C) 2011, 2012, 2013 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011, 2012, 2013, 2014 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -28,18 +24,15 @@
 #ifndef _VISITOR_BED_POST_PROCESSING_
 #define _VISITOR_BED_POST_PROCESSING_
 
-// Files included
 #include <set>
 #include <string>
-
-#include <boost/type_traits.hpp>
+#include <type_traits>
 
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
 #include "data/bed/BedCompare.hpp"
 #include "data/measurement/NaN.hpp"
 #include "utility/Formats.hpp"
 #include "utility/PrintTypes.hpp"
-
 
 namespace Visitors {
 
@@ -288,6 +281,20 @@ namespace Visitors {
       }
     };
 
+    //=================
+    // PrintSpanName()
+    //=================
+    struct PrintSpanName {
+      template <typename T>
+      void operator()(T* t) const {
+        PrintTypes::Print(t->chrom());
+        PrintTypes::Print(':');
+        PrintTypes::Print(t->start());
+        PrintTypes::Print('-');
+        PrintTypes::Print(t->end());
+      }
+    };
+
     //=======================
     // PrintUniqueRangeIDs()
     //  : sorting and uniquing -> will not be in genomic order
@@ -340,8 +347,8 @@ namespace Visitors {
         typedef std::set<
                       typename Iter::value_type,
                       Bed::GenomicAddressCompare<
-                           typename boost::remove_pointer<typename Iter::value_type>::type,
-                           typename boost::remove_pointer<typename Iter::value_type>::type
+                           typename std::remove_pointer<typename Iter::value_type>::type,
+                           typename std::remove_pointer<typename Iter::value_type>::type
                                                 >
                         > SortType; // will be consistent with sort-bed
         if ( beg == end )
@@ -378,7 +385,7 @@ namespace Visitors {
         if ( beg == end )
           return;
 
-        typename boost::remove_pointer<typename Iter::value_type>::type val = **beg;
+        typename std::remove_const<typename std::remove_pointer<typename Iter::value_type>::type>::type val = **beg;
         while ( ++beg != end ) {
           if ( val.start() > (*beg)->start() )
             val.start((*beg)->start());
