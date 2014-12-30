@@ -1077,7 +1077,7 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
     uint64_t outFnSize = 0;
     Boolean withinChr = kStarchFalse;
     unsigned long lineIdx = 0UL;
-    int64_t outCompressedFnSize = 0;
+    off_t outCompressedFnSize = 0;
     char *legacyMdBuf = NULL; 
     char *dynamicMdBuf = NULL;
     BaseCountType totalNonUniqueBases = 0;
