@@ -62,17 +62,17 @@ Via source code
 Linux
 -----
 
-Compilation of BEDOPS on Linux requires GCC 4.8.x (both ``gcc`` and ``g++`` and related components) or greater, which includes support for `C++11 <http://en.wikipedia.org/wiki/C%2B%2B11>`_ features required by core BEDOPS tools. Other tools may be required as described in the installation documentation that follows.
+Compilation of BEDOPS on Linux requires GCC 4.8.2 (both ``gcc`` and ``g++`` and related components) or greater, which includes support for `C++11 <http://en.wikipedia.org/wiki/C%2B%2B11>`_ features required by core BEDOPS tools. Other tools may be required as described in the installation documentation that follows.
 
-1. If you do not have GCC 4.8 or greater installed (both ``gcc`` and ``g++``), first install these tools. You can check the state of your GCC installation with ``gcc --version`` and ``g++ --version``, *e.g.*: 
+1. If you do not have GCC 4.8.2 or greater installed (both ``gcc`` and ``g++``), first install these tools. You can check the state of your GCC installation with ``gcc --version`` and ``g++ --version``, *e.g.*: 
 
    ::
 
      $ gcc --version
-     gcc (GCC) 4.8.0 20130127 (experimental)
+     gcc (GCC) 4.8.2 20140120 (Red Hat 4.8.2-15)
      ...
 
-   If you lack a compiler or have a compiler that is older than 4.8, use your favorite package manager to install or upgrade the newer package. For example, in Ubuntu, you might run the following: 
+   If you lack a compiler or have a compiler that is older than 4.8.2, use your favorite package manager to install or upgrade the newer package. For example, in Ubuntu, you might run the following: 
 
    ::
  
@@ -128,21 +128,21 @@ Mac OS X
 
 In Mac OS X, you have two options to install BEDOPS via source code: Compile the code manually, or use the Homebrew package manager to manage compilation.
 
-Compilation of BEDOPS on Mac OS X via either procedure requires Clang/LLVM 3.3 or greater, which includes support for `C++11 <http://en.wikipedia.org/wiki/C%2B%2B11>`_ features required by core BEDOPS tools. Other tools may be required as described in the installation documentation that follows. GNU GCC is no longer required for compilation on OS X hosts.
+Compilation of BEDOPS on Mac OS X via either procedure requires Clang/LLVM 3.5 or greater, which includes support for `C++11 <http://en.wikipedia.org/wiki/C%2B%2B11>`_ features required by core BEDOPS tools. Other tools may be required as described in the installation documentation that follows. GNU GCC is no longer required for compilation on OS X hosts.
 
 ^^^^^^^^^^^^^^^^^^
 Manual compilation
 ^^^^^^^^^^^^^^^^^^
 
-1. If you do not have Clang/LLVM 3.3 or greater installed, first do so. You can check this with ``clang -v``, *e.g.*: 
+1. If you do not have Clang/LLVM 3.5 or greater installed, first do so. You can check this with ``clang -v``, *e.g.*: 
 
    ::
 
      $ clang -v
-     Apple LLVM version 5.0 (clang-500.2.79) (based on LLVM 3.3svn)
+     Apple LLVM version 6.0 (clang-600.0.56) (based on LLVM 3.5svn)
      ...
 
-   For Mac OS X users, we recommend installing `Apple Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option within Xcode. At the time of this writing, Xcode 5.0.2 includes the necessary command-line tools to compile BEDOPS.
+   For Mac OS X users, we recommend installing `Apple Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option within Xcode. At the time of this writing, Xcode 6.1.1 includes the necessary command-line tools to compile BEDOPS.
 
 2. Install a ``git`` client of your choice, if you do not already have one installed. Github offers an `installation guide <https://help.github.com/articles/set-up-git#platform-all>`_.
 
@@ -181,15 +181,15 @@ Compilation via Homebrew
 
 Homebrew is a popular package management toolkit for Mac OS X. It facilitates easy installation of common scientific and other packages.
 
-1. If you do not have Clang/LLVM 3.3 or greater installed, first do so. You can check this with ``clang -v``, *e.g.*: 
+1. If you do not have Clang/LLVM 3.5 or greater installed, first do so. You can check this with ``clang -v``, *e.g.*: 
 
    ::
 
      $ clang -v
-     Apple LLVM version 5.0 (clang-500.2.79) (based on LLVM 3.3svn)
+     Apple LLVM version 6.0 (clang-600.0.56) (based on LLVM 3.5svn)
      ...
 
-   For Mac OS X users, we recommend installing `Apple Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option within Xcode. At the time of this writing, Xcode 5.0.2 includes the necessary command-line tools to compile BEDOPS.
+   For Mac OS X users, we recommend installing `Apple Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option within Xcode. At the time of this writing, Xcode 6.1.1 includes the necessary command-line tools to compile BEDOPS.
 
 2. Follow the instructions listed on the `Homebrew site <http://brew.sh>`_ to install the basic package manager components.
 
@@ -214,7 +214,7 @@ Cygwin
 
    For instance, this Cygwin installer is version 2.831 and is 64-bit.
 
-2. Check that you have GCC 4.8 or greater installed. You can check this by opening the Cygwin terminal window (note that this is not the same as the Cygwin installer application) and typing ``gcc --version``, *e.g.*: 
+2. Check that you have GCC 4.8.2 or greater installed. You can check this by opening the Cygwin terminal window (note that this is not the same as the Cygwin installer application) and typing ``gcc --version``, *e.g.*: 
 
    ::
 
