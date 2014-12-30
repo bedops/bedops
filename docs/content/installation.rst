@@ -45,7 +45,7 @@ Mac OS X
 
 3. Double-click to open the installer package. It will look something like this:
 
-.. image:: ../assets/installation/bedops_macosx_installer_screen.png
+.. image:: ../assets/installation/bedops_macosx_installer_screen_v2.png
 
 4. Follow the instructions to install BEDOPS and library dependencies to your Mac. (If you are upgrading from a previous version, components will be overwritten or removed, as needed.)
 
