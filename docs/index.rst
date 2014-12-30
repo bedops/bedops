@@ -65,12 +65,12 @@ Table of contents
 
    <br><img src="_images/quick_start.png" style="height:150px;">
 
-.. |downloads_png| image:: assets/index/downloads_v2.png
+.. |downloads_png| image:: assets/index/downloads_v3.png
                    :height: 30px
 
 .. |downloads_html| raw:: html
 
-   <img src="_images/downloads_v2.png" style="height:30px;">
+   <img src="_images/downloads_v3.png" style="height:36px;">
 
 .. |linux_png| image:: assets/index/linux_v2.png
                :height: 26px
