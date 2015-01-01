@@ -197,7 +197,7 @@ Homebrew is a popular package management toolkit for Mac OS X. It facilitates ea
 
    ::
 
-     $ brew install bedops
+     $ brew install homebrew/science/bedops
 
 .. _installation_via_source_code_on_cygwin:
 
