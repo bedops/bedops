@@ -152,7 +152,7 @@ Manual compilation
   
      $ git clone https://github.com/bedops/bedops.git
   
-4. Run ``make build_all_darwin_intel_fat`` in the top-level of the local copy of the BEDOPS repository:
+4. Run ``make`` in the top-level of the local copy of the BEDOPS repository:
 
    ::
 
