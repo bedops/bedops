@@ -218,12 +218,12 @@ struct Input {
               std::string::size_type sz = std::string(argv[i]).size();
               if ( std::string(argv[i]) == "--stagger" ) {
                 Ext::Assert<UE>(!staggerSet, "chop's --stagger suboption specified multiple times.");
-                Ext::Assert<UE>(++i != argc, "No bp value found for --stagger suboption in --chop");
+                Ext::Assert<UE>(++i != argc, "No #nt value found for --stagger suboption in --chop");
                 ++argcntr; // extra for required bp value that goes with --stagger
                 Ext::Assert<UE>(std::string(argv[i]).find_first_not_of(ints) == std::string::npos,
-                                "Invalid --stagger suboption bp value in --chop.  Expect a +integer.");
+                                "Invalid --stagger suboption #nt value in --chop.  Expect a +integer.");
                 std::stringstream s; s << std::string(argv[i]); s >> chopStaggerBP_;
-                Ext::Assert<UE>(chopStaggerBP_ > 0, "bp setting for chop's --stagger suboption must be > 0");
+                Ext::Assert<UE>(chopStaggerBP_ > 0, "nt setting for chop's --stagger suboption must be > 0");
                 staggerSet = true;
                 auxOptionsSet = true;
               } else if ( std::string(argv[i]) == "-x" ) {
@@ -485,7 +485,7 @@ private:
       msg += "          chr21  800   900\n";
       msg += "          chr21  900   1000\n\n";
 
-      msg += "        Additional options --stagger <bp> and -x may be used to modify --chop's behavior.\n";
+      msg += "        Additional options --stagger <nt> and -x may be used to modify --chop's behavior.\n";
       msg += "        The -x option simply excludes from output all rows that were shortened to less than chunk-size bps.\n";
       msg += "        The above output results would be modified with the -x option as follows:\n\n";
 
@@ -502,11 +502,11 @@ private:
       msg += "          chr21  800   900\n";
       msg += "          chr21  900   1000\n\n";
 
-      msg += "        The --stagger <bp> option specifies the number of bp to 'jump' in between output rows, where <bp>.\n";
+      msg += "        The --stagger <nt> option specifies the number of nt to 'jump' in between output rows, where <nt>.\n";
       msg += "          must be greater than 0 and it must be specified along with --stagger.  Starting from the previous output\n";
-      msg += "          start coordinate, it adds this number of bp to the next start coordinate output, and the end coordinate\n";
+      msg += "          start coordinate, it adds this number of nt to the next start coordinate output, and the end coordinate\n";
       msg += "          is adjusted accordingly.\n";
-      msg += "        The --stagger <bp> specification is sometimes referred to as the step-size.\n";
+      msg += "        The --stagger <nt> specification is sometimes referred to as the step-size.\n";
       msg += "        For example, using --chop 100 --stagger 53, produces:\n\n";
 
       msg += "          chr1   10    110\n";
@@ -537,7 +537,7 @@ private:
       msg += "          chr21  977   1000\n\n";
 
       msg += "        Notice the differences between start coordinates differ by 53.\n";
-      msg += "        The -x and --stagger <bp> options may be combined.\n";
+      msg += "        The -x and --stagger <nt> options may be combined.\n";
       msg += "        For example, using --chop 100 --stagger 53 -x, produces:\n\n";
 
       msg += "          chr1   10    110\n";
@@ -769,7 +769,7 @@ private:
     msg += "          -p, --partition File1 [File]*\n";
     msg += "          -s, --symmdiff File1 File2 [File]*\n";
     msg += "          -u, --everything File1 [File]*\n";
-    msg += "          -w, --chop [bp] [--stagger [bp]] [-x] File1 [File]*\n";
+    msg += "          -w, --chop [bp] [--stagger <nt>] [-x] File1 [File]*\n";
     msg += "                 by default, -w 1 is used with no staggering.\n";
     msg += "      \nExample: bedops --range 10 -u file1.bed\n";
     msg += "      NOTE: Only operations -e|n|u preserve all columns (no flattening)\n";
