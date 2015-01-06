@@ -339,9 +339,13 @@ struct Input {
       Ext::Assert<UE>(pos + 1 == str.size(), "Bad placement of %");
       std::string value = str.substr(0, pos); // get rid of %
       Ext::Assert<UE>(!value.empty(), "Bad % value");
-      std::stringstream conv(value);
+      if ( value[0] == '-' ) { // support legacy -75% syntax; drop '-'
+        value = value.substr(1);
+        Ext::Assert<UE>(!value.empty(), "Bad % value");
+      }
       Ext::Assert<UE>(value.find_first_not_of(nums) == std::string::npos,
                       "Bad: % value");
+      std::stringstream conv(value);
       conv >> subsetPerc_;
       subsetPerc_ /= 100.0;
       if ( subsetPerc_ > 1 )
