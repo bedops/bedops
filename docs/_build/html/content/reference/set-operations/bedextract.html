@@ -167,12 +167,20 @@ chrX    6777790 6777799 +V_CKROX_Q2     8.90515e-06     +       TCCCTCCCC
 <li>There are relatively few regions of interest in <code class="docutils literal"><span class="pre">Target</span></code> (say, roughly 30,000 or fewer).</li>
 <li>There are <strong>no fully-nested elements</strong> in <code class="docutils literal"><span class="pre">Query</span></code> (but duplicate coordinates are fine).</li>
 </ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">With some extra work, it is possible to use this mode of bedextract with a huge <code class="docutils literal"><span class="pre">Query</span></code> BED file that includes fully-nested elements.  The technique requires that you create a merged version of <code class="docutils literal"><span class="pre">Query</span></code> and keep that result, <code class="docutils literal"><span class="pre">Query-Index</span></code>, around along with <code class="docutils literal"><span class="pre">Query</span></code>.</p>
+</div>
 <div class="highlight-python"><div class="highlight"><pre>$ bedops -m Query &gt; Query-Index
 $ bedextract Query-Index Target \
     | bedextract Query - \
     | bedops --element-of 1 - Target \
     &gt; answer.bed
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You may change the final overlap criterion to the <cite>bedops &#8211;element-of</cite> as you see fit for your final answer.</p>
 </div>
 <div class="section" id="what-are-nested-elements">
 <span id="bedextract-nested-elements"></span><h4>6.1.2.3.3.1. What are nested elements?<a class="headerlink" href="#what-are-nested-elements" title="Permalink to this headline">¶</a></h4>

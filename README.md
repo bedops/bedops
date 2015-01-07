@@ -18,9 +18,9 @@ The <a href="https://bedops.readthedocs.org/en/latest/content/overview.html#over
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd">
-<td><img alt="linux_png" src="https://bedops.readthedocs.org/en/latest/_images/linux.png"></td>
-<td><img alt="macosx_png" src="https://bedops.readthedocs.org/en/latest/_images/macosx.png"></td>
-<td><img alt="source_png" src="https://bedops.readthedocs.org/en/latest/_images/source.png"></td>
+<td><img alt="linux_png" src="https://bedops.readthedocs.org/en/latest/_images/linux_v2.png"></td>
+<td><img alt="macosx_png" src="https://bedops.readthedocs.org/en/latest/_images/macosx_v2.png"></td>
+<td><img alt="source_png" src="https://bedops.readthedocs.org/en/latest/_images/source_v2.png"></td>
 </tr>
 <tr class="row-even"><td><ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
 <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.3/bedops_linux_x86_64-v2.4.3.tar.bz2">x86-64 (64-bit)</a> binaries</li>

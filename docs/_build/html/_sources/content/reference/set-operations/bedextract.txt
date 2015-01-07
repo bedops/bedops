@@ -129,7 +129,7 @@ Three criteria make the use of :ref:`bedextract` in this mode very successful in
 2. There are relatively few regions of interest in ``Target`` (say, roughly 30,000 or fewer).
 3. There are **no fully-nested elements** in ``Query`` (but duplicate coordinates are fine).
 
-.. note: With some extra work, it is possible to use this mode of bedextract with a huge ``Query`` BED file that includes fully-nested elements.  The technique requires that you create a merged version of ``Query`` and keep that result, ``Query-Index``, around along with ``Query``.
+.. note:: With some extra work, it is possible to use this mode of bedextract with a huge ``Query`` BED file that includes fully-nested elements.  The technique requires that you create a merged version of ``Query`` and keep that result, ``Query-Index``, around along with ``Query``.
 
 ::
 
@@ -139,7 +139,7 @@ Three criteria make the use of :ref:`bedextract` in this mode very successful in
       | bedops --element-of 1 - Target \
       > answer.bed
 
-.. note: You may change the final overlap criterion to the `bedops --element-of` as you see fit for your final answer.
+.. note:: You may change the final overlap criterion to the `bedops --element-of` as you see fit for your final answer.
 
 .. _bedextract_nested_elements:
 

@@ -85,17 +85,17 @@ In the case of 32-bit Linux:</p>
 </div>
 <div class="section" id="mac-os-x">
 <h3>2.1.2. Mac OS X<a class="headerlink" href="#mac-os-x" title="Permalink to this headline">¶</a></h3>
-<ol class="arabic simple">
-<li>Download the current Mac OS X package for BEDOPS from <a class="reference external" href="https://github.com/bedops/bedops/releases">Github BEDOPS Releases</a>.</li>
-<li>Locate the installer package (usually located in <code class="docutils literal"><span class="pre">~/Downloads</span></code> – this will depend on your web browser configuration):</li>
-</ol>
+<ol class="arabic">
+<li><p class="first">Download the current Mac OS X package for BEDOPS from <a class="reference external" href="https://github.com/bedops/bedops/releases">Github BEDOPS Releases</a>.</p>
+</li>
+<li><p class="first">Locate the installer package (usually located in <code class="docutils literal"><span class="pre">~/Downloads</span></code> – this will depend on your web browser configuration):</p>
 <img alt="../_images/bedops_macosx_installer_icon.png" src="../_images/bedops_macosx_installer_icon.png" />
-<ol class="arabic simple" start="3">
-<li>Double-click to open the installer package. It will look something like this:</li>
-</ol>
-<img alt="../_images/bedops_macosx_installer_screen.png" src="../_images/bedops_macosx_installer_screen.png" />
-<ol class="arabic simple" start="4">
-<li>Follow the instructions to install BEDOPS and library dependencies to your Mac. (If you are upgrading from a previous version, components will be overwritten or removed, as needed.)</li>
+</li>
+<li><p class="first">Double-click to open the installer package. It will look something like this:</p>
+<a class="reference internal image-reference" href="../_images/bedops_macosx_installer_screen_v2.png"><img alt="../_images/bedops_macosx_installer_screen_v2.png" src="../_images/bedops_macosx_installer_screen_v2.png" style="width: 99%;" /></a>
+</li>
+<li><p class="first">Follow the instructions to install BEDOPS and library dependencies to your Mac. (If you are upgrading from a previous version, components will be overwritten or removed, as needed.)</p>
+</li>
 </ol>
 </div>
 </div>
@@ -103,15 +103,15 @@ In the case of 32-bit Linux:</p>
 <span id="installation-via-source-code"></span><h2>2.2. Via source code<a class="headerlink" href="#via-source-code" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="installation-via-source-code-on-linux">
 <span id="id3"></span><h3>2.2.1. Linux<a class="headerlink" href="#installation-via-source-code-on-linux" title="Permalink to this headline">¶</a></h3>
-<p>Compilation of BEDOPS on Linux requires GCC 4.8.x (both <code class="docutils literal"><span class="pre">gcc</span></code> and <code class="docutils literal"><span class="pre">g++</span></code> and related components) or greater, which includes support for <a class="reference external" href="http://en.wikipedia.org/wiki/C%2B%2B11">C++11</a> features required by core BEDOPS tools. Other tools may be required as described in the installation documentation that follows.</p>
+<p>Compilation of BEDOPS on Linux requires GCC 4.8.2 (both <code class="docutils literal"><span class="pre">gcc</span></code> and <code class="docutils literal"><span class="pre">g++</span></code> and related components) or greater, which includes support for <a class="reference external" href="http://en.wikipedia.org/wiki/C%2B%2B11">C++11</a> features required by core BEDOPS tools. Other tools may be required as described in the installation documentation that follows.</p>
 <ol class="arabic">
-<li><p class="first">If you do not have GCC 4.8 or greater installed (both <code class="docutils literal"><span class="pre">gcc</span></code> and <code class="docutils literal"><span class="pre">g++</span></code>), first install these tools. You can check the state of your GCC installation with <code class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></code> and <code class="docutils literal"><span class="pre">g++</span> <span class="pre">--version</span></code>, <em>e.g.</em>:</p>
+<li><p class="first">If you do not have GCC 4.8.2 or greater installed (both <code class="docutils literal"><span class="pre">gcc</span></code> and <code class="docutils literal"><span class="pre">g++</span></code>), first install these tools. You can check the state of your GCC installation with <code class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></code> and <code class="docutils literal"><span class="pre">g++</span> <span class="pre">--version</span></code>, <em>e.g.</em>:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ gcc --version
-gcc (GCC) 4.8.0 20130127 (experimental)
+gcc (GCC) 4.8.2 20140120 (Red Hat 4.8.2-15)
 ...
 </pre></div>
 </div>
-<p>If you lack a compiler or have a compiler that is older than 4.8, use your favorite package manager to install or upgrade the newer package. For example, in Ubuntu, you might run the following:</p>
+<p>If you lack a compiler or have a compiler that is older than 4.8.2, use your favorite package manager to install or upgrade the newer package. For example, in Ubuntu, you might run the following:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ sudo apt-get install gcc-4.8
 $ sudo apt-get install g++-4.8
 $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50
@@ -159,17 +159,17 @@ $ make
 <div class="section" id="installation-via-source-code-on-mac-os-x">
 <span id="id4"></span><h3>2.2.2. Mac OS X<a class="headerlink" href="#installation-via-source-code-on-mac-os-x" title="Permalink to this headline">¶</a></h3>
 <p>In Mac OS X, you have two options to install BEDOPS via source code: Compile the code manually, or use the Homebrew package manager to manage compilation.</p>
-<p>Compilation of BEDOPS on Mac OS X via either procedure requires Clang/LLVM 3.3 or greater, which includes support for <a class="reference external" href="http://en.wikipedia.org/wiki/C%2B%2B11">C++11</a> features required by core BEDOPS tools. Other tools may be required as described in the installation documentation that follows. GNU GCC is no longer required for compilation on OS X hosts.</p>
+<p>Compilation of BEDOPS on Mac OS X via either procedure requires Clang/LLVM 3.5 or greater, which includes support for <a class="reference external" href="http://en.wikipedia.org/wiki/C%2B%2B11">C++11</a> features required by core BEDOPS tools. Other tools may be required as described in the installation documentation that follows. GNU GCC is no longer required for compilation on OS X hosts.</p>
 <div class="section" id="manual-compilation">
 <h4>2.2.2.1. Manual compilation<a class="headerlink" href="#manual-compilation" title="Permalink to this headline">¶</a></h4>
 <ol class="arabic">
-<li><p class="first">If you do not have Clang/LLVM 3.3 or greater installed, first do so. You can check this with <code class="docutils literal"><span class="pre">clang</span> <span class="pre">-v</span></code>, <em>e.g.</em>:</p>
+<li><p class="first">If you do not have Clang/LLVM 3.5 or greater installed, first do so. You can check this with <code class="docutils literal"><span class="pre">clang</span> <span class="pre">-v</span></code>, <em>e.g.</em>:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ clang -v
-Apple LLVM version 5.0 (clang-500.2.79) (based on LLVM 3.3svn)
+Apple LLVM version 6.0 (clang-600.0.56) (based on LLVM 3.5svn)
 ...
 </pre></div>
 </div>
-<p>For Mac OS X users, we recommend installing <a class="reference external" href="https://developer.apple.com/xcode/">Apple Xcode</a> and its Command Line Tools, via the <code class="docutils literal"><span class="pre">Preferences</span> <span class="pre">&gt;</span> <span class="pre">Downloads</span></code> option within Xcode. At the time of this writing, Xcode 5.0.2 includes the necessary command-line tools to compile BEDOPS.</p>
+<p>For Mac OS X users, we recommend installing <a class="reference external" href="https://developer.apple.com/xcode/">Apple Xcode</a> and its Command Line Tools, via the <code class="docutils literal"><span class="pre">Preferences</span> <span class="pre">&gt;</span> <span class="pre">Downloads</span></code> option within Xcode. At the time of this writing, Xcode 6.1.1 includes the necessary command-line tools to compile BEDOPS.</p>
 </li>
 <li><p class="first">Install a <code class="docutils literal"><span class="pre">git</span></code> client of your choice, if you do not already have one installed. Github offers an <a class="reference external" href="https://help.github.com/articles/set-up-git#platform-all">installation guide</a>.</p>
 </li>
@@ -178,7 +178,7 @@ Apple LLVM version 5.0 (clang-500.2.79) (based on LLVM 3.3svn)
 </pre></div>
 </div>
 </li>
-<li><p class="first">Run <code class="docutils literal"><span class="pre">make</span> <span class="pre">build_all_darwin_intel_fat</span></code> in the top-level of the local copy of the BEDOPS repository:</p>
+<li><p class="first">Run <code class="docutils literal"><span class="pre">make</span></code> in the top-level of the local copy of the BEDOPS repository:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ cd bedops
 $ make
 </pre></div>
@@ -207,18 +207,18 @@ $ make
 <h4>2.2.2.2. Compilation via Homebrew<a class="headerlink" href="#compilation-via-homebrew" title="Permalink to this headline">¶</a></h4>
 <p>Homebrew is a popular package management toolkit for Mac OS X. It facilitates easy installation of common scientific and other packages.</p>
 <ol class="arabic">
-<li><p class="first">If you do not have Clang/LLVM 3.3 or greater installed, first do so. You can check this with <code class="docutils literal"><span class="pre">clang</span> <span class="pre">-v</span></code>, <em>e.g.</em>:</p>
+<li><p class="first">If you do not have Clang/LLVM 3.5 or greater installed, first do so. You can check this with <code class="docutils literal"><span class="pre">clang</span> <span class="pre">-v</span></code>, <em>e.g.</em>:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ clang -v
-Apple LLVM version 5.0 (clang-500.2.79) (based on LLVM 3.3svn)
+Apple LLVM version 6.0 (clang-600.0.56) (based on LLVM 3.5svn)
 ...
 </pre></div>
 </div>
-<p>For Mac OS X users, we recommend installing <a class="reference external" href="https://developer.apple.com/xcode/">Apple Xcode</a> and its Command Line Tools, via the <code class="docutils literal"><span class="pre">Preferences</span> <span class="pre">&gt;</span> <span class="pre">Downloads</span></code> option within Xcode. At the time of this writing, Xcode 5.0.2 includes the necessary command-line tools to compile BEDOPS.</p>
+<p>For Mac OS X users, we recommend installing <a class="reference external" href="https://developer.apple.com/xcode/">Apple Xcode</a> and its Command Line Tools, via the <code class="docutils literal"><span class="pre">Preferences</span> <span class="pre">&gt;</span> <span class="pre">Downloads</span></code> option within Xcode. At the time of this writing, Xcode 6.1.1 includes the necessary command-line tools to compile BEDOPS.</p>
 </li>
 <li><p class="first">Follow the instructions listed on the <a class="reference external" href="http://brew.sh">Homebrew site</a> to install the basic package manager components.</p>
 </li>
 <li><p class="first">Run the following command:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ brew install bedops
+<div class="highlight-python"><div class="highlight"><pre>$ brew install homebrew/science/bedops
 </pre></div>
 </div>
 </li>
@@ -233,7 +233,7 @@ Apple LLVM version 5.0 (clang-500.2.79) (based on LLVM 3.3svn)
 <a class="reference internal image-reference" href="../_images/bedops_cygwin_installer_screen.png"><img alt="../_images/bedops_cygwin_installer_screen.png" src="../_images/bedops_cygwin_installer_screen.png" style="width: 99%;" /></a>
 <p>For instance, this Cygwin installer is version 2.831 and is 64-bit.</p>
 </li>
-<li><p class="first">Check that you have GCC 4.8 or greater installed. You can check this by opening the Cygwin terminal window (note that this is not the same as the Cygwin installer application) and typing <code class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></code>, <em>e.g.</em>:</p>
+<li><p class="first">Check that you have GCC 4.8.2 or greater installed. You can check this by opening the Cygwin terminal window (note that this is not the same as the Cygwin installer application) and typing <code class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></code>, <em>e.g.</em>:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ gcc --version
 gcc (GCC) 4.8.2
 ...
