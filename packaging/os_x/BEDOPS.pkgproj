@@ -4755,7 +4755,7 @@
 										<key>LANGUAGE</key>
 										<string>English</string>
 										<key>VALUE</key>
-										<string>These conversion scripts convert data in common genomics formats from BAM, GFF, GTF, PSL, SAM, VCF, and WIG formats into sorted BED and BEDOPS Starch v2 files.</string>
+										<string>The convert2bed binary and wrapper scripts convert data in common genomics formats from BAM, GFF, GTF, PSL, SAM, VCF, and WIG formats into sorted BED and BEDOPS Starch v2 files.</string>
 									</dict>
 								</array>
 								<key>OPTIONS</key>
