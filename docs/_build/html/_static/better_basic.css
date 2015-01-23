@@ -1,95 +1,9 @@
-/*
- * basic.css
- * ~~~~~~~~~
- *
- * Sphinx stylesheet -- basic theme.
- *
- * :copyright: Copyright 2007-2014 by the Sphinx team, see AUTHORS.
- * :license: BSD, see LICENSE for details.
- *
- */
+/* basic.css_t from Sphinx project modified for sphinx-better-theme */
 
 /* -- main layout ----------------------------------------------------------- */
 
 div.clearer {
     clear: both;
-}
-
-/* -- relbar ---------------------------------------------------------------- */
-
-div.related {
-    width: 100%;
-    font-size: 90%;
-}
-
-div.related h3 {
-    display: none;
-}
-
-div.related ul {
-    margin: 0;
-    padding: 0 0 0 10px;
-    list-style: none;
-}
-
-div.related li {
-    display: inline;
-}
-
-div.related li.right {
-    float: right;
-    margin-right: 5px;
-}
-
-/* -- sidebar --------------------------------------------------------------- */
-
-div.sphinxsidebarwrapper {
-    padding: 10px 5px 0 10px;
-}
-
-div.sphinxsidebar {
-    float: left;
-    width: 0px;
-    margin-left: -100%;
-    font-size: 90%;
-}
-
-div.sphinxsidebar ul {
-    list-style: none;
-}
-
-div.sphinxsidebar ul ul,
-div.sphinxsidebar ul.want-points {
-    margin-left: 20px;
-    list-style: square;
-}
-
-div.sphinxsidebar ul ul {
-    margin-top: 0;
-    margin-bottom: 0;
-}
-
-div.sphinxsidebar form {
-    margin-top: 10px;
-}
-
-div.sphinxsidebar input {
-    border: 1px solid #98dbcc;
-    font-family: sans-serif;
-    font-size: 1em;
-}
-
-div.sphinxsidebar #searchbox input[type="text"] {
-    width: 170px;
-}
-
-div.sphinxsidebar #searchbox input[type="submit"] {
-    width: 30px;
-}
-
-img {
-    border: 0;
-    max-width: 100%;
 }
 
 /* -- search page ----------------------------------------------------------- */
@@ -400,6 +314,10 @@ dl.glossary dt {
 
 .field-list p {
     margin: 0;
+}
+
+.refcount {
+    color: #060;
 }
 
 .optional {

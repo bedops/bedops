@@ -6,16 +6,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3. Revision history &mdash; BEDOPS 2.4.3 documentation</title>
+    <title>3. Revision history &mdash; BEDOPS 2.4.4 documentation</title>
     
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/better.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/test.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2.4.3',
+        VERSION:     '2.4.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,34 +24,41 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.3 documentation" href="../index.html" />
+    <link rel="top" title="BEDOPS 2.4.4 documentation" href="../index.html" />
     <link rel="next" title="4. Usage examples" href="usage-examples.html" />
-    <link rel="prev" title="2. Installation" href="installation.html" /> 
+    <link rel="prev" title="2. Installation" href="installation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="usage-examples.html" title="4. Usage examples"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="installation.html" title="2. Installation"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li> 
-      </ul>
-    </div>  
+  <body>
+    <header id="pageheader"><h1><a href="../index.html ">
+        BEDOPS 2.4.4 documentation
+    </a></h1></header>
+  <div class="related top">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="installation.html" title="Previous document">2. Installation</a>
+        </li>
+        <li>
+          <a href="usage-examples.html" title="Next document">4. Usage examples</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../index.html">BEDOPS 2.4.4 documentation</a></li> 
+    </ul>
+  </nav>
+  </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body" role="main">
+          <div class="body">
             
   <div class="section" id="revision-history">
 <span id="id1"></span><h1>3. Revision history<a class="headerlink" href="#revision-history" title="Permalink to this headline">¶</a></h1>
@@ -63,18 +70,18 @@
 <p>Released: <strong>December 18, 2014</strong></p>
 <ul class="simple">
 <li>Compilation improvements<ul>
-<li>Shane Neph put in a great deal of work to enable parallel builds (<em>e.g.</em>, <code class="docutils literal"><span class="pre">make</span> <span class="pre">-j</span> <span class="pre">N</span></code> to build various targets in parallel). Depending on the end user&#8217;s environment, this can speed up compilation time by a factor of 2, 4 or more.</li>
+<li>Shane Neph put in a great deal of work to enable parallel builds (<em>e.g.</em>, <tt class="docutils literal"><span class="pre">make</span> <span class="pre">-j</span> <span class="pre">N</span></tt> to build various targets in parallel). Depending on the end user&#8217;s environment, this can speed up compilation time by a factor of 2, 4 or more.</li>
 <li>Fixed numerous compilation warnings of debug builds of <a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a> toolkit under RHEL6/GCC and OS X 10.10.1/LLVM.</li>
 </ul>
 </li>
 <li>New <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> features<ul>
-<li>Added <code class="docutils literal"><span class="pre">--chop</span></code> and <code class="docutils literal"><span class="pre">--stagger</span></code> options to &#8220;melt&#8221; inputs into contiguous or staggered disjoint regions of equivalent size.</li>
-<li>For less confusion, arguments for <code class="docutils literal"><span class="pre">--element-of</span></code>, <code class="docutils literal"><span class="pre">--chop</span></code> and other <code class="docutils literal"><span class="pre">bedops</span></code> operations that take numerical modifiers no longer require a leading hyphen character. For instance, <code class="docutils literal"><span class="pre">--element-of</span> <span class="pre">1</span></code> is now equivalent to the former usage of <code class="docutils literal"><span class="pre">--element-of</span> <span class="pre">-1</span></code>.</li>
+<li>Added <tt class="docutils literal"><span class="pre">--chop</span></tt> and <tt class="docutils literal"><span class="pre">--stagger</span></tt> options to &#8220;melt&#8221; inputs into contiguous or staggered disjoint regions of equivalent size.</li>
+<li>For less confusion, arguments for <tt class="docutils literal"><span class="pre">--element-of</span></tt>, <tt class="docutils literal"><span class="pre">--chop</span></tt> and other <tt class="docutils literal"><span class="pre">bedops</span></tt> operations that take numerical modifiers no longer require a leading hyphen character. For instance, <tt class="docutils literal"><span class="pre">--element-of</span> <span class="pre">1</span></tt> is now equivalent to the former usage of <tt class="docutils literal"><span class="pre">--element-of</span> <span class="pre">-1</span></tt>.</li>
 </ul>
 </li>
 <li>New <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> features<ul>
-<li>The <code class="docutils literal"><span class="pre">--sweep-all</span></code> option reads through the entire map file without early termination and can help deal with <code class="docutils literal"><span class="pre">SIGPIPE</span></code> errors. It adds to execution time, but the penalty is not as severe as with the use of <code class="docutils literal"><span class="pre">--ec</span></code>. Using <code class="docutils literal"><span class="pre">--ec</span></code> alone will enable error checking, but will now no longer read through the entire map file. The <code class="docutils literal"><span class="pre">--ec</span></code> option can be used in conjunction with <code class="docutils literal"><span class="pre">--sweep-all</span></code>, with the associated time penalties. (Another method for dealing with issue this is to override how <code class="docutils literal"><span class="pre">SIGPIPE</span></code> errors are caught by the interpreter (bash, Python, etc.) and retrapping them or ignoring them. However, it may not a good idea to do this as other situations may arise in production pipelines where it is ideal to trap and handle all I/O errors in a default manner.)</li>
-<li>New <code class="docutils literal"><span class="pre">--echo-ref-size</span></code> and <code class="docutils literal"><span class="pre">--echo-ref-name</span></code> operations report genomic length of reference element, and rename the reference element in <code class="docutils literal"><span class="pre">chrom:start-end</span></code> (useful for labeling rows for input for <code class="docutils literal"><span class="pre">matrix2png</span></code> or <code class="docutils literal"><span class="pre">R</span></code> or other applications).</li>
+<li>The <tt class="docutils literal"><span class="pre">--sweep-all</span></tt> option reads through the entire map file without early termination and can help deal with <tt class="docutils literal"><span class="pre">SIGPIPE</span></tt> errors. It adds to execution time, but the penalty is not as severe as with the use of <tt class="docutils literal"><span class="pre">--ec</span></tt>. Using <tt class="docutils literal"><span class="pre">--ec</span></tt> alone will enable error checking, but will now no longer read through the entire map file. The <tt class="docutils literal"><span class="pre">--ec</span></tt> option can be used in conjunction with <tt class="docutils literal"><span class="pre">--sweep-all</span></tt>, with the associated time penalties. (Another method for dealing with issue this is to override how <tt class="docutils literal"><span class="pre">SIGPIPE</span></tt> errors are caught by the interpreter (bash, Python, etc.) and retrapping them or ignoring them. However, it may not a good idea to do this as other situations may arise in production pipelines where it is ideal to trap and handle all I/O errors in a default manner.)</li>
+<li>New <tt class="docutils literal"><span class="pre">--echo-ref-size</span></tt> and <tt class="docutils literal"><span class="pre">--echo-ref-name</span></tt> operations report genomic length of reference element, and rename the reference element in <tt class="docutils literal"><span class="pre">chrom:start-end</span></tt> (useful for labeling rows for input for <tt class="docutils literal"><span class="pre">matrix2png</span></tt> or <tt class="docutils literal"><span class="pre">R</span></tt> or other applications).</li>
 </ul>
 </li>
 <li><a class="reference internal" href="reference/set-operations/bedextract.html#bedextract"><em>bedextract</em></a><ul>
@@ -82,15 +89,15 @@
 </ul>
 </li>
 <li><a class="reference internal" href="reference/file-management/conversion.html#conversion-scripts"><em>conversion scripts</em></a><ul>
-<li>Brand new C99 binary called <a class="reference internal" href="reference/file-management/conversion/convert2bed.html#convert2bed"><em>convert2bed</em></a>, which wrapper scripts (<code class="docutils literal"><span class="pre">bam2bed</span></code>, etc.) now call. No more Python version dependencies, and the C-based rewrite offers massive performance improvements over old Python-based scripts.</li>
+<li>Brand new C99 binary called <a class="reference internal" href="reference/file-management/conversion/convert2bed.html#convert2bed"><em>convert2bed</em></a>, which wrapper scripts (<tt class="docutils literal"><span class="pre">bam2bed</span></tt>, etc.) now call. No more Python version dependencies, and the C-based rewrite offers massive performance improvements over old Python-based scripts.</li>
 <li>Added <a class="reference internal" href="reference/file-management/conversion/parallel_bam2starch.html#parallel-bam2starch"><em>Parallel bam2starch</em></a> script, which parallelizes creation of <a class="reference internal" href="reference/file-management/compression/starch-specification.html#starch-specification"><em>Starch</em></a> archive from very large BAM files in SGE environments.</li>
 <li>Added bug fix for missing code in <a class="reference internal" href="usage-examples/starchcluster.html#starchcluster"><em>starchcluster.gnu_parallel</em></a> script, where the final collation step was missing.</li>
-<li>The <a class="reference internal" href="reference/file-management/conversion/vcf2bed.html#vcf2bed"><em>vcf2bed</em></a> script now accepts the <code class="docutils literal"><span class="pre">--do-not-split</span></code> option, which prints one BED element for all alternate alleles.</li>
+<li>The <a class="reference internal" href="reference/file-management/conversion/vcf2bed.html#vcf2bed"><em>vcf2bed</em></a> script now accepts the <tt class="docutils literal"><span class="pre">--do-not-split</span></tt> option, which prints one BED element for all alternate alleles.</li>
 </ul>
 </li>
 <li><a class="reference internal" href="reference/file-management/compression/starch-specification.html#starch-specification"><em>Starch</em></a> archival format and compression/extraction tools<ul>
-<li>Added duplicate- and <a class="reference internal" href="reference/set-operations/nested-elements.html#nested-elements"><em>nested-element</em></a> flags in v2.1 of Starch metadata, which denote if a chromosome contains one or more duplicate and/or nested elements. BED files compressed with <a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a> v2.5 or greater, or Starch archives updated with <a class="reference internal" href="reference/file-management/compression/starchcat.html#starchcat"><em>starchcat</em></a> v2.5 or greater will include these values in the archive metadata. The <a class="reference internal" href="reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a> extraction tool offers <code class="docutils literal"><span class="pre">--has-duplicate</span></code> and <code class="docutils literal"><span class="pre">--has-nested</span></code> options to retrieve these flag values for a specified chromosome (or for all chromosomes).</li>
-<li>Added <code class="docutils literal"><span class="pre">--is-starch</span></code> option to <a class="reference internal" href="reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a> to test if specified input file is a Starch v1 or v2 archive.</li>
+<li>Added duplicate- and <a class="reference internal" href="reference/set-operations/nested-elements.html#nested-elements"><em>nested-element</em></a> flags in v2.1 of Starch metadata, which denote if a chromosome contains one or more duplicate and/or nested elements. BED files compressed with <a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a> v2.5 or greater, or Starch archives updated with <a class="reference internal" href="reference/file-management/compression/starchcat.html#starchcat"><em>starchcat</em></a> v2.5 or greater will include these values in the archive metadata. The <a class="reference internal" href="reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a> extraction tool offers <tt class="docutils literal"><span class="pre">--has-duplicate</span></tt> and <tt class="docutils literal"><span class="pre">--has-nested</span></tt> options to retrieve these flag values for a specified chromosome (or for all chromosomes).</li>
+<li>Added <tt class="docutils literal"><span class="pre">--is-starch</span></tt> option to <a class="reference internal" href="reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a> to test if specified input file is a Starch v1 or v2 archive.</li>
 <li>Added bug fix for compressing BED files with <a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a>, where the archive would not include the last element of the BED input, if the BED input lacked a trailing newline. The compression tools now include a routine for capturing the last line, if there is no newline.</li>
 </ul>
 </li>
@@ -108,10 +115,10 @@
 <p>Released: <strong>April 10, 2014</strong></p>
 <ul class="simple">
 <li><a class="reference internal" href="reference/file-management/conversion.html#conversion-scripts"><em>conversion scripts</em></a><ul>
-<li>Added support for <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> <code class="docutils literal"><span class="pre">--tmpdir</span></code> option to conversion scripts, to allow specification of alternative temporary directory for sorted results when used in conjunction with <code class="docutils literal"><span class="pre">--max-mem</span></code> option.</li>
-<li>Added support for GFF3 files which include a FASTA directive in <code class="docutils literal"><span class="pre">gff2bed</span></code> and <code class="docutils literal"><span class="pre">gff2starch</span></code> (thanks to Keith Hughitt).</li>
-<li>Extended support for Python-based conversion scripts to support use with Python v2.6.2 and forwards, except for <code class="docutils literal"><span class="pre">sam2bed</span></code> and <code class="docutils literal"><span class="pre">sam2starch</span></code>, which still require Python v2.7 or greater (and under Python3).</li>
-<li>Fixed <code class="docutils literal"><span class="pre">--insertions</span></code> option in <a class="reference internal" href="reference/file-management/conversion/vcf2bed.html#vcf2bed"><em>vcf2bed</em></a> to now report a single-base BED element (thanks to Matt Maurano).</li>
+<li>Added support for <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> <tt class="docutils literal"><span class="pre">--tmpdir</span></tt> option to conversion scripts, to allow specification of alternative temporary directory for sorted results when used in conjunction with <tt class="docutils literal"><span class="pre">--max-mem</span></tt> option.</li>
+<li>Added support for GFF3 files which include a FASTA directive in <tt class="docutils literal"><span class="pre">gff2bed</span></tt> and <tt class="docutils literal"><span class="pre">gff2starch</span></tt> (thanks to Keith Hughitt).</li>
+<li>Extended support for Python-based conversion scripts to support use with Python v2.6.2 and forwards, except for <tt class="docutils literal"><span class="pre">sam2bed</span></tt> and <tt class="docutils literal"><span class="pre">sam2starch</span></tt>, which still require Python v2.7 or greater (and under Python3).</li>
+<li>Fixed <tt class="docutils literal"><span class="pre">--insertions</span></tt> option in <a class="reference internal" href="reference/file-management/conversion/vcf2bed.html#vcf2bed"><em>vcf2bed</em></a> to now report a single-base BED element (thanks to Matt Maurano).</li>
 </ul>
 </li>
 </ul>
@@ -122,14 +129,14 @@
 <ul>
 <li><p class="first"><a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a></p>
 <ul class="simple">
-<li>Added <code class="docutils literal"><span class="pre">--fraction-both</span></code> and <code class="docutils literal"><span class="pre">--exact</span></code> (<code class="docutils literal"><span class="pre">--fraction-both</span> <span class="pre">1</span></code>) to list of compatible overlap options with <code class="docutils literal"><span class="pre">--faster</span></code>.</li>
-<li>Added 5% performance improvement with <cite>bedmap</cite> operations without <code class="docutils literal"><span class="pre">--faster</span></code>.</li>
+<li>Added <tt class="docutils literal"><span class="pre">--fraction-both</span></tt> and <tt class="docutils literal"><span class="pre">--exact</span></tt> (<tt class="docutils literal"><span class="pre">--fraction-both</span> <span class="pre">1</span></tt>) to list of compatible overlap options with <tt class="docutils literal"><span class="pre">--faster</span></tt>.</li>
+<li>Added 5% performance improvement with <cite>bedmap</cite> operations without <tt class="docutils literal"><span class="pre">--faster</span></tt>.</li>
 <li>Fixed scenario that can yield incorrect results (cf. <a class="reference external" href="https://github.com/bedops/bedops/issues/43">Issue 43</a>).</li>
 </ul>
 </li>
 <li><p class="first"><a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a></p>
 <ul class="simple">
-<li>Added <code class="docutils literal"><span class="pre">--tmpdir</span></code> option to allow specification of an alternative temporary directory, when used in conjunction with <code class="docutils literal"><span class="pre">--max-mem</span></code> option. This is useful if the host operating system&#8217;s standard temporary directory (<em>e.g.</em>, <code class="docutils literal"><span class="pre">/tmp</span></code> on Linux or OS X) does not have sufficient space to hold intermediate results.</li>
+<li>Added <tt class="docutils literal"><span class="pre">--tmpdir</span></tt> option to allow specification of an alternative temporary directory, when used in conjunction with <tt class="docutils literal"><span class="pre">--max-mem</span></tt> option. This is useful if the host operating system&#8217;s standard temporary directory (<em>e.g.</em>, <tt class="docutils literal"><span class="pre">/tmp</span></tt> on Linux or OS X) does not have sufficient space to hold intermediate results.</li>
 </ul>
 </li>
 <li><p class="first">All <a class="reference internal" href="reference/file-management/conversion.html#conversion-scripts"><em>conversion scripts</em></a></p>
@@ -141,13 +148,13 @@
 <li><p class="first">OS X compilation improvements</p>
 <ul>
 <li><p class="first">We have completed changes to the OS X build process for the remaining half of the BEDOPS binaries, which now allows direct, full compilation with Clang/LLVM (part of the Apple Xcode distribution).</p>
-<p>All OS X BEDOPS binaries now use Apple&#8217;s system-level C++ library, instead of GNU&#8217;s <code class="docutils literal"><span class="pre">libstdc++</span></code>. It is no longer required (or recommended) to use GNU gcc to compile BEDOPS on OS X.</p>
+<p>All OS X BEDOPS binaries now use Apple&#8217;s system-level C++ library, instead of GNU&#8217;s <tt class="docutils literal"><span class="pre">libstdc++</span></tt>. It is no longer required (or recommended) to use GNU gcc to compile BEDOPS on OS X.</p>
 <p>Compilation is faster and simpler, and we can reduce the size and complexity of Mac OS X builds and installer packages. By using Apple&#8217;s C++ library, we also eliminate the likelihood of missing library errors.</p>
 <p>In the longer term, this gets us closer to moving BEDOPS to using the CMake build system, to further abstract and simplify the build process.</p>
 </li>
 </ul>
 </li>
-<li><p class="first">Cleaned up various compilation warnings found with <code class="docutils literal"><span class="pre">clang</span></code>/<code class="docutils literal"><span class="pre">clang++</span></code> and GCC kits.</p>
+<li><p class="first">Cleaned up various compilation warnings found with <tt class="docutils literal"><span class="pre">clang</span></tt>/<tt class="docutils literal"><span class="pre">clang++</span></tt> and GCC kits.</p>
 </li>
 </ul>
 </div>
@@ -156,8 +163,8 @@
 <p>Released: <strong>January 9, 2014</strong></p>
 <ul class="simple">
 <li><a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a><ul>
-<li>Added new <code class="docutils literal"><span class="pre">--echo-map-size</span></code> and <code class="docutils literal"><span class="pre">--echo-overlap-size</span></code> options to calculate sizes of mapped elements and overlaps between mapped and reference elements.</li>
-<li>Improved performance for all <code class="docutils literal"><span class="pre">--echo-map-*</span></code> operations.</li>
+<li>Added new <tt class="docutils literal"><span class="pre">--echo-map-size</span></tt> and <tt class="docutils literal"><span class="pre">--echo-overlap-size</span></tt> options to calculate sizes of mapped elements and overlaps between mapped and reference elements.</li>
+<li>Improved performance for all <tt class="docutils literal"><span class="pre">--echo-map-*</span></tt> operations.</li>
 <li>Updated documentation.</li>
 </ul>
 </li>
@@ -165,7 +172,7 @@
 <li>Improved performance.</li>
 <li>Fixed memory leak.</li>
 <li>Added support for millions of distinct chromosomes.</li>
-<li>Improved internal estimation of memory usage with <code class="docutils literal"><span class="pre">--max-mem</span></code> option.</li>
+<li>Improved internal estimation of memory usage with <tt class="docutils literal"><span class="pre">--max-mem</span></tt> option.</li>
 </ul>
 </li>
 <li>Added support for compilation on Cygwin (64-bit). Refer to the <a class="reference internal" href="installation.html#installation-via-source-code-on-cygwin"><em>installation documentation</em></a> for build instructions.</li>
@@ -174,35 +181,35 @@
 </ul>
 </li>
 <li>All <a class="reference internal" href="reference/file-management/conversion.html#conversion-scripts"><em>conversion scripts</em></a><ul>
-<li>Python-based scripts no longer use temporary files, which reduces file I/O and improves performance. This change also reduces the need for large amounts of free space in a user&#8217;s <code class="docutils literal"><span class="pre">/tmp</span></code> folder, particularly relevant for users converting multi-GB BAM files.</li>
-<li>We now test for ability to locate <code class="docutils literal"><span class="pre">starch</span></code>, <code class="docutils literal"><span class="pre">sort-bed</span></code>, <code class="docutils literal"><span class="pre">wig2bed_bin</span></code> and <code class="docutils literal"><span class="pre">samtools</span></code> in user environment, quitting with the appropriate error state if the dependencies cannot be found.</li>
+<li>Python-based scripts no longer use temporary files, which reduces file I/O and improves performance. This change also reduces the need for large amounts of free space in a user&#8217;s <tt class="docutils literal"><span class="pre">/tmp</span></tt> folder, particularly relevant for users converting multi-GB BAM files.</li>
+<li>We now test for ability to locate <tt class="docutils literal"><span class="pre">starch</span></tt>, <tt class="docutils literal"><span class="pre">sort-bed</span></tt>, <tt class="docutils literal"><span class="pre">wig2bed_bin</span></tt> and <tt class="docutils literal"><span class="pre">samtools</span></tt> in user environment, quitting with the appropriate error state if the dependencies cannot be found.</li>
 <li>Improved documentation. In particular, we have added descriptive tables to each script&#8217;s documentation page which describe how columns map from original data input to BED output.</li>
 <li><a class="reference internal" href="reference/file-management/conversion/bam2bed.html#bam2bed"><em>bam2bed</em></a> and <a class="reference internal" href="reference/file-management/conversion/sam2bed.html#sam2bed"><em>sam2bed</em></a><ul>
-<li>Added <code class="docutils literal"><span class="pre">--custom-tags</span> <span class="pre">&lt;value&gt;</span></code> command-line option to support a comma-separated list of custom tags (cf. <a class="reference external" href="http://www.biostars.org/p/87062/">Biostars discussion</a>), <em>i.e.</em>, tags which are not part of the original SAMtools specification.</li>
-<li>Added <code class="docutils literal"><span class="pre">--keep-header</span></code> option to preserve header and metadata as BED elements that use <code class="docutils literal"><span class="pre">_header</span></code> as the chromosome name. This now makes these conversion scripts fully &#8220;non-lossy&#8221;.</li>
+<li>Added <tt class="docutils literal"><span class="pre">--custom-tags</span> <span class="pre">&lt;value&gt;</span></tt> command-line option to support a comma-separated list of custom tags (cf. <a class="reference external" href="http://www.biostars.org/p/87062/">Biostars discussion</a>), <em>i.e.</em>, tags which are not part of the original SAMtools specification.</li>
+<li>Added <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option to preserve header and metadata as BED elements that use <tt class="docutils literal"><span class="pre">_header</span></tt> as the chromosome name. This now makes these conversion scripts fully &#8220;non-lossy&#8221;.</li>
 </ul>
 </li>
 <li><a class="reference internal" href="reference/file-management/conversion/vcf2bed.html#vcf2bed"><em>vcf2bed</em></a><ul>
-<li>Added new <code class="docutils literal"><span class="pre">--snvs</span></code>, <code class="docutils literal"><span class="pre">--insertions</span></code> and <code class="docutils literal"><span class="pre">--deletions</span></code> options that filter VCF variants into three separate subcategories.</li>
-<li>Added <code class="docutils literal"><span class="pre">--keep-header</span></code> option to preserve header and metadata as BED elements that use <code class="docutils literal"><span class="pre">_header</span></code> as the chromosome name. This now makes these conversion scripts fully &#8220;non-lossy&#8221;.</li>
+<li>Added new <tt class="docutils literal"><span class="pre">--snvs</span></tt>, <tt class="docutils literal"><span class="pre">--insertions</span></tt> and <tt class="docutils literal"><span class="pre">--deletions</span></tt> options that filter VCF variants into three separate subcategories.</li>
+<li>Added <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option to preserve header and metadata as BED elements that use <tt class="docutils literal"><span class="pre">_header</span></tt> as the chromosome name. This now makes these conversion scripts fully &#8220;non-lossy&#8221;.</li>
 </ul>
 </li>
 <li><a class="reference internal" href="reference/file-management/conversion/gff2bed.html#gff2bed"><em>gff2bed</em></a><ul>
-<li>Added <code class="docutils literal"><span class="pre">--keep-header</span></code> option to preserve header and metadata as BED elements that use <code class="docutils literal"><span class="pre">_header</span></code> as the chromosome name. This now makes these conversion scripts fully &#8220;non-lossy&#8221;.</li>
+<li>Added <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option to preserve header and metadata as BED elements that use <tt class="docutils literal"><span class="pre">_header</span></tt> as the chromosome name. This now makes these conversion scripts fully &#8220;non-lossy&#8221;.</li>
 </ul>
 </li>
 <li><a class="reference internal" href="reference/file-management/conversion/psl2bed.html#psl2bed"><em>psl2bed</em></a><ul>
-<li>Added <code class="docutils literal"><span class="pre">--keep-header</span></code> option to preserve header and metadata as BED elements that use <code class="docutils literal"><span class="pre">_header</span></code> as the chromosome name. This now makes these conversion scripts fully &#8220;non-lossy&#8221;.</li>
+<li>Added <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option to preserve header and metadata as BED elements that use <tt class="docutils literal"><span class="pre">_header</span></tt> as the chromosome name. This now makes these conversion scripts fully &#8220;non-lossy&#8221;.</li>
 </ul>
 </li>
 <li><a class="reference internal" href="reference/file-management/conversion/wig2bed.html#wig2bed"><em>wig2bed</em></a><ul>
-<li>Added <code class="docutils literal"><span class="pre">--keep-header</span></code> option to <a class="reference internal" href="reference/file-management/conversion/wig2bed.html#wig2bed"><em>wig2bed</em></a> binary and <code class="docutils literal"><span class="pre">wig2bed</span></code>/<code class="docutils literal"><span class="pre">wig2starch</span></code> wrapper scripts, to preserve header and metadata as BED elements that use <code class="docutils literal"><span class="pre">_header</span></code> as the chromosome name. This now makes these conversion scripts fully &#8220;non-lossy&#8221;.</li>
+<li>Added <tt class="docutils literal"><span class="pre">--keep-header</span></tt> option to <a class="reference internal" href="reference/file-management/conversion/wig2bed.html#wig2bed"><em>wig2bed</em></a> binary and <tt class="docutils literal"><span class="pre">wig2bed</span></tt>/<tt class="docutils literal"><span class="pre">wig2starch</span></tt> wrapper scripts, to preserve header and metadata as BED elements that use <tt class="docutils literal"><span class="pre">_header</span></tt> as the chromosome name. This now makes these conversion scripts fully &#8220;non-lossy&#8221;.</li>
 </ul>
 </li>
 </ul>
 </li>
 <li>Added OS X uninstaller project to allow end user to more easily remove BEDOPS tools from this platform.</li>
-<li>Cleaned up various compilation warnings found with <code class="docutils literal"><span class="pre">clang</span></code>/<code class="docutils literal"><span class="pre">clang++</span></code> and GCC kits.</li>
+<li>Cleaned up various compilation warnings found with <tt class="docutils literal"><span class="pre">clang</span></tt>/<tt class="docutils literal"><span class="pre">clang++</span></tt> and GCC kits.</li>
 </ul>
 </div>
 <div class="section" id="v2-3-0">
@@ -212,18 +219,18 @@
 <li><p class="first">Migration of BEDOPS code and documentation from Google Code to Github.</p>
 <ul class="simple">
 <li>Due to changes with Google Code hosting policies at the end of the year, we have decided to change our process for distributing code, packages and documentation. While most of the work is done, we appreciate feedback on any problems you may encounter. Please email us at <a class="reference external" href="mailto:bedops&#37;&#52;&#48;stamlab&#46;org">bedops<span>&#64;</span>stamlab<span>&#46;</span>org</a> with details.</li>
-<li>Migration to Github should facilitate requests for code by those who are familiar with <code class="docutils literal"><span class="pre">git</span></code> and want to fork our project to submit <a class="reference external" href="https://help.github.com/articles/using-pull-requests">pull requests</a>.</li>
+<li>Migration to Github should facilitate requests for code by those who are familiar with <tt class="docutils literal"><span class="pre">git</span></tt> and want to fork our project to submit <a class="reference external" href="https://help.github.com/articles/using-pull-requests">pull requests</a>.</li>
 </ul>
 </li>
 <li><p class="first"><a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a></p>
 <ul class="simple">
-<li>General <code class="docutils literal"><span class="pre">--ec</span></code> performance improvements.</li>
+<li>General <tt class="docutils literal"><span class="pre">--ec</span></tt> performance improvements.</li>
 </ul>
 </li>
 <li><p class="first"><a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a></p>
 <ul class="simple">
-<li>Adds support for the new <code class="docutils literal"><span class="pre">--skip-unmapped</span></code> option, which filters out reference elements which do not have mapped elements associated with them. See the end of the <a class="reference internal" href="reference/statistics/bedmap.html#bedmap-score-operations"><em>score operations</em></a> section of the <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> documentation for more detail.</li>
-<li>General <code class="docutils literal"><span class="pre">--ec</span></code> performance improvements.</li>
+<li>Adds support for the new <tt class="docutils literal"><span class="pre">--skip-unmapped</span></tt> option, which filters out reference elements which do not have mapped elements associated with them. See the end of the <a class="reference internal" href="reference/statistics/bedmap.html#bedmap-score-operations"><em>score operations</em></a> section of the <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> documentation for more detail.</li>
+<li>General <tt class="docutils literal"><span class="pre">--ec</span></tt> performance improvements.</li>
 </ul>
 </li>
 <li><p class="first"><a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a></p>
@@ -236,7 +243,7 @@
 <li><p class="first"><a class="reference internal" href="reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a></p>
 <ul class="simple">
 <li>Can now unpack zero-byte (&#8220;empty set&#8221;) compressed <a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a> archive (see above).</li>
-<li>Changed <code class="docutils literal"><span class="pre">unstarch</span> <span class="pre">--list</span></code> option to print to <code class="docutils literal"><span class="pre">stdout</span></code> stream (this was previously sent to <code class="docutils literal"><span class="pre">stderr</span></code>).</li>
+<li>Changed <tt class="docutils literal"><span class="pre">unstarch</span> <span class="pre">--list</span></tt> option to print to <tt class="docutils literal"><span class="pre">stdout</span></tt> stream (this was previously sent to <tt class="docutils literal"><span class="pre">stderr</span></tt>).</li>
 </ul>
 </li>
 <li><p class="first"><a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a> metadata library</p>
@@ -248,25 +255,25 @@
 <ul class="simple">
 <li>Python scripts require v2.7+ or greater.</li>
 <li>Improved (more &#8220;Pythonic&#8221;) error code handling.</li>
-<li>Disabled support for <code class="docutils literal"><span class="pre">--max-mem</span></code> sort parameter until <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> <a class="reference external" href="https://github.com/bedops/bedops/issues/1">issue</a> is resolved. Scripts will continue to sort, but they will be limited to available system memory. If you are processing files larger than system memory, please contact us at <a class="reference external" href="mailto:bedops&#37;&#52;&#48;stamlab&#46;org">bedops<span>&#64;</span>stamlab<span>&#46;</span>org</a> for details of a temporary workaround.</li>
+<li>Disabled support for <tt class="docutils literal"><span class="pre">--max-mem</span></tt> sort parameter until <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> <a class="reference external" href="https://github.com/bedops/bedops/issues/1">issue</a> is resolved. Scripts will continue to sort, but they will be limited to available system memory. If you are processing files larger than system memory, please contact us at <a class="reference external" href="mailto:bedops&#37;&#52;&#48;stamlab&#46;org">bedops<span>&#64;</span>stamlab<span>&#46;</span>org</a> for details of a temporary workaround.</li>
 </ul>
 </li>
 <li><p class="first"><a class="reference internal" href="reference/file-management/conversion/gff2bed.html#gff2bed"><em>gff2bed</em></a> conversion script</p>
 <ul class="simple">
-<li>Resolved <code class="docutils literal"><span class="pre">IndexError</span></code> exceptions by fixing header support, bringing script in line with <a class="reference external" href="http://www.sequenceontology.org/gff3.shtml">v1.21 GFF3 spec</a>.</li>
+<li>Resolved <tt class="docutils literal"><span class="pre">IndexError</span></tt> exceptions by fixing header support, bringing script in line with <a class="reference external" href="http://www.sequenceontology.org/gff3.shtml">v1.21 GFF3 spec</a>.</li>
 </ul>
 </li>
 <li><p class="first"><a class="reference internal" href="reference/file-management/conversion/bam2bed.html#bam2bed"><em>bam2bed</em></a> and <a class="reference internal" href="reference/file-management/conversion/sam2bed.html#sam2bed"><em>sam2bed</em></a> conversion scripts</p>
 <ul class="simple">
-<li>Rewritten <code class="docutils literal"><span class="pre">bam2*</span></code> and <code class="docutils literal"><span class="pre">sam2*</span></code> scripts from <code class="docutils literal"><span class="pre">bash</span></code> into Python (v2.7+ support).</li>
+<li>Rewritten <tt class="docutils literal"><span class="pre">bam2*</span></tt> and <tt class="docutils literal"><span class="pre">sam2*</span></tt> scripts from <tt class="docutils literal"><span class="pre">bash</span></tt> into Python (v2.7+ support).</li>
 <li>Improved BAM and SAM input validation against the <a class="reference external" href="http://samtools.sourceforge.net/SAMv1.pdf">v1.4 SAM spec</a>.</li>
-<li>New <code class="docutils literal"><span class="pre">--split</span></code> option prints reads with <code class="docutils literal"><span class="pre">N</span></code> CIGAR operations as separated BED elements.</li>
-<li>New <code class="docutils literal"><span class="pre">--all-reads</span></code> option prints all reads, mapped and unmapped.</li>
+<li>New <tt class="docutils literal"><span class="pre">--split</span></tt> option prints reads with <tt class="docutils literal"><span class="pre">N</span></tt> CIGAR operations as separated BED elements.</li>
+<li>New <tt class="docutils literal"><span class="pre">--all-reads</span></tt> option prints all reads, mapped and unmapped.</li>
 </ul>
 </li>
 <li><p class="first"><a class="reference internal" href="reference/set-operations/bedextract.html#bedextract"><em>bedextract</em></a></p>
 <ul class="simple">
-<li>Fixed <code class="docutils literal"><span class="pre">stdin</span></code> bug with <a class="reference internal" href="reference/set-operations/bedextract.html#bedextract"><em>bedextract</em></a>.</li>
+<li>Fixed <tt class="docutils literal"><span class="pre">stdin</span></tt> bug with <a class="reference internal" href="reference/set-operations/bedextract.html#bedextract"><em>bedextract</em></a>.</li>
 </ul>
 </li>
 <li><p class="first">New documentation via <a class="reference external" href="readthedocs.org">readthedocs.org</a>.</p>
@@ -279,9 +286,9 @@
 </li>
 <li><p class="first">OS X compilation improvements</p>
 <ul>
-<li><p class="first">We have made changes to the OS X build process for half of the BEDOPS binaries, which allows direct compilation with Clang/LLVM (part of the Apple Xcode distribution). Those binaries now use Apple&#8217;s system-level C++ library, instead of GNU&#8217;s <code class="docutils literal"><span class="pre">libstdc++</span></code>.</p>
+<li><p class="first">We have made changes to the OS X build process for half of the BEDOPS binaries, which allows direct compilation with Clang/LLVM (part of the Apple Xcode distribution). Those binaries now use Apple&#8217;s system-level C++ library, instead of GNU&#8217;s <tt class="docutils literal"><span class="pre">libstdc++</span></tt>.</p>
 <p>This change means that we require Mac OS X 10.7 (&#8220;Lion&#8221;) or greater—we do not support 10.6 at this time.</p>
-<p>Compilation is faster and simpler, and we can reduce the size and complexity of Mac OS X builds and installer packages. By using Apple&#8217;s C++ library, we also reduce the likelihood of missing library errors. When this process is completed for the remaining binaries, it will no longer be necessary to install GCC 4.7+ (by way of MacPorts or other package managers) in order to build BEDOPS on OS X, nor will we have to bundle <code class="docutils literal"><span class="pre">libstdc++</span></code> with the installer.</p>
+<p>Compilation is faster and simpler, and we can reduce the size and complexity of Mac OS X builds and installer packages. By using Apple&#8217;s C++ library, we also reduce the likelihood of missing library errors. When this process is completed for the remaining binaries, it will no longer be necessary to install GCC 4.7+ (by way of MacPorts or other package managers) in order to build BEDOPS on OS X, nor will we have to bundle <tt class="docutils literal"><span class="pre">libstdc++</span></tt> with the installer.</p>
 </li>
 </ul>
 </li>
@@ -306,7 +313,7 @@
 </ul>
 </li>
 <li><a class="reference internal" href="reference/file-management/compression/starchcat.html#starchcat"><em>starchcat</em></a><ul>
-<li>Resolves bug with <code class="docutils literal"><span class="pre">--gzip</span></code> option, allowing updates of <code class="docutils literal"><span class="pre">gzip</span></code> -backed v1.2 and v1.5 archives to the <a class="reference internal" href="reference/file-management/compression/starch-specification.html#starch-specification"><em>v2 Starch format</em></a> (either <code class="docutils literal"><span class="pre">bzip2</span></code> - or <code class="docutils literal"><span class="pre">gzip</span></code> -backed).</li>
+<li>Resolves bug with <tt class="docutils literal"><span class="pre">--gzip</span></tt> option, allowing updates of <tt class="docutils literal"><span class="pre">gzip</span></tt> -backed v1.2 and v1.5 archives to the <a class="reference internal" href="reference/file-management/compression/starch-specification.html#starch-specification"><em>v2 Starch format</em></a> (either <tt class="docutils literal"><span class="pre">bzip2</span></tt> - or <tt class="docutils literal"><span class="pre">gzip</span></tt> -backed).</li>
 </ul>
 </li>
 <li><a class="reference internal" href="reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a><ul>
@@ -328,11 +335,11 @@
 </ul>
 </li>
 <li><a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a><ul>
-<li>Resolves bug with <code class="docutils literal"><span class="pre">--partition</span></code> option.</li>
+<li>Resolves bug with <tt class="docutils literal"><span class="pre">--partition</span></tt> option.</li>
 </ul>
 </li>
 <li><a class="reference internal" href="reference/file-management/conversion.html#conversion-scripts"><em>conversion scripts</em></a><ul>
-<li>All v2.1.0 Python-based scripts now include fix for <code class="docutils literal"><span class="pre">SIGPIPE</span></code> handling, such that use of <code class="docutils literal"><span class="pre">head</span></code> or other common UNIX utilities to process buffered standard output no longer yields <code class="docutils literal"><span class="pre">IOError</span></code> exceptions. (Thanks to Matt Maurano for reporting this bug.)</li>
+<li>All v2.1.0 Python-based scripts now include fix for <tt class="docutils literal"><span class="pre">SIGPIPE</span></tt> handling, such that use of <tt class="docutils literal"><span class="pre">head</span></tt> or other common UNIX utilities to process buffered standard output no longer yields <tt class="docutils literal"><span class="pre">IOError</span></tt> exceptions. (Thanks to Matt Maurano for reporting this bug.)</li>
 </ul>
 </li>
 <li>32-bit Linux binary support<ul>
@@ -351,22 +358,22 @@
 <p>Released: <strong>April 22, 2013</strong></p>
 <ul class="simple">
 <li><a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a><ul>
-<li>New <code class="docutils literal"><span class="pre">--partition</span></code> operator efficiently generates disjoint segments made from genomic boundaries of all overlapping inputs.</li>
+<li>New <tt class="docutils literal"><span class="pre">--partition</span></tt> operator efficiently generates disjoint segments made from genomic boundaries of all overlapping inputs.</li>
 </ul>
 </li>
 <li><a class="reference internal" href="reference/file-management/conversion.html#conversion-scripts"><em>conversion scripts</em></a><ul>
 <li>All scripts now use <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> behind the scenes to output sorted BED output, ready for use with BEDOPS utilities. It is no longer necessary to pipe data to or otherwise post-process converted data with <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a>.</li>
 <li>New <a class="reference internal" href="reference/file-management/conversion/psl2bed.html#psl2bed"><em>psl2bed</em></a> conversion script, converting <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format2">PSL-formatted UCSC BLAT output</a> to BED.</li>
 <li>New <a class="reference internal" href="reference/file-management/conversion/wig2bed.html#wig2bed"><em>wig2bed</em></a> conversion script written in Python.</li>
-<li>New <code class="docutils literal"><span class="pre">*2starch</span></code> <a class="reference internal" href="reference/file-management/conversion.html#conversion-scripts"><em>conversion scripts</em></a> offered for all <code class="docutils literal"><span class="pre">*2bed</span></code> scripts, which output Starch v2 archives.</li>
+<li>New <tt class="docutils literal"><span class="pre">*2starch</span></tt> <a class="reference internal" href="reference/file-management/conversion.html#conversion-scripts"><em>conversion scripts</em></a> offered for all <tt class="docutils literal"><span class="pre">*2bed</span></tt> scripts, which output Starch v2 archives.</li>
 </ul>
 </li>
 <li><a class="reference internal" href="reference/set-operations/closest-features.html#closest-features"><em>closest-features</em></a><ul>
-<li>Replaced <code class="docutils literal"><span class="pre">--shortest</span></code> option name with <code class="docutils literal"><span class="pre">--closest</span></code>, for clarity. (Old scripts which use <code class="docutils literal"><span class="pre">--shortest</span></code> will continue to work with the deprecated option name for now. We advise editing pipelines, as needed.)</li>
+<li>Replaced <tt class="docutils literal"><span class="pre">--shortest</span></tt> option name with <tt class="docutils literal"><span class="pre">--closest</span></tt>, for clarity. (Old scripts which use <tt class="docutils literal"><span class="pre">--shortest</span></tt> will continue to work with the deprecated option name for now. We advise editing pipelines, as needed.)</li>
 </ul>
 </li>
 <li><a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a><ul>
-<li>Improved error checking for interleaved records. This also makes use of <code class="docutils literal"><span class="pre">*2starch</span></code> conversion scripts with the <code class="docutils literal"><span class="pre">--do-not-sort</span></code> option safer.</li>
+<li>Improved error checking for interleaved records. This also makes use of <tt class="docutils literal"><span class="pre">*2starch</span></tt> conversion scripts with the <tt class="docutils literal"><span class="pre">--do-not-sort</span></tt> option safer.</li>
 </ul>
 </li>
 <li>Improved Mac OS X support<ul>
@@ -390,28 +397,28 @@
 <ul class="simple">
 <li><a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a><ul>
 <li>Takes in Starch-formatted archives as input, as well as raw BED (i.e., it is no longer required to extract a Starch archive to an intermediate, temporary file or named pipe before applying operations).</li>
-<li>New <code class="docutils literal"><span class="pre">--chrom</span></code> operator jumps to and operates on information for specified chromosome only.</li>
-<li>New <code class="docutils literal"><span class="pre">--echo-map-id-uniq</span></code> operator lists unique IDs from overlapping mapping elements.</li>
-<li>New <code class="docutils literal"><span class="pre">--max-element</span></code> and <code class="docutils literal"><span class="pre">--min-element</span></code> operators return the highest or lowest scoring overlapping map element.</li>
+<li>New <tt class="docutils literal"><span class="pre">--chrom</span></tt> operator jumps to and operates on information for specified chromosome only.</li>
+<li>New <tt class="docutils literal"><span class="pre">--echo-map-id-uniq</span></tt> operator lists unique IDs from overlapping mapping elements.</li>
+<li>New <tt class="docutils literal"><span class="pre">--max-element</span></tt> and <tt class="docutils literal"><span class="pre">--min-element</span></tt> operators return the highest or lowest scoring overlapping map element.</li>
 </ul>
 </li>
 <li><a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a><ul>
 <li>Takes in Starch-formatted archives as input, as well as raw BED.</li>
-<li>New <code class="docutils literal"><span class="pre">--chrom</span></code> operator jumps to and operates on information for specified chromosome only.</li>
+<li>New <tt class="docutils literal"><span class="pre">--chrom</span></tt> operator jumps to and operates on information for specified chromosome only.</li>
 </ul>
 </li>
 <li><a class="reference internal" href="reference/set-operations/closest-features.html#closest-features"><em>closest-features</em></a><ul>
 <li>Takes in Starch-formatted archives as input, as well as raw BED.</li>
-<li>New <code class="docutils literal"><span class="pre">--chrom</span></code> operator jumps to and operates on information for specified chromosome only.</li>
+<li>New <tt class="docutils literal"><span class="pre">--chrom</span></tt> operator jumps to and operates on information for specified chromosome only.</li>
 </ul>
 </li>
-<li><a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> and <code class="docutils literal"><span class="pre">bbms</span></code><ul>
-<li>New <code class="docutils literal"><span class="pre">--max-mem</span></code> option to limit system memory on large BED inputs.</li>
-<li>Incorporated <code class="docutils literal"><span class="pre">bbms</span></code> functionality into <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> with use of <code class="docutils literal"><span class="pre">--max-mem</span></code> operator.</li>
+<li><a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> and <tt class="docutils literal"><span class="pre">bbms</span></tt><ul>
+<li>New <tt class="docutils literal"><span class="pre">--max-mem</span></tt> option to limit system memory on large BED inputs.</li>
+<li>Incorporated <tt class="docutils literal"><span class="pre">bbms</span></tt> functionality into <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> with use of <tt class="docutils literal"><span class="pre">--max-mem</span></tt> operator.</li>
 </ul>
 </li>
 <li><a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a>, <a class="reference internal" href="reference/file-management/compression/starchcat.html#starchcat"><em>starchcat</em></a> and <a class="reference internal" href="reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a><ul>
-<li>New metadata enhancements to Starch-format archival and extraction, including: <code class="docutils literal"><span class="pre">--note</span></code>, <code class="docutils literal"><span class="pre">--elements</span></code>, <code class="docutils literal"><span class="pre">--bases</span></code>, <code class="docutils literal"><span class="pre">--bases-uniq</span></code>, <code class="docutils literal"><span class="pre">--list-chromosomes</span></code>, <code class="docutils literal"><span class="pre">--archive-timestamp</span></code>, <code class="docutils literal"><span class="pre">--archive-type</span></code> and <code class="docutils literal"><span class="pre">--archive-version</span></code> (see <code class="docutils literal"><span class="pre">--help</span></code> to <a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a>, <a class="reference internal" href="reference/file-management/compression/starchcat.html#starchcat"><em>starchcat</em></a> and <a class="reference internal" href="reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a> binaries, or view the documentation for these applications for more detail).</li>
+<li>New metadata enhancements to Starch-format archival and extraction, including: <tt class="docutils literal"><span class="pre">--note</span></tt>, <tt class="docutils literal"><span class="pre">--elements</span></tt>, <tt class="docutils literal"><span class="pre">--bases</span></tt>, <tt class="docutils literal"><span class="pre">--bases-uniq</span></tt>, <tt class="docutils literal"><span class="pre">--list-chromosomes</span></tt>, <tt class="docutils literal"><span class="pre">--archive-timestamp</span></tt>, <tt class="docutils literal"><span class="pre">--archive-type</span></tt> and <tt class="docutils literal"><span class="pre">--archive-version</span></tt> (see <tt class="docutils literal"><span class="pre">--help</span></tt> to <a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a>, <a class="reference internal" href="reference/file-management/compression/starchcat.html#starchcat"><em>starchcat</em></a> and <a class="reference internal" href="reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a> binaries, or view the documentation for these applications for more detail).</li>
 <li>Adds 20-35% performance boost to creating Starch archives with <a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a> utility.</li>
 <li>New documentation with technical overview of the Starch format specification.</li>
 </ul>
@@ -428,7 +435,7 @@
 <p>Released: <strong>January 14, 2013</strong></p>
 <ul class="simple">
 <li>Adds support for Apple 32- and 64-bit Intel hardware running OS X 10.5 through 10.8.</li>
-<li>Adds <code class="docutils literal"><span class="pre">README</span></code> for companion download.</li>
+<li>Adds <tt class="docutils literal"><span class="pre">README</span></tt> for companion download.</li>
 <li>Removes some obsolete code.</li>
 </ul>
 </div>
@@ -444,7 +451,7 @@
 <h3>3.2.13. v1.2.3<a class="headerlink" href="#v1-2-3" title="Permalink to this headline">¶</a></h3>
 <p>Released: <strong>August 17, 2012</strong></p>
 <ul class="simple">
-<li>Added <code class="docutils literal"><span class="pre">--indicator</span></code> option to <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a>.</li>
+<li>Added <tt class="docutils literal"><span class="pre">--indicator</span></tt> option to <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a>.</li>
 <li>Assorted changes to conversion scripts and associated companion download.</li>
 </ul>
 </div>
@@ -455,7 +462,7 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/logo_with_label_v3.png" alt="Logo"/>
@@ -493,14 +500,12 @@
   <h4>Next topic</h4>
   <p class="topless"><a href="usage-examples.html"
                         title="next chapter">4. Usage examples</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/content/revision-history.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
+<div class="sourcelink">
+  <a href="../_sources/content/revision-history.txt" rel="nofollow">
+    Show page source
+  </a>
+</div>
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
       <input type="text" name="q" />
@@ -513,28 +518,38 @@
     </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="usage-examples.html" title="4. Usage examples"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="installation.html" title="2. Installation"
-             >previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3b2.
-    </div>
+  <div class="related bottom">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="installation.html" title="Previous document">2. Installation</a>
+        </li>
+        <li>
+          <a href="usage-examples.html" title="Next document">4. Usage examples</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../index.html">BEDOPS 2.4.4 documentation</a></li> 
+    </ul>
+  </nav>
+  </div>
+  <footer id="pagefooter">&copy; 2014, Shane Neph, Alex Reynolds.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+      1.2.3
+        with the <a href="http://github.com/irskep/sphinx-better-theme">
+          better</a> theme.
+
+  </footer>
+
+  
   </body>
 </html>

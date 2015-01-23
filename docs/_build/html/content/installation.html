@@ -6,16 +6,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>2. Installation &mdash; BEDOPS 2.4.3 documentation</title>
+    <title>2. Installation &mdash; BEDOPS 2.4.4 documentation</title>
     
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/better.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/test.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2.4.3',
+        VERSION:     '2.4.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,34 +24,41 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.3 documentation" href="../index.html" />
+    <link rel="top" title="BEDOPS 2.4.4 documentation" href="../index.html" />
     <link rel="next" title="3. Revision history" href="revision-history.html" />
-    <link rel="prev" title="1. Overview" href="overview.html" /> 
+    <link rel="prev" title="1. Overview" href="overview.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="revision-history.html" title="3. Revision history"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="overview.html" title="1. Overview"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li> 
-      </ul>
-    </div>  
+  <body>
+    <header id="pageheader"><h1><a href="../index.html ">
+        BEDOPS 2.4.4 documentation
+    </a></h1></header>
+  <div class="related top">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="overview.html" title="Previous document">1. Overview</a>
+        </li>
+        <li>
+          <a href="revision-history.html" title="Next document">3. Revision history</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../index.html">BEDOPS 2.4.4 documentation</a></li> 
+    </ul>
+  </nav>
+  </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body" role="main">
+          <div class="body">
             
   <div class="section" id="installation">
 <span id="id1"></span><h1>2. Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
@@ -73,9 +80,9 @@ In the case of 32-bit Linux:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ tar jxvf bedops_linux_x86_64-vx.y.z.tar.bz2
 </pre></div>
 </div>
-<p>Replace <code class="docutils literal"><span class="pre">x</span></code>, <code class="docutils literal"><span class="pre">y</span></code> and <code class="docutils literal"><span class="pre">z</span></code> with the version number of BEDOPS you have downloaded.</p>
+<p>Replace <tt class="docutils literal"><span class="pre">x</span></tt>, <tt class="docutils literal"><span class="pre">y</span></tt> and <tt class="docutils literal"><span class="pre">z</span></tt> with the version number of BEDOPS you have downloaded.</p>
 </li>
-<li><p class="first">Copy the extracted binaries to a location of your choice which is in your environment&#8217;s <code class="docutils literal"><span class="pre">PATH</span></code>, <em>e.g.</em> <code class="docutils literal"><span class="pre">/usr/local/bin</span></code>:</p>
+<li><p class="first">Copy the extracted binaries to a location of your choice which is in your environment&#8217;s <tt class="docutils literal"><span class="pre">PATH</span></tt>, <em>e.g.</em> <tt class="docutils literal"><span class="pre">/usr/local/bin</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ cp bin/* /usr/local/bin
 </pre></div>
 </div>
@@ -88,7 +95,7 @@ In the case of 32-bit Linux:</p>
 <ol class="arabic">
 <li><p class="first">Download the current Mac OS X package for BEDOPS from <a class="reference external" href="https://github.com/bedops/bedops/releases">Github BEDOPS Releases</a>.</p>
 </li>
-<li><p class="first">Locate the installer package (usually located in <code class="docutils literal"><span class="pre">~/Downloads</span></code> – this will depend on your web browser configuration):</p>
+<li><p class="first">Locate the installer package (usually located in <tt class="docutils literal"><span class="pre">~/Downloads</span></tt> – this will depend on your web browser configuration):</p>
 <img alt="../_images/bedops_macosx_installer_icon.png" src="../_images/bedops_macosx_installer_icon.png" />
 </li>
 <li><p class="first">Double-click to open the installer package. It will look something like this:</p>
@@ -103,9 +110,9 @@ In the case of 32-bit Linux:</p>
 <span id="installation-via-source-code"></span><h2>2.2. Via source code<a class="headerlink" href="#via-source-code" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="installation-via-source-code-on-linux">
 <span id="id3"></span><h3>2.2.1. Linux<a class="headerlink" href="#installation-via-source-code-on-linux" title="Permalink to this headline">¶</a></h3>
-<p>Compilation of BEDOPS on Linux requires GCC 4.8.2 (both <code class="docutils literal"><span class="pre">gcc</span></code> and <code class="docutils literal"><span class="pre">g++</span></code> and related components) or greater, which includes support for <a class="reference external" href="http://en.wikipedia.org/wiki/C%2B%2B11">C++11</a> features required by core BEDOPS tools. Other tools may be required as described in the installation documentation that follows.</p>
+<p>Compilation of BEDOPS on Linux requires GCC 4.8.2 (both <tt class="docutils literal"><span class="pre">gcc</span></tt> and <tt class="docutils literal"><span class="pre">g++</span></tt> and related components) or greater, which includes support for <a class="reference external" href="http://en.wikipedia.org/wiki/C%2B%2B11">C++11</a> features required by core BEDOPS tools. Other tools may be required as described in the installation documentation that follows.</p>
 <ol class="arabic">
-<li><p class="first">If you do not have GCC 4.8.2 or greater installed (both <code class="docutils literal"><span class="pre">gcc</span></code> and <code class="docutils literal"><span class="pre">g++</span></code>), first install these tools. You can check the state of your GCC installation with <code class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></code> and <code class="docutils literal"><span class="pre">g++</span> <span class="pre">--version</span></code>, <em>e.g.</em>:</p>
+<li><p class="first">If you do not have GCC 4.8.2 or greater installed (both <tt class="docutils literal"><span class="pre">gcc</span></tt> and <tt class="docutils literal"><span class="pre">g++</span></tt>), first install these tools. You can check the state of your GCC installation with <tt class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></tt> and <tt class="docutils literal"><span class="pre">g++</span> <span class="pre">--version</span></tt>, <em>e.g.</em>:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ gcc --version
 gcc (GCC) 4.8.2 20140120 (Red Hat 4.8.2-15)
 ...
@@ -120,8 +127,8 @@ $ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50
 </div>
 <p>The specifics of this process will depend on your distribution and what you want to install. Please check with your system administration or support staff if you are unsure what your options are.</p>
 </li>
-<li><p class="first">Install a <code class="docutils literal"><span class="pre">git</span></code> client of your choice, if you do not already have one installed. Github offers an <a class="reference external" href="https://help.github.com/articles/set-up-git#platform-all">installation guide</a>.</p>
-<p>Alternatively, use <code class="docutils literal"><span class="pre">apt-get</span></code> or another package manager to install one, <em>e.g.</em></p>
+<li><p class="first">Install a <tt class="docutils literal"><span class="pre">git</span></tt> client of your choice, if you do not already have one installed. Github offers an <a class="reference external" href="https://help.github.com/articles/set-up-git#platform-all">installation guide</a>.</p>
+<p>Alternatively, use <tt class="docutils literal"><span class="pre">apt-get</span></tt> or another package manager to install one, <em>e.g.</em></p>
 <div class="highlight-python"><div class="highlight"><pre>$ sudo apt-get install git
 </pre></div>
 </div>
@@ -131,7 +138,7 @@ $ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50
 </pre></div>
 </div>
 </li>
-<li><p class="first">Enter the top-level of the local copy of the BEDOPS repository and run <code class="docutils literal"><span class="pre">make</span></code> to begin the build process:</p>
+<li><p class="first">Enter the top-level of the local copy of the BEDOPS repository and run <tt class="docutils literal"><span class="pre">make</span></tt> to begin the build process:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ cd bedops
 $ make
 </pre></div>
@@ -140,15 +147,15 @@ $ make
 </ol>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
-<p class="last">BEDOPS now supports parallel builds. If you are compiling on a multicore or multiprocessor workstation, use <code class="docutils literal"><span class="pre">make</span> <span class="pre">-j</span> <span class="pre">N</span></code> where <code class="docutils literal"><span class="pre">N</span></code> is <code class="docutils literal"><span class="pre">2</span></code>, <code class="docutils literal"><span class="pre">4</span></code> or however many cores or processors you have, in order to parallelize and speed up the build process.</p>
+<p class="last">BEDOPS now supports parallel builds. If you are compiling on a multicore or multiprocessor workstation, use <tt class="docutils literal"><span class="pre">make</span> <span class="pre">-j</span> <span class="pre">N</span></tt> where <tt class="docutils literal"><span class="pre">N</span></tt> is <tt class="docutils literal"><span class="pre">2</span></tt>, <tt class="docutils literal"><span class="pre">4</span></tt> or however many cores or processors you have, in order to parallelize and speed up the build process.</p>
 </div>
 <ol class="arabic" start="5">
-<li><p class="first">Once the build is complete, install compiled binaries and scripts to a local <code class="docutils literal"><span class="pre">bin</span></code> folder:</p>
+<li><p class="first">Once the build is complete, install compiled binaries and scripts to a local <tt class="docutils literal"><span class="pre">bin</span></tt> folder:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ make install
 </pre></div>
 </div>
 </li>
-<li><p class="first">Copy the extracted binaries to a location of your choice that is in your environment&#8217;s <code class="docutils literal"><span class="pre">PATH</span></code>, <em>e.g.</em> <code class="docutils literal"><span class="pre">/usr/local/bin</span></code>:</p>
+<li><p class="first">Copy the extracted binaries to a location of your choice that is in your environment&#8217;s <tt class="docutils literal"><span class="pre">PATH</span></tt>, <em>e.g.</em> <tt class="docutils literal"><span class="pre">/usr/local/bin</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ cp bin/* /usr/local/bin
 </pre></div>
 </div>
@@ -163,22 +170,22 @@ $ make
 <div class="section" id="manual-compilation">
 <h4>2.2.2.1. Manual compilation<a class="headerlink" href="#manual-compilation" title="Permalink to this headline">¶</a></h4>
 <ol class="arabic">
-<li><p class="first">If you do not have Clang/LLVM 3.5 or greater installed, first do so. You can check this with <code class="docutils literal"><span class="pre">clang</span> <span class="pre">-v</span></code>, <em>e.g.</em>:</p>
+<li><p class="first">If you do not have Clang/LLVM 3.5 or greater installed, first do so. You can check this with <tt class="docutils literal"><span class="pre">clang</span> <span class="pre">-v</span></tt>, <em>e.g.</em>:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ clang -v
 Apple LLVM version 6.0 (clang-600.0.56) (based on LLVM 3.5svn)
 ...
 </pre></div>
 </div>
-<p>For Mac OS X users, we recommend installing <a class="reference external" href="https://developer.apple.com/xcode/">Apple Xcode</a> and its Command Line Tools, via the <code class="docutils literal"><span class="pre">Preferences</span> <span class="pre">&gt;</span> <span class="pre">Downloads</span></code> option within Xcode. At the time of this writing, Xcode 6.1.1 includes the necessary command-line tools to compile BEDOPS.</p>
+<p>For Mac OS X users, we recommend installing <a class="reference external" href="https://developer.apple.com/xcode/">Apple Xcode</a> and its Command Line Tools, via the <tt class="docutils literal"><span class="pre">Preferences</span> <span class="pre">&gt;</span> <span class="pre">Downloads</span></tt> option within Xcode. At the time of this writing, Xcode 6.1.1 includes the necessary command-line tools to compile BEDOPS.</p>
 </li>
-<li><p class="first">Install a <code class="docutils literal"><span class="pre">git</span></code> client of your choice, if you do not already have one installed. Github offers an <a class="reference external" href="https://help.github.com/articles/set-up-git#platform-all">installation guide</a>.</p>
+<li><p class="first">Install a <tt class="docutils literal"><span class="pre">git</span></tt> client of your choice, if you do not already have one installed. Github offers an <a class="reference external" href="https://help.github.com/articles/set-up-git#platform-all">installation guide</a>.</p>
 </li>
 <li><p class="first">Clone the BEDOPS Git repository in an appropriate local directory:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ git clone https://github.com/bedops/bedops.git
 </pre></div>
 </div>
 </li>
-<li><p class="first">Run <code class="docutils literal"><span class="pre">make</span></code> in the top-level of the local copy of the BEDOPS repository:</p>
+<li><p class="first">Run <tt class="docutils literal"><span class="pre">make</span></tt> in the top-level of the local copy of the BEDOPS repository:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ cd bedops
 $ make
 </pre></div>
@@ -187,15 +194,15 @@ $ make
 </ol>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
-<p class="last">BEDOPS now supports parallel builds. If you are compiling on a multicore or multiprocessor workstation, use <code class="docutils literal"><span class="pre">make</span> <span class="pre">-j</span> <span class="pre">N</span></code> where <code class="docutils literal"><span class="pre">N</span></code> is <code class="docutils literal"><span class="pre">2</span></code>, <code class="docutils literal"><span class="pre">4</span></code> or however many cores or processors you have, in order to parallelize and speed up the build process.</p>
+<p class="last">BEDOPS now supports parallel builds. If you are compiling on a multicore or multiprocessor workstation, use <tt class="docutils literal"><span class="pre">make</span> <span class="pre">-j</span> <span class="pre">N</span></tt> where <tt class="docutils literal"><span class="pre">N</span></tt> is <tt class="docutils literal"><span class="pre">2</span></tt>, <tt class="docutils literal"><span class="pre">4</span></tt> or however many cores or processors you have, in order to parallelize and speed up the build process.</p>
 </div>
 <ol class="arabic" start="5">
-<li><p class="first">Once the build is complete, install compiled binaries and scripts to a local <code class="docutils literal"><span class="pre">bin</span></code> folder:</p>
+<li><p class="first">Once the build is complete, install compiled binaries and scripts to a local <tt class="docutils literal"><span class="pre">bin</span></tt> folder:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ make install
 </pre></div>
 </div>
 </li>
-<li><p class="first">Copy the extracted binaries to a location of your choice that is in your environment&#8217;s <code class="docutils literal"><span class="pre">PATH</span></code>, <em>e.g.</em> <code class="docutils literal"><span class="pre">/usr/local/bin</span></code>:</p>
+<li><p class="first">Copy the extracted binaries to a location of your choice that is in your environment&#8217;s <tt class="docutils literal"><span class="pre">PATH</span></tt>, <em>e.g.</em> <tt class="docutils literal"><span class="pre">/usr/local/bin</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ cp bin/* /usr/local/bin
 </pre></div>
 </div>
@@ -207,13 +214,13 @@ $ make
 <h4>2.2.2.2. Compilation via Homebrew<a class="headerlink" href="#compilation-via-homebrew" title="Permalink to this headline">¶</a></h4>
 <p>Homebrew is a popular package management toolkit for Mac OS X. It facilitates easy installation of common scientific and other packages.</p>
 <ol class="arabic">
-<li><p class="first">If you do not have Clang/LLVM 3.5 or greater installed, first do so. You can check this with <code class="docutils literal"><span class="pre">clang</span> <span class="pre">-v</span></code>, <em>e.g.</em>:</p>
+<li><p class="first">If you do not have Clang/LLVM 3.5 or greater installed, first do so. You can check this with <tt class="docutils literal"><span class="pre">clang</span> <span class="pre">-v</span></tt>, <em>e.g.</em>:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ clang -v
 Apple LLVM version 6.0 (clang-600.0.56) (based on LLVM 3.5svn)
 ...
 </pre></div>
 </div>
-<p>For Mac OS X users, we recommend installing <a class="reference external" href="https://developer.apple.com/xcode/">Apple Xcode</a> and its Command Line Tools, via the <code class="docutils literal"><span class="pre">Preferences</span> <span class="pre">&gt;</span> <span class="pre">Downloads</span></code> option within Xcode. At the time of this writing, Xcode 6.1.1 includes the necessary command-line tools to compile BEDOPS.</p>
+<p>For Mac OS X users, we recommend installing <a class="reference external" href="https://developer.apple.com/xcode/">Apple Xcode</a> and its Command Line Tools, via the <tt class="docutils literal"><span class="pre">Preferences</span> <span class="pre">&gt;</span> <span class="pre">Downloads</span></tt> option within Xcode. At the time of this writing, Xcode 6.1.1 includes the necessary command-line tools to compile BEDOPS.</p>
 </li>
 <li><p class="first">Follow the instructions listed on the <a class="reference external" href="http://brew.sh">Homebrew site</a> to install the basic package manager components.</p>
 </li>
@@ -233,15 +240,15 @@ Apple LLVM version 6.0 (clang-600.0.56) (based on LLVM 3.5svn)
 <a class="reference internal image-reference" href="../_images/bedops_cygwin_installer_screen.png"><img alt="../_images/bedops_cygwin_installer_screen.png" src="../_images/bedops_cygwin_installer_screen.png" style="width: 99%;" /></a>
 <p>For instance, this Cygwin installer is version 2.831 and is 64-bit.</p>
 </li>
-<li><p class="first">Check that you have GCC 4.8.2 or greater installed. You can check this by opening the Cygwin terminal window (note that this is not the same as the Cygwin installer application) and typing <code class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></code>, <em>e.g.</em>:</p>
+<li><p class="first">Check that you have GCC 4.8.2 or greater installed. You can check this by opening the Cygwin terminal window (note that this is not the same as the Cygwin installer application) and typing <tt class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></tt>, <em>e.g.</em>:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ gcc --version
 gcc (GCC) 4.8.2
 ...
 </pre></div>
 </div>
-<p>If you do not have <code class="docutils literal"><span class="pre">gcc</span></code> installed, then open the Cygwin (64-bit) installer application again, navigate through the current setup options, and then mark the GCC 4.8.* packages for installation:</p>
+<p>If you do not have <tt class="docutils literal"><span class="pre">gcc</span></tt> installed, then open the Cygwin (64-bit) installer application again, navigate through the current setup options, and then mark the GCC 4.8.* packages for installation:</p>
 <a class="reference internal image-reference" href="../_images/bedops_cygwin_installer_gcc_screen.png"><img alt="../_images/bedops_cygwin_installer_gcc_screen.png" src="../_images/bedops_cygwin_installer_gcc_screen.png" style="width: 99%;" /></a>
-<p>If it helps, type in <code class="docutils literal"><span class="pre">gcc</span></code> into the search field to filter results to GCC-related packages. Make sure to mark the following packages for installation, at least:</p>
+<p>If it helps, type in <tt class="docutils literal"><span class="pre">gcc</span></tt> into the search field to filter results to GCC-related packages. Make sure to mark the following packages for installation, at least:</p>
 <ul class="simple">
 <li><strong>gcc-core</strong></li>
 <li><strong>gcc-debuginfo</strong></li>
@@ -249,11 +256,11 @@ gcc (GCC) 4.8.2
 <li><strong>gcc-tools-xyz</strong></li>
 <li><strong>libgcc1</strong></li>
 </ul>
-<p>Click &#8220;Next&#8221; to follow directives to install those and any other selected package items. Then run <code class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></code> as before, to ensure you have a working GCC setup.</p>
+<p>Click &#8220;Next&#8221; to follow directives to install those and any other selected package items. Then run <tt class="docutils literal"><span class="pre">gcc</span> <span class="pre">--version</span></tt> as before, to ensure you have a working GCC setup.</p>
 </li>
-<li><p class="first">Install a <code class="docutils literal"><span class="pre">git</span></code> client of your choice. You can compile one or use the precompiled <code class="docutils literal"><span class="pre">git</span></code> package available through the Cygwin (64-bit) installer:</p>
+<li><p class="first">Install a <tt class="docutils literal"><span class="pre">git</span></tt> client of your choice. You can compile one or use the precompiled <tt class="docutils literal"><span class="pre">git</span></tt> package available through the Cygwin (64-bit) installer:</p>
 <a class="reference internal image-reference" href="../_images/bedops_cygwin_installer_git_screen.png"><img alt="../_images/bedops_cygwin_installer_git_screen.png" src="../_images/bedops_cygwin_installer_git_screen.png" style="width: 99%;" /></a>
-<p>If it helps, type in <code class="docutils literal"><span class="pre">git</span></code> into the search field to filter results to Git-related packages. Make sure to install the following package, at least:</p>
+<p>If it helps, type in <tt class="docutils literal"><span class="pre">git</span></tt> into the search field to filter results to Git-related packages. Make sure to install the following package, at least:</p>
 <ul class="simple">
 <li><strong>git</strong></li>
 </ul>
@@ -265,7 +272,7 @@ gcc (GCC) 4.8.2
 </li>
 </ol>
 <ol class="arabic" start="4">
-<li><p class="first">Enter the top-level of the local copy of the BEDOPS repository and run <code class="docutils literal"><span class="pre">make</span></code> to begin the build process:</p>
+<li><p class="first">Enter the top-level of the local copy of the BEDOPS repository and run <tt class="docutils literal"><span class="pre">make</span></tt> to begin the build process:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ cd bedops
 $ make
 </pre></div>
@@ -274,15 +281,15 @@ $ make
 </ol>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
-<p class="last">BEDOPS now supports parallel builds. If you are compiling on a multicore or multiprocessor workstation, use <code class="docutils literal"><span class="pre">make</span> <span class="pre">-j</span> <span class="pre">N</span></code> where <code class="docutils literal"><span class="pre">N</span></code> is <code class="docutils literal"><span class="pre">2</span></code>, <code class="docutils literal"><span class="pre">4</span></code> or however many cores or processors you have, in order to parallelize and speed up the build process.</p>
+<p class="last">BEDOPS now supports parallel builds. If you are compiling on a multicore or multiprocessor workstation, use <tt class="docutils literal"><span class="pre">make</span> <span class="pre">-j</span> <span class="pre">N</span></tt> where <tt class="docutils literal"><span class="pre">N</span></tt> is <tt class="docutils literal"><span class="pre">2</span></tt>, <tt class="docutils literal"><span class="pre">4</span></tt> or however many cores or processors you have, in order to parallelize and speed up the build process.</p>
 </div>
 <ol class="arabic" start="5">
-<li><p class="first">Once the build is complete, install compiled binaries and scripts to a local <code class="docutils literal"><span class="pre">bin</span></code> folder:</p>
+<li><p class="first">Once the build is complete, install compiled binaries and scripts to a local <tt class="docutils literal"><span class="pre">bin</span></tt> folder:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ make install
 </pre></div>
 </div>
 </li>
-<li><p class="first">Copy the extracted binaries to a location of your choice that is in your environment&#8217;s <code class="docutils literal"><span class="pre">PATH</span></code>, <em>e.g.</em> <code class="docutils literal"><span class="pre">/usr/bin</span></code>:</p>
+<li><p class="first">Copy the extracted binaries to a location of your choice that is in your environment&#8217;s <tt class="docutils literal"><span class="pre">PATH</span></tt>, <em>e.g.</em> <tt class="docutils literal"><span class="pre">/usr/bin</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ cp bin/* /usr/bin
 </pre></div>
 </div>
@@ -296,22 +303,22 @@ $ make
 <ol class="arabic">
 <li><p class="first">Follow steps 1-3 and step 5 from the <a class="reference internal" href="#installation-via-source-code"><em>Via Source Code</em></a> documentation.</p>
 </li>
-<li><p class="first">Run <code class="docutils literal"><span class="pre">make</span> <span class="pre">install_osx_packaging_bins</span></code> in the top-level of the local copy of the BEDOPS repository:</p>
+<li><p class="first">Run <tt class="docutils literal"><span class="pre">make</span> <span class="pre">install_osx_packaging_bins</span></tt> in the top-level of the local copy of the BEDOPS repository:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ make install_osx_packaging_bins
 </pre></div>
 </div>
 </li>
 <li><p class="first">Install <a class="reference external" href="http://s.sudre.free.fr/Software/Packages/about.html">WhiteBox Packages.app</a>, an application for building OS X installers, if not already installed.</p>
 </li>
-<li><p class="first">Create a <code class="docutils literal"><span class="pre">build</span></code> directory to store the installer and open the <code class="docutils literal"><span class="pre">BEDOPS.pkgproj</span></code> file in the top-level of the local copy of the BEDOPS repository, in order to open the BEDOPS installer project, <em>e.g.</em>:</p>
+<li><p class="first">Create a <tt class="docutils literal"><span class="pre">build</span></tt> directory to store the installer and open the <tt class="docutils literal"><span class="pre">BEDOPS.pkgproj</span></tt> file in the top-level of the local copy of the BEDOPS repository, in order to open the BEDOPS installer project, <em>e.g.</em>:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ mkdir packaging/os_x/build &amp;&amp; open packaging/os_x/BEDOPS.pkgproj
 </pre></div>
 </div>
-<p>This will open up the installer project with the <code class="docutils literal"><span class="pre">Packages.app</span></code> application.</p>
+<p>This will open up the installer project with the <tt class="docutils literal"><span class="pre">Packages.app</span></tt> application.</p>
 </li>
-<li><p class="first">Within <code class="docutils literal"><span class="pre">Packages.app</span></code>, modify the project to include the current project version number or other desired changes, as applicable.</p>
+<li><p class="first">Within <tt class="docutils literal"><span class="pre">Packages.app</span></tt>, modify the project to include the current project version number or other desired changes, as applicable.</p>
 </li>
-<li><p class="first">Run the <code class="docutils literal"><span class="pre">Build</span> <span class="pre">&gt;</span> <span class="pre">Build</span></code> menu selection to construct the installer package, located in the <code class="docutils literal"><span class="pre">packaging/os_x/build</span></code> subdirectory. Move this installer to the desired location with <code class="docutils literal"><span class="pre">mv</span></code> or the OS X Finder.</p>
+<li><p class="first">Run the <tt class="docutils literal"><span class="pre">Build</span> <span class="pre">&gt;</span> <span class="pre">Build</span></tt> menu selection to construct the installer package, located in the <tt class="docutils literal"><span class="pre">packaging/os_x/build</span></tt> subdirectory. Move this installer to the desired location with <tt class="docutils literal"><span class="pre">mv</span></tt> or the OS X Finder.</p>
 </li>
 </ol>
 </div>
@@ -321,7 +328,7 @@ $ make
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/logo_with_label_v3.png" alt="Logo"/>
@@ -355,14 +362,12 @@ $ make
   <h4>Next topic</h4>
   <p class="topless"><a href="revision-history.html"
                         title="next chapter">3. Revision history</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/content/installation.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
+<div class="sourcelink">
+  <a href="../_sources/content/installation.txt" rel="nofollow">
+    Show page source
+  </a>
+</div>
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
       <input type="text" name="q" />
@@ -375,28 +380,38 @@ $ make
     </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="revision-history.html" title="3. Revision history"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="overview.html" title="1. Overview"
-             >previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3b2.
-    </div>
+  <div class="related bottom">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="overview.html" title="Previous document">1. Overview</a>
+        </li>
+        <li>
+          <a href="revision-history.html" title="Next document">3. Revision history</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../index.html">BEDOPS 2.4.4 documentation</a></li> 
+    </ul>
+  </nav>
+  </div>
+  <footer id="pagefooter">&copy; 2014, Shane Neph, Alex Reynolds.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+      1.2.3
+        with the <a href="http://github.com/irskep/sphinx-better-theme">
+          better</a> theme.
+
+  </footer>
+
+  
   </body>
 </html>

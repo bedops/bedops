@@ -6,16 +6,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7. Summary &mdash; BEDOPS 2.4.3 documentation</title>
+    <title>7. Summary &mdash; BEDOPS 2.4.4 documentation</title>
     
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/better.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/test.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2.4.3',
+        VERSION:     '2.4.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,34 +24,41 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.3 documentation" href="../index.html" />
+    <link rel="top" title="BEDOPS 2.4.4 documentation" href="../index.html" />
     <link rel="next" title="8. Release" href="release.html" />
-    <link rel="prev" title="6.3.3.10. wig2bed" href="reference/file-management/conversion/wig2bed.html" /> 
+    <link rel="prev" title="6.3.3.10. wig2bed" href="reference/file-management/conversion/wig2bed.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="release.html" title="8. Release"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="reference/file-management/conversion/wig2bed.html" title="6.3.3.10. wig2bed"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li> 
-      </ul>
-    </div>  
+  <body>
+    <header id="pageheader"><h1><a href="../index.html ">
+        BEDOPS 2.4.4 documentation
+    </a></h1></header>
+  <div class="related top">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="reference/file-management/conversion/wig2bed.html" title="Previous document">6.3.3.10. <cite>wig2bed</cite></a>
+        </li>
+        <li>
+          <a href="release.html" title="Next document">8. Release</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../index.html">BEDOPS 2.4.4 documentation</a></li> 
+    </ul>
+  </nav>
+  </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body" role="main">
+          <div class="body">
             
   <div class="section" id="summary">
 <span id="id1"></span><h1>7. Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h1>
@@ -59,7 +66,7 @@
 <div class="section" id="set-operation-and-statistical-utilities">
 <h2>7.1. Set operation and statistical utilities<a class="headerlink" href="#set-operation-and-statistical-utilities" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="bedextract">
-<h3>7.1.1. <code class="docutils literal"><span class="pre">bedextract</span></code><a class="headerlink" href="#bedextract" title="Permalink to this headline">¶</a></h3>
+<h3>7.1.1. <tt class="docutils literal"><span class="pre">bedextract</span></tt><a class="headerlink" href="#bedextract" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Efficiently extracts features from BED input.</li>
 <li>BEDOPS <a class="reference internal" href="reference/set-operations/bedextract.html#bedextract"><em>bedextract</em></a> documentation.</li>
@@ -81,24 +88,24 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--list-chr</span></code></td>
-<td>Print every chromosome found in <code class="docutils literal"><span class="pre">input.bed</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--list-chr</span></tt></td>
+<td>Print every chromosome found in <tt class="docutils literal"><span class="pre">input.bed</span></tt></td>
 <td>1</td>
 <td>1</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></code></td>
-<td>Retrieve all rows for specified chromosome, <em>e.g.</em> <code class="docutils literal"><span class="pre">bedextract</span> <span class="pre">chr8</span>
-<span class="pre">input.bed</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt></td>
+<td>Retrieve all rows for specified chromosome, <em>e.g.</em> <tt class="docutils literal"><span class="pre">bedextract</span> <span class="pre">chr8</span>
+<span class="pre">input.bed</span></tt></td>
 <td>1</td>
 <td>1</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;query&gt;</span> <span class="pre">&lt;reference&gt;</span></code></td>
-<td>Grab elements of <code class="docutils literal"><span class="pre">query</span></code> that overlap elements in reference. Same
-as <code class="docutils literal"><span class="pre">bedops</span> <span class="pre">-e</span> <span class="pre">-1</span> <span class="pre">query</span> <span class="pre">reference</span></code>, except that this option fails
-when <code class="docutils literal"><span class="pre">query</span></code> contains fully-nested BED elements. May use <code class="docutils literal"><span class="pre">-</span></code> to
-indicate <code class="docutils literal"><span class="pre">stdin</span></code> for <code class="docutils literal"><span class="pre">reference</span></code> only.</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">&lt;query&gt;</span> <span class="pre">&lt;reference&gt;</span></tt></td>
+<td>Grab elements of <tt class="docutils literal"><span class="pre">query</span></tt> that overlap elements in reference. Same
+as <tt class="docutils literal"><span class="pre">bedops</span> <span class="pre">-e</span> <span class="pre">-1</span> <span class="pre">query</span> <span class="pre">reference</span></tt>, except that this option fails
+when <tt class="docutils literal"><span class="pre">query</span></tt> contains fully-nested BED elements. May use <tt class="docutils literal"><span class="pre">-</span></tt> to
+indicate <tt class="docutils literal"><span class="pre">stdin</span></tt> for <tt class="docutils literal"><span class="pre">reference</span></tt> only.</td>
 <td>2</td>
 <td>2</td>
 <td>3</td>
@@ -107,9 +114,9 @@ indicate <code class="docutils literal"><span class="pre">stdin</span></code> fo
 </table>
 </div>
 <div class="section" id="bedmap">
-<h3>7.1.2. <code class="docutils literal"><span class="pre">bedmap</span></code><a class="headerlink" href="#bedmap" title="Permalink to this headline">¶</a></h3>
+<h3>7.1.2. <tt class="docutils literal"><span class="pre">bedmap</span></tt><a class="headerlink" href="#bedmap" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Maps source signals from <code class="docutils literal"><span class="pre">map-file</span></code> onto qualified target regions from <code class="docutils literal"><span class="pre">ref-file</span></code>. Calculates an output for every <code class="docutils literal"><span class="pre">ref-file</span></code> element.</li>
+<li>Maps source signals from <tt class="docutils literal"><span class="pre">map-file</span></tt> onto qualified target regions from <tt class="docutils literal"><span class="pre">ref-file</span></tt>. Calculates an output for every <tt class="docutils literal"><span class="pre">ref-file</span></tt> element.</li>
 <li>BEDOPS <a class="reference internal" href="reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> documentation.</li>
 </ul>
 <table border="1" class="docutils">
@@ -129,263 +136,263 @@ indicate <code class="docutils literal"><span class="pre">stdin</span></code> fo
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--bases</span></code></td>
-<td>Reports the total number of bases from <code class="docutils literal"><span class="pre">map-file</span></code> that overlap the
-<code class="docutils literal"><span class="pre">ref-file</span></code> &#8216;s element.</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--bases</span></tt></td>
+<td>Reports the total number of bases from <tt class="docutils literal"><span class="pre">map-file</span></tt> that overlap the
+<tt class="docutils literal"><span class="pre">ref-file</span></tt> &#8216;s element.</td>
 <td>1</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--bases-uniq</span></code></td>
-<td>Reports the number of distinct bases from <code class="docutils literal"><span class="pre">ref-file</span></code> &#8216;s element
-overlapped by elements in <code class="docutils literal"><span class="pre">map-file</span></code>.</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--bases-uniq</span></tt></td>
+<td>Reports the number of distinct bases from <tt class="docutils literal"><span class="pre">ref-file</span></tt> &#8216;s element
+overlapped by elements in <tt class="docutils literal"><span class="pre">map-file</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--bases-uniq-f</span></code></td>
-<td>Reports the fraction of distinct bases from <code class="docutils literal"><span class="pre">ref-file</span></code> &#8216;s element
-elements in <code class="docutils literal"><span class="pre">map-file</span></code>.</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--bases-uniq-f</span></tt></td>
+<td>Reports the fraction of distinct bases from <tt class="docutils literal"><span class="pre">ref-file</span></tt> &#8216;s element
+elements in <tt class="docutils literal"><span class="pre">map-file</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--bp-ovr</span> <span class="pre">&lt;int&gt;</span></code></td>
-<td>Require <code class="docutils literal"><span class="pre">&lt;int&gt;</span></code> bases of overlap between elements of input files.</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--bp-ovr</span> <span class="pre">&lt;int&gt;</span></tt></td>
+<td>Require <tt class="docutils literal"><span class="pre">&lt;int&gt;</span></tt> bases of overlap between elements of input files.</td>
 <td>1</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--chrom</span> <span class="pre">&lt;chromosome&gt;</span></code></td>
-<td>Process data for given <code class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></code> only.</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--chrom</span> <span class="pre">&lt;chromosome&gt;</span></tt></td>
+<td>Process data for given <tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt> only.</td>
 <td>1</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--count</span></code></td>
-<td>Reports the number of overlapping elements in <code class="docutils literal"><span class="pre">map-file</span></code>.</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--count</span></tt></td>
+<td>Reports the number of overlapping elements in <tt class="docutils literal"><span class="pre">map-file</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--cv</span></code></td>
-<td>Reports the Coefficient of Variation: the result of <code class="docutils literal"><span class="pre">--stdev</span></code>
-divided by the result of <code class="docutils literal"><span class="pre">--mean</span></code>.</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--cv</span></tt></td>
+<td>Reports the Coefficient of Variation: the result of <tt class="docutils literal"><span class="pre">--stdev</span></tt>
+divided by the result of <tt class="docutils literal"><span class="pre">--mean</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--ec</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--ec</span></tt></td>
 <td>Error-check all input files (slower).</td>
 <td>1</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--echo</span></code></td>
-<td>Echo each line from <code class="docutils literal"><span class="pre">ref-file</span></code>.</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--echo</span></tt></td>
+<td>Echo each line from <tt class="docutils literal"><span class="pre">ref-file</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--echo-map</span></code></td>
-<td>Reports the overlapping elements found in <code class="docutils literal"><span class="pre">map-file</span></code>.</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--echo-map</span></tt></td>
+<td>Reports the overlapping elements found in <tt class="docutils literal"><span class="pre">map-file</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--echo-map-id</span></code></td>
-<td>Reports the IDs (4th column) from overlapping <code class="docutils literal"><span class="pre">map-file</span></code> elements.</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--echo-map-id</span></tt></td>
+<td>Reports the IDs (4th column) from overlapping <tt class="docutils literal"><span class="pre">map-file</span></tt> elements.</td>
 <td>1</td>
 <td>2</td>
 <td>4</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--echo-map-id-uniq</span></code></td>
-<td>List unique IDs from overlapping <code class="docutils literal"><span class="pre">map-file</span></code> elements.</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--echo-map-id-uniq</span></tt></td>
+<td>List unique IDs from overlapping <tt class="docutils literal"><span class="pre">map-file</span></tt> elements.</td>
 <td>1</td>
 <td>2</td>
 <td>4</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--echo-map-range</span></code></td>
-<td>Reports the genomic range of overlapping elements from <code class="docutils literal"><span class="pre">map-file</span></code>.</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--echo-map-range</span></tt></td>
+<td>Reports the genomic range of overlapping elements from <tt class="docutils literal"><span class="pre">map-file</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--echo-map-score</span></code></td>
-<td>Reports the scores (5th column) from overlapping <code class="docutils literal"><span class="pre">map-file</span></code>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--echo-map-score</span></tt></td>
+<td>Reports the scores (5th column) from overlapping <tt class="docutils literal"><span class="pre">map-file</span></tt>
 elements.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--echo-map-size</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--echo-map-size</span></tt></td>
 <td>Calculates difference between start and stop coordinates (or size)
 of each mapped element.</td>
 <td>1</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--echo-overlap-size</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--echo-overlap-size</span></tt></td>
 <td>Calculates size of overlap between each mapped element and its
 reference element.</td>
 <td>1</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--echo-ref-name</span></code></td>
-<td>Reports the first 3 fields of <code class="docutils literal"><span class="pre">ref-file</span></code> element in
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--echo-ref-name</span></tt></td>
+<td>Reports the first 3 fields of <tt class="docutils literal"><span class="pre">ref-file</span></tt> element in
 chrom:start-end format.</td>
 <td>1</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--echo-ref-size</span></code></td>
-<td>Reports the length of the <code class="docutils literal"><span class="pre">ref-file</span></code> element.</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--echo-ref-size</span></tt></td>
+<td>Reports the length of the <tt class="docutils literal"><span class="pre">ref-file</span></tt> element.</td>
 <td>1</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--faster</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--faster</span></tt></td>
 <td><strong>(Advanced)</strong> Strong input assumptions are made. Review documents
-before use. Compatible with <code class="docutils literal"><span class="pre">--bp-ovr</span></code> and <code class="docutils literal"><span class="pre">--range</span></code> overlap
+before use. Compatible with <tt class="docutils literal"><span class="pre">--bp-ovr</span></tt> and <tt class="docutils literal"><span class="pre">--range</span></tt> overlap
 options only.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--fraction-ref</span> <span class="pre">&lt;val&gt;</span></code></td>
-<td>The fraction of the element&#8217;s size from <code class="docutils literal"><span class="pre">ref-file</span></code> that must
-overlap the element in <code class="docutils literal"><span class="pre">map-file</span></code>. Expects <code class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;</span> <span class="pre">val</span> <span class="pre">&lt;=</span> <span class="pre">1</span></code>.</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--fraction-ref</span> <span class="pre">&lt;val&gt;</span></tt></td>
+<td>The fraction of the element&#8217;s size from <tt class="docutils literal"><span class="pre">ref-file</span></tt> that must
+overlap the element in <tt class="docutils literal"><span class="pre">map-file</span></tt>. Expects <tt class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;</span> <span class="pre">val</span> <span class="pre">&lt;=</span> <span class="pre">1</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--fraction-map</span> <span class="pre">&lt;val&gt;</span></code></td>
-<td>The fraction of the element&#8217;s size from <code class="docutils literal"><span class="pre">map-file</span></code> that must
-overlap the element in <code class="docutils literal"><span class="pre">ref-file</span></code>. Expects <code class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;</span> <span class="pre">val</span> <span class="pre">&lt;=</span> <span class="pre">1</span></code>.</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--fraction-map</span> <span class="pre">&lt;val&gt;</span></tt></td>
+<td>The fraction of the element&#8217;s size from <tt class="docutils literal"><span class="pre">map-file</span></tt> that must
+overlap the element in <tt class="docutils literal"><span class="pre">ref-file</span></tt>. Expects <tt class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;</span> <span class="pre">val</span> <span class="pre">&lt;=</span> <span class="pre">1</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--fraction-both</span> <span class="pre">&lt;val&gt;</span></code></td>
-<td>Both <code class="docutils literal"><span class="pre">--fraction-ref</span> <span class="pre">&lt;val&gt;</span></code> and <code class="docutils literal"><span class="pre">--fraction-map</span> <span class="pre">&lt;val&gt;</span></code> must be
-true to qualify as overlapping. Expects <code class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;</span> <span class="pre">val</span> <span class="pre">&lt;=</span> <span class="pre">1</span></code>.</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--fraction-both</span> <span class="pre">&lt;val&gt;</span></tt></td>
+<td>Both <tt class="docutils literal"><span class="pre">--fraction-ref</span> <span class="pre">&lt;val&gt;</span></tt> and <tt class="docutils literal"><span class="pre">--fraction-map</span> <span class="pre">&lt;val&gt;</span></tt> must be
+true to qualify as overlapping. Expects <tt class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;</span> <span class="pre">val</span> <span class="pre">&lt;=</span> <span class="pre">1</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--fraction-either</span> <span class="pre">&lt;val&gt;</span></code></td>
-<td>Both <code class="docutils literal"><span class="pre">--fraction-ref</span> <span class="pre">&lt;val&gt;</span></code> and <code class="docutils literal"><span class="pre">--fraction-map</span> <span class="pre">&lt;val&gt;</span></code> must be
-true to qualify as overlapping. Expects <code class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;</span> <span class="pre">val</span> <span class="pre">&lt;=</span> <span class="pre">1</span></code>.</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--fraction-either</span> <span class="pre">&lt;val&gt;</span></tt></td>
+<td>Both <tt class="docutils literal"><span class="pre">--fraction-ref</span> <span class="pre">&lt;val&gt;</span></tt> and <tt class="docutils literal"><span class="pre">--fraction-map</span> <span class="pre">&lt;val&gt;</span></tt> must be
+true to qualify as overlapping. Expects <tt class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;</span> <span class="pre">val</span> <span class="pre">&lt;=</span> <span class="pre">1</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--exact</span></code></td>
-<td>Shorthand for <code class="docutils literal"><span class="pre">--fraction-both</span> <span class="pre">1</span></code>. First three fields from
-<code class="docutils literal"><span class="pre">map-file</span></code> must be identical to <code class="docutils literal"><span class="pre">ref-file</span></code> element.</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--exact</span></tt></td>
+<td>Shorthand for <tt class="docutils literal"><span class="pre">--fraction-both</span> <span class="pre">1</span></tt>. First three fields from
+<tt class="docutils literal"><span class="pre">map-file</span></tt> must be identical to <tt class="docutils literal"><span class="pre">ref-file</span></tt> element.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--indicator</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--indicator</span></tt></td>
 <td>Reports the presence of one or more overlapping elements in
-<code class="docutils literal"><span class="pre">map-file</span></code> as a binary value (<code class="docutils literal"><span class="pre">0</span></code> or <code class="docutils literal"><span class="pre">1</span></code>).</td>
+<tt class="docutils literal"><span class="pre">map-file</span></tt> as a binary value (<tt class="docutils literal"><span class="pre">0</span></tt> or <tt class="docutils literal"><span class="pre">1</span></tt>).</td>
 <td>1</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--kth</span> <span class="pre">&lt;val&gt;</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--kth</span> <span class="pre">&lt;val&gt;</span></tt></td>
 <td>Reports the value at the <em>k</em> th fraction. A generalized median-like
-calculation, where <code class="docutils literal"><span class="pre">--kth</span> <span class="pre">0.5</span></code> is the median. (<code class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;</span> <span class="pre">val</span> <span class="pre">&lt;=</span> <span class="pre">1</span></code>)</td>
+calculation, where <tt class="docutils literal"><span class="pre">--kth</span> <span class="pre">0.5</span></tt> is the median. (<tt class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;</span> <span class="pre">val</span> <span class="pre">&lt;=</span> <span class="pre">1</span></tt>)</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--mad</span> <span class="pre">&lt;mult=1&gt;</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--mad</span> <span class="pre">&lt;mult=1&gt;</span></tt></td>
 <td>Reports the &#8216;median absolute deviation&#8217; of overlapping elements in
-<code class="docutils literal"><span class="pre">map-file</span></code>, multiplied by <code class="docutils literal"><span class="pre">&lt;mult&gt;</span></code>.</td>
+<tt class="docutils literal"><span class="pre">map-file</span></tt>, multiplied by <tt class="docutils literal"><span class="pre">&lt;mult&gt;</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--max</span></code></td>
-<td>Reports the highest score from overlapping elements in <code class="docutils literal"><span class="pre">map-file</span></code>.</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--max</span></tt></td>
+<td>Reports the highest score from overlapping elements in <tt class="docutils literal"><span class="pre">map-file</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--max-element</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--max-element</span></tt></td>
 <td>An element with the highest score from overlapping elements in
-<code class="docutils literal"><span class="pre">map-file</span></code>. If no overlapping element exists, <code class="docutils literal"><span class="pre">NAN</span></code> is reported.</td>
+<tt class="docutils literal"><span class="pre">map-file</span></tt>. If no overlapping element exists, <tt class="docutils literal"><span class="pre">NAN</span></tt> is reported.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--mean</span></code></td>
-<td>Reports the average score from overlapping elements in <code class="docutils literal"><span class="pre">map-file</span></code>.</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--mean</span></tt></td>
+<td>Reports the average score from overlapping elements in <tt class="docutils literal"><span class="pre">map-file</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--median</span></code></td>
-<td>Reports the median score from overlapping elements in <code class="docutils literal"><span class="pre">map-file</span></code>.</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--median</span></tt></td>
+<td>Reports the median score from overlapping elements in <tt class="docutils literal"><span class="pre">map-file</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--min</span></code></td>
-<td>Reports the lowest score from overlapping elements in <code class="docutils literal"><span class="pre">map-file</span></code>.</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--min</span></tt></td>
+<td>Reports the lowest score from overlapping elements in <tt class="docutils literal"><span class="pre">map-file</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--min-element</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--min-element</span></tt></td>
 <td>An element with the lowest score from overlapping elements in
-<code class="docutils literal"><span class="pre">map-file</span></code>. If no overlapping element exists, <code class="docutils literal"><span class="pre">NAN</span></code> is reported.</td>
+<tt class="docutils literal"><span class="pre">map-file</span></tt>. If no overlapping element exists, <tt class="docutils literal"><span class="pre">NAN</span></tt> is reported.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--skip-unmapped</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--skip-unmapped</span></tt></td>
 <td>Omits printing reference elements which do not associate with any
 mapped elements.</td>
 <td>1</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--stdev</span></code></td>
-<td>Reports the square root of the result of <code class="docutils literal"><span class="pre">--variance</span></code>.</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--stdev</span></tt></td>
+<td>Reports the square root of the result of <tt class="docutils literal"><span class="pre">--variance</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--sum</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--sum</span></tt></td>
 <td>Reports the accumulated value from scores of overlapping elements in
-<code class="docutils literal"><span class="pre">map-file</span></code>.</td>
+<tt class="docutils literal"><span class="pre">map-file</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--sweep-all</span></code></td>
-<td>Reads through entire <code class="docutils literal"><span class="pre">map-file</span></code> dataset to avoid early termination
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--sweep-all</span></tt></td>
+<td>Reads through entire <tt class="docutils literal"><span class="pre">map-file</span></tt> dataset to avoid early termination
 that may cause SIGPIPE or other I/O errors.</td>
 <td>1</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--tmean</span> <span class="pre">&lt;low&gt;</span> <span class="pre">&lt;hi&gt;</span></code></td>
-<td>Reports the mean score from overlapping elements in <code class="docutils literal"><span class="pre">map-file</span></code>,
-after ignoring the bottom <code class="docutils literal"><span class="pre">&lt;low&gt;</span></code> and top <code class="docutils literal"><span class="pre">&lt;hi&gt;</span></code> fractions of
-those scores. (<code class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">low</span> <span class="pre">&lt;=</span> <span class="pre">1</span></code>, <code class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">hi</span> <span class="pre">&lt;=</span> <span class="pre">1</span></code>, <code class="docutils literal"><span class="pre">low</span> <span class="pre">+</span> <span class="pre">hi</span> <span class="pre">&lt;=</span>
-<span class="pre">1</span></code>).</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--tmean</span> <span class="pre">&lt;low&gt;</span> <span class="pre">&lt;hi&gt;</span></tt></td>
+<td>Reports the mean score from overlapping elements in <tt class="docutils literal"><span class="pre">map-file</span></tt>,
+after ignoring the bottom <tt class="docutils literal"><span class="pre">&lt;low&gt;</span></tt> and top <tt class="docutils literal"><span class="pre">&lt;hi&gt;</span></tt> fractions of
+those scores. (<tt class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">low</span> <span class="pre">&lt;=</span> <span class="pre">1</span></tt>, <tt class="docutils literal"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">hi</span> <span class="pre">&lt;=</span> <span class="pre">1</span></tt>, <tt class="docutils literal"><span class="pre">low</span> <span class="pre">+</span> <span class="pre">hi</span> <span class="pre">&lt;=</span>
+<span class="pre">1</span></tt>).</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--variance</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--variance</span></tt></td>
 <td>Reports the variance of scores from overlapping elements in
-<code class="docutils literal"><span class="pre">map-file</span></code>.</td>
+<tt class="docutils literal"><span class="pre">map-file</span></tt>.</td>
 <td>1</td>
 <td>2</td>
 <td>5</td>
@@ -394,7 +401,7 @@ those scores. (<code class="docutils literal"><span class="pre">0</span> <span c
 </table>
 </div>
 <div class="section" id="bedops">
-<h3>7.1.3. <code class="docutils literal"><span class="pre">bedops</span></code><a class="headerlink" href="#bedops" title="Permalink to this headline">¶</a></h3>
+<h3>7.1.3. <tt class="docutils literal"><span class="pre">bedops</span></tt><a class="headerlink" href="#bedops" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Offers set and multiset operations for files in BED format.</li>
 <li>BEDOPS <a class="reference internal" href="reference/set-operations/bedops.html#bedops"><em>bedops</em></a> documentation.</li>
@@ -416,40 +423,40 @@ those scores. (<code class="docutils literal"><span class="pre">0</span> <span c
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--chrom</span> <span class="pre">&lt;chromosome&gt;</span></code></td>
-<td>Process data for given <code class="docutils literal"><span class="pre">chromosome</span></code> only.</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--chrom</span> <span class="pre">&lt;chromosome&gt;</span></tt></td>
+<td>Process data for given <tt class="docutils literal"><span class="pre">chromosome</span></tt> only.</td>
 <td>1</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--complement</span></code>, <code class="docutils literal"><span class="pre">-c</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--complement</span></tt>, <tt class="docutils literal"><span class="pre">-c</span></tt></td>
 <td>Reports the intervening intervals between the input coordinate
 segments.</td>
 <td>1</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--chop</span></code>, <code class="docutils literal"><span class="pre">-w</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--chop</span></tt>, <tt class="docutils literal"><span class="pre">-w</span></tt></td>
 <td>Breaks up merged regions into fixed-size chunks, optionally anchored
 on start coordinates a fixed distance apart.</td>
 <td>1</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--difference</span></code>, <code class="docutils literal"><span class="pre">-d</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--difference</span></tt>, <tt class="docutils literal"><span class="pre">-d</span></tt></td>
 <td>Reports the intervals found in the first file that are not present
 in any other input file.</td>
 <td>2</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--ec</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--ec</span></tt></td>
 <td>Error-check input files (slower).</td>
 <td>1</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--element-of</span></code>, <code class="docutils literal"><span class="pre">-e</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--element-of</span></tt>, <tt class="docutils literal"><span class="pre">-e</span></tt></td>
 <td>Reports rows from the first file that overlap, by a specified
 percentage or number of base pairs, the merged segments from all
 other input files.</td>
@@ -457,62 +464,62 @@ other input files.</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--header</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--header</span></tt></td>
 <td>Accept headers (VCF, GFF, SAM, BED, WIG) in any input file.</td>
 <td>1</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--intersect</span></code>, <code class="docutils literal"><span class="pre">-i</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--intersect</span></tt>, <tt class="docutils literal"><span class="pre">-i</span></tt></td>
 <td>Reports the intervals common to all input files.</td>
 <td>2</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--merge</span></code>, <code class="docutils literal"><span class="pre">-m</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--merge</span></tt>, <tt class="docutils literal"><span class="pre">-m</span></tt></td>
 <td>Reports intervals from all input files, after merging overlapping
 and adjoining segments.</td>
 <td>1</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--not-element-of</span></code>, <code class="docutils literal"><span class="pre">-n</span></code></td>
-<td>Reports exactly everything that <code class="docutils literal"><span class="pre">--element-of</span></code> does not, given the
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--not-element-of</span></tt>, <tt class="docutils literal"><span class="pre">-n</span></tt></td>
+<td>Reports exactly everything that <tt class="docutils literal"><span class="pre">--element-of</span></tt> does not, given the
 same overlap criterion.</td>
 <td>2</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--partition</span></code>, <code class="docutils literal"><span class="pre">-p</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--partition</span></tt>, <tt class="docutils literal"><span class="pre">-p</span></tt></td>
 <td>Reports all disjoint intervals from all input files. Overlapping
 segments are cut up into pieces at all segment boundaries.</td>
 <td>1</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--range</span> <span class="pre">L:R</span></code></td>
-<td>Add <code class="docutils literal"><span class="pre">L</span></code> bases to all start coordinates and <code class="docutils literal"><span class="pre">R</span></code> base to end
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--range</span> <span class="pre">L:R</span></tt></td>
+<td>Add <tt class="docutils literal"><span class="pre">L</span></tt> bases to all start coordinates and <tt class="docutils literal"><span class="pre">R</span></tt> base to end
 coordinates. Either value may be positive or negative to grow or
-shrink regions, respectively. With the <code class="docutils literal"><span class="pre">-e</span></code> or <code class="docutils literal"><span class="pre">-n</span></code> operation,
+shrink regions, respectively. With the <tt class="docutils literal"><span class="pre">-e</span></tt> or <tt class="docutils literal"><span class="pre">-n</span></tt> operation,
 the first (reference) file is not padded, unlike all other files.</td>
 <td>1</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--range</span> <span class="pre">S</span></code></td>
-<td>Pad input file(s) coordinates symmetrically by <code class="docutils literal"><span class="pre">S</span></code> bases. This is
-shorthand for <code class="docutils literal"><span class="pre">--range</span> <span class="pre">-S:S</span></code>.</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--range</span> <span class="pre">S</span></tt></td>
+<td>Pad input file(s) coordinates symmetrically by <tt class="docutils literal"><span class="pre">S</span></tt> bases. This is
+shorthand for <tt class="docutils literal"><span class="pre">--range</span> <span class="pre">-S:S</span></tt>.</td>
 <td>1</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--symmdiff</span></code>, <code class="docutils literal"><span class="pre">-s</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--symmdiff</span></tt>, <tt class="docutils literal"><span class="pre">-s</span></tt></td>
 <td>Reports the intervals found in exactly one input file.</td>
 <td>2</td>
 <td>No imposed limit</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--everything</span></code>, <code class="docutils literal"><span class="pre">-u</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--everything</span></tt>, <tt class="docutils literal"><span class="pre">-u</span></tt></td>
 <td>Reports the intervals from all input files in sorted order.
 Duplicates are retained in the output.</td>
 <td>1</td>
@@ -523,9 +530,9 @@ Duplicates are retained in the output.</td>
 </table>
 </div>
 <div class="section" id="closest-features">
-<h3>7.1.4. <code class="docutils literal"><span class="pre">closest-features</span></code><a class="headerlink" href="#closest-features" title="Permalink to this headline">¶</a></h3>
+<h3>7.1.4. <tt class="docutils literal"><span class="pre">closest-features</span></tt><a class="headerlink" href="#closest-features" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>For every element in <code class="docutils literal"><span class="pre">input-file</span></code>, find those elements in <code class="docutils literal"><span class="pre">query-file</span></code> nearest to its left and right edges.</li>
+<li>For every element in <tt class="docutils literal"><span class="pre">input-file</span></tt>, find those elements in <tt class="docutils literal"><span class="pre">query-file</span></tt> nearest to its left and right edges.</li>
 <li>BEDOPS <a class="reference internal" href="reference/set-operations/closest-features.html#closest-features"><em>closest-features</em></a> documentation.</li>
 </ul>
 <table border="1" class="docutils">
@@ -551,40 +558,40 @@ Duplicates are retained in the output.</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--chrom</span> <span class="pre">&lt;chromosome&gt;</span></code></td>
-<td>Process data for given <code class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></code> only.</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--chrom</span> <span class="pre">&lt;chromosome&gt;</span></tt></td>
+<td>Process data for given <tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt> only.</td>
 <td>2</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--dist</span></code></td>
-<td>Output includes the signed distances between the <code class="docutils literal"><span class="pre">input-file</span></code>
-element and the closest elements in <code class="docutils literal"><span class="pre">query-file</span></code>.</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--dist</span></tt></td>
+<td>Output includes the signed distances between the <tt class="docutils literal"><span class="pre">input-file</span></tt>
+element and the closest elements in <tt class="docutils literal"><span class="pre">query-file</span></tt>.</td>
 <td>2</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--ec</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--ec</span></tt></td>
 <td>Error-check all input files (slower).</td>
 <td>2</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--no-overlaps</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--no-overlaps</span></tt></td>
 <td>Do not consider elements that overlap. Overlapping elements,
 otherwise, have highest precedence.</td>
 <td>2</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--no-ref</span></code></td>
-<td>Do not echo elements from <code class="docutils literal"><span class="pre">input-file</span></code>.</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--no-ref</span></tt></td>
+<td>Do not echo elements from <tt class="docutils literal"><span class="pre">input-file</span></tt>.</td>
 <td>2</td>
 <td>2</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--closest</span></code></td>
-<td>Choose the nearest element from <code class="docutils literal"><span class="pre">query-file</span></code> only. Ties go to the
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--closest</span></tt></td>
+<td>Choose the nearest element from <tt class="docutils literal"><span class="pre">query-file</span></tt> only. Ties go to the
 leftmost closest element.</td>
 <td>2</td>
 <td>2</td>
@@ -597,7 +604,7 @@ leftmost closest element.</td>
 <div class="section" id="sorting">
 <h2>7.2. Sorting<a class="headerlink" href="#sorting" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="sort-bed">
-<h3>7.2.1. <code class="docutils literal"><span class="pre">sort-bed</span></code><a class="headerlink" href="#sort-bed" title="Permalink to this headline">¶</a></h3>
+<h3>7.2.1. <tt class="docutils literal"><span class="pre">sort-bed</span></tt><a class="headerlink" href="#sort-bed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Sorts input BED file(s) into the order required by other utilities. Loads all input data into memory.</li>
 <li>BEDOPS <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> documentation.</li>
@@ -625,10 +632,10 @@ leftmost closest element.</td>
 <td>1000</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--max-mem</span> <span class="pre">&lt;val&gt;</span></code></td>
-<td><code class="docutils literal"><span class="pre">&lt;val&gt;</span></code> specifies the maximum memory usage for the <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--max-mem</span> <span class="pre">&lt;val&gt;</span></tt></td>
+<td><tt class="docutils literal"><span class="pre">&lt;val&gt;</span></tt> specifies the maximum memory usage for the <a class="reference internal" href="reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a>
 process, which is useful for very large BED inputs. For example,
-<code class="docutils literal"><span class="pre">--max-mem</span></code> may be <code class="docutils literal"><span class="pre">8G</span></code>, <code class="docutils literal"><span class="pre">8000M</span></code>, or <code class="docutils literal"><span class="pre">8000000000</span></code> to specify
+<tt class="docutils literal"><span class="pre">--max-mem</span></tt> may be <tt class="docutils literal"><span class="pre">8G</span></tt>, <tt class="docutils literal"><span class="pre">8000M</span></tt>, or <tt class="docutils literal"><span class="pre">8000000000</span></tt> to specify
 8 GB of memory.</td>
 <td>1</td>
 <td>1000</td>
@@ -641,7 +648,7 @@ process, which is useful for very large BED inputs. For example,
 <div class="section" id="compression-and-extraction">
 <h2>7.3. Compression and extraction<a class="headerlink" href="#compression-and-extraction" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="starch">
-<h3>7.3.1. <code class="docutils literal"><span class="pre">starch</span></code><a class="headerlink" href="#starch" title="Permalink to this headline">¶</a></h3>
+<h3>7.3.1. <tt class="docutils literal"><span class="pre">starch</span></tt><a class="headerlink" href="#starch" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Lossless compression of any BED file.</li>
 <li>BEDOPS <a class="reference internal" href="reference/file-management/compression/starch.html#starch"><em>starch</em></a> documentation.</li>
@@ -669,15 +676,15 @@ process, which is useful for very large BED inputs. For example,
 <td>1</td>
 <td>3</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--bzip2</span></code> or <code class="docutils literal"><span class="pre">--gzip</span></code></td>
-<td>The internal compression method. The default <code class="docutils literal"><span class="pre">--bzip2</span></code> method
-favors storage efficiency, while <code class="docutils literal"><span class="pre">--gzip</span></code> favors compression and
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--bzip2</span></tt> or <tt class="docutils literal"><span class="pre">--gzip</span></tt></td>
+<td>The internal compression method. The default <tt class="docutils literal"><span class="pre">--bzip2</span></tt> method
+favors storage efficiency, while <tt class="docutils literal"><span class="pre">--gzip</span></tt> favors compression and
 extraction time performance.</td>
 <td>1</td>
 <td>1</td>
 <td>3</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--note=&quot;foo</span> <span class="pre">bar...&quot;</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--note=&quot;foo</span> <span class="pre">bar...&quot;</span></tt></td>
 <td>Append note to output archive metadata (optional).</td>
 <td>1</td>
 <td>1</td>
@@ -687,9 +694,9 @@ extraction time performance.</td>
 </table>
 </div>
 <div class="section" id="unstarch">
-<h3>7.3.2. <code class="docutils literal"><span class="pre">unstarch</span></code><a class="headerlink" href="#unstarch" title="Permalink to this headline">¶</a></h3>
+<h3>7.3.2. <tt class="docutils literal"><span class="pre">unstarch</span></tt><a class="headerlink" href="#unstarch" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Extraction of a <code class="docutils literal"><span class="pre">starch</span></code> archive or attributes.</li>
+<li>Extraction of a <tt class="docutils literal"><span class="pre">starch</span></tt> archive or attributes.</li>
 <li>BEDOPS <a class="reference internal" href="reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a> documentation.</li>
 </ul>
 <table border="1" class="docutils">
@@ -715,98 +722,98 @@ extraction time performance.</td>
 <td>1</td>
 <td>NA</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--archive-type</span></code></td>
-<td>Show archive&#8217;s compression type (either <code class="docutils literal"><span class="pre">bzip2</span></code> or <code class="docutils literal"><span class="pre">gzip</span></code>).</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--archive-type</span></tt></td>
+<td>Show archive&#8217;s compression type (either <tt class="docutils literal"><span class="pre">bzip2</span></tt> or <tt class="docutils literal"><span class="pre">gzip</span></tt>).</td>
 <td>1</td>
 <td>1</td>
 <td>NA</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--archive-version</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--archive-version</span></tt></td>
 <td>Show archive version (at this time, either 1.x or 2.x).</td>
 <td>1</td>
 <td>1</td>
 <td>NA</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--archive-timestamp</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--archive-timestamp</span></tt></td>
 <td>Show archive creation timestamp (ISO 8601 format).</td>
 <td>1</td>
 <td>1</td>
 <td>NA</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--bases</span> <span class="pre">&lt;chromosome&gt;</span></code></td>
-<td>Show total, non-unique base counts for optional <code class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></code>
-(omitting <code class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></code> shows total non-unique base count).</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--bases</span> <span class="pre">&lt;chromosome&gt;</span></tt></td>
+<td>Show total, non-unique base counts for optional <tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt>
+(omitting <tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt> shows total non-unique base count).</td>
 <td>1</td>
 <td>1</td>
 <td>NA</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--bases-uniq</span> <span class="pre">&lt;chromosome&gt;</span></code></td>
-<td>Show unique base counts for optional <code class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></code> (omitting
-<code class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></code> shows total, unique base count).</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--bases-uniq</span> <span class="pre">&lt;chromosome&gt;</span></tt></td>
+<td>Show unique base counts for optional <tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt> (omitting
+<tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt> shows total, unique base count).</td>
 <td>1</td>
 <td>1</td>
 <td>NA</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></code></td>
-<td>Decompress information for a single <code class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></code> only.</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt></td>
+<td>Decompress information for a single <tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt> only.</td>
 <td>1</td>
 <td>1</td>
 <td>NA</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--duplicatesExist</span></code> or
-<code class="docutils literal"><span class="pre">--duplicatesExistAsString</span></code>
-with <code class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></code></td>
-<td>Report if optional <code class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></code> or chromosomes contain duplicate
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--duplicatesExist</span></tt> or
+<tt class="docutils literal"><span class="pre">--duplicatesExistAsString</span></tt>
+with <tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt></td>
+<td>Report if optional <tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt> or chromosomes contain duplicate
 elements as 0/1 numbers or false/true strings</td>
 <td>1</td>
 <td>1</td>
 <td>NA</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--elements</span> <span class="pre">&lt;chromosome&gt;</span></code></td>
-<td>Show element count for optional <code class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></code> (omitting
-<code class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></code> shows total element count).</td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--elements</span> <span class="pre">&lt;chromosome&gt;</span></tt></td>
+<td>Show element count for optional <tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt> (omitting
+<tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt> shows total element count).</td>
 <td>1</td>
 <td>1</td>
 <td>NA</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--is-starch</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--is-starch</span></tt></td>
 <td>Test if the &lt;starch-file&gt; is a valid starch archive, returning 0/1
 for a false/true result</td>
 <td>1</td>
 <td>1</td>
 <td>NA</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--list</span></code> or <code class="docutils literal"><span class="pre">--list-json</span></code></td>
-<td>Print the metadata for a <code class="docutils literal"><span class="pre">starch</span></code> file, either in tabular form or
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--list</span></tt> or <tt class="docutils literal"><span class="pre">--list-json</span></tt></td>
+<td>Print the metadata for a <tt class="docutils literal"><span class="pre">starch</span></tt> file, either in tabular form or
 with JSON formatting.</td>
 <td>1</td>
 <td>1</td>
 <td>NA</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--list-chr</span></code> or
-<code class="docutils literal"><span class="pre">--list-chromosomes</span></code></td>
-<td>List all chromosomes in <code class="docutils literal"><span class="pre">starch</span></code> archive (similar to
-<code class="docutils literal"><span class="pre">bedextract</span> <span class="pre">--list-chr</span></code>).</td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--list-chr</span></tt> or
+<tt class="docutils literal"><span class="pre">--list-chromosomes</span></tt></td>
+<td>List all chromosomes in <tt class="docutils literal"><span class="pre">starch</span></tt> archive (similar to
+<tt class="docutils literal"><span class="pre">bedextract</span> <span class="pre">--list-chr</span></tt>).</td>
 <td>1</td>
 <td>1</td>
 <td>NA</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--nestedsExist</span></code> or
-<code class="docutils literal"><span class="pre">--nestedsExistAsString</span></code>
-with <code class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></code></td>
-<td>Report if optional <code class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></code> or chromosomes contain nested
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--nestedsExist</span></tt> or
+<tt class="docutils literal"><span class="pre">--nestedsExistAsString</span></tt>
+with <tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt></td>
+<td>Report if optional <tt class="docutils literal"><span class="pre">&lt;chromosome&gt;</span></tt> or chromosomes contain nested
 elements as 0/1 numbers or false/true strings</td>
 <td>1</td>
 <td>1</td>
 <td>NA</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--note</span></code></td>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--note</span></tt></td>
 <td>Show descriptive note (if originally added to archive).</td>
 <td>1</td>
 <td>1</td>
 <td>NA</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--sha1-signature</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--sha1-signature</span></tt></td>
 <td>Show SHA1 signature of JSON-formatted metadata (Base64-encoded).</td>
 <td>1</td>
 <td>1</td>
@@ -816,9 +823,9 @@ elements as 0/1 numbers or false/true strings</td>
 </table>
 </div>
 <div class="section" id="starchcat">
-<h3>7.3.3. <code class="docutils literal"><span class="pre">starchcat</span></code><a class="headerlink" href="#starchcat" title="Permalink to this headline">¶</a></h3>
+<h3>7.3.3. <tt class="docutils literal"><span class="pre">starchcat</span></tt><a class="headerlink" href="#starchcat" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Merge multiple <code class="docutils literal"><span class="pre">starch</span></code> archive inputs into one <code class="docutils literal"><span class="pre">starch</span></code> archive output.</li>
+<li>Merge multiple <tt class="docutils literal"><span class="pre">starch</span></tt> archive inputs into one <tt class="docutils literal"><span class="pre">starch</span></tt> archive output.</li>
 <li>BEDOPS <a class="reference internal" href="reference/file-management/compression/starchcat.html#starchcat"><em>starchcat</em></a> documentation.</li>
 </ul>
 <table border="1" class="docutils">
@@ -844,15 +851,15 @@ elements as 0/1 numbers or false/true strings</td>
 <td>No imposed limit</td>
 <td>NA</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--bzip2</span></code> or <code class="docutils literal"><span class="pre">--gzip</span></code></td>
-<td>The internal compression method. The default <code class="docutils literal"><span class="pre">--bzip2</span></code> method
-favors storage efficiency, while <code class="docutils literal"><span class="pre">--gzip</span></code> favors compression and
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">--bzip2</span></tt> or <tt class="docutils literal"><span class="pre">--gzip</span></tt></td>
+<td>The internal compression method. The default <tt class="docutils literal"><span class="pre">--bzip2</span></tt> method
+favors storage efficiency, while <tt class="docutils literal"><span class="pre">--gzip</span></tt> favors compression and
 extraction time performance.</td>
 <td>1</td>
 <td>No imposed limit</td>
 <td>NA</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--note=&quot;foo</span> <span class="pre">bar...&quot;</span></code></td>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">--note=&quot;foo</span> <span class="pre">bar...&quot;</span></tt></td>
 <td>Append note to output archive metadata (optional).</td>
 <td>1</td>
 <td>No imposed limit</td>
@@ -868,7 +875,7 @@ extraction time performance.</td>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/logo_with_label_v3.png" alt="Logo"/>
@@ -877,20 +884,20 @@ extraction time performance.</td>
   <ul>
 <li><a class="reference internal" href="#">7. Summary</a><ul>
 <li><a class="reference internal" href="#set-operation-and-statistical-utilities">7.1. Set operation and statistical utilities</a><ul>
-<li><a class="reference internal" href="#bedextract">7.1.1. <code class="docutils literal"><span class="pre">bedextract</span></code></a></li>
-<li><a class="reference internal" href="#bedmap">7.1.2. <code class="docutils literal"><span class="pre">bedmap</span></code></a></li>
-<li><a class="reference internal" href="#bedops">7.1.3. <code class="docutils literal"><span class="pre">bedops</span></code></a></li>
-<li><a class="reference internal" href="#closest-features">7.1.4. <code class="docutils literal"><span class="pre">closest-features</span></code></a></li>
+<li><a class="reference internal" href="#bedextract">7.1.1. <tt class="docutils literal"><span class="pre">bedextract</span></tt></a></li>
+<li><a class="reference internal" href="#bedmap">7.1.2. <tt class="docutils literal"><span class="pre">bedmap</span></tt></a></li>
+<li><a class="reference internal" href="#bedops">7.1.3. <tt class="docutils literal"><span class="pre">bedops</span></tt></a></li>
+<li><a class="reference internal" href="#closest-features">7.1.4. <tt class="docutils literal"><span class="pre">closest-features</span></tt></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#sorting">7.2. Sorting</a><ul>
-<li><a class="reference internal" href="#sort-bed">7.2.1. <code class="docutils literal"><span class="pre">sort-bed</span></code></a></li>
+<li><a class="reference internal" href="#sort-bed">7.2.1. <tt class="docutils literal"><span class="pre">sort-bed</span></tt></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#compression-and-extraction">7.3. Compression and extraction</a><ul>
-<li><a class="reference internal" href="#starch">7.3.1. <code class="docutils literal"><span class="pre">starch</span></code></a></li>
-<li><a class="reference internal" href="#unstarch">7.3.2. <code class="docutils literal"><span class="pre">unstarch</span></code></a></li>
-<li><a class="reference internal" href="#starchcat">7.3.3. <code class="docutils literal"><span class="pre">starchcat</span></code></a></li>
+<li><a class="reference internal" href="#starch">7.3.1. <tt class="docutils literal"><span class="pre">starch</span></tt></a></li>
+<li><a class="reference internal" href="#unstarch">7.3.2. <tt class="docutils literal"><span class="pre">unstarch</span></tt></a></li>
+<li><a class="reference internal" href="#starchcat">7.3.3. <tt class="docutils literal"><span class="pre">starchcat</span></tt></a></li>
 </ul>
 </li>
 </ul>
@@ -903,14 +910,12 @@ extraction time performance.</td>
   <h4>Next topic</h4>
   <p class="topless"><a href="release.html"
                         title="next chapter">8. Release</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/content/summary.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
+<div class="sourcelink">
+  <a href="../_sources/content/summary.txt" rel="nofollow">
+    Show page source
+  </a>
+</div>
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
       <input type="text" name="q" />
@@ -923,28 +928,38 @@ extraction time performance.</td>
     </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="release.html" title="8. Release"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="reference/file-management/conversion/wig2bed.html" title="6.3.3.10. wig2bed"
-             >previous</a> |</li>
-        <li><a href="../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3b2.
-    </div>
+  <div class="related bottom">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="reference/file-management/conversion/wig2bed.html" title="Previous document">6.3.3.10. <cite>wig2bed</cite></a>
+        </li>
+        <li>
+          <a href="release.html" title="Next document">8. Release</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../index.html">BEDOPS 2.4.4 documentation</a></li> 
+    </ul>
+  </nav>
+  </div>
+  <footer id="pagefooter">&copy; 2014, Shane Neph, Alex Reynolds.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+      1.2.3
+        with the <a href="http://github.com/irskep/sphinx-better-theme">
+          better</a> theme.
+
+  </footer>
+
+  
   </body>
 </html>

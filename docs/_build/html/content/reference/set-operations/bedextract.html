@@ -6,16 +6,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.1.2. bedextract &mdash; BEDOPS 2.4.3 documentation</title>
+    <title>6.1.2. bedextract &mdash; BEDOPS 2.4.4 documentation</title>
     
-    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/better.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/test.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '2.4.3',
+        VERSION:     '2.4.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,48 +24,59 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS 2.4.3 documentation" href="../../../index.html" />
+    <link rel="top" title="BEDOPS 2.4.4 documentation" href="../../../index.html" />
     <link rel="up" title="6.1. Set operations" href="../set-operations.html" />
     <link rel="next" title="6.1.3. closest-features" href="closest-features.html" />
-    <link rel="prev" title="6.1.1. bedops" href="bedops.html" /> 
+    <link rel="prev" title="6.1.1. bedops" href="bedops.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="closest-features.html" title="6.1.3. closest-features"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="bedops.html" title="6.1.1. bedops"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li>
-          <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
-          <li><a href="../set-operations.html" accesskey="U">6.1. Set operations</a> &raquo;</li> 
-      </ul>
-    </div>  
+  <body>
+    <header id="pageheader"><h1><a href="../../../index.html ">
+        BEDOPS 2.4.4 documentation
+    </a></h1></header>
+  <div class="related top">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="bedops.html" title="Previous document">6.1.1. <cite>bedops</cite></a>
+        </li>
+        <li>
+          <a href="closest-features.html" title="Next document">6.1.3. <cite>closest-features</cite></a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../../../index.html">BEDOPS 2.4.4 documentation</a></li>
+      <li>
+        <a href="../../reference.html">6. Reference</a>
+      </li>
+      <li>
+        <a href="../set-operations.html">6.1. Set operations</a>
+      </li> 
+    </ul>
+  </nav>
+  </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body" role="main">
+          <div class="body">
             
   <div class="section" id="bedextract">
 <span id="id1"></span><h1>6.1.2. <cite>bedextract</cite><a class="headerlink" href="#bedextract" title="Permalink to this headline">¶</a></h1>
-<p>The <code class="docutils literal"><span class="pre">bedextract</span></code> utility performs three primary tasks, with the goal of doing them very quickly:</p>
+<p>The <tt class="docutils literal"><span class="pre">bedextract</span></tt> utility performs three primary tasks, with the goal of doing them very quickly:</p>
 <ol class="arabic simple">
 <li>Lists all the chromosomes in a sorted input BED file.</li>
 <li>Extracts all the elements in a sorted input BED file, for a given chromosome.</li>
 <li>Finds elements of one BED file, which overlap elements in a second, reference BED file (when specific element criteria are satisfied).</li>
 </ol>
-<p>One might ask why use this utility, when the first two tasks can already be performed with common UNIX text processing tools, such as <code class="docutils literal"><span class="pre">cut</span></code>, <code class="docutils literal"><span class="pre">sort</span></code>, <code class="docutils literal"><span class="pre">uniq</span></code>, and <code class="docutils literal"><span class="pre">awk</span></code>, and the third task can be performed with <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a> with the <code class="docutils literal"><span class="pre">--element-of</span> <span class="pre">-1</span></code> options?</p>
-<p>The <code class="docutils literal"><span class="pre">bedextract</span></code> utility does the work of all those tools without streaming through an entire BED file, resulting in massive performance improvements. By using the hints provided by sorted BED input, the <a class="reference internal" href="#bedextract"><em>bedextract</em></a> tool can jump around, seeking very quick answers to these questions about your data.</p>
+<p>One might ask why use this utility, when the first two tasks can already be performed with common UNIX text processing tools, such as <tt class="docutils literal"><span class="pre">cut</span></tt>, <tt class="docutils literal"><span class="pre">sort</span></tt>, <tt class="docutils literal"><span class="pre">uniq</span></tt>, and <tt class="docutils literal"><span class="pre">awk</span></tt>, and the third task can be performed with <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a> with the <tt class="docutils literal"><span class="pre">--element-of</span> <span class="pre">-1</span></tt> options?</p>
+<p>The <tt class="docutils literal"><span class="pre">bedextract</span></tt> utility does the work of all those tools without streaming through an entire BED file, resulting in massive performance improvements. By using the hints provided by sorted BED input, the <a class="reference internal" href="#bedextract"><em>bedextract</em></a> tool can jump around, seeking very quick answers to these questions about your data.</p>
 <div class="section" id="how-it-works">
 <h2>6.1.2.1. How it works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h2>
 <p>Specifically, sorting with <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> allows us to perform a <a class="reference external" href="http://en.wikipedia.org/wiki/Binary_search_algorithm">binary search</a>:</p>
@@ -75,10 +86,10 @@
 <li>We repeat steps 1 and 2 until we have matches that define the bounds of the target chromosome.</li>
 </ol>
 <a class="reference internal image-reference" href="../../../_images/reference_bedextract_mechanism.png"><img alt="../../../_images/reference_bedextract_mechanism.png" src="../../../_images/reference_bedextract_mechanism.png" style="width: 99%;" /></a>
-<p>To indicate the kind of speed gain that the <a class="reference internal" href="#bedextract"><em>bedextract</em></a> tool provides, in local testing, a naïve listing of chromosomes from a 36 GB BED input using UNIX <code class="docutils literal"><span class="pre">cut</span></code> and <code class="docutils literal"><span class="pre">uniq</span></code> utilities took approximately 20 minutes to complete on a typical Core 2 Duo-based Linux workstation. Retrieval of the same chromosome listing with <code class="docutils literal"><span class="pre">bedextract</span> <span class="pre">--list-chr</span></code> took only 2 seconds (cache flushed—no cheating!).</p>
+<p>To indicate the kind of speed gain that the <a class="reference internal" href="#bedextract"><em>bedextract</em></a> tool provides, in local testing, a naïve listing of chromosomes from a 36 GB BED input using UNIX <tt class="docutils literal"><span class="pre">cut</span></tt> and <tt class="docutils literal"><span class="pre">uniq</span></tt> utilities took approximately 20 minutes to complete on a typical Core 2 Duo-based Linux workstation. Retrieval of the same chromosome listing with <tt class="docutils literal"><span class="pre">bedextract</span> <span class="pre">--list-chr</span></tt> took only 2 seconds (cache flushed—no cheating!).</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
-<p class="last">While listing chromosomes is perhaps a trivial task, 1200 seconds to 2 seconds is a 600-fold speedup. Similar improvements are gained from using <code class="docutils literal"><span class="pre">--chrom</span></code> and <code class="docutils literal"><span class="pre">--faster</span></code> options with other core BEDOPS tools like <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a> and <a class="reference internal" href="../statistics/bedmap.html#bedmap"><em>bedmap</em></a>. If your data meet the criteria for using this approach—and a lot of genomic datasets do—we strongly encourage adding this to your toolkit.</p>
+<p class="last">While listing chromosomes is perhaps a trivial task, 1200 seconds to 2 seconds is a 600-fold speedup. Similar improvements are gained from using <tt class="docutils literal"><span class="pre">--chrom</span></tt> and <tt class="docutils literal"><span class="pre">--faster</span></tt> options with other core BEDOPS tools like <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a> and <a class="reference internal" href="../statistics/bedmap.html#bedmap"><em>bedmap</em></a>. If your data meet the criteria for using this approach—and a lot of genomic datasets do—we strongly encourage adding this to your toolkit.</p>
 </div>
 </div>
 <div class="section" id="inputs-and-outputs">
@@ -102,7 +113,7 @@
 </div>
 <div class="section" id="usage">
 <h2>6.1.2.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal"><span class="pre">--help</span></code> option describes the functionality available to the end user:</p>
+<p>The <tt class="docutils literal"><span class="pre">--help</span></tt> option describes the functionality available to the end user:</p>
 <div class="highlight-python"><div class="highlight"><pre>bedextract
   citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
   version:  2.4.3
@@ -124,7 +135,7 @@
 </div>
 <div class="section" id="listing-chromosomes">
 <h3>6.1.2.3.1. Listing chromosomes<a class="headerlink" href="#listing-chromosomes" title="Permalink to this headline">¶</a></h3>
-<p>Use the <code class="docutils literal"><span class="pre">--list-chr</span></code> option to quickly retrieve a listing of chromosomes from a given sorted BED input.</p>
+<p>Use the <tt class="docutils literal"><span class="pre">--list-chr</span></tt> option to quickly retrieve a listing of chromosomes from a given sorted BED input.</p>
 <p>For example, the following lists the chromosomes in an example BED file of FIMO motif hits (see the <a class="reference internal" href="#bedextract-downloads"><em>Downloads</em></a> section):</p>
 <div class="highlight-python"><div class="highlight"><pre>$ bedextract --list-chr motifs.bed
 chr1
@@ -138,13 +149,13 @@ chrX
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <code class="docutils literal"><span class="pre">bedextract</span> <span class="pre">--list-chr</span></code> operation only works on BED files. If you have a Starch file, use <code class="docutils literal"><span class="pre">unstarch</span> <span class="pre">--list-chr</span></code> to list its chromosomes.</p>
+<p class="last">The <tt class="docutils literal"><span class="pre">bedextract</span> <span class="pre">--list-chr</span></tt> operation only works on BED files. If you have a Starch file, use <tt class="docutils literal"><span class="pre">unstarch</span> <span class="pre">--list-chr</span></tt> to list its chromosomes.</p>
 </div>
 </div>
 <div class="section" id="retrieving-elements-from-a-specific-chromosome">
 <h3>6.1.2.3.2. Retrieving elements from a specific chromosome<a class="headerlink" href="#retrieving-elements-from-a-specific-chromosome" title="Permalink to this headline">¶</a></h3>
 <p>To quickly retrieve the subset of elements from a sorted BED file associated with a given chromosome, apply the second usage case and specify the chromosome as the argument.</p>
-<p>For example, to retrieve <code class="docutils literal"><span class="pre">chrX</span></code> from the same motif sample:</p>
+<p>For example, to retrieve <tt class="docutils literal"><span class="pre">chrX</span></tt> from the same motif sample:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ bedextract chrX motifs.bed
 chrX    6775077 6775092 +V_SPZ1_01      4.92705e-06     +       GTTGGAGGGAAGGGC
 chrX    6775168 6775179 +V_ELF5_01      8.57585e-06     +       TCAAGGAAGTA
@@ -154,22 +165,22 @@ chrX    6777790 6777799 +V_CKROX_Q2     8.90515e-06     +       TCCCTCCCC
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <code class="docutils literal"><span class="pre">bedextract</span> <span class="pre">&lt;chromosome&gt;</span></code> operation only works on BED files. If you have a Starch file, use <code class="docutils literal"><span class="pre">unstarch</span> <span class="pre">&lt;chromosome&gt;</span></code> to list the elements associated with that chromosome.</p>
+<p class="last">The <tt class="docutils literal"><span class="pre">bedextract</span> <span class="pre">&lt;chromosome&gt;</span></tt> operation only works on BED files. If you have a Starch file, use <tt class="docutils literal"><span class="pre">unstarch</span> <span class="pre">&lt;chromosome&gt;</span></tt> to list the elements associated with that chromosome.</p>
 </div>
 </div>
 <div class="section" id="retrieving-elements-which-overlap-target-elements">
 <h3>6.1.2.3.3. Retrieving elements which overlap target elements<a class="headerlink" href="#retrieving-elements-which-overlap-target-elements" title="Permalink to this headline">¶</a></h3>
-<p>A common <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a> query involves asking which elements overlap one or more bases between two BED datasets, which we will call here <code class="docutils literal"><span class="pre">Query</span></code> and <code class="docutils literal"><span class="pre">Target</span></code>.</p>
-<p>One can already use <code class="docutils literal"><span class="pre">bedops</span> <span class="pre">--element-of</span> <span class="pre">1</span></code> to accomplish this task, but if certain specific criteria are met (which we will describe shortly) then a much faster result can often be obtained by instead using <a class="reference internal" href="#bedextract"><em>bedextract</em></a>.</p>
+<p>A common <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a> query involves asking which elements overlap one or more bases between two BED datasets, which we will call here <tt class="docutils literal"><span class="pre">Query</span></tt> and <tt class="docutils literal"><span class="pre">Target</span></tt>.</p>
+<p>One can already use <tt class="docutils literal"><span class="pre">bedops</span> <span class="pre">--element-of</span> <span class="pre">1</span></tt> to accomplish this task, but if certain specific criteria are met (which we will describe shortly) then a much faster result can often be obtained by instead using <a class="reference internal" href="#bedextract"><em>bedextract</em></a>.</p>
 <p>Three criteria make the use of <a class="reference internal" href="#bedextract"><em>bedextract</em></a> in this mode very successful in practice, with potentially massive speed improvements:</p>
 <ol class="arabic simple">
-<li><code class="docutils literal"><span class="pre">Query</span></code> is a huge file.</li>
-<li>There are relatively few regions of interest in <code class="docutils literal"><span class="pre">Target</span></code> (say, roughly 30,000 or fewer).</li>
-<li>There are <strong>no fully-nested elements</strong> in <code class="docutils literal"><span class="pre">Query</span></code> (but duplicate coordinates are fine).</li>
+<li><tt class="docutils literal"><span class="pre">Query</span></tt> is a huge file.</li>
+<li>There are relatively few regions of interest in <tt class="docutils literal"><span class="pre">Target</span></tt> (say, roughly 30,000 or fewer).</li>
+<li>There are <strong>no fully-nested elements</strong> in <tt class="docutils literal"><span class="pre">Query</span></tt> (but duplicate coordinates are fine).</li>
 </ol>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">With some extra work, it is possible to use this mode of bedextract with a huge <code class="docutils literal"><span class="pre">Query</span></code> BED file that includes fully-nested elements.  The technique requires that you create a merged version of <code class="docutils literal"><span class="pre">Query</span></code> and keep that result, <code class="docutils literal"><span class="pre">Query-Index</span></code>, around along with <code class="docutils literal"><span class="pre">Query</span></code>.</p>
+<p class="last">With some extra work, it is possible to use this mode of bedextract with a huge <tt class="docutils literal"><span class="pre">Query</span></tt> BED file that includes fully-nested elements.  The technique requires that you create a merged version of <tt class="docutils literal"><span class="pre">Query</span></tt> and keep that result, <tt class="docutils literal"><span class="pre">Query-Index</span></tt>, around along with <tt class="docutils literal"><span class="pre">Query</span></tt>.</p>
 </div>
 <div class="highlight-python"><div class="highlight"><pre>$ bedops -m Query &gt; Query-Index
 $ bedextract Query-Index Target \
@@ -192,22 +203,22 @@ chr1    125    150
 chr1    150    1000
 </pre></div>
 </div>
-<p>In this sorted dataset, the element <code class="docutils literal"><span class="pre">chr1:125-150</span></code> is entirely nested within <code class="docutils literal"><span class="pre">chr1:100-200</span></code>:</p>
+<p>In this sorted dataset, the element <tt class="docutils literal"><span class="pre">chr1:125-150</span></tt> is entirely nested within <tt class="docutils literal"><span class="pre">chr1:100-200</span></tt>:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_bedextract_nested_elements.png"><img alt="../../../_images/reference_bedextract_nested_elements.png" src="../../../_images/reference_bedextract_nested_elements.png" style="width: 99%;" /></a>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Fully-nested elements are not a problem for the other two <a class="reference internal" href="#bedextract"><em>bedextract</em></a> features: 1) Listing all chromosomes, and 2) Retrieving all information for a single chromosome.</p>
 </div>
-<p>Fully-nested elements are only an issue for <a class="reference internal" href="#bedextract"><em>bedextract</em></a> if they exist in the <code class="docutils literal"><span class="pre">Query</span></code> dataset. Results are not affected if the <code class="docutils literal"><span class="pre">Target</span></code> dataset contains nested elements. Overlapping (but not fully-nested) elements in the <code class="docutils literal"><span class="pre">Query</span></code> input file are fine, as are duplicated genomic positions.</p>
+<p>Fully-nested elements are only an issue for <a class="reference internal" href="#bedextract"><em>bedextract</em></a> if they exist in the <tt class="docutils literal"><span class="pre">Query</span></tt> dataset. Results are not affected if the <tt class="docutils literal"><span class="pre">Target</span></tt> dataset contains nested elements. Overlapping (but not fully-nested) elements in the <tt class="docutils literal"><span class="pre">Query</span></tt> input file are fine, as are duplicated genomic positions.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>Our lab works with BED data of various types: cut-counts, hotspots, peaks, footprints, etc. These data generally do not contain nested elements and so are amenable to use with <a class="reference internal" href="#bedextract"><em>bedextract</em></a> for extracting overlapping elements.</p>
-<p class="last">However, other types of <code class="docutils literal"><span class="pre">Query</span></code> datasets can be problematic. FIMO search results, for example, might cause trouble, where the boundaries of one motif hit can be contained within another larger hit. Or paired-end sequence data, where tags are not of a fixed length. Be sure to consider the makeup of your BED data before using <a class="reference internal" href="#bedextract"><em>bedextract</em></a>.</p>
+<p class="last">However, other types of <tt class="docutils literal"><span class="pre">Query</span></tt> datasets can be problematic. FIMO search results, for example, might cause trouble, where the boundaries of one motif hit can be contained within another larger hit. Or paired-end sequence data, where tags are not of a fixed length. Be sure to consider the makeup of your BED data before using <a class="reference internal" href="#bedextract"><em>bedextract</em></a>.</p>
 </div>
 </div>
 <div class="section" id="demonstration">
 <h4>6.1.2.3.3.2. Demonstration<a class="headerlink" href="#demonstration" title="Permalink to this headline">¶</a></h4>
-<p>To demonstrate this use of <a class="reference internal" href="#bedextract"><em>bedextract</em></a>, for our <code class="docutils literal"><span class="pre">Query</span></code> dataset we will use the <code class="docutils literal"><span class="pre">Map</span></code> example from our <a class="reference internal" href="../statistics/bedmap.html#bedmap"><em>bedmap</em></a> documentation, which contains raw DNaseI hypersensitivity signal from a human K562 cell line (see the <a class="reference internal" href="#bedextract-downloads"><em>Downloads</em></a> section for sample data):</p>
+<p>To demonstrate this use of <a class="reference internal" href="#bedextract"><em>bedextract</em></a>, for our <tt class="docutils literal"><span class="pre">Query</span></tt> dataset we will use the <tt class="docutils literal"><span class="pre">Map</span></tt> example from our <a class="reference internal" href="../statistics/bedmap.html#bedmap"><em>bedmap</em></a> documentation, which contains raw DNaseI hypersensitivity signal from a human K562 cell line (see the <a class="reference internal" href="#bedextract-downloads"><em>Downloads</em></a> section for sample data):</p>
 <div class="highlight-python"><div class="highlight"><pre>$ cat query.bed
 chr21   33031165        33031185        map-1   1.000000
 chr21   33031185        33031205        map-2   3.000000
@@ -218,12 +229,12 @@ chr21   33032445        33032465        map-65  5.000000
 chr21   33032465        33032485        map-66  6.000000
 </pre></div>
 </div>
-<p>Our <code class="docutils literal"><span class="pre">Target</span></code> data is simply an <em>ad-hoc</em> BED region which overlaps part of the <code class="docutils literal"><span class="pre">Query</span></code> dataset, stored in a <a class="reference internal" href="../file-management/compression/starch.html#starch"><em>Starch-formatted</em></a> archive:</p>
+<p>Our <tt class="docutils literal"><span class="pre">Target</span></tt> data is simply an <em>ad-hoc</em> BED region which overlaps part of the <tt class="docutils literal"><span class="pre">Query</span></tt> dataset, stored in a <a class="reference internal" href="../file-management/compression/starch.html#starch"><em>Starch-formatted</em></a> archive:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ unstarch target.starch
 chr21   33031600        33031700
 </pre></div>
 </div>
-<p>We can now ask which elements of <code class="docutils literal"><span class="pre">Query</span></code> overlap the element in <code class="docutils literal"><span class="pre">Target</span></code>:</p>
+<p>We can now ask which elements of <tt class="docutils literal"><span class="pre">Query</span></tt> overlap the element in <tt class="docutils literal"><span class="pre">Target</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ bedextract query.bed target.starch
 chr21   33031585        33031605        map-22  26.000000
 chr21   33031605        33031625        map-23  27.000000
@@ -233,7 +244,7 @@ chr21   33031665        33031685        map-26  31.000000
 chr21   33031685        33031705        map-27  37.000000
 </pre></div>
 </div>
-<p>Our <code class="docutils literal"><span class="pre">Target</span></code> dataset is a Starch-formatted file. Note that we can also use &#8220;-&#8221; to denote standard input for the <code class="docutils literal"><span class="pre">Target</span></code> dataset, as well as a regular BED- or Starch-formatted file. In other words, we can pipe target elements from another process to <a class="reference internal" href="#bedextract"><em>bedextract</em></a>, <em>e.g.</em> we can query for an ad-hoc element as follows:</p>
+<p>Our <tt class="docutils literal"><span class="pre">Target</span></tt> dataset is a Starch-formatted file. Note that we can also use &#8220;-&#8221; to denote standard input for the <tt class="docutils literal"><span class="pre">Target</span></tt> dataset, as well as a regular BED- or Starch-formatted file. In other words, we can pipe target elements from another process to <a class="reference internal" href="#bedextract"><em>bedextract</em></a>, <em>e.g.</em> we can query for an ad-hoc element as follows:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ echo -e &quot;chr21\t33031590\t33031600&quot; | bedextract query.bed -
 chr21   33031585        33031605        map-22  26.000000
 </pre></div>
@@ -241,13 +252,13 @@ chr21   33031585        33031605        map-22  26.000000
 <p>Instead of an <em>ad-hoc</em> element as in this example, however, target elements could just as easily be piped in from upstream <a class="reference internal" href="../statistics/bedmap.html#bedmap"><em>bedmap</em></a> or <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a> operations, or extracted elements from a Starch archive, etc.</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
-<p class="last">The output of this particular use of <a class="reference internal" href="#bedextract"><em>bedextract</em></a> is made up of elements from the <code class="docutils literal"><span class="pre">Query</span></code> dataset and is therefore <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED data, which can be piped to <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a>, <a class="reference internal" href="../statistics/bedmap.html#bedmap"><em>bedmap</em></a> and other BEDOPS utilities for further downstream processing.</p>
+<p class="last">The output of this particular use of <a class="reference internal" href="#bedextract"><em>bedextract</em></a> is made up of elements from the <tt class="docutils literal"><span class="pre">Query</span></tt> dataset and is therefore <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED data, which can be piped to <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a>, <a class="reference internal" href="../statistics/bedmap.html#bedmap"><em>bedmap</em></a> and other BEDOPS utilities for further downstream processing.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>Though <a class="reference internal" href="#bedextract"><em>bedextract</em></a> only supports the overlap equivalent of <code class="docutils literal"><span class="pre">bedops</span> <span class="pre">--element-of</span> <span class="pre">1</span></code>, other overlap criteria are efficiently supported by combining <a class="reference internal" href="#bedextract"><em>bedextract</em></a> with <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a>.</p>
+<p>Though <a class="reference internal" href="#bedextract"><em>bedextract</em></a> only supports the overlap equivalent of <tt class="docutils literal"><span class="pre">bedops</span> <span class="pre">--element-of</span> <span class="pre">1</span></tt>, other overlap criteria are efficiently supported by combining <a class="reference internal" href="#bedextract"><em>bedextract</em></a> with <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a>.</p>
 <p>Specifically, we can quickly filter through just the results given by <a class="reference internal" href="#bedextract"><em>bedextract</em></a> and implement other overlap criteria with <a class="reference internal" href="bedops.html#bedops"><em>bedops</em></a>, <em>e.g.</em>:</p>
-<p class="last"><code class="docutils literal"><span class="pre">$</span> <span class="pre">bedextract</span> <span class="pre">query.bed</span> <span class="pre">target.bed</span> <span class="pre">|</span> <span class="pre">bedops</span> <span class="pre">-e</span> <span class="pre">50%</span> <span class="pre">-</span> <span class="pre">target.bed</span></code></p>
+<p class="last"><tt class="docutils literal"><span class="pre">$</span> <span class="pre">bedextract</span> <span class="pre">query.bed</span> <span class="pre">target.bed</span> <span class="pre">|</span> <span class="pre">bedops</span> <span class="pre">-e</span> <span class="pre">50%</span> <span class="pre">-</span> <span class="pre">target.bed</span></tt></p>
 </div>
 </div>
 </div>
@@ -255,9 +266,9 @@ chr21   33031585        33031605        map-22  26.000000
 <div class="section" id="downloads">
 <span id="bedextract-downloads"></span><h2>6.1.2.4. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Sample <a class="reference download internal" href="../../../_downloads/reference_bedextract_motifs.bed"><code class="xref download docutils literal"><span class="pre">FIMO</span> <span class="pre">motifs</span></code></a></li>
-<li>Sample <code class="docutils literal"><span class="pre">Query</span></code> dataset: <a class="reference download internal" href="../../../_downloads/reference_bedmap_map.bed"><code class="xref download docutils literal"><span class="pre">DHS</span> <span class="pre">signal</span></code></a></li>
-<li>Sample <code class="docutils literal"><span class="pre">Target</span></code> dataset: <a class="reference download internal" href="../../../_downloads/reference_bedextract_target.starch"><code class="xref download docutils literal"><span class="pre">ad-hoc</span> <span class="pre">coordinates</span></code></a></li>
+<li>Sample <a class="reference download internal" href="../../../_downloads/reference_bedextract_motifs.bed"><tt class="xref download docutils literal"><span class="pre">FIMO</span> <span class="pre">motifs</span></tt></a></li>
+<li>Sample <tt class="docutils literal"><span class="pre">Query</span></tt> dataset: <a class="reference download internal" href="../../../_downloads/reference_bedmap_map.bed"><tt class="xref download docutils literal"><span class="pre">DHS</span> <span class="pre">signal</span></tt></a></li>
+<li>Sample <tt class="docutils literal"><span class="pre">Target</span></tt> dataset: <a class="reference download internal" href="../../../_downloads/reference_bedextract_target.starch"><tt class="xref download docutils literal"><span class="pre">ad-hoc</span> <span class="pre">coordinates</span></tt></a></li>
 </ul>
 </div>
 </div>
@@ -266,7 +277,7 @@ chr21   33031585        33031605        map-22  26.000000
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/logo_with_label_v3.png" alt="Logo"/>
@@ -301,14 +312,12 @@ chr21   33031585        33031605        map-22  26.000000
   <h4>Next topic</h4>
   <p class="topless"><a href="closest-features.html"
                         title="next chapter">6.1.3. <cite>closest-features</cite></a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../../../_sources/content/reference/set-operations/bedextract.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
+<div class="sourcelink">
+  <a href="../../../_sources/content/reference/set-operations/bedextract.txt" rel="nofollow">
+    Show page source
+  </a>
+</div>
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -321,30 +330,44 @@ chr21   33031585        33031605        map-22  26.000000
     </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="closest-features.html" title="6.1.3. closest-features"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="bedops.html" title="6.1.1. bedops"
-             >previous</a> |</li>
-        <li><a href="../../../index.html">BEDOPS 2.4.3 documentation</a> &raquo;</li>
-          <li><a href="../../reference.html" >6. Reference</a> &raquo;</li>
-          <li><a href="../set-operations.html" >6.1. Set operations</a> &raquo;</li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &copy; Copyright 2014, Shane Neph, Alex Reynolds.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3b2.
-    </div>
+  <div class="related bottom">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="bedops.html" title="Previous document">6.1.1. <cite>bedops</cite></a>
+        </li>
+        <li>
+          <a href="closest-features.html" title="Next document">6.1.3. <cite>closest-features</cite></a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../../../index.html">BEDOPS 2.4.4 documentation</a></li>
+      <li>
+        <a href="../../reference.html">6. Reference</a>
+      </li>
+      <li>
+        <a href="../set-operations.html">6.1. Set operations</a>
+      </li> 
+    </ul>
+  </nav>
+  </div>
+  <footer id="pagefooter">&copy; 2014, Shane Neph, Alex Reynolds.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+      1.2.3
+        with the <a href="http://github.com/irskep/sphinx-better-theme">
+          better</a> theme.
+
+  </footer>
+
+  
   </body>
 </html>
