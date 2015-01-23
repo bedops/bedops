@@ -102,11 +102,12 @@ html_theme = 'better'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {
+html_theme_options = {
+     'cssfiles': ['_static/custom.css']
 #    "collapsiblesidebar": "true",
 #    "linkcolor": "blue",
 #    "visitedlinkcolor": "darkblue"
-#}
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
