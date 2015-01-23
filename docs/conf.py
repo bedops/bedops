@@ -103,7 +103,7 @@ html_theme = 'better'
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-     'cssfiles': ['_static/custom.css']
+#    'cssfiles': ['_static/custom.css']
 #    "collapsiblesidebar": "true",
 #    "linkcolor": "blue",
 #    "visitedlinkcolor": "darkblue"
@@ -323,4 +323,4 @@ RTD_OLD_THEME = True
 
 #html_style = 'test.css'
 def setup(app):
-    app.add_stylesheet("test.css")
+    app.add_stylesheet("custom.css")
