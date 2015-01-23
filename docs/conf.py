@@ -319,7 +319,7 @@ epub_copyright = u'2013, Shane Neph, Alex Reynolds'
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'http://docs.python.org/': None}
 
-RTD_OLD_THEME = True
+#RTD_OLD_THEME = True
 
 #html_style = 'test.css'
 def setup(app):
