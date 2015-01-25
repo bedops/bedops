@@ -34,6 +34,7 @@ tt {
       -webkit-column-count: 1;
       -moz-column-count: 1;
       column-count: 1;
+      column-rule: none;
    }
 
    .col_element {
