@@ -62,10 +62,10 @@ Contents
 
 .. |downloads| raw:: html
 
-   <img src="_images/downloads_v3.png" style="height:36px; margin:0;">
+   <img src="_images/downloads_v3.png" style="height:36px; margin:0; width: auto !important;">
    <div class="index_cols">
       <div style="display:inline-block;">
-         <img src="_images/linux_v2.png" style="height:26px;">
+         <img src="_images/linux_v2.png" style="height:26px; width: auto !important;">
          <ul style="list-style-type:square; font-size:smaller; margin-right:2px; padding-right:0px;">
             <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.4/bedops_linux_x86_64-v2.4.4.tar.bz2">x86-64 (64-bit)</a> binaries</li>
             <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.4/bedops_linux_i386-v2.4.4.tar.bz2">i386 (32-bit)</a> binaries</li>
@@ -73,14 +73,14 @@ Contents
          </ul>
       </div>
       <div style="display:inline-block;">
-         <img src="_images/macosx_v2.png" style="height:26px;">
+         <img src="_images/macosx_v2.png" style="height:26px; width: auto !important;">
          <ul style="list-style-type:square; font-size:smaller; margin-right:2px; padding-right:0px;">
             <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.4/BEDOPS.2.4.4.mpkg.zip">Intel (32-/64-bit, 10.7-10.10)</a> installer package</li>
             <li><a href="content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
          </ul>
       </div>
       <div style="display:inline-block;">
-         <img src="_images/source_v2.png" style="height:26px;">
+         <img src="_images/source_v2.png" style="height:26px; width: auto !important;">
          <ul style="list-style-type:square; font-size:smaller; margin-right:2px; padding-right:0px;">
             <li><a href="https://github.com/bedops/bedops/archive/v2.4.4.tar.gz">Source code</a> (tar.gz)</li>
             <li><a href="https://github.com/bedops/bedops/archive/v2.4.4.zip">Source code</a> (zip)</li>
