@@ -9,12 +9,6 @@ You can read more about **BEDOPS** and how it can be useful for your research in
 |downloads|
 
 +-----------------------+-----------------------+------------------------+
-| |downloads_html|                              |                        |
-+-----------------------+-----------------------+------------------------+
-| |linux_html|          | |macosx_html|         | |source_html|          |
-+-----------------------+-----------------------+------------------------+
-| |linux_downloads|     | |macosx_downloads|    | |source_downloads|     |
-+-----------------------+-----------------------+------------------------+
 | |reference_html|                              |                        |
 +-----------------------+-----------------------+------------------------+
 | |set_operations_html| | |statistics_html|     | |file_management_html| |
