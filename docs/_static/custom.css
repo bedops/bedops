@@ -28,7 +28,7 @@ tt {
    column-count: 3;
 }
 
-@media only screen and (max-device-width: 480px) {
+@media only screen and (max-device-width: 640px) {
    .index_cols {
       -webkit-column-count: 1;
       -moz-column-count: 1;
