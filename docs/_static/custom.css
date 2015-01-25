@@ -31,6 +31,7 @@ tt {
 }
 
 ul {
+   -webkit-padding-start: 0px;
    -webkit-margin-before:0em;
    -webkit-margin-after:0em;
 }
