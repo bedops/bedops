@@ -17,7 +17,7 @@ The ``vcf2bed`` script requires :ref:`convert2bed <convert2bed>`. The ``vcf2star
 
 This script is also dependent on input that follows the VCF v4.2 specification.
 
-.. tip:: Conversion of data which are VCF-like, but which do not follow the specification can cause ``IOError`` and other runtime exceptions. If you run into problems, please check that your input follows the VCF specification using validation tools, such as those packaged with `VCFTools <http://vcftools.sourceforge.net/perl_module.html#vcf-validator>`_.
+.. tip:: Conversion of data which are VCF-like, but which do not follow the specification can cause parsing issues. If you run into problems, please check that your input follows the VCF specification using validation tools, such as those packaged with `VCFTools <http://vcftools.sourceforge.net/perl_module.html#vcf-validator>`_.
 
 ======
 Source

@@ -15,7 +15,7 @@ The ``psl2bed`` script requires :ref:`convert2bed <convert2bed>`. The ``psl2star
 
 This script is also dependent on input that follows the `PSL specification <http://genome.ucsc.edu/FAQ/FAQformat.html#format2>`_. 
 
-.. tip:: Conversion of data which are PSL-like, but which do not follow the specification can cause ``IOError`` and other runtime exceptions. If you run into problems, please check that your input follows the PSL specification.
+.. tip:: Conversion of data which are PSL-like, but which do not follow the specification can cause parsing issues. If you run into problems, please check that your input follows the PSL specification.
 
 ======
 Source
