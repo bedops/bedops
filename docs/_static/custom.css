@@ -28,17 +28,13 @@ tt {
    column-count: 3;
 }
 
-@media only screen 
-and (min-device-width : 320px) 
-and (max-device-width : 960px) { 
+@media only screen and (max-device-width: 480px) {
    .index_cols {
-      -webkit-column-count: 1; /* Chrome, Safari, Opera */
-      -moz-column-count: 1; /* Firefox */
+      -webkit-column-count: 1;
+      -moz-column-count: 1;
       column-count: 1;
    }
 }
-
-
 
 ul {
    break-inside: avoid-column;
