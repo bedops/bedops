@@ -139,7 +139,7 @@ Contents
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:2px; padding-right:0px; padding-left:20px;">
             <li><a href="content/reference/set-operations/bedops.html"><tt>bedops</tt></a> - apply set operations on any number of BED inputs</li>
             <li><a href="content/reference/set-operations/bedextract.html"><tt>bedextract</tt></a> - efficiently extract BED features</li>
-            <li><a href="content/reference/set-operations/closest-features.html"><tt>closest-features</tt></a> - matches nearest<br/>features between BED files</li>
+            <li><a href="content/reference/set-operations/closest-features.html"><tt>closest-features</tt></a> - matches nearest features between BED files</li>
         </ul>
       </div>
       <div class="col_element" style="display:inline-block;">
