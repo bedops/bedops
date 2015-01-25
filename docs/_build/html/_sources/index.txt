@@ -8,6 +8,8 @@ You can read more about **BEDOPS** and how it can be useful for your research in
 
 |downloads|
 
+|reference|
+
 +-----------------------+-----------------------+------------------------+
 | |reference_html|                              |                        |
 +-----------------------+-----------------------+------------------------+
@@ -139,6 +141,34 @@ Contents
    <li><a href="https://github.com/bedops/bedops/archive/v2.4.4.zip">Source code</a> (zip)</li>
    <li><a href="content/installation.html#installation-via-source-code">Compilation instructions</a></li>
    </ul>
+
+.. |reference| raw:: html
+
+   <img src="_images/reference_v2.png" style="height:36px; margin:0; width:auto !important;">
+   <div class="index_cols">
+      <div style="display:inline-block;">
+         <img src="_images/set_operations_v2.png" style="height:130px; margin:0; width:auto !important;">
+         <ul style="list-style-type:square; font-size:smaller; margin-right:2px; padding-right:0px;">
+            <li><a href="content/reference/set-operations/bedops.html"><tt>bedops</tt></a> - apply set operations on any number of BED inputs</li>
+            <li><a href="content/reference/set-operations/bedextract.html"><tt>bedextract</tt></a> - efficiently extract BED features</li>
+            <li><a href="content/reference/set-operations/closest-features.html"><tt>closest-features</tt></a> - matches nearest<br/>features between BED files</li>
+        </ul>
+      </div>
+      <div style="display:inline-block;">
+         <img src="_images/statistics_v2.png" style="height:130px; margin;0; width:auto !important;">
+         <ul style="list-style-type:square; font-size:smaller; margin-right:2px; padding-right:0px;">
+            <li><a href="content/reference/statistics/bedmap.html"><tt>bedmap</tt></a> - map overlapping BED elements onto target regions and optionally compute any number of common statistical operations</li>
+         </ul>
+      </div>
+      <div style="display:inline-block;">
+         <ul style="list-style-type:square; font-size:smaller; margin-right:2px; padding-right:0px;">
+            <li><a href="content/reference/file-management/sorting/sort-bed.html"><tt>sort-bed</tt></a> - apply lexicographical sort to BED data</li>
+            <li><a href="content/reference/file-management/compression/starch.html"><tt>starch</tt></a> and <a href="content/reference/file-management/compression/unstarch.html"><tt>unstarch</tt></a> - compress and extract BED data</li>
+            <li><a href="content/reference/file-management/compression/starchcat.html"><tt>starchcat</tt></a> - merge compressed archives</li>
+            <li><a href="content/reference/file-management/conversion.html">Conversion tools</a> - convert common genomic formats to BED</li>
+         </ul>
+      </div>
+   </div>
 
 .. |reference_png| image:: assets/index/reference_v2.png
                    :height: 36px
