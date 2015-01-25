@@ -2,6 +2,10 @@ img.logo {
    max-width: 100%;
 }
 
+img {
+   width: auto !important;
+}
+
 span.pre {
    font-size: 1.0em;
 }
