@@ -26,6 +26,8 @@ tt {
    -webkit-column-count: 3; /* Chrome, Safari, Opera */
    -moz-column-count: 3; /* Firefox */
    column-count: 3;
+   -webkit-column-rule: 1px dotted #e0e0e0;
+   -moz-column-rule: 1px dotted #e0e0e0;
    column-rule: 1px dotted #e0e0e0;
 }
 
@@ -34,6 +36,8 @@ tt {
       -webkit-column-count: 1;
       -moz-column-count: 1;
       column-count: 1;
+      -webkit-column-rule: none;
+      -moz-column-rule: none;
       column-rule: none;
    }
 
