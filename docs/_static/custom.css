@@ -46,3 +46,8 @@ ul {
    -webkit-margin-before:0em;
    -webkit-margin-after:0em;
 }
+
+.tip {
+   background-color: #deeeb1;
+   border: 1px solid #b3ce67;
+}
