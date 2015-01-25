@@ -15,7 +15,7 @@ The ``gff2bed`` script requires :ref:`convert2bed <convert2bed>`. The ``gff2star
 
 This script is also dependent on input that follows the GFF3 specification. A GFF3-format validator is available `here <http://modencode.oicr.on.ca/cgi-bin/validate_gff3_online>`_ to ensure your input follows specification.
 
-.. tip:: Conversion of data which are GFF-like, but which do not follow the specification can cause ``IOError`` and other runtime exceptions. If you run into problems, please check that your input follows the GFF specification.
+.. tip:: Conversion of data which are GFF-like, but which do not follow the specification can cause parsing issues. If you run into problems, please check that your input follows the GFF3 specification. Tools such as the `GFF3 Online Validator <http://genometools.org/cgi-bin/gff3validator.cgi>`_ are useful for this task.
 
 ======
 Source

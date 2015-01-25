@@ -115,22 +115,19 @@ chr1    147971222       147971272       id-4    -0.760000
 </pre></div>
 </div>
 <p>Conversion of this two-section WIG input results in output with modified ID fields to denote their section association:</p>
-<div class="highlight-python"><div class="highlight"><pre>FIX THIS
-
-$ more foo.bed
-_header 0       1       track type=wiggle_0 name=foo description=foo
-chr1    147971108       147971158       id-1    -0.590000
-chr1    147971146       147971196       id-2    0.120000
-chr1    147971184       147971234       id-3    0.110000
-chr1    147971222       147971272       id-4    -0.760000
-
-_header 0       1       track type=wiggle_0 name=testfixed
-_header 1       2       fixedStep chrom=chrX start=100 step=10 span=5
-chrX    99      104     id-11   1.900000
-chrX    109     114     id-12   2.300000
-chrX    119     124     id-13   -0.100000
-chrX    129     134     id-14   1.100000
-chrX    139     144     id-15   4.100000
+<div class="highlight-python"><div class="highlight"><pre>$ more foo.bed
+_header 0       1       bar.1           track type=wiggle_0 name=foo description=foo
+_header 1       2       bar.2           track type=wiggle_0 name=testfixed
+_header 2       3       bar.2           fixedStep chrom=chrX start=100 step=10 span=5
+chr1    147971108       147971158       bar.1-id-1    -0.590000
+chr1    147971146       147971196       bar.1-id-2    0.120000
+chr1    147971184       147971234       bar.1-id-3    0.110000
+chr1    147971222       147971272       bar.1-id-4    -0.760000
+chrX    99      104     bar.2-id-11   1.900000
+chrX    109     114     bar.2-id-12   2.300000
+chrX    119     124     bar.2-id-13   -0.100000
+chrX    129     134     bar.2-id-14   1.100000
+chrX    139     144     bar.2-id-15   4.100000
 </pre></div>
 </div>
 <div class="admonition note">
