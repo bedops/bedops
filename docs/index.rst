@@ -68,7 +68,8 @@ Table of contents
 
 .. |downloads| raw:: html
 
-   <img src="_images/downloads_v3.png" style="height:36px; margin:0;"><div class="index_cols">
+   <img src="_images/downloads_v3.png" style="height:36px; margin:0;">
+   <div class="index_cols">
       <div style="display:inline-block;">
          <img src="_images/linux_v2.png" style="height:26px;">
          <ul style="list-style-type:square; font-size:smaller; margin-right:2px; padding-right:0px;">
