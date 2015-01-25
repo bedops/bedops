@@ -19,7 +19,7 @@ Released: **January 25, 2015**
 
 * Documentation improvements
 
-  * Implemented substantial style changes via `A Better Sphinx Theme <http://github.com/irskep/sphinx-better-theme>`_ and various customizations. We also include responsive web style elements to improve browsing documentation on mobile devices.
+  * Implemented substantial style changes via `A Better Sphinx Theme <http://github.com/irskep/sphinx-better-theme>`_ and various customizations. We also include responsive web style elements to help improve browsing on mobile devices.
 
   * Fixes to typos in conversion and other documents.
 
