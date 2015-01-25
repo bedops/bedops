@@ -15,6 +15,22 @@ Current version
 v2.4.4
 ------
 
+Released: **January 25, 2015**
+
+* Documentation improvements
+
+  * Implemented substantial style changes via `A Better Sphinx Theme <http://github.com/irskep/sphinx-better-theme>`_ and various customizations. We also include responsive web style elements to improve browsing documentation on mobile devices.
+
+  * Fixes to typos in conversion and other documents.
+
+=================
+Previous versions
+=================
+
+------
+v2.4.3
+------
+
 Released: **December 18, 2014**
 
 * Compilation improvements
@@ -60,10 +76,6 @@ Released: **December 18, 2014**
 * Documentation improvements
 
   * Remade some image assets throughout the documents to support Retina-grade displays
-
-=================
-Previous versions
-=================
 
 ------
 v2.4.2
