@@ -1,17 +1,17 @@
 img.logo {
-  max-width: 100%;
+   max-width: 100%;
 }
 
 span.pre {
-  font-size: 1.1em;
+   font-size: 1.0em;
 }
 
 a {
-    color: #00f !important;
+   color: #00f !important;
 }
 
 a:visited {
-    color: #20e !important;
+   color: #20e !important;
 }
 
 h2 {
@@ -20,4 +20,10 @@ h2 {
 
 tt {
    font-size: 0.9em;
+}
+
+.index_cols {
+   -webkit-column-count: 3; /* Chrome, Safari, Opera */
+   -moz-column-count: 3; /* Firefox */
+   column-count: 3;
 }
