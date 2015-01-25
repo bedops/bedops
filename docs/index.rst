@@ -11,12 +11,6 @@ You can read more about **BEDOPS** and how it can be useful for your research in
 |reference|
 
 +-----------------------+-----------------------+------------------------+
-| |reference_html|                              |                        |
-+-----------------------+-----------------------+------------------------+
-| |set_operations_html| | |statistics_html|     | |file_management_html| |
-+-----------------------+-----------------------+------------------------+
-| |set_operations|      | |statistics|          | |file_management|      |
-+-----------------------+-----------------------+------------------------+
 | |performance_html|    | |support_html|        | |other_html|           |
 +-----------------------+-----------------------+------------------------+
 | |performance|         | |support|             | |other|                |
@@ -147,7 +141,7 @@ Contents
    <img src="_images/reference_v2.png" style="height:36px; margin:0; width:auto !important;">
    <div class="index_cols">
       <div style="display:inline-block;">
-         <img src="_images/set_operations_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:10px;">
+         <img src="_images/set_operations_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:2px; padding-right:0px;">
             <li><a href="content/reference/set-operations/bedops.html"><tt>bedops</tt></a> - apply set operations on any number of BED inputs</li>
             <li><a href="content/reference/set-operations/bedextract.html"><tt>bedextract</tt></a> - efficiently extract BED features</li>
@@ -155,19 +149,50 @@ Contents
         </ul>
       </div>
       <div style="display:inline-block;">
-         <img src="_images/statistics_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:10px;">
+         <img src="_images/statistics_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:2px; padding-right:0px;">
             <li><a href="content/reference/statistics/bedmap.html"><tt>bedmap</tt></a> - map overlapping BED elements onto target regions and optionally compute any number of common statistical operations</li>
          </ul>
       </div>
       <div style="display:inline-block;">
-         <img src="_images/file_management_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:10px;">
+         <img src="_images/file_management_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:2px; padding-right:0px;">
             <li><a href="content/reference/file-management/sorting/sort-bed.html"><tt>sort-bed</tt></a> - apply lexicographical sort to BED data</li>
             <li><a href="content/reference/file-management/compression/starch.html"><tt>starch</tt></a> and <a href="content/reference/file-management/compression/unstarch.html"><tt>unstarch</tt></a> - compress and extract BED data</li>
             <li><a href="content/reference/file-management/compression/starchcat.html"><tt>starchcat</tt></a> - merge compressed archives</li>
             <li><a href="content/reference/file-management/conversion.html">Conversion tools</a> - convert common genomic formats to BED</li>
          </ul>
+      </div>
+   </div>
+   <div class="index_cols">
+      <div style="display:inline-block;">
+         <img src="_images/performance_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
+         <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
+            <li>Parallel <a href="content/reference/file-management/conversion/parallel_bam2bed.html"><tt>bam2bed</tt></a> and <a href="content/reference/file-management/conversion/parallel_bam2starch.html"><tt>bam2starch</tt></a> - parallelized conversion and compression of BAM data</li>
+            <li><a href="content/performance.html#set-operations-with-bedops">Set operations with <tt>bedops</tt></li>
+            <li><a href="content/performance.html#compression-characteristics-of-starch">Compression characteristics of <tt>starch</tt></li>
+            <li><a href="content/performance.html#independent-testing">Independent testing</a></li>
+         </ul>
+      </div>
+      <div style="display:inline-block;">
+          <img src="_images/support_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
+          <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
+             <li><a href="content/installation.html">How to install <strong>BEDOPS</strong></a></li>
+             <li><a href="content/usage-examples.html">Usage examples</a> of <strong>BEDOPS</strong> tools in action</li>
+             <li><a href="http://bedops.uwencode.org/forum/"><strong>BEDOPS</strong> user forum</li>
+             <li><a href="http://groups.google.com/group/bedops-discuss"><strong>BEDOPS</strong> discusssion mailing list</li>
+          </ul>
+      </div>
+      <div style="display:inline-block;">
+          <img src="_images/toc_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
+          <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
+             <li><a href="content/summary.html">Table summary</a> of <strong>BEDOPS</strong> toolkit</li>
+             <li><a href="content/reference/file-management/compression/starch-specification.html">Starch v2.1</a> format specification</li>
+             <li><a href="content/reference/set-operations/nested-elements.html">About nested elements</a>
+             <li><a href="content/revision-history.html">Revision history</a></li>
+             <li><a href="content/release.html">Github release instructions</a></li>
+             <li><a href="https://github.com/bedops/bedops">Github repository</a></li>
+          </ul>
       </div>
    </div>
 
