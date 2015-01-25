@@ -158,6 +158,7 @@ Contents
          </ul>
       </div>
    </div>
+   <p>
    <div class="index_cols">
       <div style="display:inline-block;">
          <img src="_images/performance_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
