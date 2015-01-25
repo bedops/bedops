@@ -10,12 +10,6 @@ You can read more about **BEDOPS** and how it can be useful for your research in
 
 |reference|
 
-+-----------------------+-----------------------+------------------------+
-| |performance_html|    | |support_html|        | |other_html|           |
-+-----------------------+-----------------------+------------------------+
-| |performance|         | |support|             | |other|                |
-+-----------------------+-----------------------+------------------------+
-
 ========
 Citation
 ========
@@ -167,7 +161,7 @@ Contents
    <div class="index_cols">
       <div style="display:inline-block;">
          <img src="_images/performance_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
-         <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
+         <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:2px; padding-right:0px;">
             <li>Parallel <a href="content/reference/file-management/conversion/parallel_bam2bed.html"><tt>bam2bed</tt></a> and <a href="content/reference/file-management/conversion/parallel_bam2starch.html"><tt>bam2starch</tt></a> - parallelized conversion and compression of BAM data</li>
             <li><a href="content/performance.html#set-operations-with-bedops">Set operations with <tt>bedops</tt></li>
             <li><a href="content/performance.html#compression-characteristics-of-starch">Compression characteristics of <tt>starch</tt></li>
@@ -176,7 +170,7 @@ Contents
       </div>
       <div style="display:inline-block;">
           <img src="_images/support_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
-          <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
+          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:2px; padding-right:0px;">
              <li><a href="content/installation.html">How to install <strong>BEDOPS</strong></a></li>
              <li><a href="content/usage-examples.html">Usage examples</a> of <strong>BEDOPS</strong> tools in action</li>
              <li><a href="http://bedops.uwencode.org/forum/"><strong>BEDOPS</strong> user forum</li>
@@ -185,7 +179,7 @@ Contents
       </div>
       <div style="display:inline-block;">
           <img src="_images/toc_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
-          <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
+          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:2px; padding-right:0px;">
              <li><a href="content/summary.html">Table summary</a> of <strong>BEDOPS</strong> toolkit</li>
              <li><a href="content/reference/file-management/compression/starch-specification.html">Starch v2.1</a> format specification</li>
              <li><a href="content/reference/set-operations/nested-elements.html">About nested elements</a>
