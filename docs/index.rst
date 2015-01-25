@@ -179,9 +179,7 @@ Contents
              <li><a href="content/release.html">Github release instructions</a></li>
              <li><a href="https://github.com/bedops/bedops">Github repository</a></li>
           </ul>
-      </div>
-      <div style="display:inline-block; margin:0;">
-          <img src="_images/support_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
+      </div><div style="display:inline-block; margin:0;"><img src="_images/support_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
           <ul style="list-style-type:square; font-size:smaller; margin:0; margin-right:2px; padding-right:0px;">
              <li><a href="content/installation.html">How to install <strong>BEDOPS</strong></a></li>
              <li><a href="content/usage-examples.html">Usage examples</a> of <strong>BEDOPS</strong> tools in action</li>
