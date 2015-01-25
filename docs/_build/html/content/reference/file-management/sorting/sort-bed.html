@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
     <link rel="top" title="BEDOPS v2.4.4" href="../../../../index.html" />
     <link rel="up" title="6.3.1. Sorting" href="../sorting.html" />
@@ -32,7 +32,7 @@
     <link rel="prev" title="6.3.1. Sorting" href="../sorting.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   </head>
-  <body>
+  <body role="document">
     <header id="pageheader"><h1><a href="../../../../index.html ">
         BEDOPS v2.4.4
     </a></h1></header>
@@ -68,11 +68,11 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="sort-bed">
 <span id="id1"></span><h1>6.3.1.1. <cite>sort-bed</cite><a class="headerlink" href="#sort-bed" title="Permalink to this headline">¶</a></h1>
-<p>The <tt class="docutils literal"><span class="pre">sort-bed</span></tt> utility sorts BED files of any size, even larger than system memory. BED files that are in lexicographic-chromosome order allow BEDOPS utilities to work efficiently with data from any species without software modifications. Further, sorted files can be traversed very quickly.</p>
+<p>The <code class="docutils literal"><span class="pre">sort-bed</span></code> utility sorts BED files of any size, even larger than system memory. BED files that are in lexicographic-chromosome order allow BEDOPS utilities to work efficiently with data from any species without software modifications. Further, sorted files can be traversed very quickly.</p>
 <p>Sorted BED order is defined first by lexicographic chromosome order, then ascending integer start coordinate order, and finally by ascending integer end coordinate order.</p>
 <p>Other utilities in the BEDOPS suite require data in sorted order as described. You only need to sort once: BEDOPS utilities all read and write data in sorted order.</p>
 <div class="section" id="inputs-and-outputs">
@@ -88,7 +88,7 @@
 </div>
 <div class="section" id="usage">
 <h2>6.3.1.1.2. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">--help</span></tt> option is fairly basic, but describes the usage:</p>
+<p>The <code class="docutils literal"><span class="pre">--help</span></code> option is fairly basic, but describes the usage:</p>
 <div class="highlight-python"><div class="highlight"><pre>sort-bed
   citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
   version:  2.4.3
@@ -107,13 +107,13 @@ USAGE: sort-bed [--help] [--version] [--max-mem &lt;val&gt;] [--tmpdir &lt;path&
 <div class="highlight-python"><div class="highlight"><pre>$ sort-bed unsortedData.bed &gt; sortedData.bed
 </pre></div>
 </div>
-<p>The <a class="reference internal" href="#sort-bed"><em>sort-bed</em></a> program efficiently sorts BED inputs. By default, all input records are read into system memory and sorted. If your BED dataset is larger than available system memory, use the <tt class="docutils literal"><span class="pre">--max-mem</span></tt> option to limit the amount of memory <a class="reference internal" href="#sort-bed"><em>sort-bed</em></a> uses to do its work:</p>
+<p>The <a class="reference internal" href="#sort-bed"><em>sort-bed</em></a> program efficiently sorts BED inputs. By default, all input records are read into system memory and sorted. If your BED dataset is larger than available system memory, use the <code class="docutils literal"><span class="pre">--max-mem</span></code> option to limit the amount of memory <a class="reference internal" href="#sort-bed"><em>sort-bed</em></a> uses to do its work:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ sort-bed --max-mem 2G reallyHugeUnsortedData.bed &gt; reallyHugeSortedData.bed
 </pre></div>
 </div>
 <p>This option allows <a class="reference internal" href="#sort-bed"><em>sort-bed</em></a> to scale to input of any size.</p>
-<p>The <tt class="docutils literal"><span class="pre">--tmpdir</span></tt> option allows specification of an alternative temporary directory, when used in conjunction with <tt class="docutils literal"><span class="pre">--max-mem</span></tt> option. This is useful if the host operating system’s standard temporary directory (<em>e.g.</em>, <tt class="docutils literal"><span class="pre">/tmp</span></tt> on Linux or OS X) does not have sufficient space to hold intermediate results.</p>
-<p>For example, to use the current working directory to store temporary data, one could use the <tt class="docutils literal"><span class="pre">$PWD</span></tt> environment variable:</p>
+<p>The <code class="docutils literal"><span class="pre">--tmpdir</span></code> option allows specification of an alternative temporary directory, when used in conjunction with <code class="docutils literal"><span class="pre">--max-mem</span></code> option. This is useful if the host operating system’s standard temporary directory (<em>e.g.</em>, <code class="docutils literal"><span class="pre">/tmp</span></code> on Linux or OS X) does not have sufficient space to hold intermediate results.</p>
+<p>For example, to use the current working directory to store temporary data, one could use the <code class="docutils literal"><span class="pre">$PWD</span></code> environment variable:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ sort-bed --max-mem 2G --tmpdir $PWD reallyHugeUnsortedData.bed &gt; reallyHugeSortedData.bed
 </pre></div>
 </div>
@@ -124,7 +124,7 @@ USAGE: sort-bed [--help] [--version] [--max-mem &lt;val&gt;] [--tmpdir &lt;path&
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../../index.html">
               <img class="logo" src="../../../../_static/logo_with_label_v3.png" alt="Logo"/>
@@ -153,7 +153,7 @@ USAGE: sort-bed [--help] [--version] [--max-mem &lt;val&gt;] [--tmpdir &lt;path&
     Show page source
   </a>
 </div>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../../search.html" method="get">
       <input type="text" name="q" />
@@ -199,9 +199,9 @@ USAGE: sort-bed [--help] [--version] [--max-mem &lt;val&gt;] [--tmpdir &lt;path&
     </ul>
   </nav>
   </div>
-  <footer id="pagefooter">&copy; 2014, Shane Neph, Alex Reynolds.
+  <footer id="pagefooter">&copy; 2011-2015, Shane Neph, Alex Reynolds.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a>
-      1.2.3
+      1.3b2
         with the <a href="http://github.com/irskep/sphinx-better-theme">
           better</a> theme.
 

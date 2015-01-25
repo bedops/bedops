@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
     <link rel="top" title="BEDOPS v2.4.4" href="../../../../index.html" />
     <link rel="up" title="6.3.2. Compression" href="../compression.html" />
@@ -32,7 +32,7 @@
     <link rel="prev" title="6.3.2. Compression" href="../compression.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   </head>
-  <body>
+  <body role="document">
     <header id="pageheader"><h1><a href="../../../../index.html ">
         BEDOPS v2.4.4
     </a></h1></header>
@@ -68,14 +68,14 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="starch">
 <span id="id1"></span><h1>6.3.2.1. <cite>starch</cite><a class="headerlink" href="#starch" title="Permalink to this headline">¶</a></h1>
-<p>With high-throughput sequencing generating large amounts of genomic data, archiving can be a critical part of an analysis toolkit. BEDOPS includes the <tt class="docutils literal"><span class="pre">starch</span></tt> utility to provide a method for efficient and lossless compression of <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1">UCSC BED-formatted data</a> into the <a class="reference internal" href="starch-specification.html#starch-specification"><em>Starch v2 format</em></a>.</p>
+<p>With high-throughput sequencing generating large amounts of genomic data, archiving can be a critical part of an analysis toolkit. BEDOPS includes the <code class="docutils literal"><span class="pre">starch</span></code> utility to provide a method for efficient and lossless compression of <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1">UCSC BED-formatted data</a> into the <a class="reference internal" href="starch-specification.html#starch-specification"><em>Starch v2 format</em></a>.</p>
 <p>Starch v2 archives can be extracted with <a class="reference internal" href="unstarch.html#unstarch"><em>unstarch</em></a> to recover the original BED input, or processed as inputs to <a class="reference internal" href="../../set-operations/bedops.html#bedops"><em>bedops</em></a> and <a class="reference internal" href="../../statistics/bedmap.html#bedmap"><em>bedmap</em></a>, where set operations and element calculations can be performed directly and without the need for intermediate file extraction.</p>
 <p>The <a class="reference internal" href="#starch"><em>starch</em></a> utility includes <a class="reference external" href="http://en.wikipedia.org/wiki/Large_file_support">large file support</a> on 64-bit operating systems, enabling compression of more than 2 GB of data (a common restriction on 32-bit systems).</p>
-<p>Data can be stored with one of two open-source backend compression methods, either <tt class="docutils literal"><span class="pre">bzip2</span></tt> or <tt class="docutils literal"><span class="pre">gzip</span></tt>, providing the end user with a reasonable tradeoff between speed and storage performance that can be useful for working with constrained storage situations or slower hardware.</p>
+<p>Data can be stored with one of two open-source backend compression methods, either <code class="docutils literal"><span class="pre">bzip2</span></code> or <code class="docutils literal"><span class="pre">gzip</span></code>, providing the end user with a reasonable tradeoff between speed and storage performance that can be useful for working with constrained storage situations or slower hardware.</p>
 <div class="section" id="inputs-and-outputs">
 <h2>6.3.2.1.1. Inputs and outputs<a class="headerlink" href="#inputs-and-outputs" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="input">
@@ -83,7 +83,7 @@
 <p>As with other BEDOPS utilities, <a class="reference internal" href="#starch"><em>starch</em></a> takes in <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sorted</em></a> BED data as input. You can use <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a> to sort BED data, piping it into <a class="reference internal" href="#starch"><em>starch</em></a> as standard input (see <a class="reference internal" href="#starch-example"><em>Example</em></a> section below).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">While more than three columns may be specified, most of the space savings in the Starch format are derived from from a pre-processing step on the coordinates. Therefore, minimizing or removing unnecessary columnar data from the fourth column on (<em>e.g.</em>, with <tt class="docutils literal"><span class="pre">cut</span> <span class="pre">-f1-3</span></tt> or similar) can help improve compression efficiency considerably.</p>
+<p class="last">While more than three columns may be specified, most of the space savings in the Starch format are derived from from a pre-processing step on the coordinates. Therefore, minimizing or removing unnecessary columnar data from the fourth column on (<em>e.g.</em>, with <code class="docutils literal"><span class="pre">cut</span> <span class="pre">-f1-3</span></code> or similar) can help improve compression efficiency considerably.</p>
 </div>
 </div>
 <div class="section" id="output">
@@ -98,7 +98,7 @@
 </div>
 <div class="section" id="usage">
 <h2>6.3.2.1.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<p>Use the <tt class="docutils literal"><span class="pre">--help</span></tt> option to list all options:</p>
+<p>Use the <code class="docutils literal"><span class="pre">--help</span></code> option to list all options:</p>
 <div class="highlight-python"><div class="highlight"><pre>starch
  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
  binary version: 2.4.3 (creates archive version: 2.1.0)
@@ -126,44 +126,44 @@ USAGE: starch [--note=&quot;foo bar...&quot;] [--bzip2 | --gzip] [--header] [&lt
 <h2>6.3.2.1.4. Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="backend-compression-type">
 <h3>6.3.2.1.4.1. Backend compression type<a class="headerlink" href="#backend-compression-type" title="Permalink to this headline">¶</a></h3>
-<p>Use the <tt class="docutils literal"><span class="pre">--bzip2</span></tt> or <tt class="docutils literal"><span class="pre">--gzip</span></tt> operators to use the <tt class="docutils literal"><span class="pre">bzip2</span></tt> or <tt class="docutils literal"><span class="pre">gzip</span></tt> compression algorithms on transformed BED data. By default, <a class="reference internal" href="#starch"><em>starch</em></a> uses the <tt class="docutils literal"><span class="pre">bzip2</span></tt> method.</p>
+<p>Use the <code class="docutils literal"><span class="pre">--bzip2</span></code> or <code class="docutils literal"><span class="pre">--gzip</span></code> operators to use the <code class="docutils literal"><span class="pre">bzip2</span></code> or <code class="docutils literal"><span class="pre">gzip</span></code> compression algorithms on transformed BED data. By default, <a class="reference internal" href="#starch"><em>starch</em></a> uses the <code class="docutils literal"><span class="pre">bzip2</span></code> method.</p>
 </div>
 <div class="section" id="note">
 <h3>6.3.2.1.4.2. Note<a class="headerlink" href="#note" title="Permalink to this headline">¶</a></h3>
-<p>Use the <tt class="docutils literal"><span class="pre">--note=&quot;xyz...&quot;</span></tt> option to add a custom string that describes the archive. This data can be retrieved with <tt class="docutils literal"><span class="pre">unstarch</span> <span class="pre">--note</span></tt>.</p>
+<p>Use the <code class="docutils literal"><span class="pre">--note=&quot;xyz...&quot;</span></code> option to add a custom string that describes the archive. This data can be retrieved with <code class="docutils literal"><span class="pre">unstarch</span> <span class="pre">--note</span></code>.</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
 <p class="last">Examples of usage might include a description of the experiment associated with the data, a URL to a UCSC Genome Browser session, or a bar code or other unique identifier for internal lab or LIMS use.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The only limitation on the length of a note is the command-line shell&#8217;s maximum argument length parameter (as found on most UNIX systems with the command <tt class="docutils literal"><span class="pre">getconf</span> <span class="pre">ARG_MAX</span></tt>) minus the length of the non- <tt class="docutils literal"><span class="pre">--note=&quot;...&quot;</span></tt> command components. On most desktop systems, this value will be approximately 256 kB.</p>
+<p class="last">The only limitation on the length of a note is the command-line shell&#8217;s maximum argument length parameter (as found on most UNIX systems with the command <code class="docutils literal"><span class="pre">getconf</span> <span class="pre">ARG_MAX</span></code>) minus the length of the non- <code class="docutils literal"><span class="pre">--note=&quot;...&quot;</span></code> command components. On most desktop systems, this value will be approximately 256 kB.</p>
 </div>
 </div>
 <div class="section" id="headers">
 <h3>6.3.2.1.4.3. Headers<a class="headerlink" href="#headers" title="Permalink to this headline">¶</a></h3>
-<p>Add the <tt class="docutils literal"><span class="pre">--header</span></tt> flag if the BED data being compressed contain <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1.7">extra header data</a> that are exported from a UCSC Genome Browser session.</p>
+<p>Add the <code class="docutils literal"><span class="pre">--header</span></code> flag if the BED data being compressed contain <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1.7">extra header data</a> that are exported from a UCSC Genome Browser session.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">If the BED data contain custom headers and <tt class="docutils literal"><span class="pre">--header</span></tt> is not specified, <a class="reference internal" href="#starch"><em>starch</em></a> will be unable to read chromosome data correctly and exit with an error state.</p>
+<p class="last">If the BED data contain custom headers and <code class="docutils literal"><span class="pre">--header</span></code> is not specified, <a class="reference internal" href="#starch"><em>starch</em></a> will be unable to read chromosome data correctly and exit with an error state.</p>
 </div>
 </div>
 <div class="section" id="unique-tag">
 <h3>6.3.2.1.4.4. Unique tag<a class="headerlink" href="#unique-tag" title="Permalink to this headline">¶</a></h3>
-<p>Adding a <tt class="docutils literal"><span class="pre">&lt;unique-tag&gt;</span></tt> string replaces portions of the <cite>filename</cite> key in the archive&#8217;s <a class="reference internal" href="starch-specification.html#starch-archive-metadata-stream"><em>stream metadata</em></a>.</p>
+<p>Adding a <code class="docutils literal"><span class="pre">&lt;unique-tag&gt;</span></code> string replaces portions of the <cite>filename</cite> key in the archive&#8217;s <a class="reference internal" href="starch-specification.html#starch-archive-metadata-stream"><em>stream metadata</em></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This feature is largely obsolete and included for legacy support. It is better to use the <tt class="docutils literal"><span class="pre">--note=&quot;xyz...&quot;</span></tt> option to add identifiers or other custom data.</p>
+<p class="last">This feature is largely obsolete and included for legacy support. It is better to use the <code class="docutils literal"><span class="pre">--note=&quot;xyz...&quot;</span></code> option to add identifiers or other custom data.</p>
 </div>
 </div>
 </div>
 <div class="section" id="example">
 <h2>6.3.2.1.5. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<p>To compress unsorted BED data (or data of unknown sort order), we feed <a class="reference internal" href="#starch"><em>starch</em></a> a <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sorted</em></a> stream, using the hyphen (<tt class="docutils literal"><span class="pre">-</span></tt>) to specify standard input:</p>
+<p>To compress unsorted BED data (or data of unknown sort order), we feed <a class="reference internal" href="#starch"><em>starch</em></a> a <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><em>sorted</em></a> stream, using the hyphen (<code class="docutils literal"><span class="pre">-</span></code>) to specify standard input:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ sort-bed unsorted.bed | starch - &gt; sorted.starch
 </pre></div>
 </div>
-<p>This creates the file <tt class="docutils literal"><span class="pre">sorted.starch</span></tt>, which uses the <tt class="docutils literal"><span class="pre">bzip2</span></tt> algorithm to compress transformed BED data from a sorted permutation of data in <tt class="docutils literal"><span class="pre">unsorted.bed</span></tt>. No note or custom tag data is added.</p>
+<p>This creates the file <code class="docutils literal"><span class="pre">sorted.starch</span></code>, which uses the <code class="docutils literal"><span class="pre">bzip2</span></code> algorithm to compress transformed BED data from a sorted permutation of data in <code class="docutils literal"><span class="pre">unsorted.bed</span></code>. No note or custom tag data is added.</p>
 <p>It is possible to speed up the compression of a BED file by using a cluster. Start by reviewing our <a class="reference internal" href="../../../usage-examples/starchcluster.html#starchcluster"><em>starchcluster</em></a> script.</p>
 </div>
 </div>
@@ -172,7 +172,7 @@ USAGE: starch [--note=&quot;foo bar...&quot;] [--bzip2 | --gzip] [--header] [&lt
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../../index.html">
               <img class="logo" src="../../../../_static/logo_with_label_v3.png" alt="Logo"/>
@@ -210,7 +210,7 @@ USAGE: starch [--note=&quot;foo bar...&quot;] [--bzip2 | --gzip] [--header] [&lt
     Show page source
   </a>
 </div>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../../search.html" method="get">
       <input type="text" name="q" />
@@ -256,9 +256,9 @@ USAGE: starch [--note=&quot;foo bar...&quot;] [--bzip2 | --gzip] [--header] [&lt
     </ul>
   </nav>
   </div>
-  <footer id="pagefooter">&copy; 2014, Shane Neph, Alex Reynolds.
+  <footer id="pagefooter">&copy; 2011-2015, Shane Neph, Alex Reynolds.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a>
-      1.2.3
+      1.3b2
         with the <a href="http://github.com/irskep/sphinx-better-theme">
           better</a> theme.
 

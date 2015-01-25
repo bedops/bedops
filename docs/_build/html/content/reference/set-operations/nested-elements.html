@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
     <link rel="top" title="BEDOPS v2.4.4" href="../../../index.html" />
     <link rel="up" title="6.1. Set operations" href="../set-operations.html" />
@@ -32,7 +32,7 @@
     <link rel="prev" title="6.1.3. closest-features" href="closest-features.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   </head>
-  <body>
+  <body role="document">
     <header id="pageheader"><h1><a href="../../../index.html ">
         BEDOPS v2.4.4
     </a></h1></header>
@@ -65,7 +65,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="nested-elements">
 <span id="id1"></span><h1>6.1.4. Nested elements<a class="headerlink" href="#nested-elements" title="Permalink to this headline">¶</a></h1>
@@ -116,17 +116,17 @@ chr1    125    150
 chr1    150    1000
 </pre></div>
 </div>
-<p>Here, the element <tt class="docutils literal"><span class="pre">chr1:125-150</span></tt> is entirely nested within <tt class="docutils literal"><span class="pre">chr1:100-200</span></tt>:</p>
+<p>Here, the element <code class="docutils literal"><span class="pre">chr1:125-150</span></code> is entirely nested within <code class="docutils literal"><span class="pre">chr1:100-200</span></code>:</p>
 <a class="reference internal image-reference" href="../../../_images/reference_bedextract_nested_elements.png"><img alt="../../../_images/reference_bedextract_nested_elements.png" src="../../../_images/reference_bedextract_nested_elements.png" style="width: 99%;" /></a>
 </div>
 <div class="section" id="why-nested-elements-matter">
 <span id="id2"></span><h2>6.1.4.3. Why nested elements matter<a class="headerlink" href="#why-nested-elements-matter" title="Permalink to this headline">¶</a></h2>
-<p>BEDOPS <a class="reference internal" href="../statistics/bedmap.html#bedmap"><em>bedmap</em></a> and <a class="reference internal" href="bedextract.html#bedextract"><em>bedextract</em></a> tools offer the <tt class="docutils literal"><span class="pre">--faster</span></tt> option to perform very fast retrieval of overlapping elements, so long as input datasets do not contain nested elements, as defined above.</p>
+<p>BEDOPS <a class="reference internal" href="../statistics/bedmap.html#bedmap"><em>bedmap</em></a> and <a class="reference internal" href="bedextract.html#bedextract"><em>bedextract</em></a> tools offer the <code class="docutils literal"><span class="pre">--faster</span></code> option to perform very fast retrieval of overlapping elements, so long as input datasets do not contain nested elements, as defined above.</p>
 <p>To extract maximum performance out of the use of the BEDOPS toolkit, therefore, it is very useful to know if the input datasets contain such elements — if they do not, then we can apply this optimization.</p>
 <p>Common datasets we work with do not contain nested elements: reads, peaks, footprints, and others. However, other datasets do, such as motif hits or paired-end sequencing reads.</p>
 <p>How can we find out if our inputs have nested elements, before we start applying any operations?</p>
 <p>The compression tool <a class="reference internal" href="../file-management/compression/starch.html#starch"><em>starch</em></a> (v2.5 and greater) will look for these elements in an input BED file and store this condition as a flag in the output archive&#8217;s metadata. This value can be retrieved in constant time with <a class="reference internal" href="../file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a> and other tools which make use of the Starch C++ API.</p>
-<p>Additionally, the <tt class="docutils literal"><span class="pre">--ec</span></tt> (error-correction) option in <a class="reference internal" href="../statistics/bedmap.html#bedmap"><em>bedmap</em></a> will also report if inputs contain nested elements. This option doubles execution time, but when used in conjunction with the <tt class="docutils literal"><span class="pre">--faster</span></tt> option, the speed gains are more than recovered.</p>
+<p>Additionally, the <code class="docutils literal"><span class="pre">--ec</span></code> (error-correction) option in <a class="reference internal" href="../statistics/bedmap.html#bedmap"><em>bedmap</em></a> will also report if inputs contain nested elements. This option doubles execution time, but when used in conjunction with the <code class="docutils literal"><span class="pre">--faster</span></code> option, the speed gains are more than recovered.</p>
 </div>
 </div>
 
@@ -134,7 +134,7 @@ chr1    150    1000
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/logo_with_label_v3.png" alt="Logo"/>
@@ -160,7 +160,7 @@ chr1    150    1000
     Show page source
   </a>
 </div>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -203,9 +203,9 @@ chr1    150    1000
     </ul>
   </nav>
   </div>
-  <footer id="pagefooter">&copy; 2014, Shane Neph, Alex Reynolds.
+  <footer id="pagefooter">&copy; 2011-2015, Shane Neph, Alex Reynolds.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a>
-      1.2.3
+      1.3b2
         with the <a href="http://github.com/irskep/sphinx-better-theme">
           better</a> theme.
 

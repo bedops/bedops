@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
     <link rel="top" title="BEDOPS v2.4.4" href="../../index.html" />
     <link rel="up" title="4. Usage examples" href="../usage-examples.html" />
@@ -32,7 +32,7 @@
     <link rel="prev" title="4.3. Measuring the frequency of signed distances between SNPs and nearest DHSes" href="distance-frequencies.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   </head>
-  <body>
+  <body role="document">
     <header id="pageheader"><h1><a href="../../index.html ">
         BEDOPS v2.4.4
     </a></h1></header>
@@ -62,7 +62,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="finding-the-subset-of-snps-within-dhses">
 <span id="finding-elements-within-elements"></span><h1>4.4. Finding the subset of SNPs within DHSes<a class="headerlink" href="#finding-the-subset-of-snps-within-dhses" title="Permalink to this headline">¶</a></h1>
@@ -73,7 +73,7 @@
 </div>
 <div class="section" id="script">
 <h2>4.4.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
-<p>SNPs are in a BED-formatted file called <tt class="docutils literal"><span class="pre">SNPs.bed</span></tt> sorted lexicographically with <a class="reference internal" href="../reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a>. The DNase-hypersensitive sites are stored in a sorted BED-formatted file called <tt class="docutils literal"><span class="pre">DHSs.bed</span></tt>. These two files are available in the <a class="reference internal" href="#snps-within-dhses-downloads"><em>Downloads</em></a> section.</p>
+<p>SNPs are in a BED-formatted file called <code class="docutils literal"><span class="pre">SNPs.bed</span></code> sorted lexicographically with <a class="reference internal" href="../reference/file-management/sorting/sort-bed.html#sort-bed"><em>sort-bed</em></a>. The DNase-hypersensitive sites are stored in a sorted BED-formatted file called <code class="docutils literal"><span class="pre">DHSs.bed</span></code>. These two files are available in the <a class="reference internal" href="#snps-within-dhses-downloads"><em>Downloads</em></a> section.</p>
 <div class="highlight-python"><div class="highlight"><pre>bedmap --skip-unmapped --echo --echo-map SNPs.bed DHSs.bed \
   &gt; subsetOfSNPsWithinAssociatedDHS.bed
 </pre></div>
@@ -85,14 +85,14 @@
 <div class="highlight-python"><div class="highlight"><pre>chr1    10799576    10799577    rs12046278  Systolic_blood_pressure Cardiovascular|chr1 10799460    10799610    MCV-1   9.18063
 </pre></div>
 </div>
-<p>The output is delimited by pipe symbols (<tt class="docutils literal"><span class="pre">|</span></tt>), showing the reference element (SNP) and the mapped element (DHS).</p>
+<p>The output is delimited by pipe symbols (<code class="docutils literal"><span class="pre">|</span></code>), showing the reference element (SNP) and the mapped element (DHS).</p>
 <p>If multiple elements are mapped onto a single reference element, the mapped elements are further separated by semicolons, by default.</p>
 </div>
 <div class="section" id="downloads">
 <span id="snps-within-dhses-downloads"></span><h2>4.4.4. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><a class="reference download internal" href="../../_downloads/Frequencies-SNPs.bed.starch"><tt class="xref download docutils literal"><span class="pre">SNP</span></tt></a> elements</li>
-<li><a class="reference download internal" href="../../_downloads/Frequencies-DHSs.bed.starch"><tt class="xref download docutils literal"><span class="pre">DNase-hypersensitive</span></tt></a> elements</li>
+<li><a class="reference download internal" href="../../_downloads/Frequencies-SNPs.bed.starch"><code class="xref download docutils literal"><span class="pre">SNP</span></code></a> elements</li>
+<li><a class="reference download internal" href="../../_downloads/Frequencies-DHSs.bed.starch"><code class="xref download docutils literal"><span class="pre">DNase-hypersensitive</span></code></a> elements</li>
 </ul>
 <p>The <a class="reference internal" href="../reference/statistics/bedmap.html#bedmap"><em>bedmap</em></a> tool can operate directly on Starch-formatted archives. Alternatively, use the <a class="reference internal" href="../reference/file-management/compression/unstarch.html#unstarch"><em>unstarch</em></a> tool to decompress Starch data files to sorted BED format.</p>
 </div>
@@ -102,7 +102,7 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/logo_with_label_v3.png" alt="Logo"/>
@@ -129,7 +129,7 @@
     Show page source
   </a>
 </div>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -169,9 +169,9 @@
     </ul>
   </nav>
   </div>
-  <footer id="pagefooter">&copy; 2014, Shane Neph, Alex Reynolds.
+  <footer id="pagefooter">&copy; 2011-2015, Shane Neph, Alex Reynolds.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a>
-      1.2.3
+      1.3b2
         with the <a href="http://github.com/irskep/sphinx-better-theme">
           better</a> theme.
 

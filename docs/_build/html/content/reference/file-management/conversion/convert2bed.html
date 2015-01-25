@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
     <link rel="top" title="BEDOPS v2.4.4" href="../../../../index.html" />
     <link rel="up" title="6.3.3. Data conversion" href="../conversion.html" />
@@ -32,7 +32,7 @@
     <link rel="prev" title="6.3.3. Data conversion" href="../conversion.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   </head>
-  <body>
+  <body role="document">
     <header id="pageheader"><h1><a href="../../../../index.html ">
         BEDOPS v2.4.4
     </a></h1></header>
@@ -68,28 +68,28 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="convert2bed">
 <span id="id1"></span><h1>6.3.3.1. <cite>convert2bed</cite><a class="headerlink" href="#convert2bed" title="Permalink to this headline">¶</a></h1>
-<p>The <tt class="docutils literal"><span class="pre">convert2bed</span></tt> binary converts common binary and text genomic formats (BAM, GFF, GTF, PSL, SAM, VCF and WIG) to unsorted or sorted, extended BED or <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>BEDOPS Starch</em></a> (compressed BED) with additional per-format options.</p>
-<p>Convenience wrapper bash scripts are provided for each of these input formats, which convert standard input to unsorted or sorted BED, or to BEDOPS Starch (compressed BED). Scripts expose format-specific <tt class="docutils literal"><span class="pre">convert2bed</span></tt> options.</p>
-<p>We also provide <tt class="docutils literal"><span class="pre">bam2bed_sge</span></tt>, <tt class="docutils literal"><span class="pre">bam2bed_gnuParallel</span></tt>, <tt class="docutils literal"><span class="pre">bam2starch_sge</span></tt> and <tt class="docutils literal"><span class="pre">bam2starch_gnuParallel</span></tt> convenience scripts, which parallelize the conversion of indexed BAM to BED or to BEDOPS Starch via a Sun Grid Engine-based computational cluster or local GNU Parallel installation.</p>
+<p>The <code class="docutils literal"><span class="pre">convert2bed</span></code> binary converts common binary and text genomic formats (BAM, GFF, GTF, PSL, SAM, VCF and WIG) to unsorted or sorted, extended BED or <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>BEDOPS Starch</em></a> (compressed BED) with additional per-format options.</p>
+<p>Convenience wrapper bash scripts are provided for each of these input formats, which convert standard input to unsorted or sorted BED, or to BEDOPS Starch (compressed BED). Scripts expose format-specific <code class="docutils literal"><span class="pre">convert2bed</span></code> options.</p>
+<p>We also provide <code class="docutils literal"><span class="pre">bam2bed_sge</span></code>, <code class="docutils literal"><span class="pre">bam2bed_gnuParallel</span></code>, <code class="docutils literal"><span class="pre">bam2starch_sge</span></code> and <code class="docutils literal"><span class="pre">bam2starch_gnuParallel</span></code> convenience scripts, which parallelize the conversion of indexed BAM to BED or to BEDOPS Starch via a Sun Grid Engine-based computational cluster or local GNU Parallel installation.</p>
 <div class="section" id="dependencies">
 <h2>6.3.3.1.1. Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
-<p>Conversion of BAM and SAM input is dependent upon the installation of <a class="reference external" href="http://samtools.sourceforge.net/">SAMtools</a> and <a class="reference internal" href="#convert2bed"><em>convert2bed</em></a>. All <tt class="docutils literal"><span class="pre">*2starch</span></tt> wrapper scripts are further dependent on the installation of the <a class="reference internal" href="../compression/starch.html#starch"><em>starch</em></a> binary, part of a typical BEDOPS installation.</p>
+<p>Conversion of BAM and SAM input is dependent upon the installation of <a class="reference external" href="http://samtools.sourceforge.net/">SAMtools</a> and <a class="reference internal" href="#convert2bed"><em>convert2bed</em></a>. All <code class="docutils literal"><span class="pre">*2starch</span></code> wrapper scripts are further dependent on the installation of the <a class="reference internal" href="../compression/starch.html#starch"><em>starch</em></a> binary, part of a typical BEDOPS installation.</p>
 </div>
 <div class="section" id="source">
 <h2>6.3.3.1.2. Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">convert2bed</span></tt> conversion tool is part of the binary and source downloads of BEDOPS. See the <a class="reference internal" href="../../../installation.html#installation"><em>Installation</em></a> documentation for more details.</p>
+<p>The <code class="docutils literal"><span class="pre">convert2bed</span></code> conversion tool is part of the binary and source downloads of BEDOPS. See the <a class="reference internal" href="../../../installation.html#installation"><em>Installation</em></a> documentation for more details.</p>
 </div>
 <div class="section" id="usage">
 <h2>6.3.3.1.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<p>Generally, to convert data in format <tt class="docutils literal"><span class="pre">xyz</span></tt> to sorted BED:</p>
+<p>Generally, to convert data in format <code class="docutils literal"><span class="pre">xyz</span></code> to sorted BED:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ convert2bed -i xyz &lt; input.xyz &gt; output.bed
 </pre></div>
 </div>
-<p>Add the <tt class="docutils literal"><span class="pre">-o</span> <span class="pre">starch</span></tt> option to write a BEDOPS Starch file, which stores compressed BED data and feature metadata:</p>
+<p>Add the <code class="docutils literal"><span class="pre">-o</span> <span class="pre">starch</span></code> option to write a BEDOPS Starch file, which stores compressed BED data and feature metadata:</p>
 <div class="highlight-python"><div class="highlight"><pre>$ convert2bed -i xyz -o starch &lt; input.xyz &gt; output.starch
 </pre></div>
 </div>
@@ -100,7 +100,7 @@ $ bam2starch &lt; reads.bam &gt; reads.starch
 </div>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
-<p class="last">Format-specific options are available for each wrapper; use <tt class="docutils literal"><span class="pre">--help</span></tt> with a wrapper script or <tt class="docutils literal"><span class="pre">--help-bam</span></tt>, <tt class="docutils literal"><span class="pre">--help-gff</span></tt> etc. with <tt class="docutils literal"><span class="pre">convert2bed</span></tt> to get a format-specific description of the conversion procedure and options.</p>
+<p class="last">Format-specific options are available for each wrapper; use <code class="docutils literal"><span class="pre">--help</span></code> with a wrapper script or <code class="docutils literal"><span class="pre">--help-bam</span></code>, <code class="docutils literal"><span class="pre">--help-gff</span></code> etc. with <code class="docutils literal"><span class="pre">convert2bed</span></code> to get a format-specific description of the conversion procedure and options.</p>
 </div>
 </div>
 <div class="section" id="example">
@@ -113,7 +113,7 @@ $ bam2starch &lt; reads.bam &gt; reads.starch
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../../index.html">
               <img class="logo" src="../../../../_static/logo_with_label_v3.png" alt="Logo"/>
@@ -140,7 +140,7 @@ $ bam2starch &lt; reads.bam &gt; reads.starch
     Show page source
   </a>
 </div>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../../search.html" method="get">
       <input type="text" name="q" />
@@ -186,9 +186,9 @@ $ bam2starch &lt; reads.bam &gt; reads.starch
     </ul>
   </nav>
   </div>
-  <footer id="pagefooter">&copy; 2014, Shane Neph, Alex Reynolds.
+  <footer id="pagefooter">&copy; 2011-2015, Shane Neph, Alex Reynolds.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a>
-      1.2.3
+      1.3b2
         with the <a href="http://github.com/irskep/sphinx-better-theme">
           better</a> theme.
 
