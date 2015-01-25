@@ -15,7 +15,7 @@ The ``gtf2bed`` script requires :ref:`convert2bed <convert2bed>`. The ``gtf2star
 
 This script is also dependent on input that follows the GTF 2.2 specification. A GTF-format validator is available `here <http://mblab.wustl.edu/software.html>`_ to ensure your input follows specification.
 
-.. tip:: Conversion of data which are GTF-like, but which do not follow the specification can cause ``IOError`` and other runtime exceptions. If you run into problems, please check that your input follows the GTF specification.
+.. tip:: Conversion of data which are GTF-like, but which do not follow the specification can cause parsing issues. If you run into problems, please check that your input follows the GTF specification. 
 
 ======
 Source
