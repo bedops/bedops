@@ -34,6 +34,10 @@ tt {
       -moz-column-count: 1;
       column-count: 1;
    }
+
+   .col_element {
+      margin-bottom:15px;
+   }
 }
 
 ul {
