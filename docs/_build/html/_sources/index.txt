@@ -28,9 +28,9 @@ If you use **BEDOPS** in your research, please cite the following manuscript:
 
    Shane Neph, M. Scott Kuehn, Alex P. Reynolds, et al. **BEDOPS: high-performance genomic feature operations**. *Bioinformatics* (2012) 28 (14): 1919-1920. `doi: 10.1093/bioinformatics/bts277 <http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract>`_
 
-=================
-Table of contents
-=================
+========
+Contents
+========
 
 .. toctree::
    :numbered:
