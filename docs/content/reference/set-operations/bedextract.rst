@@ -28,7 +28,7 @@ Specifically, sorting with :ref:`sort-bed` allows us to perform a `binary search
 
 To indicate the kind of speed gain that the :ref:`bedextract` tool provides, in local testing, a naïve listing of chromosomes from a 36 GB BED input using UNIX ``cut`` and ``uniq`` utilities took approximately 20 minutes to complete on a typical Core 2 Duo-based Linux workstation. Retrieval of the same chromosome listing with ``bedextract --list-chr`` took only 2 seconds (cache flushed |---| no cheating!).
 
-.. tip:: While listing chromosomes is perhaps a trivial task, 1200 seconds to 2 seconds is a 600-fold speedup. Similar improvements are gained from using ``--chrom`` and ``--faster`` options with other core BEDOPS tools like :ref:`bedops` and :ref:`bedmap`. If your data meet the criteria for using this approach |---| and a lot of genomic datasets do |---| we strongly encourage adding this to your toolkit.
+.. tip:: While listing chromosomes is perhaps a trivial task, 1200 seconds to 2 seconds is a **600-fold** speedup. Similar improvements are gained from using ``--chrom`` and ``--faster`` options with other core BEDOPS tools like :ref:`bedops` and :ref:`bedmap`. If your data meet the criteria for using this approach |---| and a lot of genomic datasets do |---| we strongly encourage adding this to your toolkit.
 
 ==================
 Inputs and outputs
