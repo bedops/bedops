@@ -26,6 +26,7 @@ tt {
    -webkit-column-count: 3; /* Chrome, Safari, Opera */
    -moz-column-count: 3; /* Firefox */
    column-count: 3;
+   column-rule: 1px dotted #e0e0e0;
 }
 
 @media only screen and (max-device-width: 640px) {
