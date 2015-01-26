@@ -753,7 +753,7 @@ During normal use of ``bedmap``, the application will usually terminate when it 
 
 When adding ``--ec``, ``bedmap`` will go into :ref:`error checking mode <bedmap_error_checking>` and read through the entire map dataset. 
 
-One method for dealing with this is to override how SIGPIPE errors are caught by the interpreter (bash, Python, etc.) and retrapping them or ignoring them. However, it may not a good idea to do this as other situations may arise in production pipelines where it is ideal to trap and handle all I/O errors in a default manner.
+One method for dealing with this is to override how ``SIGPIPE`` errors are caught by the interpreter (bash, Python, etc.) and retrapping them or ignoring them. However, it may not a good idea to do this as other situations may arise in production pipelines where it is ideal to trap and handle all I/O errors in a default manner.
 
 Until now, we have proposed using the ``--ec`` (error checking) option in ``bedmap`` as one way to prevent raising ``SIGPIPE`` events when chaining commands via pipes, by forcing all inputs to be read entirely.  Early pipe termination can cause scripts to stop processing when certain flags are set (for example, when -e is used with tcsh).  This hidden behavior of ``--ec`` has been replaced with the explicit option ``--sweep-all``.
 
