@@ -14,7 +14,7 @@ a:visited {
    color: #20e !important;
 }
 
-pre, tt {
+a > pre, tt {
    color: #00f !important;
 }
 
