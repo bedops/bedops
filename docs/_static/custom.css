@@ -31,6 +31,21 @@ tt {
    column-rule: 1px dotted #e0e0e0;
 }
 
+@media only screen and (min-device-width : 320px) and (max-device-width : 568px) and (orientation : landscape) { 
+   .index_cols {
+      -webkit-column-count: 1;
+      -moz-column-count: 1;
+      column-count: 1;
+      -webkit-column-rule: none;
+      -moz-column-rule: none;
+      column-rule: none;
+   }
+
+   .col_element {
+      margin-bottom:15px;
+   }
+}
+
 @media only screen and (max-device-width: 640px) {
    .index_cols {
       -webkit-column-count: 1;
