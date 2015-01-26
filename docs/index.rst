@@ -54,7 +54,7 @@ Contents
 
    <img src="_images/downloads_v3.png" style="height:36px; margin:0; width: auto !important;">
    <div class="index_cols">
-      <div class="col_element" style="display:inline-block;">
+      <div class="col_element" style="display:inline-block; float:left;">
          <img src="_images/linux_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
             <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.4/bedops_linux_x86_64-v2.4.4.tar.bz2">x86-64 (64-bit)</a> binaries</li>
@@ -62,14 +62,14 @@ Contents
             <li><a href="content/installation.html#linux">Installation instructions</a> for Linux hosts</li>
          </ul>
       </div>
-      <div class="col_element" style="display:inline-block;">
+      <div class="col_element" style="display:inline-block; float:left;">
          <img src="_images/macosx_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
             <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.4/BEDOPS.2.4.4.mpkg.zip">Intel (32-/64-bit, 10.7-10.10)</a> installer package</li>
             <li><a href="content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
          </ul>
       </div>
-      <div class="col_element" style="display:inline-block;">
+      <div class="col_element" style="display:inline-block; float:left;">
          <img src="_images/source_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
             <li><a href="https://github.com/bedops/bedops/archive/v2.4.4.tar.gz">Source code</a> (tar.gz)</li>
