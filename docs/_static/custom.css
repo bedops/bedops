@@ -31,6 +31,10 @@ tt {
    column-rule: 1px dotted #e0e0e0;
 }
 
+.col_element {
+   display: inline-block;
+}
+
 @media only screen and (min-device-width : 320px) and (max-device-width : 568px) and (orientation : landscape) { 
    .index_cols {
       -webkit-column-count: 1;
@@ -43,6 +47,7 @@ tt {
 
    .col_element {
       margin-bottom:15px;
+      display: block;
    }
 }
 
@@ -58,6 +63,7 @@ tt {
 
    .col_element {
       margin-bottom:15px;
+      display: block;
    }
 }
 
