@@ -54,7 +54,7 @@ Contents
 
    <img src="_images/downloads_v3.png" style="height:36px; margin:0; width: auto !important;">
    <div class="index_cols">
-      <div class="col_element" style="display:inline-block;">
+      <div class="col_element">
          <img src="_images/linux_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
             <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.4/bedops_linux_x86_64-v2.4.4.tar.bz2">x86-64 (64-bit)</a> binaries</li>
@@ -62,14 +62,14 @@ Contents
             <li><a href="content/installation.html#linux">Installation instructions</a> for Linux hosts</li>
          </ul>
       </div>
-      <div class="col_element" style="display:inline-block;">
+      <div class="col_element">
          <img src="_images/macosx_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
             <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.4/BEDOPS.2.4.4.mpkg.zip">Intel (32-/64-bit, 10.7-10.10)</a> installer package</li>
             <li><a href="content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
          </ul>
       </div>
-      <div class="col_element" style="display:inline-block;">
+      <div class="col_element">
          <img src="_images/source_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
             <li><a href="https://github.com/bedops/bedops/archive/v2.4.4.tar.gz">Source code</a> (tar.gz)</li>
@@ -134,7 +134,7 @@ Contents
 
    <img src="_images/reference_v2.png" style="height:36px; margin:0; width:auto !important;">
    <div class="index_cols">
-      <div class="col_element" style="display:inline-block;">
+      <div class="col_element">
          <img src="_images/set_operations_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:2px; padding-right:0px; padding-left:20px;">
             <li><a href="content/reference/set-operations/bedops.html"><tt>bedops</tt></a> - apply set operations on any number of BED inputs</li>
@@ -142,13 +142,13 @@ Contents
             <li><a href="content/reference/set-operations/closest-features.html"><tt>closest-features</tt></a> - matches nearest features between BED files</li>
         </ul>
       </div>
-      <div class="col_element" style="display:inline-block;">
+      <div class="col_element">
          <img src="_images/statistics_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:2px; padding-right:0px; padding-left:20px;">
             <li><a href="content/reference/statistics/bedmap.html"><tt>bedmap</tt></a> - map overlapping BED elements onto target regions and optionally compute any number of common statistical operations</li>
          </ul>
       </div>
-      <div class="col_element" style="display:inline-block;">
+      <div class="col_element">
          <img src="_images/file_management_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:2px; padding-right:0px; padding-left:20px;">
             <li><a href="content/reference/file-management/sorting/sort-bed.html"><tt>sort-bed</tt></a> - apply lexicographical sort to BED data</li>
@@ -159,7 +159,7 @@ Contents
       </div>
    </div>
    <div class="index_cols">
-      <div class="col_element" style="display:inline-block;">
+      <div class="col_element">
          <img src="_images/performance_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
          <ul style="list-style-type:square; font-size:smaller; margin:0; margin-right:2px; padding-right:0px; padding-left:20px;">
             <li>Parallel <a href="content/reference/file-management/conversion/parallel_bam2bed.html"><tt>bam2bed</tt></a> and <a href="content/reference/file-management/conversion/parallel_bam2starch.html"><tt>bam2starch</tt></a> - parallelized conversion and compression of BAM data</li>
@@ -168,7 +168,7 @@ Contents
             <li><a href="content/performance.html#independent-testing">Independent testing</a></li>
          </ul>
       </div>
-      <div class="col_element" style="display:inline-block;">
+      <div class="col_element">
           <img src="_images/toc_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
           <ul style="list-style-type:square; font-size:smaller; margin:0; margin-right:2px; padding-right:0px; padding-left:20px;">
              <li><a href="content/summary.html">Table summary</a> of <strong>BEDOPS</strong> toolkit</li>
@@ -179,7 +179,7 @@ Contents
              <li><a href="https://github.com/bedops/bedops">Github repository</a></li>
           </ul>
       </div>
-      <div class="col_element" style="display:inline-block;">
+      <div class="col_element">
           <img src="_images/support_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
           <ul style="list-style-type:square; font-size:smaller; margin:0; margin-right:2px; padding-right:0px; padding-left:20px;">
              <li><a href="content/installation.html">How to install <strong>BEDOPS</strong></a></li>
