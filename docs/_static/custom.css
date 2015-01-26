@@ -14,7 +14,7 @@ a:visited {
    color: #20e !important;
 }
 
-a > pre, tt {
+a span.pre, a tt {
    color: #00f !important;
 }
 
