@@ -10,35 +10,31 @@ The <a href="https://bedops.readthedocs.org/en/latest/content/overview.html#over
 
 ### Downloads ###
 
-<table border="1">
-<colgroup>
-<col width="33%">
-<col width="33%">
-<col width="34%">
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd">
-<td><img alt="linux_png" src="https://bedops.readthedocs.org/en/latest/_images/linux_v2.png"></td>
-<td><img alt="macosx_png" src="https://bedops.readthedocs.org/en/latest/_images/macosx_v2.png"></td>
-<td><img alt="source_png" src="https://bedops.readthedocs.org/en/latest/_images/source_v2.png"></td>
-</tr>
-<tr class="row-even"><td><ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.5/bedops_linux_x86_64-v2.4.5.tar.bz2">x86-64 (64-bit)</a> binaries</li>
-<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.5/bedops_linux_i386-v2.4.5.tar.bz2">i386 (32-bit)</a> binaries</li>
-<li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#linux">Installation instructions</a></li>
-</ul></td>
-<td><ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.5/BEDOPS.2.4.5.mpkg.zip">Intel (32-/64-bit)</a> installer</li>
-<li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#mac-os-x">Installation instructions</a></li>
-</ul></td>
-<td><ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-<li><a href="https://github.com/bedops/bedops/archive/v2.4.5.tar.gz">Source code</a> (tar.gz)</li>
-<li><a href="https://github.com/bedops/bedops/archive/v2.4.5.zip">Source code</a> (zip)</li>
-<li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#installation-via-source-code">Compilation instructions</a></li>
-</ul></td>
-</tr>
-</tbody>
-</table>
+<div class="index_cols" style="-webkit-column-count:3; -moz-column-count:3; column-count:3; -webkit-column-rule: 1px dotted #e0e0e0; -moz-column-rule: 1px dotted #e0e0e0; column-rule: 1px dotted #e0e0e0;">
+   <div class="col_element" style="display: inline-block;">
+      <img src="https://bedops.readthedocs.org/en/latest/_images/linux_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
+      <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
+         <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.5/bedops_linux_x86_64-v2.4.5.tar.bz2">x86-64 (64-bit)</a> binaries</li>
+         <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.5/bedops_linux_i386-v2.4.5.tar.bz2">i386 (32-bit)</a> binaries</li>
+         <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#linux">Installation instructions</a> for Linux hosts</li>
+      </ul>
+   </div>
+   <div class="col_element" style="display: inline-block;">
+      <img src="https://bedops.readthedocs.org/en/latest/_images/macosx_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
+      <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
+         <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.5/BEDOPS.2.4.5.mpkg.zip">Intel (32-/64-bit, 10.7-10.10)</a> installer package</li>
+         <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
+      </ul>
+   </div>
+   <div class="col_element" style="display: inline-block;">
+      <img src="https://bedops.readthedocs.org/en/latest/_images/source_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
+      <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
+         <li><a href="https://github.com/bedops/bedops/archive/v2.4.5.tar.gz">Source code</a> (tar.gz)</li>
+         <li><a href="https://github.com/bedops/bedops/archive/v2.4.5.zip">Source code</a> (zip)</li>
+         <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#installation-via-source-code">Compilation instructions</a></li>
+      </ul>
+   </div>
+</div>
 
 ### Documentation ###
 
