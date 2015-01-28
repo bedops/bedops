@@ -5167,7 +5167,7 @@
 						<key>LANGUAGE</key>
 						<string>English</string>
 						<key>VALUE</key>
-						<string>BEDOPS 2.4.4</string>
+						<string>BEDOPS 2.4.5</string>
 					</dict>
 				</array>
 			</dict>
@@ -5430,7 +5430,7 @@
 				</dict>
 			</array>
 			<key>NAME</key>
-			<string>BEDOPS 2.4.4</string>
+			<string>BEDOPS 2.4.5</string>
 		</dict>
 	</dict>
 	<key>TYPE</key>

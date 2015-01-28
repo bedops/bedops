@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.3.3.1. convert2bed &mdash; BEDOPS v2.4.4</title>
+    <title>6.3.3.1. convert2bed &mdash; BEDOPS v2.4.5</title>
     
     <link rel="stylesheet" href="../../../../_static/better.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.4.4',
+        VERSION:     '2.4.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS v2.4.4" href="../../../../index.html" />
+    <link rel="top" title="BEDOPS v2.4.5" href="../../../../index.html" />
     <link rel="up" title="6.3.3. Data conversion" href="../conversion.html" />
     <link rel="next" title="6.3.3.2. bam2bed" href="bam2bed.html" />
     <link rel="prev" title="6.3.3. Data conversion" href="../conversion.html" />
@@ -34,7 +34,7 @@
   </head>
   <body role="document">
     <header id="pageheader"><h1><a href="../../../../index.html ">
-        BEDOPS v2.4.4
+        BEDOPS v2.4.5
     </a></h1></header>
   <div class="related top">
   <nav id="rellinks">
@@ -72,7 +72,7 @@
             
   <div class="section" id="convert2bed">
 <span id="id1"></span><h1>6.3.3.1. <cite>convert2bed</cite><a class="headerlink" href="#convert2bed" title="Permalink to this headline">¶</a></h1>
-<p>The <code class="docutils literal"><span class="pre">convert2bed</span></code> binary converts common binary and text genomic formats (BAM, GFF, GTF, PSL, SAM, VCF and WIG) to unsorted or sorted, extended BED or <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>BEDOPS Starch</em></a> (compressed BED) with additional per-format options.</p>
+<p>The <code class="docutils literal"><span class="pre">convert2bed</span></code> binary converts common binary and text genomic formats (BAM, GFF, GTF, PSL, RepeatMasker annotation output (OUT), SAM, VCF and WIG) to unsorted or sorted, extended BED or <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><em>BEDOPS Starch</em></a> (compressed BED) with additional per-format options.</p>
 <p>Convenience wrapper bash scripts are provided for each of these input formats, which convert standard input to unsorted or sorted BED, or to BEDOPS Starch (compressed BED). Scripts expose format-specific <code class="docutils literal"><span class="pre">convert2bed</span></code> options.</p>
 <p>We also provide <code class="docutils literal"><span class="pre">bam2bed_sge</span></code>, <code class="docutils literal"><span class="pre">bam2bed_gnuParallel</span></code>, <code class="docutils literal"><span class="pre">bam2starch_sge</span></code> and <code class="docutils literal"><span class="pre">bam2starch_gnuParallel</span></code> convenience scripts, which parallelize the conversion of indexed BAM to BED or to BEDOPS Starch via a Sun Grid Engine-based computational cluster or local GNU Parallel installation.</p>
 <div class="section" id="dependencies">

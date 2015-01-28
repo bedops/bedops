@@ -12,6 +12,20 @@ Current version
 ===============
 
 ------
+v2.4.5
+------
+
+Released: **January 28, 2015**
+
+* ``convert2bed`` improvements
+
+  * Addition of RepeatMasker annotation output (``.out``) file conversion support, ``rmsk2bed`` and ``rmsk2starch`` wrappers, and unit tests
+
+=================
+Previous versions
+=================
+
+------
 v2.4.4
 ------
 
@@ -22,10 +36,6 @@ Released: **January 25, 2015**
   * Implemented substantial style changes via `A Better Sphinx Theme <http://github.com/irskep/sphinx-better-theme>`_ and various customizations. We also include responsive web style elements to help improve browsing on mobile devices.
 
   * Fixes to typos in conversion and other documents.
-
-=================
-Previous versions
-=================
 
 ------
 v2.4.3

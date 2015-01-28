@@ -3,7 +3,7 @@
 `convert2bed`
 =============
 
-The ``convert2bed`` binary converts common binary and text genomic formats (BAM, GFF, GTF, PSL, SAM, VCF and WIG) to unsorted or sorted, extended BED or :ref:`BEDOPS Starch <starch_specification>` (compressed BED) with additional per-format options.
+The ``convert2bed`` binary converts common binary and text genomic formats (BAM, GFF, GTF, PSL, RepeatMasker annotation output (OUT), SAM, VCF and WIG) to unsorted or sorted, extended BED or :ref:`BEDOPS Starch <starch_specification>` (compressed BED) with additional per-format options.
 
 Convenience wrapper bash scripts are provided for each of these input formats, which convert standard input to unsorted or sorted BED, or to BEDOPS Starch (compressed BED). Scripts expose format-specific ``convert2bed`` options.
 

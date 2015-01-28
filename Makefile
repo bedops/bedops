@@ -73,6 +73,7 @@ install_conversion_scripts: prep_c
 	-cp ${APPDIR}/conversion/src/wrappers/gff2bed ${BINDIR}/gff2bed
 	-cp ${APPDIR}/conversion/src/wrappers/gtf2bed ${BINDIR}/gtf2bed
 	-cp ${APPDIR}/conversion/src/wrappers/psl2bed ${BINDIR}/psl2bed
+	-cp ${APPDIR}/conversion/src/wrappers/rmsk2bed ${BINDIR}/rmsk2bed
 	-cp ${APPDIR}/conversion/src/wrappers/sam2bed ${BINDIR}/sam2bed
 	-cp ${APPDIR}/conversion/src/wrappers/vcf2bed ${BINDIR}/vcf2bed
 	-cp ${APPDIR}/conversion/src/wrappers/wig2bed ${BINDIR}/wig2bed
@@ -80,6 +81,7 @@ install_conversion_scripts: prep_c
 	-cp ${APPDIR}/conversion/src/wrappers/gff2starch ${BINDIR}/gff2starch
 	-cp ${APPDIR}/conversion/src/wrappers/gtf2starch ${BINDIR}/gtf2starch
 	-cp ${APPDIR}/conversion/src/wrappers/psl2starch ${BINDIR}/psl2starch
+	-cp ${APPDIR}/conversion/src/wrappers/rmsk2starch ${BINDIR}/rmsk2starch
 	-cp ${APPDIR}/conversion/src/wrappers/sam2starch ${BINDIR}/sam2starch
 	-cp ${APPDIR}/conversion/src/wrappers/vcf2starch ${BINDIR}/vcf2starch
 	-cp ${APPDIR}/conversion/src/wrappers/wig2starch ${BINDIR}/wig2starch
@@ -105,6 +107,7 @@ install_osx_packaging_bins: prep_c
 	-cp ${APPDIR}/conversion/src/wrappers/gff2bed ${OSXPKGDIR}/gff2bed
 	-cp ${APPDIR}/conversion/src/wrappers/gtf2bed ${OSXPKGDIR}/gtf2bed
 	-cp ${APPDIR}/conversion/src/wrappers/psl2bed ${OSXPKGDIR}/psl2bed
+	-cp ${APPDIR}/conversion/src/wrappers/rmsk2bed ${OSXPKGDIR}/rmsk2bed
 	-cp ${APPDIR}/conversion/src/wrappers/sam2bed ${OSXPKGDIR}/sam2bed
 	-cp ${APPDIR}/conversion/src/wrappers/vcf2bed ${OSXPKGDIR}/vcf2bed
 	-cp ${APPDIR}/conversion/src/wrappers/wig2bed ${OSXPKGDIR}/wig2bed
@@ -112,6 +115,7 @@ install_osx_packaging_bins: prep_c
 	-cp ${APPDIR}/conversion/src/wrappers/gff2starch ${OSXPKGDIR}/gff2starch
 	-cp ${APPDIR}/conversion/src/wrappers/gtf2starch ${OSXPKGDIR}/gtf2starch
 	-cp ${APPDIR}/conversion/src/wrappers/psl2starch ${OSXPKGDIR}/psl2starch
+	-cp ${APPDIR}/conversion/src/wrappers/rmsk2starch ${OSXPKGDIR}/rmsk2starch
 	-cp ${APPDIR}/conversion/src/wrappers/sam2starch ${OSXPKGDIR}/sam2starch
 	-cp ${APPDIR}/conversion/src/wrappers/vcf2starch ${OSXPKGDIR}/vcf2starch
 	-cp ${APPDIR}/conversion/src/wrappers/wig2starch ${OSXPKGDIR}/wig2starch

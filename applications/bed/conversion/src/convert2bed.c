@@ -85,6 +85,9 @@ c2b_init_conversion(c2b_pipeset_t *p)
         case PSL_FORMAT:
             c2b_init_psl_conversion(p);
             break;
+        case RMSK_FORMAT:
+            c2b_init_rmsk_conversion(p);
+            break;
         case SAM_FORMAT:
             c2b_init_sam_conversion(p);
             break;
@@ -121,6 +124,12 @@ static void
 c2b_init_psl_conversion(c2b_pipeset_t *p)
 {
     c2b_init_generic_conversion(p, &c2b_line_convert_psl_to_bed_unsorted);
+}
+
+static void
+c2b_init_rmsk_conversion(c2b_pipeset_t *p)
+{
+    c2b_init_generic_conversion(p, &c2b_line_convert_rmsk_to_bed_unsorted);
 }
 
 static void
@@ -1642,6 +1651,423 @@ c2b_line_convert_psl_to_bed(c2b_psl_t p, char *dest_line, ssize_t *dest_size)
                           p.blockSizes,
                           p.qStarts,
                           p.tStarts);
+}
+
+static void
+c2b_line_convert_rmsk_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
+{
+    /* 
+       RepeatMasker annotation output is space-delimited and can have multiple spaces. We also need to walk
+       past the first lines of the the output data to skip the header.
+    */
+
+    ssize_t rmsk_field_start_offsets[C2B_MAX_FIELD_COUNT_VALUE];
+    ssize_t rmsk_field_end_offsets[C2B_MAX_FIELD_COUNT_VALUE];
+    int rmsk_field_start_idx = 0;
+    int rmsk_field_end_idx = 0;
+    ssize_t current_src_posn = 0;
+
+    while (current_src_posn < src_size) {
+        /* within bounds */
+        if (((current_src_posn + 1) < src_size) && (c2b_globals.rmsk->line >= c2b_rmsk_header_line_count)) {
+            /* skip over any initial spaces */
+            while (c2b_globals.rmsk->is_start_of_line) {
+                if ((src[current_src_posn] != c2b_space_delim) && (src[current_src_posn] != c2b_line_delim)) {
+                    c2b_globals.rmsk->is_start_of_line = kFalse;
+                    rmsk_field_start_offsets[rmsk_field_start_idx++] = current_src_posn; /* 0th offset is *start* of actual data */
+                    break;
+                }
+                current_src_posn++;
+            }
+            /* if current position is a space delimiter, we keep reading until there are no more spaces */
+            if (src[current_src_posn] == c2b_space_delim) {
+                c2b_globals.rmsk->is_start_of_gap = kTrue;
+                if (c2b_globals.rmsk->is_start_of_gap) {
+                    rmsk_field_end_offsets[rmsk_field_end_idx++] = current_src_posn; /* current offset is end of current field */
+                }
+                /* walk through gap until next field is found */
+                while (c2b_globals.rmsk->is_start_of_gap) {
+                    if (src[current_src_posn++] != c2b_space_delim) {
+                        c2b_globals.rmsk->is_start_of_gap = kFalse;
+                        rmsk_field_start_offsets[rmsk_field_start_idx++] = current_src_posn - 1; /* current offset is start of next field */
+                        if (src[current_src_posn] == c2b_line_delim) {
+                            rmsk_field_end_offsets[rmsk_field_end_idx++] = current_src_posn;
+                        }
+                        current_src_posn--;
+                        break;
+                    }
+                }
+            }
+            /* if current position is a line delimiter, we increment some indices */
+            else if (src[current_src_posn] == c2b_line_delim) {
+                rmsk_field_end_offsets[rmsk_field_end_idx++] = current_src_posn;
+                c2b_globals.rmsk->line++;
+                c2b_globals.rmsk->is_start_of_line = kTrue;
+                c2b_globals.rmsk->is_start_of_gap = kFalse;
+            }
+        }
+        else {
+            if (src[current_src_posn + 1] == c2b_line_delim) {
+                rmsk_field_end_offsets[rmsk_field_end_idx++] = current_src_posn + 1;
+                c2b_globals.rmsk->line++;
+                c2b_globals.rmsk->is_start_of_line = kTrue;
+                c2b_globals.rmsk->is_start_of_gap = kFalse;
+                if (c2b_globals.rmsk->line <= c2b_rmsk_header_line_count) {
+                    if (c2b_globals.keep_header_flag) {
+                        char src_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
+                        char dest_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
+                        memcpy(src_header_line_str, src, src_size);
+                        src_header_line_str[src_size] = '\0';
+                        sprintf(dest_header_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), src_header_line_str);
+                        memcpy(dest + *dest_size, dest_header_line_str, strlen(dest_header_line_str));
+                        *dest_size += strlen(dest_header_line_str);
+                        c2b_globals.header_line_idx++;
+                    }
+                    return;
+                }
+            }
+        }
+        current_src_posn++;
+    }
+
+    c2b_globals.rmsk->is_start_of_line = kTrue;
+    c2b_globals.rmsk->is_start_of_gap = kFalse;
+
+#ifdef DEBUG
+    fprintf(stderr, "rmsk_field_start_idx: %d\n", (int) rmsk_field_start_idx);
+    fprintf(stderr, "rmsk_field_end_idx: %d\n", (int) rmsk_field_end_idx);
+#endif
+
+    if ((rmsk_field_start_idx < c2b_rmsk_field_min) || (rmsk_field_end_idx > c2b_rmsk_field_max)) {
+        fprintf(stderr, "Error: Invalid field count (%d) -- input file may not match input format\n", rmsk_field_start_idx);
+        c2b_print_usage(stderr);
+        exit(EINVAL); // Invalid argument (POSIX.1)
+    }
+    
+    /*  0 - Smith-Waterman score of the match */
+    char sw_score_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t sw_score_start = rmsk_field_start_offsets[0];
+    ssize_t sw_score_end = rmsk_field_end_offsets[0];
+    ssize_t sw_score_size = sw_score_end - sw_score_start;
+    memcpy(sw_score_str, src + sw_score_start, sw_score_size);
+    sw_score_str[sw_score_size] = '\0';
+
+#ifdef DEBUG
+    fprintf(stderr, "sw_score_str [%s]\n", sw_score_str);
+#endif
+
+    /*  1 - Percent, divergence = mismatches / (matches + mismatches) */
+    char perc_div_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t perc_div_start = rmsk_field_start_offsets[1];
+    ssize_t perc_div_end = rmsk_field_end_offsets[1];
+    ssize_t perc_div_size = perc_div_end - perc_div_start;
+    memcpy(perc_div_str, src + perc_div_start, perc_div_size);
+    perc_div_str[perc_div_size] = '\0';
+
+#ifdef DEBUG
+    fprintf(stderr, "perc_div_str [%s]\n", perc_div_str);
+#endif
+
+    /*  2 - Percent, bases opposite a gap in the query sequence = deleted bp */
+    char perc_deleted_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t perc_deleted_start = rmsk_field_start_offsets[2];
+    ssize_t perc_deleted_end = rmsk_field_end_offsets[2];
+    ssize_t perc_deleted_size = perc_deleted_end - perc_deleted_start;
+    memcpy(perc_deleted_str, src + perc_deleted_start, perc_deleted_size);
+    perc_deleted_str[perc_deleted_size] = '\0';
+
+#ifdef DEBUG
+    fprintf(stderr, "perc_deleted_str [%s]\n", perc_deleted_str);
+#endif
+
+    /*  3 - Percent, bases opposite a gap in the repeat consensus = inserted bp */
+    char perc_inserted_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t perc_inserted_start = rmsk_field_start_offsets[3];
+    ssize_t perc_inserted_end = rmsk_field_end_offsets[3];
+    ssize_t perc_inserted_size = perc_inserted_end - perc_inserted_start;
+    memcpy(perc_inserted_str, src + perc_inserted_start, perc_inserted_size);
+    perc_inserted_str[perc_inserted_size] = '\0';
+
+#ifdef DEBUG
+    fprintf(stderr, "perc_inserted_str [%s]\n", perc_inserted_str);
+#endif
+
+    /*  4 - Query sequence */
+    char query_seq_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t query_seq_start = rmsk_field_start_offsets[4];
+    ssize_t query_seq_end = rmsk_field_end_offsets[4];
+    ssize_t query_seq_size = query_seq_end - query_seq_start;
+    memcpy(query_seq_str, src + query_seq_start, query_seq_size);
+    query_seq_str[query_seq_size] = '\0';
+
+#ifdef DEBUG
+    fprintf(stderr, "query_seq_str [%s]\n", query_seq_str);
+#endif
+
+    /*  5 - Query start (1-indexed) */
+    char query_start_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t query_start_start = rmsk_field_start_offsets[5];
+    ssize_t query_start_end = rmsk_field_end_offsets[5];
+    ssize_t query_start_size = query_start_end - query_start_start;
+    memcpy(query_start_str, src + query_start_start, query_start_size);
+    query_start_str[query_start_size] = '\0';
+    uint64_t query_start_val = strtoull(query_start_str, NULL, 10);
+
+#ifdef DEBUG
+    fprintf(stderr, "query_start_str [%s]\n", query_start_str);
+#endif
+
+    /*  6 - Query end */
+    char query_end_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t query_end_start = rmsk_field_start_offsets[6];
+    ssize_t query_end_end = rmsk_field_end_offsets[6];
+    ssize_t query_end_size = query_end_end - query_end_start;
+    memcpy(query_end_str, src + query_end_start, query_end_size);
+    query_end_str[query_end_size] = '\0';
+    uint64_t query_end_val = strtoull(query_end_str, NULL, 10);
+
+#ifdef DEBUG
+    fprintf(stderr, "query_end_str [%s]\n", query_end_str);
+#endif
+
+    /*  7 - Bases in query sequence past the ending position of match */
+    char bases_past_match_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t bases_past_match_start = rmsk_field_start_offsets[7];
+    ssize_t bases_past_match_end = rmsk_field_end_offsets[7];
+    ssize_t bases_past_match_size = bases_past_match_end - bases_past_match_start;
+    memcpy(bases_past_match_str, src + bases_past_match_start, bases_past_match_size);
+    bases_past_match_str[bases_past_match_size] = '\0';
+
+#ifdef DEBUG
+    fprintf(stderr, "bases_past_match_str [%s]\n", bases_past_match_str);
+#endif
+
+    /*  8 - Strand match with repeat consensus sequence (+ = forward, C = complement) */
+    char strand_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t strand_start = rmsk_field_start_offsets[8];
+    ssize_t strand_end = rmsk_field_end_offsets[8];
+    ssize_t strand_size = strand_end - strand_start;
+    memcpy(strand_str, src + strand_start, strand_size);
+    strand_str[strand_size] = '\0';
+    if (strcmp(strand_str, c2b_rmsk_strand_complement) == 0) {
+        memcpy(strand_str, c2b_rmsk_strand_complement_replacement, strlen(c2b_rmsk_strand_complement_replacement) + 1);
+    }
+
+#ifdef DEBUG
+    fprintf(stderr, "strand_str [%s]\n", strand_str);
+#endif
+
+    /*  9 - Matching interspersed repeat name */
+    char repeat_name_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t repeat_name_start = rmsk_field_start_offsets[9];
+    ssize_t repeat_name_end = rmsk_field_end_offsets[9];
+    ssize_t repeat_name_size = repeat_name_end - repeat_name_start;
+    memcpy(repeat_name_str, src + repeat_name_start, repeat_name_size);
+    repeat_name_str[repeat_name_size] = '\0';
+
+#ifdef DEBUG
+    fprintf(stderr, "repeat_name_str [%s]\n", repeat_name_str);
+#endif
+
+    /* 10 - Repeat class */
+    char repeat_class_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t repeat_class_start = rmsk_field_start_offsets[10];
+    ssize_t repeat_class_end = rmsk_field_end_offsets[10];
+    ssize_t repeat_class_size = repeat_class_end - repeat_class_start;
+    memcpy(repeat_class_str, src + repeat_class_start, repeat_class_size);
+    repeat_class_str[repeat_class_size] = '\0';
+
+#ifdef DEBUG
+    fprintf(stderr, "repeat_class_str [%s]\n", repeat_class_str);
+#endif
+
+    /* 11 - Bases in (complement of) the repeat consensus sequence, prior to beginning of the match */
+    char bases_before_match_comp_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t bases_before_match_comp_start = rmsk_field_start_offsets[11];
+    ssize_t bases_before_match_comp_end = rmsk_field_end_offsets[11];
+    ssize_t bases_before_match_comp_size = bases_before_match_comp_end - bases_before_match_comp_start;
+    memcpy(bases_before_match_comp_str, src + bases_before_match_comp_start, bases_before_match_comp_size);
+    bases_before_match_comp_str[bases_before_match_comp_size] = '\0';
+
+#ifdef DEBUG
+    fprintf(stderr, "bases_before_match_comp_str [%s]\n", bases_before_match_comp_str);
+#endif
+
+    /* 12 - Match start (in repeat consensus sequence) */
+    char match_start_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t match_start_start = rmsk_field_start_offsets[12];
+    ssize_t match_start_end = rmsk_field_end_offsets[12];
+    ssize_t match_start_size = match_start_end - match_start_start;
+    memcpy(match_start_str, src + match_start_start, match_start_size);
+    match_start_str[match_start_size] = '\0';
+
+#ifdef DEBUG
+    fprintf(stderr, "match_start_str [%s]\n", match_start_str);
+#endif
+
+    /* 13 - Match end (in repeat consensus sequence) */
+    char match_end_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t match_end_start = rmsk_field_start_offsets[13];
+    ssize_t match_end_end = rmsk_field_end_offsets[13];
+    ssize_t match_end_size = match_end_end - match_end_start;
+    memcpy(match_end_str, src + match_end_start, match_end_size);
+    match_end_str[match_end_size] = '\0';
+
+#ifdef DEBUG
+    fprintf(stderr, "match_end_str [%s]\n", match_end_str);
+#endif
+
+    /* 14 - Identifier for individual insertions */
+    char unique_id_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t unique_id_start = rmsk_field_start_offsets[14];
+    ssize_t unique_id_end = rmsk_field_end_offsets[14];
+    ssize_t unique_id_size = unique_id_end - unique_id_start;
+    memcpy(unique_id_str, src + unique_id_start, unique_id_size);
+    unique_id_str[unique_id_size] = '\0';
+
+#ifdef DEBUG
+    fprintf(stderr, "unique_id_str [%s]\n", unique_id_str);
+#endif
+
+    /* 15 - Higher-scoring match present (optional) */
+    char higher_score_match_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    higher_score_match_str[0] = '\0';
+
+    if ((rmsk_field_start_idx == c2b_rmsk_field_max) && (rmsk_field_end_idx == c2b_rmsk_field_max)) {
+        ssize_t higher_score_match_start = rmsk_field_start_offsets[15];
+        ssize_t higher_score_match_end = rmsk_field_end_offsets[15];
+        ssize_t higher_score_match_size = higher_score_match_end - higher_score_match_start;
+        memcpy(higher_score_match_str, src + higher_score_match_start, higher_score_match_size);
+        higher_score_match_str[higher_score_match_size] = '\0';
+    }
+
+#ifdef DEBUG
+    fprintf(stderr, "higher_score_match_str [%s]\n", higher_score_match_str);
+#endif
+
+    c2b_rmsk_t rmsk;
+    rmsk.sw_score = sw_score_str;
+    rmsk.perc_div = perc_div_str;
+    rmsk.perc_deleted = perc_deleted_str;
+    rmsk.perc_inserted = perc_inserted_str;
+    rmsk.query_seq = query_seq_str;
+    rmsk.query_start = query_start_val - 1;
+    rmsk.query_end = query_end_val;
+    rmsk.bases_past_match = bases_past_match_str;
+    rmsk.strand = strand_str;
+    rmsk.repeat_name = repeat_name_str;
+    rmsk.repeat_class = repeat_class_str;
+    rmsk.bases_before_match_comp = bases_before_match_comp_str;
+    rmsk.match_start = match_start_str;
+    rmsk.match_end = match_end_str;
+    rmsk.unique_id = unique_id_str;
+    rmsk.higher_score_match = higher_score_match_str;
+
+    c2b_line_convert_rmsk_to_bed(rmsk, dest, dest_size);
+}
+
+static inline void
+c2b_line_convert_rmsk_to_bed(c2b_rmsk_t r, char *dest_line, ssize_t *dest_size)
+{
+    /* 
+       For RepeatMasker annotation-formatted data, we use the mapping provided by BEDOPS
+       convention described at:
+
+       http://bedops.readthedocs.org/en/latest/content/reference/file-management/conversion/rmsk2bed.html
+
+       RepeatMasker field        BED column index       BED field
+       -------------------------------------------------------------------------
+       query_seq                 1                      chromosome
+       query_start - 1           2                      start
+       query_end                 3                      stop
+       repeat_name               4                      id
+       sw_score                  5                      score
+       strand                    6                      strand
+
+       The remaining RepeatMasker columns are mapped as-is, in same order, to adjacent BED columns:
+
+       RepeatMasker field        BED column index       BED field
+       -------------------------------------------------------------------------
+       perc_div                  7                      -
+       perc_deleted              8                      -
+       perc_inserted             9                      -
+       bases_past_match          10                     -
+       repeat_class              11                     -
+       bases_before_match_comp   12                     -
+       match_start               13                     -
+       match_end                 14                     -
+       unique_id                 15                     -
+       higher_score_match        16                     -       
+    */
+
+    if (strlen(r.higher_score_match) == 0) {
+        *dest_size += sprintf(dest_line + *dest_size,
+                              "%s\t"            \
+                              "%" PRIu64 "\t"   \
+                              "%" PRIu64 "\t"   \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\n",
+                              r.query_seq,
+                              r.query_start,
+                              r.query_end,
+                              r.repeat_name,
+                              r.sw_score,
+                              r.strand,
+                              r.perc_div,
+                              r.perc_deleted,
+                              r.perc_inserted,
+                              r.bases_past_match,
+                              r.repeat_class,
+                              r.bases_before_match_comp,
+                              r.match_start,
+                              r.match_end,
+                              r.unique_id);
+    }
+    else {
+        *dest_size += sprintf(dest_line + *dest_size,
+                              "%s\t"            \
+                              "%" PRIu64 "\t"   \
+                              "%" PRIu64 "\t"   \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\t"            \
+                              "%s\n",
+                              r.query_seq,
+                              r.query_start,
+                              r.query_end,
+                              r.repeat_name,
+                              r.sw_score,
+                              r.strand,
+                              r.perc_div,
+                              r.perc_deleted,
+                              r.perc_inserted,
+                              r.bases_past_match,
+                              r.repeat_class,
+                              r.bases_before_match_comp,
+                              r.match_start,
+                              r.match_end,
+                              r.unique_id,
+                              r.higher_score_match);
+    }
 }
 
 static void
@@ -3721,6 +4147,7 @@ c2b_init_globals()
     c2b_globals.gff = NULL, c2b_init_global_gff_state();
     c2b_globals.gtf = NULL, c2b_init_global_gtf_state();
     c2b_globals.psl = NULL, c2b_init_global_psl_state();
+    c2b_globals.rmsk = NULL, c2b_init_global_rmsk_state();
     c2b_globals.sam = NULL, c2b_init_global_sam_state();
     c2b_globals.vcf = NULL, c2b_init_global_vcf_state(); 
     c2b_globals.wig = NULL, c2b_init_global_wig_state();
@@ -3750,6 +4177,7 @@ c2b_delete_globals()
     if (c2b_globals.gff) c2b_delete_global_gff_state();
     if (c2b_globals.gtf) c2b_delete_global_gtf_state();
     if (c2b_globals.psl) c2b_delete_global_psl_state();
+    if (c2b_globals.rmsk) c2b_delete_global_rmsk_state();
     if (c2b_globals.sam) c2b_delete_global_sam_state();
     if (c2b_globals.vcf) c2b_delete_global_vcf_state();
     if (c2b_globals.wig) c2b_delete_global_wig_state();
@@ -3877,6 +4305,42 @@ c2b_delete_global_psl_state()
 
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_delete_global_psl_state() - exit  ---\n");
+#endif
+}
+
+static void
+c2b_init_global_rmsk_state()
+{
+#ifdef DEBUG
+    fprintf(stderr, "--- c2b_init_global_rmsk_state() - enter ---\n");
+#endif
+
+    c2b_globals.rmsk = malloc(sizeof(c2b_rmsk_state_t));
+    if (!c2b_globals.rmsk) {
+        fprintf(stderr, "Error: Could not allocate space for RepeatMasker annotation state global\n");
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+
+    c2b_globals.rmsk->line = 0U;
+    c2b_globals.rmsk->is_start_of_line = kTrue;
+    c2b_globals.rmsk->is_start_of_gap = kFalse;
+
+#ifdef DEBUG
+    fprintf(stderr, "--- c2b_init_global_rmsk_state() - exit  ---\n");
+#endif
+}
+
+static void             
+c2b_delete_global_rmsk_state()
+{
+#ifdef DEBUG
+    fprintf(stderr, "--- c2b_delete_global_rmsk_state() - enter ---\n");
+#endif
+
+    free(c2b_globals.rmsk), c2b_globals.rmsk = NULL;
+
+#ifdef DEBUG
+    fprintf(stderr, "--- c2b_delete_global_rmsk_state() - exit  ---\n");
 #endif
 }
 
@@ -4272,6 +4736,9 @@ c2b_init_command_line_options(int argc, char **argv)
             case 'h':
                 c2b_print_usage(stdout);
                 exit(EXIT_SUCCESS);
+            case 'w':
+                c2b_print_version(stdout);
+                exit(EXIT_SUCCESS);
             case '1':
                 c2b_globals.help_format_idx = BAM_FORMAT;
                 c2b_print_format_usage(stdout);
@@ -4289,14 +4756,18 @@ c2b_init_command_line_options(int argc, char **argv)
                 c2b_print_format_usage(stdout);
                 exit(EXIT_SUCCESS);
             case '5':
-                c2b_globals.help_format_idx = SAM_FORMAT;
+                c2b_globals.help_format_idx = RMSK_FORMAT;
                 c2b_print_format_usage(stdout);
                 exit(EXIT_SUCCESS);
             case '6':
-                c2b_globals.help_format_idx = VCF_FORMAT;
+                c2b_globals.help_format_idx = SAM_FORMAT;
                 c2b_print_format_usage(stdout);
                 exit(EXIT_SUCCESS);
             case '7':
+                c2b_globals.help_format_idx = VCF_FORMAT;
+                c2b_print_format_usage(stdout);
+                exit(EXIT_SUCCESS);
+            case '8':
                 c2b_globals.help_format_idx = WIG_FORMAT;
                 c2b_print_format_usage(stdout);
                 exit(EXIT_SUCCESS);
@@ -4352,6 +4823,26 @@ c2b_init_command_line_options(int argc, char **argv)
 
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_init_command_line_options() - exit  ---\n");
+#endif
+}
+
+static void
+c2b_print_version(FILE *stream)
+{
+#ifdef DEBUG
+    fprintf(stderr, "--- c2b_print_version() - enter ---\n");
+#endif
+
+    fprintf(stream,
+            "%s\n"            \
+            "  version: %s\n" \
+            "  author:  %s\n",
+            general_name,
+            version,
+            authors);
+
+#ifdef DEBUG
+    fprintf(stderr, "--- c2b_print_version() - exit  ---\n");
 #endif
 }
 
@@ -4419,6 +4910,12 @@ c2b_print_format_usage(FILE *stream)
         format_usage = (char *) psl_usage;
         format_description = (char *) psl_description;
         format_options = (char *) psl_options;
+        break;
+    case RMSK_FORMAT:
+        format_name = (char *) rmsk_name;
+        format_usage = (char *) rmsk_usage;
+        format_description = (char *) rmsk_description;
+        format_options = (char *) rmsk_options;
         break;
     case SAM_FORMAT:
         format_name = (char *) sam_name;
@@ -4522,13 +5019,14 @@ c2b_to_input_format(const char *input_format)
 #endif
 
     return
-        (strcmp(input_format, "bam") == 0) ? BAM_FORMAT :
-        (strcmp(input_format, "gff") == 0) ? GFF_FORMAT :
-        (strcmp(input_format, "gtf") == 0) ? GTF_FORMAT :
-        (strcmp(input_format, "psl") == 0) ? PSL_FORMAT :
-        (strcmp(input_format, "sam") == 0) ? SAM_FORMAT :
-        (strcmp(input_format, "vcf") == 0) ? VCF_FORMAT :
-        (strcmp(input_format, "wig") == 0) ? WIG_FORMAT :
+        (strcmp(input_format, "bam") == 0)  ? BAM_FORMAT  :
+        (strcmp(input_format, "gff") == 0)  ? GFF_FORMAT  :
+        (strcmp(input_format, "gtf") == 0)  ? GTF_FORMAT  :
+        (strcmp(input_format, "psl") == 0)  ? PSL_FORMAT  :
+        (strcmp(input_format, "rmsk") == 0) ? RMSK_FORMAT :
+        (strcmp(input_format, "sam") == 0)  ? SAM_FORMAT  :
+        (strcmp(input_format, "vcf") == 0)  ? VCF_FORMAT  :
+        (strcmp(input_format, "wig") == 0)  ? WIG_FORMAT  :
         UNDEFINED_FORMAT;
 }
 

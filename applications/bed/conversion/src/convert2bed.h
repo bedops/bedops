@@ -1,9 +1,9 @@
 /* 
    convert2bed.h
    -----------------------------------------------------------------------
-   Copyright (C) 2014 Alex Reynolds
+   Copyright (C) 2014-2015 Alex Reynolds
 
-   wig2bed components, (C) 2011-2014 Scott Kuehn and Shane Neph
+   wig2bed components, (C) 2011-2015 Scott Kuehn and Shane Neph
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@
 #include <sys/param.h>
 #include <sys/wait.h>
 
-#define C2B_VERSION "2.4.3"
+#define C2B_VERSION "2.4.5"
 
 typedef int boolean;
 extern const boolean kTrue;
@@ -86,6 +86,7 @@ extern const char *starch_note_suffix_arg;
 extern const char *starch_stdin_arg;
 extern const char c2b_tab_delim;
 extern const char c2b_line_delim;
+extern const char c2b_space_delim;
 extern const char c2b_sam_header_prefix;
 extern const char *c2b_gff_header;
 extern const char *c2b_gff_fasta;
@@ -98,6 +99,11 @@ extern const char c2b_gtf_comment;
 extern const char *c2b_gtf_zero_length_insertion_attribute;
 extern const int c2b_psl_field_min;
 extern const int c2b_psl_field_max;
+extern const int c2b_rmsk_header_line_count;
+extern const int c2b_rmsk_field_min;
+extern const int c2b_rmsk_field_max;
+extern const char *c2b_rmsk_strand_complement;
+extern const char *c2b_rmsk_strand_complement_replacement;
 extern const int c2b_vcf_field_min;
 extern const char c2b_vcf_header_prefix;
 extern const char c2b_vcf_alt_allele_delim;
@@ -127,7 +133,8 @@ const char *starch_note_prefix_arg = " --note=\"";
 const char *starch_note_suffix_arg = "\" ";
 const char *starch_stdin_arg = " - ";
 const char c2b_tab_delim = '\t';
-const char c2b_line_delim = '\t';
+const char c2b_line_delim = '\n';
+const char c2b_space_delim = 0x20;
 const char c2b_sam_header_prefix = '@';
 const char *c2b_gff_header = "##gff-version 3";
 const char *c2b_gff_fasta = "##FASTA";
@@ -137,9 +144,14 @@ const char *c2b_gff_zero_length_insertion_attribute = ";zero_length_insertion=Tr
 const int c2b_gtf_field_min = 9;
 const int c2b_gtf_field_max = 10;
 const char c2b_gtf_comment = '#';
-const char *c2b_gtf_zero_length_insertion_attribute = "; zero_length_insertion=True";
+const char *c2b_gtf_zero_length_insertion_attribute = "; zero_length_insertion=True"; 
 const int c2b_psl_field_min = 21;
 const int c2b_psl_field_max = 21;
+const int c2b_rmsk_header_line_count = 3;
+const int c2b_rmsk_field_min = 15;
+const int c2b_rmsk_field_max = 16;
+const char *c2b_rmsk_strand_complement = "C";
+const char *c2b_rmsk_strand_complement_replacement = "-";
 const int c2b_vcf_field_min = 8;
 const char c2b_vcf_header_prefix = '#';
 const char c2b_vcf_alt_allele_delim = ',';
@@ -163,6 +175,7 @@ typedef enum format {
     GFF_FORMAT,
     GTF_FORMAT,
     PSL_FORMAT,
+    RMSK_FORMAT,
     SAM_FORMAT,
     VCF_FORMAT,
     WIG_FORMAT,
@@ -357,6 +370,57 @@ typedef struct psl {
 } c2b_psl_t;
 
 /* 
+   The RepeatMasker OUT (RMSK) format is described at:
+
+   https://helix.nih.gov/Applications/repeatmasker.help
+
+   OUT fields are in the following ordering:
+
+   Index   OUT field
+   ---------------------------------------------------------
+   0       Smith-Waterman score of the match
+   1       Percent, divergence = mismatches / (matches + mismatches)
+   2       Percent, bases opposite a gap in the query sequence = deleted bp
+   3       Percent, bases opposite a gap in the repeat consensus = inserted bp
+   4       Query sequence
+   5       Query start (1-indexed)
+   6       Query end
+   7       Bases in query sequence past the ending position of match
+   8       Strand match with repeat consensus sequence (+ = forward, C = complement)
+   9       Matching interspersed repeat name
+   10      Repeat class
+   11      Bases in (complement of) the repeat consensus sequence, prior to beginning of the match
+   12      Match start (in repeat consensus sequence)
+   13      Match end (in repeat consensus sequence)
+   14      Identifier for individual insertions
+
+   An asterisk (*) following the final column indicates that there is a 
+   higher-scoring match whose domain partly (<80%) includes the domain of 
+   the current match.
+
+   15      Higher-scoring match present
+*/
+
+typedef struct rmsk {
+    char *sw_score;
+    char *perc_div;
+    char *perc_deleted;
+    char *perc_inserted;
+    char *query_seq;
+    uint64_t query_start;
+    uint64_t query_end;
+    char *bases_past_match;
+    char *strand;
+    char *repeat_name;
+    char *repeat_class;
+    char *bases_before_match_comp;
+    char *match_start;
+    char *match_end;
+    char *unique_id;
+    char *higher_score_match;
+} c2b_rmsk_t;
+
+/* 
    The VCF v4.2 format is described at:
 
    http://samtools.github.io/hts-specs/VCFv4.2.pdf
@@ -415,17 +479,15 @@ typedef struct vcf {
     BAM -> SAM -> BED (unsorted) -> BED (sorted)
     BAM -> SAM -> BED (unsorted)
    
-   More generically, other formats typically follow one of these 
-   three paths:
+   More generically, other formats typically follow one of these three paths:
 
     XYZ -> BED (unsorted) -> BED (sorted) -> Starch
     XYZ -> BED (unsorted) -> BED (sorted)
     XYZ -> BED (unsorted)
 
-   Here, XYZ is one of GFF, GTF, PSL, SAM, VCF, or WIG.
+   Here, XYZ is one of GFF, GTF, PSL, RepeatMasker (OUT), SAM, VCF, or WIG.
    
-   If a more complex pipeline ever arises, we could just increase the
-   value of MAX_PIPES.
+   If a more complex pipeline arises, we can increase the value of MAX_PIPES.
 
    Each pipe has a read and write stream. The write stream handles
    data sent via the out and err file handles. We bundle all the pipes
@@ -488,15 +550,17 @@ static const char *general_usage = "\n"                                 \
     "  $ convert2bed --input=fmt [--output=fmt] [options] < input > output\n";
 
 static const char *general_description =                                \
-    "  Convert BAM, GFF, GTF, PSL, SAM, VCF and WIG genomic formats to BED or BEDOPS Starch (compressed BED)\n" \
+    "  Convert BAM, GFF, GTF, PSL, RepeatMasker (OUT), SAM, VCF and WIG\n" \
+    "  genomic formats to BED or BEDOPS Starch (compressed BED)\n"      \
     "\n"                                                                \
-    "  Input can be a regular file or standard input piped in using the hyphen character ('-'):\n" \
+    "  Input can be a regular file or standard input piped in using the\n" \
+    "  hyphen character ('-'):\n"                                       \
     "\n"                                                                \
-    "  $ upstream_process ... | convert2bed --input=fmt - > output\n";
+    "  $ some_upstream_process ... | convert2bed --input=fmt - > output\n";
 
 static const char *general_io_options =                                 \
     "  Input (required):\n\n"                                           \
-    "  --input=[bam|gff|gtf|psl|sam|vcf|wig] (-i <fmt>)\n"              \
+    "  --input=[bam|gff|gtf|psl|rmsk|sam|vcf|wig] (-i <fmt>)\n"              \
     "      Genomic format of input file (required)\n\n"                 \
     "  Output:\n\n"                                                     \
     "  --output=[bed|starch] (-o <fmt>)\n"                              \
@@ -521,8 +585,10 @@ static const char *general_options =                                    \
     "      intermediate data\n"                                         \
     "  --starch-note=\"xyz...\" (-e \"xyz...\")\n"                      \
     "      Used with --output=starch, this adds a note to the Starch archive metadata\n" \
-    "  --help | --help[-bam|-gff|-gtf|-psl|-sam|-vcf|-wig] (-h | -h <fmt>)\n" \
-    "      Show general help message (or detailed help for a specified input format)\n";
+    "  --help | --help[-bam|-gff|-gtf|-psl|-rmsk|-sam|-vcf|-wig] (-h | -h <fmt>)\n" \
+    "      Show general help message (or detailed help for a specified input format)\n" \
+    "  --version (-w)\n"                                                \
+    "      Show application version\n";
 
 static const char *bam_name = "convert2bed -i bam";
 
@@ -787,6 +853,68 @@ static const char *psl_options =                                        \
     "  --split (-s)\n"                                                  \
     "      Split record into multiple BED elements, based on tStarts field value\n";
 
+static const char *rmsk_name = "convert2bed -i rmsk";
+
+static const char *rmsk_usage =                                         \
+    "  Converts 1-base, closed [a, b] RepeatMasker annotation input\n"  \
+    "  into 0-based, half-open [a-1, b) extended BED or BEDOPS Starch\n" \
+    "\n"                                                                \
+    "  Usage:\n"                                                        \
+    "\n"                                                                \
+    "  $ rmsk2bed < foo.out > sorted-foo.out.bed\n"                     \
+    "  $ rmsk2starch < foo.out > sorted-foo.out.starch\n"               \
+    "\n"                                                                \
+    "  Or:\n"                                                           \
+    "\n"                                                                \
+    "  $ convert2bed -i rmsk < foo.out > sorted-foo.out.bed\n"          \
+    "  $ convert2bed -i rmsk -o starch < foo.out > sorted-foo.out.starch\n" \
+    "\n"                                                                \
+    "  We make no assumptions about sort order from converted output. Apply\n" \
+    "  the usage case displayed to pass data to the BEDOPS sort-bed application,\n" \
+    "  which generates lexicographically-sorted BED data as output.\n"  \
+    "\n"                                                                \
+    "  If you want to skip sorting, use the --do-not-sort option:\n"    \
+    "\n"                                                                \
+    "  $ rmsk2bed --do-not-sort < foo.out > unsorted-foo.out.bed\n";
+
+static const char *rmsk_description =                                   \
+    "  The RepeatMasker annotation format is 1-based and closed [a, b]\n" \
+    "  which is converted to 0-based, half-closed [a-1, b) when creating\n" \
+    "  BED output.\n"                                                   \
+    "\n"                                                                \
+    "  We process RepeatMasker annotation data (as described in:\n"     \
+    "  http://www.repeatmasker.org/webrepeatmaskerhelp.html) converting\n" \
+    "  them into the first six UCSC BED columns, as follows:\n"         \
+    "\n"                                                                \
+    "  - Query sequence            <-->   chromosome (1st column)\n"    \
+    "  - Query start -  1          <-->   start (2nd column)\n"         \
+    "  - Query end                 <-->   stop (3rd column)\n"          \
+    "  - Match repeat name         <-->   id (4th column)\n"            \
+    "  - SW score                  <-->   score (5th column)\n"         \
+    "  - strand                    <-->   strand (6th column)\n"        \
+    "\n"                                                                \
+    "  The remaining RepeatMasker columns are mapped as-is, in order,\n" \
+    "  to adjacent BED columns:\n"                                      \
+    "\n"                                                                \
+    "  - Percent, divergence\n"                                         \
+    "  - Percent, bases opposite gap in query (deleted bp)\n"           \
+    "  - Percent, bases opposite gap in repeat (inserted bp)\n"         \
+    "  - Bases in query sequence past the ending position of match\n"   \
+    "  - Repeat class\n"                                                \
+    "  - Bases in (complement of) the repeat consensus sequence\n"      \
+    "  - Match start (in repeat consensus sequence)\n"                  \
+    "  - Match end (in repeat consensus sequence)\n"                    \
+    "  - Identifier for individual insertions\n"                        \
+    "\n"                                                                \
+    "  Because we have mapped all columns, we can translate converted BED data back\n" \
+    "  to RepeatMasker annotation output with a simple awk statement or other script\n" \
+    "  that calculates 1-based coordinates and permutes columns.\n";
+
+static const char *rmsk_options =                                       \
+    "  RepeatMasker annotation conversion options:\n\n"                 \
+    "  --keep-header (-k)\n"                                            \
+    "      Preserve header section as pseudo-BED elements\n";
+
 static const char *sam_name = "convert2bed -i sam";
 
 static const char *sam_usage =                                          \
@@ -978,7 +1106,7 @@ static const char *wig_options =                                        \
 
 static const char *format_undefined_usage =                             \
     "  Note: Please specify format to get detailed usage parameters:\n\n" \
-    "  --help[-bam|-gff|-gtf|-psl|-sam|-vcf|-wig] (-h <fmt>)\n";
+    "  --help[-bam|-gff|-gtf|-psl|-rmsk|-sam|-vcf|-wig] (-h <fmt>)\n";
 
 typedef struct gff_state {
     char *id;
@@ -991,6 +1119,12 @@ typedef struct gtf_state {
 typedef struct psl_state {
     boolean is_headered;
 } c2b_psl_state_t;
+
+typedef struct rmsk_state {
+    uint64_t line;
+    boolean is_start_of_line;
+    boolean is_start_of_gap;
+} c2b_rmsk_state_t;
 
 typedef struct sam_state {
     char *samtools_path;
@@ -1052,6 +1186,7 @@ static struct globals {
     c2b_gff_state_t *gff;
     c2b_gtf_state_t *gtf;
     c2b_psl_state_t *psl;
+    c2b_rmsk_state_t *rmsk;
     c2b_sam_state_t *sam;
     c2b_vcf_state_t *vcf;
     c2b_wig_state_t *wig;
@@ -1078,17 +1213,19 @@ static struct option c2b_client_long_options[] = {
     { "sort-tmpdir",    required_argument,   NULL,    'r' },
     { "multisplit",     required_argument,   NULL,    'b' },
     { "help",           no_argument,         NULL,    'h' },
+    { "version",        no_argument,         NULL,    'w' },
     { "help-bam",       no_argument,         NULL,    '1' },
     { "help-gff",       no_argument,         NULL,    '2' },
     { "help-gtf",       no_argument,         NULL,    '3' },
     { "help-psl",       no_argument,         NULL,    '4' },
-    { "help-sam",       no_argument,         NULL,    '5' },
-    { "help-vcf",       no_argument,         NULL,    '6' },
-    { "help-wig",       no_argument,         NULL,    '7' },
+    { "help-rmsk",      no_argument,         NULL,    '5' },
+    { "help-sam",       no_argument,         NULL,    '6' },
+    { "help-vcf",       no_argument,         NULL,    '7' },
+    { "help-wig",       no_argument,         NULL,    '8' },
     { NULL,             no_argument,         NULL,     0  }
 };
 
-static const char *c2b_client_opt_string = "i:o:dakspvtnzge:m:r:b:h1234567?";
+static const char *c2b_client_opt_string = "i:o:dakspvtnzge:m:r:b:hw12345678?";
 
 #ifdef __cplusplus
 extern "C" {
@@ -1098,6 +1235,7 @@ extern "C" {
     static void              c2b_init_gff_conversion(c2b_pipeset_t *p);
     static void              c2b_init_gtf_conversion(c2b_pipeset_t *p);
     static void              c2b_init_psl_conversion(c2b_pipeset_t *p);
+    static void              c2b_init_rmsk_conversion(c2b_pipeset_t *p);
     static void              c2b_init_sam_conversion(c2b_pipeset_t *p);
     static void              c2b_init_vcf_conversion(c2b_pipeset_t *p);
     static void              c2b_init_wig_conversion(c2b_pipeset_t *p);
@@ -1113,6 +1251,8 @@ extern "C" {
     static inline void       c2b_line_convert_gtf_to_bed(c2b_gtf_t g, char *dest_line, ssize_t *dest_size);
     static void              c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
     static inline void       c2b_line_convert_psl_to_bed(c2b_psl_t p, char *dest_line, ssize_t *dest_size);
+    static void              c2b_line_convert_rmsk_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
+    static inline void       c2b_line_convert_rmsk_to_bed(c2b_rmsk_t r, char *dest_line, ssize_t *dest_size);
     static void              c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
     static void              c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *dest_size, char *src, ssize_t src_size); 
     static inline void       c2b_sam_cigar_str_to_ops(char *s);
@@ -1153,6 +1293,8 @@ extern "C" {
     static void              c2b_delete_global_gtf_state();
     static void              c2b_init_global_psl_state();
     static void              c2b_delete_global_psl_state();
+    static void              c2b_init_global_rmsk_state();
+    static void              c2b_delete_global_rmsk_state();
     static void              c2b_init_global_sam_state();
     static void              c2b_delete_global_sam_state();
     static void              c2b_init_global_vcf_state();
@@ -1166,6 +1308,7 @@ extern "C" {
     static void              c2b_init_global_starch_params();
     static void              c2b_delete_global_starch_params();
     static void              c2b_init_command_line_options(int argc, char **argv);
+    static void              c2b_print_version(FILE *stream);
     static void              c2b_print_usage(FILE *stream);
     static void              c2b_print_format_usage(FILE *stream);
     static char *            c2b_to_lowercase(const char *src);

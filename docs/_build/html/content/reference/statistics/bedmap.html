@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.2.1. bedmap &mdash; BEDOPS v2.4.4</title>
+    <title>6.2.1. bedmap &mdash; BEDOPS v2.4.5</title>
     
     <link rel="stylesheet" href="../../../_static/better.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '2.4.4',
+        VERSION:     '2.4.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
-    <link rel="top" title="BEDOPS v2.4.4" href="../../../index.html" />
+    <link rel="top" title="BEDOPS v2.4.5" href="../../../index.html" />
     <link rel="up" title="6.2. Statistics" href="../statistics.html" />
     <link rel="next" title="6.3. File management" href="../file-management.html" />
     <link rel="prev" title="6.2. Statistics" href="../statistics.html" />
@@ -34,7 +34,7 @@
   </head>
   <body role="document">
     <header id="pageheader"><h1><a href="../../../index.html ">
-        BEDOPS v2.4.4
+        BEDOPS v2.4.5
     </a></h1></header>
   <div class="related top">
   <nav id="rellinks">
@@ -97,7 +97,7 @@
 <p>The <code class="docutils literal"><span class="pre">--help</span></code> option describes the various mapping and analytical operations and other options available to the end user:</p>
 <div class="highlight-python"><div class="highlight"><pre>bedmap
   citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-  version:  2.4.4
+  version:  2.4.5
   authors:  Shane Neph &amp; Scott Kuehn
 
  USAGE: bedmap [process-flags] [overlap-option] &lt;operation(s)...&gt; &lt;ref-file&gt; [map-file]
@@ -397,7 +397,7 @@ chr21   33031900    33032000    ref-3|154.500000|9.311283|138.000000|165.000000
 <p>The <code class="docutils literal"><span class="pre">--echo-map</span></code> flag gathers overlapping mapped elements for every reference element. The option is useful for debugging and detailed downstream processing needs. This is the most general operation in <a class="reference internal" href="#bedmap"><em>bedmap</em></a> in that overlapping elements are returned in full detail, for every reference element. While results are well-defined and easily parsed, the output can be very large and difficult to read.</p>
 <p>As an example of using the <code class="docutils literal"><span class="pre">--echo-map-id</span></code> operator in a biological context, we examine a <a class="reference external" href="http://meme.nbcr.net/meme/fimo-intro.html">FIMO</a> analysis that returns a subset of transcription factor binding sites in BED format, with <a class="reference external" href="http://en.wikipedia.org/wiki/TRANSFAC">TRANSFAC</a> motif names listed in the ID column:</p>
 <div class="highlight-python"><div class="highlight"><pre>chr1    4534161 4534177 -V_GRE_C        4.20586e-06     -       CGTACACACAGTTCTT
-chr1    4534192.4.44205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
+chr1    4534192.4.54205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
 chr1    4534209 4534223 +V_HNF4_Q6_01   6.93604e-06     +       GGACCAGAGTCCAC
 chr1    4962522 4962540 -V_GCNF_01      9.4497e-06      -       CCCAAGGTCAAGATAAAG
 chr1    4962529 4962539 +V_NUR77_Q5     8.43564e-06     +       TTGACCTTGG
@@ -593,7 +593,7 @@ chr21   33031900    33032000    ref-3|117.750000
 <p>The <code class="docutils literal"><span class="pre">--prec</span></code> and <code class="docutils literal"><span class="pre">--sci</span></code> process flags are useful for controlling the <a class="reference external" href="http://en.wikipedia.org/wiki/Precision_(arithmetic)">arithmetic precision</a> and <a class="reference external" href="http://en.wikipedia.org/wiki/Scientific_notation">notation</a> of score output, when used with the <code class="docutils literal"><span class="pre">--echo-map-score</span></code>, <code class="docutils literal"><span class="pre">--sum</span></code>, <code class="docutils literal"><span class="pre">--mean</span></code> and other numerical score operators. This will also format results from the non-score operator <code class="docutils literal"><span class="pre">--bases-uniq-f</span></code>.</p>
 <p>To demonstrate their use, we revisit the <code class="docutils literal"><span class="pre">Motifs</span></code> dataset, which includes <em>p</em>-values reporting the statistical significance of putative transcription factor binding sites:</p>
 <div class="highlight-python"><div class="highlight"><pre>chr1    4534161 4534177 -V_GRE_C        4.20586e-06     -       CGTACACACAGTTCTT
-chr1    4534192.4.44205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
+chr1    4534192.4.54205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
 chr1    4534209 4534223 +V_HNF4_Q6_01   6.93604e-06     +       GGACCAGAGTCCAC
 chr1    4962522 4962540 -V_GCNF_01      9.4497e-06      -       CCCAAGGTCAAGATAAAG
 chr1    4962529 4962539 +V_NUR77_Q5     8.43564e-06     +       TTGACCTTGG
