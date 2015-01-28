@@ -169,6 +169,8 @@ As with all BEDOPS tools and operations, the output of this operation is :ref:`s
 
    This example uses three input sets, but you can specify two, four or even more sets with ``--everything`` to take their union.
 
+.. _bedops_element_of:
+
 -----------------------------
 Element-of (-e, --element-of)
 -----------------------------
@@ -270,6 +272,8 @@ While this operation is not symmetric with respect to ordering of input sets, ``
 
 .. note:: We show usage examples with two files, but ``--element-of`` supports three or more input sets. For a more in-depth discussion of ``--element-of`` and how overlaps are determined with three or more input files, please review the `BEDOPS forum discussion <http://bedops.uwencode.org/forum/index.php?topic=20.0>`_ on this subject.
 
+.. _bedops_not_element_of:
+
 -------------------------------------
 Not-element-of (-n, --not-element-of)
 -------------------------------------
@@ -320,6 +324,8 @@ Similarly, this operation is not symmetric |--| the order of inputs will specify
 
 .. note:: The same caveat applies to use of ``--not-element-of`` (``-n``) as with ``--element-of`` (``-e``), namely that the second and all subsequent input files are merged before the set operation is applied. Please review the BEDOPS `forum discussion thread <http://bedops.uwencode.org/forum/index.php?topic=20.0>`_ on this topic for more details.
 
+.. _bedops_complement:
+
 -----------------------------
 Complement (-c, --complement)
 -----------------------------
@@ -367,6 +373,8 @@ Note this **computed result** will lack ID, score and other columnar data other 
    As we see here, for a given chromosome, gaps are computed between the leftmost and rightmost edges of elements in the union of elements across all input sets.
 
 .. note:: For a more in-depth discussion on using ``--complement`` with left and right bounds of input chromosomes, please review the BEDOPS `forum discussion <http://bedops.uwencode.org/forum/index.php?topic=19.0>`_ on this subject.
+
+.. _bedops_difference:
 
 -----------------------------
 Difference (-d, --difference)
@@ -416,6 +424,8 @@ The ``--difference`` operation calculates the genomic regions found within the f
 
 .. note:: As with ``--element-of`` and ``--not-element-of``, this operation is not symmetric. While ``--not-element-of`` preserves all columns of elements found in the reference input and allows one to define overlaps, the ``--difference`` operator simply reports every genomic range as three-column BED, which does not overlap elements found in the second and subsequent input files by any amount.
 
+.. _bedops_symmetric_difference:
+
 -------------------------------------
 Symmetric difference (-s, --symmdiff)
 -------------------------------------
@@ -464,6 +474,8 @@ The ``--symmdiff`` operation calculates the genomic range that is exclusive to e
 
 .. tip:: It has been observed that ``--symmdiff`` (``-s``) is the same as the union of ``--difference A B`` with ``--difference B A``, but ``--symmdiff`` runs faster in practice.
 
+.. _bedops_intersect:
+
 ---------------------------
 Intersect (-i, --intersect)
 ---------------------------
@@ -509,6 +521,8 @@ The ``--intersect`` operation determines genomic regions common to all input set
 
    Notice how this computed result is quite different from that of ``--element-of N``, which functions more like a LEFT JOIN operation in SQL.
 
+.. _bedops_merge:
+
 -------------------
 Merge (-m, --merge)
 -------------------
@@ -553,6 +567,8 @@ The ``--merge`` operation flattens all disjoint, overlapping, and adjoining elem
       chr1	490	550
 
 .. tip:: The preceding example shows use of ``--merge`` (``-m``) with two inputs, but the merge operation works just as well with one input, collapsing elements within the file that overlap or which are directly adjoining.
+
+.. _bedops_partition:
 
 ---------------------------
 Partition (-p, --partition)
@@ -654,6 +670,8 @@ The ``--chop`` operator merges all overlapping input regions and "chops" them up
       chr1	126	127
 
 .. note:: Overlapping and nested regions are merged into contiguous ranges before chopping. The end result contains unique, non-overlapping elements.
+
+.. _bedops_stagger:
 
 -----------------------
 Stagger (-x, --stagger)
@@ -767,6 +785,8 @@ Padding elements with :ref:`bedops` is much more efficient that doing so with ``
 
 Also, note that the ``--element-of`` and ``--not-element-of`` operations behave differently with ``--range``, in that only the second and subsequent input files are padded.
 
+.. _bedops_starch:
+
 ==============
 Starch support
 ==============
@@ -774,6 +794,8 @@ Starch support
 The :ref:`bedops` application supports use of :ref:`Starch <starch>`-formatted archives as inputs, as well as text-based BED data. One or multiple inputs may be Starch archives.
 
 .. tip:: By combining the ``--chrom`` operator with operations on :ref:`Starch <starch>` archives, the end user can achieve improved computing performance and disk space savings, particularly where :ref:`bedops`, :ref:`bedmap` and :ref:`closest-features` operations are applied with a computational cluster on separate chromosomes.
+
+.. _bedops_error_checking:
 
 =====================
 Error checking (--ec)
