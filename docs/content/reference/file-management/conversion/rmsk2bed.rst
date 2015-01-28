@@ -65,7 +65,9 @@ We can convert it to sorted BED data in the following manner:
   HSU08988	9000	9695	Tigger1	12279	-	10.5	2.1	1.7	(19548)	DNA/MER2_type	(1600)	818	2	19
   HSU08988	9695	9816	MER7A	721	-	21.2	1.4	0.0	(19427)	DNA/MER2_type	(224)	122	2	20
 
-As you see here, we strip the header element, but adding the ``--keep-header`` option will preserve this header as a BED element that uses ``_header`` as a chromosome name:
+.. note:: Use :ref:`bedops --merge <bedops>` to merge elements, *e.g.*: ``rmsk2bed < foo.out | bedops --merge - > merged_repeatmasker_elements.bed``
+
+As shown above, we strip the header element, but adding the ``--keep-header`` option will preserve this header as a BED element that uses ``_header`` as a chromosome name:
 
 ::
 
