@@ -10,7 +10,7 @@ The <a href="https://bedops.readthedocs.org/en/latest/content/overview.html#over
 
 ### Downloads ###
 
-<span style="-webkit-column-count: 3; -moz-column-count: 3; column-count: 3; -webkit-column-rule: 1px dotted #e0e0e0; -moz-column-rule: 1px dotted #e0e0e0; column-rule: 1px dotted #e0e0e0;">
+<div style="-webkit-column-count: 3; -moz-column-count: 3; column-count: 3; -webkit-column-rule: 1px dotted #e0e0e0; -moz-column-rule: 1px dotted #e0e0e0; column-rule: 1px dotted #e0e0e0;">
    <div style="display: inline-block;">
       <img src="https://bedops.readthedocs.org/en/latest/_images/linux_v2.png" style="height:26px !important; width: auto !important; margin-bottom:10px;">
       <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
@@ -34,7 +34,7 @@ The <a href="https://bedops.readthedocs.org/en/latest/content/overview.html#over
          <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#installation-via-source-code">Compilation instructions</a></li>
       </ul>
    </div>
-</span>
+</div>
 
 ### Documentation ###
 
