@@ -9,7 +9,7 @@ The ``bedextract`` utility performs three primary tasks, with the goal of doing 
 2. Extracts all the elements in a sorted input BED file, for a given chromosome.
 3. Finds elements of one BED file, which overlap elements in a second, reference BED file (when specific element criteria are satisfied).
 
-One might ask why use this utility, when the first two tasks can already be performed with common UNIX text processing tools, such as ``cut``, ``sort``, ``uniq``, and ``awk``, and the third task can be performed with :ref:`bedops` with the ``--element-of -1`` options?
+One might ask why use this utility, when the first two tasks can already be performed with common UNIX text processing tools, such as ``cut``, ``sort``, ``uniq``, and ``awk``, and the third task can be performed with :ref:`bedops` with the ``--element-of 1`` options?
 
 The ``bedextract`` utility does the work of all those tools without streaming through an entire BED file, resulting in massive performance improvements. By using the hints provided by sorted BED input, the :ref:`bedextract` tool can jump around, seeking very quick answers to these questions about your data.
 
