@@ -1,48 +1,58 @@
-## BEDOPS v2.4.5: high-performance genomic feature operations ##
+## BEDOPS v2.4.6: high-performance genomic feature operations ##
 
 <!-- <img src="http://bedops.readthedocs.org/en/latest/_static/logo_with_label_v2.png" align="right" style="max-width:33%" /> -->
 
 ### About ###
 
-**BEDOPS v2.4.5** is a suite of tools to address common questions raised in genomic studies — mostly with regard to overlap and proximity relationships between data sets. It aims to be scalable and flexible, facilitating the efficient and accurate analysis and management of large-scale genomic data. 
+**BEDOPS v2.4.6** is a suite of tools to address common questions raised in genomic studies — mostly with regard to overlap and proximity relationships between data sets. It aims to be scalable and flexible, facilitating the efficient and accurate analysis and management of large-scale genomic data. 
 
-The <a href="https://bedops.readthedocs.org/en/latest/content/overview.html#overview">overview</a> section of the **BEDOPS v2.4.5** documentation summarizes the toolkit, functionality and performance enhancements. The <a href="https://bedops.readthedocs.org/en/latest/index.html#reference">reference</a> table offers documentation for all applications and scripts.
+The <a href="https://bedops.readthedocs.org/en/latest/content/overview.html#overview">overview</a> section of the **BEDOPS v2.4.6** documentation summarizes the toolkit, functionality and performance enhancements. The <a href="https://bedops.readthedocs.org/en/latest/index.html#reference">reference</a> table offers documentation for all applications and scripts.
 
 ### Downloads ###
 
-<div style="-webkit-column-count: 3; -moz-column-count: 3; column-count: 3; -webkit-column-rule: 1px dotted #e0e0e0; -moz-column-rule: 1px dotted #e0e0e0; column-rule: 1px dotted #e0e0e0;">
-   <div style="display: inline-block;">
-      <img src="https://bedops.readthedocs.org/en/latest/_images/linux_v2.png" style="height:26px !important; width: auto !important; margin-bottom:10px;">
-      <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
-         <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.5/bedops_linux_x86_64-v2.4.5.tar.bz2">x86-64 (64-bit)</a> binaries</li>
-         <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.5/bedops_linux_i386-v2.4.5.tar.bz2">i386 (32-bit)</a> binaries</li>
-         <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#linux">Installation instructions</a> for Linux hosts</li>
-      </ul>
-   </div>
-   <div style="display: inline-block;">
-      <img src="https://bedops.readthedocs.org/en/latest/_images/macosx_v2.png" style="height:26px !important; width: auto !important; margin-bottom:10px;">
-      <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
-         <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.5/BEDOPS.2.4.5.mpkg.zip">Intel (32-/64-bit, 10.7-10.10)</a> installer package</li>
-         <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
-      </ul>
-   </div>
-   <div style="display: inline-block;">
-      <img src="https://bedops.readthedocs.org/en/latest/_images/source_v2.png" style="height:26px !important; width: auto !important; margin-bottom:10px;">
-      <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
-         <li><a href="https://github.com/bedops/bedops/archive/v2.4.5.tar.gz">Source code</a> (tar.gz)</li>
-         <li><a href="https://github.com/bedops/bedops/archive/v2.4.5.zip">Source code</a> (zip)</li>
-         <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#installation-via-source-code">Compilation instructions</a></li>
-      </ul>
-   </div>
-</div>
+<table width="100%">
+<tr>
+<th width="33%">
+<img src="https://bedops.readthedocs.org/en/latest/_images/linux_v2.png" height="26px" style="height:26px !important; width: auto !important; margin-bottom:10px;">
+</th>
+<th width="33%">
+<img src="https://bedops.readthedocs.org/en/latest/_images/macosx_v2.png" height="26px" style="height:26px !important; width: auto !important; margin-bottom:10px;">
+</th>
+<th width="34%">
+<img src="https://bedops.readthedocs.org/en/latest/_images/source_v2.png" height="26px" style="height:26px !important; width: auto !important; margin-bottom:10px;">
+</th>
+</tr>
+<tr>
+<td>
+<ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
+<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.6/bedops_linux_x86_64-v2.4.6.tar.bz2">x86-64 (64-bit)</a> binaries</li>
+<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.6/bedops_linux_i386-v2.4.6.tar.bz2">i386 (32-bit)</a> binaries</li>
+<li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#linux">Installation instructions</a> for Linux hosts</li>
+</ul>
+</td>
+<td>
+<ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
+<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.6/BEDOPS.2.4.6.mpkg.zip">Intel (32-/64-bit, 10.7-10.10)</a> installer package</li>
+<li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
+</ul>
+</td>
+<td>
+<ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
+<li><a href="https://github.com/bedops/bedops/archive/v2.4.6.tar.gz">Source code</a> (tar.gz)</li>
+<li><a href="https://github.com/bedops/bedops/archive/v2.4.6.zip">Source code</a> (zip)</li>
+<li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#installation-via-source-code">Compilation instructions</a></li>
+</ul>
+</td>
+</tr>
+</table>
 
 ### Documentation ###
 
-Complete documentation for **BEDOPS v2.4.5** tools is available at: <a href="https://bedops.readthedocs.org/en/latest/index.html">https://bedops.readthedocs.org/</a>
+Complete documentation for **BEDOPS v2.4.6** tools is available at: <a href="https://bedops.readthedocs.org/en/latest/index.html">https://bedops.readthedocs.org/</a>
 
 ### Citation ###
 
-If you use **BEDOPS v2.4.5** in your research, please cite the following manuscript:
+If you use **BEDOPS v2.4.6** in your research, please cite the following manuscript:
 
 > Shane Neph, M. Scott Kuehn, Alex P. Reynolds, et al.  
 > [**BEDOPS: high-performance genomic feature operations**  
