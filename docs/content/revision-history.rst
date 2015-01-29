@@ -12,6 +12,20 @@ Current version
 ===============
 
 ------
+v2.4.6
+------
+
+Released: **TBD**
+
+* General fixes
+
+  * Fixed possibly corrupt Jansson tarball (thanks to rekado, Shane N. and Richard S.)
+
+=================
+Previous versions
+=================
+
+------
 v2.4.5
 ------
 
@@ -20,10 +34,6 @@ Released: **January 28, 2015**
 * ``convert2bed`` improvements
 
   * Addition of RepeatMasker annotation output (``.out``) file conversion support, ``rmsk2bed`` and ``rmsk2starch`` wrappers, and unit tests
-
-=================
-Previous versions
-=================
 
 ------
 v2.4.4
