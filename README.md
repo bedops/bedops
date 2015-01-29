@@ -13,13 +13,13 @@ The <a href="https://bedops.readthedocs.org/en/latest/content/overview.html#over
 <table width="100%">
 <tr>
 <th width="33%">
-<img src="https://bedops.readthedocs.org/en/latest/_images/linux_v2.png" height="26px" style="height:26px !important; width: auto !important; margin-bottom:10px;">
+<center><img src="https://bedops.readthedocs.org/en/latest/_images/linux_v2.png" height="26px" style="height:26px !important; width: auto !important; margin-bottom:10px;"></center>
 </th>
 <th width="33%">
-<img src="https://bedops.readthedocs.org/en/latest/_images/macosx_v2.png" height="26px" style="height:26px !important; width: auto !important; margin-bottom:10px;">
+<center><img src="https://bedops.readthedocs.org/en/latest/_images/macosx_v2.png" height="26px" style="height:26px !important; width: auto !important; margin-bottom:10px;"></center>
 </th>
 <th width="34%">
-<img src="https://bedops.readthedocs.org/en/latest/_images/source_v2.png" height="26px" style="height:26px !important; width: auto !important; margin-bottom:10px;">
+<center><img src="https://bedops.readthedocs.org/en/latest/_images/source_v2.png" height="26px" style="height:26px !important; width: auto !important; margin-bottom:10px;"></center>
 </th>
 </tr>
 <tr>
