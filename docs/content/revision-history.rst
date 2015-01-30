@@ -19,14 +19,18 @@ Released: **TBD**
 
 * :ref:`convert2bed` fixes and improvements
   
-  * Added support for conversion of the `GVF file format <http://www.sequenceontology.org/resources/gvf.html#summary>`_.
+  * Added support for conversion of the `GVF file format <http://www.sequenceontology.org/resources/gvf.html#summary>`_, including wrapper scripts and unit tests.
+
   * Fixed bug in string copy of zero-length element attribute for :ref:`gff2bed` and :ref:`gtf2bed` (GFF and GTF) formats
 
 * General fixes and improvements
 
   * Fixed possibly corrupt Jansson tarball (thanks to rekado, Shane N. and Richard S.)
+
   * Fixed typo in :ref:`bedextract <bedextract>` documentation
+
   * Fixed broken image in :ref:`Overview <overview>`
+
   * Removed 19 MB ``_build`` intermediate result directory (which should improve overall ``git clone`` time considerably!)
 
 =================
