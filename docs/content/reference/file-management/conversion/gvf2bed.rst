@@ -70,7 +70,7 @@ We can convert it to sorted BED data in the following manner:
   chr16	49303426	49303427	ID_8	.	+	dbSNP	SNV	.	ID=ID_8;Variant_seq=T;Individual=0;Genotype=0:0;zero_length_insertion=True
   chr16	49303595	49303596	ID_9	.	+	dbSNP	SNV	.	ID=ID_9;Variant_seq=A,G,T;Individual=0,1,3;Genotype=1:2,3:3,1:3;zero_length_insertion=True
 
-As shown, the default usage strips the leading pragmas (``##gvf-version 1.07``, *etc.*), but adding the ``--keep-header`` option will preserve this header as a BED element that uses ``_header`` as a chromosome name:
+As shown, the default usage strips the leading pragmas (``##gvf-version 1.07``, *etc.*), but adding the ``--keep-header`` option will preserve pragmas as BED elements that use ``_header`` as a chromosome name:
 
 ::
 

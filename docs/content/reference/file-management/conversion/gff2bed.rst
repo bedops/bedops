@@ -61,7 +61,7 @@ We can convert it to sorted BED data in the following manner:
   chr1    4999    5500    exon00004       .       .       .       exon    .       ID=exon00004;Gap=M8 D3 M6 I1 M6
   chr1    6999    9000    exon00005       10      +       .       exon    1       ID=exon00005;Dbxref="NCBI_gi:10727410"
 
-As you see here, we strip the header element (``##gff-version 3``), but adding the ``--keep-header`` option will preserve this header as a BED element that uses ``_header`` as a chromosome name:
+The default usage strips the leading pragma, or header (``##gff-version 3``), but adding the ``--keep-header`` option will preserve this as a BED element that uses ``_header`` as a chromosome name:
 
 ::
 
@@ -72,22 +72,6 @@ As you see here, we strip the header element (``##gff-version 3``), but adding t
   chr1    2999    3902    exon00003       .       ?       Canada  exon    2       ID=exon00003;score=4;Name=foo
   chr1    4999    5500    exon00004       .       .       .       exon    .       ID=exon00004;Gap=M8 D3 M6 I1 M6
   chr1    6999    9000    exon00005       10      +       .       exon    1       ID=exon00005;Dbxref="NCBI_gi:10727410"
-
-.. note:: GFF3 data that have trailing semi-colons on attributes, *e.g.*: 
-
-   ::
-
-     Parent=ATMG00060.1,ATMG00060.1-Protein; 
-
-   will cause ``IndexError: list index out of range`` errors when used with this conversion script. 
-
-   The easiest fix is to use ``awk`` to strip the trailing delimiter and pipe the fixed results to the conversion script, *i.e.*: 
-   
-   ::
-     
-     $ awk '{gsub(/;$/,"");print}' bad_foo.gff | gff2bed - > good_foo.bed 
-
-   This issue is also discussed on the `BEDOPS User Forum <http://bedops.uwencode.org/forum/index.php?topic=34.0>`_.
 
 .. note:: Zero-length insertion elements are given an extra attribute called ``zeroLengthInsertion`` which lets a BED-to-GFF or other parser know that the element will require conversion back to a right-closed element ``[a, b]``, where ``a`` and ``b`` are equal.
 
