@@ -25,7 +25,7 @@ Released: **TBD**
 
 * General fixes and improvements
 
-  * Fixed possibly corrupt Jansson tarball (thanks to rekado, Shane N. and Richard S.)
+  * Fixed possibly corrupt bzip2, Jansson and zlib tarballs (thanks to rekado, Shane N. and Richard S.)
 
   * Fixed typo in :ref:`bedextract <bedextract>` documentation
 
