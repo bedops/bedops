@@ -82,6 +82,9 @@ c2b_init_conversion(c2b_pipeset_t *p)
         case GTF_FORMAT:
             c2b_init_gtf_conversion(p);
             break;
+        case GVF_FORMAT:
+            c2b_init_gvf_conversion(p);
+            break;
         case PSL_FORMAT:
             c2b_init_psl_conversion(p);
             break;
@@ -118,6 +121,13 @@ static void
 c2b_init_gtf_conversion(c2b_pipeset_t *p)
 {
     c2b_init_generic_conversion(p, &c2b_line_convert_gtf_to_bed_unsorted);
+}
+
+static void
+c2b_init_gvf_conversion(c2b_pipeset_t *p)
+{
+    /* GVF format conversion uses the GFF functor */
+    c2b_init_generic_conversion(p, &c2b_line_convert_gff_to_bed_unsorted);
 }
 
 static void
@@ -1285,7 +1295,7 @@ static inline void
 c2b_line_convert_gff_to_bed(c2b_gff_t g, char *dest_line, ssize_t *dest_size)
 {
     /* 
-       For GFF-formatted data, we use the mapping provided by BEDOPS convention described at:
+       For GFF- and GVF-formatted data, we use the mapping provided by BEDOPS convention described at:
 
        http://bedops.readthedocs.org/en/latest/content/reference/file-management/conversion/gff2bed.html
 
@@ -4754,22 +4764,26 @@ c2b_init_command_line_options(int argc, char **argv)
                 c2b_print_format_usage(stdout);
                 exit(EXIT_SUCCESS);
             case '4':
-                c2b_globals.help_format_idx = PSL_FORMAT;
+                c2b_globals.help_format_idx = GVF_FORMAT;
                 c2b_print_format_usage(stdout);
                 exit(EXIT_SUCCESS);
             case '5':
-                c2b_globals.help_format_idx = RMSK_FORMAT;
+                c2b_globals.help_format_idx = PSL_FORMAT;
                 c2b_print_format_usage(stdout);
                 exit(EXIT_SUCCESS);
             case '6':
-                c2b_globals.help_format_idx = SAM_FORMAT;
+                c2b_globals.help_format_idx = RMSK_FORMAT;
                 c2b_print_format_usage(stdout);
                 exit(EXIT_SUCCESS);
             case '7':
-                c2b_globals.help_format_idx = VCF_FORMAT;
+                c2b_globals.help_format_idx = SAM_FORMAT;
                 c2b_print_format_usage(stdout);
                 exit(EXIT_SUCCESS);
             case '8':
+                c2b_globals.help_format_idx = VCF_FORMAT;
+                c2b_print_format_usage(stdout);
+                exit(EXIT_SUCCESS);
+            case '9':
                 c2b_globals.help_format_idx = WIG_FORMAT;
                 c2b_print_format_usage(stdout);
                 exit(EXIT_SUCCESS);
@@ -4907,6 +4921,12 @@ c2b_print_format_usage(FILE *stream)
         format_description = (char *) gtf_description;
         format_options = (char *) gtf_options;
         break;
+    case GVF_FORMAT:
+        format_name = (char *) gvf_name;
+        format_usage = (char *) gvf_usage;
+        format_description = (char *) gvf_description;
+        format_options = (char *) gvf_options;
+        break;
     case PSL_FORMAT:
         format_name = (char *) psl_name;
         format_usage = (char *) psl_usage;
@@ -5024,6 +5044,7 @@ c2b_to_input_format(const char *input_format)
         (strcmp(input_format, "bam") == 0)  ? BAM_FORMAT  :
         (strcmp(input_format, "gff") == 0)  ? GFF_FORMAT  :
         (strcmp(input_format, "gtf") == 0)  ? GTF_FORMAT  :
+        (strcmp(input_format, "gvf") == 0)  ? GVF_FORMAT  :
         (strcmp(input_format, "psl") == 0)  ? PSL_FORMAT  :
         (strcmp(input_format, "rmsk") == 0) ? RMSK_FORMAT :
         (strcmp(input_format, "sam") == 0)  ? SAM_FORMAT  :

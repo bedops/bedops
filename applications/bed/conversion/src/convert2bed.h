@@ -51,7 +51,7 @@
 #include <sys/param.h>
 #include <sys/wait.h>
 
-#define C2B_VERSION "2.4.5"
+#define C2B_VERSION "2.4.6"
 
 typedef int boolean;
 extern const boolean kTrue;
@@ -174,6 +174,7 @@ typedef enum format {
     BAM_FORMAT,
     GFF_FORMAT,
     GTF_FORMAT,
+    GVF_FORMAT,
     PSL_FORMAT,
     RMSK_FORMAT,
     SAM_FORMAT,
@@ -550,8 +551,8 @@ static const char *general_usage = "\n"                                 \
     "  $ convert2bed --input=fmt [--output=fmt] [options] < input > output\n";
 
 static const char *general_description =                                \
-    "  Convert BAM, GFF, GTF, PSL, RepeatMasker (OUT), SAM, VCF and WIG\n" \
-    "  genomic formats to BED or BEDOPS Starch (compressed BED)\n"      \
+    "  Convert BAM, GFF, GTF, GVF, PSL, RepeatMasker (OUT), SAM, VCF\n" \
+    "  and WIG genomic formats to BED or BEDOPS Starch (compressed BED)\n"      \
     "\n"                                                                \
     "  Input can be a regular file or standard input piped in using the\n" \
     "  hyphen character ('-'):\n"                                       \
@@ -560,7 +561,7 @@ static const char *general_description =                                \
 
 static const char *general_io_options =                                 \
     "  Input (required):\n\n"                                           \
-    "  --input=[bam|gff|gtf|psl|rmsk|sam|vcf|wig] (-i <fmt>)\n"              \
+    "  --input=[bam|gff|gtf|gvf|psl|rmsk|sam|vcf|wig] (-i <fmt>)\n"     \
     "      Genomic format of input file (required)\n\n"                 \
     "  Output:\n\n"                                                     \
     "  --output=[bed|starch] (-o <fmt>)\n"                              \
@@ -585,7 +586,7 @@ static const char *general_options =                                    \
     "      intermediate data\n"                                         \
     "  --starch-note=\"xyz...\" (-e \"xyz...\")\n"                      \
     "      Used with --output=starch, this adds a note to the Starch archive metadata\n" \
-    "  --help | --help[-bam|-gff|-gtf|-psl|-rmsk|-sam|-vcf|-wig] (-h | -h <fmt>)\n" \
+    "  --help | --help[-bam|-gff|-gtf|-gvf|-psl|-rmsk|-sam|-vcf|-wig] (-h | -h <fmt>)\n" \
     "      Show general help message (or detailed help for a specified input format)\n" \
     "  --version (-w)\n"                                                \
     "      Show application version\n";
@@ -778,6 +779,71 @@ static const char *gtf_description =                                    \
     "  column data.\n";
 
 static const char *gtf_options = NULL;
+
+static const char *gvf_name = "convert2bed -i gvf";
+
+static const char *gvf_description =                                    \
+    "  GVF is a type of GFF3 file with additional pragmas and attributes \n" \
+    "  specified (http://www.sequenceontology.org/resources/gvf.html).\n" \
+    "  The GVF format has the same nine-column tab-delimited format as \n" \
+    "  GFF3. All of the requirements and restrictions specified for GFF3\n" \
+    "  apply to the GVF specification.\n"                               \
+    "\n"                                                                \
+    "  The GFF3 specification (http://www.sequenceontology.org/gff3.shtml) \n" \
+    "  contains columns that do not map directly to common or UCSC BED columns.\n" \
+    "  Therefore, we add the following columns to preserve the ability to\n" \
+    "  seamlessly convert back to GVF (GFF3) after performing operations\n" \
+    "  with bedops, bedmap, or other BEDOPS or BED-processing tools.\n"      \
+    "\n"                                                                \
+    "  - The 'source' GVF column data maps to the 7th BED column\n"     \
+    "  - The 'type' data maps to the 8th BED column\n"                  \
+    "  - The 'phase' data maps to the 9th BED column\n"                 \
+    "  - The 'attributes' data maps to the 10th BED column\n"           \
+    "\n"                                                                \
+    "  We make the following assumptions about the GVF (GFF3) input data:\n" \
+    "\n"                                                                \
+    "  - The 'seqid' GVF column data maps to the chromosome label (1st BED column)\n" \
+    "  - The 'ID' attribute in the 'attributes' GFF column (if present) maps to\n" \
+    "    the element ID (4th BED column)\n"                             \
+    "  - The 'score' and 'strand' GVF columns (if present) are mapped to the\n" \
+    "    5th and 6th BED columns, respectively\n"                       \
+    "\n"                                                                \
+    "  If we encounter zero-length insertion elements (which are defined\n" \
+    "  where the start and stop GVF column data values are equivalent), the\n" \
+    "  start coordinate is decremented to convert to 0-based, half-open indexing,\n" \
+    "  and a 'zero_length_insertion' attribute is added to the 'attributes' GFF\n" \
+    "  column data.\n"                                                  \
+    "\n"                                                                \
+    "  Metadata and header fields are usually stripped. Use the --keep-header\n" \
+    "  option to preserve these data as pseudo-BED elements that use the \"_header\"\n" \
+    "  chromosome name.\n";
+
+static const char *gvf_options =                                        \
+    "  GVF conversion options:\n\n"                                     \
+    "  --keep-header (-k)\n"                                            \
+    "      Preserve header section as pseudo-BED elements\n";
+
+static const char *gvf_usage =                                          \
+    "  Converts 1-based, closed [a, b] GVF (GFF3) input into 0-based,\n" \
+    "  half-open [a-1, b) six-column extended BED or BEDOPS Starch\n"   \
+    "\n"                                                                \
+    "  Usage:\n"                                                        \
+    "\n"                                                                \
+    "  $ gvf2bed < foo.gvf > sorted-foo.gvf.bed\n"                      \
+    "  $ gvf2starch < foo.gvf > sorted-foo.gvf.starch\n"                \
+    "\n"                                                                \
+    "  Or:\n"                                                           \
+    "\n"                                                                \
+    "  $ convert2bed -i gvf < foo.gvf > sorted-foo.gvf.bed\n"           \
+    "  $ convert2bed -i gvf -o starch < foo.gvf > sorted-foo.gvf.starch\n" \
+    "\n"                                                                \
+    "  We make no assumptions about sort order from converted output. Apply\n" \
+    "  the usage case displayed to pass data to the sort-bed application,\n" \
+    "  which generates lexicographically-sorted BED data as output.\n"  \
+    "\n"                                                                \
+    "  If you want to skip sorting, use the --do-not-sort option:\n"    \
+    "\n"                                                                \
+    "  $ gvf2bed --do-not-sort < foo.gvf > unsorted-foo.gvf.bed\n";
 
 static const char *psl_name = "convert2bed -i psl";
 
@@ -1106,7 +1172,7 @@ static const char *wig_options =                                        \
 
 static const char *format_undefined_usage =                             \
     "  Note: Please specify format to get detailed usage parameters:\n\n" \
-    "  --help[-bam|-gff|-gtf|-psl|-rmsk|-sam|-vcf|-wig] (-h <fmt>)\n";
+    "  --help[-bam|-gff|-gtf|-gvf|-psl|-rmsk|-sam|-vcf|-wig] (-h <fmt>)\n";
 
 typedef struct gff_state {
     char *id;
@@ -1217,11 +1283,12 @@ static struct option c2b_client_long_options[] = {
     { "help-bam",       no_argument,         NULL,    '1' },
     { "help-gff",       no_argument,         NULL,    '2' },
     { "help-gtf",       no_argument,         NULL,    '3' },
-    { "help-psl",       no_argument,         NULL,    '4' },
-    { "help-rmsk",      no_argument,         NULL,    '5' },
-    { "help-sam",       no_argument,         NULL,    '6' },
-    { "help-vcf",       no_argument,         NULL,    '7' },
-    { "help-wig",       no_argument,         NULL,    '8' },
+    { "help-gvf",       no_argument,         NULL,    '4' },
+    { "help-psl",       no_argument,         NULL,    '5' },
+    { "help-rmsk",      no_argument,         NULL,    '6' },
+    { "help-sam",       no_argument,         NULL,    '7' },
+    { "help-vcf",       no_argument,         NULL,    '8' },
+    { "help-wig",       no_argument,         NULL,    '9' },
     { NULL,             no_argument,         NULL,     0  }
 };
 
@@ -1234,6 +1301,7 @@ extern "C" {
     static void              c2b_init_conversion(c2b_pipeset_t *p);
     static void              c2b_init_gff_conversion(c2b_pipeset_t *p);
     static void              c2b_init_gtf_conversion(c2b_pipeset_t *p);
+    static void              c2b_init_gvf_conversion(c2b_pipeset_t *p);
     static void              c2b_init_psl_conversion(c2b_pipeset_t *p);
     static void              c2b_init_rmsk_conversion(c2b_pipeset_t *p);
     static void              c2b_init_sam_conversion(c2b_pipeset_t *p);

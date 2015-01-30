@@ -19,6 +19,7 @@ Released: **TBD**
 
 * :ref:`convert2bed` fixes and improvements
   
+  * Added support for conversion of the `GVF file format <http://www.sequenceontology.org/resources/gvf.html#summary>`_.
   * Fixed bug in string copy of zero-length element attribute for :ref:`gff2bed` and :ref:`gtf2bed` (GFF and GTF) formats
 
 * General fixes and improvements
