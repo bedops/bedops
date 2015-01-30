@@ -15,7 +15,7 @@ Current version
 v2.4.6
 ------
 
-Released: **TBD**
+Released: **January 30, 2015**
 
 * :ref:`convert2bed <convert2bed>` fixes and improvements
   
