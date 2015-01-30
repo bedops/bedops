@@ -17,9 +17,9 @@ v2.4.6
 
 Released: **TBD**
 
-* :ref:`convert2bed` fixes and improvements
+* :ref:`convert2bed <convert2bed>` fixes and improvements
   
-  * Added support for conversion of the `GVF file format <http://www.sequenceontology.org/resources/gvf.html#summary>`_, including wrapper scripts and unit tests. Refer to the :ref:`gvf2bed` documentation for more information.
+  * Added support for conversion of the `GVF file format <http://www.sequenceontology.org/resources/gvf.html#summary>`_, including wrapper scripts and unit tests. Refer to the :ref:`gvf2bed <gvf2bed>` documentation for more information.
 
   * Fixed bug in string copy of zero-length element attribute for :ref:`gff2bed` and :ref:`gtf2bed` (GFF and GTF) formats
 

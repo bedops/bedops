@@ -42,6 +42,7 @@ Example
 To demonstrate these scripts, we use a sample GVF input called ``foo.gvf`` (see the :ref:`Downloads <gvf2bed_downloads>` section to grab this file). 
 
 ::
+
   ##gvf-version 1.07
   ##feature-ontology http://www.sequenceontology.org/resources/obo_files/current_release.obo
   ##multi-individual NA19240,NA18507,NA12878,NA19238
