@@ -1,4 +1,4 @@
-formats := bam gff gtf psl sam vcf wig
+formats := bam gff gtf gvf psl rmsk sam vcf wig
 
 .PHONY: $(formats)
 

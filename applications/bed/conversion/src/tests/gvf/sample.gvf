@@ -1,0 +1,13 @@
+##gvf-version 1.07
+##feature-ontology http://www.sequenceontology.org/resources/obo_files/current_release.obo
+##multi-individual NA19240,NA18507,NA12878,NA19238
+##genome-build NCBI B36.3
+##sequence-region chr16 1 88827254
+
+chr16	dbSNP	SNV	49291360	49291360	.	+	.	ID=ID_2;Variant_seq=C,G;Individual=0,1,2,3;Genotype=0:1,0:0,1:1,0:1;
+chr16	dbSNP	SNV	49302125	49302125	.	+	.	ID=ID_3;Variant_seq=C,T;Individual=0,1,3;Genotype=0:1,2:2,0:2;
+chr16	dbSNP	SNV	49302365	49302365	.	+	.	ID=ID_4;Variant_seq=G;Individual=0,1;Genotype=0:0,0:0;
+chr16	dbSNP	SNV	49302700	49302700	.	+	.	ID=ID_5;Variant_seq=C,T;Individual=2,3;Genotype=0:1,0:0;
+chr16	dbSNP	SNV	49303084	49303084	.	+	.	ID=ID_6;Variant_seq=T,G,A;Individual=3;Genotype=1,2:;
+chr16	dbSNP	SNV	49303427	49303427	.	+	.	ID=ID_8;Variant_seq=T;Individual=0;Genotype=0:0;
+chr16	dbSNP	SNV	49303596	49303596	.	+	.	ID=ID_9;Variant_seq=A,G,T;Individual=0,1,3;Genotype=1:2,3:3,1:3;

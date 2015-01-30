@@ -1,0 +1,7 @@
+chr16	49291359	49291360	ID_2	.	+	dbSNP	SNV	.	ID=ID_2;Variant_seq=C,G;Individual=0,1,2,3;Genotype=0:1,0:0,1:1,0:1;zero_length_insertion=True
+chr16	49302124	49302125	ID_3	.	+	dbSNP	SNV	.	ID=ID_3;Variant_seq=C,T;Individual=0,1,3;Genotype=0:1,2:2,0:2;zero_length_insertion=True
+chr16	49302364	49302365	ID_4	.	+	dbSNP	SNV	.	ID=ID_4;Variant_seq=G;Individual=0,1;Genotype=0:0,0:0;zero_length_insertion=True
+chr16	49302699	49302700	ID_5	.	+	dbSNP	SNV	.	ID=ID_5;Variant_seq=C,T;Individual=2,3;Genotype=0:1,0:0;zero_length_insertion=True
+chr16	49303083	49303084	ID_6	.	+	dbSNP	SNV	.	ID=ID_6;Variant_seq=T,G,A;Individual=3;Genotype=1,2:;zero_length_insertion=True
+chr16	49303426	49303427	ID_8	.	+	dbSNP	SNV	.	ID=ID_8;Variant_seq=T;Individual=0;Genotype=0:0;zero_length_insertion=True
+chr16	49303595	49303596	ID_9	.	+	dbSNP	SNV	.	ID=ID_9;Variant_seq=A,G,T;Individual=0,1,3;Genotype=1:2,3:3,1:3;zero_length_insertion=True
