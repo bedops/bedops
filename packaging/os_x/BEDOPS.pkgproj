@@ -625,6 +625,38 @@
 													<key>GID</key>
 													<integer>0</integer>
 													<key>PATH</key>
+													<string>resources/bin/gvf2bed</string>
+													<key>PATH_TYPE</key>
+													<integer>1</integer>
+													<key>PERMISSIONS</key>
+													<integer>493</integer>
+													<key>TYPE</key>
+													<integer>3</integer>
+													<key>UID</key>
+													<integer>0</integer>
+												</dict>
+												<dict>
+													<key>CHILDREN</key>
+													<array/>
+													<key>GID</key>
+													<integer>0</integer>
+													<key>PATH</key>
+													<string>resources/bin/gvf2starch</string>
+													<key>PATH_TYPE</key>
+													<integer>1</integer>
+													<key>PERMISSIONS</key>
+													<integer>493</integer>
+													<key>TYPE</key>
+													<integer>3</integer>
+													<key>UID</key>
+													<integer>0</integer>
+												</dict>
+												<dict>
+													<key>CHILDREN</key>
+													<array/>
+													<key>GID</key>
+													<integer>0</integer>
+													<key>PATH</key>
 													<string>resources/bin/psl2bed</string>
 													<key>PATH_TYPE</key>
 													<integer>1</integer>
@@ -4787,7 +4819,7 @@
 										<key>LANGUAGE</key>
 										<string>English</string>
 										<key>VALUE</key>
-										<string>The convert2bed binary and wrapper scripts convert data in common genomics formats from BAM, GFF, GTF, PSL, SAM, VCF, and WIG formats into sorted BED and BEDOPS Starch v2 files.</string>
+										<string>The convert2bed binary and wrapper scripts convert data in common genomics formats from BAM, GFF, GTF, GVF, PSL, RepeatMasker annotation ouput (OUT), SAM, VCF, and WIG formats into sorted BED and BEDOPS Starch v2 files.</string>
 									</dict>
 								</array>
 								<key>OPTIONS</key>
@@ -5199,7 +5231,7 @@
 						<key>LANGUAGE</key>
 						<string>English</string>
 						<key>VALUE</key>
-						<string>BEDOPS 2.4.5</string>
+						<string>BEDOPS 2.4.6</string>
 					</dict>
 				</array>
 			</dict>
@@ -5462,7 +5494,7 @@
 				</dict>
 			</array>
 			<key>NAME</key>
-			<string>BEDOPS 2.4.5</string>
+			<string>BEDOPS 2.4.6</string>
 		</dict>
 	</dict>
 	<key>TYPE</key>
