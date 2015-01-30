@@ -17,12 +17,12 @@ v2.4.6
 
 Released: **TBD**
 
-* General fixes
+* General fixes and improvements
 
   * Fixed possibly corrupt Jansson tarball (thanks to rekado, Shane N. and Richard S.)
   * Fixed typo in :ref:`bedextract <bedextract>` documentation
-  * Removed 19 MB ``_build`` intermediate result directory, which should improve overall ``git clone`` time considerably
   * Fixed broken image in :ref:`Overview <overview>`
+  * Removed 19 MB ``_build`` intermediate result directory (which should improve overall ``git clone`` time considerably!)
 
 =================
 Previous versions
