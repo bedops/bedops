@@ -15,6 +15,7 @@ Some other formats not covered here can be converted with, for instance, the `UC
    conversion/parallel_bam2starch
    conversion/gff2bed
    conversion/gtf2bed
+   conversion/gvf2bed
    conversion/psl2bed
    conversion/rmsk2bed
    conversion/sam2bed

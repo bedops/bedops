@@ -1148,7 +1148,13 @@ c2b_line_convert_gff_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
             char non_interval_str[C2B_MAX_FIELD_LENGTH_VALUE];
             memcpy(non_interval_str, src, current_src_posn);
             non_interval_str[current_src_posn] = '\0';
-            if (strcmp(non_interval_str, c2b_gff_header) == 0) {
+            char non_int_prefix[C2B_MAX_FIELD_LENGTH_VALUE];
+            strncpy(non_int_prefix, non_interval_str, 2);
+            non_int_prefix[2] = '\0';
+            /* We compare against either of two standard GFF3 or GVF header pragmas */
+            if ((strcmp(non_interval_str, c2b_gff_header) == 0) || 
+                (strcmp(non_interval_str, c2b_gvf_header) == 0) || 
+                (strcmp(non_int_prefix, c2b_gvf_generic_header) == 0)) {
                 if (!c2b_globals.keep_header_flag) {
                     return;
                 }
