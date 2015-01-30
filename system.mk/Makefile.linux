@@ -46,6 +46,7 @@ clean: clean_debug clean_gprof $(SUBDIRS)
 	rm -f ${BINDIR}/bam2bed*
 	rm -f ${BINDIR}/gff2bed
 	rm -f ${BINDIR}/gtf2bed
+	rm -f ${BINDIR}/gvf2bed
 	rm -f ${BINDIR}/psl2bed
 	rm -f ${BINDIR}/rmsk2bed
 	rm -f ${BINDIR}/sam2bed
@@ -56,6 +57,7 @@ clean: clean_debug clean_gprof $(SUBDIRS)
 	rm -f ${BINDIR}/bam2starch*
 	rm -f ${BINDIR}/gff2starch
 	rm -f ${BINDIR}/gtf2starch
+	rm -f ${BINDIR}/gvf2starch
 	rm -f ${BINDIR}/psl2starch
 	rm -f ${BINDIR}/rmsk2starch
 	rm -f ${BINDIR}/sam2starch
@@ -85,6 +87,7 @@ clean_debug:
 	rm -f ${BINDIR}/bam2bed*
 	rm -f ${BINDIR}/gff2bed
 	rm -f ${BINDIR}/gtf2bed
+	rm -f ${BINDIR}/gvf2bed
 	rm -f ${BINDIR}/psl2bed
 	rm -f ${BINDIR}/rmsk2bed
 	rm -f ${BINDIR}/sam2bed
@@ -95,6 +98,7 @@ clean_debug:
 	rm -f ${BINDIR}/bam2starch*
 	rm -f ${BINDIR}/gff2starch
 	rm -f ${BINDIR}/gtf2starch
+	rm -f ${BINDIR}/gvf2starch
 	rm -f ${BINDIR}/psl2starch
 	rm -f ${BINDIR}/rmsk2starch
 	rm -f ${BINDIR}/sam2starch
@@ -115,6 +119,7 @@ clean_gprof:
 	rm -f ${BINDIR}/bam2bed*
 	rm -f ${BINDIR}/gff2bed
 	rm -f ${BINDIR}/gtf2bed
+	rm -f ${BINDIR}/gvf2bed
 	rm -f ${BINDIR}/psl2bed
 	rm -f ${BINDIR}/rmsk2bed
 	rm -f ${BINDIR}/sam2bed
@@ -125,6 +130,7 @@ clean_gprof:
 	rm -f ${BINDIR}/bam2starch*
 	rm -f ${BINDIR}/gff2starch
 	rm -f ${BINDIR}/gtf2starch
+	rm -f ${BINDIR}/gvf2starch
 	rm -f ${BINDIR}/psl2starch
 	rm -f ${BINDIR}/rmsk2starch
 	rm -f ${BINDIR}/sam2starch
