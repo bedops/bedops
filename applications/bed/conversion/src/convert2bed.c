@@ -991,9 +991,10 @@ c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
 
     if (gtf.start == gtf.end) {
         gtf.start -= 1;
-        memcpy(attributes_str + strlen(attributes_str), 
+        ssize_t trailing_semicolon_fudge = (attributes_str[strlen(attributes_str) - 1] == ';') ? 1 : 0;
+        memcpy(attributes_str + strlen(attributes_str) - trailing_semicolon_fudge, 
                c2b_gtf_zero_length_insertion_attribute, 
-               strlen(c2b_gtf_zero_length_insertion_attribute));
+               strlen(c2b_gtf_zero_length_insertion_attribute) + 1);
     }
     else {
         gtf.start -= 1;
@@ -1241,9 +1242,10 @@ c2b_line_convert_gff_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
 
     if (gff.start == gff.end) {
         gff.start -= 1;
-        memcpy(attributes_str + strlen(attributes_str), 
+        ssize_t trailing_semicolon_fudge = (attributes_str[strlen(attributes_str) - 1] == ';') ? 1 : 0;
+        memcpy(attributes_str + strlen(attributes_str) - trailing_semicolon_fudge,
                c2b_gff_zero_length_insertion_attribute, 
-               strlen(c2b_gff_zero_length_insertion_attribute));
+               strlen(c2b_gff_zero_length_insertion_attribute) + 1);
     }
     else {
         gff.start -= 1;
