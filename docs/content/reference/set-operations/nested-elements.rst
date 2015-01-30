@@ -16,7 +16,7 @@ A *nested element* is defined as a BED element from a sorted BED file, where a g
 Loosely speaking, consider the following five overlap cases for pairings of generic, half-open intervals:
 
 .. image:: ../../../assets/reference/set-operations/reference_nested_elements.png
-   :width: 50%
+   :width: 33%
 
 Of these five interval pairs, the fifth overlap pairing identifies a nested element, where the second interval is nested within the first. 
 
