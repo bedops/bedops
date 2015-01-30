@@ -17,6 +17,10 @@ v2.4.6
 
 Released: **TBD**
 
+* :ref:`convert2bed` fixes and improvements
+  
+  * Fixed bug in string copy of zero-length element attribute for :ref:`gff2bed` and :ref:`gtf2bed` (GFF and GTF) formats
+
 * General fixes and improvements
 
   * Fixed possibly corrupt Jansson tarball (thanks to rekado, Shane N. and Richard S.)
