@@ -12,6 +12,20 @@ Current version
 ===============
 
 ------
+v2.4.7
+------
+
+Released: **TBD**
+
+* :ref:`convert2bed <convert2bed>` fixes and improvements
+
+  * Fixed compilation warning regarding comparison of signed and unsigned values
+
+=================
+Previous versions
+=================
+
+------
 v2.4.6
 ------
 
@@ -32,10 +46,6 @@ Released: **January 30, 2015**
   * Fixed broken image in :ref:`Overview <overview>`
 
   * Removed 19 MB ``_build`` intermediate result directory (which should improve overall ``git clone`` time considerably!)
-
-=================
-Previous versions
-=================
 
 ------
 v2.4.5
