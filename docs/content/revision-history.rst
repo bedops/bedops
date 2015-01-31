@@ -26,7 +26,7 @@ Previous versions
 =================
 
 ------
-v2.4.7
+v2.4.6
 ------
 
 Released: **January 30, 2015**
