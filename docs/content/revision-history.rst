@@ -20,6 +20,7 @@ Released: **TBD**
 * :ref:`convert2bed <convert2bed>` fixes and improvements
 
   * Fixed compilation warning regarding comparison of signed and unsigned values
+  * Fixed corrupted :ref:`psl2bed <psl2bed>` test inputs
 
 =================
 Previous versions
