@@ -67,6 +67,9 @@ const boolean kFalse = 0;
 #define C2B_MAX_LINES_VALUE 32
 #define C2B_MAX_OPERATIONS_VALUE 32
 #define C2B_MAX_CHROMOSOME_LENGTH 32
+#define C2B_MAX_PSL_BLOCKS 1024
+#define C2B_MAX_PSL_BLOCK_SIZES_STRING_LENGTH 20
+#define C2B_MAX_PSL_T_STARTS_STRING_LENGTH 20
 
 extern const char *c2b_samtools;
 extern const char *c2b_sort_bed;
@@ -101,6 +104,8 @@ extern const char *c2b_gvf_header;
 extern const char *c2b_gvf_generic_header;
 extern const int c2b_psl_field_min;
 extern const int c2b_psl_field_max;
+extern const char c2b_psl_blockSizes_delimiter;
+extern const char c2b_psl_tStarts_delimiter;
 extern const uint64_t c2b_rmsk_header_line_count;
 extern const int c2b_rmsk_field_min;
 extern const int c2b_rmsk_field_max;
@@ -151,6 +156,8 @@ const char *c2b_gvf_header = "##gvf-version 1.07";
 const char *c2b_gvf_generic_header = "##";
 const int c2b_psl_field_min = 21;
 const int c2b_psl_field_max = 21;
+const char c2b_psl_blockSizes_delimiter = ',';
+const char c2b_psl_tStarts_delimiter = ',';
 const uint64_t c2b_rmsk_header_line_count = 3;
 const int c2b_rmsk_field_min = 15;
 const int c2b_rmsk_field_max = 16;
@@ -373,6 +380,12 @@ typedef struct psl {
     char *qStarts;
     char *tStarts;
 } c2b_psl_t;
+
+typedef struct block {
+    uint64_t *sizes;
+    uint64_t *starts;
+    uint64_t max_count;
+} c2b_psl_block_t;
 
 /* 
    The RepeatMasker OUT (RMSK) format is described at:
@@ -1188,6 +1201,7 @@ typedef struct gtf_state {
 
 typedef struct psl_state {
     boolean is_headered;
+    c2b_psl_block_t *block;
 } c2b_psl_state_t;
 
 typedef struct rmsk_state {
@@ -1322,6 +1336,8 @@ extern "C" {
     static void              c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
     static inline void       c2b_line_convert_gtf_to_bed(c2b_gtf_t g, char *dest_line, ssize_t *dest_size);
     static void              c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
+    static inline void       c2b_psl_blockSizes_to_ptr(char *s, uint64_t bc);
+    static inline void       c2b_psl_tStarts_to_ptr(char *s, uint64_t bc);
     static inline void       c2b_line_convert_psl_to_bed(c2b_psl_t p, char *dest_line, ssize_t *dest_size);
     static void              c2b_line_convert_rmsk_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
     static inline void       c2b_line_convert_rmsk_to_bed(c2b_rmsk_t r, char *dest_line, ssize_t *dest_size);

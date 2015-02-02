@@ -1585,7 +1585,77 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
        Convert PSL struct to BED string and copy it to destination
     */
 
-    c2b_line_convert_psl_to_bed(psl, dest, dest_size);
+    if ((c2b_globals.split_flag) && (blockCount_val > 1)) {
+        if (c2b_globals.psl->block->max_count < blockCount_val) {
+            fprintf(stderr, "Error: Insufficent PSL block state global size\n");
+            exit(ENOMEM); /* Not enough space (POSIX.1) */
+        }
+        /* parse tStarts_str and blockSizes_str to write per-block elements */
+        c2b_psl_blockSizes_to_ptr(blockSizes_str, blockCount_val);
+        c2b_psl_tStarts_to_ptr(tStarts_str, blockCount_val);
+        for (uint64_t bc_idx = 0; bc_idx < blockCount_val; bc_idx++) {
+            psl.tStart = c2b_globals.psl->block->starts[bc_idx];
+            psl.tEnd = c2b_globals.psl->block->starts[bc_idx] + c2b_globals.psl->block->sizes[bc_idx];
+            c2b_line_convert_psl_to_bed(psl, dest, dest_size);
+        }
+    }
+    else {
+        c2b_line_convert_psl_to_bed(psl, dest, dest_size);
+    }
+}
+
+static inline void
+c2b_psl_blockSizes_to_ptr(char *s, uint64_t bc) 
+{
+    size_t current_bs_offset = 0;
+    uint64_t bc_idx;
+    char bs_arr[C2B_MAX_PSL_BLOCK_SIZES_STRING_LENGTH];
+    char *bs_ptr = NULL;
+    size_t new_bs_offset = 0;
+    uint64_t bs_val = 0;
+
+    for (bc_idx = 0; bc_idx < bc; bc_idx++) {
+        bs_ptr = strchr(s + current_bs_offset, c2b_psl_blockSizes_delimiter);
+        if (bs_ptr) {
+            new_bs_offset = bs_ptr - (s + current_bs_offset);
+            if (new_bs_offset > C2B_MAX_PSL_BLOCK_SIZES_STRING_LENGTH) {
+                fprintf(stderr, "Error: PSL block size string length too long\n");
+                exit(EINVAL); // Invalid argument (POSIX.1)
+            }
+            memcpy(bs_arr, s + current_bs_offset, new_bs_offset);
+            bs_arr[new_bs_offset] = '\0';
+            bs_val = strtoull(bs_arr, NULL, 10);
+            c2b_globals.psl->block->sizes[bc_idx] = bs_val;
+            current_bs_offset = new_bs_offset + 1;
+        }
+    }
+}
+
+static inline void
+c2b_psl_tStarts_to_ptr(char *s, uint64_t bc) 
+{
+    size_t current_ts_offset = 0;
+    uint64_t bc_idx;
+    char ts_arr[C2B_MAX_PSL_T_STARTS_STRING_LENGTH];
+    char *ts_ptr = NULL;
+    size_t new_ts_offset = 0;
+    uint64_t ts_val = 0;
+
+    for (bc_idx = 0; bc_idx < bc; bc_idx++) {
+        ts_ptr = strchr(s + current_ts_offset, c2b_psl_tStarts_delimiter);
+        if (ts_ptr) {
+            new_ts_offset = ts_ptr - (s + current_ts_offset);
+            if (new_ts_offset > C2B_MAX_PSL_T_STARTS_STRING_LENGTH) {
+                fprintf(stderr, "Error: PSL t-starts string length too long\n");
+                exit(EINVAL); // Invalid argument (POSIX.1)
+            }
+            memcpy(ts_arr, s + current_ts_offset, new_ts_offset);
+            ts_arr[new_ts_offset] = '\0';
+            ts_val = strtoull(ts_arr, NULL, 10);
+            c2b_globals.psl->block->starts[bc_idx] = ts_val;
+            current_ts_offset = new_ts_offset + 1;
+        }
+    }
 }
 
 static inline void
@@ -4307,6 +4377,31 @@ c2b_init_global_psl_state()
 
     c2b_globals.psl->is_headered = kTrue;
 
+    c2b_globals.psl->block = NULL;
+    c2b_globals.psl->block = malloc(sizeof(c2b_psl_block_t));
+    if (!c2b_globals.psl->block) {
+        fprintf(stderr, "Error: Could not allocate space for PSL block state global\n");
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+
+    c2b_globals.psl->block->max_count = 0;
+
+    c2b_globals.psl->block->sizes = NULL;
+    c2b_globals.psl->block->sizes = malloc(sizeof(uint64_t) * C2B_MAX_PSL_BLOCKS);
+    if (!c2b_globals.psl->block->sizes) {
+        fprintf(stderr, "Error: Could not allocate space for PSL block state sizes global\n");
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+
+    c2b_globals.psl->block->starts = NULL;
+    c2b_globals.psl->block->starts = malloc(sizeof(uint64_t) * C2B_MAX_PSL_BLOCKS);
+    if (!c2b_globals.psl->block->starts) {
+        fprintf(stderr, "Error: Could not allocate space for PSL block state starts global\n");
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+
+    c2b_globals.psl->block->max_count = C2B_MAX_PSL_BLOCKS;
+
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_init_global_psl_state() - exit  ---\n");
 #endif
@@ -4319,6 +4414,10 @@ c2b_delete_global_psl_state()
     fprintf(stderr, "--- c2b_delete_global_psl_state() - enter ---\n");
 #endif
 
+    free(c2b_globals.psl->block->starts), c2b_globals.psl->block->starts = NULL;
+    free(c2b_globals.psl->block->sizes), c2b_globals.psl->block->sizes = NULL;
+    c2b_globals.psl->block->max_count = 0;
+    free(c2b_globals.psl->block), c2b_globals.psl->block = NULL;
     free(c2b_globals.psl), c2b_globals.psl = NULL;
 
 #ifdef DEBUG
