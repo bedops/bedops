@@ -295,7 +295,7 @@ Building an OS X installer package for redistribution
 
    ::
      
-     $ mkdir packaging/os_x/build && open packaging/os_x/BEDOPS.pkgproj
+     $ mkdir -p packaging/os_x/build && open packaging/os_x/BEDOPS.pkgproj
 
    This will open up the installer project with the ``Packages.app`` application.
 

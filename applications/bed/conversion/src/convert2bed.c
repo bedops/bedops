@@ -1607,26 +1607,37 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
 static inline void
 c2b_psl_blockSizes_to_ptr(char *s, uint64_t bc) 
 {
-    size_t current_bs_offset = 0;
+    size_t start_bs_offset = 0;
+    size_t end_bs_index = 0;
+    size_t length_bs_offset = 0;
     uint64_t bc_idx;
     char bs_arr[C2B_MAX_PSL_BLOCK_SIZES_STRING_LENGTH];
     char *bs_ptr = NULL;
-    size_t new_bs_offset = 0;
     uint64_t bs_val = 0;
 
     for (bc_idx = 0; bc_idx < bc; bc_idx++) {
-        bs_ptr = strchr(s + current_bs_offset, c2b_psl_blockSizes_delimiter);
+        bs_ptr = strchr(s + start_bs_offset, c2b_psl_blockSizes_delimiter);
+#ifdef DEBUG
+        fprintf(stderr, "s: [%s] | bs_ptr: [%s]\n", s, bs_ptr);
+#endif
         if (bs_ptr) {
-            new_bs_offset = bs_ptr - (s + current_bs_offset);
-            if (new_bs_offset > C2B_MAX_PSL_BLOCK_SIZES_STRING_LENGTH) {
+            end_bs_index = bs_ptr - s;
+#ifdef DEBUG
+            fprintf(stderr, "start_bs_offset: [%zu] | end_bs_index: [%zu]\n", start_bs_offset, end_bs_index);
+#endif
+            length_bs_offset = end_bs_index - start_bs_offset;
+            if (length_bs_offset > C2B_MAX_PSL_BLOCK_SIZES_STRING_LENGTH) {
                 fprintf(stderr, "Error: PSL block size string length too long\n");
                 exit(EINVAL); // Invalid argument (POSIX.1)
             }
-            memcpy(bs_arr, s + current_bs_offset, new_bs_offset);
-            bs_arr[new_bs_offset] = '\0';
+            memcpy(bs_arr, s + start_bs_offset, length_bs_offset);
+            bs_arr[length_bs_offset] = '\0';
+#ifdef DEBUG
+            fprintf(stderr, "bs_arr: [%s]\n", bs_arr);
+#endif
             bs_val = strtoull(bs_arr, NULL, 10);
             c2b_globals.psl->block->sizes[bc_idx] = bs_val;
-            current_bs_offset = new_bs_offset + 1;
+            start_bs_offset = end_bs_index + 1;
         }
     }
 }
@@ -1634,26 +1645,37 @@ c2b_psl_blockSizes_to_ptr(char *s, uint64_t bc)
 static inline void
 c2b_psl_tStarts_to_ptr(char *s, uint64_t bc) 
 {
-    size_t current_ts_offset = 0;
+    size_t start_ts_offset = 0;
+    size_t end_ts_index = 0;
+    size_t length_ts_offset = 0;
     uint64_t bc_idx;
     char ts_arr[C2B_MAX_PSL_T_STARTS_STRING_LENGTH];
     char *ts_ptr = NULL;
-    size_t new_ts_offset = 0;
     uint64_t ts_val = 0;
 
     for (bc_idx = 0; bc_idx < bc; bc_idx++) {
-        ts_ptr = strchr(s + current_ts_offset, c2b_psl_tStarts_delimiter);
+        ts_ptr = strchr(s + start_ts_offset, c2b_psl_tStarts_delimiter);
+#ifdef DEBUG
+        fprintf(stderr, "s: [%s] | ts_ptr: [%s]\n", s, ts_ptr);
+#endif
         if (ts_ptr) {
-            new_ts_offset = ts_ptr - (s + current_ts_offset);
-            if (new_ts_offset > C2B_MAX_PSL_T_STARTS_STRING_LENGTH) {
-                fprintf(stderr, "Error: PSL t-starts string length too long\n");
+            end_ts_index = ts_ptr - s;
+#ifdef DEBUG
+            fprintf(stderr, "start_ts_offset: [%zu] | end_ts_index: [%zu]\n", start_ts_offset, end_ts_index);
+#endif
+            length_ts_offset = end_ts_index - start_ts_offset;
+            if (length_ts_offset > C2B_MAX_PSL_T_STARTS_STRING_LENGTH) {
+                fprintf(stderr, "Error: PSL block start string length too long\n");
                 exit(EINVAL); // Invalid argument (POSIX.1)
             }
-            memcpy(ts_arr, s + current_ts_offset, new_ts_offset);
-            ts_arr[new_ts_offset] = '\0';
+            memcpy(ts_arr, s + start_ts_offset, length_ts_offset);
+            ts_arr[length_ts_offset] = '\0';
+#ifdef DEBUG
+            fprintf(stderr, "ts_arr: [%s]\n", ts_arr);
+#endif
             ts_val = strtoull(ts_arr, NULL, 10);
             c2b_globals.psl->block->starts[bc_idx] = ts_val;
-            current_ts_offset = new_ts_offset + 1;
+            start_ts_offset = end_ts_index + 1;
         }
     }
 }
