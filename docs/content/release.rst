@@ -116,6 +116,50 @@ Release
 
 7. Update a local fork of `homebrew-science <https://github.com/Homebrew/homebrew-science>`_ with details for the BEDOPS `formula <https://github.com/Homebrew/homebrew-science/blob/master/bedops.rb>`_. Submit pull request to homebrew-science folks.
 
+   a. After establishing a local fork, add the upstream remote so that you can fetch/pull updated formulas from Homebrew (if this is already done, this step can be skipped):
+
+   ::
+
+      $ git remote add upstream git://github.com/homebrew/homebrew-science.git
+
+   b. Fetch and pull data to the master branch from the upstream remote:
+
+   ::
+
+      $ git checkout master
+      $ git fetch
+      $ git pull upstream master
+      ...
+
+   c. Make a branch of the master entitled *bedops-vXpYpZ* and check it out:
+
+   ::
+
+      $ git branch bedops-vXpYpZ
+      $ git checkout bedops-vXpYpZ
+
+   d. Edit changes to *bedops.rb* formula. Change the version number in the tarball download and remove the ``sha1`` line.
+
+   e. Test the new formula:
+
+   ::
+
+      $ brew install ./bedops.rb --build-from-source
+
+   f. The ``--build-from-source`` option skips the per-platform bottle code. If the installation is successful, there will be a SHA1 code that you can copy and paste into the formula.
+
+   g. Add, commit and push to the *bedops-vXpYpZ* branch:
+
+   ::
+
+      $ git add bedops.rb
+      $ git commit -am 'BEDOPS X.Y.Z'
+      $ git push origin bedops-vXpYpZ
+
+   h. Visit the `homebrew-science <https://github.com/Homebrew/homebrew-science>`_ site and start a pull request from your local fork's newly pushed branch. There will be a big green button at the top of the GitHub site that asks you to start this pull request.
+
+   i. Wait for success or failure; the homebrew-science people will indicate if there are any problems.
+
 8. Consider closing out or deleting the development branch, as well as setting up the next development branch.
 
 =========
