@@ -138,17 +138,17 @@ Release
       $ git branch bedops-vXpYpZ
       $ git checkout bedops-vXpYpZ
 
-   d. Edit changes to *bedops.rb* formula. Change the version number in the tarball download and remove the ``sha1`` line.
+   d. Edit changes to *bedops.rb* formula. Change the version number in the tarball download and remove the ``sha1`` line (you'll replace this later on).
 
-   e. Test the new formula:
+   e. Test the new formula. Add the ``--build-from-source`` option to skip the per-platform bottle code:
 
    ::
 
       $ brew install ./bedops.rb --build-from-source
 
-   f. The ``--build-from-source`` option skips the per-platform bottle code. If the installation is successful, there will be a SHA1 code that you can copy and paste into the formula.
+   f. If the installation is successful, there will be a SHA1 validation code that you can copy and paste into the formula with the ``sha1`` header (see step *d* |---| basically, you are updating the line you removed in that step).
 
-   g. Add, commit and push to the *bedops-vXpYpZ* branch:
+   g. Add, commit and push the updated formula to the *bedops-vXpYpZ* branch:
 
    ::
 
@@ -156,9 +156,9 @@ Release
       $ git commit -am 'BEDOPS X.Y.Z'
       $ git push origin bedops-vXpYpZ
 
-   h. Visit the `homebrew-science <https://github.com/Homebrew/homebrew-science>`_ site and start a pull request from your local fork's newly pushed branch. There will be a big green button at the top of the GitHub site that asks you to start this pull request.
+   h. Visit the `homebrew-science <https://github.com/Homebrew/homebrew-science>`_ site and initiate a pull request from your local fork's newly pushed branch (there will be a big green button at the top of the GitHub site that asks you to start this pull request).
 
-   i. Wait for success or failure; the homebrew-science people will indicate if there are any problems.
+   i. Wait for success or failure; the homebrew-science people will indicate if there are any problems, usually within 48-72 hours.
 
 8. Consider closing out or deleting the development branch, as well as setting up the next development branch.
 
