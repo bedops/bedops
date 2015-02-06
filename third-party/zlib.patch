@@ -1,0 +1,47 @@
+--- zlib-1.2.7/zlib.h	2012-05-03 06:12:35.000000000 +0200
++++ zlib-1.2.7/zlib.h	2014-10-30 08:26:52.000000000 +0100
+@@ -1627,19 +1627,36 @@
+                                          unsigned char FAR *window,
+                                          const char *version,
+                                          int stream_size));
++#ifdef __cplusplus
+ #define deflateInit(strm, level) \
+-        deflateInit_((strm), (level), ZLIB_VERSION, (int)sizeof(z_stream))
++    deflateInit_((strm), (level), ZLIB_VERSION, static_cast<int>( sizeof(z_stream) ))
++#else
++#define deflateInit(strm, level) \
++    deflateInit_((strm), (level), ZLIB_VERSION, (int)sizeof(z_stream))
++#endif
+ #define inflateInit(strm) \
+-        inflateInit_((strm), ZLIB_VERSION, (int)sizeof(z_stream))
++    inflateInit_((strm), ZLIB_VERSION, (int)sizeof(z_stream))
+ #define deflateInit2(strm, level, method, windowBits, memLevel, strategy) \
+-        deflateInit2_((strm),(level),(method),(windowBits),(memLevel),\
+-                      (strategy), ZLIB_VERSION, (int)sizeof(z_stream))
++    deflateInit2_((strm),(level),(method),(windowBits),(memLevel),	\
++		  (strategy), ZLIB_VERSION, (int)sizeof(z_stream))
++#ifdef __cplusplus
++#define deflateInit2cpp(strm, level, method, windowBits, memLevel, strategy) \
++    deflateInit2_((strm),(level),(method),(windowBits),(memLevel),	\
++		  (strategy), ZLIB_VERSION, static_cast<int>(sizeof(z_stream)))
++#endif
++#ifdef __cplusplus
+ #define inflateInit2(strm, windowBits) \
+-        inflateInit2_((strm), (windowBits), ZLIB_VERSION, \
+-                      (int)sizeof(z_stream))
++    inflateInit2_((strm), (windowBits), ZLIB_VERSION,		\
++		  static_cast<int>(sizeof(z_stream)))
++#else
++#define inflateInit2(strm, windowBits)			  \
++    inflateInit2_((strm), (windowBits), ZLIB_VERSION,	  \
++		  (int)sizeof(z_stream))
++#endif
++
+ #define inflateBackInit(strm, windowBits, window) \
+-        inflateBackInit_((strm), (windowBits), (window), \
+-                      ZLIB_VERSION, (int)sizeof(z_stream))
++    inflateBackInit_((strm), (windowBits), (window),		\
++		     ZLIB_VERSION, (int)sizeof(z_stream))
+ 
+ #ifndef Z_SOLO
+ 

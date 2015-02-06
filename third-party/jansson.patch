@@ -1,0 +1,27 @@
+diff -ur jansson-2.6/src/jansson.h jansson-2.6/src/jansson.h
+--- jansson-2.6/src/jansson.h	2014-02-11 08:53:06.000000000 +0100
++++ jansson-2.6/src/jansson.h	2014-10-23 08:38:54.000000000 +0200
+@@ -94,7 +94,11 @@
+ static JSON_INLINE
+ json_t *json_incref(json_t *json)
+ {
++#ifdef __cplusplus
++    if(json && json->refcount != static_cast<size_t>(-1))
++#else
+     if(json && json->refcount != (size_t)-1)
++#endif
+         ++json->refcount;
+     return json;
+ }
+@@ -105,7 +109,11 @@
+ static JSON_INLINE
+ void json_decref(json_t *json)
+ {
++#ifdef __cplusplus
++    if(json && json->refcount != static_cast<size_t>(-1) && --json->refcount == 0)
++#else
+     if(json && json->refcount != (size_t)-1 && --json->refcount == 0)
++#endif
+         json_delete(json);
+ }
+ 

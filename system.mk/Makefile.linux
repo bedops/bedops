@@ -147,12 +147,15 @@ support: jansson_support_c bzip2_support_c zlib_support_c
 
 jansson_support_c:
 	bzcat ${WHICHJANSSON}.tar.bz2 | tar -x -C ${PARTY3}
+	cd ${PARTY3} && patch -p0 < jansson.patch
 	cd ${PARTY3}/${JANSSONVERSION} && ./configure --prefix=${WDIR}/${PARTY3}/${JANSSONVERSION} && $(MAKE) && $(MAKE) install && cd ${WDIR} && rm -f jansson && ln -s ${JANSSONVERSION} ${PARTY3}/jansson
 
 bzip2_support_c:
-	bzcat ${WHICHBZIP2}.tar.bz2 | tar -x -C ${PARTY3}
+	tar -x -z -C ${PARTY3} -f ${WHICHBZIP2}.tar.gz
+	cd ${PARTY3} && patch -p0 < bzip2.patch
 	cd ${PARTY3}/${BZIP2VERSION} && $(MAKE) libbz2.a && cd ${WDIR} && rm -f bzip2 && ln -s ${BZIP2VERSION} ${PARTY3}/bzip2
 
 zlib_support_c:
-	bzcat ${WHICHZLIB}.tar.bz2 | tar -x -C ${PARTY3}
+	tar -x -z -C ${PARTY3} -f ${WHICHZLIB}.tar.gz
+	cd ${PARTY3} && patch -p0 < zlib.patch
 	cd ${PARTY3}/${ZLIBVERSION} && ./configure --static && $(MAKE) && cd ${WDIR} && rm -f zlib && ln -s ${ZLIBVERSION} ${PARTY3}/zlib
