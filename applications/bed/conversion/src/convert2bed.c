@@ -1,9 +1,9 @@
 /* 
    convert2bed.c
    -----------------------------------------------------------------------
-   Copyright (C) 2014 Alex Reynolds
+   Copyright (C) 2015 Alex Reynolds
    
-   wig2bed components, (C) 2011-2014 Scott Kuehn and Shane Neph
+   wig2bed components, (C) 2011-2015 Scott Kuehn and Shane Neph
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
