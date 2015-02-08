@@ -301,7 +301,26 @@ Building an OS X installer package for redistribution
 
 5. Within ``Packages.app``, modify the project to include the current project version number or other desired changes, as applicable.
 
-6. Run the ``Build > Build`` menu selection to construct the installer package, located in the ``packaging/os_x/build`` subdirectory. Move this installer to the desired location with ``mv`` or the OS X Finder.
+6. Run the ``Build > Build`` menu selection to construct the installer package, located in the ``packaging/os_x/build`` subdirectory. Move this installer to the ``/tmp`` directory: 
+
+   ::
+
+     $ mv packaging/os_x/build/BEDOPS\ X.Y.Z.pkg /tmp/BEDOPS\ X.Y.Z.unsigned.pkg
+
+7. Find the ``Developer ID Installer`` alias or name that will be used to digitally sign the installer ``pkg`` bundle, *e.g.*:
+
+   ::
+
+     $ security find-certificate -a -c "Developer ID Installer" | grep "alis"
+         "alis"<blob>="Developer ID Installer: Foo B. Baz (ABCD12345678)"
+
+   (If necessary, you may need to sign up for a `Mac Developer Program <https://developer.apple.com/programs/mac/>`_ account with Apple.)
+
+8. Sign the package installer, *e.g.*:
+
+   ::
+
+     $ productsign --timestamp --sign "Developer ID Installer: Foo B. Baz (ABCD12345678)" /tmp/BEDOPS\ X.Y.Z.unsigned.pkg /tmp/BEDOPS\ X.Y.Z.signed.pkg
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
