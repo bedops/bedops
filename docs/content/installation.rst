@@ -305,7 +305,7 @@ Building an OS X installer package for redistribution
 
    ::
 
-     $ mv packaging/os_x/build/BEDOPS\ X.Y.Z.pkg /tmp/BEDOPS\ X.Y.Z.unsigned.pkg
+     $ mv packaging/os_x/build/BEDOPS\ X.Y.Z.mpkg /tmp/BEDOPS.X.Y.Z.unsigned.mpkg
 
 7. Find the ``Developer ID Installer`` alias or name that will be used to digitally sign the installer ``pkg`` bundle, *e.g.*:
 
@@ -320,7 +320,7 @@ Building an OS X installer package for redistribution
 
    ::
 
-     $ productsign --timestamp --sign "Developer ID Installer: Foo B. Baz (ABCD12345678)" /tmp/BEDOPS\ X.Y.Z.unsigned.pkg /tmp/BEDOPS\ X.Y.Z.signed.pkg
+     $ productsign --timestamp --sign "Developer ID Installer: Foo B. Baz (ABCD12345678)" /tmp/BEDOPS.X.Y.Z.unsigned.mpkg /tmp/BEDOPS.X.Y.Z.signed.mpkg
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
