@@ -12,10 +12,10 @@ The <a href="https://bedops.readthedocs.org/en/latest/content/overview.html#over
 
 <table width="100%">
 <tr>
-<th width="33%">
+<th width="33%" align="left">
 <img src="https://bedops.readthedocs.org/en/latest/_images/linux_v2.png" height="26px" style="height:26px !important; width: auto !important; margin-bottom:10px;">
 </th>
-<th width="33%">
+<th width="33%" align="left">
 <img src="https://bedops.readthedocs.org/en/latest/_images/macosx_v2.png" height="26px" style="height:26px !important; width: auto !important; margin-bottom:10px;">
 </th>
 <th width="34%" align="left">
