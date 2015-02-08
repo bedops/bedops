@@ -36,15 +36,15 @@ Preparing a major, minor or maintenance release of BEDOPS from a development bra
      bedops_linux_x86_64-vX.Y.Z.tar.bz2 (64-bit)
      bedops_linux_i386-vX.Y.Z.tar.bz2 (32-bit)
 
-   For Mac OS X, we build a Zip-compressed :ref:`OS X Installer bundle <installation_os_x_installer_construction>` with the following name scheme:
+   For Mac OS X, we build a Zip-compressed :ref:`OS X Installer <installation_os_x_installer_construction>` with the following name scheme:
 
    ::
 
-     BEDOPS.X.Y.Z.mpkg.zip
+     BEDOPS.X.Y.Z.pkg.zip
 
    The *X.Y.Z* scheme should follow the development branch name, *e.g.* 2.4.8, etc.
 
-3. Collect tarballs for all platforms in one location for later addition with web browser, via BEDOPS Github web site.
+3. Collect tarballs and zipped Installer in one location for later addition with web browser, via BEDOPS Github web site.
 
 =======
 Release
