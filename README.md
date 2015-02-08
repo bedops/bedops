@@ -23,20 +23,20 @@ The <a href="https://bedops.readthedocs.org/en/latest/content/overview.html#over
 </th>
 </tr>
 <tr>
-<td>
+<td valign="top">
 <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
 <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.8/bedops_linux_x86_64-v2.4.8.tar.bz2">x86-64 (64-bit)</a> binaries</li>
 <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.8/bedops_linux_i386-v2.4.8.tar.bz2">i386 (32-bit)</a> binaries</li>
 <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#linux">Installation instructions</a> for Linux hosts</li>
 </ul>
 </td>
-<td>
+<td valign="top">
 <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
-<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.8/BEDOPS.2.4.8.mpkg.zip">Intel (32-/64-bit, 10.7-10.10)</a> installer package</li>
+<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.8/BEDOPS.2.4.8.pkg.zip">Intel (32-/64-bit, 10.7-10.10)</a> installer package</li>
 <li><a href="http://bedops.readthedocs.org/en/latest/content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
 </ul>
 </td>
-<td>
+<td valign="top">
 <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
 <li><a href="https://github.com/bedops/bedops/archive/v2.4.8.tar.gz">Source code</a> (tar.gz)</li>
 <li><a href="https://github.com/bedops/bedops/archive/v2.4.8.zip">Source code</a> (zip)</li>
