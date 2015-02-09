@@ -19,7 +19,7 @@ Released: **February 7, 2015**
 
 * Mac OS X packaging
 
-  * Installer signed with `productsign <https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/productsign.1.html#//apple_ref/doc/man/1/productsign>`_ to pass OS X Gatekeeper
+  * Installer signed with `productsign <https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/productsign.1.html#//apple_ref/doc/man/1/productsign>`_ to pass `OS X Gatekeeper <http://support.apple.com/en-us/HT202491>`_
 
 * Updated copyright dates in source code
 
