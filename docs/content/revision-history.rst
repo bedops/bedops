@@ -21,6 +21,10 @@ Released: **February 7, 2015**
 
   * Installer signed with `productsign <https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/productsign.1.html#//apple_ref/doc/man/1/productsign>`_ to pass `OS X Gatekeeper <http://support.apple.com/en-us/HT202491>`_
 
+* Linux packaging
+
+  * SHA1 hashes of each tarball are now part of the `BEDOPS Releases <https://github.com/bedops/bedops/releases/>`_ description page, going forwards
+
 * Updated copyright dates in source code
 
 =================
