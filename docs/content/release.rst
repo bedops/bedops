@@ -112,6 +112,17 @@ Release
 
 .. note:: We should aim to fix typos and other errors as soon after a new release as possible, because then shortly afterwards we can simply pull a new development branch off the current state of the master branch with minimal commit losses.
 
+.. tip:: If we push any subsequent changes to the ``master`` branch, it's not the end of the world. However, it is recommended that the version tag is pushed forwards to the latest commit:
+
+   ::
+
+      $ git tag -f -a vX.Y.Z -m 'pushed current version tag forwards to latest commit'
+      ...
+      $ git push -f --tags
+      ...
+
+   This way, anyone who downloads source via GitHub will get the "freshest" code, with all the typo fixes and so forth.
+
 6. Visit the `BEDOPS documentation administration site <https://readthedocs.org/dashboard/bedops/edit/>`_ to disable documentation for the development branch. 
 
    Specifically, click on the `versions <https://readthedocs.org/dashboard/bedops/versions/>`_ tab to deactivate the old development branch. (Likewise, when adding a new development branch, add an active link here, so that edits to the documentation folder in the new development branch are available.)
