@@ -36,7 +36,9 @@ Preparing a major, minor or maintenance release of BEDOPS from a development bra
      bedops_linux_x86_64-vX.Y.Z.tar.bz2 (64-bit)
      bedops_linux_i386-vX.Y.Z.tar.bz2 (32-bit)
 
-   For Mac OS X, we build a Zip-compressed :ref:`OS X Installer <installation_os_x_installer_construction>` with the following name scheme:
+   Run ``sha1sum`` on each tarball to get its SHA1 hash (store this SHA1 hash in a file for later retrieval).
+
+   For the OS X Installer, use ``productsign`` per :ref:`OS X Installer <installation_os_x_installer_construction>` documentation to digitally sign the package. Compress the Installer with the Finder or `zip`:
 
    ::
 
@@ -44,9 +46,7 @@ Preparing a major, minor or maintenance release of BEDOPS from a development bra
 
    The *X.Y.Z* scheme should follow the development branch name, *e.g.* 2.4.8, etc.
 
-3. For the Linux tarballs, run ``sha1sum`` on each to get their SHA1 signatures. For the OS X Installer, use ``productsign`` per :ref:`OS X Installer <installation_os_x_installer_construction>` documentation to digitally sign the package.
-
-4. Collect tarballs and zipped Installer in one location for later addition with web browser, via BEDOPS Github web site.
+3. Collect tarballs and zipped Installer in one location for later addition with web browser, via BEDOPS Github web site.
 
 =======
 Release
@@ -93,7 +93,7 @@ Release
      ------
 
      ### Mac OS X
-     **BEDOPS.X.Y.Z.mpkg.zip**
+     **BEDOPS.X.Y.Z.pkg.zip**
      This package of BEDOPS vX.Y.Z binaries is a digitally-signed installer for OS X (10.7 - 10.10) running on Intel-based Macs.
 
      For installation instructions, please read [§2.1.2. Mac OS X] (http://bedops.readthedocs.org/en/latest/content/installation.html#mac-os-x) of the BEDOPS Installation document.
