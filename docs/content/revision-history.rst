@@ -12,7 +12,21 @@ Current version
 ===============
 
 ------
-v2.4.9
+v2.4.8
+------
+
+Released: **TBD**
+
+* Starch C++ API
+
+  * Fixed bug with ``starch --header`` functionality, such that BEDOPS core tools (``bedops``, etc.) would be unable to extract correct data from headered Starch archive
+
+=================
+Previous versions
+=================
+
+------
+v2.4.8
 ------
 
 Released: **February 7, 2015**
@@ -26,10 +40,6 @@ Released: **February 7, 2015**
   * SHA1 hashes of each tarball are now part of the `BEDOPS Releases <https://github.com/bedops/bedops/releases/>`_ description page, going forwards
 
 * Updated copyright dates in source code
-
-=================
-Previous versions
-=================
 
 ------
 v2.4.7
