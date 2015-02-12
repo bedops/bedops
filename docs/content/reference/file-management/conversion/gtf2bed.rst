@@ -41,18 +41,18 @@ To demonstrate these scripts, we use a sample GTF input called ``foo.gtf`` (see 
 
 ::
 
-  chr20      protein_coding  exon    9874841 9874841 .       +       .       gene_id "ENSBTAG00000020601"; transcript_id "ENSBTAT00000027448"; gene_name "ZNF366";
-  chr20      protein_coding  CDS     9873504 9874841 .       +       0       gene_id "ENSBTAG00000020601"; transcript_id "ENSBTAT00000027448"; gene_name "ZNF366";
-  chr20      protein_coding  exon    9877488 9877679 .       +       .       gene_id "ENSBTAG00000020601"; transcript_id "ENSBTAT00000027448";
+  chr20      protein_coding  exon    9874841 9874841 .       +       .       gene_id "ENSBTAG00000020601"; transcript_id "ENSBTAT0000002.4.9"; gene_name "ZNF366";
+  chr20      protein_coding  CDS     9873504 9874841 .       +       0       gene_id "ENSBTAG00000020601"; transcript_id "ENSBTAT0000002.4.9"; gene_name "ZNF366";
+  chr20      protein_coding  exon    9877488 9877679 .       +       .       gene_id "ENSBTAG00000020601"; transcript_id "ENSBTAT0000002.4.9";
 
 We can convert it to sorted BED data in the following manner:
 
 ::
 
   $ gtf2bed < foo.gtf
-  chr20   9874840 9874841 ZNF366  .       +       protein_coding  exon    .       gene_id "ENSBTAG00000020601"; transcript_id "ENSBTAT00000027448"; gene_name "ZNF366"; zero_length_insertion "True";
-  chr20   9873503 9874841 ZNF366  .       +       protein_coding  CDS     0       gene_id "ENSBTAG00000020601"; transcript_id "ENSBTAT00000027448"; gene_name "ZNF366";
-  chr20   9877487 9877679 ENSBTAG00000020601      .       +       protein_coding  exon    .       gene_id "ENSBTAG00000020601"; transcript_id "ENSBTAT00000027448";
+  chr20   9874840 9874841 ZNF366  .       +       protein_coding  exon    .       gene_id "ENSBTAG00000020601"; transcript_id "ENSBTAT0000002.4.9"; gene_name "ZNF366"; zero_length_insertion "True";
+  chr20   9873503 9874841 ZNF366  .       +       protein_coding  CDS     0       gene_id "ENSBTAG00000020601"; transcript_id "ENSBTAT0000002.4.9"; gene_name "ZNF366";
+  chr20   9877487 9877679 ENSBTAG00000020601      .       +       protein_coding  exon    .       gene_id "ENSBTAG00000020601"; transcript_id "ENSBTAT0000002.4.9";
 
 .. tip:: After, say, performing set or statistical operations with :ref:`bedops`, :ref:`bedmap` etc., converting data back to GTF is accomplished through an ``awk`` statement that re-orders columns and shifts the coordinate index:
 

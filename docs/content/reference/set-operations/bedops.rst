@@ -53,7 +53,7 @@ The ``--help`` option describes the set operation and other options available to
 
   bedops
     citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-    version:  2.4.8
+    version:  2.4.9
     authors:  Shane Neph & Scott Kuehn
 
         USAGE: bedops [process-flags] <operation> <File(s)>*
