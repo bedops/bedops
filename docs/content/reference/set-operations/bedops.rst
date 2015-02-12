@@ -713,7 +713,7 @@ The ``--stagger`` operator works in conjunction with :ref:`--chop <bedops_chop>`
 Exclude (-x)
 ------------
 
-Like ``--stagger``, ``-x`` is a sub-option of the :ref:`--chop <bedops_chop>` operator, and it may be used with or without ``--stagger``.  This option will remove any remainder genomic chunk that is smaller than that specified with ``--chop``.  For example, if you start with a 10 nt region and use ``--chop 4``, the final segment would be 2 nt in length if ``-x`` is not specified.  With ``-x``, that last segment does not go to output.  With ``-x``, the ``chop`` operation produces an output of regions that are all the same size.
+Like ``--stagger``, ``-x`` is a sub-option of the :ref:`--chop <bedops_chop>` operator, and it may be used with or without ``--stagger``.  This option will remove any remainder genomic chunk that is smaller than that specified with ``--chop``.  For example, if you start with a 10 nt region and use ``--chop 4``, the final segment would be 2 nt in length if ``-x`` is not specified.  With ``-x``, that last segment does not go to output.  With ``-x``, the ``chop`` operation produces output regions that are all the same size.
 
 .. _bedops_chrom:
 
