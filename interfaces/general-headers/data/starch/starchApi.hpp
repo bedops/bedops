@@ -1490,7 +1490,7 @@ namespace starch
                                                                                        &_currRemainder,
                                                                                        &_currRemainderLen);
                                 if (res != 0)
-                                    extractLine(line);
+                                    break;
                             } while (res != 0);
                         }
 
@@ -1603,7 +1603,7 @@ namespace starch
                                                                                        &_currRemainder,
                                                                                        &_currRemainderLen);
                                 if (res != 0)
-                                    extractLine(line);
+                                    break;
                             } while (res != 0);
                         }
 
