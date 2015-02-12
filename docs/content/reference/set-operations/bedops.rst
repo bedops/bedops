@@ -673,9 +673,9 @@ The ``--chop`` operator merges all overlapping input regions and "chops" them up
 
 .. _bedops_stagger:
 
------------------------
-Stagger (-x, --stagger)
------------------------
+-------------------
+Stagger (--stagger)
+-------------------
 
 The ``--stagger`` operator works in conjunction with :ref:`--chop <bedops_chop>`. While ``--chop`` sets the size of each cut, the ``--stagger`` operator moves the start position of each cut by the specified number of bases, across each merged interval.
 
