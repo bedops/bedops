@@ -2277,7 +2277,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 
 #ifdef DEBUG
                     fprintf(stderr, "\t(intermediate) start: %" PRId64 "\tpStart: %" PRId64 "\tstop: %" PRId64 "\tpStop: %" PRId64 "\n", start, pStart, stop, pStop);
+#ifdef __cplusplus
+                    fprintf(stderr, "\t(intermediate) duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", static_cast<int>( duplicateElementExistsFlag ), static_cast<int>( nestedElementExistsFlag ));
+#else
                     fprintf(stderr, "\t(intermediate) duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", (int) duplicateElementExistsFlag, (int) nestedElementExistsFlag);
+#endif
 #endif
 
                     /* test for duplicate element */
@@ -2367,7 +2371,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 
 #ifdef DEBUG
             fprintf(stderr, "\t(just-before-last-pass) start: %" PRId64 "\tpStart: %" PRId64 "\tstop: %" PRId64 "\tpStop: %" PRId64 "\n", start, pStart, stop, pStop);
+#ifdef __cplusplus
+            fprintf(stderr, "\t(just-before-last-pass) duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", static_cast<int>( duplicateElementExistsFlag ), static_cast<int>( nestedElementExistsFlag ));
+#else
             fprintf(stderr, "\t(just-before-last-pass) duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", (int) duplicateElementExistsFlag, (int) nestedElementExistsFlag);
+#endif
 #endif
 
             /* test for duplicate element */
@@ -2569,7 +2577,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 
     /* build footer */
 #ifdef DEBUG
+#ifdef __cplusplus
+    fprintf(stderr, "\tWARNING:\nmdLength: %llu\nmd   - [%s]\nsha1 - [%s]\n", static_cast<unsigned long long>( strlen(json) ), json, sha1Digest);
+#else
     fprintf(stderr, "\tWARNING:\nmdLength: %llu\nmd   - [%s]\nsha1 - [%s]\n", (unsigned long long) strlen(json), json, sha1Digest);
+#endif
     fprintf(stderr, "\twriting offset and signature to output stream...\n");
 #endif
 #ifdef __cplusplus
@@ -3224,7 +3236,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 
 #ifdef DEBUG
                 fprintf(stderr, "\t(intermediate) start: %" PRId64 "\tpStart: %" PRId64 "\tstop: %" PRId64 "\tpStop: %" PRId64 "\n", start, pStart, stop, pStop);
+#ifdef __cplusplus
+                fprintf(stderr, "\t(intermediate) duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", static_cast<int>( duplicateElementExistsFlag ), static_cast<int>( nestedElementExistsFlag ));
+#else
                 fprintf(stderr, "\t(intermediate) duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", (int) duplicateElementExistsFlag, (int) nestedElementExistsFlag);
+#endif
 #endif
 
                 /* test for duplicate element */
@@ -3343,7 +3359,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 
 #ifdef DEBUG
             fprintf(stderr, "\t(intermediate) start: %" PRId64 "\tpStart: %" PRId64 "\tstop: %" PRId64 "\tpStop: %" PRId64 "\n", start, pStart, stop, pStop);
+#ifdef __cplusplus
+            fprintf(stderr, "\t(intermediate) duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", static_cast<int>( duplicateElementExistsFlag ), static_cast<int>( nestedElementExistsFlag ));
+#else
             fprintf(stderr, "\t(intermediate) duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", (int) duplicateElementExistsFlag, (int) nestedElementExistsFlag);
+#endif
 #endif
 
             /* test for duplicate element */
@@ -3487,7 +3507,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 
 #ifdef DEBUG
     fprintf(stderr, "\t(last-pass) updating last md record...\n");
+#ifdef __cplusplus
+    fprintf(stderr, "\t(last-pass) flag state: duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", static_cast<int>( duplicateElementExistsFlag ), static_cast<int>( nestedElementExistsFlag ));
+#else
     fprintf(stderr, "\t(last-pass) flag state: duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", (int) duplicateElementExistsFlag, (int) nestedElementExistsFlag);
+#endif
 #endif
     if (STARCH_updateMetadataForChromosome(md, 
                                            prevChromosome, 
@@ -3555,7 +3579,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 
     /* build footer */
 #ifdef DEBUG
+#ifdef __cplusplus
+    fprintf(stderr, "\tWARNING:\nmdLength: %llu\nmd   - [%s]\nsha1 - [%s]\n", static_cast<unsigned long long>( strlen(json) ), json, sha1Digest);
+#else
     fprintf(stderr, "\tWARNING:\nmdLength: %llu\nmd   - [%s]\nsha1 - [%s]\n", (unsigned long long) strlen(json), json, sha1Digest);
+#endif
     fprintf(stderr, "\twriting offset and signature to output stream...\n");
 #endif
 #ifdef __cplusplus

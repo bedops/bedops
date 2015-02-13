@@ -406,7 +406,11 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
 #endif
 
 #ifdef DEBUG
+#ifdef __cplusplus
+    fprintf(stderr, "\tstartOffset -> %" PRId64" \t outFileSize -> %" PRIu64 " \t *cumulativeOutputSize -> %" PRIu64 "\n", static_cast<uint64_t>( startOffset ), static_cast<uint64_t>( outFileSize ), static_cast<uint64_t>( *cumulativeOutputSize ));
+#else
     fprintf(stderr, "\tstartOffset -> %" PRId64" \t outFileSize -> %" PRIu64 " \t *cumulativeOutputSize -> %" PRIu64 "\n", (uint64_t) startOffset, (uint64_t) outFileSize, (uint64_t) *cumulativeOutputSize);
+#endif
 #endif
 
     /* 
@@ -1843,9 +1847,15 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
         fprintf(stderr, "\tinChr -> %s\n", inChr);
         fprintf(stderr, "\toutTagFn -> %s\n", outTagFn);
         fprintf(stderr, "\tt_fileSize -> %zu\n", t_fileSize);
+#ifdef __cplusplus
+        fprintf(stderr, "\tt_lineIdx -> %" PRIu64 "\n", static_cast<uint64_t>( t_lineIdx ));
+        fprintf(stderr, "\tt_totalNonUniqueBases -> %" PRIu64 "\n", static_cast<uint64_t>( t_totalNonUniqueBases ));
+        fprintf(stderr, "\tt_totalUniqueBases -> %" PRIu64 "\n", static_cast<uint64_t>( t_totalUniqueBases ));
+#else
         fprintf(stderr, "\tt_lineIdx -> %" PRIu64 "\n", (uint64_t) t_lineIdx);
         fprintf(stderr, "\tt_totalNonUniqueBases -> %" PRIu64 "\n", (uint64_t) t_totalNonUniqueBases);
         fprintf(stderr, "\tt_totalUniqueBases -> %" PRIu64 "\n", (uint64_t) t_totalUniqueBases);
+#endif
     }
 #endif
 
@@ -3636,6 +3646,26 @@ STARCHCAT_printChromosomeSummaries (const ChromosomeSummaries *chrSums)
 #endif
                 if (strcmp(iter->chromosome, summary->chromosome) == 0) {
 #ifdef DEBUG
+#ifdef __cplusplus
+                    fprintf(stderr, "\t\t\t[recIdx: %02u]\n" \
+                            "\t\t\t\tfilename: %s\n" \
+                            "\t\t\t\theaderFlag: %u\n" \
+                            "\t\t\t\tmdOffset: %" PRIu64 "\n" \
+                            "\t\t\t\ttype: %u\n" \
+                            "\t\t\t\tintChr: %s\n" \
+                            "\t\t\t\tintFn: %s\n" \
+                            "\t\t\t\tintSize: %" PRIu64 "\n" \
+                            "\t\t\t\tintLineCount: %" PRId64 "\n", \
+                            recIdx, 
+			    mdRecord->filename, 
+			    mdRecord->hFlag, 
+			    static_cast<uint64_t>( mdRecord->mdOffset ), 
+			    mdRecord->type, 
+			    iter->chromosome, 
+			    iter->filename, 
+			    static_cast<uint64_t>( iter->size ), 
+			    static_cast<uint64_t>( iter->lineCount ));
+#else
                     fprintf(stderr, "\t\t\t[recIdx: %02u]\n" \
                             "\t\t\t\tfilename: %s\n" \
                             "\t\t\t\theaderFlag: %u\n" \
@@ -3654,6 +3684,7 @@ STARCHCAT_printChromosomeSummaries (const ChromosomeSummaries *chrSums)
 			    iter->filename, 
 			    (uint64_t) iter->size, 
 			    (uint64_t) iter->lineCount);
+#endif
 #endif
                     break;
                 }

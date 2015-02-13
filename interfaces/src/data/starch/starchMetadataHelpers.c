@@ -192,7 +192,11 @@ STARCH_updateMetadataForChromosome(Metadata **md, char *chr, char *fn, uint64_t 
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_updateMetadataForChromosome() ---\n");
+#ifdef __cplusplus
+    fprintf(stderr, "\tduplicateElementExists: %d\n\tnestedElementExists: %d\n", static_cast<int>( duplicateElementExists ), static_cast<int>( nestedElementExists ));
+#else
     fprintf(stderr, "\tduplicateElementExists: %d\n\tnestedElementExists: %d\n", (int) duplicateElementExists, (int) nestedElementExists);
+#endif
 #endif
     Metadata *iter;
 
@@ -584,8 +588,13 @@ STARCH_generateJSONMetadata(const Metadata *md, const CompressionType type, cons
         /* 2.1+ archive */
         if ((json_integer_value(streamArchiveVersionMajor) > 2) || ((json_integer_value(streamArchiveVersionMajor) == 2) && (json_integer_value(streamArchiveVersionMinor) >= 1))) {
 #ifdef DEBUG
+#ifdef __cplusplus
+            fprintf(stderr, "\titer->duplicateElementExists: %d\n", static_cast<int>( iter->duplicateElementExists ));
+            fprintf(stderr, "\titer->nestedElementExists: %d\n", static_cast<int>( iter->nestedElementExists ));
+#else
             fprintf(stderr, "\titer->duplicateElementExists: %d\n", (int) iter->duplicateElementExists);
             fprintf(stderr, "\titer->nestedElementExists: %d\n", (int) iter->nestedElementExists);
+#endif
 #endif
             streamDuplicateElementExistsFlag = json_boolean(iter->duplicateElementExists == kStarchTrue);
             if (!streamDuplicateElementExistsFlag) {
@@ -978,7 +987,11 @@ STARCH_readJSONMetadata(json_t **metadataJSON, FILE **fp, const char *fn, Metada
 
 #ifdef DEBUG
         fprintf(stderr, "\toffsetBuffer: %s\n", offsetBuffer);
+#ifdef __cplusplus
+        fprintf(stderr, "\tcurrentMdOffset: %" PRIu64 "\n", static_cast<uint64_t>( currentMdOffset ));
+#else
         fprintf(stderr, "\tcurrentMdOffset: %" PRIu64 "\n", (uint64_t) currentMdOffset);
+#endif
 #endif
         for (mdHashIndex = 0; mdHashIndex < STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH - 1; mdHashIndex++) {
 #ifdef __cplusplus
