@@ -60,7 +60,7 @@ dependencies: mkdirs
 	${CXX} ${CXXFLAGS} -c ${OBJDIR}/starchSha1Digest.c -o  ${LOCALOBJDIR}/starchSha1Digest.o ${INCLUDES}
 	${CXX} ${CXXFLAGS} -c ${OBJDIR}/starchBase64Coding.c -o  ${LOCALOBJDIR}/starchBase64Coding.o ${INCLUDES}
 
-debug: dependencies_debug starchLibrary_debug starch_debug unstarch_debug starchcat_debug starchcluster
+build_debug: dependencies_debug starchLibrary_debug starch_debug unstarch_debug starchcat_debug starchcluster
 	rm -f *~
 
 dependencies_debug: mkdirs
@@ -72,7 +72,7 @@ dependencies_debug: mkdirs
 	${CXX} ${CXXDFLAGS} -c ${OBJDIR}/starchSha1Digest.c -o  ${LOCALOBJDIR}/starchSha1Digest.o ${INCLUDES}
 	${CXX} ${CXXDFLAGS} -c ${OBJDIR}/starchBase64Coding.c -o  ${LOCALOBJDIR}/starchBase64Coding.o ${INCLUDES}
 
-gprof: dependencies_gprof starchLibrary_gprof starch_gprof unstarch_gprof starchcat_gprof starchcluster
+build_gprof: dependencies_gprof starchLibrary_gprof starch_gprof unstarch_gprof starchcat_gprof starchcluster
 	rm -f *~
 
 dependencies_gprof: mkdirs

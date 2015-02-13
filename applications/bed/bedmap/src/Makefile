@@ -26,7 +26,6 @@ LIBRARIES           = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 BLDFLAGS            = -Wall -pedantic -O3 -std=c++11 
 SFLAGS              = -static
 
-
 FLAGS               = ${SFLAGS} -s ${BLDFLAGS} ${OBJDIR}/NaN.o ${OBJDIR}/starchConstants.o ${OBJDIR}/starchFileHelpers.o ${OBJDIR}/starchHelpers.o ${OBJDIR}/starchMetadataHelpers.o ${OBJDIR}/unstarchHelpers.o ${OBJDIR}/starchSha1Digest.o ${OBJDIR}/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
 
 DFLAGS              = ${SFLAGS} -g -O0 -std=c++11 -fno-inline -Wall -pedantic ${OBJDIR}/NaN.o ${OBJDIR}/starchConstants.o ${OBJDIR}/starchFileHelpers.o ${OBJDIR}/starchHelpers.o ${OBJDIR}/starchMetadataHelpers.o ${OBJDIR}/unstarchHelpers.o ${OBJDIR}/starchSha1Digest.o ${OBJDIR}/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
@@ -40,10 +39,10 @@ PROG                = bedmap
 build: dependencies
 	mkdir -p ${BINDIR} && $(CXX) -o ${BINDIR}/${PROG} ${FLAGS} ${LIBRARIES} ${SOURCE1} 
 
-debug: dependencies
+build_debug: dependencies
 	mkdir -p ${BINDIR} && $(CXX) -o ${BINDIR}/debug.${PROG} ${DFLAGS} ${LIBRARIES} ${SOURCE1}
 
-gprof: dependencies
+build_gprof: dependencies
 	mkdir -p ${BINDIR} && $(CXX) -o ${BINDIR}/gprof.${PROG} ${GPROFFLAGS} ${LIBRARIES} ${SOURCE1} 
 
 dependencies:
