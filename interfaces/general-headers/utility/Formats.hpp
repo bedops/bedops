@@ -39,7 +39,7 @@ namespace Formats {
   const char* Format(long long int) { return "%lld"; } /* msft doesn't conform to this standard */
   const char* Format(short) { return "%hd"; }
   const char* Format(unsigned short) { return "%hu"; }
-  const char* Format(double d, int precision, bool scientific) {
+  const char* Format(double, int precision, bool scientific) {
     static char prec[20];
     if ( scientific )
       std::sprintf(prec, "%%.%de", precision);
