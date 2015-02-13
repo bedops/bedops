@@ -62,6 +62,9 @@ int
 checkfiles(const char **bedFileNames, unsigned int numFiles);
 
 int
+checkSort(char const **bedFileNames, unsigned int numFiles);
+
+int
 mergeSort(FILE **tmpFiles, unsigned int numFiles);
 
 int
