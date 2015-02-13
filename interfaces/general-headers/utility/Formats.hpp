@@ -29,17 +29,17 @@
 
 namespace Formats {
 
-  const char* Format(const char*) { return "%s"; }
-  const char* Format(char) { return "%c"; }
-  const char* Format(double) { return "%lf"; }
-  const char* Format(float) { return "%f"; }
-  const char* Format(int) { return "%d"; }
-  const char* Format(unsigned int) { return "%u"; }
-  const char* Format(long int) { return "%ld"; }
-  const char* Format(long long int) { return "%lld"; } /* msft doesn't conform to this standard */
-  const char* Format(short) { return "%hd"; }
-  const char* Format(unsigned short) { return "%hu"; }
-  const char* Format(double, int precision, bool scientific) {
+  constexpr const char* Format(const char*) { return "%s"; }
+  constexpr const char* Format(char) { return "%c"; }
+  constexpr const char* Format(double) { return "%lf"; }
+  constexpr const char* Format(float) { return "%f"; }
+  constexpr const char* Format(int) { return "%d"; }
+  constexpr const char* Format(unsigned int) { return "%u"; }
+  constexpr const char* Format(long int) { return "%ld"; }
+  constexpr const char* Format(long long int) { return "%lld"; } /* msft doesn't conform to this standard */
+  constexpr const char* Format(short) { return "%hd"; }
+  constexpr const char* Format(unsigned short) { return "%hu"; }
+  inline const char* Format(double, int precision, bool scientific) {
     static char prec[20];
     if ( scientific )
       std::sprintf(prec, "%%.%de", precision);
@@ -60,19 +60,19 @@ namespace Formats {
 
   // Overloaded functions for uint64_t and potential underlying types
   template <typename T>
-  typename std::enable_if<Details::check<T, uint64_t>::value, char const*>::type
+  constexpr typename std::enable_if<Details::check<T, uint64_t>::value, char const*>::type
   Format(T) { return "%" PRIu64; }
 
   template <typename T>
-  typename std::enable_if<Details::check<T, unsigned long long int>::value &&
-                          Details::check<T, unsigned long long int>::not_uint64_t, char const*>::type
+  constexpr typename std::enable_if<Details::check<T, unsigned long long int>::value &&
+                                    Details::check<T, unsigned long long int>::not_uint64_t, char const*>::type
   Format(T) { return "%llu"; } /* msft doesn't conform to this standard */
 
   template <typename T>
-  typename std::enable_if<Details::check<T, unsigned long int>::value &&
-                          Details::check<T, unsigned long int>::not_uint64_t &&
-                          !Details::check<T, unsigned int>::value,
-                          char const*>::type
+  constexpr typename std::enable_if<Details::check<T, unsigned long int>::value &&
+                                    Details::check<T, unsigned long int>::not_uint64_t &&
+                                    !Details::check<T, unsigned int>::value,
+                                    char const*>::type
   Format(T) { return "%lu"; }
 
 } // namespace Formats

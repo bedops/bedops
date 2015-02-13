@@ -294,7 +294,7 @@ namespace Bed {
     std::string lowerstr(const std::string& s) {
       std::string t(s);
       for ( std::size_t i = 0; i < t.size(); ++i )
-        t[i] = std::tolower(t[i]);
+        t[i] = static_cast<char>(std::tolower(t[i]));
       return(t);
     }
   

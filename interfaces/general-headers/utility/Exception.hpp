@@ -36,8 +36,8 @@ namespace Ext {
     enum { Value = ErrorID };
     explicit Exception(const std::string& msg) : msg_(msg) { /* */ }
     Exception(const std::string& msg1, const std::string& msg2) : msg_(msg1 + "\n" + msg2) { /* */ }
-    virtual ~Exception() throw() { /* */ }
-    virtual const char* what() const throw() { return msg_.c_str(); }
+    virtual ~Exception() noexcept { /* */ }
+    virtual const char* what() const noexcept { return msg_.c_str(); }
   protected:
     Exception() { }
     std::string msg_;

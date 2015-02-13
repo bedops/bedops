@@ -29,6 +29,9 @@
 #include "data/bed/BedTypes.hpp"
 #include "utility/Exception.hpp"
 
+#include "Structures.hpp"
+
+
 int
 checkSort(char const **bedFileNames, unsigned int numFiles)
 {

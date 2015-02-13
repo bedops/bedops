@@ -107,8 +107,8 @@ namespace Bed {
           return((a->start() < b->start()) ? -1 : 1);
         if ( a->end() != b->end() )
           return((a->end() < b->end()) ? -1 : 1);
-        CoordType aidx = (a - static_cast<BedType1 const*>(0));
-        CoordType bidx = (b - static_cast<BedType2 const*>(0));
+        CoordType aidx = static_cast<CoordType>(a - static_cast<BedType1 const*>(0));
+        CoordType bidx = static_cast<CoordType>(b - static_cast<BedType2 const*>(0));
         return((aidx < bidx) ? -1 : 1); // a==b but still overlap < ovrRequired
       }
       return((a->start() < b->start()) ? -1 : 1); // no overlap
