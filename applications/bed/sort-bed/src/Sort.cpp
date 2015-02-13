@@ -38,10 +38,10 @@ using namespace std;
 
 static const char *name = "sort-bed";
 static const char *authors = "Scott Kuehn";
-static const char *usage = "\nUSAGE: sort-bed [--help] [--version] [--max-mem <val>] [--tmpdir <path>] <file1.bed> <file2.bed> <...>\n        Sort BED file(s).\n        May use '-' to indicate stdin.\n        Results are sent to stdout.\n\n        <val> for --max-mem may be 8G, 8000M, or 8000000000 to specify 8 GB of memory.\n        --tmpdir is useful only with --max-mem.\n";
+static const char *usage = "\nUSAGE: sort-bed [--help] [--version] [--check-sort] [--max-mem <val>] [--tmpdir <path>] <file1.bed> <file2.bed> <...>\n        Sort BED file(s).\n        May use '-' to indicate stdin.\n        Results are sent to stdout.\n\n        <val> for --max-mem may be 8G, 8000M, or 8000000000 to specify 8 GB of memory.\n        --tmpdir is useful only with --max-mem.\n";
 
 static void 
-getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, double* maxMem, char **tmpPath)
+getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, int *justCheck, double* maxMem, char **tmpPath)
 {
     int numFiles, i, j, stdincnt = 0, changeMem = 0, units = 0, changeTDir = 0;
     size_t k;
@@ -65,7 +65,7 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, d
         {
             for(i = 1, j = 0; i < argc; i++, j++)
                 {
-                    // Check for --help
+                    /* Check for --help */
                     if(strcmp(argv[i], "--help") == 0) 
                         {
                             fprintf(stdout, "%s\n  citation: %s\n  version:  %s\n  authors:  %s\n%s\n",
@@ -78,7 +78,7 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, d
                                     name, BEDOPS::citation(), BEDOPS::revision(), authors);
                             exit(EXIT_SUCCESS);
                         }
-                    // Check for max memory before merge-sort
+                    /* Check for max memory before merge-sort */
                     else if(strcmp(argv[i], "--max-mem") == 0)
                         {
                             units = 0;
@@ -160,8 +160,14 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, d
                             numFiles -= 2;
                             continue;
                         }
-                    // Check for stdin
-                    else if(strcmp(argv[i], "-") == 0) 
+                    else if(strcmp(argv[i], "--check-sort") == 0)
+                        {
+                            *justCheck = 1;
+                            --j;
+                            numFiles -= 1;
+                            continue;
+                        }
+                    else if(strcmp(argv[i], "-") == 0) /* stdin */
                         {
                             stdincnt++;
                         }
@@ -175,7 +181,7 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, d
             fprintf(stderr, "Cannot specify '-' more than once\n");
             exit(EXIT_FAILURE);
         }
-    else if(numFiles < 1) /* can be different from before if --max-mem was used */
+    else if(numFiles < 1) /* can be different from before if --max-mem was used, for example*/
         {
             fprintf(stderr, "%s\n  citation: %s\n  version:  %s\n  authors:  %s\n%s\n%s\n",
                     name, BEDOPS::citation(), BEDOPS::revision(), authors, usage, "No file given.");
@@ -192,30 +198,40 @@ main(int argc, char **argv)
     const char *inFiles[MAX_INFILES];
     char* tmpPath = NULL;
     bool clean = false;
+    int justCheck = 0;
     int rval = EXIT_FAILURE;
 
-    getArgs(argc, argv, inFiles, &numInFiles, &maxMemory, &tmpPath);
-
-    if(tmpPath != NULL)
+    getArgs(argc, argv, inFiles, &numInFiles, &justCheck, &maxMemory, &tmpPath);
+    if(justCheck) /* just checking inputs */
         {
-          if(maxMemory > 0)
-              {
-                  clean = true;
-              }
-          else // tmpPath only useful when --max-mem is used
-              {
-                  free(tmpPath);
-                  tmpPath = NULL;
-              }
+            rval = checkSort(inFiles, numInFiles);
+            return rval;
         }
-    else if (maxMemory > 0)
+    else /* sorting */
         {
-            tmpPath = getenv("TMPDIR");
+            if(tmpPath != NULL)
+                {
+                    if(maxMemory > 0)
+                        {
+                            clean = true;
+                        }
+                    else /* tmpPath only useful when --max-mem is used */
+                        {
+                            free(tmpPath);
+                            tmpPath = NULL;
+                        }
+                }
+            else if (maxMemory > 0)
+                {
+                    tmpPath = getenv("TMPDIR");
+                }
+        
+            // sort
+            rval = processData(inFiles, numInFiles, maxMemory, tmpPath);
+
+            if(clean)
+                free(tmpPath);
         }
 
-    // sort
-    rval = processData(inFiles, numInFiles, maxMemory, tmpPath);
-    if(clean)
-        free(tmpPath);
     return rval;
 }

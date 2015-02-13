@@ -33,6 +33,7 @@
 #include <limits>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include "algorithm/bed/FindBedRange.hpp"
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
