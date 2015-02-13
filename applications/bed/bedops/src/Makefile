@@ -38,10 +38,10 @@ PROG                = bedops
 build: dependencies
 	mkdir -p $(BINDIR) && $(CXX) -o $(BINDIR)/$(PROG) $(FLAGS) ${LIBRARIES} $(SOURCE1) 
 
-gprof: dependencies
+build_gprof: dependencies
 	mkdir -p $(BINDIR) && $(CXX) -o $(BINDIR)/gprof.$(PROG) $(GPROFFLAGS) ${LIBRARIES} $(SOURCE1) 
 
-debug: dependencies
+build_debug: dependencies
 	mkdir -p $(BINDIR) && $(CXX) -o $(BINDIR)/debug.$(PROG) $(DFLAGS) ${LIBRARIES} $(SOURCE1)
 
 dependencies:

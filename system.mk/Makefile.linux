@@ -28,9 +28,15 @@ build: $(SUBDIRS)
 $(SUBDIRS):
 	$(MAKE) -C $@ -f Makefile $(MAKECMDGOALS)
 
-debug: $(SUBDIRS)
+debug: support
+	$(MAKE) build_debug -f $(SELF)
 
-gprof: $(SUBDIRS)
+build_debug: $(SUBDIRS)
+
+gprof: support
+	$(MAKE) build_gprof -f $(SELF)
+
+build_gprof: $(SUBDIRS)
 
 clean: clean_debug clean_gprof $(SUBDIRS)
 	rm -f ${BINDIR}/sort-bed

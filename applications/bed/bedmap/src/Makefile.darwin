@@ -43,10 +43,10 @@ PROG                 = bedmap
 build: dependencies
 	$(CXX) -o $(BINDIR)/$(PROG)_$(ARCH) $(FLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIBRARIES} $(SOURCE1)
 
-debug: dependencies
+build_debug: dependencies
 	$(CXX) -o $(BINDIR)/debug.$(PROG)_$(ARCH) $(DFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIBRARIES} $(SOURCE1)
 
-gprof: dependencies
+build_gprof: dependencies
 	$(CXX) -o $(BINDIR)/gprof.$(PROG)_$(ARCH) $(GPROFFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIBRARIES} $(SOURCE1)
 
 dependencies:

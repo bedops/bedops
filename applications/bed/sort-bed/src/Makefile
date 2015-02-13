@@ -20,7 +20,7 @@ endif
 
 build: sort
 
-gprof: gprofbuild
+build_gprof: gprofbuild
 	${CXX} -o ${DIST_DIR}/gprof.${PROG} ${PFLAGS} ${SFLAGS} ${WARNINGS} ${GPROFFLAGS} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o 
 
 sort: sortbuild
@@ -43,7 +43,7 @@ clean:
 	rm -f $(DIST_DIR)/$(PROG)
 	rm -f $(DIST_DIR)/*.$(PROG)
 
-debug: prep
+build_debug: prep
 	${CXX} -g -O0 -std=c++11 -fno-inline -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
 	${CXX} -g -O0 -std=c++11 -fno-inline -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
 	${CXX} -g ${SFLAGS} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o -o ${DIST_DIR}/debug.${PROG}

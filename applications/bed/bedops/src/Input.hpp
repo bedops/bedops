@@ -215,7 +215,6 @@ struct Input {
             bool staggerSet = false;
 
             for ( int i = start; i < argc; ++i ) {
-              std::string::size_type sz = std::string(argv[i]).size();
               if ( std::string(argv[i]) == "--stagger" ) {
                 Ext::Assert<UE>(!staggerSet, "chop's --stagger suboption specified multiple times.");
                 Ext::Assert<UE>(++i != argc, "No #nt value found for --stagger suboption in --chop");

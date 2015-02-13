@@ -55,7 +55,10 @@ build: all
 
 build_fat: sort_c_intel_fat bedops_c_intel_fat closestfeatures_c_intel_fat bedmap_c_intel_fat bedextract_c_intel_fat convert2bed_c_intel_fat starch_c_intel_fat
 
-debug: all
+debug: support
+	$(MAKE) build_debug -f $(SELF)
+
+build_debug: all
 	$(MAKE) dbg_build_fat -f $(SELF)
 
 dbg_build_fat: dbg_sort_c_intel_fat dbg_bedops_c_intel_fat dbg_closestfeatures_c_intel_fat dbg_bedmap_c_intel_fat dbg_bedextract_c_intel_fat dbg_convert2bed_c_intel_fat dbg_starch_c_intel_fat
@@ -277,8 +280,8 @@ dbg_convert2bed_c_intel_fat:
 	-test -e ${APPDIR}/conversion/bin/debug.convert2bed_i386 && test -e ${APPDIR}/conversion/bin/debug.convert2bed_x86_64 && { lipo -create ${APPDIR}/conversion/bin/debug.convert2bed_i386 ${APPDIR}/conversion/bin/debug.convert2bed_x86_64 -output ${APPDIR}/conversion/bin/debug.convert2bed; }
 
 dbg_starch_c_intel_fat:
-	cp ${APPDIR}/starch/src/starchcluster_sge.tcsh ${APPDIR}/starch/bin/starchcluster_sge.tcsh
-	cp ${APPDIR}/starch/src/starchcluster_gnuParallel.tcsh ${APPDIR}/starch/bin/starchcluster_gnuParallel.tcsh
+	cp ${APPDIR}/starch/src/starchcluster_sge.tcsh ${APPDIR}/starch/bin/starchcluster_sge
+	cp ${APPDIR}/starch/src/starchcluster_gnuParallel.tcsh ${APPDIR}/starch/bin/starchcluster_gnuParallel
 	-test -e ${APPDIR}/starch/bin_i386/debug.starch && test -e ${APPDIR}/starch/bin_x86_64/debug.starch && { lipo -create ${APPDIR}/starch/bin_i386/debug.starch ${APPDIR}/starch/bin_x86_64/debug.starch -output ${APPDIR}/starch/bin/debug.starch; }
 	-test -e ${APPDIR}/starch/bin_i386/debug.unstarch && test -e ${APPDIR}/starch/bin_x86_64/debug.unstarch && { lipo -create ${APPDIR}/starch/bin_i386/debug.unstarch ${APPDIR}/starch/bin_x86_64/debug.unstarch -output ${APPDIR}/starch/bin/debug.unstarch; }
 	-test -e ${APPDIR}/starch/bin_i386/debug.starchcat && test -e ${APPDIR}/starch/bin_x86_64/debug.starchcat && { lipo -create ${APPDIR}/starch/bin_i386/debug.starchcat ${APPDIR}/starch/bin_x86_64/debug.starchcat -output ${APPDIR}/starch/bin/debug.starchcat; }

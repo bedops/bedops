@@ -36,10 +36,10 @@ PROG                = closest-features
 build: dependencies
 	mkdir -p $(BINDIR) && $(CXX) -o $(BINDIR)/$(PROG) $(FLAGS) ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB} $(SOURCE1) 
 
-gprof: dependencies
+build_gprof: dependencies
 	mkdir -p $(BINDIR) && $(CXX) -o $(BINDIR)/gprof.$(PROG) $(FLAGS) ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB} $(SOURCE1)
 
-debug: dependencies
+build_debug: dependencies
 	mkdir -p $(BINDIR) && $(CXX) -o $(BINDIR)/debug.$(PROG) $(DFLAGS) ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB} $(SOURCE1)
 
 dependencies:

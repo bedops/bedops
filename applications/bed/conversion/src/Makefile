@@ -14,7 +14,7 @@ SFLAGS                    = -static
 
 all: setup build
 
-.PHONY: setup build debug profile clean
+.PHONY: setup build build_debug build_gprof clean
 
 setup:
 	mkdir -p $(DISTDIR)
@@ -24,14 +24,14 @@ build: setup
 	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CFLAGS) -c $(SOURCE) -o $(OBJDIR)/$(PROG).o $(INCLUDES)
 	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CFLAGS) $(SFLAGS) $(OBJDIR)/$(PROG).o -o $(DISTDIR)/$(PROG) $(LIBS)
 
-debug: setup
+build_debug: setup
 	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CDFLAGS) -c $(SOURCE) -o $(OBJDIR)/$(PROG).o $(INCLUDES)
-	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CDFLAGS) $(SFLAGS) $(OBJDIR)/$(PROG).o -o $(DISTDIR)/$(PROG) $(LIBS)
+	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CDFLAGS) $(SFLAGS) $(OBJDIR)/$(PROG).o -o $(DISTDIR)/debug.$(PROG) $(LIBS)
 
-profile: setup
+build_gprof: setup
 	$(CC) -shared -fPIC gprof-helper.c -o gprof-helper.so $(LIBS) -ldl
 	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CPFLAGS) -c $(SOURCE) -o $(OBJDIR)/$(PROG).o $(INCLUDES)
-	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CPFLAGS) $(SFLAGS)  $(OBJDIR)/$(PROG).o -o $(DISTDIR)/$(PROG) $(LIBS)
+	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CPFLAGS) $(SFLAGS)  $(OBJDIR)/$(PROG).o -o $(DISTDIR)/gprof.$(PROG) $(LIBS)
 	@echo "\nNote: To profile convert2bed with gprof/pthreads, run:\n\t$$ LD_PRELOAD=/path/to/gprof-helper.so convert2bed"
 
 clean:
