@@ -523,9 +523,9 @@ namespace starch
                         for (_tokCount = 0; _token != NULL; _tokCount++) {
                             switch (_tokCount) {
                                 case 0: {
-                                    _tokenCheck = STARCH_strnstr((const char *)_token, STARCH_LEGACY_EXTENSION_BZ2, strlen(_token));
+                                    _tokenCheck = STARCH_strnstr(const_cast<const char *>( _token ), STARCH_LEGACY_EXTENSION_BZ2, strlen(_token));
                                     if (!_tokenCheck) {
-                                        _tokenCheck = STARCH_strnstr((const char *)_token, STARCH_LEGACY_EXTENSION_GZIP, strlen(_token));
+                                        _tokenCheck = STARCH_strnstr(const_cast<const char *>( _token ), STARCH_LEGACY_EXTENSION_GZIP, strlen(_token));
                                         if (!_tokenCheck)
                                             return false;
                                     }
@@ -537,12 +537,12 @@ namespace starch
                                             break;
                                         }
                                     }
-                                    _recChromosome = (char *) std::malloc(std::strlen(_recTokBuf) + 1);
+                                    _recChromosome = static_cast<char *>( std::malloc(std::strlen(_recTokBuf) + 1) );
                                     if (!_recChromosome)
                                         return false;
                                     std::strncpy(_recChromosome, _recTokBuf, std::strlen(_recTokBuf) + 1);
 
-                                    _recFilename = (char *) std::malloc(std::strlen(_token) + 1);
+                                    _recFilename = static_cast<char *>( std::malloc(std::strlen(_token) + 1) );
                                     if (!_recFilename)
                                         return false;
                                     std::strncpy(_recFilename, _token, strlen(_token) + 1);
@@ -587,10 +587,10 @@ namespace starch
                         else
                             break;
                         
-                        _tokBufIdx = -1;
+                        _tokBufIdx = static_cast<size_t>( -1 );
                     }
                     else
-                        _tokBuf[_tokBufIdx] = (char) _buf[_bufIdx];
+                        _tokBuf[_tokBufIdx] = static_cast<char>( _buf[_bufIdx] );
                 }
                 
                 /* if _testMd is not NULL, then we have valid legacy metadata record(s) */
@@ -686,187 +686,188 @@ namespace starch
                 else if (hasStarchRevision1LegacyHeader(_inFn)) { 
                     return true;
                 }
-
+                
                 return false;
             }
-
-            std::string                     getInFn() { return inFn; }
-            const char                    * getInFnCStr() { return inFn.c_str(); }
-            Boolean                         getArchiveHeaderFlag() { return archHeaderFlag; }
-            Boolean                       * getArchiveHeaderFlagPtr() { return &archHeaderFlag; }
-            Boolean                         getArchiveShowNewlineFlag() { return archShowNewlineFlag; }
-            Boolean                       * getArchiveShowNewlineFlagPtr() { return &archShowNewlineFlag; }
-            Metadata                      * getArchiveMdIter() { return archMdIter; }
-            Metadata                      * getArchiveRecordIter() { return archMdIter; }
-            unsigned int                    getArchiveVersionMajor() { if (!archMd) { readJSONMetadata(false, false); } if (!archVersion) { throw(std::string("ERROR: Could not retrieve version data")); } return (unsigned int) archVersion->major; }
-            unsigned int                    getArchiveVersionMinor() { if (!archMd) { readJSONMetadata(false, false); } if (!archVersion) { throw(std::string("ERROR: Could not retrieve version data")); } return (unsigned int) archVersion->minor; }
-            unsigned int                    getArchiveVersionRevision() { if (!archMd) { readJSONMetadata(false, false); } if (!archVersion) { throw(std::string("ERROR: Could not retrieve version data")); } return (unsigned int) archVersion->revision; }
-            char                          * getArchiveCreationTimestamp() { return archCreationTimestamp; }
-            char                          * getArchiveNote() { return archNote; }
-            inline const char             * getCurrentChromosome() { if ((!currentChromosome) && (archMdIter)) { setCurrentChromosome(archMdIter->chromosome); } return currentChromosome; }
-            inline Bed::SignedCoordType     getCurrentStart() { return currentStart; }
-            inline Bed::SignedCoordType     getCurrentStop() { return currentStop; }
-            inline const char *             getCurrentRemainder() { return currentRemainder; }
-            Bed::LineCountType              getCurrentChromosomeLineCount() { return (archMdIter) ? archMdIter->lineCount : 0; }
-            Bed::BaseCountType              getCurrentChromosomeNonUniqueBaseCount() { return (archMdIter) ? archMdIter->totalNonUniqueBases : 0; }
-            Bed::BaseCountType              getCurrentChromosomeUniqueBaseCount() { return (archMdIter) ? archMdIter->totalUniqueBases : 0; }
-            bool                            getCurrentChromosomeHasDuplicateElement() { return (archMdIter) ? (archMdIter->duplicateElementExists == kStarchTrue ? true : false ) : (STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE == kStarchTrue ? true : false ); }
-            bool                            getCurrentChromosomeHasNestedElement() { return (archMdIter) ? (archMdIter->nestedElementExists == kStarchTrue ? true : false ) : (STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE == kStarchTrue ? true : false ); }
-            bool                            getAllChromosomesHaveDuplicateElement() { Metadata *_archMdIter; for (_archMdIter = archMd; _archMdIter != NULL; _archMdIter = _archMdIter->next) { if (UNSTARCH_duplicateElementExistsForChromosome(archMd, _archMdIter->chromosome) == kStarchTrue) return true; } return false; }
-            bool                            getAllChromosomesHaveNestedElement() { Metadata *_archMdIter; for (_archMdIter = archMd; _archMdIter != NULL; _archMdIter = _archMdIter->next) { if (UNSTARCH_nestedElementExistsForChromosome(archMd, _archMdIter->chromosome) == kStarchTrue) return true; } return false; }
-            inline bool                     isEOF() { return (!getCurrentChromosome()); }
+        
+        std::string                     getInFn() { return inFn; }
+        const char                    * getInFnCStr() { return inFn.c_str(); }
+        Boolean                         getArchiveHeaderFlag() { return archHeaderFlag; }
+        Boolean                       * getArchiveHeaderFlagPtr() { return &archHeaderFlag; }
+        Boolean                         getArchiveShowNewlineFlag() { return archShowNewlineFlag; }
+        Boolean                       * getArchiveShowNewlineFlagPtr() { return &archShowNewlineFlag; }
+        Metadata                      * getArchiveMdIter() { return archMdIter; }
+        Metadata                      * getArchiveRecordIter() { return archMdIter; }
+        unsigned int                    getArchiveVersionMajor() { if (!archMd) { readJSONMetadata(false, false); } if (!archVersion) { throw(std::string("ERROR: Could not retrieve version data")); } return static_cast<unsigned int>( archVersion->major ); }
+        unsigned int                    getArchiveVersionMinor() { if (!archMd) { readJSONMetadata(false, false); } if (!archVersion) { throw(std::string("ERROR: Could not retrieve version data")); } return static_cast<unsigned int>( archVersion->minor ); }
+        unsigned int                    getArchiveVersionRevision() { if (!archMd) { readJSONMetadata(false, false); } if (!archVersion) { throw(std::string("ERROR: Could not retrieve version data")); } return static_cast<unsigned int>( archVersion->revision ); }
+        char                          * getArchiveCreationTimestamp() { return archCreationTimestamp; }
+        char                          * getArchiveNote() { return archNote; }
+        inline const char             * getCurrentChromosome() { if ((!currentChromosome) && (archMdIter)) { setCurrentChromosome(archMdIter->chromosome); } return currentChromosome; }
+        inline Bed::SignedCoordType     getCurrentStart() { return currentStart; }
+        inline Bed::SignedCoordType     getCurrentStop() { return currentStop; }
+        inline const char *             getCurrentRemainder() { return currentRemainder; }
+        Bed::LineCountType              getCurrentChromosomeLineCount() { return (archMdIter) ? archMdIter->lineCount : 0; }
+        Bed::BaseCountType              getCurrentChromosomeNonUniqueBaseCount() { return (archMdIter) ? archMdIter->totalNonUniqueBases : 0; }
+        Bed::BaseCountType              getCurrentChromosomeUniqueBaseCount() { return (archMdIter) ? archMdIter->totalUniqueBases : 0; }
+        bool                            getCurrentChromosomeHasDuplicateElement() { return (archMdIter) ? (archMdIter->duplicateElementExists == kStarchTrue ? true : false ) : (STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE == kStarchTrue ? true : false ); }
+        bool                            getCurrentChromosomeHasNestedElement() { return (archMdIter) ? (archMdIter->nestedElementExists == kStarchTrue ? true : false ) : (STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE == kStarchTrue ? true : false ); }
+        bool                            getAllChromosomesHaveDuplicateElement() { Metadata *_archMdIter; for (_archMdIter = archMd; _archMdIter != NULL; _archMdIter = _archMdIter->next) { if (UNSTARCH_duplicateElementExistsForChromosome(archMd, _archMdIter->chromosome) == kStarchTrue) return true; } return false; }
+        bool                            getAllChromosomesHaveNestedElement() { Metadata *_archMdIter; for (_archMdIter = archMd; _archMdIter != NULL; _archMdIter = _archMdIter->next) { if (UNSTARCH_nestedElementExistsForChromosome(archMd, _archMdIter->chromosome) == kStarchTrue) return true; } return false; }
+        inline bool                     isEOF() { return (!getCurrentChromosome()); }
 
         // ------------        
-        private:
-            Metadata *archMd;
-            ArchiveVersion *archVersion;
-            CompressionType archType;
-            char *archCreationTimestamp;
-            char *archNote;
-            uint64_t archMdOffset;
-            uint64_t archStreamOffset;
-            Boolean archHeaderFlag;
-            Boolean archShowNewlineFlag;
-            json_t *archMdJSON;
-            Metadata *archMdIter;
-            FILE *inFp;
-            std::string inFn;
-            std::string selectedChromosome;
-            uint64_t cumulativeSize;
-            BZFILE *bzFp;
-            unsigned char *bzOutput;
-            z_stream zStream;
-            char *zOutput;
-            char *zRemainderBuf;
-            char *zInBuf;
-            char *zOutBuf;
-            char *zLineBuf;
-            int zError;
-            int zBufIdx;
-            int zOutBufIdx;
-            int zHave;
-            int zBufOffset;
-            bool allowHeadersFlag;
-            bool perLineUsageFlag;            
-            char *currentChromosome;
-            Bed::SignedCoordType currentStart;
-            Bed::SignedCoordType currentStop;
-            char *currentRemainder;
-            Bed::SignedCoordType t_start;
-            Bed::SignedCoordType t_pLength;
-            Bed::SignedCoordType t_lastEnd;
-            char t_firstInputToken[UNSTARCH_FIRST_TOKEN_MAX_LENGTH];
-            char t_secondInputToken[UNSTARCH_SECOND_TOKEN_MAX_LENGTH];
-            char *_currChr;
-            size_t _currChrLen;
-            Bed::SignedCoordType _currStart;
-            Bed::SignedCoordType _currStop;
-            char *_currRemainder;
-            size_t _currRemainderLen;
 
-            int initializeMembers();
-            int setupBzip2Works();
-            int breakdownBzip2Works();
-            int setupGzipWorks();
-            int breakdownGzipWorks();
-            int setupTransformationParameters();
-            int seekCurrentInFpPosition();
-            int zReadChunk();
-            int zReadLine();
-            int extractLine(std::string& line);
-            int setupPerLineAccess();
-            int readJSONMetadata(bool suppressErrorMsgs, bool preserveJSONRef);
-
-            Metadata * getArchiveMd() { return archMd; }
-            Metadata ** getArchiveMdPtr() { return &archMd; }
-            ArchiveVersion * getArchiveVersion() { return archVersion; }
-            ArchiveVersion ** getArchiveVersionPtr() { return &archVersion; }
-            CompressionType getArchiveType() { return archType; }
-            CompressionType * getArchiveTypePtr() { return &archType; }
-            char ** getArchiveCreationTimestampPtr() { return &archCreationTimestamp; }
-            char ** getArchiveNotePtr() { return &archNote; }
-            uint64_t getArchiveMdOffset() { return archMdOffset; }
-            uint64_t * getArchiveMdOffsetPtr() { return &archMdOffset; }
-            uint64_t getArchiveStreamOffset() { return archStreamOffset; }
-            uint64_t * getArchiveStreamOffsetPtr() { return &archStreamOffset; }
-            json_t * getArchiveMdJSON() { return archMdJSON; }
-            json_t ** getArchiveMdJSONPtr() { return &archMdJSON; }
-            FILE * getInFp() { return inFp; }
-            FILE ** getInFpPtr() { return &inFp; }
-            BZFILE * getBzFp() { return bzFp; }
-            BZFILE ** getBzFpPtr() { return &bzFp; }
-            unsigned char * getBzOutput() { return bzOutput; }
-            unsigned char ** getBzOutputPtr() { return &bzOutput; }
-            z_stream getZStream() { return zStream; }
-            z_stream * getZStreamPtr() { return &zStream; }
-            char * getZOutput() { return zOutput; }
-            char ** getZOutputPtr() { return &zOutput; }
-            char * getZRemainderBuf() { return zRemainderBuf; }
-            char ** getZRemainderBufPtr() { return &zRemainderBuf; }
-            char * getZInBuf() { return zInBuf; }
-            char ** getZInBufPtr() { return &zInBuf; }
-            char * getZOutBuf() { return zOutBuf; }
-            char ** getZOutBufPtr() { return &zOutBuf; }
-            char * getZLineBuf() { return zLineBuf; }
-            char ** getZLineBufPtr() { return &zLineBuf; }
-            int getZError() { return zError; }
-            int getZBufIdx() { return zBufIdx; }
-            int getZOutBufIdx() { return zOutBufIdx; }
-            int getZHave() { return zHave; }
-            int getZBufOffset() { return zBufOffset; }            
-            bool getAllowHeadersFlag() { return allowHeadersFlag; }
-            bool getPerLineUsageFlag() { return perLineUsageFlag; }
-            uint64_t getCumulativeSize() { return cumulativeSize; }
-            void setInFn(const std::string& _inFn) { inFn = _inFn; }
-            void setArchiveHeaderFlag(unsigned int _aHf) { archHeaderFlag = _aHf; }
-            void setArchiveShowNewlineFlag(unsigned int _aSNf) { archShowNewlineFlag = _aSNf; }
-            void setArchiveMd(Metadata *_aMd) { archMd = _aMd; }
-            void setArchiveVersion(ArchiveVersion *_av) { archVersion = _av; }
-            void setArchiveType(CompressionType _type) { archType = _type; }
-            void setArchiveCreationTimestamp(const char *_cTime) { archCreationTimestamp = (char *) _cTime; }
-            void setArchiveNote(const char *_note) { archNote = (char *) _note; }
-            void setArchiveMdOffset(uint64_t _aMdOffset) { archMdOffset = _aMdOffset; }
-            void setArchiveStreamOffset(uint64_t _aStreamOffset) { archStreamOffset = _aStreamOffset; }
-            void setArchiveMdIter(Metadata *_aMdIter) { archMdIter = _aMdIter; }
-            void setArchiveMdJSON(json_t *_aMdJSON) { archMdJSON = _aMdJSON; }
-            void incrementCumulativeSize(uint64_t _inc) { cumulativeSize += _inc; }            
-            void setBzOutput(unsigned char * _bzOutput) { bzOutput = _bzOutput; }
-            void setZOutput(char * _zOutput) { zOutput = _zOutput; }
-            void setZInBuf(char * _zInBuf) { zInBuf = _zInBuf; }
-            void setZOutBuf(char * _zOutBuf) { zOutBuf = _zOutBuf; }
-            void setZLineBuf(char * _zLineBuf) { zLineBuf = _zLineBuf; }
-            void setZError(int _zError) { zError = _zError; }
-            void setZBufIdx(int _zBufIdx) { zBufIdx = _zBufIdx; }
-            void setZOutBufIdx(int _zOutBufIdx) { zOutBufIdx = _zOutBufIdx; }
-            void setZHave(int _zHave) { zHave = _zHave; }
-            void setZBufOffset(int _zBufOffset) { zBufOffset = _zBufOffset; }
-            void setAllowHeadersFlag(bool _allowHeadersFlag) { allowHeadersFlag = _allowHeadersFlag; }
-            void setPerLineUsageFlag(bool _perLineUsageFlag) { perLineUsageFlag = _perLineUsageFlag; }
-            void iterateArchiveMdIter() {
-              if (!archMdIter)
+    private:
+        Metadata *archMd;
+        ArchiveVersion *archVersion;
+        CompressionType archType;
+        char *archCreationTimestamp;
+        char *archNote;
+        uint64_t archMdOffset;
+        uint64_t archStreamOffset;
+        Boolean archHeaderFlag;
+        Boolean archShowNewlineFlag;
+        json_t *archMdJSON;
+        Metadata *archMdIter;
+        FILE *inFp;
+        std::string inFn;
+        std::string selectedChromosome;
+        uint64_t cumulativeSize;
+        BZFILE *bzFp;
+        unsigned char *bzOutput;
+        z_stream zStream;
+        char *zOutput;
+        char *zRemainderBuf;
+        char *zInBuf;
+        char *zOutBuf;
+        char *zLineBuf;
+        int zError;
+        int zBufIdx;
+        int zOutBufIdx;
+        int zHave;
+        int zBufOffset;
+        bool allowHeadersFlag;
+        bool perLineUsageFlag;            
+        char *currentChromosome;
+        Bed::SignedCoordType currentStart;
+        Bed::SignedCoordType currentStop;
+        char *currentRemainder;
+        Bed::SignedCoordType t_start;
+        Bed::SignedCoordType t_pLength;
+        Bed::SignedCoordType t_lastEnd;
+        char t_firstInputToken[UNSTARCH_FIRST_TOKEN_MAX_LENGTH];
+        char t_secondInputToken[UNSTARCH_SECOND_TOKEN_MAX_LENGTH];
+        char *_currChr;
+        size_t _currChrLen;
+        Bed::SignedCoordType _currStart;
+        Bed::SignedCoordType _currStop;
+        char *_currRemainder;
+        size_t _currRemainderLen;
+        
+        int initializeMembers();
+        int setupBzip2Works();
+        int breakdownBzip2Works();
+        int setupGzipWorks();
+        int breakdownGzipWorks();
+        int setupTransformationParameters();
+        int seekCurrentInFpPosition();
+        int zReadChunk();
+        int zReadLine();
+        int extractLine(std::string& line);
+        int setupPerLineAccess();
+        int readJSONMetadata(bool suppressErrorMsgs, bool preserveJSONRef);
+        
+        Metadata * getArchiveMd() { return archMd; }
+        Metadata ** getArchiveMdPtr() { return &archMd; }
+        ArchiveVersion * getArchiveVersion() { return archVersion; }
+        ArchiveVersion ** getArchiveVersionPtr() { return &archVersion; }
+        CompressionType getArchiveType() { return archType; }
+        CompressionType * getArchiveTypePtr() { return &archType; }
+        char ** getArchiveCreationTimestampPtr() { return &archCreationTimestamp; }
+        char ** getArchiveNotePtr() { return &archNote; }
+        uint64_t getArchiveMdOffset() { return archMdOffset; }
+        uint64_t * getArchiveMdOffsetPtr() { return &archMdOffset; }
+        uint64_t getArchiveStreamOffset() { return archStreamOffset; }
+        uint64_t * getArchiveStreamOffsetPtr() { return &archStreamOffset; }
+        json_t * getArchiveMdJSON() { return archMdJSON; }
+        json_t ** getArchiveMdJSONPtr() { return &archMdJSON; }
+        FILE * getInFp() { return inFp; }
+        FILE ** getInFpPtr() { return &inFp; }
+        BZFILE * getBzFp() { return bzFp; }
+        BZFILE ** getBzFpPtr() { return &bzFp; }
+        unsigned char * getBzOutput() { return bzOutput; }
+        unsigned char ** getBzOutputPtr() { return &bzOutput; }
+        z_stream getZStream() { return zStream; }
+        z_stream * getZStreamPtr() { return &zStream; }
+        char * getZOutput() { return zOutput; }
+        char ** getZOutputPtr() { return &zOutput; }
+        char * getZRemainderBuf() { return zRemainderBuf; }
+        char ** getZRemainderBufPtr() { return &zRemainderBuf; }
+        char * getZInBuf() { return zInBuf; }
+        char ** getZInBufPtr() { return &zInBuf; }
+        char * getZOutBuf() { return zOutBuf; }
+        char ** getZOutBufPtr() { return &zOutBuf; }
+        char * getZLineBuf() { return zLineBuf; }
+        char ** getZLineBufPtr() { return &zLineBuf; }
+        int getZError() { return zError; }
+        int getZBufIdx() { return zBufIdx; }
+        int getZOutBufIdx() { return zOutBufIdx; }
+        int getZHave() { return zHave; }
+        int getZBufOffset() { return zBufOffset; }            
+        bool getAllowHeadersFlag() { return allowHeadersFlag; }
+        bool getPerLineUsageFlag() { return perLineUsageFlag; }
+        uint64_t getCumulativeSize() { return cumulativeSize; }
+        void setInFn(const std::string& _inFn) { inFn = _inFn; }
+        void setArchiveHeaderFlag(unsigned int _aHf) { archHeaderFlag = static_cast<Boolean>( _aHf ); }
+        void setArchiveShowNewlineFlag(unsigned int _aSNf) { archShowNewlineFlag = static_cast<Boolean>( _aSNf ); }
+        void setArchiveMd(Metadata *_aMd) { archMd = _aMd; }
+        void setArchiveVersion(ArchiveVersion *_av) { archVersion = _av; }
+        void setArchiveType(CompressionType _type) { archType = _type; }
+        void setArchiveCreationTimestamp(const char *_cTime) { archCreationTimestamp = const_cast<char *>( _cTime ); }
+        void setArchiveNote(const char *_note) { archNote = const_cast<char *>( _note ); }
+        void setArchiveMdOffset(uint64_t _aMdOffset) { archMdOffset = _aMdOffset; }
+        void setArchiveStreamOffset(uint64_t _aStreamOffset) { archStreamOffset = _aStreamOffset; }
+        void setArchiveMdIter(Metadata *_aMdIter) { archMdIter = _aMdIter; }
+        void setArchiveMdJSON(json_t *_aMdJSON) { archMdJSON = _aMdJSON; }
+        void incrementCumulativeSize(uint64_t _inc) { cumulativeSize += _inc; }            
+        void setBzOutput(unsigned char * _bzOutput) { bzOutput = _bzOutput; }
+        void setZOutput(char * _zOutput) { zOutput = _zOutput; }
+        void setZInBuf(char * _zInBuf) { zInBuf = _zInBuf; }
+        void setZOutBuf(char * _zOutBuf) { zOutBuf = _zOutBuf; }
+        void setZLineBuf(char * _zLineBuf) { zLineBuf = _zLineBuf; }
+        void setZError(int _zError) { zError = _zError; }
+        void setZBufIdx(int _zBufIdx) { zBufIdx = _zBufIdx; }
+        void setZOutBufIdx(int _zOutBufIdx) { zOutBufIdx = _zOutBufIdx; }
+        void setZHave(int _zHave) { zHave = _zHave; }
+        void setZBufOffset(int _zBufOffset) { zBufOffset = _zBufOffset; }
+        void setAllowHeadersFlag(bool _allowHeadersFlag) { allowHeadersFlag = _allowHeadersFlag; }
+        void setPerLineUsageFlag(bool _perLineUsageFlag) { perLineUsageFlag = _perLineUsageFlag; }
+        void iterateArchiveMdIter() {
+            if (!archMdIter)
                 return;
-              archMdIter = archMdIter->next;
-              if (archMdIter)
+            archMdIter = archMdIter->next;
+            if (archMdIter)
                 setCurrentChromosome(archMdIter->chromosome);
-              else
+            else
                 free(currentChromosome), currentChromosome = NULL;
-            }
-            void setCurrentChromosome(char *_cC) {
-              if (currentChromosome) {
+        }
+        void setCurrentChromosome(char *_cC) {
+            if (currentChromosome) {
                 free(currentChromosome);
                 currentChromosome = NULL;
-              }
-              currentChromosome = (char *) malloc (strlen(_cC) + 1);
-              if (currentChromosome) {
-                strncpy(currentChromosome, _cC, strlen(_cC) + 1);
-              }
             }
-            void setCurrentStart(Bed::SignedCoordType  _cS) { currentStart = _cS; }
-            void setCurrentStop(Bed::SignedCoordType _cS) { currentStop = _cS; }
-            void setCurrentRemainder(char * _remainder) { currentRemainder = _remainder; }
-            void setSelectedChromosome(const std::string& _selChr) { selectedChromosome = _selChr; }
+            currentChromosome = static_cast<char *>( malloc (strlen(_cC) + 1) );
+            if (currentChromosome) {
+                strncpy(currentChromosome, _cC, strlen(_cC) + 1);
+            }
+        }
+        void setCurrentStart(Bed::SignedCoordType  _cS) { currentStart = _cS; }
+        void setCurrentStop(Bed::SignedCoordType _cS) { currentStop = _cS; }
+        void setCurrentRemainder(char * _remainder) { currentRemainder = _remainder; }
+        void setSelectedChromosome(const std::string& _selChr) { selectedChromosome = _selChr; }
     };
-
+    
     Starch::Starch() 
     {
 #ifdef DEBUG
@@ -982,7 +983,7 @@ namespace starch
         archType = _type;
         archVersion = _av;
         archMdOffset = _mdOffset;
-        archHeaderFlag = _hf;
+        archHeaderFlag = static_cast<Boolean>( _hf );
         
         if (!inFn.empty()) {
             inFp = std::fopen(inFn.c_str(), "rbR");
@@ -1017,7 +1018,7 @@ namespace starch
         std::fprintf(stderr, "\n--- Starch::Starch(Starch &) ---\n");
 #endif
         if (cpArchive.inFn.empty()) { inFn.assign(cpArchive.inFn); } else { inFn = std::string(); }
-        if (cpArchive.archMd != NULL) { archMd = STARCH_copyMetadata((const Metadata *)cpArchive.archMd); } else { archMd = NULL; }
+        if (cpArchive.archMd != NULL) { archMd = STARCH_copyMetadata(const_cast<const Metadata *>( cpArchive.archMd )); } else { archMd = NULL; }
         if (cpArchive.archVersion != NULL) {
             if (!archVersion)
                 archVersion = new ArchiveVersion;
@@ -1052,8 +1053,8 @@ namespace starch
         if (archVersion != NULL) free(archVersion);
 
         if (cpArchive.inFn.empty()) { inFn.assign(cpArchive.inFn); } else { inFn = std::string(); }
-        if (cpArchive.archMd != NULL) { archMd = STARCH_copyMetadata((const Metadata *)cpArchive.archMd); } else { archMd = NULL; }
-        if (cpArchive.archVersion != NULL) { 
+        if (cpArchive.archMd != NULL) { archMd = STARCH_copyMetadata(const_cast<const Metadata *>( cpArchive.archMd )); } else { archMd = NULL; }
+        if (cpArchive.archVersion != NULL) {
             archVersion = new ArchiveVersion;
             if (!archVersion)
                 throw(std::string("ERROR: could not allocate space for archive version struct"));
@@ -1186,13 +1187,13 @@ namespace starch
 
         return STARCH_listJSONMetadata(out,
                                        err,
-                                       (const Metadata *) getArchiveMd(),
-                                       (const CompressionType) getArchiveType(),
-                                       (const ArchiveVersion *) getArchiveVersion(),
-                                       (const char *) getArchiveCreationTimestamp(),
-                                       (const char *) getArchiveNote(),
-                                       (const Boolean) getArchiveHeaderFlag(),
-                                       (const Boolean) getArchiveShowNewlineFlag());
+                                       const_cast<const Metadata *>( getArchiveMd() ),
+                                       static_cast<const CompressionType>( getArchiveType() ),
+                                       const_cast<const ArchiveVersion *>( getArchiveVersion() ),
+                                       const_cast<const char *>( getArchiveCreationTimestamp() ),
+                                       const_cast<const char *>( getArchiveNote() ),
+                                       static_cast<const Boolean>( getArchiveHeaderFlag() ),
+                                       static_cast<const Boolean>( getArchiveShowNewlineFlag() ));
     }
 
     int
@@ -1216,7 +1217,7 @@ namespace starch
 
             // setting up initial bz output buffer...
             if (!bzOutput) 
-                bzOutput = (unsigned char *) std::malloc(bzOutputLength);
+                bzOutput = static_cast<unsigned char *>( std::malloc(bzOutputLength) );
             if (!bzOutput)
                 throw(std::string("ERROR: bzip2 output buffer could not be allocated"));
 
@@ -1287,22 +1288,22 @@ namespace starch
                 break;
         }
 
-        zRemainderBuf = (char *) std::malloc(1);
+        zRemainderBuf = static_cast<char *>( std::malloc(1) );
         if (!zRemainderBuf)
             throw(std::string("ERROR: ran out of memory to allocate to z-remainder-buffer"));
         zRemainderBuf[0] = '\0';
 
-        zInBuf = (char *) std::malloc(STARCH_Z_CHUNK);
+        zInBuf = static_cast<char *>( std::malloc(STARCH_Z_CHUNK) );
         if (!zInBuf)
             throw(std::string("ERROR: ran out of memory to allocate to z-in-buffer"));
         zInBuf[0] = '\0';
 
-        zOutBuf = (char *) std::malloc(STARCH_Z_CHUNK);
+        zOutBuf = static_cast<char *>( std::malloc(STARCH_Z_CHUNK) );
         if (!zOutBuf)
             throw(std::string("ERROR: ran out of memory to allocate to z-in-buffer"));
         zOutBuf[0] = '\0';
 
-        zLineBuf = (char *) std::malloc(STARCH_Z_CHUNK);
+        zLineBuf = static_cast<char *>( std::malloc(STARCH_Z_CHUNK) );
         if (!zLineBuf)
             throw(std::string("ERROR: ran out of memory to allocate to z-in-buffer"));
         zLineBuf[0] = '\0';
@@ -1391,7 +1392,7 @@ namespace starch
         std::fprintf(stderr, "\toffsetting to %" PRIu64 "\n", (cumulativeSize + archStreamOffset));
 #endif
         if (archMdIter) {
-            if (STARCH_fseeko( getInFp(), (off_t)(cumulativeSize + archStreamOffset), SEEK_SET ) != 0)
+            if (STARCH_fseeko( getInFp(), static_cast<off_t>( cumulativeSize + archStreamOffset ), SEEK_SET ) != 0)
                 throw(std::string("ERROR: could not seek data in archive"));
             incrementCumulativeSize( archMdIter->size );
         }
@@ -1443,7 +1444,7 @@ namespace starch
                         if (allowHeadersFlag) {
                             (archHeaderFlag == kStarchFalse) ?
                                 UNSTARCH_sReverseTransformHeaderlessInput( getCurrentChromosome(),
-                                                                           (const unsigned char *) bzOutput, 
+                                                                           const_cast<const unsigned char *>( bzOutput ), 
                                                                            tab,
                                                                            &t_start, 
                                                                            &t_pLength, 
@@ -1458,7 +1459,7 @@ namespace starch
                                                                            &_currRemainderLen)
                                               :
                                 UNSTARCH_sReverseTransformInput( getCurrentChromosome(),
-                                                                 (const unsigned char *) bzOutput, 
+                                                                 const_cast<const unsigned char *>( bzOutput ), 
                                                                  tab,
                                                                  &t_start, 
                                                                  &t_pLength, 
@@ -1475,7 +1476,7 @@ namespace starch
                         else {
                             do {
                                 res = UNSTARCH_sReverseTransformIgnoringHeaderedInput( getCurrentChromosome(),
-                                                                                       (const unsigned char *) bzOutput, 
+                                                                                       const_cast<const unsigned char *>( bzOutput ), 
                                                                                        tab,
                                                                                        &t_start, 
                                                                                        &t_pLength, 
@@ -1556,7 +1557,7 @@ namespace starch
                         if (allowHeadersFlag) {
                             (archHeaderFlag == kStarchFalse) ?
                                 UNSTARCH_sReverseTransformHeaderlessInput( getCurrentChromosome(),
-                                                                           (const unsigned char *) zLineBuf, 
+                                                                           const_cast<const unsigned char *>( reinterpret_cast<unsigned char *>( zLineBuf ) ),
                                                                            tab,
                                                                            &t_start, 
                                                                            &t_pLength, 
@@ -1571,7 +1572,7 @@ namespace starch
                                                                            &_currRemainderLen)
                                               :
                                 UNSTARCH_sReverseTransformInput( getCurrentChromosome(),
-                                                                 (const unsigned char *) zLineBuf, 
+                                                                 const_cast<const unsigned char *>( reinterpret_cast<unsigned char *>( zLineBuf ) ), 
                                                                  tab,
                                                                  &t_start, 
                                                                  &t_pLength, 
@@ -1588,7 +1589,7 @@ namespace starch
                         else {
                             do {
                                 res = UNSTARCH_sReverseTransformIgnoringHeaderedInput( getCurrentChromosome(),
-                                                                                       (const unsigned char *) zLineBuf, 
+                                                                                       const_cast<const unsigned char *>( reinterpret_cast<unsigned char *>( zLineBuf ) ),
                                                                                        tab,
                                                                                        &t_start, 
                                                                                        &t_pLength,
@@ -1691,10 +1692,10 @@ namespace starch
         std::fprintf(stderr, "\n--- Starch::zReadChunk() ---\n");
 #endif
         zStream.avail_in = std::fread(zInBuf, 1, STARCH_Z_CHUNK, inFp);
-        zStream.next_in = (Byte *) zInBuf;
+        zStream.next_in = reinterpret_cast<Byte *>( zInBuf );
 
         zStream.avail_out = STARCH_Z_CHUNK;
-        zStream.next_out = (Byte *) zOutBuf;
+        zStream.next_out = reinterpret_cast<Byte *>( zOutBuf );
 
         zError = inflate(&zStream, Z_NO_FLUSH);
         switch (zError) {
@@ -1710,13 +1711,13 @@ namespace starch
             default:
                 break;
         }
-        zHave = STARCH_Z_CHUNK - zStream.avail_out;
+        zHave = STARCH_Z_CHUNK - static_cast<int>( zStream.avail_out );
         zOutBuf[zHave] = '\0';
 
         // copy remainder buffer onto the line buffer, if not NULL
         if (zRemainderBuf) {
             std::strncpy(zLineBuf, zRemainderBuf, strlen(zRemainderBuf));
-            zBufOffset = std::strlen(zRemainderBuf);
+            zBufOffset = static_cast<int>( std::strlen(zRemainderBuf) );
         }
         else
             zBufOffset = 0;
@@ -1774,9 +1775,9 @@ namespace starch
         if (std::strlen(zLineBuf) > 0) {            
             if (std::strlen(zLineBuf) > std::strlen(zRemainderBuf)) {
                 free(zRemainderBuf), zRemainderBuf = NULL;
-                zRemainderBuf = (char *) std::malloc(std::strlen(zLineBuf) * 2); // resize remainder buffer, if necessary
+                zRemainderBuf = static_cast<char *>( std::malloc(std::strlen(zLineBuf) * 2) ); // resize remainder buffer, if necessary
             }
-            std::strncpy(zRemainderBuf, zLineBuf, zBufIdx);
+            std::strncpy(zRemainderBuf, zLineBuf, static_cast<size_t>( zBufIdx ));
             zRemainderBuf[zBufIdx] = '\0';
         }
 
@@ -1806,9 +1807,9 @@ namespace starch
                 if (UNSTARCH_extractDataWithBzip2(getInFpPtr(), 
                                                   out,
                                                   chr.c_str(), 
-                                                  (const Metadata *)getArchiveMd(), 
+                                                  const_cast<const Metadata *>( getArchiveMd() ), 
                                                   getArchiveMdOffset(),
-                                                  (const unsigned int)getArchiveHeaderFlag() ) != 0 ) {
+                                                  static_cast<const Boolean>( getArchiveHeaderFlag() )) != 0 ) {
                     throw(std::string("ERROR: backend extraction failed"));
                 }            
                 break;
@@ -1817,9 +1818,9 @@ namespace starch
                 if (UNSTARCH_extractDataWithGzip(getInFpPtr(), 
                                                  out,
                                                  chr.c_str(), 
-                                                 (const Metadata *)getArchiveMd(), 
+                                                 const_cast<const Metadata *>( getArchiveMd() ), 
                                                  getArchiveMdOffset(), 
-                                                 (const unsigned int)getArchiveHeaderFlag()) != 0 ) {
+                                                 static_cast<const Boolean>( getArchiveHeaderFlag() )) != 0 ) {
                     throw(std::string("ERROR: backend extraction failed"));
                 }
                 break;
