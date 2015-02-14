@@ -199,7 +199,7 @@ namespace starch
                     we reach the end of the metadata stored in the header.
                 */
 
-                _testMagicPrecursor = (char *) std::malloc((size_t) mdTerminatorBytesLength);
+                _testMagicPrecursor = static_cast<char *>( std::malloc(static_cast<size_t>( mdTerminatorBytesLength )) );
                 if (!_testMagicPrecursor) {
                     std::fseek(_inFp, 0, SEEK_SET);
                     return false;
@@ -208,13 +208,12 @@ namespace starch
                     if ((std::memcmp(_testMagicBuf, bzip2MagicBytes, sizeof(bzip2MagicBytes) - 1) == 0) || 
                         (std::memcmp(_testMagicBuf, gzipMagicBytes, sizeof(gzipMagicBytes) - 1) == 0)) 
                     {
-                        STARCH_fseeko(_inFp, (off_t) (_mdOffset - mdTerminatorBytesLength), SEEK_SET);
+                        STARCH_fseeko(_inFp, static_cast<off_t>( _mdOffset - mdTerminatorBytesLength ), SEEK_SET);
                         _nReadBytes = std::fread(_testMagicPrecursor, mdTerminatorBytesLength, mdTerminatorBytesLength, _inFp);
-                        if (_nReadBytes != (size_t) (mdTerminatorBytesLength * mdTerminatorBytesLength)) {
+                        if (_nReadBytes != static_cast<size_t>( mdTerminatorBytesLength * mdTerminatorBytesLength )) {
 #ifdef __cplusplus
                             /* why can't c++ standardize on a format specifier for a simple std::size_t ? */
-                            std::fprintf(stderr, "ERROR: Bytes read ( %" PRIu64 " ) not equal to terminator byte length!\n",
-                                         (uint64_t)(_nReadBytes));
+                            std::fprintf(stderr, "ERROR: Bytes read ( %" PRIu64 " ) not equal to terminator byte length!\n", static_cast<uint64_t>( _nReadBytes ));
 #else
                             std::fprintf(stderr, "ERROR: Bytes read (%zu) not equal to terminator byte length!\n", _nReadBytes);
 #endif
@@ -225,28 +224,28 @@ namespace starch
                             (std::memcmp(_testMagicPrecursor, otherLegacyMdTerminatorBytes, sizeof(otherLegacyMdTerminatorBytes)) == 0) )
                             break;
                     }
-                    _mdOffset += _testElemSize * _testElemCount;
-                    STARCH_fseeko(_inFp, (off_t) (_mdOffset - STARCH_TEST_BYTE_POSITION_RESET), SEEK_SET);
+                    _mdOffset += static_cast<uint64_t>( _testElemSize * _testElemCount );
+                    STARCH_fseeko(_inFp, static_cast<off_t>( _mdOffset - STARCH_TEST_BYTE_POSITION_RESET ), SEEK_SET);
                     _mdOffset -= STARCH_TEST_BYTE_POSITION_RESET;
-                } while (std::fread(_testMagicBuf, _testElemSize, _testElemCount, _inFp));
+                } while (std::fread(_testMagicBuf, static_cast<size_t>( _testElemSize ), static_cast<size_t>( _testElemCount ), _inFp));
                 free(_testMagicPrecursor);
                 _testMagicPrecursor = NULL;
                 if (std::fseek(_inFp, 0, SEEK_SET) != 0) 
                     return false;
-                _mdBuf = (char *) std::malloc((size_t) _mdOffset + 1);
+                _mdBuf = static_cast<char *>( std::malloc(static_cast<size_t>( _mdOffset ) + 1) );
                 if (!_mdBuf) {
                     std::fseek(_inFp, 0, SEEK_SET);
                     return false;
                 }
                 do {
-                    *(_mdBuf + _mdOffsetIdx++) = std::fgetc(_inFp);
+                    *(_mdBuf + _mdOffsetIdx++) = static_cast<char>( std::fgetc(_inFp) );
                 } while (_mdOffsetIdx < _mdOffset);
 
-                _mdJSON = json_loads((const char *) _mdBuf, JSON_DISABLE_EOF_CHECK, &_mdJSONError);
+                _mdJSON = json_loads(reinterpret_cast<const char *>( _mdBuf ), JSON_DISABLE_EOF_CHECK, &_mdJSONError);
                 free(_mdBuf);
                 _mdBuf = NULL;
                 _mdJSONArchive = json_object_get(_mdJSON, STARCH_METADATA_STREAM_ARCHIVE_KEY);
-                _archVersion = (ArchiveVersion *) std::malloc(sizeof(ArchiveVersion));
+                _archVersion = static_cast<ArchiveVersion *>( std::malloc(sizeof(ArchiveVersion)) );
                 if (!_archVersion) {
                     std::fseek(_inFp, 0, SEEK_SET);
                     return false;
@@ -261,11 +260,11 @@ namespace starch
                             }
                             json_object_foreach(_mdJSONArchVersion, _mdJSONArchVerObjKey, _mdJSONArchVerObjValue) {
                                 if (strcmp(_mdJSONArchVerObjKey, STARCH_METADATA_STREAM_ARCHIVE_VERSION_MAJOR_KEY) == 0)
-                                    _archVersion->major = (int) json_integer_value(_mdJSONArchVerObjValue);
+                                    _archVersion->major = static_cast<int>( json_integer_value(_mdJSONArchVerObjValue) );
                                 if (strcmp(_mdJSONArchVerObjKey, STARCH_METADATA_STREAM_ARCHIVE_VERSION_MINOR_KEY) == 0)
-                                    _archVersion->minor = (int) json_integer_value(_mdJSONArchVerObjValue);
+                                    _archVersion->minor = static_cast<int>( json_integer_value(_mdJSONArchVerObjValue) );
                                 if (strcmp(_mdJSONArchVerObjKey, STARCH_METADATA_STREAM_ARCHIVE_VERSION_REVISION_KEY) == 0)
-                                    _archVersion->revision = (int) json_integer_value(_mdJSONArchVerObjValue);
+                                    _archVersion->revision = static_cast<int>( json_integer_value(_mdJSONArchVerObjValue) );
                             }
                         }
                     }
@@ -281,8 +280,8 @@ namespace starch
                     _archVersion->revision = 0;
                 }
 
-                _archStreamChr = (char *) std::malloc(STARCH_STREAM_METADATA_MAX_LENGTH + 1);
-                _archStreamFn = (char *) std::malloc(STARCH_STREAM_METADATA_MAX_LENGTH + 1);
+                _archStreamChr = static_cast<char *>( std::malloc(STARCH_STREAM_METADATA_MAX_LENGTH + 1) );
+                _archStreamFn = static_cast<char *>( std::malloc(STARCH_STREAM_METADATA_MAX_LENGTH + 1) );
                 if (!_archStreamChr || !_archStreamFn) {
                     std::fseek(_inFp, 0, SEEK_SET);
                     return false;
@@ -339,11 +338,11 @@ namespace starch
                                 return false;
                             }
                             _mdJSONStreamLineCount = json_integer(STARCH_DEFAULT_LINE_COUNT);
-                            _archStreamLineCount = (Bed::LineCountType) json_integer_value(_mdJSONStreamLineCount);
+                            _archStreamLineCount = static_cast<Bed::LineCountType>( json_integer_value(_mdJSONStreamLineCount) );
                             json_decref(_mdJSONStreamLineCount);
                         }
                         else 
-                            _archStreamLineCount = (Bed::LineCountType) json_integer_value(_mdJSONStreamLineCount);
+                            _archStreamLineCount = static_cast<Bed::LineCountType>( json_integer_value(_mdJSONStreamLineCount) );
 
                         _mdJSONStreamNonUniqueBaseCount = json_object_get(_mdJSONStream, STARCH_METADATA_STREAM_TOTALNONUNIQUEBASES_KEY);
                         if (!_mdJSONStreamNonUniqueBaseCount) {
@@ -353,11 +352,11 @@ namespace starch
                                 return false;
                             }
                             _mdJSONStreamNonUniqueBaseCount = json_integer(STARCH_DEFAULT_NON_UNIQUE_BASE_COUNT);
-                            _archStreamNonUniqueBaseCount = (Bed::BaseCountType) json_integer_value(_mdJSONStreamNonUniqueBaseCount);
+                            _archStreamNonUniqueBaseCount = static_cast<Bed::BaseCountType>( json_integer_value(_mdJSONStreamNonUniqueBaseCount) );
                             json_decref(_mdJSONStreamNonUniqueBaseCount);
                         }
                         else 
-                            _archStreamNonUniqueBaseCount = (Bed::BaseCountType) json_integer_value(_mdJSONStreamNonUniqueBaseCount);
+                            _archStreamNonUniqueBaseCount = static_cast<Bed::BaseCountType>( json_integer_value(_mdJSONStreamNonUniqueBaseCount) );
 
                         _mdJSONStreamUniqueBaseCount = json_object_get(_mdJSONStream, STARCH_METADATA_STREAM_TOTALUNIQUEBASES_KEY);
                         if (!_mdJSONStreamUniqueBaseCount) {
@@ -367,11 +366,11 @@ namespace starch
                                 return false;
                             }
                             _mdJSONStreamUniqueBaseCount = json_integer(STARCH_DEFAULT_UNIQUE_BASE_COUNT);
-                            _archStreamUniqueBaseCount = (Bed::BaseCountType) json_integer_value(_mdJSONStreamUniqueBaseCount);
+                            _archStreamUniqueBaseCount = static_cast<Bed::BaseCountType>( json_integer_value(_mdJSONStreamUniqueBaseCount) );
                             json_decref(_mdJSONStreamUniqueBaseCount);
                         }
                         else 
-                            _archStreamUniqueBaseCount = (Bed::BaseCountType) json_integer_value(_mdJSONStreamUniqueBaseCount);
+                            _archStreamUniqueBaseCount = static_cast<Bed::BaseCountType>( json_integer_value(_mdJSONStreamUniqueBaseCount) );
 
                         _mdJSONStreamDuplicateElementExists = json_object_get(_mdJSONStream, STARCH_METADATA_STREAM_DUPLICATEELEMENTEXISTS_KEY);
                         if (!_mdJSONStreamDuplicateElementExists) {
@@ -381,11 +380,11 @@ namespace starch
                                 return false;
                             }
                             _mdJSONStreamDuplicateElementExists = json_boolean(STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE);
-                            _archStreamDuplicateElementExists = static_cast<Boolean>(json_is_true(_mdJSONStreamDuplicateElementExists));
+                            _archStreamDuplicateElementExists = static_cast<Boolean>( json_is_true(_mdJSONStreamDuplicateElementExists) );
                             json_decref(_mdJSONStreamDuplicateElementExists);
                         }
                         else 
-                            _archStreamDuplicateElementExists = static_cast<Boolean>(json_is_true(_mdJSONStreamDuplicateElementExists));
+                            _archStreamDuplicateElementExists = static_cast<Boolean>( json_is_true(_mdJSONStreamDuplicateElementExists) );
 
                         _mdJSONStreamNestedElementExists = json_object_get(_mdJSONStream, STARCH_METADATA_STREAM_NESTEDELEMENTEXISTS_KEY);
                         if (!_mdJSONStreamNestedElementExists) {
@@ -395,11 +394,11 @@ namespace starch
                                 return false;
                             }
                             _mdJSONStreamNestedElementExists = json_boolean(STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE);
-                            _archStreamNestedElementExists = static_cast<Boolean>(json_is_true(_mdJSONStreamNestedElementExists));
+                            _archStreamNestedElementExists = static_cast<Boolean>( json_is_true(_mdJSONStreamNestedElementExists) );
                             json_decref(_mdJSONStreamNestedElementExists);
                         }
                         else 
-                            _archStreamNestedElementExists = static_cast<Boolean>(json_is_true(_mdJSONStreamNestedElementExists));
+                            _archStreamNestedElementExists = static_cast<Boolean>( json_is_true(_mdJSONStreamNestedElementExists) );
                         
                         if (_recIdx == 0) {
                             _testMd = STARCH_createMetadata(_archStreamChr,
