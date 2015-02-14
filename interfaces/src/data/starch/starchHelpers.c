@@ -238,14 +238,15 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_createTransformTokens() ---\n");
 #endif
-    unsigned int charCnt, sCnt, elemCnt;
+    unsigned int charCnt, sCnt;
+    int elemCnt;
     char buffer[STARCH_BUFFER_MAX_LENGTH];
     unsigned int idIdx = 0U;
     unsigned int restIdx = 0U;
 
     charCnt = 0U;
     sCnt = 0U;
-    elemCnt = 0U;
+    elemCnt = -1;
 
     do {
         buffer[charCnt++] = s[sCnt];
@@ -253,24 +254,108 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
             if (elemCnt < 3) {
                 buffer[(charCnt - 1)] = '\0';
                 charCnt = 0;
+                elemCnt++;
             }
+#ifdef DEBUG
+            fprintf(stderr, "\t--- s [%s] buffer [%s], charCnt [%u], strlen(buffer) [%zu], sCnt [%u], strlen(s) [%zu]\n", s, buffer, charCnt, strlen(buffer), sCnt, strlen(s));
+#endif
             switch (elemCnt) {
                 case 0: {
                     /* we do field validation tests after we determine what kind of BED line this is */
-                    /* copy element to chromosome variable, if memory is available */
+
+                    /* determine what type of BED input line we're working with on the basis of the chr value */
 #ifdef __cplusplus
-                    *chr = static_cast<char *>( malloc((strlen(buffer) + 1) * sizeof(**chr)) );
+                    if (strncmp(reinterpret_cast<const char *>( buffer ), kStarchBedHeaderTrack, strlen(kStarchBedHeaderTrack)) == 0) {
 #else
-                    *chr = malloc((strlen(buffer) + 1) * sizeof(**chr));
+                    if (strncmp((const char *) buffer, kStarchBedHeaderTrack, strlen(kStarchBedHeaderTrack)) == 0) {
 #endif
-                    if (! *chr) {
-                        fprintf(stderr, "ERROR: Ran out of memory while creating transform tokens\n");
-                        return STARCH_FATAL_ERROR;
+                        *lineType = kBedLineHeaderTrack;
+                        elemCnt = 3;
                     }
 #ifdef __cplusplus
-                    strncpy(*chr, reinterpret_cast<const char *>( buffer ), strlen(buffer) + 1);
+                    else if (strncmp(reinterpret_cast<const char *>( buffer ), kStarchBedHeaderBrowser, strlen(kStarchBedHeaderBrowser)) == 0) {
 #else
-                    strncpy(*chr, (const char *)buffer, strlen(buffer) + 1);
+            	    else if (strncmp((const char *) buffer, kStarchBedHeaderBrowser, strlen(kStarchBedHeaderBrowser)) == 0) {
+#endif
+                        *lineType = kBedLineHeaderBrowser;
+                        elemCnt = 3;
+                    }
+#ifdef __cplusplus
+                    else if (strncmp(reinterpret_cast<const char *>( buffer ), kStarchBedHeaderSAM, strlen(kStarchBedHeaderSAM)) == 0) {
+#else
+            	    else if (strncmp((const char *) buffer, kStarchBedHeaderSAM, strlen(kStarchBedHeaderSAM)) == 0) {
+#endif
+                        *lineType = kBedLineHeaderSAM;
+                        elemCnt = 3;
+                    }
+#ifdef __cplusplus
+                    else if (strncmp(reinterpret_cast<const char *>( buffer ), kStarchBedHeaderVCF, strlen(kStarchBedHeaderVCF)) == 0) {
+#else
+		    else if (strncmp((const char *) buffer, kStarchBedHeaderVCF, strlen(kStarchBedHeaderVCF)) == 0) {
+#endif
+                        *lineType = kBedLineHeaderVCF;
+                        elemCnt = 3;
+                    }
+#ifdef __cplusplus
+                    else if (strncmp(reinterpret_cast<const char *>( buffer ), kStarchBedGenericComment, strlen(kStarchBedGenericComment)) == 0) {
+#else
+            	    else if (strncmp((const char *) buffer, kStarchBedGenericComment, strlen(kStarchBedGenericComment)) == 0) {
+#endif
+                        *lineType = kBedLineGenericComment;
+                        elemCnt = 3;
+                    }
+                    else {
+                        *lineType = kBedLineCoordinates;
+                    }
+                    
+                    /* if line type is of kBedLineCoordinates type, then we test chromosome length */
+                    if (*lineType == kBedLineCoordinates) {
+#ifdef DEBUG
+                        fprintf(stderr, "\t--- copying chromosome field ---\n");
+#endif
+                        if (strlen(buffer) > TOKEN_CHR_MAX_LENGTH) {
+                            fprintf(stderr, "ERROR: Chromosome field length is too long (must be no longer than %ld characters)\n", TOKEN_CHR_MAX_LENGTH);
+                            return STARCH_FATAL_ERROR;
+                        }
+                        /* copy element to chromosome variable, if memory is available */
+#ifdef __cplusplus
+                        *chr = static_cast<char *>( malloc((strlen(buffer) + 1) * sizeof(**chr)) );
+#else
+                        *chr = malloc((strlen(buffer) + 1) * sizeof(**chr));
+#endif
+                        if (! *chr) {
+                            fprintf(stderr, "ERROR: Ran out of memory while creating transform tokens\n");
+                            return STARCH_FATAL_ERROR;
+                        }
+#ifdef __cplusplus
+                        strncpy(*chr, reinterpret_cast<const char *>( buffer ), strlen(buffer) + 1);
+#else
+                        strncpy(*chr, (const char *)buffer, strlen(buffer) + 1);
+#endif
+                    }
+                    /* otherwise, we limit the length of a comment line to TOKENS_HEADER_MAX_LENGTH */
+                    else {
+#ifdef DEBUG
+                        fprintf(stderr, "\t--- copying whole line ---\n");
+#endif
+                        if (strlen(s) > TOKENS_HEADER_MAX_LENGTH) {
+                            fprintf(stderr, "ERROR: Comment line length is too long (must be no longer than %ld characters)\n", TOKEN_CHR_MAX_LENGTH);
+                            return STARCH_FATAL_ERROR;
+                        }
+                        /* copy whole line to chromosome variable, if memory is available */
+#ifdef __cplusplus
+                        *chr = static_cast<char *>( malloc((strlen(s) + 1) * sizeof(**chr)) );
+#else
+                        *chr = malloc((strlen(s) + 1) * sizeof(**chr));
+#endif
+                        if (! *chr) {
+                            fprintf(stderr, "ERROR: Ran out of memory while creating transform tokens\n");
+                            return STARCH_FATAL_ERROR;
+                        }
+                        strncpy(*chr, s, strlen(s) + 1);
+                    }
+#ifdef DEBUG
+                    fprintf(stderr, "\t--- resulting chr [%s]\n", *chr);
 #endif
                     break;
                 }
@@ -296,6 +381,9 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
 #endif
                         return STARCH_FATAL_ERROR;
                     }
+#ifdef DEBUG
+                    fprintf(stderr, "\t--- resulting start [%" PRId64 "]\n", *start);
+#endif
                     break;
                 }
                 case 2: {
@@ -320,72 +408,14 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
 #endif
                         return STARCH_FATAL_ERROR;
                     }
+#ifdef DEBUG
+                    fprintf(stderr, "\t--- resulting stop [%" PRId64 "]\n", *stop);
+#endif
                     break;
                 }
                 /* just keep filling the buffer until we reach s[sCnt]'s null -- we do tests later */
                 case 3:                    
                     break;
-            }
-
-            /* determine what type of BED input line we're working with */
-#ifdef __cplusplus
-            if (strncmp(reinterpret_cast<const char *>( *chr ), kStarchBedHeaderTrack, strlen(kStarchBedHeaderTrack)) == 0) {
-#else
-            if (strncmp((const char *) *chr, kStarchBedHeaderTrack, strlen(kStarchBedHeaderTrack)) == 0) {
-#endif
-                *lineType = kBedLineHeaderTrack;
-                elemCnt = 3;
-            }
-#ifdef __cplusplus
-            else if (strncmp(reinterpret_cast<const char *>( *chr ), kStarchBedHeaderBrowser, strlen(kStarchBedHeaderBrowser)) == 0) {
-#else
-            else if (strncmp((const char *) *chr, kStarchBedHeaderBrowser, strlen(kStarchBedHeaderBrowser)) == 0) {
-#endif
-                *lineType = kBedLineHeaderBrowser;
-                elemCnt = 3;
-            }
-#ifdef __cplusplus
-            else if (strncmp(reinterpret_cast<const char *>( *chr ), kStarchBedHeaderSAM, strlen(kStarchBedHeaderSAM)) == 0) {
-#else
-            else if (strncmp((const char *) *chr, kStarchBedHeaderSAM, strlen(kStarchBedHeaderSAM)) == 0) {
-#endif
-                *lineType = kBedLineHeaderSAM;
-                elemCnt = 3;
-            }
-#ifdef __cplusplus
-            else if (strncmp(reinterpret_cast<const char *>( *chr ), kStarchBedHeaderVCF, strlen(kStarchBedHeaderVCF)) == 0) {
-#else
-            else if (strncmp((const char *) *chr, kStarchBedHeaderVCF, strlen(kStarchBedHeaderVCF)) == 0) {
-#endif
-                *lineType = kBedLineHeaderVCF;
-                elemCnt = 3;
-            }
-#ifdef __cplusplus
-            else if (strncmp(reinterpret_cast<const char *>( *chr ), kStarchBedGenericComment, strlen(kStarchBedGenericComment)) == 0) {
-#else
-            else if (strncmp((const char *) *chr, kStarchBedGenericComment, strlen(kStarchBedGenericComment)) == 0) {
-#endif
-                *lineType = kBedLineGenericComment;
-                elemCnt = 3;
-            }
-            else {
-                *lineType = kBedLineCoordinates;
-                elemCnt++;
-            }
-            
-            /* if line type is of kBedLineCoordinates type, then we test chromosome length */
-            if (*lineType == kBedLineCoordinates) {
-                if (strlen(*chr) > TOKEN_CHR_MAX_LENGTH) {
-                    fprintf(stderr, "ERROR: Chromosome field length is too long (must be no longer than %ld characters)\n", TOKEN_CHR_MAX_LENGTH);
-                    return STARCH_FATAL_ERROR;
-                }
-            }
-            /* otherwise, we limit the length of a comment line to TOKENS_HEADER_MAX_LENGTH */
-            else {
-                if (strlen(*chr) > TOKENS_HEADER_MAX_LENGTH) {
-                    fprintf(stderr, "ERROR: Comment line length is too long (must be no longer than %ld characters)\n", TOKEN_CHR_MAX_LENGTH);
-                    return STARCH_FATAL_ERROR;
-                }                
             }
         }
     } while (s[sCnt++] != '\0');
@@ -419,6 +449,9 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
         strncpy(*remainder, reinterpret_cast<const char *>( buffer ), strlen(buffer) + 1);        
 #else
         strncpy(*remainder, (const char *)buffer, strlen(buffer) + 1);        
+#endif
+#ifdef DEBUG
+        fprintf(stderr, "\t--- resulting remainder [%s]\n", *remainder);
 #endif
     }
 
