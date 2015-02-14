@@ -24,6 +24,7 @@
 #ifndef SIMPLE_PRINT_FORMATS_H
 #define SIMPLE_PRINT_FORMATS_H
 
+#include <cstdio>
 #include <type_traits>
 
 #include "utility/Formats.hpp"

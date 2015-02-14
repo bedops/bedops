@@ -25,6 +25,7 @@
 #define SIMPLE_C_FORMATS_H
 
 #include <cinttypes>
+#include <cstdio>
 #include <type_traits>
 
 namespace Formats {
