@@ -154,7 +154,7 @@ namespace Bed {
         return(1);
 
       // overlap exists
-      if ( perc_ == std::numeric_limits<double>::epsilon() )
+      if ( perc_ <= std::numeric_limits<double>::epsilon() )
         return(0);
 
       totalLength = mapType->end() - mapType->start();
