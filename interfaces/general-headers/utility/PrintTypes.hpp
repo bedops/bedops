@@ -25,6 +25,7 @@
 #define SIMPLE_PRINT_FORMATS_H
 
 #include <cstdio>
+#include <string>
 #include <type_traits>
 
 #include "utility/Formats.hpp"
@@ -111,7 +112,5 @@ namespace PrintTypes {
     { t.println(out); }
 
 } // namespace PrintTypes
-
-//#include "../../src/utility/PrintTypes.cpp"
 
 #endif // SIMPLE_PRINT_FORMATS_H
