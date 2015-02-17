@@ -5231,7 +5231,7 @@
 						<key>LANGUAGE</key>
 						<string>English</string>
 						<key>VALUE</key>
-						<string>BEDOPS 2.4.8</string>
+						<string>BEDOPS 2.4.9</string>
 					</dict>
 				</array>
 			</dict>
@@ -5324,6 +5324,13 @@
 				<string>build</string>
 				<key>PATH_TYPE</key>
 				<integer>1</integer>
+			</dict>
+			<key>CERTIFICATE</key>
+			<dict>
+				<key>NAME</key>
+				<string>Developer ID Installer: Alex Reynolds (DLZRG65Q5B)</string>
+				<key>PATH</key>
+				<string>/Users/alexpreynolds/Library/Keychains/login.keychain</string>
 			</dict>
 			<key>EXCLUDED_FILES</key>
 			<array>
@@ -5494,7 +5501,7 @@
 				</dict>
 			</array>
 			<key>NAME</key>
-			<string>BEDOPS 2.4.8</string>
+			<string>BEDOPS 2.4.9</string>
 		</dict>
 	</dict>
 	<key>TYPE</key>

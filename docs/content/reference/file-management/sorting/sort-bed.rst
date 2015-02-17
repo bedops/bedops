@@ -38,7 +38,7 @@ The ``--help`` option is fairly basic, but describes the usage:
     version:  2.4.9
     authors:  Scott Kuehn
 
-  USAGE: sort-bed [--help] [--version] [--max-mem <val>] [--tmpdir <path>] <file1.bed> <file2.bed> <...>
+  USAGE: sort-bed [--help] [--version] [--check-sort] [--max-mem <val>] [--tmpdir <path>] <file1.bed> <file2.bed> <...>
           Sort BED file(s).
           May use '-' to indicate stdin.
           Results are sent to stdout.
@@ -67,6 +67,8 @@ For example, to use the current working directory to store temporary data, one c
 ::
 
   $ sort-bed --max-mem 2G --tmpdir $PWD reallyHugeUnsortedData.bed > reallyHugeSortedData.bed
+
+Use of the ``--check-sort`` option returns a message if the input is sorted, or not.
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace

@@ -15,7 +15,15 @@ Current version
 v2.4.9
 ------
 
-Released: **TBD**
+Released: **February 17, 2015**
+
+* :ref:`sort-bed <sort-bed>`
+
+  * Added support for ``--check-sort`` to report if input is sorted (or not)
+
+* Starch
+
+  * Improved support for ``starch --header``, where header contains tab-delimited fields
 
 * Starch C++ API
 
