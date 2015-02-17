@@ -15,7 +15,15 @@ all: random.bed
 random.bed:
 	@echo "[STARCH] making ${ELEMENTS}-element, randomly-generated BED file..."
 	@mkdir -p ${DATADIR}
-	@test -s ${DATADIR}/$@ || ${SRC}/make_unsorted_random_bed_file.sh --elements=${ELEMENTS} | sort-bed - > ${DATADIR}/$@
+	@test -s ${DATADIR}/$@ || ${SRC}/make_unsorted_random_bed_file.sh --elements=${ELEMENTS} | ${SRC}/jumble_duplicate_coords.pl | sort-bed - > ${DATADIR}/$@
+
+#
+# tip: one can use 
+#
+# 	$ awk '{key=$1":"$2":"$3; if (a[key]) { print "dup"; }}' ${DATADIR}/random.bed 
+#
+# to verify there are no duplicates
+#
 
 clean:
 	@echo "[STARCH] removing randomly-generated BED data (if present)..."
