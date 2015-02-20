@@ -3284,6 +3284,10 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
             exit(EINVAL); /* Invalid argument (POSIX.1) */
         }
         c2b_globals.wig->pos_lines++;
+	if (c2b_globals.wig->start_pos == 0) {
+	    fprintf(stderr, "Warning: WIG data contains 0-indexed element at line %u\n", c2b_globals.wig->line);
+	    return;
+	}
         if (!c2b_globals.wig->basename) {
             sprintf(dest_line_str,
                     "%s\t"                      \
@@ -3327,6 +3331,10 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                 exit(EINVAL); /* Invalid argument (POSIX.1) */
             }
             c2b_globals.wig->pos_lines++;
+	    if (c2b_globals.wig->start_pos == 0) {
+		fprintf(stderr, "Warning: WIG data contains 0-indexed element at line %u\n", c2b_globals.wig->line);
+		return;
+	    }
             if (!c2b_globals.wig->basename) {
                 sprintf(dest_line_str,
                         "%s\t"                  \
@@ -3369,6 +3377,10 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                 exit(EINVAL); /* Invalid argument (POSIX.1) */
             }
             c2b_globals.wig->pos_lines++;
+	    if (c2b_globals.wig->start_pos == 0) {
+		fprintf(stderr, "Warning: WIG data contains 0-indexed element at line %u\n", c2b_globals.wig->line);
+		return;
+	    }
             if (!c2b_globals.wig->basename) {
                 sprintf(dest_line_str,
                         "%s\t"                  \
