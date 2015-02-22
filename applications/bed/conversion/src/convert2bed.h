@@ -1186,7 +1186,7 @@ static const char *wig_options =                                        \
     "      A single input file may have multiple WIG sections. With this option\n" \
     "      every section gets an ID prefix starting with <basename>.1, then\n" \
     "      <basename>.2, and so on\n"                                   \
-    "  --zero-indexed (-z)\n"                                           \
+    "  --zero-indexed (-x)\n"                                           \
     "      Do not apply any index adjustment to input WIG data. This is useful\n" \
     "      with input derived from bigWigToWig, for example, where the bigWig\n" \
     "      data are originally zero-indexed.\n";
