@@ -2,7 +2,7 @@
 
 #
 # convert2bed
-# Copyright (C) 2014 Alex Reynolds
+# Copyright (C) 2014-2015-2015 Alex Reynolds
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ sort_tmpdir="/tmp"
 keep_header=false
 multisplit=""
 multisplit_set=false
+zero_indexed=false
 
 help()
 {
@@ -42,7 +43,7 @@ help()
     exit $1
 }
 
-optspec=":r:m:dhkb:-:"
+optspec=":r:m:dhkxb:-:"
 while getopts "$optspec" optchar; do
     case "${optchar}" in
         -)
@@ -97,6 +98,9 @@ while getopts "$optspec" optchar; do
                     multisplit=${val}
                     multisplit_set=true
                     ;;
+                zero-indexed)
+                    zero_indexed=true
+                    ;;
                 *)
                     help 1
                     #if [ "$OPTERR" = 1 ] && [ "${optspec:0:1}" != ":" ]; then echo "Unknown option --${OPTARG}" >&2; fi
@@ -118,6 +122,9 @@ while getopts "$optspec" optchar; do
             ;;
         k)
             keep_header=true
+            ;;
+        x)
+            zero_indexed=true
             ;;
         b)
             multisplit=${OPTARG}
@@ -144,5 +151,6 @@ if [ "${do_not_sort}" = true ]; then options="${options} --do-not-sort"; fi
 
 if [ "${keep_header}" = true ]; then options="${options} --keep-header"; fi
 if [ "${multisplit_set}" = true ]; then options="${options} --multisplit=${multisplit}"; fi
+if [ "${zero_indexed}" = true ]; then options="${options} --zero-indexed"; fi
 
 ${cmd} ${options} - <&0

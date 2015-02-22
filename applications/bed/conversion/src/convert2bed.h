@@ -1185,7 +1185,11 @@ static const char *wig_options =                                        \
     "  --multisplit=<basename> (-b <basename>)\n"                       \
     "      A single input file may have multiple WIG sections. With this option\n" \
     "      every section gets an ID prefix starting with <basename>.1, then\n" \
-    "      <basename>.2, and so on\n";
+    "      <basename>.2, and so on\n"                                   \
+    "  --zero-indexed (-z)\n"                                           \
+    "      Do not apply any index adjustment to input WIG data. This is useful\n" \
+    "      with input derived from bigWigToWig, for example, where the bigWig\n" \
+    "      data are originally zero-indexed.\n";
 
 static const char *format_undefined_usage =                             \
     "  Note: Please specify format to get detailed usage parameters:\n\n" \
@@ -1237,6 +1241,8 @@ typedef struct wig_state {
     boolean is_fixed_step;
     boolean start_write;
     char *basename;
+    int start_shift;
+    int end_shift;
 } c2b_wig_state_t;
 
 typedef struct cat_params {
@@ -1267,6 +1273,7 @@ static struct globals {
     boolean all_reads_flag;
     boolean keep_header_flag;
     boolean split_flag;
+    boolean zero_indexed_flag;
     c2b_gff_state_t *gff;
     c2b_gtf_state_t *gtf;
     c2b_psl_state_t *psl;
@@ -1296,6 +1303,7 @@ static struct option c2b_client_long_options[] = {
     { "max-mem",        required_argument,   NULL,    'm' },
     { "sort-tmpdir",    required_argument,   NULL,    'r' },
     { "multisplit",     required_argument,   NULL,    'b' },
+    { "zero-indexed",   no_argument,         NULL,    'x' },
     { "help",           no_argument,         NULL,    'h' },
     { "version",        no_argument,         NULL,    'w' },
     { "help-bam",       no_argument,         NULL,    '1' },
@@ -1310,7 +1318,7 @@ static struct option c2b_client_long_options[] = {
     { NULL,             no_argument,         NULL,     0  }
 };
 
-static const char *c2b_client_opt_string = "i:o:dakspvtnzge:m:r:b:hw12345678?";
+static const char *c2b_client_opt_string = "i:o:dakspvtnzge:m:r:b:xhw12345678?";
 
 #ifdef __cplusplus
 extern "C" {

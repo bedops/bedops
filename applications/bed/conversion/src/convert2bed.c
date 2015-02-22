@@ -3284,10 +3284,11 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
             exit(EINVAL); /* Invalid argument (POSIX.1) */
         }
         c2b_globals.wig->pos_lines++;
-	if (c2b_globals.wig->start_pos == 0) {
-	    fprintf(stderr, "Warning: WIG data contains 0-indexed element at line %u\n", c2b_globals.wig->line);
-	    return;
-	}
+        if ((c2b_globals.wig->start_pos == 0) && (!c2b_globals.zero_indexed_flag)) {
+            fprintf(stderr, "Error: WIG data contains 0-indexed element at line %u\n", c2b_globals.wig->line);
+            fprintf(stderr, "       Consider adding --zero-indexed (-x) option to convert zero-indexed WIG data\n");
+            exit(EINVAL); /* Invalid argument (POSIX.1) */
+        }
         if (!c2b_globals.wig->basename) {
             sprintf(dest_line_str,
                     "%s\t"                      \
@@ -3296,8 +3297,8 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                     "id-%d\t"                   \
                     "%lf\n",
                     c2b_globals.wig->chr,
-                    c2b_globals.wig->start_pos - 1,
-                    c2b_globals.wig->end_pos - 1,
+                    c2b_globals.wig->start_pos - c2b_globals.wig->start_shift,
+                    c2b_globals.wig->end_pos - c2b_globals.wig->end_shift,
                     c2b_globals.wig->pos_lines,
                     c2b_globals.wig->score);
         }
@@ -3309,8 +3310,8 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                     "%s-%d\t"                   \
                     "%lf\n",
                     c2b_globals.wig->chr,
-                    c2b_globals.wig->start_pos - 1,
-                    c2b_globals.wig->end_pos - 1,
+                    c2b_globals.wig->start_pos - c2b_globals.wig->start_shift,
+                    c2b_globals.wig->end_pos - c2b_globals.wig->end_shift,
                     c2b_globals.wig->id,
                     c2b_globals.wig->pos_lines,
                     c2b_globals.wig->score);
@@ -3331,10 +3332,11 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                 exit(EINVAL); /* Invalid argument (POSIX.1) */
             }
             c2b_globals.wig->pos_lines++;
-	    if (c2b_globals.wig->start_pos == 0) {
-		fprintf(stderr, "Warning: WIG data contains 0-indexed element at line %u\n", c2b_globals.wig->line);
-		return;
-	    }
+            if ((c2b_globals.wig->start_pos == 0) && (!c2b_globals.zero_indexed_flag)) {
+                fprintf(stderr, "Error: WIG data contains 0-indexed element at line %u\n", c2b_globals.wig->line);
+                fprintf(stderr, "       Consider adding --zero-indexed (-x) option to convert zero-indexed WIG data\n");
+                exit(EINVAL); /* Invalid argument (POSIX.1) */
+            }
             if (!c2b_globals.wig->basename) {
                 sprintf(dest_line_str,
                         "%s\t"                  \
@@ -3343,8 +3345,8 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                         "id-%d\t"               \
                         "%lf\n",
                         c2b_globals.wig->chr,
-                        c2b_globals.wig->start_pos - 1,
-                        c2b_globals.wig->start_pos + c2b_globals.wig->span - 1,
+                        c2b_globals.wig->start_pos - c2b_globals.wig->start_shift,
+                        c2b_globals.wig->start_pos + c2b_globals.wig->span - c2b_globals.wig->end_shift,
                         c2b_globals.wig->pos_lines,
                         c2b_globals.wig->score);
             }
@@ -3356,8 +3358,8 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                         "%s-%d\t"               \
                         "%lf\n",
                         c2b_globals.wig->chr,
-                        c2b_globals.wig->start_pos - 1,
-                        c2b_globals.wig->start_pos + c2b_globals.wig->span - 1,
+                        c2b_globals.wig->start_pos - c2b_globals.wig->start_shift,
+                        c2b_globals.wig->start_pos + c2b_globals.wig->span - c2b_globals.wig->end_shift,
                         c2b_globals.wig->id,
                         c2b_globals.wig->pos_lines,
                         c2b_globals.wig->score);
@@ -3377,10 +3379,11 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                 exit(EINVAL); /* Invalid argument (POSIX.1) */
             }
             c2b_globals.wig->pos_lines++;
-	    if (c2b_globals.wig->start_pos == 0) {
-		fprintf(stderr, "Warning: WIG data contains 0-indexed element at line %u\n", c2b_globals.wig->line);
-		return;
-	    }
+            if ((c2b_globals.wig->start_pos == 0) && (!c2b_globals.zero_indexed_flag)) {
+                fprintf(stderr, "Error: WIG data contains 0-indexed element at line %u\n", c2b_globals.wig->line);
+                fprintf(stderr, "       Consider adding --zero-indexed (-x) option to convert zero-indexed WIG data\n");
+                exit(EINVAL); /* Invalid argument (POSIX.1) */
+            }
             if (!c2b_globals.wig->basename) {
                 sprintf(dest_line_str,
                         "%s\t"                  \
@@ -3389,8 +3392,8 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                         "id-%d\t"               \
                         "%lf\n",
                         c2b_globals.wig->chr,
-                        c2b_globals.wig->start_pos - 1,
-                        c2b_globals.wig->start_pos + c2b_globals.wig->span - 1,
+                        c2b_globals.wig->start_pos - c2b_globals.wig->start_shift,
+                        c2b_globals.wig->start_pos + c2b_globals.wig->span - c2b_globals.wig->end_shift,
                         c2b_globals.wig->pos_lines,
                         c2b_globals.wig->score);
             }
@@ -3402,8 +3405,8 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                         "%s-%d\t"               \
                         "%lf\n",
                         c2b_globals.wig->chr,
-                        c2b_globals.wig->start_pos - 1,
-                        c2b_globals.wig->start_pos + c2b_globals.wig->span - 1,
+                        c2b_globals.wig->start_pos - c2b_globals.wig->start_shift,
+                        c2b_globals.wig->start_pos + c2b_globals.wig->span - c2b_globals.wig->end_shift,
                         c2b_globals.wig->id,
                         c2b_globals.wig->pos_lines,
                         c2b_globals.wig->score);
@@ -4265,6 +4268,7 @@ c2b_init_globals()
     c2b_globals.all_reads_flag = kFalse;
     c2b_globals.keep_header_flag = kFalse;
     c2b_globals.split_flag = kFalse;
+    c2b_globals.zero_indexed_flag = kFalse;
     c2b_globals.header_line_idx = 0U;
     c2b_globals.gff = NULL, c2b_init_global_gff_state();
     c2b_globals.gtf = NULL, c2b_init_global_gtf_state();
@@ -4601,6 +4605,8 @@ c2b_init_global_wig_state()
     c2b_globals.wig->is_fixed_step = kFalse;
     c2b_globals.wig->start_write = kFalse;
     c2b_globals.wig->basename = NULL;
+    c2b_globals.wig->start_shift = 1;
+    c2b_globals.wig->end_shift = 1;
 
     c2b_globals.wig->chr = malloc(C2B_MAX_CHROMOSOME_LENGTH);
     if (!c2b_globals.wig->chr) {
@@ -4883,6 +4889,11 @@ c2b_init_command_line_options(int argc, char **argv)
                 break;
             case 'g':
                 c2b_globals.starch->gzip = kTrue;
+                break;
+            case 'x':
+                c2b_globals.wig->start_shift = 0;
+                c2b_globals.wig->end_shift = 0;
+                c2b_globals.zero_indexed_flag = kTrue;
                 break;
             case 'h':
                 c2b_print_usage(stdout);

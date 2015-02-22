@@ -11,8 +11,26 @@ This page summarizes some of the more important changes between releases.
 Current version
 ===============
 
-------
+-------
 v2.4.10
+-------
+
+Released: **TBD**
+
+* :ref:`convert2bed <convert2bed>`
+
+  * Added ``--zero-indexed`` option to ``wig2bed`` and ``wig2starch`` wrappers and ``convert2bed`` binary, which converts WIG data that are zero-indexed without any coordinate adjustments. This is useful for WIG data sourced from the UCSC Kent tool ``bigWigToWig``, where the ``bigWig`` data can potentially be sourced from 0-indexed BAM- or bedGraph-formatted data. 
+
+  * If the WIG input contains any element with a start coordinate of 0, the default use of ``wig2bed``, ``wig2starch`` and ``convert2bed`` will exit early with an error condition, suggesting the use of ``--zero-indexed``.
+
+  * Updated copyright date range of wrapper scripts
+
+=================
+Previous versions
+=================
+
+------
+v2.4.9
 ------
 
 Released: **February 17, 2015**
@@ -28,10 +46,6 @@ Released: **February 17, 2015**
 * Starch C++ API
 
   * Fixed bug with ``starch --header`` functionality, such that BEDOPS core tools (``bedops``, etc.) would be unable to extract correct data from headered Starch archive
-
-=================
-Previous versions
-=================
 
 ------
 v2.4.8

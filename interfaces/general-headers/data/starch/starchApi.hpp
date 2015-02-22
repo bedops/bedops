@@ -1691,7 +1691,7 @@ namespace starch
 #ifdef DEBUG
         std::fprintf(stderr, "\n--- Starch::zReadChunk() ---\n");
 #endif
-        zStream.avail_in = std::fread(zInBuf, 1, STARCH_Z_CHUNK, inFp);
+        zStream.avail_in = static_cast<uInt>( std::fread(zInBuf, 1, STARCH_Z_CHUNK, inFp) );
         zStream.next_in = reinterpret_cast<Byte *>( zInBuf );
 
         zStream.avail_out = STARCH_Z_CHUNK;
