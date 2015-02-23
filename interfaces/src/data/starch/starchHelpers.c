@@ -1685,8 +1685,8 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     unsigned long lineIdx = 0UL;
     int64_t start = 0;
     int64_t stop = 0;
-    int64_t pStart = 0;
-    int64_t pStop = 0;
+    int64_t pStart = -1;
+    int64_t pStop = -1;
     int64_t previousStop = 0;
     int64_t lastPosition = 0;
     int64_t lcDiff = 0;
@@ -2109,8 +2109,8 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 #endif
                     withinChr = kStarchFalse;
                     lastPosition = 0;
-                    pStart = 0;
-                    pStop = 0;
+                    pStart = -1;
+                    pStop = -1;
                     previousStop = 0;
                     lcDiff = 0;
                     lineIdx = 0UL;
@@ -2141,6 +2141,17 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                         memset(nonCoordLineBuf, 0, strlen(nonCoordLineBuf));
                         nonCoordLineBufNeedsPrinting = kStarchFalse;
                     }
+
+                    /* test for out-of-order element */
+                    if (pStart > start) {
+                        fprintf(stderr, "ERROR: BED data is not properly sorted by start coordinates at line %lu\n", lineIdx);
+                        exit (EXIT_FAILURE);
+                    }
+                    else if ((pStart == start) && (pStop > stop)) {
+                        fprintf(stderr, "ERROR: BED data is not properly sorted by end coordinates (when start coordinates are equal) at line %lu\n", lineIdx);
+                        exit (EXIT_FAILURE);
+                    }
+
                     if (stop > start)
                         coordDiff = stop - start;
                     else {
@@ -2354,6 +2365,16 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
             fprintf(stderr, "\t(just-before-last-pass) untransformedBuffer:\n%s\n", untransformedBuffer);
 #endif
 
+            /* test for out-of-order element */
+            if (pStart > start) {
+                fprintf(stderr, "ERROR: BED data is not properly sorted by start coordinates at line %lu\n", lineIdx);
+                exit (EXIT_FAILURE);
+            }
+            else if ((pStart == start) && (pStop > stop)) {
+                fprintf(stderr, "ERROR: BED data is not properly sorted by end coordinates (when start coordinates are equal) at line %lu\n", lineIdx);
+                exit (EXIT_FAILURE);
+            }
+
             /* transform */
             if (stop > start)
                 coordDiff = stop - start;
@@ -2410,7 +2431,6 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
             fprintf(stderr, "\t(just-before-last-pass) duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", (int) duplicateElementExistsFlag, (int) nestedElementExistsFlag);
 #endif
 #endif
-
             /* test for duplicate element */
             if ((pStart == start) && (pStop == stop))
                 duplicateElementExistsFlag = kStarchTrue;
@@ -2667,8 +2687,8 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     unsigned long lineIdx = 0UL;
     int64_t start = 0;
     int64_t stop = 0;
-    int64_t pStart = 0;
-    int64_t pStop = 0;
+    int64_t pStart = -1;
+    int64_t pStop = -1;
     int64_t previousStop = 0;
     int64_t lastPosition = 0;
     int64_t lcDiff = 0;
@@ -3087,8 +3107,8 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #endif
                     withinChr = kStarchFalse;
                     lastPosition = 0;
-                    pStart = 0;
-                    pStop = 0;
+                    pStart = -1;
+                    pStop = -1;
                     previousStop = 0;
                     lcDiff = 0;
                     lineIdx = 0UL;
@@ -3245,6 +3265,16 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #endif
                 }
 
+                /* test for out-of-order element */
+                if (pStart > start) {
+                    fprintf(stderr, "ERROR: BED data is not properly sorted by start coordinates at line %lu\n", lineIdx);
+                    exit (EXIT_FAILURE);
+                }
+                else if ((pStart == start) && (pStop > stop)) {
+                    fprintf(stderr, "ERROR: BED data is not properly sorted by end coordinates (when start coordinates are equal) at line %lu\n", lineIdx);
+                    exit (EXIT_FAILURE);
+                }
+
                 lastPosition = stop;
 #ifdef __cplusplus
                 totalNonUniqueBases += static_cast<BaseCountType>( stop - start );
@@ -3275,7 +3305,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                 fprintf(stderr, "\t(intermediate) duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", (int) duplicateElementExistsFlag, (int) nestedElementExistsFlag);
 #endif
 #endif
-
+                
                 /* test for duplicate element */
                 if ((pStart == start) && (pStop == stop))
                     duplicateElementExistsFlag = kStarchTrue;
@@ -3311,6 +3341,15 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #ifdef DEBUG
             fprintf(stderr, "\t(just-before-last-pass) untransformedBuffer:\n%s\n", untransformedBuffer);
 #endif
+            /* test for out-of-order element */
+            if (pStart > start) {
+                fprintf(stderr, "ERROR: BED data is not properly sorted by start coordinates at line %lu\n", lineIdx);
+                exit (EXIT_FAILURE);
+            }
+            else if ((pStart == start) && (pStop > stop)) {
+                fprintf(stderr, "ERROR: BED data is not properly sorted by end coordinates (when start coordinates are equal) at line %lu\n", lineIdx);
+                exit (EXIT_FAILURE);
+            }
 
             /* transform */
             if (stop > start)
@@ -3398,7 +3437,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
             fprintf(stderr, "\t(intermediate) duplicateElementExistsFlag: %d\tnestedElementExistsFlag: %d\n", (int) duplicateElementExistsFlag, (int) nestedElementExistsFlag);
 #endif
 #endif
-
+            
             /* test for duplicate element */
             if ((pStart == start) && (pStop == stop))
                 duplicateElementExistsFlag = kStarchTrue;
