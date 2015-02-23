@@ -15,7 +15,11 @@ Current version
 v2.4.10
 -------
 
-Released: **TBD**
+Released: **February 23, 2015**
+
+* :ref:`starch <starch>`
+
+  * In addition to checking chromosome interleaving, the ``starch`` tool now enforces :ref:`sort-bed <sort-bed>` sort ordering on BED input and exits with an ``EINVAL`` error if the data are not sorted correctly.
 
 * :ref:`convert2bed <convert2bed>`
 
