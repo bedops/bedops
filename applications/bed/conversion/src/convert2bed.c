@@ -1399,10 +1399,14 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
 
     /* 0 - matches */
     char matches_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    ssize_t matches_size = psl_field_offsets[0] - 1;
+    ssize_t matches_size = psl_field_offsets[0];
     memcpy(matches_str, src, matches_size);
     matches_str[matches_size] = '\0';
     uint64_t matches_val = strtoull(matches_str, NULL, 10);
+
+#ifdef DEBUG
+    fprintf(stderr, "matches_str: [%s]\n", matches_str);
+#endif
 
     /* 
        We test if matches is a number or string, as one of the header 
@@ -1430,6 +1434,10 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     memcpy(misMatches_str, src + psl_field_offsets[0] + 1, misMatches_size);
     misMatches_str[misMatches_size] = '\0';
     uint64_t misMatches_val = strtoull(misMatches_str, NULL, 10);
+    
+#ifdef DEBUG
+    fprintf(stderr, "misMatches_str: [%s]\n", misMatches_str);
+#endif
 
     /* 2 - repMatches */
     char repMatches_str[C2B_MAX_FIELD_LENGTH_VALUE];
@@ -1438,12 +1446,20 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     repMatches_str[repMatches_size] = '\0';
     uint64_t repMatches_val = strtoull(repMatches_str, NULL, 10);
 
+#ifdef DEBUG
+    fprintf(stderr, "repMatches_str: [%s]\n", repMatches_str);
+#endif
+
     /* 3 - nCount */
     char nCount_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t nCount_size = psl_field_offsets[3] - psl_field_offsets[2] - 1;
     memcpy(nCount_str, src + psl_field_offsets[2] + 1, nCount_size);
     nCount_str[nCount_size] = '\0';
     uint64_t nCount_val = strtoull(nCount_str, NULL, 10);
+
+#ifdef DEBUG
+    fprintf(stderr, "nCount_str: [%s]\n", nCount_str);
+#endif
 
     /* 4 - qNumInsert */
     char qNumInsert_str[C2B_MAX_FIELD_LENGTH_VALUE];
@@ -1452,12 +1468,20 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     qNumInsert_str[qNumInsert_size] = '\0';
     uint64_t qNumInsert_val = strtoull(qNumInsert_str, NULL, 10);
 
+#ifdef DEBUG
+    fprintf(stderr, "qNumInsert_str: [%s]\n", qNumInsert_str);
+#endif
+
     /* 5 - qBaseInsert */
     char qBaseInsert_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t qBaseInsert_size = psl_field_offsets[5] - psl_field_offsets[4] - 1;
     memcpy(qBaseInsert_str, src + psl_field_offsets[4] + 1, qBaseInsert_size);
     qBaseInsert_str[qBaseInsert_size] = '\0';
     uint64_t qBaseInsert_val = strtoull(qBaseInsert_str, NULL, 10);
+
+#ifdef DEBUG
+    fprintf(stderr, "qBaseInsert_str: [%s]\n", qBaseInsert_str);
+#endif
 
     /* 6 - tNumInsert */
     char tNumInsert_str[C2B_MAX_FIELD_LENGTH_VALUE];
@@ -1466,6 +1490,10 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     tNumInsert_str[tNumInsert_size] = '\0';
     uint64_t tNumInsert_val = strtoull(tNumInsert_str, NULL, 10);
 
+#ifdef DEBUG
+    fprintf(stderr, "tNumInsert_str: [%s]\n", tNumInsert_str);
+#endif
+
     /* 7 - tBaseInsert */
     char tBaseInsert_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t tBaseInsert_size = psl_field_offsets[7] - psl_field_offsets[6] - 1;
@@ -1473,17 +1501,29 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     tBaseInsert_str[tBaseInsert_size] = '\0';
     uint64_t tBaseInsert_val = strtoull(tBaseInsert_str, NULL, 10);
 
+#ifdef DEBUG
+    fprintf(stderr, "tBaseInsert_str: [%s]\n", tBaseInsert_str);
+#endif
+
     /* 8 - strand */
     char strand_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t strand_size = psl_field_offsets[8] - psl_field_offsets[7] - 1;
     memcpy(strand_str, src + psl_field_offsets[7] + 1, strand_size);
     strand_str[strand_size] = '\0';
 
+#ifdef DEBUG
+    fprintf(stderr, "strand_str: [%s]\n", strand_str);
+#endif
+
     /* 9 - qName */
     char qName_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t qName_size = psl_field_offsets[9] - psl_field_offsets[8] - 1;
     memcpy(qName_str, src + psl_field_offsets[8] + 1, qName_size);
     qName_str[qName_size] = '\0';
+
+#ifdef DEBUG
+    fprintf(stderr, "qName_str: [%s]\n", qName_str);
+#endif
 
     /* 10 - qSize */
     char qSize_str[C2B_MAX_FIELD_LENGTH_VALUE];
@@ -1492,12 +1532,20 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     qSize_str[qSize_size] = '\0';
     uint64_t qSize_val = strtoull(qSize_str, NULL, 10);
 
+#ifdef DEBUG
+    fprintf(stderr, "qSize_str: [%s]\n", qSize_str);
+#endif
+
     /* 11 - qStart */
     char qStart_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t qStart_size = psl_field_offsets[11] - psl_field_offsets[10] - 1;
     memcpy(qStart_str, src + psl_field_offsets[10] + 1, qStart_size);
     qStart_str[qStart_size] = '\0';
     uint64_t qStart_val = strtoull(qStart_str, NULL, 10);
+
+#ifdef DEBUG
+    fprintf(stderr, "qStart_str: [%s]\n", qStart_str);
+#endif
 
     /* 12 - qEnd */
     char qEnd_str[C2B_MAX_FIELD_LENGTH_VALUE];
@@ -1506,11 +1554,19 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     qEnd_str[qEnd_size] = '\0';
     uint64_t qEnd_val = strtoull(qEnd_str, NULL, 10);
 
+#ifdef DEBUG
+    fprintf(stderr, "qEnd_str: [%s]\n", qEnd_str);
+#endif
+
     /* 13 - tName */
     char tName_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t tName_size = psl_field_offsets[13] - psl_field_offsets[12] - 1;
     memcpy(tName_str, src + psl_field_offsets[12] + 1, tName_size);
     tName_str[tName_size] = '\0';
+
+#ifdef DEBUG
+    fprintf(stderr, "tName_str: [%s]\n", tName_str);
+#endif
 
     /* 14 - tSize */
     char tSize_str[C2B_MAX_FIELD_LENGTH_VALUE];
@@ -1519,12 +1575,20 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     tSize_str[tSize_size] = '\0';
     uint64_t tSize_val = strtoull(tSize_str, NULL, 10);
 
+#ifdef DEBUG
+    fprintf(stderr, "tSize_str: [%s]\n", tSize_str);
+#endif
+
     /* 15 - tStart */
     char tStart_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t tStart_size = psl_field_offsets[15] - psl_field_offsets[14] - 1;
     memcpy(tStart_str, src + psl_field_offsets[14] + 1, tStart_size);
     tStart_str[tStart_size] = '\0';
     uint64_t tStart_val = strtoull(tStart_str, NULL, 10);
+
+#ifdef DEBUG
+    fprintf(stderr, "tStart_str: [%s]\n", tStart_str);
+#endif
 
     /* 16 - tEnd */
     char tEnd_str[C2B_MAX_FIELD_LENGTH_VALUE];
@@ -1533,6 +1597,10 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     tEnd_str[tEnd_size] = '\0';
     uint64_t tEnd_val = strtoull(tEnd_str, NULL, 10);
 
+#ifdef DEBUG
+    fprintf(stderr, "tEnd_str: [%s]\n", tEnd_str);
+#endif
+
     /* 17 - blockCount */
     char blockCount_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t blockCount_size = psl_field_offsets[17] - psl_field_offsets[16] - 1;
@@ -1540,11 +1608,19 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     blockCount_str[blockCount_size] = '\0';
     uint64_t blockCount_val = strtoull(blockCount_str, NULL, 10);
 
+#ifdef DEBUG
+    fprintf(stderr, "blockCount_str: [%s]\n", blockCount_str);
+#endif
+
     /* 18 - blockSizes */
     char blockSizes_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t blockSizes_size = psl_field_offsets[18] - psl_field_offsets[17] - 1;
     memcpy(blockSizes_str, src + psl_field_offsets[17] + 1, blockSizes_size);
     blockSizes_str[blockSizes_size] = '\0';
+
+#ifdef DEBUG
+    fprintf(stderr, "blockSizes_str: [%s]\n", blockSizes_str);
+#endif
 
     /* 19 - qStarts */
     char qStarts_str[C2B_MAX_FIELD_LENGTH_VALUE];
@@ -1552,11 +1628,19 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     memcpy(qStarts_str, src + psl_field_offsets[18] + 1, qStarts_size);
     qStarts_str[qStarts_size] = '\0';
 
+#ifdef DEBUG
+    fprintf(stderr, "qStarts_str: [%s]\n", qStarts_str);
+#endif
+
     /* 20 - tStarts */
     char tStarts_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t tStarts_size = psl_field_offsets[20] - psl_field_offsets[19] - 1;
     memcpy(tStarts_str, src + psl_field_offsets[19] + 1, tStarts_size);
     tStarts_str[tStarts_size] = '\0';
+
+#ifdef DEBUG
+    fprintf(stderr, "tStarts_str: [%s]\n", tStarts_str);
+#endif
 
     c2b_psl_t psl;
     psl.matches = matches_val;

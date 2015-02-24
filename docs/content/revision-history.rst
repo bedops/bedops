@@ -12,6 +12,20 @@ Current version
 ===============
 
 -------
+v2.4.11
+-------
+
+Released: **February 24, 2015**
+
+* :ref:`convert2bed <convert2bed>`
+
+  * Fixed bug in :ref:`psl2bed <psl2bed>` where ``matches`` column value was truncated by one character. Updated unit tests.
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.10
 -------
 
@@ -28,10 +42,6 @@ Released: **February 23, 2015**
   * If the WIG input contains any element with a start coordinate of 0, the default use of ``wig2bed``, ``wig2starch`` and ``convert2bed`` will exit early with an error condition, suggesting the use of ``--zero-indexed``.
 
   * Updated copyright date range of wrapper scripts
-
-=================
-Previous versions
-=================
 
 ------
 v2.4.9
