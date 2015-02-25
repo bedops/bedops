@@ -57,7 +57,7 @@ To demonstrate these scripts, we use a sample PSL input called ``foo.psl`` (see 
   30      0       0       0       0       0       0       0       +       foo     50      14      44      chr6    171115067       127685756       127685786       1       30,     14,     127685756,
   30      0       0       0       0       0       0       0       +       foo     50      14      44      chr6    171115067       93161871        93161901        1       30,     14,     93161871,
   31      0       0       0       0       0       0       0       +       foo     50      13      44      chr5    180915260       119897315       119897346       1       31,     13,     119897315,
-  30      0       0       0       0       0       0       0       +       foo     50      14      44      chr5    180915260       123254725       1232.4.115       1       30,     14,     123254725,
+  30      0       0       0       0       0       0       0       +       foo     50      14      44      chr5    180915260       123254725       1232.4.125       1       30,     14,     123254725,
   ...
 
 We can convert it to sorted BED data in the following manner:
@@ -128,7 +128,7 @@ In this section, we describe how PSL columns are mapped to BED columns. We start
 +---------------------------+---------------------+---------------+
 | qName                     | 4                   | id            |
 +---------------------------+---------------------+---------------+
-| qSize                     | 5                   | score         |
+| matches                   | 5                   | score         |
 +---------------------------+---------------------+---------------+
 | strand                    | 6                   | strand        |
 +---------------------------+---------------------+---------------+
@@ -138,7 +138,7 @@ The remaining PSL columns are mapped, in order, to the remaining columns of the 
 +---------------------------+---------------------+---------------+
 | PSL field                 | BED column index    | BED field     |
 +===========================+=====================+===============+
-| matches                   | 7                   |               |
+| qSize                     | 7                   |               |
 +---------------------------+---------------------+---------------+
 | misMatches                | 8                   |               |
 +---------------------------+---------------------+---------------+
@@ -173,7 +173,9 @@ This is a lossless mapping. Because we have mapped all columns, we can translate
 
 ::
 
-  $ awk 'BEGIN { OFS = "\t" } { print $7" "$8" "$9" "$10" "$11" "$12" "$13" "$14" "$6" "$4" "$5" "$15" "$16" "$1" "$17" "$2" "$3" "$18" "$19" "$20" "$21 }' converted.bed > original.psl
+  $ awk 'BEGIN { OFS = "\t" } \
+    { \
+      print $5" "$8" "$9" "$10" "$11" "$12" "$13" "$14" "$6" "$4" "$7" "$15" "$16" "$1" "$17" "$2" "$3" "$18" "$19" "$20" "$21 }' converted.bed > original.psl
 
 In the case where the ``--split`` option is added, the ``tStart`` and ``tEnd`` fields are replaced with each of the values in the larger ``tStarts`` string, added to the respective values in the larger ``blockSizes`` string. This is still a lossless conversion, but modifications to the ``awk`` script printed above would be required to rebuild the original PSL.
 

@@ -12,6 +12,20 @@ Current version
 ===============
 
 -------
+v2.4.12
+-------
+
+Released: **TBD**
+
+* :ref:`convert2bed <convert2bed>`
+
+  * Switched ``matches`` and ``qSize`` fields in order of :ref:`psl2bed <psl2bed>` output (refer to documentation for field order).
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.11
 -------
 
@@ -20,10 +34,6 @@ Released: **February 24, 2015**
 * :ref:`convert2bed <convert2bed>`
 
   * Fixed bug in :ref:`psl2bed <psl2bed>` where ``matches`` column value was truncated by one character. Updated unit tests.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.10

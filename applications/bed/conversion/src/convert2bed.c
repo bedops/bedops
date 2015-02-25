@@ -1778,14 +1778,14 @@ c2b_line_convert_psl_to_bed(c2b_psl_t p, char *dest_line, ssize_t *dest_size)
        tStart                    2                      start
        tEnd                      3                      stop
        qName                     4                      id
-       qSize                     5                      score
+       matches                   5                      score
        strand                    6                      strand
 
        The remaining PSL columns are mapped as-is, in same order, to adjacent BED columns:
 
        PSL field                 BED column index       BED field
        -------------------------------------------------------------------------
-       matches                   7                      -
+       qSize                     7                      -
        misMatches                8                      -
        repMatches                9                      -
        nCount                    10                     -
@@ -1828,9 +1828,9 @@ c2b_line_convert_psl_to_bed(c2b_psl_t p, char *dest_line, ssize_t *dest_size)
                           p.tStart,
                           p.tEnd,
                           p.qName,
-                          p.qSize,
-                          p.strand,
                           p.matches,
+                          p.strand,
+                          p.qSize,
                           p.misMatches,
                           p.repMatches,
                           p.nCount,
