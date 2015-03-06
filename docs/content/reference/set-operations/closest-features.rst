@@ -72,7 +72,7 @@ The ``--help`` option describes the various operations and options available to 
 
     NOTES:
       If an element from <query-file> overlaps the <input-file> element, its distance is zero.
-        An overlapping element take precedence over all non-overlapping elements.  This is true
+        An overlapping element takes precedence over all non-overlapping elements.  This is true
         even when the overlapping element's edge-to-edge distance to the <input-file>'s element
         is greater than the edge-to-edge distance from a non-overlapping element.
       Overlapping elements may be ignored completely (no precedence) with --no-overlaps.
