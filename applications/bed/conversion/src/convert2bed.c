@@ -872,13 +872,18 @@ c2b_cmd_starch_bed(char *cmd)
 static void
 c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
 {
-    ssize_t gtf_field_offsets[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t gtf_field_offsets[C2B_MAX_FIELD_COUNT_VALUE];
     int gtf_field_idx = 0;
     ssize_t current_src_posn = -1;
 
     while (++current_src_posn < src_size) {
         if ((src[current_src_posn] == c2b_tab_delim) || (src[current_src_posn] == c2b_line_delim)) {
             gtf_field_offsets[gtf_field_idx++] = current_src_posn;
+        }
+        if (gtf_field_idx >= C2B_MAX_FIELD_COUNT_VALUE) {
+            fprintf(stderr, "Error: Invalid field count (%d) -- input file may have too many fields\n", gtf_field_idx);
+            c2b_print_usage(stderr);
+            exit(EINVAL); /* Invalid argument (POSIX.1) */
         }
     }
     gtf_field_offsets[gtf_field_idx] = src_size;
@@ -1029,6 +1034,7 @@ c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
         if (id_str) {
             /* we remove quotation marks around ID string value */
             memcpy(c2b_globals.gtf->id, kv_tok + strlen(gtf_id_prefix) + 1, strlen(kv_tok + strlen(gtf_id_prefix)) - 2);
+            c2b_globals.gtf->id[strlen(kv_tok + strlen(gtf_id_prefix)) - 2] = '\0';
         }
     }
     free(attributes_copy), attributes_copy = NULL;
@@ -1127,13 +1133,18 @@ c2b_line_convert_gtf_to_bed(c2b_gtf_t g, char *dest_line, ssize_t *dest_size)
 static void
 c2b_line_convert_gff_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
 {
-    ssize_t gff_field_offsets[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t gff_field_offsets[C2B_MAX_FIELD_COUNT_VALUE];
     int gff_field_idx = 0;
     ssize_t current_src_posn = -1;
 
     while (++current_src_posn < src_size) {
         if ((src[current_src_posn] == c2b_tab_delim) || (src[current_src_posn] == c2b_line_delim)) {
             gff_field_offsets[gff_field_idx++] = current_src_posn;
+        }
+        if (gff_field_idx >= C2B_MAX_FIELD_COUNT_VALUE) {
+            fprintf(stderr, "Error: Invalid field count (%d) -- input file may have too many fields\n", gff_field_idx);
+            c2b_print_usage(stderr);
+            exit(EINVAL); /* Invalid argument (POSIX.1) */
         }
     }
     gff_field_offsets[gff_field_idx] = src_size;
@@ -1280,11 +1291,14 @@ c2b_line_convert_gff_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     memcpy(attributes_copy, attributes_str, strlen(attributes_str) + 1);
     const char *kv_tok;
     const char *gff_id_prefix = "ID=";
-    char *id_str;
+    const char *gff_null_id = ".";
+    char *id_str = NULL;
+    memcpy(c2b_globals.gff->id, gff_null_id, strlen(gff_null_id) + 1);
     while ((kv_tok = c2b_strsep(&attributes_copy, ";")) != NULL) {
         id_str = strstr(kv_tok, gff_id_prefix);
         if (id_str) {
             memcpy(c2b_globals.gff->id, kv_tok + strlen(gff_id_prefix), strlen(kv_tok + strlen(gff_id_prefix)) + 1);
+            c2b_globals.gff->id[strlen(kv_tok + strlen(gff_id_prefix)) + 1] = '\0';
         }
     }
     free(attributes_copy), attributes_copy = NULL;
@@ -1350,13 +1364,18 @@ c2b_line_convert_gff_to_bed(c2b_gff_t g, char *dest_line, ssize_t *dest_size)
 static void
 c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
 {
-    ssize_t psl_field_offsets[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t psl_field_offsets[C2B_MAX_FIELD_COUNT_VALUE];
     int psl_field_idx = 0;
     ssize_t current_src_posn = -1;
 
     while (++current_src_posn < src_size) {
         if ((src[current_src_posn] == c2b_tab_delim) || (src[current_src_posn] == c2b_line_delim)) {
             psl_field_offsets[psl_field_idx++] = current_src_posn;
+        }
+        if (psl_field_idx >= C2B_MAX_FIELD_COUNT_VALUE) {
+            fprintf(stderr, "Error: Invalid field count (%d) -- input file may have too many fields\n", psl_field_idx);
+            c2b_print_usage(stderr);
+            exit(EINVAL); /* Invalid argument (POSIX.1) */
         }
     }
     psl_field_offsets[psl_field_idx] = src_size;
@@ -1871,6 +1890,11 @@ c2b_line_convert_rmsk_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src,
                     rmsk_field_start_offsets[rmsk_field_start_idx++] = current_src_posn; /* 0th offset is *start* of actual data */
                     break;
                 }
+                if (rmsk_field_start_idx >= C2B_MAX_FIELD_COUNT_VALUE) {
+                    fprintf(stderr, "Error: Invalid field count (%d) -- input file may have too many fields\n", rmsk_field_start_idx);
+                    c2b_print_usage(stderr);
+                    exit(EINVAL); // Invalid argument (POSIX.1)                    
+                }
                 current_src_posn++;
             }
             /* if current position is a space delimiter, we keep reading until there are no more spaces */
@@ -2304,6 +2328,11 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
         if ((src[current_src_posn] == c2b_tab_delim) || (src[current_src_posn] == c2b_line_delim)) {
             sam_field_offsets[sam_field_idx++] = current_src_posn;
         }
+        if (sam_field_idx >= C2B_MAX_FIELD_COUNT_VALUE) {
+            fprintf(stderr, "Error: Invalid field count (%d) -- input file may have too many fields\n", sam_field_idx);
+            c2b_print_usage(stderr);
+            exit(EINVAL); /* Invalid argument (POSIX.1) */
+        }
     }
     sam_field_offsets[sam_field_idx] = src_size;
     sam_field_offsets[sam_field_idx + 1] = -1;
@@ -2444,7 +2473,7 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
        parse it for operation key-value pairs to loop through later on
     */
 
-    ssize_t sam_field_offsets[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t sam_field_offsets[C2B_MAX_FIELD_COUNT_VALUE];
     int sam_field_idx = 0;
     ssize_t current_src_posn = -1;
 
@@ -2474,6 +2503,11 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
     while (++current_src_posn < src_size) {
         if ((src[current_src_posn] == c2b_tab_delim) || (src[current_src_posn] == c2b_line_delim)) {
             sam_field_offsets[sam_field_idx++] = current_src_posn;
+        }
+        if (sam_field_idx >= C2B_MAX_FIELD_COUNT_VALUE) {
+            fprintf(stderr, "Error: Invalid field count (%d) -- input file may have too many fields\n", sam_field_idx);
+            c2b_print_usage(stderr);
+            exit(EINVAL); /* Invalid argument (POSIX.1) */
         }
     }
     sam_field_offsets[sam_field_idx] = src_size;
@@ -2869,13 +2903,18 @@ c2b_line_convert_sam_to_bed(c2b_sam_t s, char *dest_line, ssize_t *dest_size)
 static void
 c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
 {
-    ssize_t vcf_field_offsets[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t vcf_field_offsets[C2B_MAX_FIELD_COUNT_VALUE];
     int vcf_field_idx = 0;
     ssize_t current_src_posn = -1;
 
     while (++current_src_posn < src_size) {
         if ((src[current_src_posn] == c2b_tab_delim) || (src[current_src_posn] == c2b_line_delim)) {
             vcf_field_offsets[vcf_field_idx++] = current_src_posn;
+        }
+        if (vcf_field_idx >= C2B_MAX_FIELD_COUNT_VALUE) {
+            fprintf(stderr, "Error: Invalid field count (%d) -- input file may have too many fields\n", vcf_field_idx);
+            c2b_print_usage(stderr);
+            exit(EINVAL); /* Invalid argument (POSIX.1) */
         }
     }
     vcf_field_offsets[vcf_field_idx] = src_size;

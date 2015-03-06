@@ -20,6 +20,8 @@ Released: **TBD**
 * :ref:`convert2bed <convert2bed>`
 
   * Switched ``matches`` and ``qSize`` fields in order of :ref:`psl2bed <psl2bed>` output (refer to documentation for field order).
+  * Added null sentinel to GTF ID value.
+  * To help reduce the chance of buffer overflows, the `convert2bed` tool increases the maximum field length from 8191 to 24575 characters to allow parsing of inputs with longer field length, such as very long attributes from `mosquito GFF3 <https://www.vectorbase.org/download/aedes-aegypti-liverpoolbasefeaturesaaegl33gff3gz>`_ data (thanks to T. Karginov for the bug report).
 
 =================
 Previous versions
