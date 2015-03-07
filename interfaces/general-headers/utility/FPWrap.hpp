@@ -38,7 +38,7 @@ namespace Ext {
       { /* */ }
 
     explicit FPWrap(const std::string& file, const std::string& mode = "r")
-     : fp_( (file == "-") ? stdin : std::fopen(file.c_str(), mode.c_str()) ) {
+     : fp_( (file == "-") ? stdin : std::fopen(file.c_str(), mode.c_str()) ), name_(file) {
       Assert<IOError>(fp_ && fp_ != NULL, "Unable to find file: " + file);
     }
 
@@ -58,11 +58,14 @@ namespace Ext {
     inline void Close()
       { if ( fp_ && fp_ != NULL ) std::fclose(fp_); fp_ = NULL; }
 
+    inline const std::string& Name() const { return name_; }
+
     ~FPWrap()
       { if ( fp_ && fp_ != NULL ) std::fclose(fp_); }
 
   private:
     FILE* fp_;
+    std::string name_;
   };
 
 } // namespace Ext

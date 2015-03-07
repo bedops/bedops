@@ -31,10 +31,13 @@
 #include <cstring>
 #include <iterator>
 
+#include <sys/stat.h>
+
 #include "algorithm/bed/FindBedRange.hpp"
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
-#include "Bed.hpp"
+#include "data/bed/Bed.hpp"
 #include "data/starch/starchApi.hpp"
+#include "utility/FPWrap.hpp"
 
 namespace Bed {
 
@@ -51,22 +54,34 @@ namespace Bed {
     typedef BedType**                 pointer;
     typedef BedType*&                 reference;
   
-    allocate_iterator_starch_bed() : _M_ok(false), fp_(NULL), _M_value(0), is_starch_(false), all_(false), archive_(NULL) { chr_[0] = '\0'; }
-    allocate_iterator_starch_bed(FILE* fp, const std::string& chr = "all") /* this ASSUMES fp is open and meaningful */
-      : _M_ok(fp && !std::feof(fp)), fp_(fp), _M_value(0),
+    allocate_iterator_starch_bed() : fp_(NULL), _M_ok(false), _M_value(0), is_starch_(false), all_(false), archive_(NULL) { chr_[0] = '\0'; }
+
+    template <typename ErrorType>
+    allocate_iterator_starch_bed(Ext::FPWrap<ErrorType>& fp, const std::string& chr = "all") /* this ASSUMES fp is open and meaningful */
+      : fp_(fp), _M_ok(fp_ && !std::feof(fp_)), _M_value(0),
         is_starch_(_M_ok && (fp_ != stdin) && starch::Starch::isStarch(fp_)),
         all_(0 == std::strcmp(chr.c_str(), "all")), archive_(NULL) {
-  
+
       chr_[0] = '\0';
       std::size_t sz = std::min(chr.size(), static_cast<std::size_t>(Bed::MAXCHROMSIZE));
       std::strncpy(chr_, chr.c_str(), sz);
       chr_[sz] = '\0';
-  
+
       if ( !_M_ok ) {
         if ( fp_ )
           fp_ = NULL;
         return;
-      } else if ( fp_ == stdin && !all_ ) { // BED, chrom-specific, using stdin
+      }
+
+      bool is_namedpipe = false;
+      if ( fp.Name() != "-" ) {
+        struct stat st;
+        if ( stat(fp.Name().c_str(), &st) == -1 )
+          throw(ErrorType("Error: stat() failed on: " + fp.Name()));
+        is_namedpipe = (S_ISFIFO(st.st_mode) != 0);
+      }
+
+      if ( (fp_ == stdin || is_namedpipe) && !all_ ) { // BED, chrom-specific, using stdin
         // stream through until we find what we want
         while ( (_M_ok = (fp_ && !std::feof(fp_))) ) {
           _M_value = new BedType(fp_);
@@ -204,9 +219,9 @@ namespace Bed {
     }
   
   private:
+    FILE* fp_;
     bool _M_ok;
     char chr_[Bed::MAXCHROMSIZE+1];
-    FILE* fp_;
     BedType* _M_value;
     const bool is_starch_;
     const bool all_;

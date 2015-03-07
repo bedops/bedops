@@ -27,13 +27,14 @@
 #include <cctype>
 #include <cstddef>
 #include <cstdlib>
-#include <fstream>
-#include <iostream>
+#include <istream>
 #include <iterator>
 #include <limits>
 #include <sstream>
 #include <string>
 #include <vector>
+
+#include <sys/stat.h>
 
 #include "algorithm/bed/FindBedRange.hpp"
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
@@ -66,18 +67,28 @@ namespace Bed {
                            lastChr_(""), lastStart_(1), lastEnd_(0), nestCheck_(false),
                            maxEnd_(0), chr_(""), isStarch_(false), all_(true), archive_(0)
       { /* */ }
-  
+
     bed_check_iterator(std::istream& is, const std::string& filename, const std::string& chr = "all", bool nestCheck = false)
       : fp_(is), _M_ok(fp_), _M_value(0), fn_(filename), cnt_(0), lastChr_(""), lastStart_(1),
         lastEnd_(0), nestCheck_(nestCheck), maxEnd_(0), chr_(chr),
-        isStarch_(fp_ && (&is != &std::cin) && starch::Starch::isStarch(fn_)), all_(chr_ == "all"),
+        isStarch_(false), all_(chr_ == "all"),
         archive_(0) {
   
       if ( !_M_ok )
         return;
-  
+
+      bool is_namedpipe = false;
+      if ( fn_ != "-" ) {
+        struct stat st;
+        if ( stat(filename.c_str(), &st) == -1 )
+          throw(Exception("Error: stat() failed on: " + fn_));
+        is_namedpipe = (S_ISFIFO(st.st_mode) != 0);
+      }
+
+      isStarch_ = (fp_ && !is_namedpipe && (&is != &std::cin) && starch::Starch::isStarch(fn_));
+
       // compare pointers directly, to allow compilation with Clang/LLVM against C++11 standard
-      if ( &fp_ == &std::cin && !all_ ) { // only BED through stdin
+      if ( (&fp_ == &std::cin || is_namedpipe) && !all_ ) { // only BED through stdin; chromosome-specific
         // cannot 'jump' to chr_ -> stream through, line by line until we find it or eof
         Ext::ByLine bl;
         while ( (_M_ok = (fp_ && fp_ >> bl)) ) {
@@ -99,7 +110,6 @@ namespace Bed {
         _M_value = static_cast<BedType*>(0);
         return;
       }
-  
       if ( isStarch_ ) {
         const bool perLineUsage = true;
         const bool noHeaders = false;
@@ -627,7 +637,7 @@ namespace Bed {
     bool nestCheck_;
     Bed::CoordType maxEnd_;
     std::string chr_;
-    const bool isStarch_;
+    bool isStarch_;
     const bool all_;
     starch::Starch* archive_;
   };
