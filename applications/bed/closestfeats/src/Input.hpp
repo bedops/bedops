@@ -166,7 +166,7 @@ namespace FeatDist {
     msg += "\n";
     msg += "  NOTES:\n";
     msg += "    If an element from <query-file> overlaps the <input-file> element, its distance is zero.\n";
-    msg += "      An overlapping element take precedence over all non-overlapping elements.  This is true\n";
+    msg += "      An overlapping element takes precedence over all non-overlapping elements.  This is true\n";
     msg += "      even when the overlapping element\'s edge-to-edge distance to the <input-file>\'s element\n";
     msg += "      is greater than the edge-to-edge distance from a non-overlapping element.\n";
     msg += "    Overlapping elements may be ignored completely (no precedence) with --no-overlaps.\n";

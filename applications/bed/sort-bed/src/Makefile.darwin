@@ -8,7 +8,7 @@ PROG                 = sort-bed
 DIST_DIR             = ../bin
 OBJ_DIR              = objects_${ARCH}
 OPTIMIZE             = -O3 -std=c++11 -stdlib=libc++
-WARNINGS             = -Weverything -Wno-exit-time-destructors -Wno-c++98-compat-pedantic -Wno-padded
+WARNINGS             = -Wall
 MAIN                 = ../../../..
 HEAD                 = ${MAIN}/interfaces/general-headers
 THISDIR              = ${shell pwd}

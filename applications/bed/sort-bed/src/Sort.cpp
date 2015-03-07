@@ -203,10 +203,7 @@ main(int argc, char **argv)
 
     getArgs(argc, argv, inFiles, &numInFiles, &justCheck, &maxMemory, &tmpPath);
     if(justCheck) /* just checking inputs */
-        {
-            rval = checkSort(inFiles, numInFiles);
-            return rval;
-        }
+        rval = checkSort(inFiles, numInFiles);
     else /* sorting */
         {
             if(tmpPath != NULL)
