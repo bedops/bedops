@@ -23,7 +23,7 @@ Released: **TBD**
 
 * :ref:`convert2bed <convert2bed>`
 
-  * Switched ``matches`` and ``qSize`` fields in order of :ref:`psl2bed <psl2bed>` output (refer to documentation for field order).
+  * Switched ``matches`` and ``qSize`` fields in order of :ref:`psl2bed <psl2bed>` output. Refer to documentation for new field order.
   * Added null sentinel to GTF ID value.
   * To help reduce the chance of buffer overflows, the `convert2bed` tool increases the maximum field length from 8191 to 24575 characters to allow parsing of inputs with longer field length, such as very long attributes from `mosquito GFF3 <https://www.vectorbase.org/download/aedes-aegypti-liverpoolbasefeaturesaaegl33gff3gz>`_ data (thanks to T. Karginov for the bug report).
 
@@ -39,7 +39,7 @@ Released: **February 24, 2015**
 
 * :ref:`convert2bed <convert2bed>`
 
-  * Fixed bug in :ref:`psl2bed <psl2bed>` where ``matches`` column value was truncated by one character. Updated unit tests.
+  * Fixed bug in :ref:`psl2bed <psl2bed>` where ``matches`` column value was truncated by one character. Updated unit tests. Thanks to M. Wirthlin for the bug report.
 
 -------
 v2.4.10
