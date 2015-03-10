@@ -195,10 +195,7 @@ namespace Visitors {
         PrintTypes::Print(t->id());
         PrintTypes::Print('\t');
         std::printf(format, t->measurement());
-        if ( T::UseRest ) {
-          PrintTypes::Print('\t');
-          PrintTypes::Print(t->rest());
-        }
+        printRest(t);
       }
 
       template <typename T>
