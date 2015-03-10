@@ -38,7 +38,7 @@ namespace BedMap {
   struct VisitorTypes {
 
     typedef Visitors::BedHelpers::Print ProcessAll;
-    typedef Visitors::BedHelpers::Print ProcessOne;
+    typedef Visitors::BedHelpers::PrintAllScorePrecision ProcessOne;
     typedef Visitors::BedHelpers::PrintID ProcessID;
     typedef Visitors::BedHelpers::PrintLength ProcessLength;
     typedef Visitors::Helpers::Print ProcessIntegerLength;

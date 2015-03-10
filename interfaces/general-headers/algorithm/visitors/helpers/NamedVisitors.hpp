@@ -171,13 +171,13 @@ namespace Visitors {
     };
 
     template <typename B, typename C>
-    struct VisitorName< Visitors::Extreme< Visitors::BedHelpers::Print,B,Ordering::CompValueThenAddressGreater<C,C> > > {
+    struct VisitorName< Visitors::Extreme< Visitors::BedHelpers::PrintAllScorePrecision,B,Ordering::CompValueThenAddressGreater<C,C> > > {
       static std::string Name()
         { return "max-element"; }
     };
 
     template <typename B, typename C>
-    struct VisitorName< Visitors::Extreme< Visitors::BedHelpers::Print,B,Ordering::CompValueThenAddressLesser<C, C> > > {
+    struct VisitorName< Visitors::Extreme< Visitors::BedHelpers::PrintAllScorePrecision,B,Ordering::CompValueThenAddressLesser<C, C> > > {
       static std::string Name()
         { return "min-element"; }
     };

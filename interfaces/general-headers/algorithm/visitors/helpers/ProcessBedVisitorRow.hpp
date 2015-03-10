@@ -175,6 +175,55 @@ namespace Visitors {
       bool scientific_;
     };
 
+    //==========================
+    // PrintAllScorePrecision()
+    //==========================
+    struct PrintAllScorePrecision {
+      PrintAllScorePrecision(int precision, bool inScientific)
+        : precision_(precision), scientific_(inScientific)
+        { /* */ }
+
+      template <typename T>
+      void operator()(T* t) const { // could use dis/enable_if for built-ins
+        static char const* format = Formats::Format(t->measurement(), precision_, scientific_);
+        PrintTypes::Print(t->chrom());
+        PrintTypes::Print('\t');
+        PrintTypes::Print(t->start());
+        PrintTypes::Print('\t');
+        PrintTypes::Print(t->end());
+        PrintTypes::Print('\t');
+        PrintTypes::Print(t->id());
+        PrintTypes::Print('\t');
+        std::printf(format, t->measurement());
+        if ( T::UseRest ) {
+          PrintTypes::Print('\t');
+          PrintTypes::Print(t->rest());
+        }
+      }
+
+      template <typename T>
+      void operator()(const T& t) const {
+        operator()(&t);
+      }
+
+      void operator()(const Signal::NaN& s) const {
+        throw(std::string("Unable to process a 'NAN' with PrintAllScorePrecision."));
+      }
+
+    protected:
+      template <typename T>
+      typename std::enable_if<T::UseRest, void>::type printRest(T* t) const {
+        PrintTypes::Print(t->rest()); // already includes '\t' out front
+      }
+
+      template <typename T>
+      typename std::enable_if<!T::UseRest, void>::type printRest(T* t) const { /* */ }
+
+    protected:
+      int precision_;
+      bool scientific_;
+    };
+
     //================
     // PrintlnScore()
     //================

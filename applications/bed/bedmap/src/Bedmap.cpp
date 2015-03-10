@@ -174,6 +174,9 @@ int main(int argc, char **argv) {
     std::cerr << "  version:  " << BedMap::version << std::endl;
     std::cerr << "  authors:  " << BedMap::authors << std::endl;
     std::cerr << BedMap::Usage() << std::endl;
+  } catch(std::string& s) {
+    std::cerr << "May use bedmap --help for more help.\n" << std::endl;
+    std::cerr << "Error: " << s << std::endl;
   } catch(const std::exception& stx) {
     std::cerr << "May use bedmap --help for more help.\n" << std::endl;
     std::cerr << "Error: " << stx.what() << std::endl;
@@ -494,7 +497,7 @@ namespace BedMap {
         rtn = new typename VTypes::Max(pt);
       else if ( nm == visName<typename VTypes::MaxElement>() ) {
         typedef typename VTypes::MaxElement::ProcessType MPT;
-        rtn = new typename VTypes::MaxElement(MPT());
+        rtn = new typename VTypes::MaxElement(MPT(precision, useScientific));
       }
       else if ( nm == visName<typename VTypes::Median>() )
         rtn = new typename VTypes::Median(pt);
@@ -513,7 +516,7 @@ namespace BedMap {
         rtn = new typename VTypes::Min(pt);
       else if ( nm == visName<typename VTypes::MinElement>() ) {
         typedef typename VTypes::MinElement::ProcessType MPT;
-        rtn = new typename VTypes::MinElement(MPT());
+        rtn = new typename VTypes::MinElement(MPT(precision, useScientific));
       }
       else if ( nm == visName<typename VTypes::StdDev>() )
         rtn = new typename VTypes::StdDev(pt);
