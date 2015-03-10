@@ -83,7 +83,8 @@ namespace BedMap {
       // Process user's operation options
       if ( argc <= 1 )
         throw(NoInput()); // prints usage statement and returns EXIT_FAILURE
-      const std::string integers = "-0123456789";
+      const std::string posIntegers = "0123456789";
+      const std::string integers = "-" + posIntegers;
       const std::string reals = "." + integers;
       int argcntr = 1;
       bool hasVisitor = false;
@@ -132,8 +133,8 @@ namespace BedMap {
           Ext::Assert<ArgError>(argcntr < argc, "No precision value given");
           Ext::Assert<ArgError>(!setPrec_, "--prec specified multiple times.");
           std::string sval = argv[argcntr++];
-          Ext::Assert<ArgError>(sval.find_first_not_of(integers) == std::string::npos,
-                                "Non-integer argument: " + sval + " for --prec");
+          Ext::Assert<ArgError>(sval.find_first_not_of(posIntegers) == std::string::npos,
+                                "Non-positive-integer argument: " + sval + " for --prec");
           std::stringstream conv(sval);
           conv >> precision_;
           Ext::Assert<ArgError>(precision_ >= 0, "--prec value must be >= 0");
@@ -144,8 +145,8 @@ namespace BedMap {
           Ext::Assert<ArgError>(!isOverlapBP_, "multiple --bp-ovr's detected");
           Ext::Assert<ArgError>(argcntr < argc, "No arg for --bp-ovr");
           std::string sval = argv[argcntr++];
-          Ext::Assert<ArgError>(sval.find_first_not_of(integers) == std::string::npos,
-                                "Non-integer argument: " + sval + " for --bp-ovr");
+          Ext::Assert<ArgError>(sval.find_first_not_of(posIntegers) == std::string::npos,
+                                "Non-positive-integer argument: " + sval + " for --bp-ovr");
           std::stringstream conv(sval);
           conv >> overlapBP_;
           Ext::Assert<ArgError>(overlapBP_ > 0, "--bp-ovr value must be > 0");
@@ -154,8 +155,8 @@ namespace BedMap {
           Ext::Assert<ArgError>(!isRangeBP_ && !rangeAlias_, "multiple --range's detected");
           Ext::Assert<ArgError>(argcntr < argc, "No arg for --range");
           std::string sval = argv[argcntr++];
-          Ext::Assert<ArgError>(sval.find_first_not_of(integers) == std::string::npos,
-                                "Non-integer argument: " + sval + " for --range");
+          Ext::Assert<ArgError>(sval.find_first_not_of(posIntegers) == std::string::npos,
+                                "Non-positive-integer argument: " + sval + " for --range");
           std::stringstream conv(sval);
           conv >> rangeBP_;
           Ext::Assert<ArgError>(rangeBP_ >= 0, "--range value must be >= 0");
