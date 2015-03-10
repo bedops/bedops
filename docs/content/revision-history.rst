@@ -17,6 +17,10 @@ v2.4.12
 
 Released: **TBD**
 
+* :ref:`bedmap <bedmap>`
+
+  * Added support for ``--prec``/``--sci`` with ``--min-element`` and ``--max-element`` operations (thanks to E. Rynes for the pointer).
+
 * :ref:`bedops <bedops>` | :ref:`bedmap <bedmap>` | :ref:`closest-features <closest-features>`
 
   * Added support for ``bash`` process substitution/named pipes with specification of ``--chrom`` and/or ``--ec`` options (thanks to B. Gulko for the bug report).
