@@ -24,6 +24,8 @@
 #ifndef INPUT_BEDOPS_H
 #define INPUT_BEDOPS_H
 
+#include <fstream>
+#include <iostream>
 #include <map>
 #include <sstream>
 #include <string>
@@ -168,7 +170,6 @@ struct Input {
           // More argument possibilities for -e, -n, and -c
           if ( ft_ == ELEMENTOF || ft_ == NOTELEMENTOF ) { // extra args?
             const std::string ints = "1234567890";
-            int maxCount = 1, cntr = 0;
             int start = argcntr + 1;
             for ( int i = start; i < argc; ++i ) {
               std::string::size_type sz = std::string(argv[i]).size();
@@ -177,20 +178,32 @@ struct Input {
                    (std::string(argv[i]).find_first_not_of(ints) == std::string::npos)
                      ||
                    (std::string(argv[i]).find("%") != std::string::npos) ) {
-
                 if ( std::string(argv[i]).find("--") == std::string::npos ) {
-                  setSubsetOption(argv[i]);
-                  ++argcntr;
+                  std::ifstream tmpfile(argv[i]);
+                  if ( !tmpfile ) { // even if an integer, it could name a file input
+                    setSubsetOption(argv[i]);
+                    ++argcntr;
+                    break;
+                  } else {
+                    bool isint = (std::string(argv[i]).find_first_not_of(plusints) == std::string::npos);
+                    if ( isint ) {
+                      std::cerr << "Warning: interpreting argument '"
+                                << argv[i]
+                                << "' as a file input and not as an overlap spec," << std::endl;
+                      std::cerr << "         since the file exists." << std::endl;
+                      std::cerr << "You can use the legacy syntax '-"
+                                << argv[i]
+                                << "' if you want to use it as an overlap criterion." << std::endl;
+                    }
+                    break;
+                  }
                 } else {
                   break;
                 }
-              }
-              else
+              } else {
                 break;
-              ++cntr;
+              }
             } // for
-            std::string msg = "Expect (at most) 1 argument with -e/-n operations";
-            Ext::Assert<Ext::UserError>(cntr <= maxCount, msg);
           } else if ( ft_ == COMPLEMENT ) {
             int maxCount = 1, cntr = 0;
             int start = argcntr + 1;
