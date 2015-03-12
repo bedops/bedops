@@ -17,6 +17,10 @@ v2.4.12
 
 Released: **TBD**
 
+* :ref:`bedops <bedops>`
+
+  * Checks have been added to determine if an integer argument is a file in the current working directory, before interpreting that argument as an overlap criterion for ``-e`` and ``-n`` options. To reduce ambiguity, if an integer is used as a file input, ``bedops`` issues a warning of the interpretation and provides guidance on how to force that value to instead be used as an overlap specification, if desired.
+
 * :ref:`bedmap <bedmap>`
 
   * Added support for ``--prec``/``--sci`` with ``--min-element`` and ``--max-element`` operations (thanks to E. Rynes for the pointer).
