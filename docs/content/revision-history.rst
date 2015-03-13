@@ -15,7 +15,7 @@ Current version
 v2.4.12
 -------
 
-Released: **TBD**
+Released: **March 13, 2015**
 
 * :ref:`bedops <bedops>`
 
