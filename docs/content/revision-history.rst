@@ -28,6 +28,7 @@ Released: **TBD**
 * :ref:`bedops <bedops>` | :ref:`bedmap <bedmap>` | :ref:`closest-features <closest-features>`
 
   * Added support for ``bash`` process substitution/named pipes with specification of ``--chrom`` and/or ``--ec`` options (thanks to B. Gulko for the bug report).
+  * Fixed code that extracts ``gzip``-backed Starch archives from ``bedops`` and other core tools (thanks again to B. Gulko for the bug report).
 
 * :ref:`convert2bed <convert2bed>`
 
