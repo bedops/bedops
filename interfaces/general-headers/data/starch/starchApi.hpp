@@ -1691,14 +1691,15 @@ namespace starch
 #ifdef DEBUG
         std::fprintf(stderr, "\n--- Starch::zReadChunk() ---\n");
 #endif
-        zStream.avail_in = static_cast<uInt>( std::fread(zInBuf, 1, STARCH_Z_CHUNK, inFp) );
+
+        zStream.avail_in = static_cast<uInt>( std::fread(zInBuf, 1, STARCH_Z_CHUNK / 8, inFp) );
         zStream.next_in = reinterpret_cast<Byte *>( zInBuf );
 
-        zStream.avail_out = STARCH_Z_CHUNK;
-        zStream.next_out = reinterpret_cast<Byte *>( zOutBuf );
-
-        zError = inflate(&zStream, Z_NO_FLUSH);
-        switch (zError) {
+        do {
+            zStream.avail_out = STARCH_Z_CHUNK;
+            zStream.next_out = reinterpret_cast<Byte *>( zOutBuf );
+            zError = inflate(&zStream, Z_NO_FLUSH);
+            switch (zError) {
             case Z_NEED_DICT: {
                 throw(std::string("ERROR: z-stream needs dictionary"));
             }
@@ -1710,7 +1711,9 @@ namespace starch
             }
             default:
                 break;
-        }
+            }
+        } while (zStream.avail_out == 0);
+
         zHave = STARCH_Z_CHUNK - static_cast<int>( zStream.avail_out );
         zOutBuf[zHave] = '\0';
 
@@ -1720,8 +1723,8 @@ namespace starch
             zBufOffset = static_cast<int>( std::strlen(zRemainderBuf) );
         }
         else
-            zBufOffset = 0;
-
+            zBufOffset = 0;            
+        
         // set intial conditions for line parsing
         zBufIdx = zBufOffset;
         zOutBufIdx = 0;
@@ -1748,8 +1751,9 @@ namespace starch
         std::fprintf(stderr, "\n--- Starch::zReadLine() ---\n");
 #endif
 
-        if (zOutBufIdx == 0)
+        if (zOutBufIdx == 0) {
             zReadChunk();
+        }
 
         for (; zOutBufIdx < zHave; zBufIdx++) {
             if (zOutBuf[zOutBufIdx++] == '\n') {
@@ -1785,7 +1789,7 @@ namespace starch
             if (zHave == 0)
                 return EXIT_SUCCESS;
             else {
-                zReadChunk();
+                zOutBufIdx = 0;
                 zReadLine();
             }
         }
