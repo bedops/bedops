@@ -19,13 +19,13 @@ Released: **TBD**
 
 * :ref:`bedops <bedops>`
 
-  * Checks have been added to determine if an integer argument is a file in the current working directory, before interpreting that argument as an overlap criterion for ``-e`` and ``-n`` options. To reduce ambiguity, if an integer is used as a file input, ``bedops`` issues a warning of the interpretation and provides guidance on how to force that value to instead be used as an overlap specification, if desired.
+  * Checks have been added to determine if an integer argument is a file in the current working directory, before interpreting that argument as an overlap criterion for ``-e`` and ``-n`` options. To reduce ambiguity, if an integer is used as a file input, ``bedops`` issues a warning of the interpretation and provides guidance on how to force that value to instead be used as an overlap specification, if desired (thanks to E. Rynes for the pointer).
 
 * :ref:`bedmap <bedmap>`
 
   * Added support for ``--prec``/``--sci`` with ``--min-element`` and ``--max-element`` operations (thanks to E. Rynes for the pointer).
 
-* :ref:`bedops <bedops>` | :ref:`bedmap <bedmap>` | :ref:`closest-features <closest-features>`
+* :REF:`bedops <bedops>` | :ref:`bedmap <bedmap>` | :ref:`closest-features <closest-features>`
 
   * Added support for ``bash`` process substitution/named pipes with specification of ``--chrom`` and/or ``--ec`` options (thanks to B. Gulko for the bug report).
   * Fixed code that extracts ``gzip``-backed Starch archives from ``bedops`` and other core tools (thanks again to B. Gulko for the bug report).
