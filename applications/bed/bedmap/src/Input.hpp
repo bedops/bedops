@@ -35,8 +35,8 @@
 #include <vector>
 
 #include "algorithm/visitors/BedVisitors.hpp"
-#include "algorithm/visitors/helpers/NamedVisitors.hpp"
 #include "utility/Assertion.hpp"
+#include "utility/Exception.hpp"
 #include "utility/Typify.hpp"
 
 #include "TDefs.hpp"
@@ -45,17 +45,78 @@ namespace BedMap {
 
   struct NoInput { /* */ };
 
+  enum class OpName {
+    Bases, BasesUniq, BasesUniqFract, Count, CoeffVar, Echo, EchoMap,
+    EchoMapRange, EchoMapScore, EchoMapSize, EchoMapText, EchoMapTextUniq,
+    EchoOverlapSize, EchoRefSize, EchoRefName, Indicator, KthAvg, KthValueAt,
+    Mad, Max, MaxElement, Mean, Median, Min, MinElement, Stdev, Sum, TMean,
+    Variance
+  };
+
+  enum class OpNameAlias {
+    EchoMapID, EchoMapIDUniq 
+ };
+
+  std::string OperationName(OpName nm) {
+    std::string name;
+    switch(nm) {
+      case OpName::Bases:           name = "bases";              break;
+      case OpName::BasesUniq:       name = "bases-uniq";         break;
+      case OpName::BasesUniqFract:  name = "bases-uniq-f";       break;
+      case OpName::Count:           name = "count";              break;
+      case OpName::CoeffVar:        name = "cv";                 break;
+      case OpName::Echo:            name = "echo";               break;
+      case OpName::EchoMap:         name = "echo-map";           break;
+      case OpName::EchoMapRange:    name = "echo-map-range";     break;
+      case OpName::EchoMapScore:    name = "echo-map-score";     break;
+      case OpName::EchoMapSize:     name = "echo-map-size";      break;
+      case OpName::EchoMapText:     name = "echo-map-text";      break;
+      case OpName::EchoMapTextUniq: name = "echo-map-text-uniq"; break;
+      case OpName::EchoOverlapSize: name = "echo-overlap-size";  break;
+      case OpName::EchoRefSize:     name = "echo-ref-size";      break;
+      case OpName::EchoRefName:     name = "echo-ref-name";      break;
+      case OpName::Indicator:       name = "indicator";          break;
+      case OpName::KthAvg:          name = "kth";                break;
+      case OpName::KthValueAt:      name = "kth-val";            break;
+      case OpName::Mad:             name = "mad";                break;
+      case OpName::Max:             name = "max";                break;
+      case OpName::MaxElement:      name = "max-element";        break;
+      case OpName::Mean:            name = "mean";               break;
+      case OpName::Median:          name = "median";             break;
+      case OpName::Min:             name = "min";                break;
+      case OpName::MinElement:      name = "min-element";        break;
+      case OpName::Stdev:           name = "stdev";              break;
+      case OpName::Sum:             name = "sum";                break;
+      case OpName::TMean:           name = "tmean";              break;
+      case OpName::Variance:        name = "variance";           break;
+      default:
+        throw(Ext::ProgramError("Unmatched enum"));
+    };
+    return name;
+  }
+
+  std::string OperationName(OpNameAlias nm) {
+    std::string name;
+    switch(nm) {
+      case OpNameAlias::EchoMapID:     name = "echo-map-id";      break;
+      case OpNameAlias::EchoMapIDUniq: name = "echo-map-id-uniq"; break;
+      default:
+        throw(Ext::ProgramError("Unmatched enum alias"));
+    };
+    return name;
+  }
+
   namespace details {
     struct dummyBase {
       typedef int RefType;
       typedef int MapType;
     };
-
-
+/*
     template <typename T>
     std::string name() {
-      return(Visitors::Helpers::VisitorName<T>::Name());
+      return Visitors::Helpers::VisitorName<T>::Name();
     }
+*/
   } // details
 
 
@@ -89,47 +150,69 @@ namespace BedMap {
       int argcntr = 1;
       bool hasVisitor = false;
       while ( argcntr < argc ) {
-        std::string next = argv[argcntr++];
-        if ( next.find("--") == std::string::npos && argc - argcntr < 2 ) // process file inputs
+        std::string nextOption = argv[argcntr++];
+        int columnSelect = -1;
+        if ( nextOption.find("--") == std::string::npos && argc - argcntr < 2 ) // process file inputs
           break;
 
-        Ext::Assert<ArgError>(next.find("--") == 0, "Option " + next + " does not start with '--'");
-        next = next.substr(2);
+        Ext::Assert<ArgError>(nextOption.find("--") == 0, "Option " + nextOption + " does not start with '--'");
+        nextOption = nextOption.substr(2);
 
-        if ( next == "help" ) {
+        if ( nextOption.find("=") != std::string::npos ) {
+          auto column = nextOption.substr(nextOption.find("=")+1);
+          Ext::Assert<ArgError>(column.find_first_not_of(posIntegers) == std::string::npos,
+                                "Bad column number with option: --" + nextOption);
+          std::stringstream ss; ss << column;
+          ss >> columnSelect;
+          Ext::Assert<ArgError>(columnSelect > 3, "Column selection must be > 3 for --" + nextOption);
+          nextOption = nextOption.substr(0, nextOption.find("="));
+        }
+
+        if ( nextOption == "help" ) {
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
           throw(HelpType()); // prints usage statement and returns EXIT_SUCCESS
-        } else if ( next == "version" ) {
+        } else if ( nextOption == "version" ) {
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
           throw(VersionType()); // prints version and returns EXIT_SUCCESS
-        } else if ( next == "ec" || next == "header" ) {
+        } else if ( nextOption == "ec" || nextOption == "header" ) {
           // bed_check_iterator<> allows silly headers
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
           errorCheck_ = true;
-        } else if ( next == "faster" ) {
+        } else if ( nextOption == "faster" ) {
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
           fastMode_ = true;
-        } else if ( next == "sweep-all" ) { // --> sweep through all of second file
+        } else if ( nextOption == "sweep-all" ) { // --> sweep through all of second file
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
           sweepAll_ = true;
-        } else if ( next == "delim" ) {
+        } else if ( nextOption == "delim" ) {
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
           Ext::Assert<ArgError>(outDelim_ == "|", "--delim specified multiple times");
           Ext::Assert<ArgError>(argcntr < argc, "No output delimiter given");
           outDelim_ = argv[argcntr++];
           Ext::Assert<ArgError>(outDelim_.find("--") != 0,
                                 "Apparent option: " + std::string(argv[argcntr]) + " where output delimiter expected.");
-        } else if ( next == "chrom" ) {
+        } else if ( nextOption == "chrom" ) {
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
           Ext::Assert<ArgError>(chrom_ == "all", "--chrom specified multiple times");
           Ext::Assert<ArgError>(argcntr < argc, "No chromosome name given");
           chrom_ = argv[argcntr++];
           Ext::Assert<ArgError>(chrom_.find("--") != 0,
                                 "Apparent option: " + std::string(argv[argcntr]) + " where chromosome expected.");
-        } else if ( next == "multidelim" ) {
+        } else if ( nextOption == "multidelim" ) {
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
           Ext::Assert<ArgError>(multiDelim_ == ";", "--multidelim specified multiple times");
           Ext::Assert<ArgError>(argcntr < argc, "No multi-value column delimmiter given");
           multiDelim_ = argv[argcntr++];
           Ext::Assert<ArgError>(multiDelim_.find("--") != 0,
                                 "Apparent option: " + std::string(argv[argcntr]) + " where output delimiter expected.");
-        } else if ( next == "skip-unmapped" ) {
+        } else if ( nextOption == "skip-unmapped" ) {
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
           skipUnmappedRows_ = true;
-        } else if ( next == "sci" ) {
+        } else if ( nextOption == "sci" ) {
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
           useScientific_ = true;
-        } else if ( next == "prec" ) {
+        } else if ( nextOption == "prec" ) {
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
           Ext::Assert<ArgError>(argcntr < argc, "No precision value given");
           Ext::Assert<ArgError>(!setPrec_, "--prec specified multiple times.");
           std::string sval = argv[argcntr++];
@@ -139,8 +222,9 @@ namespace BedMap {
           conv >> precision_;
           Ext::Assert<ArgError>(precision_ >= 0, "--prec value must be >= 0");
           setPrec_ = true;
-        } else if ( next == "bp-ovr" ) {
+        } else if ( nextOption == "bp-ovr" ) {
           // first check that !rangeAlias_ before !isOverlapBP_
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
           Ext::Assert<ArgError>(!rangeAlias_, "--range and --bp-ovr detected.  Choose one.");
           Ext::Assert<ArgError>(!isOverlapBP_, "multiple --bp-ovr's detected");
           Ext::Assert<ArgError>(argcntr < argc, "No arg for --bp-ovr");
@@ -151,7 +235,8 @@ namespace BedMap {
           conv >> overlapBP_;
           Ext::Assert<ArgError>(overlapBP_ > 0, "--bp-ovr value must be > 0");
           isOverlapBP_ = true;
-        } else if ( next == "range" ) {
+        } else if ( nextOption == "range" ) {
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
           Ext::Assert<ArgError>(!isRangeBP_ && !rangeAlias_, "multiple --range's detected");
           Ext::Assert<ArgError>(argcntr < argc, "No arg for --range");
           std::string sval = argv[argcntr++];
@@ -169,7 +254,8 @@ namespace BedMap {
             rangeAlias_ = true;
             overlapBP_ = 1;
           }
-        } else if ( next == "fraction-ref" ) {
+        } else if ( nextOption == "fraction-ref" ) {
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
           Ext::Assert<ArgError>(!isPercRef_, "multiple --fraction-ref's detected");
           Ext::Assert<ArgError>(argcntr < argc, "No arg for --fraction-ref");
           std::string sval = argv[argcntr++];
@@ -179,7 +265,8 @@ namespace BedMap {
           conv >> percOvr_;
           Ext::Assert<ArgError>(percOvr_ > 0 && percOvr_ <= 1, "--fraction-ref value must be: >0-1.0");
           isPercRef_ = true;
-        } else if ( next == "fraction-map" ) {
+        } else if ( nextOption == "fraction-map" ) {
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
           Ext::Assert<ArgError>(!isPercMap_, "multiple --fraction-map's detected");
           Ext::Assert<ArgError>(argcntr < argc, "No arg for --fraction-map");
           std::string sval = argv[argcntr++];
@@ -189,7 +276,8 @@ namespace BedMap {
           conv >> percOvr_;
           Ext::Assert<ArgError>(percOvr_ > 0 && percOvr_ <= 1, "--fraction-map value must be: >0-1.0");
           isPercMap_ = true;
-        } else if ( next == "fraction-either" ) {
+        } else if ( nextOption == "fraction-either" ) {
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
           Ext::Assert<ArgError>(!isPercEither_, "multiple --fraction-either's detected");
           Ext::Assert<ArgError>(argcntr < argc, "No arg for --fraction-either");
           std::string sval = argv[argcntr++];
@@ -199,7 +287,8 @@ namespace BedMap {
           conv >> percOvr_;
           Ext::Assert<ArgError>(percOvr_ > 0 && percOvr_ <= 1, "--fraction-either value must be: >0-1.0");
           isPercEither_ = true;
-        } else if ( next == "fraction-both" ) {
+        } else if ( nextOption == "fraction-both" ) {
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
           Ext::Assert<ArgError>(!isPercBoth_, "multiple --fraction-both's detected");
           Ext::Assert<ArgError>(argcntr < argc, "No arg for --fraction-both");
           std::string sval = argv[argcntr++];
@@ -209,114 +298,118 @@ namespace BedMap {
           conv >> percOvr_;
           Ext::Assert<ArgError>(percOvr_ > 0 && percOvr_ <= 1, "--fraction-both value must be: >0-1.0");
           isPercBoth_ = true;
-        } else if ( next == "exact" ) { // same as --fraction-both 1
+        } else if ( nextOption == "exact" ) { // same as --fraction-both 1
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
           Ext::Assert<ArgError>(!isExact_, "multiple --exact's detected - use one");
           isExact_ = true;
-        }
-        else if ( next == details::name<typename VT::OvrAgg>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::OvrAgg>());
-        else if ( next == details::name<typename VT::OvrUniq>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::OvrUniq>());
-        else if ( next == details::name<typename VT::OvrUniqFract>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::OvrUniqFract>());
-        else if ( next == details::name<typename VT::EchoRefAll>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoRefAll>());
-        else if ( next == details::name<typename VT::EchoRefLength>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoRefLength>());
-        else if ( next == details::name<typename VT::EchoRefSpan>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoRefSpan>());
-        else if ( next == details::name<typename VT::EchoMapAll>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoMapAll>());
-        else if ( next == details::name<typename VT::EchoMapID>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoMapID>());
-        else if ( next == details::name<typename VT::EchoMapUniqueID>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoMapUniqueID>());
-        else if ( next == details::name<typename VT::EchoMapLength>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoMapLength>());
-        else if ( next == details::name<typename VT::EchoMapIntersectLength>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoMapIntersectLength>());
-        else if ( next == details::name<typename VT::EchoMapRange>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoMapRange>());
-        else if ( next == details::name<typename VT::EchoMapScore>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::EchoMapScore>());
-        else if ( next == details::name<typename VT::Count>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::Count>());
-        else if ( next == details::name<typename VT::Indicator>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::Indicator>());
-        else if ( next == details::name<typename VT::Max>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::Max>());
-        else if ( next == details::name<typename VT::MaxElement>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::MaxElement>());
-        else if ( next == details::name<typename VT::Min>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::Min>());
-        else if ( next == details::name<typename VT::MinElement>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::MinElement>());
-        else if ( next == details::name<typename VT::Average>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::Average>());
-        else if ( next == details::name<typename VT::Variance>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::Variance>());
-        else if ( next == details::name<typename VT::StdDev>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::StdDev>());
-        else if ( next == details::name<typename VT::CoeffVariation>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::CoeffVariation>());
-        else if ( next == details::name<typename VT::Sum>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::Sum>());
-        else if ( next == details::name<typename VT::Median>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::Median>());
-        else if ( next == details::name<typename VT::MedianAbsoluteDeviation>() ) {
+        } else if ( nextOption == OperationName(OpName::Bases) ) {
+          hasVisitor = addColumnSelectVisitor(OpName::Bases, columnSelect);
+        } else if ( nextOption == OperationName(OpName::BasesUniq) ) {
+          hasVisitor = addColumnSelectVisitor(OpName::BasesUniq, columnSelect);
+        } else if ( nextOption == OperationName(OpName::BasesUniqFract) ) {
+          hasVisitor = addColumnSelectVisitor(OpName::BasesUniqFract, columnSelect);
+        } else if ( nextOption == OperationName(OpName::Echo) ) {
+          hasVisitor = addNoArgVisitor(OpName::Echo);
+        } else if ( nextOption == OperationName(OpName::EchoRefSize) ) {
+          hasVisitor = addNoArgVisitor(OpName::EchoRefSize);
+        } else if ( nextOption == OperationName(OpName::EchoRefName) ) {
+          hasVisitor = addNoArgVisitor(OpName::EchoRefName);
+        } else if ( nextOption == OperationName(OpName::EchoMap) ) {
+          hasVisitor = addNoArgVisitor(OpName::EchoMap);
+        } else if ( nextOption == OperationName(OpName::EchoMapText) ) {
+          hasVisitor = addColumnSelectVisitor(OpName::EchoMapText, columnSelect < 0 ? 4 : columnSelect);
+        } else if ( nextOption == OperationName(OpNameAlias::EchoMapID) ) {
+          hasVisitor = addColumnSelectVisitor(OpName::EchoMapText, 4);
+        } else if ( nextOption == OperationName(OpName::EchoMapTextUniq) ) {
+          hasVisitor = addColumnSelectVisitor(OpName::EchoMapTextUniq, columnSelect < 0 ? 4 : columnSelect);
+        } else if ( nextOption == OperationName(OpNameAlias::EchoMapIDUniq) ) {
+          hasVisitor = addColumnSelectVisitor(OpName::EchoMapTextUniq, 4);
+        } else if ( nextOption == OperationName(OpName::EchoMapSize) ) {
+          hasVisitor = addNoArgVisitor(OpName::EchoMapSize);
+        } else if ( nextOption == OperationName(OpName::EchoOverlapSize) ) {
+          hasVisitor = addNoArgVisitor(OpName::EchoOverlapSize);
+        } else if ( nextOption == OperationName(OpName::EchoMapRange) ) {
+          hasVisitor = addNoArgVisitor(OpName::EchoMapRange);
+        } else if ( nextOption == OperationName(OpName::EchoMapScore) ) {
+          hasVisitor = addColumnSelectVisitor(OpName::EchoMapScore, columnSelect);
+        } else if ( nextOption == OperationName(OpName::Count) ) {
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
+          hasVisitor = addNoArgVisitor(OpName::Count);
+        } else if ( nextOption == OperationName(OpName::Indicator) ) {
+          Ext::Assert<ArgError>(columnSelect < 0, "No column number allowed for option: --" + nextOption);
+          hasVisitor = addNoArgVisitor(OpName::Indicator);
+        } else if ( nextOption == OperationName(OpName::Max) ) {
+          hasVisitor = addColumnSelectVisitor(OpName::Max, columnSelect);
+        } else if ( nextOption == OperationName(OpName::MaxElement) ) {
+          hasVisitor = addColumnSelectVisitor(OpName::MaxElement, columnSelect);
+        } else if ( nextOption == OperationName(OpName::Min) ) {
+          hasVisitor = addColumnSelectVisitor(OpName::Min, columnSelect);
+        } else if ( nextOption == OperationName(OpName::MinElement) ) {
+          hasVisitor = addColumnSelectVisitor(OpName::MinElement, columnSelect);
+        } else if ( nextOption == OperationName(OpName::Mean) ) {
+          hasVisitor = addColumnSelectVisitor(OpName::Mean, columnSelect);
+        } else if ( nextOption == OperationName(OpName::Variance) ) {
+          hasVisitor = addColumnSelectVisitor(OpName::Variance, columnSelect);
+        } else if ( nextOption == OperationName(OpName::Stdev) ) {
+          hasVisitor = addColumnSelectVisitor(OpName::Stdev, columnSelect);
+        } else if ( nextOption == OperationName(OpName::CoeffVar) ) {
+          hasVisitor = addColumnSelectVisitor(OpName::CoeffVar, columnSelect);
+        } else if ( nextOption == OperationName(OpName::Sum) ) {
+          hasVisitor = addColumnSelectVisitor(OpName::Sum, columnSelect);
+        } else if ( nextOption == OperationName(OpName::Median) ) {
+          hasVisitor = addColumnSelectVisitor(OpName::Median, columnSelect);
+        } else if ( nextOption == OperationName(OpName::Mad) ) {
           std::string sval = argv[argcntr];
           if ( sval.find_first_not_of(reals) == std::string::npos ) { // assume argument for this option
             ++argcntr;
             std::stringstream conv(sval);
             double val = -1;
             conv >> val;
-            Ext::Assert<ArgError>(val > 0, "--" + details::name<typename VT::MedianAbsoluteDeviation>() + " Expect 0 < val");
+            Ext::Assert<ArgError>(val > 0, "--" + OperationName(OpName::Mad) + " Expect 0 < val");
             std::vector<std::string> tmpVec;
             tmpVec.push_back(sval);
-            hasVisitor = addVisitor(Ext::Type2Type<typename VT::MedianAbsoluteDeviation>(), tmpVec);
+            hasVisitor = addColumnSelectVisitor(OpName::Mad, columnSelect, tmpVec);
           }
           else // use default multiplier for MAD
-            hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::MedianAbsoluteDeviation>());
-        }
-        else if ( next == details::name<typename VT::KthAverage>() ) {
-          Ext::Assert<ArgError>(argcntr < argc, "No arg for --" + details::name<typename VT::KthAverage>());
+            hasVisitor = addColumnSelectVisitor(OpName::Mad, columnSelect);
+        } else if ( nextOption == OperationName(OpName::KthAvg) ) {
+          Ext::Assert<ArgError>(argcntr < argc, "No arg for --" + OperationName(OpName::KthAvg));
           std::string sval = argv[argcntr++];
           Ext::Assert<ArgError>(sval.find_first_not_of(reals) == std::string::npos,
-                                "Non-numeric argument: " + sval + " for --" + details::name<typename VT::KthAverage>());
+                                "Non-numeric argument: " + sval + " for --" + OperationName(OpName::KthAvg));
           std::stringstream conv(sval);
           double val = -1;
           conv >> val;
-          Ext::Assert<ArgError>(val >= 0 && val <= 1, "--" + details::name<typename VT::KthAverage>() + " Expect 0 <= val <= 1");
+          Ext::Assert<ArgError>(val >= 0 && val <= 1, "--" + OperationName(OpName::KthAvg) + " Expect 0 <= val <= 1");
           std::vector<std::string> tmpVec;
           tmpVec.push_back(sval);
-          hasVisitor = addVisitor(Ext::Type2Type<typename VT::KthAverage>(), tmpVec);
-        }
-        else if ( next == details::name<typename VT::TMean>() ) {
-          Ext::Assert<ArgError>(argcntr < argc, "No <low> arg given for --" + details::name<typename VT::TMean>());
+          hasVisitor = addColumnSelectVisitor(OpName::KthAvg, columnSelect, tmpVec);
+        } else if ( nextOption == OperationName(OpName::TMean) ) {
+          Ext::Assert<ArgError>(argcntr < argc, "No <low> arg given for --" + OperationName(OpName::TMean));
           std::string svalLow = argv[argcntr++];
           Ext::Assert<ArgError>(svalLow.find_first_not_of(reals) == std::string::npos,
-                                "Non-numeric argument: " + svalLow + " for --" + details::name<typename VT::TMean>());
+                                "Non-numeric argument: " + svalLow + " for --" + OperationName(OpName::TMean));
 
-          Ext::Assert<ArgError>(argcntr < argc, "No <hi> arg given for --" + details::name<typename VT::TMean>());
+          Ext::Assert<ArgError>(argcntr < argc, "No <hi> arg given for --" + OperationName(OpName::TMean));
           std::string svalHigh = argv[argcntr++];
           Ext::Assert<ArgError>(svalHigh.find_first_not_of(reals) == std::string::npos,
-                                "Non-numeric argument: " + svalHigh + " for --" + details::name<typename VT::TMean>());
+                                "Non-numeric argument: " + svalHigh + " for --" + OperationName(OpName::TMean));
 
           std::stringstream convLow(svalLow), convHigh(svalHigh);
           double valLow = 100, valHigh = 100;
           convLow >> valLow; convHigh >> valHigh;
           Ext::Assert<ArgError>(valLow >= 0 && valLow <= 1,
-                                "--" + details::name<typename VT::TMean>() + " Expect 0 <= low < hi <= 1");
+                                "--" + OperationName(OpName::TMean) + " Expect 0 <= low < hi <= 1");
           Ext::Assert<ArgError>(valHigh >= 0 && valHigh <= 1,
-                                "--" + details::name<typename VT::TMean>() + " Expect 0 <= low < hi <= 1");
+                                "--" + OperationName(OpName::TMean) + " Expect 0 <= low < hi <= 1");
           Ext::Assert<ArgError>(valLow + valHigh <= 1,
-                                "--" + details::name<typename VT::TMean>() + " Expect (low + hi) <= 1.");
+                                "--" + OperationName(OpName::TMean) + " Expect (low + hi) <= 1.");
           std::vector<std::string> tmpVec;
           tmpVec.push_back(svalLow); tmpVec.push_back(svalHigh);
-          hasVisitor = addVisitor(Ext::Type2Type<typename VT::TMean>(), tmpVec);
+          hasVisitor = addColumnSelectVisitor(OpName::TMean, columnSelect, tmpVec);
+        } else {
+          throw(ArgError("Unknown option: --" + nextOption));
         }
-        else
-          throw(ArgError("Unknown option: --" + next));
       } // while
 
       if ( !(isPercMap_ || isPercRef_ || isPercEither_ || isPercBoth_ || isRangeBP_ || isOverlapBP_ || isExact_) ) {
@@ -336,7 +429,7 @@ namespace BedMap {
       Ext::Assert<ArgError>(hasVisitor, "No processing option specified (ie; --max).");
       Ext::Assert<ArgError>(0 <= argc - argcntr, "No files");
       Ext::Assert<ArgError>(3 == minRefFields_, "Program error: Input.hpp::minRefFields_");
-      Ext::Assert<ArgError>(3 <= minMapFields_ && 5 >= minMapFields_, "Program error: Input.hpp::minMapFields_");
+      Ext::Assert<ArgError>(3 <= minMapFields_, "Program error: Input.hpp::minMapFields_");
       Ext::Assert<ArgError>(!fastMode_ || isOverlapBP_ || isRangeBP_ || isPercBoth_ || isExact_, "--faster compatible with --range, --bp-ovr, --fraction-both, and --exact only");
 
       // Process files inputs
@@ -361,7 +454,7 @@ namespace BedMap {
   public:
     std::string refFileName_;
     std::string mapFileName_;
-    std::vector<std::string> visitorNames_;
+    std::vector<OpName> visitorNames_;
     std::vector< std::vector<std::string> > visitorArgs_;
     long rangeBP_;
     long overlapBP_;
@@ -390,14 +483,12 @@ namespace BedMap {
 
   private:
     struct MapFields {
-      template <typename T> static unsigned int num(Ext::Type2Type<T>) { return 5; }
+      template <typename T> static unsigned int num(Ext::Type2Type<T>) { return 4; }
       static unsigned int num(Ext::Type2Type<typename VT::Count>) { return 3; }
       static unsigned int num(Ext::Type2Type<typename VT::EchoMapAll>) { return 3; }
-      static unsigned int num(Ext::Type2Type<typename VT::EchoMapID>) { return 4; }
       static unsigned int num(Ext::Type2Type<typename VT::EchoMapIntersectLength>) { return 3; }
       static unsigned int num(Ext::Type2Type<typename VT::EchoMapLength>) { return 3; }
       static unsigned int num(Ext::Type2Type<typename VT::EchoMapRange>) { return 3; }
-      static unsigned int num(Ext::Type2Type<typename VT::EchoMapUniqueID>) { return 4; }
       static unsigned int num(Ext::Type2Type<typename VT::EchoRefAll>) { return 3; }
       static unsigned int num(Ext::Type2Type<typename VT::EchoRefLength>) { return 3; }
       static unsigned int num(Ext::Type2Type<typename VT::EchoRefSpan>) { return 3; }
@@ -411,33 +502,42 @@ namespace BedMap {
       template <typename T> static unsigned int num(Ext::Type2Type<T>) { return 3; }
     };
 
-    template <typename T>
-    bool addNoArgVisitor(Ext::Type2Type<T> t) {
-      visitorNames_.push_back(details::name<T>());
+    bool addNoArgVisitor(OpName op) {
+      visitorNames_.push_back(op);
       visitorArgs_.push_back(std::vector<std::string>());
-      minMapFields_ = std::max(minMapFields_, static_cast<unsigned int>(MapFields::num(t)));
-      minRefFields_ = std::max(minRefFields_, static_cast<unsigned int>(RefFields::num(t)));
-      return(true);
+//      minMapFields_ = std::max(minMapFields_, MapFields::num(t));
+//      minRefFields_ = std::max(minRefFields_, RefFields::num(t));
+      return true;
     }
 
-    template <typename T>
-    bool addVisitor(Ext::Type2Type<T> t, const std::vector<std::string>& args) {
-      visitorNames_.push_back(details::name<T>());
+    bool addVisitor(OpName op, const std::vector<std::string>& args) {
+      visitorNames_.push_back(op);
       visitorArgs_.push_back(args);
-      minMapFields_ = std::max(minMapFields_, static_cast<unsigned int>(MapFields::num(t)));
-      minRefFields_ = std::max(minRefFields_, static_cast<unsigned int>(RefFields::num(t)));
-      return(true);
+//      minMapFields_ = std::max(minMapFields_, MapFields::num(t));
+//      minRefFields_ = std::max(minRefFields_, RefFields::num(t));
+      return true;
+    }
+
+    bool addColumnSelectVisitor(OpName op, int column, std::vector<std::string> args = std::vector<std::string>()) {
+      visitorNames_.push_back(op);
+      std::stringstream ss;
+      if ( column > 0 )
+        ss << column;
+      else // default for measurements
+        ss << 5;
+	  std::reverse(args.begin(), args.end());
+      args.push_back(ss.str());
+	  std::reverse(args.begin(), args.end());
+      visitorArgs_.push_back(args);
+      minMapFields_ = std::max(minMapFields_, static_cast<unsigned int>(column > 0 ? column : 5u));
+      minRefFields_ = std::max(minRefFields_, 3u);
+      return true;
     }
   };
-
-
 
   //---------
   // Usage()
   std::string Usage() {
-
-    typedef BedMap::VisitorTypes<details::dummyBase> VT;
-
     std::stringstream usage;
     usage << "                                                                                                    \n";
     usage << " USAGE: bedmap [process-flags] [overlap-option] <operation(s)...> <ref-file> [map-file]             \n";
@@ -490,51 +590,53 @@ namespace BedMap {
     usage << "      SCORE:                                                                                        \n";
     usage << "       <ref-file> must have at least 3 columns and <map-file> 5 columns.                            \n";
     usage << "                                                                                                    \n";
-    usage << "      --" + details::name<VT::CoeffVariation>() + "                The result of --" + details::name<VT::StdDev>() + " divided by the result of --" + details::name<VT::Average>() + ".\n";
-    usage << "      --" + details::name<VT::KthAverage>() + " <val>         Generalized median. Report the value, x, such that the fraction <val>\n";
+    usage << "      --" + OperationName(OpName::CoeffVar) + "                The result of --" + OperationName(OpName::Stdev) + " divided by the result of --" + OperationName(OpName::Mean) + ".\n";
+    usage << "      --" + OperationName(OpName::KthAvg) + " <val>         Generalized median. Report the value, x, such that the fraction <val>\n";
     usage << "                            of overlapping elements' scores from <map-file> is less than x,\n";
     usage << "                            and the fraction 1-<val> of scores is greater than x.  0 < val <= 1.\n";
-    usage << "      --" + details::name<VT::MedianAbsoluteDeviation>() + " <mult=1>      The median absolute deviation of overlapping elements in <map-file>.\n";
+    usage << "      --" + OperationName(OpName::Mad) + " <mult=1>      The median absolute deviation of overlapping elements in <map-file>.\n";
     usage << "                            Multiply mad score by <mult>.  0 < mult, and mult is 1 by default.\n";
-    usage << "      --" + details::name<VT::Max>() + "               The highest score from overlapping elements in <map-file>.\n";
-    usage << "      --" + details::name<VT::MaxElement>() + "       An element with the highest score from overlapping elements in <map-file>.\n";
-    usage << "      --" + details::name<VT::Average>() + "              The average score from overlapping elements in <map-file>.\n";
-    usage << "      --" + details::name<VT::Median>() + "            The median score from overlapping elements in <map-file>.\n";
-    usage << "      --" + details::name<VT::Min>() + "               The lowest score from overlapping elements in <map-file>.\n";
-    usage << "      --" + details::name<VT::MinElement>() + "       An element with the lowest score from overlapping elements in <map-file>.\n";
-    usage << "      --" + details::name<VT::StdDev>() + "             The square root of the result of --" + details::name<VT::Variance>() + ".\n";
-    usage << "      --" + details::name<VT::Sum>() + "               Accumulated scores from overlapping elements in <map-file>.\n";
-    usage << "      --" + details::name<VT::TMean>() + " <low> <hi>  The mean score from overlapping elements in <map-file>, after\n";
+    usage << "      --" + OperationName(OpName::Max) + "               The highest score from overlapping elements in <map-file>.\n";
+    usage << "      --" + OperationName(OpName::MaxElement) + "       An element with the highest score from overlapping elements in <map-file>.\n";
+    usage << "      --" + OperationName(OpName::Mean) + "              The average score from overlapping elements in <map-file>.\n";
+    usage << "      --" + OperationName(OpName::Median) + "            The median score from overlapping elements in <map-file>.\n";
+    usage << "      --" + OperationName(OpName::Min) + "               The lowest score from overlapping elements in <map-file>.\n";
+    usage << "      --" + OperationName(OpName::MinElement) + "       An element with the lowest score from overlapping elements in <map-file>.\n";
+    usage << "      --" + OperationName(OpName::Stdev) + "             The square root of the result of --" + OperationName(OpName::Variance) + ".\n";
+    usage << "      --" + OperationName(OpName::Sum) + "               Accumulated scores from overlapping elements in <map-file>.\n";
+    usage << "      --" + OperationName(OpName::TMean) + " <low> <hi>  The mean score from overlapping elements in <map-file>, after\n";
     usage << "                            ignoring the bottom <low> and top <hi> fractions of those scores.\n";
     usage << "                            0 <= low <= 1.  0 <= hi <= 1.  low+hi <= 1.\n";
-    usage << "      --" + details::name<VT::Variance>() + "          The variance of scores from overlapping elements in <map-file>.\n";
+    usage << "      --" + OperationName(OpName::Variance) + "          The variance of scores from overlapping elements in <map-file>.\n";
     usage << "     \n";
     usage << "     ----------\n";
     usage << "      NON-SCORE:\n";
     usage << "       <ref-file> must have at least 3 columns.\n";
-    usage << "       For --" + details::name<VT::EchoMapID>() + "/" + details::name<VT::EchoMapUniqueID>() + ", <map-file> must have at least 4 columns.\n";
-    usage << "       For --" + details::name<VT::EchoMapScore>() + ", <map-file> must have at least 5 columns.\n";
+    usage << "       For --" + OperationName(OpNameAlias::EchoMapID) + "/" + OperationName(OpNameAlias::EchoMapIDUniq) + ", <map-file> must have at least 4 columns.\n";
+    usage << "       For --" + OperationName(OpName::EchoMapScore) + ", <map-file> must have at least 5 columns.\n";
     usage << "       For all others, <map-file> requires at least 3 columns.\n\n";
-    usage << "      --" + details::name<VT::OvrAgg>() + "             The total number of overlapping bases from <map-file>.\n";
-    usage << "      --" + details::name<VT::OvrUniq>() + "        The number of distinct bases from <ref-file>'s element covered by\n";
-    usage << "                            overlapping elements in <map-file>.\n";
-    usage << "      --" + details::name<VT::OvrUniqFract>() + "      The fraction of distinct bases from <ref-file>'s element covered by\n";
-    usage << "                            overlapping elements in <map-file>.\n";
-    usage << "      --" + details::name<VT::Count>() + "             The number of overlapping elements in <map-file>.\n";
-    usage << "      --" + details::name<VT::EchoRefAll>() + "              Print each line from <ref-file>.\n";
-    usage << "      --" + details::name<VT::EchoMapAll>() + "          List all overlapping elements from <map-file>.\n";
-    usage << "      --" + details::name<VT::EchoMapID>() +  "       List IDs from all overlapping <map-file> elements.\n";
-    usage << "      --" + details::name<VT::EchoMapUniqueID>() +  "  List unique IDs from overlapping <map-file> elements.\n";
-    usage << "      --" + details::name<VT::EchoMapRange>() + "    Print genomic range of overlapping elements from <map-file>.\n";
-    usage << "      --" + details::name<VT::EchoMapScore>() + "    List scores from overlapping <map-file> elements.\n";
-    usage << "      --" + details::name<VT::EchoMapLength>() + "     List the full length of every overlapping element.\n";
-    usage << "      --" + details::name<VT::EchoMapIntersectLength>() + " List lengths of overlaps.\n";
-    usage << "      --" + details::name<VT::EchoRefSpan>() + "     Print the first 3 fields of <ref-file> using chrom:start-end format.\n";
-    usage << "      --" + details::name<VT::EchoRefLength>() + "     Print the length of each line from <ref-file>.\n";
-    usage << "      --" + details::name<VT::Indicator>() + "         Print 1 if there exists an overlapping element in <map-file>, 0 otherwise.\n";
+    usage << "      --" + OperationName(OpName::Bases) + "              The total number of overlapping bases from <map-file>.\n";
+    usage << "      --" + OperationName(OpName::BasesUniq) + "         The number of distinct bases from <ref-file>'s element covered by\n";
+    usage << "                             overlapping elements in <map-file>.\n";
+    usage << "      --" + OperationName(OpName::BasesUniqFract) + "       The fraction of distinct bases from <ref-file>'s element covered by\n";
+    usage << "                             overlapping elements in <map-file>.\n";
+    usage << "      --" + OperationName(OpName::Count) + "              The number of overlapping elements in <map-file>.\n";
+    usage << "      --" + OperationName(OpName::Echo) + "               Print each line from <ref-file>.\n";
+    usage << "      --" + OperationName(OpName::EchoMap) + "           List all overlapping elements from <map-file>.\n";
+    usage << "      --" + OperationName(OpNameAlias::EchoMapID) +  "        List IDs from all overlapping <map-file> elements.\n";
+    usage << "      --" + OperationName(OpNameAlias::EchoMapIDUniq) +  "   List unique IDs from overlapping <map-file> elements.\n";
+    usage << "      --" + OperationName(OpName::EchoMapRange) + "     Print genomic range of overlapping elements from <map-file>.\n";
+    usage << "      --" + OperationName(OpName::EchoMapScore) + "     List scores from overlapping <map-file> elements.\n";
+    usage << "      --" + OperationName(OpName::EchoMapSize) + "      List the full length of every overlapping element.\n";
+    usage << "      --" + OperationName(OpName::EchoMapText) +  "      List column text from all overlapping <map-file> elements.\n";
+    usage << "      --" + OperationName(OpName::EchoMapTextUniq) +  " List unique column text from overlapping <map-file> elements.\n";
+    usage << "      --" + OperationName(OpName::EchoOverlapSize) + "  List lengths of overlaps.\n";
+    usage << "      --" + OperationName(OpName::EchoRefName) + "      Print the first 3 fields of <ref-file> using chrom:start-end format.\n";
+    usage << "      --" + OperationName(OpName::EchoRefSize) + "      Print the length of each line from <ref-file>.\n";
+    usage << "      --" + OperationName(OpName::Indicator) + "          Print 1 if there exists an overlapping element in <map-file>, 0 otherwise.\n";
     usage << "\n";
 
-    return(usage.str());
+    return usage.str();
   }
 
 } // namespace BedMap
