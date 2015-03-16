@@ -3,7 +3,7 @@ os:
   - linux
 compiler:
   - gcc
-  - clang
+  # - clang
 # Change this to your needs
 before_install:
   # g++ 4.8.3
