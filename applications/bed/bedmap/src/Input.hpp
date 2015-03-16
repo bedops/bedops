@@ -25,21 +25,12 @@
 #define _BEDMAP_INPUT_HPP
 
 #include <algorithm>
-#include <cmath>
-#include <cstdio>
-#include <cstdlib>
-#include <exception>
-#include <limits>
 #include <sstream>
 #include <string>
 #include <vector>
 
-#include "algorithm/visitors/BedVisitors.hpp"
 #include "utility/Assertion.hpp"
 #include "utility/Exception.hpp"
-#include "utility/Typify.hpp"
-
-#include "TDefs.hpp"
 
 namespace BedMap {
 
@@ -106,31 +97,11 @@ namespace BedMap {
     return name;
   }
 
-  namespace details {
-    struct dummyBase {
-      typedef int RefType;
-      typedef int MapType;
-    };
-/*
-    template <typename T>
-    std::string name() {
-      return Visitors::Helpers::VisitorName<T>::Name();
-    }
-*/
-  } // details
-
-
-
   //=============
   // Input<T,U>:
   //=============
   template <typename ArgError, typename HelpType, typename VersionType>
-  class Input {
-
-    typedef VisitorTypes<details::dummyBase> VT;
-
-  public:
-
+  struct Input {
     // Constructor
     Input(int argc, char **argv)
       : refFileName_(""), mapFileName_(""), rangeBP_(0), overlapBP_(0),
@@ -450,7 +421,6 @@ namespace BedMap {
                             "Cannot have stdin set for two files");
     }
 
-
   public:
     std::string refFileName_;
     std::string mapFileName_;
@@ -482,39 +452,11 @@ namespace BedMap {
     bool skipUnmappedRows_;
 
   private:
-    struct MapFields {
-      template <typename T> static unsigned int num(Ext::Type2Type<T>) { return 4; }
-      static unsigned int num(Ext::Type2Type<typename VT::Count>) { return 3; }
-      static unsigned int num(Ext::Type2Type<typename VT::EchoMapAll>) { return 3; }
-      static unsigned int num(Ext::Type2Type<typename VT::EchoMapIntersectLength>) { return 3; }
-      static unsigned int num(Ext::Type2Type<typename VT::EchoMapLength>) { return 3; }
-      static unsigned int num(Ext::Type2Type<typename VT::EchoMapRange>) { return 3; }
-      static unsigned int num(Ext::Type2Type<typename VT::EchoRefAll>) { return 3; }
-      static unsigned int num(Ext::Type2Type<typename VT::EchoRefLength>) { return 3; }
-      static unsigned int num(Ext::Type2Type<typename VT::EchoRefSpan>) { return 3; }
-      static unsigned int num(Ext::Type2Type<typename VT::Indicator>) { return 3; }
-      static unsigned int num(Ext::Type2Type<typename VT::OvrAgg>) { return 3; }
-      static unsigned int num(Ext::Type2Type<typename VT::OvrUniq>) { return 3; }
-      static unsigned int num(Ext::Type2Type<typename VT::OvrUniqFract>) { return 3; }
-    };
-
-    struct RefFields {
-      template <typename T> static unsigned int num(Ext::Type2Type<T>) { return 3; }
-    };
-
     bool addNoArgVisitor(OpName op) {
       visitorNames_.push_back(op);
       visitorArgs_.push_back(std::vector<std::string>());
-//      minMapFields_ = std::max(minMapFields_, MapFields::num(t));
-//      minRefFields_ = std::max(minRefFields_, RefFields::num(t));
-      return true;
-    }
-
-    bool addVisitor(OpName op, const std::vector<std::string>& args) {
-      visitorNames_.push_back(op);
-      visitorArgs_.push_back(args);
-//      minMapFields_ = std::max(minMapFields_, MapFields::num(t));
-//      minRefFields_ = std::max(minRefFields_, RefFields::num(t));
+      minRefFields_ = std::max(minRefFields_, 3u);
+      minMapFields_ = std::max(minRefFields_, 3u);
       return true;
     }
 
