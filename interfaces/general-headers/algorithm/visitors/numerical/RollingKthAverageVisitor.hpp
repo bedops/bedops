@@ -33,6 +33,7 @@
 #include "algorithm/visitors/numerical/RollingKthVisitor.hpp"
 #include "data/measurement/NaN.hpp"
 #include "data/measurement/SelectMeasureType.hpp"
+#include "utility/OrderCompare.hpp"
 
 namespace Visitors {
 

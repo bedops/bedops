@@ -1,6 +1,6 @@
 /*
   Author: Shane Neph & Scott Kuehn
-  Date:   Thu Dec 17 20:01:34 PST 2009
+  Date:   Fri Mar 13 17:15:32 PDT 2015
 */
 //
 //    BEDOPS
@@ -21,20 +21,19 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#ifndef _BED_WINDOW_VISITOR_TYPES_HPP
-#define _BED_WINDOW_VISITOR_TYPES_HPP
+#ifndef _NUMERICAL_WINDOW_VISITOR_TYPES_BED_H
+#define _NUMERICAL_WINDOW_VISITOR_TYPES_BED_H
 
-#include "bed/BedBaseVisitor.hpp"
-#include "bed/BedNumericVisitors.hpp"
-#include "bed/EchoMapBedVisitor.hpp" // do not include other/EchoMapVisitor.hpp
-#include "bed/EchoMapIntersectLengthVisitor.hpp"
-#include "bed/OvrAggregateVisitor.hpp"
-#include "bed/OvrUniqueVisitor.hpp"
-#include "bed/OvrUniqueFractionVisitor.hpp"
-#include "numerical/CountVisitor.hpp"
-#include "numerical/IndicatorVisitor.hpp"
-#include "other/EchoVisitor.hpp"
-#include "other/MultiVisitor.hpp"
-#include "Visitors.hpp"
+#include "numeric/AverageVisitorBed.hpp"
+#include "numeric/CoeffVariationVisitorBed.hpp"
+#include "numeric/ExtremeVisitorBed.hpp"
+#include "numeric/MedianAbsoluteDeviationVisitorBed.hpp"
+#include "numeric/MedianVisitorBed.hpp"
+#include "numeric/RollingKthVisitorBed.hpp"
+#include "numeric/RollingKthAverageVisitorBed.hpp"
+#include "numeric/StdevVisitorBed.hpp"
+#include "numeric/SumVisitorBed.hpp"
+#include "numeric/TrimmedMeanVisitorBed.hpp"
+#include "numeric/VarianceVisitorBed.hpp"
 
-#endif // _BED_WINDOW_VISITOR_TYPES_HPP
+#endif // _NUMERICAL_WINDOW_VISITOR_TYPES_BED_H

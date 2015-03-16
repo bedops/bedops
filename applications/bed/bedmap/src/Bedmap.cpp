@@ -25,20 +25,18 @@
 #include <cstdlib>
 #include <exception>
 #include <fstream>
-#include <map>
+#include <iostream>
 #include <sstream>
 #include <string>
-#include <utility>
 #include <vector>
 
 #include "algorithm/visitors/BedVisitors.hpp"
-#include "algorithm/visitors/helpers/NamedVisitors.hpp"
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
 #include "algorithm/WindowSweep.hpp"
 #include "data/bed/AllocateIterator_BED_starch.hpp"
 #include "data/bed/BedCheckIterator.hpp"
 #include "data/bed/BedDistances.hpp"
-#include "data/bed/BedTypes.hpp"
+#include "data/bed/GeneralBed.hpp"
 #include "suite/BEDOPS.Version.hpp"
 #include "utility/Assertion.hpp"
 #include "utility/ByLine.hpp"
@@ -65,104 +63,56 @@ namespace BedMap {
   //======================
   // Forward Declarations
   //======================
-  template <typename SweepDistType, typename BedDistType>
-  void selectSweep(const SweepDistType& st,
-                   const BedDistType& dt,
-                   const std::string& refFileName,
-                   const std::string& mapFileName,
-                   int minRefFields,
-                   int minMapFields,
-                   bool errorCheck,
-                   const std::string& colSep,
-                   const std::string& multivalColSep,
-                   int precision,
-                   bool useScientific,
-                   bool fastMode,
-                   bool sweepAll,
-                   const std::string& chrom,
-                   bool skipUnmappedRows,
-                   const std::vector<std::string>& visitorNames,
-                   const std::vector <std::vector<std::string> >& visitorArgs);
-
+  template <typename SweepDistType, typename BedDistType, typename InputType>
+  void selectSweep(const SweepDistType&,
+                   const BedDistType&,
+                   const InputType&);
 } // namespace BedMap
-
-
-
 
 //========
 // main()
 //========
 int main(int argc, char **argv) {
-
   typedef BedMap::Input<Ext::UserError, BedMap::Help, BedMap::Version> InputType;
-
   try {
     InputType input(argc, argv);
-
-    std::vector<std::string> visitorNames = input.visitorNames_;
-    std::vector< std::vector<std::string> > visitorArgs = input.visitorArgs_;
-    int prec = input.precision_;
-    bool sci = input.useScientific_;
- 
     if ( input.isPercMap_ ) { // % overlap relative to MapType's size (signalmapish)
       Bed::PercentOverlapMapping bedDist(input.percOvr_);
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
-      BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
-                          input.minRefFields_, input.minMapFields_, input.errorCheck_,
-                          input.outDelim_, input.multiDelim_, prec, sci, input.fastMode_,
-                          input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
+      BedMap::selectSweep(sweepDist, bedDist, input);
     } else if ( input.isPercRef_ ) { // % overlap relative to RefTypes's size (setops -e)
       Bed::PercentOverlapReference bedDist(input.percOvr_);
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
-      BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
-                          input.minRefFields_, input.minMapFields_, input.errorCheck_,
-                          input.outDelim_, input.multiDelim_, prec, sci, input.fastMode_,
-                          input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
+      BedMap::selectSweep(sweepDist, bedDist, input);
     } else if ( input.isPercBoth_ ) { // % overlap relative to both MapType's and RefType's sizes
       Bed::PercentOverlapBoth bedDist(input.percOvr_);
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
-      BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
-                          input.minRefFields_, input.minMapFields_, input.errorCheck_,
-                          input.outDelim_, input.multiDelim_, prec, sci, input.fastMode_,
-                          input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
+      BedMap::selectSweep(sweepDist, bedDist, input);
     } else if ( input.isExact_ ) { // must be identical coordinates
       Bed::Exact bedDist;
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
-      BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
-                          input.minRefFields_, input.minMapFields_, input.errorCheck_,
-                          input.outDelim_, input.multiDelim_, prec, sci, input.fastMode_,
-                          input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
+      BedMap::selectSweep(sweepDist, bedDist, input);
     } else if ( input.isPercEither_ ) { // % overlap relative to either MapType's or RefType's size
       Bed::PercentOverlapEither bedDist(input.percOvr_);
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
-      BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
-                          input.minRefFields_, input.minMapFields_, input.errorCheck_,
-                          input.outDelim_, input.multiDelim_, prec, sci, input.fastMode_,
-                          input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
+      BedMap::selectSweep(sweepDist, bedDist, input);
     } else if ( input.isRangeBP_ ) { // buffer each reference element
       Bed::RangedDist bedDist(input.rangeBP_);
       Bed::RangedDist sweepDist(input.rangeBP_); // same as bedDist in this case
-      BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
-                          input.minRefFields_, input.minMapFields_, input.errorCheck_,
-                          input.outDelim_, input.multiDelim_, prec, sci, input.fastMode_,
-                          input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
+      BedMap::selectSweep(sweepDist, bedDist, input);
     } else { // require a certain amount of bp overlap
       Bed::Overlapping bedDist(input.overlapBP_);
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
-      BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
-                          input.minRefFields_, input.minMapFields_, input.errorCheck_,
-                          input.outDelim_, input.multiDelim_, prec, sci, input.fastMode_,
-                          input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
+      BedMap::selectSweep(sweepDist, bedDist, input);
     }
-
-    return(EXIT_SUCCESS);
+    return EXIT_SUCCESS;
   } catch(const BedMap::Help& h) { // show usage and exit success
     std::cout << BedMap::prognm << std::endl;
     std::cout << "  citation: " << BedMap::citation << std::endl;
     std::cout << "  version:  " << BedMap::version << std::endl;
     std::cout << "  authors:  " << BedMap::authors << std::endl;
     std::cout << BedMap::Usage() << std::endl;
-    return(EXIT_SUCCESS);
+    return EXIT_SUCCESS;
   } catch(const BedMap::Version& v) { // show version and exit success
     std::cout << BedMap::prognm << std::endl;
     std::cout << "  citation: " << BedMap::citation << std::endl;
@@ -174,562 +124,379 @@ int main(int argc, char **argv) {
     std::cerr << "  version:  " << BedMap::version << std::endl;
     std::cerr << "  authors:  " << BedMap::authors << std::endl;
     std::cerr << BedMap::Usage() << std::endl;
-  } catch(std::string& s) {
-    std::cerr << "May use bedmap --help for more help.\n" << std::endl;
-    std::cerr << "Error: " << s << std::endl;
   } catch(const std::exception& stx) {
     std::cerr << "May use bedmap --help for more help.\n" << std::endl;
     std::cerr << "Error: " << stx.what() << std::endl;
   } catch(...) {
     std::cerr << "Unknown Error.  Aborting" << std::endl;
   }
-  return(EXIT_FAILURE);
+  return EXIT_FAILURE;
 }
 
 
 namespace BedMap {
 
-  //============
-  // runSweep(): single-file mode
-  //============
-  template <typename BaseClass, typename SweepDistType, typename BedDistType>
-  void runSweep(const SweepDistType& st,
-                const BedDistType& dt,
-                const std::string& refFileName,
-                bool errorCheck,
-                bool nestCheck,
-                bool fastMode,
-                const std::string& columnSep,
-                const std::string& chrom,
-                bool skipUnmappedRows,
-                std::vector<BaseClass*>& visitorGroup) {
-
+  //=============
+  // runSweep1(): single-file mode
+  //=============
+  template <typename BaseClass, typename SweepDistType, typename BedDistType, typename InputType>
+  void runSweep1(const SweepDistType& st,
+                 const BedDistType& dt,
+                 const InputType& input,
+                 std::vector<BaseClass*>& visitorGroup,
+                 bool doNestCheck) {
     typedef typename BaseClass::RefType RefType;
     typedef Visitors::Helpers::PrintDelim PrintType;
 
     // Set up visitors
-    PrintType processFields(columnSep);
+    PrintType processFields(input.outDelim_);
     PrintType processRows("\n");
     typedef Visitors::MultiVisitor<PrintType, PrintType, BaseClass> MVType;
-    MVType multiv(visitorGroup, dt, processFields, processRows, !skipUnmappedRows);
+    MVType multiv(visitorGroup, dt, processFields, processRows, !input.skipUnmappedRows_);
 
-    if ( !errorCheck ) { // faster iterators
+    if ( !input.errorCheck_ ) { // faster iterators
       // Create file handle iterators
-      Ext::FPWrap<Ext::InvalidFile> refFile(refFileName);
-      Bed::allocate_iterator_starch_bed<RefType*> refFileI(refFile, chrom), refFileEnd;
+      Ext::FPWrap<Ext::InvalidFile> refFile(input.refFileName_);
+      Bed::allocate_iterator_starch_bed<RefType*> refFileI(refFile, input.chrom_), refFileEnd;
 
       // Do work
-      if ( !fastMode )
+      if ( !input.fastMode_ )
         WindowSweep::sweep(refFileI, refFileEnd, st, multiv);
       else // no nested elements
         WindowSweep::sweep(refFileI, refFileEnd, dt, multiv);
-    } else {
-      // Create file handle iterators
-      bool isStdin = (refFileName == "-");
-      std::ifstream infile(refFileName.c_str());
-      if ( !isStdin && !infile )
-          throw(Ext::UserError("Unable to find: " + refFileName));
-      if ( isStdin ) {
-        Bed::bed_check_iterator<RefType*> refFileI(std::cin, refFileName, chrom, nestCheck);
-        Bed::bed_check_iterator<RefType*> refFileEnd;
-        if ( !fastMode )
-          WindowSweep::sweep(refFileI, refFileEnd, st, multiv);
-        else // no nested elements
-          WindowSweep::sweep(refFileI, refFileEnd, dt, multiv);
-      } else {
-        Bed::bed_check_iterator<RefType*> refFileI(infile, refFileName, chrom, nestCheck);
-        Bed::bed_check_iterator<RefType*> refFileEnd;
-        if ( !fastMode )
-          WindowSweep::sweep(refFileI, refFileEnd, st, multiv);
-        else // no nested elements
-          WindowSweep::sweep(refFileI, refFileEnd, dt, multiv);
-      }
+    } else { // --ec
+//      const bool nestCheck = doNestCheck; // check for fully-nested elements if --fast and --ec
+//      bool isStdin = (input.refFileName_ == "-");
+//      std::ifstream infile(input.refFileName_.c_str());
+//      if ( !isStdin && !infile )
+//          throw(Ext::UserError("Unable to find: " + input.refFileName_));
+//      if ( isStdin ) {
+//        Bed::bed_check_iterator<RefType*> refFileI(std::cin, input.refFileName_, input.chrom_, nestCheck);
+//        Bed::bed_check_iterator<RefType*> refFileEnd;
+//        if ( !input.fastMode_ )
+//          WindowSweep::sweep(refFileI, refFileEnd, st, multiv);
+//        else // no nested elements
+//          WindowSweep::sweep(refFileI, refFileEnd, dt, multiv);
+//      } else {
+//        Bed::bed_check_iterator<RefType*> refFileI(infile, input.refFileName_, input.chrom_, nestCheck);
+//        Bed::bed_check_iterator<RefType*> refFileEnd;
+//        if ( !input.fastMode_ )
+//          WindowSweep::sweep(refFileI, refFileEnd, st, multiv);
+//        else // no nested elements
+//          WindowSweep::sweep(refFileI, refFileEnd, dt, multiv);
+//      }
     }
-
     // multiv does cleanup
   }
 
-  //============
-  // runSweep(): multi-file mode
-  //============
-  template <typename BaseClass, typename SweepDistType, typename BedDistType>
-  void runSweep(const SweepDistType& st,
-                const BedDistType& dt,
-                const std::string& refFileName,
-                const std::string& mapFileName,
-                bool errorCheck,
-                bool nestCheck,
-                bool fastMode,
-                bool sweepAll,
-                const std::string& columnSep,
-                const std::string& chrom,
-                bool skipUnmappedRows,
-                std::vector<BaseClass*>& visitorGroup) {
-
+  //=============
+  // runSweep2(): multi-file mode
+  //=============
+  template <typename BaseClass, typename SweepDistType, typename BedDistType, typename InputType>
+  void runSweep2(const SweepDistType& st,
+                 const BedDistType& dt,
+                 const InputType& input,
+                 std::vector<BaseClass*>& visitorGroup,
+                 bool doNestCheck) {
     typedef typename BaseClass::RefType RefType;
     typedef typename BaseClass::MapType MapType;
     typedef Visitors::Helpers::PrintDelim PrintType;
 
     // Set up visitors
-    PrintType processFields(columnSep);
+    PrintType processFields(input.outDelim_);
     PrintType processRows("\n");
     typedef Visitors::MultiVisitor<PrintType, PrintType, BaseClass> MVType;
-    MVType multiv(visitorGroup, dt, processFields, processRows, !skipUnmappedRows);
+    MVType multiv(visitorGroup, dt, processFields, processRows, !input.skipUnmappedRows_);
 
-    if ( !errorCheck ) { // faster iterators
+    if ( !input.errorCheck_ ) { // faster iterators
       // Create file handle iterators
-      Ext::FPWrap<Ext::InvalidFile> refFile(refFileName);
-      Bed::allocate_iterator_starch_bed<RefType*> refFileI(refFile, chrom), refFileEnd;
-      Ext::FPWrap<Ext::InvalidFile> mapFile(mapFileName);
-      Bed::allocate_iterator_starch_bed<MapType*> mapFileI(mapFile, chrom), mapFileEnd;
+      Ext::FPWrap<Ext::InvalidFile> refFile(input.refFileName_);
+      Bed::allocate_iterator_starch_bed<RefType*> refFileI(refFile, input.chrom_), refFileEnd;
+      Ext::FPWrap<Ext::InvalidFile> mapFile(input.mapFileName_);
+      Bed::allocate_iterator_starch_bed<MapType*> mapFileI(mapFile, input.chrom_), mapFileEnd;
 
       // Do work
-      if ( !fastMode )
-        WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, sweepAll);
+      if ( !input.fastMode_ )
+        WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, input.sweepAll_);
       else // no nested elements
-        WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, sweepAll);
-    } else {
-      // Create file handle iterators
-      typedef Ext::UserError EType;
-      bool isStdinRef = (refFileName == "-");
-      bool isStdinMap = (mapFileName == "-");
-      if ( isStdinRef && isStdinMap )
-        throw(EType("Cannot have both input files set to '-'"));
-      std::ifstream rfin(refFileName.c_str()), mfin(mapFileName.c_str());
-      if ( !isStdinRef && !rfin )
-        throw(EType("Unable to find: " + refFileName));
-      if ( !isStdinMap && !mfin )
-        throw(EType("Unable to find: " + mapFileName));
-
-      // Do work
-      if ( isStdinRef ) {
-        Bed::bed_check_iterator<RefType*> refFileI(std::cin, refFileName, chrom, nestCheck), refFileEnd;
-        Bed::bed_check_iterator<MapType*> mapFileI(mfin, mapFileName, chrom, nestCheck), mapFileEnd;
-        if ( !fastMode )
-          WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, sweepAll);
-        else // no nested elements
-          WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, sweepAll);
-      } else {
-        Bed::bed_check_iterator<RefType*> refFileI(rfin, refFileName, chrom, nestCheck), refFileEnd;
-        if ( isStdinMap ) {
-          Bed::bed_check_iterator<MapType*> mapFileI(std::cin, mapFileName, chrom, nestCheck), mapFileEnd;
-          if ( !fastMode )
-            WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, sweepAll);
-          else // no nested elements
-            WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, sweepAll);
-        } else {
-          Bed::bed_check_iterator<MapType*> mapFileI(mfin, mapFileName, chrom, nestCheck), mapFileEnd;
-          if ( !fastMode )
-            WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, sweepAll);
-          else // no nested elements
-            WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, sweepAll);
-        }
-      }
+        WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, input.sweepAll_);
+    } else { // --ec
+//      typedef Ext::UserError EType;
+//      const bool nestCheck = doNestCheck; // check for fully-nested elements if --fast and --ec
+//      bool isStdinRef = (input.refFileName_ == "-");
+//      bool isStdinMap = (input.mapFileName_ == "-");
+//      if ( isStdinRef && isStdinMap )
+//        throw(EType("Cannot have both input files set to '-'"));
+//      std::ifstream rfin(input.refFileName_.c_str()), mfin(input.mapFileName_.c_str());
+//      if ( !isStdinRef && !rfin )
+//        throw(EType("Unable to find: " + input.refFileName_));
+//      if ( !isStdinMap && !mfin )
+//        throw(EType("Unable to find: " + input.mapFileName_));
+//
+//      // Do work
+//      if ( isStdinRef ) {
+//        Bed::bed_check_iterator<RefType*> refFileI(std::cin, input.refFileName_, input.chrom_, nestCheck), refFileEnd;
+//        Bed::bed_check_iterator<MapType*> mapFileI(mfin, input.mapFileName_, input.chrom_, nestCheck), mapFileEnd;
+//        if ( !input.fastMode_ )
+//          WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, input.sweepAll_);
+//        else // no nested elements
+//          WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, input.sweepAll_);
+//      } else {
+//        Bed::bed_check_iterator<RefType*> refFileI(rfin, input.refFileName_, input.chrom_, nestCheck), refFileEnd;
+//        if ( isStdinMap ) {
+//          Bed::bed_check_iterator<MapType*> mapFileI(std::cin, input.mapFileName_, input.chrom_, nestCheck), mapFileEnd;
+//          if ( !input.fastMode_ )
+//            WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, input.sweepAll_);
+//          else // no nested elements
+//            WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, input.sweepAll_);
+//        } else {
+//          Bed::bed_check_iterator<MapType*> mapFileI(mfin, input.mapFileName_, input.chrom_, nestCheck), mapFileEnd;
+//          if ( !input.fastMode_ )
+//            WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, input.sweepAll_);
+//          else // no nested elements
+//            WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, input.sweepAll_);
+//        }
+//      }
     }
-
     // multiv does cleanup
   }
 
-
-  //=========
-  // upper()
-  //=========
-  std::string upper(const std::string& s) {
-    std::string t = s;
-    for ( std::size_t i = 0; i < t.size(); ++i )
-      t[i] = std::toupper(t[i]);
-    return(t);
-  }
-
-
-  //===========
-  // visName()
-  //===========
-  template <typename VisitorType>
-  std::string visName() {
-    return upper(Visitors::Helpers::VisitorName<VisitorType>::Name());
-  }
-
-
-  template <typename BaseClass, int NumFields>
-  struct GenerateVisitors; // not implemented
-
-
-  //===========================
-  // GenerateVisitors<> : Bed3
-  //===========================
+  //==================
+  // GenerateVisitors
+  //==================
   template <typename BaseVisitor>
-  struct GenerateVisitors<BaseVisitor, 3> {
+  struct GenerateVisitors {
 
     typedef BaseVisitor BaseClass;
 
-    template <typename DistType>
-    BaseVisitor* generate(const DistType&, const std::string& className,
-                          const std::vector<std::string>&,
+    BaseVisitor* generate(OpName op,
+                          const std::vector<std::string>& args,
                           const std::string& multivalColSep,
                           int precision, bool useScientific) {
-  
-      typedef VisitorTypes<BaseVisitor> VTypes;
-      BaseVisitor* rtn = 0;
-  
-      // Create an instance associated with each name in classNames
-      std::string nm = upper(className);
-   
 
-      if ( nm == visName<typename VTypes::Count>() )
+      typedef VisitorTypes<BaseVisitor> VTypes;
+      typedef typename VTypes::Average::ProcessType MPT; // applicable to most numeric outputs
+      MPT mpt(precision, useScientific);
+
+      BaseVisitor* rtn = 0; // create instance of OpName
+      if ( op == OpName::Count ) {
         rtn = new typename VTypes::Count;
-      else if ( nm == visName<typename VTypes::EchoMapAll>() ) {
+      } else if ( op == OpName::EchoMap ) {
         typedef typename VTypes::EchoMapAll::ProcessType PT;
         typedef typename PT::PType PType;
         rtn = new typename VTypes::EchoMapAll(PT(PType(), multivalColSep));
-      }
-      else if ( nm == visName<typename VTypes::EchoMapLength>() )
+      } else if ( op == OpName::EchoMapSize ) {
         rtn = new typename VTypes::EchoMapLength;
-      else if ( nm == visName<typename VTypes::EchoMapIntersectLength>() )
+      } else if ( op == OpName::EchoOverlapSize ) {
         rtn = new typename VTypes::EchoMapIntersectLength;
-      else if ( nm == visName<typename VTypes::EchoMapRange>() )
+      } else if ( op == OpName::EchoMapRange ) {
         rtn = new typename VTypes::EchoMapRange;
-      else if ( nm == visName<typename VTypes::EchoRefAll>() )
+      } else if ( op == OpName::Echo ) {
         rtn = new typename VTypes::EchoRefAll;
-      else if ( nm == visName<typename VTypes::EchoRefLength>() )
+      } else if ( op == OpName::EchoRefSize ) {
         rtn = new typename VTypes::EchoRefLength;
-      else if ( nm == visName<typename VTypes::EchoRefSpan>() )
+      } else if ( op == OpName::EchoRefName ) {
         rtn = new typename VTypes::EchoRefSpan;
-      else if ( nm == visName<typename VTypes::Indicator>() )
+      } else if ( op == OpName::Indicator ) {
         rtn = new typename VTypes::Indicator;
-      else if ( nm == visName<typename VTypes::OvrAgg>() )
+      } else if ( op == OpName::Bases ) {
         rtn = new typename VTypes::OvrAgg;
-      else if ( nm == visName<typename VTypes::OvrUniq>() )
+      } else if ( op == OpName::BasesUniq ) {
         rtn = new typename VTypes::OvrUniq;
-      else if ( nm == visName<typename VTypes::OvrUniqFract>() ) {
+      } else if ( op == OpName::BasesUniqFract ) {
         typedef typename VTypes::OvrUniqFract::ProcessType PT;
         PT pt(precision, useScientific);
         rtn = new typename VTypes::OvrUniqFract(pt);
-      }
-
-      return(rtn);
-    }
-  };
-
-
-  //===========================
-  // GenerateVisitors<> : Bed4
-  //===========================
-  template <typename BaseVisitor>
-  struct GenerateVisitors<BaseVisitor, 4>
-           : GenerateVisitors<BaseVisitor, 3> {
-
-    typedef GenerateVisitors<BaseVisitor, 3> SuperClass;
-
-    template <typename DistType>
-    BaseVisitor* generate(const DistType& d, const std::string& className,
-                          const std::vector<std::string>& args,
-                          const std::string& multivalColSep,
-                          int precision, bool useScientific) {
-  
-      typedef VisitorTypes<BaseVisitor> VTypes;
-      BaseVisitor* rtn = SuperClass::generate(d, className, args, multivalColSep, precision, useScientific);
-      if ( rtn )
-        return(rtn);
-
-      // Create an instance associated with className
-      std::string nm = upper(className);
-      if ( nm == visName<typename VTypes::EchoMapID>() ) {
-        typedef typename VTypes::EchoMapID::ProcessType PT;
+      } else if ( op == OpName::EchoMapText ) {
+        typedef typename VTypes::EchoMapText::ProcessType PT;
         typedef typename PT::PType PType;
-        rtn = new typename VTypes::EchoMapID(PT(PType(), multivalColSep));
-      } else if ( nm == visName<typename VTypes::EchoMapUniqueID>() ) {
-        typedef typename VTypes::EchoMapUniqueID::ProcessType PT;
-        rtn = new typename VTypes::EchoMapUniqueID(PT(multivalColSep));
-      }
-
-      return(rtn);
-    }
-  };
-
-
-  //===========================
-  // GenerateVisitors<> : Bed5
-  //===========================
-  template <typename BaseVisitor>
-  struct GenerateVisitors<BaseVisitor, 5>
-           : GenerateVisitors<BaseVisitor, 4> {
-
-    typedef GenerateVisitors<BaseVisitor, 4> SuperClass;
-
-    template <typename DistType>
-    BaseVisitor* generate(const DistType& d, const std::string& className,
-                          const std::vector<std::string>& args,
-                          const std::string& multivalColSep,
-                          int precision, bool useScientific) {
-  
-      typedef VisitorTypes<BaseVisitor> VTypes;
-      BaseVisitor* rtn = SuperClass::generate(d, className, args, multivalColSep, precision, useScientific);
-      if ( rtn )
-        return(rtn);
-
-      // Create an instance associated with className
-      std::string nm = upper(className);
-      typedef typename VTypes::Average::ProcessType PT; // applicable to most numeric outputs
-      PT pt(precision, useScientific);
-
-      if ( nm == visName<typename VTypes::Average>() )
-        rtn = new typename VTypes::Average(pt);
-      else if ( nm == visName<typename VTypes::CoeffVariation>() )
-        rtn = new typename VTypes::CoeffVariation(pt);
-      else if ( nm == visName<typename VTypes::EchoMapScore>() ) {
+        rtn = new typename VTypes::EchoMapText(PT(PType(args[0]), multivalColSep));
+      } else if ( op == OpName::EchoMapTextUniq ) {
+        typedef typename VTypes::EchoMapTextUnique::ProcessType PT;
+        rtn = new typename VTypes::EchoMapTextUnique(PT(args[0], multivalColSep));
+      } else if ( op == OpName::Mean ) {
+        std::stringstream conv(args[0]);
+        std::size_t column; conv >> column;
+        rtn = new typename VTypes::Average(mpt, column);
+      } else if ( op == OpName::CoeffVar ) {
+        std::stringstream conv(args[0]);
+        std::size_t column; conv >> column;
+        rtn = new typename VTypes::CoeffVariation(mpt, column);
+      } else if ( op == OpName::EchoMapScore ) {
         typedef typename VTypes::EchoMapScore::ProcessType PT;
+        typedef typename PT::PType PType;
+        std::stringstream conv(args[0]);
+        std::size_t column; conv >> column;
+        PType pt(column, precision, useScientific);
         rtn = new typename VTypes::EchoMapScore(PT(pt, multivalColSep));
-      }
-      else if ( nm == visName<typename VTypes::KthAverage>() ) {
-        Ext::Assert<Ext::UserError>(1 == args.size(), "Need a value with " + nm);
-        std::stringstream conv1(args[0]);
-        double percentile;
-        conv1 >> percentile;
-        if ( 0 == percentile ) // min faster
-          rtn = new typename VTypes::Min(pt);
-        else if ( 1 == percentile ) // max faster
-          rtn = new typename VTypes::Max(pt);
-        else
-          rtn = new typename VTypes::KthAverage(percentile, pt); // does check on percentile
-      }
-      else if ( nm == visName<typename VTypes::Max>() )
-        rtn = new typename VTypes::Max(pt);
-      else if ( nm == visName<typename VTypes::MaxElement>() ) {
-        typedef typename VTypes::MaxElement::ProcessType MPT;
-        rtn = new typename VTypes::MaxElement(MPT(precision, useScientific));
-      }
-      else if ( nm == visName<typename VTypes::Median>() )
-        rtn = new typename VTypes::Median(pt);
-      else if ( nm == visName<typename VTypes::MedianAbsoluteDeviation>() ) {
-        Ext::Assert<Ext::UserError>(1 >= args.size(), "Need 1 value with " + nm);
-        if ( 1 == args.size() ) {
-          std::stringstream conv1(args[0]);
-          double multiplier;
-          conv1 >> multiplier;
-          rtn = new typename VTypes::MedianAbsoluteDeviation(pt, multiplier);
-        }
-        else // use default multiplier
-          rtn = new typename VTypes::MedianAbsoluteDeviation(pt);
-      }
-      else if ( nm == visName<typename VTypes::Min>() )
-        rtn = new typename VTypes::Min(pt);
-      else if ( nm == visName<typename VTypes::MinElement>() ) {
-        typedef typename VTypes::MinElement::ProcessType MPT;
-        rtn = new typename VTypes::MinElement(MPT(precision, useScientific));
-      }
-      else if ( nm == visName<typename VTypes::StdDev>() )
-        rtn = new typename VTypes::StdDev(pt);
-      else if ( nm == visName<typename VTypes::Sum>() )
-        rtn = new typename VTypes::Sum(pt);
-      else if ( nm == visName<typename VTypes::TMean>() ) {
-        Ext::Assert<Ext::UserError>(2 == args.size(), "Need two values with " + nm);
+      } else if ( op == OpName::KthAvg ) {
+        Ext::Assert<Ext::UserError>(2 == args.size(), "Need a value with " + OperationName(op));
         std::stringstream conv1(args[0]), conv2(args[1]);
+        std::size_t column; conv1 >> column;
+        double percentile; conv2 >> percentile;
+        if ( 0 == percentile ) // min faster
+          rtn = generate(OpName::Min, args, multivalColSep, precision, useScientific);
+        else if ( 1 == percentile ) // max faster
+          rtn = generate(OpName::Max, args, multivalColSep, precision, useScientific);
+        else
+          rtn = new typename VTypes::KthAverage(percentile, mpt, column); // does check on percentile
+      } else if ( op == OpName::Max ) {
+        typedef typename VTypes::Max::ProcessType PType;
+        std::stringstream conv(args[0]);
+        std::size_t column; conv >> column;
+        PType pt(column, precision, useScientific);
+        rtn = new typename VTypes::Max(pt, column);
+      } else if ( op == OpName::MaxElement ) {
+        typedef typename VTypes::MaxElement::ProcessType PType;
+        std::stringstream conv(args[0]);
+        std::size_t column; conv >> column;
+        PType pt;
+        rtn = new typename VTypes::MaxElement(pt, column);
+      } else if ( op == OpName::Median ) {
+        std::stringstream conv(args[0]);
+        std::size_t column; conv >> column;
+        rtn = new typename VTypes::Median(mpt, column);
+      } else if ( op == OpName::Mad ) {
+        Ext::Assert<Ext::UserError>(2 >= args.size(), "1 value allowed for --" + OperationName(op));
+        std::stringstream conv1(args[0]);
+        std::size_t column; conv1 >> column;
+        if ( 2 == args.size() ) {
+          std::stringstream conv2(args[1]);
+          double multiplier;
+          conv2 >> multiplier;
+          rtn = new typename VTypes::MedianAbsoluteDeviation(mpt, multiplier, column);
+        }
+        else // use default multiplier of 1
+          rtn = new typename VTypes::MedianAbsoluteDeviation(mpt, 1, column);
+      } else if ( op == OpName::Min ) {
+        typedef typename VTypes::Min::ProcessType PType;
+        std::stringstream conv(args[0]);
+        std::size_t column; conv >> column;
+        PType pt(column, precision, useScientific);
+        rtn = new typename VTypes::Min(pt, column);
+      } else if ( op == OpName::MinElement ) {
+        typedef typename VTypes::MinElement::ProcessType PType;
+        std::stringstream conv(args[0]);
+        std::size_t column; conv >> column;
+        PType pt;
+        rtn = new typename VTypes::MinElement(pt, column);
+      } else if ( op == OpName::Stdev ) {
+        std::stringstream conv(args[0]);
+        std::size_t column; conv >> column;
+        rtn = new typename VTypes::StdDev(mpt, column);
+      } else if ( op == OpName::Sum ) {
+        std::stringstream conv(args[0]);
+        std::size_t column; conv >> column;
+        rtn = new typename VTypes::Sum(mpt, column);
+      } else if ( op == OpName::TMean ) {
+        typedef typename VTypes::TMean::ProcessType PT;
+        Ext::Assert<Ext::UserError>(3 == args.size(), "Need two values with " + OperationName(op));
+        std::stringstream conv1(args[0]), conv2(args[1]), conv3(args[2]);
         double percentileLow = 100, percentileHigh = -100;
-        conv1 >> percentileLow;
-        conv2 >> percentileHigh;
-        rtn = new typename VTypes::TMean(percentileLow, percentileHigh, pt);
+        std::size_t column; conv1 >> column;
+        conv2 >> percentileLow;
+        conv3 >> percentileHigh;
+        PT pt(column, precision, useScientific);
+        rtn = new typename VTypes::TMean(percentileLow, percentileHigh, pt, column);
+      } else if ( op == OpName::Variance ) {
+        std::stringstream conv(args[0]);
+        std::size_t column; conv >> column;
+        rtn = new typename VTypes::Variance(mpt, column);
       }
-      else if ( nm == visName<typename VTypes::Variance>() )
-        rtn = new typename VTypes::Variance(pt);
-
-      return(rtn);
+      return rtn;
     }
   };
-
 
   //===============
   // getVisitors()
   //===============
-  template <typename GV, typename BedDistType>
+  template <typename GV, typename BedDistType, typename InputType>
   std::vector<typename GV::BaseClass*>
-           getVisitors(GV& gv, const BedDistType& dt, const std::string& multivalColSep,
-                       int precision, bool useScientific, const std::vector<std::string>& visitorNames,
-                       const std::vector< std::vector<std::string> >& visitorArgs) {
-
+           getVisitors(GV& gv, const BedDistType& dt, const InputType& input) {
     std::vector<typename GV::BaseClass*> visitorGroup;
-    std::vector<std::string>::const_iterator iter = visitorNames.begin();
+    std::vector<OpName>::const_iterator iter = input.visitorNames_.begin();
     typename GV::BaseClass* bc = static_cast<typename GV::BaseClass*>(0);
-    while ( iter != visitorNames.end() ) {
-      bc = gv.generate(dt, *iter, visitorArgs[iter-visitorNames.begin()], multivalColSep, precision, useScientific);
+    while ( iter != input.visitorNames_.end() ) {
+      bc = gv.generate(*iter, input.visitorArgs_[iter-input.visitorNames_.begin()],
+                       input.multiDelim_, input.precision_, input.useScientific_);
       if ( !bc )
-        throw(Ext::ProgramError("Unknown Operation: " + *iter + ". Program Error Detected."));
+        throw(Ext::ProgramError("Unknown Operation: " + OperationName(*iter) + ". Program Error Detected."));
       visitorGroup.push_back(bc);
       ++iter;
     } // while
-    return(visitorGroup);
+    return visitorGroup;
   }
 
   //==============
   // SelectBase<> : General Case
   //==============
-  template <bool ProcessMode, typename BedDistType, typename RefType, typename MapType = RefType>
+  template <bool ProcessMode, typename BedDistType>
   struct SelectBase {
-    typedef Visitors::BedBaseVisitor<BedDistType, RefType, MapType> BaseClass;
+    typedef Visitors::BedBaseVisitor<BedDistType, Bed::GBed, Bed::GBed> BaseClass;
     enum { IsFastMode = ProcessMode };
   };
 
   //==============
   // SelectBase<> : No fully nested components
   //==============
-  template <typename BedDistType, typename RefType, typename MapType>
-  struct SelectBase<true, BedDistType, RefType, MapType> {
-    typedef Visitors::Visitor<RefType, MapType> BaseClass;
+  template <typename BedDistType>
+  struct SelectBase<true, BedDistType> {
+    typedef Visitors::Visitor<Bed::GBed, Bed::GBed> BaseClass;
     enum { IsFastMode = true };
   };
 
-  //=============
-  // callSweep(): multi-file mode
-  //=============
-  template <bool ProcessMode, typename SweepDistType, typename BedDistType>
-  void callSweep(const SweepDistType& st,
-                 const BedDistType& dt,
-                 const std::string& refFileName,
-                 const std::string& mapFileName,
-                 int minRefFields,
-                 int minMapFields,
-                 bool errorCheck,
-                 const std::string& colSep,
-                 const std::string& multivalColSep,
-                 int precision,
-                 bool useScientific,
-                 const std::string& chrom,
-                 bool skipUnmappedRows,
-                 bool sweepAll,
-                 const std::vector<std::string>& visitorNames,
-                 const std::vector< std::vector<std::string> >& visitorArgs) {
-
-    // minRefFields must be <= minMapFields
-    Ext::Assert<Ext::ProgramError>(minRefFields <= minMapFields,
-                                   "BedMap::callSweep() minimum fields program error detected");
-
-    const bool nestCheck = ProcessMode;
-    if ( minMapFields < 4 ) { // just need Bed3
-      typedef Bed::B3Rest RefType;
-      typedef Bed::B3Rest MapType;
-      typedef typename SelectBase<ProcessMode, BedDistType, RefType, MapType>::BaseClass BaseClass;
-      BedMap::GenerateVisitors<BaseClass, 3> gv;
-      std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
-                                                         useScientific, visitorNames, visitorArgs);
-      runSweep<BaseClass>(st, dt, refFileName, mapFileName, errorCheck, nestCheck,
-                          ProcessMode, sweepAll, colSep, chrom, skipUnmappedRows, visitorGroup);
-    } else if ( minMapFields < 5 ) { // just need Bed4 for Map and Bed3 for Ref
-      Ext::Assert<Ext::ProgramError>(minRefFields < minMapFields,
-                                     "BedMap::callSweep()-2 minimum fields program error detected");
-      typedef Bed::B3Rest RefType;
-      typedef Bed::B4Rest MapType;
-      typedef typename SelectBase<ProcessMode, BedDistType, RefType, MapType>::BaseClass BaseClass;
-      BedMap::GenerateVisitors<BaseClass, 4> gv;
-      std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
-                                                         useScientific, visitorNames, visitorArgs);
-      runSweep<BaseClass>(st, dt, refFileName, mapFileName, errorCheck, nestCheck,
-                          ProcessMode, sweepAll, colSep, chrom, skipUnmappedRows, visitorGroup);
-    } else { // need Bed5 for Map and Bed3 for Ref
-      Ext::Assert<Ext::ProgramError>(minRefFields == 3,
-                                     "BedMap::callSweep()-2 minimum fields program error detected");
-      typedef Bed::B3Rest RefType;
-      typedef Bed::B5Rest MapType;
-      typedef typename SelectBase<ProcessMode, BedDistType, RefType, MapType>::BaseClass BaseClass;
-      BedMap::GenerateVisitors<BaseClass, 5> gv;
-      std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
-                                                         useScientific, visitorNames, visitorArgs);
-      runSweep<BaseClass>(st, dt, refFileName, mapFileName, errorCheck, nestCheck,
-                          ProcessMode, sweepAll, colSep, chrom, skipUnmappedRows, visitorGroup);
-    }
+  //==============
+  // callSweep1(): single-file mode
+  //==============
+  template <bool ProcessMode, typename SweepDistType, typename BedDistType, typename InputType>
+  void callSweep1(const SweepDistType& st,
+                  const BedDistType& dt,
+                  const InputType& input) {
+    typedef typename SelectBase<ProcessMode, BedDistType>::BaseClass BaseClass;
+    constexpr bool isFast = SelectBase<ProcessMode, BedDistType>::IsFastMode;
+    BedMap::GenerateVisitors<BaseClass> gv;
+    std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, input);
+    runSweep1<BaseClass>(st, dt, input, visitorGroup, isFast);
   }
 
-  //=============
-  // callSweep(): single-file mode
-  //=============
-  template <bool ProcessMode, typename SweepDistType, typename BedDistType>
-  void callSweep(const SweepDistType& st,
-                 const BedDistType& dt,
-                 const std::string& refFileName,
-                 int minRefFields,
-                 bool errorCheck,
-                 const std::string& colSep,
-                 const std::string& multivalColSep,
-                 int precision,
-                 bool useScientific,
-                 const std::string& chrom,
-                 bool skipUnmappedRows,
-                 const std::vector<std::string>& visitorNames,
-                 const std::vector< std::vector<std::string> >& visitorArgs) {
-
-    const bool nestCheck = ProcessMode;
-    if ( minRefFields < 4 ) { // just need Bed3
-      typedef Bed::B3Rest RefType;
-      typedef typename SelectBase<ProcessMode, BedDistType, RefType, RefType>::BaseClass BaseClass;
-      BedMap::GenerateVisitors<BaseClass, 3> gv;
-      std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
-                                                         useScientific, visitorNames, visitorArgs);
-      runSweep<BaseClass>(st, dt, refFileName, errorCheck, nestCheck,
-                          ProcessMode, colSep, chrom, skipUnmappedRows, visitorGroup);
-    } else if ( minRefFields < 5 ) { // need Bed4
-      typedef Bed::B4Rest RefType;
-      typedef typename SelectBase<ProcessMode, BedDistType, RefType, RefType>::BaseClass BaseClass;
-      BedMap::GenerateVisitors<BaseClass, 4> gv;
-      std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
-                                                         useScientific, visitorNames, visitorArgs);
-      runSweep<BaseClass>(st, dt, refFileName, errorCheck, nestCheck,
-                          ProcessMode, colSep, chrom, skipUnmappedRows, visitorGroup);
-    } else { // need Bed5
-      typedef Bed::B5Rest RefType;
-      typedef typename SelectBase<ProcessMode, BedDistType, RefType, RefType>::BaseClass BaseClass;
-      BedMap::GenerateVisitors<BaseClass, 5> gv;
-      std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
-                                                         useScientific, visitorNames, visitorArgs);
-      runSweep<BaseClass>(st, dt, refFileName, errorCheck, nestCheck,
-                          ProcessMode, colSep, chrom, skipUnmappedRows, visitorGroup);
-    }
+  //==============
+  // callSweep2(): multi-file mode
+  //==============
+  template <bool ProcessMode, typename SweepDistType, typename BedDistType, typename InputType>
+  void callSweep2(const SweepDistType& st,
+                  const BedDistType& dt,
+                  const InputType& input) {
+    typedef typename SelectBase<ProcessMode, BedDistType>::BaseClass BaseClass;
+    constexpr bool isFast = SelectBase<ProcessMode, BedDistType>::IsFastMode;
+    BedMap::GenerateVisitors<BaseClass> gv;
+    std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, input);
+    runSweep2<BaseClass>(st, dt, input, visitorGroup, isFast);
   }
-
 
   //================
   // selectSweep():
   //================
-  template <typename SweepDistType, typename BedDistType>
+  template <typename SweepDistType, typename BedDistType, typename InputType>
   void selectSweep(const SweepDistType& st,
                    const BedDistType& dt,
-                   const std::string& refFileName,
-                   const std::string& mapFileName,
-                   int minRefFields,
-                   int minMapFields,
-                   bool errorCheck,
-                   const std::string& colSep,
-                   const std::string& multivalColSep,
-                   int precision,
-                   bool useScientific,
-                   bool fastMode,
-                   bool sweepAll,
-                   const std::string& chrom,
-                   bool skipUnmappedRows,
-                   const std::vector<std::string>& visitorNames,
-                   const std::vector< std::vector<std::string> >& visitorArgs) {
+                   const InputType& input) {
 
     const bool SpecialMode = true;
     const bool GeneralMode = false;
-    if ( fastMode && !st.Symmetric ) // symmetry is a neccessary (and sufficient if no nested elements)
+    if ( input.fastMode_ && !st.Symmetric ) // symmetry is a necessary (and sufficient if no nested elements)
       throw(Ext::ProgramError("Symmetric distance required for fast mode!"));
 
-    if ( mapFileName.empty() ) { // single-file mode
-      if ( fastMode )
-        callSweep<SpecialMode>(st, dt, refFileName, minRefFields, errorCheck, colSep, multivalColSep,
-                               precision, useScientific, chrom, skipUnmappedRows, visitorNames, visitorArgs);
+    if ( input.mapFileName_.empty() ) { // single-file mode
+      if ( input.fastMode_ )
+        callSweep1<SpecialMode>(st, dt, input);
       else
-        callSweep<GeneralMode>(st, dt, refFileName, minRefFields, errorCheck, colSep, multivalColSep,
-                               precision, useScientific, chrom, skipUnmappedRows, visitorNames, visitorArgs);
+        callSweep1<GeneralMode>(st, dt, input);
     } else { // dual-file mode
-      if ( fastMode )
-        callSweep<SpecialMode>(st, dt, refFileName, mapFileName, minRefFields, minMapFields,
-                               errorCheck, colSep, multivalColSep, precision, useScientific,
-                               chrom, skipUnmappedRows, sweepAll, visitorNames, visitorArgs);
+      if ( input.fastMode_ )
+        callSweep2<SpecialMode>(st, dt, input);
       else
-        callSweep<GeneralMode>(st, dt, refFileName, mapFileName, minRefFields, minMapFields,
-                               errorCheck, colSep, multivalColSep, precision, useScientific,
-                               chrom, skipUnmappedRows, sweepAll, visitorNames, visitorArgs);
+        callSweep2<GeneralMode>(st, dt, input);
     }
   }
-
 
 } // namespace BedMap

@@ -25,6 +25,7 @@
 #define _VISITOR_BED_POST_PROCESSING_
 
 #include <set>
+#include <sstream>
 #include <string>
 #include <type_traits>
 
@@ -175,6 +176,36 @@ namespace Visitors {
       bool scientific_;
     };
 
+    //============================
+    // PrintColumnScorePrecision()
+    //============================
+    struct PrintColumnScorePrecision {
+      PrintColumnScorePrecision(std::size_t column, int precision, bool inScientific)
+        : col_(column), precision_(precision), scientific_(inScientific)
+        { /* */ }
+
+      template <typename T>
+      void operator()(T* t) const { // could use dis/enable_if for built-ins
+        static char const* format = Formats::Format(typename T::MeasurementType(), precision_, scientific_);
+        std::printf(format, t->measure(col_));
+      }
+
+      template <typename T>
+      void operator()(const T& t) const {
+        static char const* format = Formats::Format(t, precision_, scientific_);
+        std::printf(format, t);
+      }
+
+      void operator()(const Signal::NaN& s) const {
+        PrintTypes::Print(s.nan_);
+      }
+
+    protected:
+      std::size_t col_;
+      int precision_;
+      bool scientific_;
+    };
+
     //==========================
     // PrintAllScorePrecision()
     //==========================
@@ -275,8 +306,6 @@ namespace Visitors {
     // PrintID()
     //===========
     struct PrintID {
-      typedef std::string Type;
-
       template <typename T>
       void operator()(T* t) const {
         PrintTypes::Print(t->id());
@@ -303,12 +332,68 @@ namespace Visitors {
       }
     };
 
+    //=============
+    // PrintText()
+    //=============
+    struct PrintText {
+      explicit PrintText(std::size_t col) : col_(col) { /* */ }
+      explicit PrintText(const std::string& col) : col_(0) {
+        std::stringstream ss; ss << col; ss >> col_;
+      }
+
+      template <typename T>
+      void operator()(T* t) const {
+        PrintTypes::Print(t->text(col_));
+      }
+
+      void operator()(const Signal::NaN&) const {
+        static char const* noID = "No-ID";
+        PrintTypes::Print(noID);
+      }
+
+    protected:
+      std::size_t col_;
+    };
+
+    //========================
+    // PrintUniqueRangeText()
+    //  : sorting and uniquing -> will not be in genomic order
+    //========================
+    struct PrintUniqueRangeText : private Visitors::Helpers::PrintDelim {
+      typedef Visitors::Helpers::PrintDelim Base;
+
+      explicit PrintUniqueRangeText(const std::string& col, const std::string& delim = ";")
+        : Base(delim), col_(0) {
+		  std::stringstream ss; ss << col; ss >> col_;
+	  }
+
+      template <typename Iter>
+      void operator()(Iter beg, Iter end) const {
+        typedef std::set<std::string> SortType;
+        if ( beg == end )
+          return;
+        SortType srt;
+        while ( beg != end ) {
+          srt.insert((*beg)->text(col_));
+          ++beg;
+        } // while
+
+        typename SortType::iterator i = srt.begin();
+        PrintTypes::Print(i->c_str());
+        while ( ++i != srt.end() ) {
+          Base::operator()();
+          PrintTypes::Print(i->c_str());
+        } // while
+      }
+
+	protected:
+	  std::size_t col_;
+    };
+
     //===============
     // PrintLength()
     //===============
     struct PrintLength {
-      typedef std::string Type;
-
       template <typename T>
       void operator()(T* t) const {
         PrintTypes::Print(t->length());
@@ -319,8 +404,6 @@ namespace Visitors {
     // PrintlnLength()
     //=================
     struct PrintlnLength {
-      typedef std::string Type;
-
       template <typename T>
       void operator()(T* t) const {
         PrintTypes::Println(t->length());
