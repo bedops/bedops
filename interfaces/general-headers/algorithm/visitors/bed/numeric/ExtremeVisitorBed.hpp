@@ -39,7 +39,7 @@ namespace Visitors {
     /*
       CompType requires value + address comparisons; we must use a std::set<>
        not a std::multiset<>.  Use a version of the templated
-       CompValueThenAddress<> or a similar idea.
+       CompValueThenAddressLesser or a similar idea.
     */
     template <
               typename Process,

@@ -124,6 +124,9 @@ int main(int argc, char **argv) {
     std::cerr << "  version:  " << BedMap::version << std::endl;
     std::cerr << "  authors:  " << BedMap::authors << std::endl;
     std::cerr << BedMap::Usage() << std::endl;
+  } catch(std::string& s) {
+    std::cerr << "May use bedmap --help for more help.\n" << std::endl;
+    std::cerr << "Error: " << s << std::endl;
   } catch(const std::exception& stx) {
     std::cerr << "May use bedmap --help for more help.\n" << std::endl;
     std::cerr << "Error: " << stx.what() << std::endl;
@@ -430,18 +433,18 @@ namespace BedMap {
   //==============
   // SelectBase<> : General Case
   //==============
-  template <bool ProcessMode, typename BedDistType>
+  template <bool ProcessMode, typename BedDistType, bool UseRest>
   struct SelectBase {
-    typedef Visitors::BedBaseVisitor<BedDistType, Bed::GBed, Bed::GBed> BaseClass;
+    typedef Visitors::BedBaseVisitor<BedDistType, Bed::GBed<UseRest>, Bed::GBed<UseRest>> BaseClass;
     enum { IsFastMode = ProcessMode };
   };
 
   //==============
   // SelectBase<> : No fully nested components
   //==============
-  template <typename BedDistType>
-  struct SelectBase<true, BedDistType> {
-    typedef Visitors::Visitor<Bed::GBed, Bed::GBed> BaseClass;
+  template <typename BedDistType, bool UseRest>
+  struct SelectBase<true, BedDistType, UseRest> {
+    typedef Visitors::Visitor<Bed::GBed<UseRest>, Bed::GBed<UseRest>> BaseClass;
     enum { IsFastMode = true };
   };
 
@@ -452,11 +455,19 @@ namespace BedMap {
   void callSweep1(const SweepDistType& st,
                   const BedDistType& dt,
                   const InputType& input) {
-    typedef typename SelectBase<ProcessMode, BedDistType>::BaseClass BaseClass;
-    constexpr bool isFast = SelectBase<ProcessMode, BedDistType>::IsFastMode;
-    BedMap::GenerateVisitors<BaseClass> gv;
-    std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, input);
-    runSweep1<BaseClass>(st, dt, input, visitorGroup, isFast);
+    if ( input.useRest_ ) {
+      typedef typename SelectBase<ProcessMode, BedDistType, true>::BaseClass BaseClass;
+      constexpr bool isFast = SelectBase<ProcessMode, BedDistType, true>::IsFastMode;
+      BedMap::GenerateVisitors<BaseClass> gv;
+      std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, input);
+      runSweep1<BaseClass>(st, dt, input, visitorGroup, isFast);
+    } else {
+      typedef typename SelectBase<ProcessMode, BedDistType, false>::BaseClass BaseClass;
+      constexpr bool isFast = SelectBase<ProcessMode, BedDistType, false>::IsFastMode;
+      BedMap::GenerateVisitors<BaseClass> gv;
+      std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, input);
+      runSweep1<BaseClass>(st, dt, input, visitorGroup, isFast);
+    }
   }
 
   //==============
@@ -466,11 +477,19 @@ namespace BedMap {
   void callSweep2(const SweepDistType& st,
                   const BedDistType& dt,
                   const InputType& input) {
-    typedef typename SelectBase<ProcessMode, BedDistType>::BaseClass BaseClass;
-    constexpr bool isFast = SelectBase<ProcessMode, BedDistType>::IsFastMode;
-    BedMap::GenerateVisitors<BaseClass> gv;
-    std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, input);
-    runSweep2<BaseClass>(st, dt, input, visitorGroup, isFast);
+    if ( input.useRest_ ) {
+      typedef typename SelectBase<ProcessMode, BedDistType, true>::BaseClass BaseClass;
+      constexpr bool isFast = SelectBase<ProcessMode, BedDistType, true>::IsFastMode;
+      BedMap::GenerateVisitors<BaseClass> gv;
+      std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, input);
+      runSweep2<BaseClass>(st, dt, input, visitorGroup, isFast);
+    } else {
+      typedef typename SelectBase<ProcessMode, BedDistType, false>::BaseClass BaseClass;
+      constexpr bool isFast = SelectBase<ProcessMode, BedDistType, false>::IsFastMode;
+      BedMap::GenerateVisitors<BaseClass> gv;
+      std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, input);
+      runSweep2<BaseClass>(st, dt, input, visitorGroup, isFast);
+    }
   }
 
   //================
