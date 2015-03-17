@@ -35,6 +35,7 @@
 
 namespace Bed
 {
+  template <bool UseRest = true>
   class GBed {
     enum { RestColIdx = 4 };
 
@@ -45,40 +46,51 @@ namespace Bed
       : _chrom(""), _start(1), _end(0) { /* */ }
     GBed(char const* chr, CoordType start, CoordType end)
       : _chrom(chr), _start(start), _end(end) { /* */ }
-    GBed(char const* chr, CoordType start, CoordType end, const std::vector<std::string>& rest)
-      : _chrom(chr), _start(start), _end(end), _rest(rest) { /* */ }
-    explicit GBed(FILE* inputFile) : _chrom(""), _start(1), _end(0)
+    explicit GBed(FILE* inputFile)
+	  : _chrom(""), _start(1), _end(0)
       {
         static char cbuf[TOKEN_CHR_MAX_LENGTH + 1];
         static char rest[TOKEN_REST_MAX_LENGTH + 1];
         cbuf[0] = '\0';
         rest[0] = '\0';
-        std::fscanf(inputFile, "%s\t%" SCNu64 "\t%" SCNu64 "%[^\n]s\n", cbuf, &_start, &_end, rest);
+        if ( UseRest )
+          std::fscanf(inputFile, "%s\t%" SCNu64 "\t%" SCNu64 "%[^\n]s\n", cbuf, &_start, &_end, rest);
+        else
+          std::fscanf(inputFile, "%s\t%" SCNu64 "\t%" SCNu64 "%*[^\n]s\n", cbuf, &_start, &_end);
         std::fgetc(inputFile); // chomp newline
 
         _chrom = cbuf;
 
-        char* pch = std::strtok(rest, "\t");
-        while ( pch != NULL ) {
-          _rest.push_back(pch);
-          pch = std::strtok(NULL, "\t");
-        } // while
+        if ( UseRest ) {
+          char* pch = std::strtok(rest, "\t");
+          while ( pch != NULL ) {
+            _rest.push_back(pch);
+            pch = std::strtok(NULL, "\t");
+          } // while
+        }
       }
-    explicit GBed(const std::string& inputLine) : _chrom(""), _start(1), _end(0)
+    explicit GBed(const std::string& inputLine)
+	  : _chrom(""), _start(1), _end(0)
       {
         static char cbuf[TOKEN_CHR_MAX_LENGTH + 1];
         static char rest[TOKEN_REST_MAX_LENGTH + 1];
         cbuf[0] = '\0';
         rest[0] = '\0';
-        std::sscanf(inputLine.c_str(), "%s\t%" SCNu64 "\t%" SCNu64 "%[^\n]s\n", cbuf, &_start, &_end, rest);
+
+        if ( UseRest )
+          std::sscanf(inputLine.c_str(), "%s\t%" SCNu64 "\t%" SCNu64 "%[^\n]s\n", cbuf, &_start, &_end, rest);
+        else
+          std::sscanf(inputLine.c_str(), "%s\t%" SCNu64 "\t%" SCNu64 "%*[^\n]s\n", cbuf, &_start, &_end);
 
         _chrom = cbuf;
 
-        char* pch = std::strtok(rest, "\t");
-        while ( pch != NULL ) {
-          _rest.push_back(pch);
-          pch = std::strtok(NULL, "\t");
-        } // while
+        if ( UseRest ) {
+          char* pch = std::strtok(rest, "\t");
+          while ( pch != NULL ) {
+            _rest.push_back(pch);
+            pch = std::strtok(NULL, "\t");
+          } // while
+        }
       }
 
     // Basic BED
@@ -94,25 +106,13 @@ namespace Bed
     char const* text(int col) const { return _rest[col-RestColIdx].c_str(); }
     void text(int col, const std::string& s) { _rest[col-RestColIdx] = s; }
     MeasurementType measure(int col) const { return std::atof(_rest[col-RestColIdx].c_str()); }
-    void measure(int col, MeasurementType m)
-      {
-        std::stringstream ss; ss << m;
-        _rest[col-RestColIdx] = ss.str();
-      }
 
     // Printing
     void print() const
       {
         std::printf("%s\t%" PRIu64 "\t%" PRIu64, _chrom.c_str(), _start, _end);
-        for ( auto i : _rest )
+        for ( const auto& i : _rest )
           std::printf("\t%s", i.c_str());
-      }
-    void println() const
-      {
-        std::printf("%s\t%" PRIu64 "\t%" PRIu64, _chrom.c_str(), _start, _end);
-        for ( auto i : _rest )
-          std::printf("\t%s", i.c_str());
-        std::printf("\n");
       }
 
     // Operatives

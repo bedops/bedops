@@ -78,18 +78,18 @@ namespace Visitors {
 
         if ( size > 1 ) {
           if ( kthPosUp == kthPosDown ) { // a true integer; take average of two adjacent integers
-            double one = (*BaseClass::currentMarker_)->measure(col_);
+            double one = (*BaseClass::currentMarker_)->measure(BaseClass::col_);
             typename BaseClass::ScoreTypeContainer::iterator next = BaseClass::currentMarker_;
-            double two = (*++next)->measure(col_);
+            double two = (*++next)->measure(BaseClass::col_);
             pt_.operator()((one + two)/2.0);
           } else if ( BaseClass::currentAtPos_ == kthPosUp ) {
-            pt_.operator()(static_cast<MT>((*BaseClass::currentMarker_)->measure(col_)));
+            pt_.operator()(static_cast<MT>((*BaseClass::currentMarker_)->measure(BaseClass::col_)));
           } else { // BaseClass::currentAtPos_ == kthPosDown; round up to kthPosUp per wikipedia
             typename BaseClass::ScoreTypeContainer::iterator next = BaseClass::currentMarker_;
-            pt_.operator()(static_cast<MT>((*++next)->measure(col_)));
+            pt_.operator()(static_cast<MT>((*++next)->measure(BaseClass::col_)));
           }
         } else if ( 1 == size ) {
-          pt_.operator()(static_cast<MT>((*BaseClass::currentMarker_)->measure(col_)));
+          pt_.operator()(static_cast<MT>((*BaseClass::currentMarker_)->measure(BaseClass::col_)));
         } else {
           static const Signal::NaN nan = Signal::NaN();
           pt_.operator()(nan);
@@ -104,7 +104,6 @@ namespace Visitors {
 
     protected:
       ProcessType pt_;
-      std::size_t col_;
     };
 
   } // namespace BedSpecific

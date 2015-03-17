@@ -35,9 +35,10 @@ namespace Bed {
 
   // function objects for comparing values, then addresses
   struct CompValueThenAddressLesser
-    : public std::binary_function<GBed const*, GBed const*, bool> {
+    : public std::binary_function<GBed<true> const*, GBed<true> const*, bool> {
       explicit CompValueThenAddressLesser(std::size_t col) : _col(col) {}
-      inline bool operator()(GBed const* t1, GBed const* t2) const {
+      template <bool T>
+      inline bool operator()(GBed<T> const* t1, GBed<T> const* t2) const {
         auto m1 = t1->measure(_col), m2 = t2->measure(_col);
         if ( m1 != m2 )
           return(m1 < m2);
@@ -48,9 +49,10 @@ namespace Bed {
   };
 
   struct CompValueThenAddressGreater
-    : public std::binary_function<GBed const*, GBed const*, bool> {
+    : public std::binary_function<GBed<true> const*, GBed<true> const*, bool> {
       explicit CompValueThenAddressGreater(std::size_t col) : _col(col) {}
-      inline bool operator()(GBed const* t1, GBed const* t2) const {
+      template <bool T>
+      inline bool operator()(GBed<T> const* t1, GBed<T> const* t2) const {
         auto m1 = t1->measure(_col), m2 = t2->measure(_col);
         if ( m1 != m2 )
           return(m1 > m2);

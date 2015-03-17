@@ -110,7 +110,7 @@ namespace BedMap {
         precision_(6), useScientific_(false), setPrec_(false), numFiles_(0),
         minRefFields_(0), minMapFields_(0), errorCheck_(false), sweepAll_(false),
         outDelim_("|"), multiDelim_(";"), fastMode_(false), rangeAlias_(false),
-        chrom_("all"), skipUnmappedRows_(false) {
+        chrom_("all"), skipUnmappedRows_(false), useRest_(false) {
 
       // Process user's operation options
       if ( argc <= 1 )
@@ -450,13 +450,15 @@ namespace BedMap {
     bool rangeAlias_;
     std::string chrom_;
     bool skipUnmappedRows_;
+    bool useRest_;
 
   private:
     bool addNoArgVisitor(OpName op) {
       visitorNames_.push_back(op);
       visitorArgs_.push_back(std::vector<std::string>());
       minRefFields_ = std::max(minRefFields_, 3u);
-      minMapFields_ = std::max(minRefFields_, 3u);
+      minMapFields_ = std::max(minMapFields_, 3u);
+      useRest_ = useRest_ || op == OpName::Echo || op == OpName::EchoMap;
       return true;
     }
 
@@ -471,8 +473,9 @@ namespace BedMap {
       args.push_back(ss.str());
 	  std::reverse(args.begin(), args.end());
       visitorArgs_.push_back(args);
-      minMapFields_ = std::max(minMapFields_, static_cast<unsigned int>(column > 0 ? column : 5u));
       minRefFields_ = std::max(minRefFields_, 3u);
+      minMapFields_ = std::max(minMapFields_, static_cast<unsigned int>(column > 0 ? column : 5u));
+      useRest_ = true;
       return true;
     }
   };
