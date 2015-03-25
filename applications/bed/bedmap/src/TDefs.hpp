@@ -37,6 +37,7 @@ namespace BedMap {
   //==============
   template <typename BaseClass>
   struct VisitorTypes {
+
     typedef Visitors::BedHelpers::Print ProcessAll;
     typedef Visitors::BedHelpers::Print ProcessOne;
     typedef Visitors::BedHelpers::PrintText ProcessText;
@@ -91,6 +92,7 @@ namespace BedMap {
     typedef Visitors::BedSpecific::OvrAggregate<ProcessScore, BaseClass> OvrAgg;
     typedef Visitors::BedSpecific::OvrUnique<ProcessScore, BaseClass> OvrUniq;
     typedef Visitors::BedSpecific::OvrUniqueFract<ProcessScorePrecision, BaseClass> OvrUniqFract;
+
   };
 
 } // namespace BedMap
