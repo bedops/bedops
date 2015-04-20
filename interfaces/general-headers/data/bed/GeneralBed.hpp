@@ -35,7 +35,6 @@
 
 namespace Bed
 {
-  template <bool UseRest = true>
   class GBed {
     enum { RestColIdx = 4 };
 
@@ -53,21 +52,16 @@ namespace Bed
         static char rest[TOKEN_REST_MAX_LENGTH + 1];
         cbuf[0] = '\0';
         rest[0] = '\0';
-        if ( UseRest )
-          std::fscanf(inputFile, "%s\t%" SCNu64 "\t%" SCNu64 "%[^\n]s\n", cbuf, &_start, &_end, rest);
-        else
-          std::fscanf(inputFile, "%s\t%" SCNu64 "\t%" SCNu64 "%*[^\n]s\n", cbuf, &_start, &_end);
+        std::fscanf(inputFile, "%s\t%" SCNu64 "\t%" SCNu64 "%[^\n]s\n", cbuf, &_start, &_end, rest);
         std::fgetc(inputFile); // chomp newline
 
         _chrom = cbuf;
 
-        if ( UseRest ) {
-          char* pch = std::strtok(rest, "\t");
-          while ( pch != NULL ) {
-            _rest.push_back(pch);
-            pch = std::strtok(NULL, "\t");
-          } // while
-        }
+        char* pch = std::strtok(rest, "\t");
+        while ( pch != NULL ) {
+          _rest.push_back(pch);
+          pch = std::strtok(NULL, "\t");
+        } // while
       }
     explicit GBed(const std::string& inputLine)
 	  : _chrom(""), _start(1), _end(0)
@@ -77,20 +71,15 @@ namespace Bed
         cbuf[0] = '\0';
         rest[0] = '\0';
 
-        if ( UseRest )
-          std::sscanf(inputLine.c_str(), "%s\t%" SCNu64 "\t%" SCNu64 "%[^\n]s\n", cbuf, &_start, &_end, rest);
-        else
-          std::sscanf(inputLine.c_str(), "%s\t%" SCNu64 "\t%" SCNu64 "%*[^\n]s\n", cbuf, &_start, &_end);
+        std::sscanf(inputLine.c_str(), "%s\t%" SCNu64 "\t%" SCNu64 "%[^\n]s\n", cbuf, &_start, &_end, rest);
 
         _chrom = cbuf;
 
-        if ( UseRest ) {
-          char* pch = std::strtok(rest, "\t");
-          while ( pch != NULL ) {
-            _rest.push_back(pch);
-            pch = std::strtok(NULL, "\t");
-          } // while
-        }
+        char* pch = std::strtok(rest, "\t");
+        while ( pch != NULL ) {
+          _rest.push_back(pch);
+          pch = std::strtok(NULL, "\t");
+        } // while
       }
 
     // Basic BED
