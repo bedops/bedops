@@ -78,7 +78,7 @@ namespace Bed {
         return;
 
       bool is_namedpipe = false;
-      if ( fn_ != "-" ) {
+      if ( fn_ != "-" && fn_ != "stdin" ) {
         struct stat st;
         if ( stat(filename.c_str(), &st) == -1 )
           throw(Exception("Error: stat() failed on: " + fn_));
