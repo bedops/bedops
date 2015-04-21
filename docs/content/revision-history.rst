@@ -20,6 +20,9 @@ Released: **April 20, 2015**
 * :ref:`bedops <bedops>`
 
   * Resolved issue in using ``--ec`` with ``bedops`` when reading from ``stdin`` (thanks to Brad Gulko for the bug report).
+
+* General suite-wide improvements
+
   * Addressed inconsistency with constants defined for the suite at the extreme end of the limits we allow for coordinate values (thanks again to Brad Gulko for the report).
 
 =================
