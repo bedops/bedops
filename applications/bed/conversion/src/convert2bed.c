@@ -3061,7 +3061,7 @@ c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
         while ((allele_tok = c2b_strsep(&alt_alleles_copy, ",")) != NULL) {
             vcf.alt = (char *) allele_tok; /* discard const */
             if ((c2b_globals.vcf->filter_count == 1) && (!c2b_globals.vcf->only_insertions)) {
-                vcf.end = start_val + abs(ref_size - strlen(vcf.alt)) + 1;
+                vcf.end = start_val + ref_size - strlen(vcf.alt) + 1;
             }
             if ( (c2b_globals.vcf->filter_count == 0) ||
                  ((c2b_globals.vcf->only_snvs) && (c2b_vcf_record_is_snv(ref_str, vcf.alt))) ||
@@ -3078,7 +3078,7 @@ c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
         /* just print the one allele */
 
         if ((c2b_globals.vcf->filter_count == 1) && (!c2b_globals.vcf->only_insertions)) {
-            vcf.end = start_val + abs(ref_size - strlen(alt_str)) + 1;
+            vcf.end = start_val + ref_size - strlen(alt_str) + 1;
         }
         if ( (c2b_globals.vcf->filter_count == 0) ||
              ((c2b_globals.vcf->only_snvs) && (c2b_vcf_record_is_snv(ref_str, alt_str))) ||
