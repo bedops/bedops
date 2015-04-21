@@ -34,7 +34,7 @@ namespace BEDOPS {
 #endif
 
   static const char* revision() {
-    return("2.4.13");
+    return("2.4.14");
   }
 
   static const char* citation() {
