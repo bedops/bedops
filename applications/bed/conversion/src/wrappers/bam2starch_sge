@@ -1,8 +1,8 @@
 #!/bin/tcsh -ef
 
-#    bam2starchcluster_sge
+#    bam2starch_sge
 #    -----------------------------------------------------------------------
-#    Copyright (C) 2011-2014 Shane Neph and Alex Reynolds
+#    Copyright (C) 2011-2015 Shane Neph and Alex Reynolds
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ set sge_opts = "$queue $shell $misc_opts $soundoff"
 # some input error checking
 ############################
 
-set help = "\nUsage: bam2starchcluster_sge [--help] [--clean] <input-indexed-bam-file> [output-starch-file]\n\n"
+set help = "\nUsage: bam2starch_sge [--help] [--clean] <input-indexed-bam-file> [output-starch-file]\n\n"
 set help = "$help  Pass in the name of an indexed BAM file to create a Starch archive using the cluster.\n\n"
 set help = "$help  (stdin isn't supported through this wrapper script, but Starch supports it natively.)\n\n"
 set help = "$help  Add --clean to remove <input-indexed-bam-file> after starching it up.\n\n"
@@ -126,7 +126,7 @@ endif
 set files = ()
 set jids = ()
 @ cntr = 0
-foreach chrom (`$samtools_bin idxstats $input | cut -f1`)
+foreach chrom (`samtools idxstats $input | cut -f1`)
   qsub $sge_opts -N $nm.$cntr > /dev/stderr << __EXTRACTION__
     samtools view -b $input $chrom | bam2starch - > $here/$nm/$cntr
 __EXTRACTION__

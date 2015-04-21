@@ -1,8 +1,8 @@
 #!/bin/tcsh -ef
 
-#    bam2bedcluster_gnuParallel
+#    bam2bed_gnuParallel
 #    -----------------------------------------------------------------------
-#    Copyright (C) 2011-2014 Shane Neph and Alex Reynolds
+#    Copyright (C) 2011-2015 Shane Neph and Alex Reynolds
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 # some input error checking
 ############################
 
-set help = "\nUsage: bam2bedcluster_gnuParallel [--help] [--clean] <input-indexed-bam-file> [output-bed-file]\n\n"
+set help = "\nUsage: bam2bed_gnuParallel [--help] [--clean] <input-indexed-bam-file> [output-bed-file]\n\n"
 set help = "$help  Pass in the name of an indexed BAM file to create a sorted BED file using GNU Parallel.\n\n"
 set help = "$help  (stdin isn't supported through this wrapper script.)\n\n"
 set help = "$help  Add --clean to remove <input-indexed-bam-file> after turning it into BED.\n\n"

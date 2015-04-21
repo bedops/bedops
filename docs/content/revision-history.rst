@@ -12,6 +12,24 @@ Current version
 ===============
 
 -------
+v2.4.14
+-------
+
+Released: **April 21, 2015**
+
+* :ref:`convert2bed <convert2bed>`
+
+  * Fixed missing ``samtools`` variable references in cluster conversion scripts.
+
+* General suite-wide improvements
+
+  * Fixed exception error message for ``stdin`` check (thanks to Brad Gulko for the bug report).
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.13
 -------
 
@@ -24,10 +42,6 @@ Released: **April 20, 2015**
 * General suite-wide improvements
 
   * Addressed inconsistency with constants defined for the suite at the extreme end of the limits we allow for coordinate values (thanks again to Brad Gulko for the report).
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.12

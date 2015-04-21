@@ -1,8 +1,8 @@
 #!/bin/tcsh -ef
 
-#    bam2starchcluster_gnuParallel
+#    bam2starch_gnuParallel
 #    -----------------------------------------------------------------------
-#    Copyright (C) 2011-2014 Shane Neph and Alex Reynolds
+#    Copyright (C) 2011-2015 Shane Neph and Alex Reynolds
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 # some input error checking
 ############################
 
-set help = "\nUsage: bam2starchcluster_gnuParallel [--help] [--clean] <input-indexed-bam-file> [output-starch-file]\n\n"
+set help = "\nUsage: bam2starch_gnuParallel [--help] [--clean] <input-indexed-bam-file> [output-starch-file]\n\n"
 set help = "$help  Pass in the name of an indexed BAM file to create a Starch file using GNU Parallel.\n\n"
 set help = "$help  (stdin isn't supported through this wrapper script.)\n\n"
 set help = "$help  Add --clean to remove <input-indexed-bam-file> after starching it up.\n\n"
