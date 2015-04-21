@@ -81,7 +81,7 @@ namespace Bed {
       if ( fn_ != "-" && fn_ != "stdin" ) {
         struct stat st;
         if ( stat(filename.c_str(), &st) == -1 )
-          throw(Exception("Error: stat() failed on: " + fn_));
+          throw(Exception("stat() failed on: " + fn_));
         is_namedpipe = (S_ISFIFO(st.st_mode) != 0);
       }
 
