@@ -19,7 +19,7 @@ Released: **April 21, 2015**
 
 * :ref:`convert2bed <convert2bed>`
 
-  * Fixed missing ``samtools`` variable references in cluster conversion scripts.
+  * Fixed missing ``samtools`` variable references in cluster conversion scripts (thanks to Brad Gulko for the bug report).
 
 * General suite-wide improvements
 
