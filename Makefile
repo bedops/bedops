@@ -128,3 +128,26 @@ install_osx_packaging_bins: prep_c
 	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_sge ${OSXPKGDIR}/bam2starch_sge
 	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_gnuParallel ${OSXPKGDIR}/bam2starch_gnuParallel
 	mkdir -p ${OSXLIBDIR}
+
+update_bedops_version:
+ifndef OLD_VER
+	$(error Old version variable OLD_VER is undefined (e.g., 2.4.14))
+endif
+ifndef NEW_VER
+	$(error New version variable NEW_VER is undefined (e.g., 2.4.15))
+endif
+ifeq ($(KERNEL), Darwin)
+	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" README.md
+	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" interfaces/general-headers/suite/BEDOPS.Version.hpp
+	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/os_x/BEDOPS.pkgproj
+	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" docs/index.rst
+	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" docs/conf.py
+	find docs/content -type f -exec sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" {} +
+else
+	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" README.md
+	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" interfaces/general-headers/suite/BEDOPS.Version.hpp
+	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/os_x/BEDOPS.pkgproj
+	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" docs/index.rst
+	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" docs/conf.py
+	find docs/content -type f -exec sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" {} +
+endif
