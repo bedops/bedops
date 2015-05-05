@@ -151,3 +151,6 @@ else
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" docs/conf.py
 	find docs/content -type f -exec sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" {} +
 endif
+
+docker: packaging/docker/Dockerfile
+	docker build -t bedops -f packaging/docker/Dockerfile  .
