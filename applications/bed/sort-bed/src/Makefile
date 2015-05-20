@@ -26,13 +26,14 @@ LIBLOCATION         = -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLI
 LIBRARIES           = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 
 PROG                = sort-bed
-DIST_DIR            = ../bin
-OBJ_DIR             = objects
+BINDIR              = ../bin
+OBJDIR             = objects
 WARNINGS            = -Wall -Wextra -pedantic
 BLDFLAGS            = ${WARNINGS} -O3 -std=c++11
 SFLAGS              = -static
 
-STARCHOBJS          = $(OBJ_DIR)/starchConstants.o $(OBJ_DIR)/starchFileHelpers.o $(OBJ_DIR)/starchHelpers.o $(OBJ_DIR)/starchMetadataHelpers.o $(OBJ_DIR)/unstarchHelpers.o $(OBJ_DIR)/starchSha1Digest.o $(OBJ_DIR)/starchBase64Coding.o
+dependency_names    = SortDetails Sort CheckSort NaN starchConstants starchFileHelpers starchHelpers starchMetadataHelpers unstarchHelpers starchSha1Digest starchBase64Coding
+dependencies        = $(addprefix $(OBJDIR)/, $(addsuffix .o, $(dependency_names)))
 
 FLAGS               = $(SFLAGS) -s ${BLDFLAGS} ${LIBLOCATION} ${INCLUDES}
 DFLAGS              = $(SFLAGS) -g -O0 -std=c++11 -Wall -fno-inline -pedantic ${LIBLOCATION} ${INCLUDES}
@@ -44,58 +45,33 @@ else
 	WARNINGS += -U__STRICT_ANSI__
 endif
 
-build: sort
+build: $(dependencies)
 
-sort: sortbuild
-	${CXX} -o ${DIST_DIR}/${PROG} ${FLAGS} ${STARCHOBJS} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o ${OBJ_DIR}/CheckSort.o ${LIBRARIES}
+build_gprof: $(BINDIR)/gprof.$(PROG)
 
-build_gprof: gprofbuild
-	${CXX} -o ${DIST_DIR}/gprof.${PROG} ${GPROFFLAGS} ${STARCHOBJS} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o ${OBJ_DIR}/CheckSort.o ${LIBRARIES}
+build_debug: $(BINDIR)/debug.$(PROG)
 
-build_debug: dbgbuild
-	${CXX} $(DFLAGS) ${STARCHOBJS} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o ${OBJ_DIR}/CheckSort.o -o ${DIST_DIR}/debug.${PROG} ${LIBRARIES}
+dependencies: $(dependencies)
 
-gprofbuild: prep
-	$(CXX) -c ${GPROFFLAGS} $(LIB3)/starchConstants.c -o $(OBJ_DIR)/starchConstants.o ${INCLUDES}
-	$(CXX) -c ${GPROFFLAGS} $(LIB3)/starchFileHelpers.c -o $(OBJ_DIR)/starchFileHelpers.o ${INCLUDES}
-	$(CXX) -c ${GPROFFLAGS} $(LIB3)/starchHelpers.c -o $(OBJ_DIR)/starchHelpers.o -iquote${HEAD} ${INCLUDES}
-	$(CXX) -c ${GPROFFLAGS} $(LIB3)/starchMetadataHelpers.c -o $(OBJ_DIR)/starchMetadataHelpers.o ${INCLUDES}
-	$(CXX) -c ${GPROFFLAGS} $(LIB3)/unstarchHelpers.c -o $(OBJ_DIR)/unstarchHelpers.o ${INCLUDES}
-	$(CXX) -c ${GPROFFLAGS} ${LIB3}/starchSha1Digest.c -o  ${OBJ_DIR}/starchSha1Digest.o ${INCLUDES}
-	$(CXX) -c ${GPROFFLAGS} ${LIB3}/starchBase64Coding.c -o  ${OBJ_DIR}/starchBase64Coding.o ${INCLUDES}
-	${CXX} -c ${GPROFFLAGS} CheckSort.cpp -o ${OBJ_DIR}/CheckSort.o ${INCLUDES}
-	${CXX} -c ${GPROFFLAGS} SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
-	${CXX} -c ${GPROFFLAGS} Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
+$(BINDIR)/$(PROG) : $(dependencies)
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(FLAGS) ${LIBRARIES} $(SOURCE1)
 
-sortbuild: prep
-	$(CXX) -c $(BLDFLAGS) $(LIB3)/starchConstants.c -o $(OBJ_DIR)/starchConstants.o ${INCLUDES}
-	$(CXX) -c $(BLDFLAGS) $(LIB3)/starchFileHelpers.c -o $(OBJ_DIR)/starchFileHelpers.o ${INCLUDES}
-	$(CXX) -c $(BLDFLAGS) $(LIB3)/starchHelpers.c -o $(OBJ_DIR)/starchHelpers.o -iquote${HEAD} ${INCLUDES}
-	$(CXX) -c $(BLDFLAGS) $(LIB3)/starchMetadataHelpers.c -o $(OBJ_DIR)/starchMetadataHelpers.o ${INCLUDES}
-	$(CXX) -c $(BLDFLAGS) $(LIB3)/unstarchHelpers.c -o $(OBJ_DIR)/unstarchHelpers.o ${INCLUDES}
-	$(CXX) -c $(BLDFLAGS) ${LIB3}/starchSha1Digest.c -o  ${OBJ_DIR}/starchSha1Digest.o ${INCLUDES}
-	$(CXX) -c $(BLDFLAGS) ${LIB3}/starchBase64Coding.c -o  ${OBJ_DIR}/starchBase64Coding.o ${INCLUDES}
-	${CXX} -c $(BLDFLAGS) CheckSort.cpp -o ${OBJ_DIR}/CheckSort.o ${INCLUDES}
-	${CXX} -c $(BLDFLAGS) SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
-	${CXX} -c $(BLDFLAGS) Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
+$(BINDIR)/gprof.$(PROG) : $(dependencies)
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(GPROFFLAGS) ${LIBRARIES} $(SOURCE1)
 
-dbgbuild: prep
-	$(CXX) -c $(DFLAGS) $(LIB3)/starchConstants.c -o $(OBJ_DIR)/starchConstants.o ${INCLUDES}
-	$(CXX) -c $(DFLAGS) $(LIB3)/starchFileHelpers.c -o $(OBJ_DIR)/starchFileHelpers.o ${INCLUDES}
-	$(CXX) -c $(DFLAGS) $(LIB3)/starchHelpers.c -o $(OBJ_DIR)/starchHelpers.o -iquote${HEAD} ${INCLUDES}
-	$(CXX) -c $(DFLAGS) $(LIB3)/starchMetadataHelpers.c -o $(OBJ_DIR)/starchMetadataHelpers.o ${INCLUDES}
-	$(CXX) -c $(DFLAGS) $(LIB3)/unstarchHelpers.c -o $(OBJ_DIR)/unstarchHelpers.o ${INCLUDES}
-	$(CXX) -c $(DFLAGS) ${LIB3}/starchSha1Digest.c -o  ${OBJ_DIR}/starchSha1Digest.o ${INCLUDES}
-	$(CXX) -c $(DFLAGS) ${LIB3}/starchBase64Coding.c -o  ${OBJ_DIR}/starchBase64Coding.o ${INCLUDES}
-	${CXX} -c $(DFLAGS) CheckSort.cpp -o ${OBJ_DIR}/CheckSort.o ${INCLUDES}
-	${CXX} -c $(DFLAGS) SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
-	${CXX} -c $(DFLAGS) Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
+$(BINDIR)/debug.$(PROG) : $(dependencies)
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(DFLAGS) ${LIBRARIES} $(SOURCE1)
 
-prep: clean
-	mkdir -p ${DIST_DIR}
-	mkdir -p ${OBJ_DIR}
+$(OBJDIR)/%.o : $(LIB1)/%.cpp
+	mkdir -p $(OBJDIR) && $(CXX) -c $(BLDFLAGS) $^ -o $@ ${INCLUDES}
+
+$(OBJDIR)/%.o : $(LIB3)/%.c
+	mkdir -p $(OBJDIR) && $(CXX) -c ${BLDFLAGS} $^ -o $@ ${INCLUDES}
+
+$(OBJDIR)/%.o : %.cpp
+	mkdir -p $(OBJDIR) && $(CXX) -c ${BLDFLAGS} $^ -o $@ -iquote${HEAD} ${INCLUDES}
 
 clean:
 	rm -rf ${OBJ_DIR}
-	rm -f $(DIST_DIR)/$(PROG)
-	rm -f $(DIST_DIR)/*.$(PROG)
+	rm -f $(BINDIR)/$(PROG)
+	rm -f $(BINDIR)/*.$(PROG)
