@@ -148,17 +148,18 @@ clean_gprof:
 #
 # third-party libraries
 #
+LIBS = $(addprefix $(PARTY3)/, jansson/lib/libjansson.a bzip2/libbz2.a zlib/libz.a)
 
-support: jansson_support_c bzip2_support_c zlib_support_c
+support: $(LIBS)
 
-jansson_support_c:
-	bzcat ${WHICHJANSSON}.tar.bz2 | tar -x -C ${PARTY3}
+${PARTY3}/jansson/lib/libjansson.a: $(WHICHJANSSON).tar.bz2
+	bzcat $^ | tar -x -C ${PARTY3}
 	cd ${PARTY3}/${JANSSONVERSION} && ./configure --prefix=${WDIR}/${PARTY3}/${JANSSONVERSION} && $(MAKE) && $(MAKE) install && cd ${WDIR} && rm -f jansson && ln -sf ${JANSSONVERSION} ${PARTY3}/jansson
 
-bzip2_support_c:
-	bzcat ${WHICHBZIP2}.tar.bz2 | tar -x -C ${PARTY3}
+$(PARTY3)/bzip2/libbz2.a: $(WHICHBZIP2).tar.bz2
+	bzcat $^ | tar -x -C ${PARTY3}
 	cd ${PARTY3}/${BZIP2VERSION} && $(MAKE) libbz2.a && cd ${WDIR} && rm -f bzip2 && ln -sf ${BZIP2VERSION} ${PARTY3}/bzip2
 
-zlib_support_c:
-	bzcat ${WHICHZLIB}.tar.bz2 | tar -x -C ${PARTY3}
+${PARTY3}/zlib/libz.a: $(WHICHZLIB).tar.bz2
+	bzcat $^ | tar -x -C ${PARTY3}
 	cd ${PARTY3}/${ZLIBVERSION} && ./configure --static && $(MAKE) && cd ${WDIR} && rm -f zlib && ln -sf ${ZLIBVERSION} ${PARTY3}/zlib
