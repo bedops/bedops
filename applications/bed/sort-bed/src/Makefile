@@ -32,7 +32,7 @@ WARNINGS            = -Wall -Wextra -pedantic
 BLDFLAGS            = ${WARNINGS} -O3 -std=c++11
 SFLAGS              = -static
 
-dependency_names    = SortDetails Sort CheckSort NaN starchConstants starchFileHelpers starchHelpers starchMetadataHelpers unstarchHelpers starchSha1Digest starchBase64Coding
+dependency_names    = starchConstants starchFileHelpers starchHelpers starchMetadataHelpers unstarchHelpers starchSha1Digest starchBase64Coding SortDetails Sort CheckSort
 dependencies        = $(addprefix $(OBJDIR)/, $(addsuffix .o, $(dependency_names)))
 
 FLAGS               = $(SFLAGS) -s ${BLDFLAGS} ${LIBLOCATION} ${INCLUDES}
@@ -45,7 +45,7 @@ else
 	WARNINGS += -U__STRICT_ANSI__
 endif
 
-build: $(dependencies)
+build: $(BINDIR)/$(PROG) $(dependencies)
 
 build_gprof: $(BINDIR)/gprof.$(PROG)
 
@@ -54,13 +54,13 @@ build_debug: $(BINDIR)/debug.$(PROG)
 dependencies: $(dependencies)
 
 $(BINDIR)/$(PROG) : $(dependencies)
-	mkdir -p $(BINDIR) && $(CXX) -o $@ $(FLAGS) ${LIBRARIES} $(SOURCE1)
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(FLAGS) $^ ${LIBRARIES}
 
 $(BINDIR)/gprof.$(PROG) : $(dependencies)
-	mkdir -p $(BINDIR) && $(CXX) -o $@ $(GPROFFLAGS) ${LIBRARIES} $(SOURCE1)
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(GPROFFLAGS) $^ ${LIBRARIES}
 
 $(BINDIR)/debug.$(PROG) : $(dependencies)
-	mkdir -p $(BINDIR) && $(CXX) -o $@ $(DFLAGS) ${LIBRARIES} $(SOURCE1)
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(DFLAGS) $^ ${LIBRARIES}
 
 $(OBJDIR)/%.o : $(LIB1)/%.cpp
 	mkdir -p $(OBJDIR) && $(CXX) -c $(BLDFLAGS) $^ -o $@ ${INCLUDES}
@@ -69,9 +69,9 @@ $(OBJDIR)/%.o : $(LIB3)/%.c
 	mkdir -p $(OBJDIR) && $(CXX) -c ${BLDFLAGS} $^ -o $@ ${INCLUDES}
 
 $(OBJDIR)/%.o : %.cpp
-	mkdir -p $(OBJDIR) && $(CXX) -c ${BLDFLAGS} $^ -o $@ -iquote${HEAD} ${INCLUDES}
+	mkdir -p $(OBJDIR) && $(CXX) -c ${BLDFLAGS} $^ -o $@ ${INCLUDES}
 
 clean:
-	rm -rf ${OBJ_DIR}
+	rm -rf ${OBJDIR}
 	rm -f $(BINDIR)/$(PROG)
 	rm -f $(BINDIR)/*.$(PROG)
