@@ -1,0 +1,5 @@
+.git
+docs
+.travis.yml
+.gitignore
+.dockerignore
