@@ -30,7 +30,7 @@ Previous versions
 =================
 
 -------
-v2.4.14
+v2.4.15
 -------
 
 Released: **April 21, 2015**
