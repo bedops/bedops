@@ -12,6 +12,24 @@ Current version
 ===============
 
 -------
+v2.4.15
+-------
+
+Released: **January 21, 2016**
+
+* Docker container build target added for CentOS 7
+
+  * Thanks to Leo Comitale (Poldo) for writing a Makefile target and spec for creating a BEDOPS Docker container for CentOS 7.
+
+* :ref:`convert2bed <convert2bed>`
+
+  * Fixed buffer overflows in ``vcf2bed`` to improve conversion reliability for certain VCF files (thanks to Jared Andrews and Kousik Kundu for bug reports).
+  
+=================
+Previous versions
+=================
+
+-------
 v2.4.14
 -------
 
@@ -25,9 +43,6 @@ Released: **April 21, 2015**
 
   * Fixed exception error message for ``stdin`` check (thanks to Brad Gulko for the bug report).
 
-=================
-Previous versions
-=================
 
 -------
 v2.4.13

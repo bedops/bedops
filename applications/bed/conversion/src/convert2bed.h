@@ -3,7 +3,7 @@
    -----------------------------------------------------------------------
    Copyright (C) 2014-2015 Alex Reynolds
 
-   wig2bed components, (C) 2011-2015 Scott Kuehn and Shane Neph
+   wig2bed components, (C) 2011-2016 Scott Kuehn and Shane Neph
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
