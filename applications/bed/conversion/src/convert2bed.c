@@ -2903,7 +2903,7 @@ c2b_line_convert_sam_to_bed(c2b_sam_t s, char *dest_line, ssize_t *dest_size)
 static void
 c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
 {
-    ssize_t vcf_field_offsets[C2B_MAX_FIELD_COUNT_VALUE];
+    ssize_t vcf_field_offsets[C2B_MAX_VCF_FIELD_COUNT_VALUE];
     int vcf_field_idx = 0;
     ssize_t current_src_posn = -1;
 
@@ -2911,7 +2911,7 @@ c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
         if ((src[current_src_posn] == c2b_tab_delim) || (src[current_src_posn] == c2b_line_delim)) {
             vcf_field_offsets[vcf_field_idx++] = current_src_posn;
         }
-        if (vcf_field_idx >= C2B_MAX_FIELD_COUNT_VALUE) {
+        if (vcf_field_idx >= C2B_MAX_VCF_FIELD_COUNT_VALUE) {
             fprintf(stderr, "Error: Invalid field count (%d) -- input file may have too many fields\n", vcf_field_idx);
             c2b_print_usage(stderr);
             exit(EINVAL); /* Invalid argument (POSIX.1) */
@@ -2924,8 +2924,19 @@ c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
        If number of fields in not in bounds, we may need to exit early
     */
     
-    char src_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
-    char dest_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
+    char *src_header_line_str = NULL; 
+    src_header_line_str = malloc(C2B_MAX_LONGER_LINE_LENGTH_VALUE);
+    if (!src_header_line_str) {
+        fprintf(stderr, "Error: Could not allocate space for VCF source header line string\n");
+        exit(ENOMEM); /* Not enough space (POSIX.1) */        
+    }
+
+    char *dest_header_line_str = NULL;
+    dest_header_line_str = malloc(C2B_MAX_LONGER_LINE_LENGTH_VALUE);
+    if (!dest_header_line_str) {
+        fprintf(stderr, "Error: Could not allocate space for VCF destination header line string\n");
+        exit(ENOMEM); /* Not enough space (POSIX.1) */        
+    }
 
     if ((vcf_field_idx + 1) < c2b_vcf_field_min) {
         /* Legal header cases: line starts with "##" or "#" */
@@ -2935,9 +2946,12 @@ c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                 memcpy(src_header_line_str, src, src_size);
                 src_header_line_str[src_size] = '\0';
                 sprintf(dest_header_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), src_header_line_str);
+                fprintf(stderr, "%s", dest_header_line_str);
                 memcpy(dest + *dest_size, dest_header_line_str, strlen(dest_header_line_str));
                 *dest_size += strlen(dest_header_line_str);
                 c2b_globals.header_line_idx++;
+                free(src_header_line_str), src_header_line_str = NULL;
+                free(dest_header_line_str), dest_header_line_str = NULL;
                 return;
             }
             else {
@@ -3010,15 +3024,31 @@ c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     filter_str[filter_size] = '\0';
 
     /* 7 - INFO */
-    char info_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char *info_str = NULL;
+    info_str = malloc(C2B_MAX_LONGER_LINE_LENGTH_VALUE);
+    if (!info_str) {
+        fprintf(stderr, "Error: Could not allocate space for VCF INFO string\n");
+        exit(ENOMEM); /* Not enough space (POSIX.1) */        
+    }    
+    
     ssize_t info_size = vcf_field_offsets[7] - vcf_field_offsets[6] - 1;
     memcpy(info_str, src + vcf_field_offsets[6] + 1, info_size);
     info_str[info_size] = '\0';
 
-    char format_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    char samples_str[C2B_MAX_FIELD_LENGTH_VALUE];
-
+    char *format_str = NULL;
+    format_str = malloc(C2B_MAX_LONGER_LINE_LENGTH_VALUE);
+    if (!format_str) {
+        fprintf(stderr, "Error: Could not allocate space for VCF FORMAT string\n");
+        exit(ENOMEM); /* Not enough space (POSIX.1) */        
+    }
     format_str[0] = '\0'; /* initialize to zero-length string */
+    
+    char *samples_str = NULL;
+    samples_str = malloc(C2B_MAX_LONGER_LINE_LENGTH_VALUE);
+    if (!samples_str) {
+        fprintf(stderr, "Error: Could not allocate space for VCF SAMPLE string\n");
+        exit(ENOMEM); /* Not enough space (POSIX.1) */        
+    }    
 
     if (vcf_field_idx >= 8) {
         /* 8 - FORMAT */
@@ -3088,6 +3118,10 @@ c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                 c2b_line_convert_vcf_to_bed(vcf, dest, dest_size);
             }
     }
+
+    free(info_str), info_str = NULL;
+    free(format_str), format_str = NULL;
+    free(samples_str), samples_str = NULL;
 }
 
 static inline boolean
@@ -3584,7 +3618,7 @@ c2b_process_intermediate_bytes_by_lines(void *arg)
     c2b_pipeline_stage_t *stage = (c2b_pipeline_stage_t *) arg;
     c2b_pipeset_t *pipes = stage->pipeset;
     char *src_buffer = NULL;
-    ssize_t src_buffer_size = C2B_MAX_LINE_LENGTH_VALUE;
+    ssize_t src_buffer_size = C2B_MAX_LONGER_LINE_LENGTH_VALUE;
     ssize_t src_bytes_read = 0;
     ssize_t remainder_length = 0;
     ssize_t remainder_offset = 0;
@@ -3593,14 +3627,10 @@ c2b_process_intermediate_bytes_by_lines(void *arg)
     ssize_t start_offset = 0;
     ssize_t end_offset = 0;
     char *dest_buffer = NULL;
-    ssize_t dest_buffer_size = C2B_MAX_LINE_LENGTH_VALUE * C2B_MAX_LINES_VALUE;
+    ssize_t dest_buffer_size = C2B_MAX_LONGER_LINE_LENGTH_VALUE * C2B_MAX_LINES_VALUE;
     ssize_t dest_bytes_written = 0;
     void (*line_functor)(char *, ssize_t *, char *, ssize_t) = stage->line_functor;
     int exit_status = 0;
-
-#ifdef DEBUG
-    fprintf(stderr, "\t-> c2b_process_intermediate_bytes_by_lines | reading from fd  (%02d) | writing to fd  (%02d)\n", pipes->out[stage->src][PIPE_READ], pipes->in[stage->dest][PIPE_WRITE]);
-#endif
 
     /* 
        We read from the src out pipe, then write to the dest in pipe 
@@ -3715,6 +3745,7 @@ c2b_process_intermediate_bytes_by_lines(void *arg)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result"
         write(pipes->in[stage->dest][PIPE_WRITE], dest_buffer, dest_bytes_written);
+        //fprintf(stderr, "dest_bytes_written [%zu]\n", dest_bytes_written);
 #pragma GCC diagnostic pop
 
         remainder_length = src_bytes_read + remainder_length - remainder_offset;
