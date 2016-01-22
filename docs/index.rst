@@ -65,7 +65,7 @@ Contents
       <div class="col_element">
          <img src="_images/macosx_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
-            <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.15/BEDOPS.2.4.15.pkg.zip">Intel (32-/64-bit, 10.7-10.10)</a> installer package</li>
+            <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.15/BEDOPS.2.4.15.pkg.zip">Intel (32-/64-bit, 10.7-10.11)</a> installer package</li>
             <li><a href="content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
          </ul>
       </div>

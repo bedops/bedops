@@ -5154,9 +5154,9 @@ c2b_print_version(FILE *stream)
 #endif
 
     fprintf(stream,
-            "%s\n"            \
-            "  version: %s\n" \
-            "  author:  %s\n",
+            "%s\n"                              \
+            "  version:  %s\n"                  \
+            "  author:   %s\n",
             general_name,
             version,
             authors);
@@ -5174,12 +5174,12 @@ c2b_print_usage(FILE *stream)
 #endif
 
     fprintf(stream,
-            "%s\n"            \
-            "  version: %s\n" \
-            "  author:  %s\n" \
-            "%s\n"            \
-            "%s\n"            \
-            "%s\n"            \
+            "%s\n"             \
+            "  version:  %s\n" \
+            "  author:   %s\n" \
+            "%s\n"             \
+            "%s\n"             \
+            "%s\n"             \
             "%s\n",
             general_name,
             version,
@@ -5270,12 +5270,12 @@ c2b_print_format_usage(FILE *stream)
 
     if (format_options) {
         fprintf(stream,
-                "%s\n"                          \
-                "  version: %s\n"               \
-                "  author:  %s\n\n"             \
-                "%s\n"                          \
-                "%s\n"                          \
-                "%s\n"                          \
+                "%s\n"                           \
+                "  version:  %s\n"               \
+                "  author:   %s\n\n"             \
+                "%s\n"                           \
+                "%s\n"                           \
+                "%s\n"                           \
                 "%s\n",
                 format_name,
                 version,
@@ -5287,11 +5287,11 @@ c2b_print_format_usage(FILE *stream)
     }
     else {
         fprintf(stream,
-                "%s\n"                          \
-                "  version: %s\n"               \
-                "  author:  %s\n\n"             \
-                "%s\n"                          \
-                "%s\n"                          \
+                "%s\n"                           \
+                "  version:  %s\n"               \
+                "  author:   %s\n\n"             \
+                "%s\n"                           \
+                "%s\n"                           \
                 "%s\n",
                 format_name,
                 version,
