@@ -23,7 +23,11 @@ Released: **January 21, 2016**
 
 * :ref:`convert2bed <convert2bed>`
 
-  * Fixed buffer overflows in ``vcf2bed`` to improve conversion reliability for certain VCF files (thanks to Jared Andrews and Kousik Kundu for bug reports).
+  * Fixed buffer overflows in ``convert2bed`` to improve conversion reliability for VCF files (thanks to Jared Andrews and Kousik Kundu for bug reports).
+
+* General improvements
+
+  * Improved OS X 10.11 build process.
   
 =================
 Previous versions
