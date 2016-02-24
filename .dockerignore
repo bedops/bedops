@@ -1,11 +1,8 @@
 .git
 docs
-<<<<<<< HEAD
-=======
 LICENSE
 packaging
 README.md
->>>>>>> upstream/master
 .travis.yml
 .gitignore
 .dockerignore
