@@ -12,27 +12,26 @@ PROG                      = convert2bed
 SOURCE                    = convert2bed.c
 SFLAGS                    = -static
 
-all: setup build
+all: build
 
-.PHONY: setup build build_debug build_gprof clean
+.PHONY: build build_debug build_gprof clean
 
-setup:
-	mkdir -p $(DISTDIR)
-	mkdir -p $(OBJDIR)
+build: $(DISTDIR)/$(PROG)
+build_debug: $(DISTDIR)/debug.$(PROG)
+build_gprof: $(DISTDIR)/gprof.$(PROG)
 
-build: setup
-	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CFLAGS) -c $(SOURCE) -o $(OBJDIR)/$(PROG).o $(INCLUDES)
-	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CFLAGS) $(SFLAGS) $(OBJDIR)/$(PROG).o -o $(DISTDIR)/$(PROG) $(LIBS)
+$(DISTDIR)/$(PROG): $(PROG).c
+	mkdir -p $(DISTDIR) && $(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CFLAGS) $(SFLAGS) $(INCLUDES) $^ -o $@ $(LIBS)
 
-build_debug: setup
-	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CDFLAGS) -c $(SOURCE) -o $(OBJDIR)/$(PROG).o $(INCLUDES)
-	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CDFLAGS) $(SFLAGS) $(OBJDIR)/$(PROG).o -o $(DISTDIR)/debug.$(PROG) $(LIBS)
+$(DISTDIR)/debug.$(PROG): $(PROG).c
+	mkdir -p $(DISTDIR) && $(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CDFLAGS) $(SFLAGS) $(INCLUDES) $^ -o $@ $(LIBS)
 
-build_gprof: setup
-	$(CC) -shared -fPIC gprof-helper.c -o gprof-helper.so $(LIBS) -ldl
-	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CPFLAGS) -c $(SOURCE) -o $(OBJDIR)/$(PROG).o $(INCLUDES)
-	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CPFLAGS) $(SFLAGS)  $(OBJDIR)/$(PROG).o -o $(DISTDIR)/gprof.$(PROG) $(LIBS)
-	@echo "\nNote: To profile convert2bed with gprof/pthreads, run:\n\t$$ LD_PRELOAD=/path/to/gprof-helper.so convert2bed"
+$(DISTDIR)/gprof.$(PROG): $(PROG).c gprof-helper.so
+	mkdir -p $(DISTDIR) && $(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CPFLAGS) $(SFLAGS) $(INCLUDES) $< -o $@ $(LIBS)
+	@echo -e "\nNote: To profile convert2bed with gprof/pthreads, run:\n\t$$ LD_PRELOAD=/path/to/gprof-helper.so convert2bed"
+
+%.so: %.c
+	$(CC) -shared -fPIC $^ -o $@ $(LIBS) -ldl
 
 clean:
 	rm -rf $(DISTDIR)

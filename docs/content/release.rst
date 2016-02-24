@@ -15,7 +15,7 @@ Preparing a major, minor or maintenance release of BEDOPS from a development bra
 
    a. Close out open documentation or feature issues, making necessary pushes to the current development branch.
 
-   b. If any issues can't be closed out, rename the assigned version tag to the next anticipated release version (*e.g.*, *v2.4.14* to *v2p5p0*, etc.)
+   b. If any issues can't be closed out, rename the assigned version tag to the next anticipated release version (*e.g.*, *v2.4.15* to *v2p5p0*, etc.)
 
 2. Pull the most recent commit for the development branch to a local folder on build hosts (Linux with sufficiently old kernel, current OS X, etc.).
 
@@ -23,7 +23,7 @@ Preparing a major, minor or maintenance release of BEDOPS from a development bra
 
       1) For Linux, we build two versions, one 64-bit and one 32-bit. It may help to use `VirtualBox <https://www.virtualbox.org>`_ or a similar virtualization host to set up and run different (and consistent) versions of Linux build hosts.
 
-      2) For Mac OS X, we currently build the Mac target with whatever the modern Xcode and current OS X release happens to be (currently, command-line tools that ship with Xcode 6 and OS X Yosemite/10.10). If things work correctly, build flags generate "fat" binaries that should run on 10.7 and newer OS releases.
+      2) For Mac OS X, we currently build the Mac target with whatever the modern Xcode and current OS X release happens to be (currently, command-line tools that ship with Xcode 7 and OS X El Capitan/10.11). If things work correctly, build flags generate "fat" binaries that should run on 10.7 and newer OS releases.
 
    b. For all platforms, run test suites for various tools and conversion scripts; tests should pass on supported platforms. If not, add an Issue ticket, fix it, close it and start over with the build/test process.
 
@@ -44,7 +44,7 @@ Preparing a major, minor or maintenance release of BEDOPS from a development bra
 
      BEDOPS.X.Y.Z.pkg.zip
 
-   The *X.Y.Z* scheme should follow the development branch name, *e.g.* 2.4.14, etc.
+   The *X.Y.Z* scheme should follow the development branch name, *e.g.* 2.4.15, etc.
 
 3. Collect tarballs and zipped Installer in one location for later addition with web browser, via BEDOPS Github web site.
 
@@ -63,7 +63,7 @@ Release
 
    Ideally, whatever steps are used to merge the development branch into the master branch should preserve the overall commit history.
 
-   As before, the *X.Y.Z* scheme should follow the development branch name, *e.g.* 2.4.14, etc.
+   As before, the *X.Y.Z* scheme should follow the development branch name, *e.g.* 2.4.15, etc.
 
 2. Add a `new release <https://github.com/bedops/bedops/releases/new>`_ via the Github site. Or click on the `Draft a new release <https://github.com/bedops/bedops/releases>`_ button from the Github Releases page.
 

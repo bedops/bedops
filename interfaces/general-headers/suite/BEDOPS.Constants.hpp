@@ -6,7 +6,7 @@
 
 //
 //    BEDOPS
-//    Copyright (C) 2011-2015 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2016 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
 //   - just want to utilize C++'s type system explicitly
 #define INT_TOKEN_CHR_MAX_LENGTH 127
 #define INT_TOKEN_ID_MAX_LENGTH 16383
-#define INT_TOKEN_REST_MAX_LENGTH 131072
+#define INT_TOKEN_REST_MAX_LENGTH 8*131072
 #define INT_MAX_DEC_INTEGERS 12
 #define INT_MAX_COORD_VALUE 999999999999 /* MAX_DEC_INTEGERS decimal integers; we assume >= 64-bit systems */
 #define INT_TOKENS_MAX_LENGTH (TOKEN_CHR_MAX_LENGTH + TOKEN_ID_MAX_LENGTH + TOKEN_REST_MAX_LENGTH + 2*MAX_DEC_INTEGERS)

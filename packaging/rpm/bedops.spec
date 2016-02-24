@@ -1,5 +1,9 @@
 Name:           bedops
+<<<<<<< HEAD
 Version:        2.4.14
+=======
+Version:        2.4.15
+>>>>>>> upstream/master
 Release:        1
 Summary:        A suite of tools to address common questions raised in genomic studies.
 Group:          Applications/Productivity

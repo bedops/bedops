@@ -3,7 +3,7 @@
    -----------------------------------------------------------------------
    Copyright (C) 2014-2015 Alex Reynolds
 
-   wig2bed components, (C) 2011-2015 Scott Kuehn and Shane Neph
+   wig2bed components, (C) 2011-2016 Scott Kuehn and Shane Neph
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@
 #include <sys/param.h>
 #include <sys/wait.h>
 
-#define C2B_VERSION "2.4.13"
+#define C2B_VERSION "2.4.15"
 
 typedef int boolean;
 extern const boolean kTrue;
@@ -64,12 +64,14 @@ const boolean kFalse = 0;
 #define C2B_MAX_OPERATION_FIELD_LENGTH_VALUE 32
 #define C2B_MAX_STRAND_LENGTH_VALUE 4
 #define C2B_MAX_LINE_LENGTH_VALUE 131072
+#define C2B_MAX_LONGER_LINE_LENGTH_VALUE 1048576
 #define C2B_MAX_LINES_VALUE 32
 #define C2B_MAX_OPERATIONS_VALUE 32
 #define C2B_MAX_CHROMOSOME_LENGTH 32
 #define C2B_MAX_PSL_BLOCKS 1024
 #define C2B_MAX_PSL_BLOCK_SIZES_STRING_LENGTH 20
 #define C2B_MAX_PSL_T_STARTS_STRING_LENGTH 20
+#define C2B_MAX_VCF_FIELD_COUNT_VALUE 24576
 
 extern const char *c2b_samtools;
 extern const char *c2b_sort_bed;
