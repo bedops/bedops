@@ -341,6 +341,19 @@ namespace Visitors {
       }
     };
 
+    //==============
+    // PrintRowID()
+    //==============
+    struct PrintRowID {
+      template <typename T>
+      void operator()(T* t) const {
+        static char const* id = "id-";
+        static unsigned long rowID = 0;
+        PrintTypes::Print(id);
+        PrintTypes::Print(++rowID);
+      }
+    };
+
     //=======================
     // PrintUniqueRangeIDs()
     //  : sorting and uniquing -> will not be in genomic order
