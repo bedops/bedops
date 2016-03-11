@@ -12,6 +12,20 @@ Current version
 ===============
 
 -------
+v2.4.16
+-------
+
+Released: **TBD**
+
+* :ref:`bedmap <bedmap>`
+
+  * Added new ``--echo-ref-row-id`` option to report reference row ID elements.
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.15
 -------
 
@@ -28,10 +42,6 @@ Released: **January 21, 2016**
 * General improvements
 
   * Improved OS X 10.11 build process.
-  
-=================
-Previous versions
-=================
 
 -------
 v2.4.14
