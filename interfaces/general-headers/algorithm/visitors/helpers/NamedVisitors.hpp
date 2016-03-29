@@ -5,7 +5,7 @@
 
 //
 //    BEDOPS
-//    Copyright (C) 2011-2015 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2016 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -76,6 +76,12 @@ namespace Visitors {
     struct VisitorName< Visitors::Echo<Visitors::BedHelpers::PrintSpanName,B> > {
       static std::string Name()
         { return "echo-ref-name"; }
+    };
+
+    template <typename B>
+    struct VisitorName< Visitors::Echo<Visitors::BedHelpers::PrintRowID, B> > {
+      static std::string Name()
+        { return "echo-ref-row-id"; }
     };
 
     template <typename A, typename B>

@@ -4,7 +4,7 @@
 */
 //
 //    BEDOPS
-//    Copyright (C) 2011-2015 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2016 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ namespace BedMap {
     typedef Visitors::Helpers::Print ProcessIntegerLength;
     typedef Visitors::BedHelpers::PrintScore ProcessScore;
     typedef Visitors::BedHelpers::PrintSpanName ProcessSpanName;
+    typedef Visitors::BedHelpers::PrintRowID ProcessRowID;
     typedef Visitors::BedHelpers::PrintScorePrecision ProcessScorePrecision;
     typedef Visitors::BedHelpers::PrintBED3 ProcessBED3;
     typedef Visitors::Helpers::PrintRangeDelim<ProcessAll> ProcessRangeDelimAll;
@@ -87,6 +88,7 @@ namespace BedMap {
     typedef Visitors::Echo<ProcessAll, BaseClass> EchoRefAll;
     typedef Visitors::Echo<ProcessLength, BaseClass> EchoRefLength;
     typedef Visitors::Echo<ProcessSpanName, BaseClass> EchoRefSpan;
+    typedef Visitors::Echo<ProcessRowID, BaseClass> EchoRefRowNumber;
     typedef Visitors::BedSpecific::OvrAggregate<ProcessScore, BaseClass> OvrAgg;
     typedef Visitors::BedSpecific::OvrUnique<ProcessScore, BaseClass> OvrUniq;
     typedef Visitors::BedSpecific::OvrUniqueFract<ProcessScorePrecision, BaseClass> OvrUniqFract;

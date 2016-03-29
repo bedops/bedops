@@ -4,7 +4,7 @@
 */
 //
 //    BEDOPS
-//    Copyright (C) 2011-2015 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2016 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -338,6 +338,19 @@ namespace Visitors {
         PrintTypes::Print(t->start());
         PrintTypes::Print('-');
         PrintTypes::Print(t->end());
+      }
+    };
+
+    //==============
+    // PrintRowID()
+    //==============
+    struct PrintRowID {
+      template <typename T>
+      void operator()(T* t) const {
+        static char const* id = "id-";
+        static unsigned long rowID = 0;
+        PrintTypes::Print(id);
+        PrintTypes::Print(++rowID);
       }
     };
 

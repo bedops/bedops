@@ -199,6 +199,32 @@ Homebrew is a popular package management toolkit for Mac OS X. It facilitates ea
 
      $ brew install homebrew/science/bedops
 
+.. _installation_via_source_code_on_docker:
+
+------
+Docker
+------
+
+`Docker <https://www.docker.com/what-docker>`_ containers wrap up a piece of software (such as BEDOPS) in a complete, self-contained VM.
+
+To set up a CentOS 7-based Docker container with BEDOPS binaries, you can use the following steps:
+
+    ::
+
+       $ git clone https://github.com/bedops/bedops.git
+       $ cd bedops
+       $ make docker
+       ...
+       $ docker run -i -t bedops
+
+The following then generates a set of RPMs using the CentOS 7 image, which can run in CentOS 6 and Fedora 21 containers:
+
+    ::
+
+       $ make rpm
+
+Thanks go to Leo Comitale for his efforts here.
+
 .. _installation_via_source_code_on_cygwin:
 
 ------

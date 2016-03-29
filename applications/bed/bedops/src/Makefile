@@ -28,33 +28,37 @@ LIBRARIES           = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 BLDFLAGS            = -Wall -pedantic -O3 -std=c++11
 SFLAGS              = -static
 
-FLAGS               = $(SFLAGS) -s $(BLDFLAGS) $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
-DFLAGS              = $(SFLAGS) -g -O0 -std=c++11 -Wall -fno-inline -pedantic $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
-GPROFFLAGS          = $(SFLAGS) -O -std=c++11 -Wall -pedantic -pg $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
+dependency_names    = NaN starchConstants starchFileHelpers starchHelpers starchMetadataHelpers unstarchHelpers starchSha1Digest starchBase64Coding
+dependencies        = $(addprefix $(OBJDIR)/, $(addsuffix .o, $(dependency_names)))
+FLAGS               = $(SFLAGS) -s $(BLDFLAGS) $(dependencies) ${LIBLOCATION} ${INCLUDES}
+DFLAGS              = $(SFLAGS) -g -O0 -std=c++11 -Wall -fno-inline -pedantic $(dependencies) ${LIBLOCATION} ${INCLUDES}
+GPROFFLAGS          = $(SFLAGS) -O -std=c++11 -Wall -pedantic -pg $(dependencies) ${LIBLOCATION} ${INCLUDES}
 SOURCE1             = Bedops.cpp
 BINDIR              = ../bin
 PROG                = bedops
 
-build: dependencies
-	mkdir -p $(BINDIR) && $(CXX) -o $(BINDIR)/$(PROG) $(FLAGS) ${LIBRARIES} $(SOURCE1) 
+build: $(BINDIR)/$(PROG)
 
-build_gprof: dependencies
-	mkdir -p $(BINDIR) && $(CXX) -o $(BINDIR)/gprof.$(PROG) $(GPROFFLAGS) ${LIBRARIES} $(SOURCE1) 
+build_gprof: $(BINDIR)/gprof.$(PROG)
 
-build_debug: dependencies
-	mkdir -p $(BINDIR) && $(CXX) -o $(BINDIR)/debug.$(PROG) $(DFLAGS) ${LIBRARIES} $(SOURCE1)
+build_debug: $(BINDIR)/debug.$(PROG)
 
-dependencies:
-	rm -rf $(OBJDIR)
-	mkdir -p $(OBJDIR)
-	$(CXX) -c $(BLDFLAGS) $(LIB1)/NaN.cpp -o $(OBJDIR)/NaN.o ${INCLUDES}
-	$(CXX) -c $(BLDFLAGS) $(LIB3)/starchConstants.c -o $(OBJDIR)/starchConstants.o ${INCLUDES}
-	$(CXX) -c $(BLDFLAGS) $(LIB3)/starchFileHelpers.c -o $(OBJDIR)/starchFileHelpers.o ${INCLUDES}
-	$(CXX) -c $(BLDFLAGS) $(LIB3)/starchHelpers.c -o $(OBJDIR)/starchHelpers.o -iquote${HEAD} ${INCLUDES}
-	$(CXX) -c $(BLDFLAGS) $(LIB3)/starchMetadataHelpers.c -o $(OBJDIR)/starchMetadataHelpers.o ${INCLUDES}
-	$(CXX) -c $(BLDFLAGS) $(LIB3)/unstarchHelpers.c -o $(OBJDIR)/unstarchHelpers.o ${INCLUDES}
-	$(CXX) -c ${BLDFLAGS} ${LIB3}/starchSha1Digest.c -o  ${OBJDIR}/starchSha1Digest.o ${INCLUDES}
-	$(CXX) -c ${BLDFLAGS} ${LIB3}/starchBase64Coding.c -o  ${OBJDIR}/starchBase64Coding.o ${INCLUDES}
+dependencies: $(dependencies)
+
+$(BINDIR)/$(PROG) : $(dependencies)
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(FLAGS) ${LIBRARIES} $(SOURCE1)
+
+$(BINDIR)/gprof.$(PROG) : $(dependencies)
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(GPROFFLAGS) ${LIBRARIES} $(SOURCE1)
+
+$(BINDIR)/debug.$(PROG) : $(dependencies)
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(DFLAGS) ${LIBRARIES} $(SOURCE1)
+
+$(OBJDIR)/%.o : $(LIB1)/%.cpp
+	mkdir -p $(OBJDIR) && $(CXX) -c $(BLDFLAGS) $^ -o $@ ${INCLUDES}
+
+$(OBJDIR)/%.o : $(LIB3)/%.c
+	mkdir -p $(OBJDIR) && $(CXX) -c ${BLDFLAGS} $^ -o $@ ${INCLUDES}
 
 test:
 	mkdir -p $(TMPTESTDIR)

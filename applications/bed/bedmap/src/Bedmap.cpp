@@ -4,7 +4,7 @@
 */
 //
 //    BEDOPS
-//    Copyright (C) 2011-2015 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2016 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -395,6 +395,8 @@ namespace BedMap {
         rtn = new typename VTypes::EchoRefLength;
       else if ( nm == visName<typename VTypes::EchoRefSpan>() )
         rtn = new typename VTypes::EchoRefSpan;
+      else if ( nm == visName<typename VTypes::EchoRefRowNumber>() )
+        rtn = new typename VTypes::EchoRefRowNumber;
       else if ( nm == visName<typename VTypes::Indicator>() )
         rtn = new typename VTypes::Indicator;
       else if ( nm == visName<typename VTypes::OvrAgg>() )
@@ -730,6 +732,5 @@ namespace BedMap {
                                chrom, skipUnmappedRows, sweepAll, visitorNames, visitorArgs);
     }
   }
-
 
 } // namespace BedMap

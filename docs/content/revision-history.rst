@@ -12,6 +12,38 @@ Current version
 ===============
 
 -------
+v2.4.16
+-------
+
+Released: **TBD**
+
+* :ref:`bedmap <bedmap>`
+
+  * Added new ``--echo-ref-row-id`` option to report reference row ID elements.
+
+=================
+Previous versions
+=================
+
+-------
+v2.4.15
+-------
+
+Released: **January 21, 2016**
+
+* Docker container build target added for CentOS 7
+
+  * Thanks to Leo Comitale (Poldo) for writing a Makefile target and spec for creating a BEDOPS Docker container for CentOS 7.
+
+* :ref:`convert2bed <convert2bed>`
+
+  * Fixed buffer overflows in ``convert2bed`` to improve conversion reliability for VCF files (thanks to Jared Andrews and Kousik Kundu for bug reports).
+
+* General improvements
+
+  * Improved OS X 10.11 build process.
+
+-------
 v2.4.14
 -------
 
@@ -25,9 +57,6 @@ Released: **April 21, 2015**
 
   * Fixed exception error message for ``stdin`` check (thanks to Brad Gulko for the bug report).
 
-=================
-Previous versions
-=================
 
 -------
 v2.4.13
