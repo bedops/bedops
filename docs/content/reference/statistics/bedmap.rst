@@ -140,6 +140,7 @@ The ``--help`` option describes the various mapping and analytical operations an
         --echo-map-size     List the full length of every overlapping element.
         --echo-overlap-size List lengths of overlaps.
         --echo-ref-name     Print the first 3 fields of <ref-file> using chrom:start-end format.
+        --echo-ref-row-id   Print 'id-' followed by the line number of <ref-file>.
         --echo-ref-size     Print the length of each line from <ref-file>.
         --indicator         Print 1 if there exists an overlapping element in <map-file>, 0 otherwise.
 
@@ -401,7 +402,7 @@ Echo
 
 The ID, score and coordinate columns of the reference and map files are very useful for reading and debugging results, or reporting a more detailed mapping.
 
-We can use the ``--echo``, ``--echo-map``, ``--echo-map-id``, ``--echo-map-id-uniq``, ``--echo-map-score``, ``--echo-map-range``, ``--echo-map-size``, ``--echo-overlap-size``, ``--echo-ref-name``, and ``echo-ref-size`` flags to tell :ref:`bedmap` to report additional details about the reference and map elements.
+We can use the ``--echo``, ``--echo-map``, ``--echo-map-id``, ``--echo-map-id-uniq``, ``--echo-map-score``, ``--echo-map-range``, ``--echo-map-size``, ``--echo-overlap-size``, ``--echo-ref-name``, ``--echo-ref-row-id``, and ``echo-ref-size`` flags to tell :ref:`bedmap` to report additional details about the reference and map elements.
 
 The ``--echo`` flag reports each reference element. We have already seen the application of ``--echo`` in earlier examples. The option helps to clearly associate results from other chosen operations with specific reference elements. Additionally, ``--echo`` enables the output from :ref:`bedmap` to be used as input to additional BEDOPS utilities, including :ref:`bedmap` itself.
 
@@ -461,6 +462,8 @@ The ``--echo-map-range`` flag tells :ref:`bedmap` to report the genomic range of
 .. note:: The ``--echo-map-range`` option produces three-column BED results that are not always guaranteed to be sorted. The ``--echo`` operation is independent, and it produces reference elements in proper BEDOPS order, as shown. If the results of the ``--echo-map-range`` option will be used directly as BED coordinates in downstream BEDOPS analyses (*i.e.*, no ``--echo`` operator), first pipe them to :ref:`sort-bed` to ensure proper sort order.
 
 The ``--echo-ref-size`` flag reports the difference between the stop and start coordinates of the reference element.  The ``--echo-ref-name`` flag produces a converted format for the first 3 BED fields, A:B-C, where A is the chromosome name, B is the start coordinate, and C is the stop coordinate for that reference element.
+
+The ``--echo-ref-row-id`` flag prints the prefix ``id-`` with the line number of the reference element.
 
 Finally, the ``--echo-map-size`` flag reports the difference between the stop and start coordinates of each mapped element, while the ``--echo-overlap-size`` flag reports the length of the overlap between the reference element and each mapped element. 
 
