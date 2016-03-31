@@ -70,6 +70,7 @@ clean:
 	rm -f $(BINDIR)/$(PROG)
 	rm -f $(BINDIR)/*.$(PROG)
 	rm -rf $(OBJDIR)
+	rm -rf $(BINDIR)
 
 clean_test:
 	rm -rf $(TMPTESTDIR)

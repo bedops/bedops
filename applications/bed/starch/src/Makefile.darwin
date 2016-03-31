@@ -118,5 +118,8 @@ mkdirs:
 clean:
 	rm -f $(LOCALSTARCHLIB)
 	rm -f ${LOCALSTARCHLIBDEBUG}
-	rm -rf ${LOCALOBJDIR}
+	rm -Rf ${LOCALOBJDIR}
+	rm -Rf ${LOCALSTARCHLIBDIR}
 	rm -rf ${BINDIR}/*starch*
+	rm -Rf ${BINDIR}
+	rm -Rf ${THISDIR}/../bin

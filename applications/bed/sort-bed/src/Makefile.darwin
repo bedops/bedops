@@ -86,3 +86,4 @@ clean:
 	rm -rf ${OBJ_DIR}*
 	rm -rf ${DIST_DIR}/${PROG}*
 	rm -rf ${DIST_DIR}/*.${PROG}*
+	rm -rf ${DIST_DIR}

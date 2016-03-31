@@ -32,7 +32,7 @@ LOCALOBJDIR               = objects
 INCLUDES                  = -iquote${MAIN} -iquote${HEAD} -iquote${PARTY3} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 LIBRARIES                 = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 ARCH_VERSION              = v2.1
-BIN_VERSION               = v2.4.3
+BIN_VERSION               = v2.4.16
 TEST                      = ../test
 TEST_LINUX_BINDIR         = ${TEST}/binaries/linux/${ARCH_VERSION}/bin
 TEST_OSX_BINDIR           = ${TEST}/binaries/osx/${ARCH_VERSION}/bin
@@ -101,3 +101,4 @@ clean:
 	rm -f ${LOCALSTARCHLIBGPROF}
 	rm -f ${BINDIR}/*starch*
 	rm -rf ${LOCALOBJDIR}
+	rm -rf ${BINDIR}
