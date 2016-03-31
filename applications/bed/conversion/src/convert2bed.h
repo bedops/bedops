@@ -1,7 +1,7 @@
 /* 
    convert2bed.h
    -----------------------------------------------------------------------
-   Copyright (C) 2014-2015 Alex Reynolds
+   Copyright (C) 2014-2016 Alex Reynolds
 
    wig2bed components, (C) 2011-2016 Scott Kuehn and Shane Neph
 

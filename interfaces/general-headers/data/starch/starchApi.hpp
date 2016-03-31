@@ -1266,6 +1266,7 @@ namespace starch
 #ifdef DEBUG
         std::fprintf(stderr, "\n--- Starch::setupGzipWorks() ---\n");
 #endif
+
         zStream.zalloc = Z_NULL;
         zStream.zfree = Z_NULL;
         zStream.opaque = Z_NULL;
@@ -1308,7 +1309,7 @@ namespace starch
             throw(std::string("ERROR: ran out of memory to allocate to z-in-buffer"));
         zLineBuf[0] = '\0';
 
-        // seting up transformation parameters...
+        // setting up transformation parameters...
         if (setupTransformationParameters() != EXIT_SUCCESS)
             throw(std::string("ERROR: could not initialize transformation parameters"));
         return EXIT_SUCCESS;
@@ -1406,6 +1407,7 @@ namespace starch
 #ifdef DEBUG
         std::fprintf(stderr, "\n--- Starch::extractBEDLine(std::string &) ---\n");
 #endif
+
         line.clear();
         while (!isEOF()) {
             extractLine(line);
@@ -1426,6 +1428,7 @@ namespace starch
 #ifdef DEBUG
         std::fprintf(stderr, "\n--- Starch::extractLine(std::string &) ---\n");
 #endif
+
         static char out[STARCH_BUFFER_MAX_LENGTH];
         static const char tab = '\t';
         int res = 0;
@@ -1692,7 +1695,8 @@ namespace starch
         std::fprintf(stderr, "\n--- Starch::zReadChunk() ---\n");
 #endif
 
-        zStream.avail_in = static_cast<uInt>( std::fread(zInBuf, 1, STARCH_Z_CHUNK / 8, inFp) );
+        //zStream.avail_in = static_cast<uInt>( std::fread(zInBuf, 1, STARCH_Z_CHUNK / 8, inFp) );
+        zStream.avail_in = static_cast<uInt>( std::fread(zInBuf, 1, STARCH_Z_CHUNK, inFp) );
         zStream.next_in = reinterpret_cast<Byte *>( zInBuf );
 
         do {
@@ -1728,6 +1732,11 @@ namespace starch
         // set intial conditions for line parsing
         zBufIdx = zBufOffset;
         zOutBufIdx = 0;
+
+        std::fprintf(stderr, "zHave [%d]\n", zHave);        
+        std::fprintf(stderr, "zBufIdx [%d]\n", zBufIdx);
+        std::fprintf(stderr, "zOutBufIdx [%d]\n", zOutBufIdx);
+        std::fprintf(stderr, "[ %s ]\n", zOutBuf);
         
         return EXIT_SUCCESS;
     }
@@ -1750,8 +1759,12 @@ namespace starch
 #ifdef DEBUG
         std::fprintf(stderr, "\n--- Starch::zReadLine() ---\n");
 #endif
+        
 
         if (zOutBufIdx == 0) {
+#ifdef DEBUG
+            std::fprintf(stderr, "\n--- zOutBufIdx is empty, reading chunk... ---\n");
+#endif
             zReadChunk();
         }
 
@@ -1842,6 +1855,7 @@ namespace starch
 #ifdef DEBUG
         std::fprintf(stderr, "\n--- Starch::setupPerLineAccess() ---\n");
 #endif        
+
         if (!archMd) // read in Metadata object from JSON header
             readJSONMetadata(false, false);
 

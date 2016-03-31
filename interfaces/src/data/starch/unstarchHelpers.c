@@ -157,6 +157,13 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
                     else 
                         zBufOffset = 0;
 
+#ifdef DEBUG
+                    fprintf(stderr, "zHave [%d]\n", zHave);        
+                    fprintf(stderr, "zBufIdx [%d]\n", zBufOffset);
+                    fprintf(stderr, "zOutBufIdx [%d]\n", zOutBufIdx);
+                    fprintf(stderr, "[ %s ]\n", zOutBuf);
+#endif
+                    
                     /* read through zOutBuf for newlines */                    
                     for (zBufIdx = zBufOffset, zOutBufIdx = 0; zOutBufIdx < zHave; zBufIdx++, zOutBufIdx++) {
                         zLineBuf[zBufIdx] = zOutBuf[zOutBufIdx];
