@@ -131,10 +131,10 @@ install_osx_packaging_bins: prep_c
 
 update_bedops_version:
 ifndef OLD_VER
-	$(error Old version variable OLD_VER is undefined (e.g., 2.4.14))
+	$(error Old version variable OLD_VER is undefined (e.g., 2.4.15))
 endif
 ifndef NEW_VER
-	$(error New version variable NEW_VER is undefined (e.g., 2.4.15))
+	$(error New version variable NEW_VER is undefined (e.g., 2.4.16))
 endif
 ifeq ($(KERNEL), Darwin)
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" README.md

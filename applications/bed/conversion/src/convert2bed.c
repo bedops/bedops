@@ -5157,9 +5157,9 @@ c2b_print_version(FILE *stream)
             "%s\n"                              \
             "  version:  %s\n"                  \
             "  author:   %s\n",
-            general_name,
-            version,
-            authors);
+            application_name,
+            application_version,
+            application_authors);
 
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_print_version() - exit  ---\n");
@@ -5181,9 +5181,9 @@ c2b_print_usage(FILE *stream)
             "%s\n"             \
             "%s\n"             \
             "%s\n",
-            general_name,
-            version,
-            authors,
+            application_name,
+            application_version,
+            application_authors,
             general_usage,
             general_description,
             general_io_options, 
@@ -5262,7 +5262,7 @@ c2b_print_format_usage(FILE *stream)
         format_options = (char *) wig_options;
         break;
     default:
-        format_name = (char *) general_name;
+        format_name = (char *) application_name;
         format_usage = (char *) format_undefined_usage;
         format_description = (char *) general_description;
         format_options = (char *) general_options;
@@ -5278,8 +5278,8 @@ c2b_print_format_usage(FILE *stream)
                 "%s\n"                           \
                 "%s\n",
                 format_name,
-                version,
-                authors,
+                application_version,
+                application_authors,
                 format_usage,
                 format_description,
                 format_options,
@@ -5294,8 +5294,8 @@ c2b_print_format_usage(FILE *stream)
                 "%s\n"                           \
                 "%s\n",
                 format_name,
-                version,
-                authors,
+                application_version,
+                application_authors,
                 format_usage,
                 format_description,
                 general_options);
