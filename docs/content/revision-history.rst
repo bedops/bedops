@@ -15,7 +15,7 @@ Current version
 v2.4.16
 -------
 
-Released: **TBD**
+Released: **April 5, 2016**
 
 * :ref:`bedmap <bedmap>`
 
