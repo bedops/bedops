@@ -21,6 +21,14 @@ Released: **TBD**
 
   * Added new ``--echo-ref-row-id`` option to report reference row ID elements.
 
+* Starch C++ API
+
+  * Fixed bug with extraction of archives made with ``starch --gzip`` (thanks to Brad Gulko for the bug report and Paul Verhoeven and Peter Weir for compile and testing assistance).
+
+* General improvements
+
+  * Small improvements to build cleanup targets.
+
 =================
 Previous versions
 =================
