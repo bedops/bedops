@@ -31,7 +31,7 @@ SFLAGS              = -static
 dependency_names    = NaN starchConstants starchFileHelpers starchHelpers starchMetadataHelpers unstarchHelpers starchSha1Digest starchBase64Coding
 dependencies        = $(addprefix $(OBJDIR)/, $(addsuffix .o, $(dependency_names)))
 FLAGS               = $(SFLAGS) -s $(BLDFLAGS) $(dependencies) ${LIBLOCATION} ${INCLUDES}
-DFLAGS              = $(SFLAGS) -g -O0 -std=c++11 -Wall -fno-inline -pedantic $(dependencies) ${LIBLOCATION} ${INCLUDES}
+DFLAGS              = $(SFLAGS) -g -O0 -DDEBUG_VERBOSE=1 -std=c++11 -Wall -fno-inline -pedantic -DDEBUG=1 $(dependencies) ${LIBLOCATION} ${INCLUDES}
 GPROFFLAGS          = $(SFLAGS) -O -std=c++11 -Wall -pedantic -pg $(dependencies) ${LIBLOCATION} ${INCLUDES}
 SOURCE1             = Bedops.cpp
 BINDIR              = ../bin
