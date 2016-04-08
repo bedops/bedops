@@ -143,6 +143,7 @@ ifeq ($(KERNEL), Darwin)
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/os_x/BEDOPS.pkgproj
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" docs/index.rst
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" docs/conf.py
+	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/conversion/src/convert2bed.h
 	find docs/content -type f -exec sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" {} +
 else
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" README.md
@@ -151,6 +152,7 @@ else
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/os_x/BEDOPS.pkgproj
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" docs/index.rst
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" docs/conf.py
+	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/conversion/src/convert2bed.h
 	find docs/content -type f -exec sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" {} +
 endif
 
