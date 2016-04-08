@@ -12,6 +12,16 @@ Current version
 ===============
 
 -------
+v2.4.17
+-------
+
+Released: **April 5, 2016**
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.16
 -------
 
@@ -28,10 +38,6 @@ Released: **April 5, 2016**
 * General improvements
 
   * Small improvements to build cleanup targets.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.15
