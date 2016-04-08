@@ -15,7 +15,7 @@ Current version
 v2.4.17
 -------
 
-Released: **April 5, 2016**
+Released: **TBD**
 
 =================
 Previous versions
