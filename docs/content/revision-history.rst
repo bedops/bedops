@@ -12,10 +12,20 @@ Current version
 ===============
 
 -------
-v2.4.16
+v2.4.17
 -------
 
 Released: **TBD**
+
+=================
+Previous versions
+=================
+
+-------
+v2.4.16
+-------
+
+Released: **April 5, 2016**
 
 * :ref:`bedmap <bedmap>`
 
@@ -28,10 +38,6 @@ Released: **TBD**
 * General improvements
 
   * Small improvements to build cleanup targets.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.15
