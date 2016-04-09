@@ -139,6 +139,9 @@ endif
 ifeq ($(KERNEL), Darwin)
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" README.md
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/rpm/bedops.spec
+	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/rpm/Dockerfile
+	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/deb/control
+	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/deb/Dockerfile
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" interfaces/general-headers/suite/BEDOPS.Version.hpp
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/os_x/BEDOPS.pkgproj
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" docs/index.rst
@@ -147,6 +150,9 @@ ifeq ($(KERNEL), Darwin)
 else
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" README.md
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/rpm/bedops.spec
+	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/rpm/Dockerfile
+	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/deb/control
+	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/deb/Dockerfile
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" interfaces/general-headers/suite/BEDOPS.Version.hpp
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/os_x/BEDOPS.pkgproj
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" docs/index.rst
@@ -154,8 +160,8 @@ else
 	find docs/content -type f -exec sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" {} +
 endif
 
-docker: packaging/docker/Dockerfile
-	docker build -t bedops -f packaging/docker/Dockerfile  .
-
 rpm: packaging/rpm/Dockerfile
 	docker build -t bedops:rpm -f packaging/rpm/Dockerfile .
+
+deb: packaging/deb/Dockerfile
+	docker build -t bedops:deb -f packaging/deb/Dockerfile .
