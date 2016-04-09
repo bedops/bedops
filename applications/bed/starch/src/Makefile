@@ -32,15 +32,15 @@ LOCALOBJDIR               = objects
 INCLUDES                  = -iquote${MAIN} -iquote${HEAD} -iquote${PARTY3} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 LIBRARIES                 = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 ARCH_VERSION              = v2.1
-BIN_VERSION               = v2.4.3
+BIN_VERSION               = v2.4.16
 TEST                      = ../test
 TEST_LINUX_BINDIR         = ${TEST}/binaries/linux/${ARCH_VERSION}/bin
 TEST_OSX_BINDIR           = ${TEST}/binaries/osx/${ARCH_VERSION}/bin
 AR                        = ar
 SFLAGS                    = -static
 CXXFLAGS                  = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 -Wformat -Wall -Wextra -Wswitch-enum -std=c++11 ${SFLAGS} -s
-CXXDFLAGS                 = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g -Wformat -Wall -Wextra -Wswitch-enum -std=c++11 -DDEBUG=1 ${SFLAGS}
-CXXGFLAGS                 = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O -Wformat -Wall -Wextra -Wswitch-enum -std=c++11 -DDEBUG=1 ${SFLAGS} -pg
+CXXDFLAGS                 = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g -Wformat -Wall -Wextra -Wswitch-enum -std=c++11 -DDEBUG_VERBOSE=1 ${SFLAGS}
+CXXGFLAGS                 = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O -Wformat -Wall -Wextra -Wswitch-enum -std=c++11 -DDEBUG_VERBOSE=1 ${SFLAGS} -pg
 
 STARCH_NAMES              = starchConstants unstarchHelpers starchHelpers starchMetadataHelpers starchFileHelpers starchSha1Digest starchBase64Coding
 STARCH_OBJECTS            = $(addprefix $(LOCALOBJDIR)/, $(addsuffix .o, $(STARCH_NAMES)))
@@ -101,3 +101,4 @@ clean:
 	rm -f ${LOCALSTARCHLIBGPROF}
 	rm -f ${BINDIR}/*starch*
 	rm -rf ${LOCALOBJDIR}
+	rm -rf ${BINDIR}

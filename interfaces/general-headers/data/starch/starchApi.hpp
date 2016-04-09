@@ -747,6 +747,9 @@ namespace starch
         int zOutBufIdx;
         int zHave;
         int zBufOffset;
+        bool needToInflateZChunk;
+        bool needToReadZChunk;
+        bool postBreakdownZValuesIdentical;
         bool allowHeadersFlag;
         bool perLineUsageFlag;            
         char *currentChromosome;
@@ -1266,6 +1269,7 @@ namespace starch
 #ifdef DEBUG
         std::fprintf(stderr, "\n--- Starch::setupGzipWorks() ---\n");
 #endif
+
         zStream.zalloc = Z_NULL;
         zStream.zfree = Z_NULL;
         zStream.opaque = Z_NULL;
@@ -1288,27 +1292,31 @@ namespace starch
                 break;
         }
 
-        zRemainderBuf = static_cast<char *>( std::malloc(1) );
+        zRemainderBuf = static_cast<char *>( std::malloc(STARCH_Z_CHUNK * STARCH_Z_CHUNK_MULTIPLIER) );
         if (!zRemainderBuf)
             throw(std::string("ERROR: ran out of memory to allocate to z-remainder-buffer"));
         zRemainderBuf[0] = '\0';
 
-        zInBuf = static_cast<char *>( std::malloc(STARCH_Z_CHUNK) );
+        zInBuf = static_cast<char *>( std::malloc(STARCH_Z_CHUNK * STARCH_Z_CHUNK_MULTIPLIER) );
         if (!zInBuf)
             throw(std::string("ERROR: ran out of memory to allocate to z-in-buffer"));
         zInBuf[0] = '\0';
 
-        zOutBuf = static_cast<char *>( std::malloc(STARCH_Z_CHUNK) );
+        zOutBuf = static_cast<char *>( std::malloc(STARCH_Z_CHUNK * STARCH_Z_CHUNK_MULTIPLIER) );
         if (!zOutBuf)
             throw(std::string("ERROR: ran out of memory to allocate to z-in-buffer"));
         zOutBuf[0] = '\0';
 
-        zLineBuf = static_cast<char *>( std::malloc(STARCH_Z_CHUNK) );
+        zLineBuf = static_cast<char *>( std::malloc(STARCH_Z_CHUNK * STARCH_Z_CHUNK_MULTIPLIER) );
         if (!zLineBuf)
             throw(std::string("ERROR: ran out of memory to allocate to z-in-buffer"));
         zLineBuf[0] = '\0';
 
-        // seting up transformation parameters...
+        needToReadZChunk = true;
+        needToInflateZChunk = true;
+        postBreakdownZValuesIdentical = false;
+
+        // setting up transformation parameters...
         if (setupTransformationParameters() != EXIT_SUCCESS)
             throw(std::string("ERROR: could not initialize transformation parameters"));
         return EXIT_SUCCESS;
@@ -1403,19 +1411,32 @@ namespace starch
     bool
     Starch::extractBEDLine(std::string& line)
     {
-#ifdef DEBUG
+#ifdef DEBUG_VERBOSE
         std::fprintf(stderr, "\n--- Starch::extractBEDLine(std::string &) ---\n");
 #endif
+
         line.clear();
         while (!isEOF()) {
+#ifdef DEBUG_VERBOSE
+            std::fprintf(stderr, "--> not isEOF()\n");
+#endif
             extractLine(line);
 
-            if ((t_firstInputToken[0] == 'p') && (archMdIter))
+            if ((t_firstInputToken[0] == 'p') && (archMdIter)) {
+#ifdef DEBUG_VERBOSE
+                std::fprintf(stderr, "--> prefix is 'p'()\n");
+#endif
                 extractLine(line);
+            }
 
-            if (!line.empty())
+            if (!line.empty()) {
                 break;
+            }
         }
+
+#ifdef DEBUG_VERBOSE
+        std::fprintf(stderr, "--> at end of extractBEDLine, line is [ %s ]\n", line.c_str());
+#endif
 
         return !isEOF();
     }
@@ -1423,9 +1444,10 @@ namespace starch
     int
     Starch::extractLine(std::string& line)
     { 
-#ifdef DEBUG
+#ifdef DEBUG_VERBOSE
         std::fprintf(stderr, "\n--- Starch::extractLine(std::string &) ---\n");
 #endif
+
         static char out[STARCH_BUFFER_MAX_LENGTH];
         static const char tab = '\t';
         int res = 0;
@@ -1548,7 +1570,15 @@ namespace starch
                 case kGzip: {
                     // extract untransformed line from archive
                     zReadLine();
+#ifdef DEBUG_VERBOSE
+                    std::fprintf(stderr, "--> (post-read-line) zError [%d]\n", zError);
+#endif
+                    //if (zError != Z_STREAM_END) {
                     if (zHave > 0) {
+#ifdef DEBUG_VERBOSE
+                        std::fprintf(stderr, "--> zOutBufIdx [ %d ] zHave [ %d ]\n", zOutBufIdx, zHave);
+#endif
+
                         // we deliberately choose to disable support for headers 
                         // in reverse transformation used by C++ client apps
                         allowHeadersFlag = false;
@@ -1626,6 +1656,9 @@ namespace starch
 
                         breakdownGzipWorks();
                         if (std::strcmp(selectedChromosome.c_str(), getCurrentChromosome()) == 0) {
+#ifdef DEBUG_VERBOSE
+                            std::fprintf(stderr, "--> current chromosome does not match\n");
+#endif
                             archMdIter = NULL;
                             if (currentChromosome) free(currentChromosome), currentChromosome = NULL;
                             if (_currChr) free(_currChr), _currChr = NULL;
@@ -1635,11 +1668,17 @@ namespace starch
                         }
                         iterateArchiveMdIter();
                         if (!archMdIter) {
+#ifdef DEBUG_VERBOSE
+                            std::fprintf(stderr, "--> current chromosome is NULL\n");
+#endif
                             archMdIter = NULL;
                             if (currentChromosome) free(currentChromosome), currentChromosome = NULL;
                             if (currentRemainder) free(currentRemainder), currentRemainder = NULL;
                             if (_currChr) free(_currChr), _currChr = NULL;
                             line.clear();
+#ifdef DEBUG_VERBOSE
+                            std::fprintf(stderr, "--> returning...\n");
+#endif
                             return EXIT_SUCCESS;
                         }
                         seekCurrentInFpPosition();
@@ -1648,7 +1687,9 @@ namespace starch
                         // we call extractLine() once more, in order to get the next
                         // BED element (we're not interested in untransformed data, but
                         // in a fully-transformed line of BED output)
-            
+#ifdef DEBUG_VERBOSE
+                        std::fprintf(stderr, "--> calling extractLine() one more time...\n");
+#endif
                         extractLine(line);
                     }
                     break;
@@ -1671,7 +1712,10 @@ namespace starch
             seekCurrentInFpPosition();
         }
 
-        if (_currChr) {
+        if (_currChr && !postBreakdownZValuesIdentical) {
+#ifdef DEBUG_VERBOSE
+            std::fprintf(stderr, "--> (post-breakdown) zOutBufIdx [ %d ] zHave [ %d ]\n", zOutBufIdx, zHave);
+#endif
             setCurrentStart(_currStart);
             setCurrentStop(_currStop);
             setCurrentRemainder(_currRemainder);
@@ -1680,6 +1724,7 @@ namespace starch
             else
                 std::sprintf(out, "%s\t%" PRId64 "\t%" PRId64, _currChr, _currStart, _currStop);
             line = out;
+            postBreakdownZValuesIdentical = (zOutBufIdx == zHave);
         }
 
         return EXIT_SUCCESS;
@@ -1688,47 +1733,24 @@ namespace starch
     int 
     Starch::zReadChunk()
     {
-#ifdef DEBUG
+#ifdef DEBUG_VERBOSE
         std::fprintf(stderr, "\n--- Starch::zReadChunk() ---\n");
 #endif
 
-        zStream.avail_in = static_cast<uInt>( std::fread(zInBuf, 1, STARCH_Z_CHUNK / 8, inFp) );
+#ifdef DEBUG_VERBOSE
+        std::fprintf(stderr, "--> (pre-read-chunk)  currently at byte [%013ld]\n", std::ftell(inFp));
+#endif
+
+        zStream.avail_in = static_cast<uInt>( std::fread(zInBuf, 1, STARCH_Z_CHUNK * STARCH_Z_CHUNK_MULTIPLIER, inFp) );
         zStream.next_in = reinterpret_cast<Byte *>( zInBuf );
+        needToReadZChunk = false;
+        needToInflateZChunk = true;
+        postBreakdownZValuesIdentical = false;
 
-        do {
-            zStream.avail_out = STARCH_Z_CHUNK;
-            zStream.next_out = reinterpret_cast<Byte *>( zOutBuf );
-            zError = inflate(&zStream, Z_NO_FLUSH);
-            switch (zError) {
-            case Z_NEED_DICT: {
-                throw(std::string("ERROR: z-stream needs dictionary"));
-            }
-            case Z_DATA_ERROR: {
-                throw(std::string("ERROR: z-stream suffered data error"));
-            }
-            case Z_MEM_ERROR: {
-                throw(std::string("ERROR: z-stream suffered memory error"));
-            }
-            default:
-                break;
-            }
-        } while (zStream.avail_out == 0);
+#ifdef DEBUG_VERBOSE
+        std::fprintf(stderr, "--> (post-read-chunk) currently at byte [%013ld]\n", std::ftell(inFp));
+#endif
 
-        zHave = STARCH_Z_CHUNK - static_cast<int>( zStream.avail_out );
-        zOutBuf[zHave] = '\0';
-
-        // copy remainder buffer onto the line buffer, if not NULL
-        if (zRemainderBuf) {
-            std::strncpy(zLineBuf, zRemainderBuf, strlen(zRemainderBuf));
-            zBufOffset = static_cast<int>( std::strlen(zRemainderBuf) );
-        }
-        else
-            zBufOffset = 0;            
-        
-        // set intial conditions for line parsing
-        zBufIdx = zBufOffset;
-        zOutBufIdx = 0;
-        
         return EXIT_SUCCESS;
     }
 
@@ -1748,49 +1770,82 @@ namespace starch
         //         the buffers up with the first batch of data
 
 #ifdef DEBUG
-        std::fprintf(stderr, "\n--- Starch::zReadLine() ---\n");
+        std::fprintf(stderr, "\n--- Starch::zReadLine() -- zStream.avail_out [%d] ---\n", zStream.avail_out);
 #endif
-
-        if (zOutBufIdx == 0) {
+        
+        if (needToReadZChunk) {
             zReadChunk();
         }
 
+        if (needToInflateZChunk) {  
+            zStream.avail_out = STARCH_Z_CHUNK * STARCH_Z_CHUNK_MULTIPLIER;
+            zStream.next_out = reinterpret_cast<Byte *>( zOutBuf );
+            zError = inflate(&zStream, Z_NO_FLUSH);
+            switch (zError) {
+            case Z_NEED_DICT: {
+                throw(std::string("ERROR: z-stream needs dictionary"));
+            }
+            case Z_DATA_ERROR: {
+                throw(std::string("ERROR: z-stream suffered data error"));
+            }
+            case Z_MEM_ERROR: {
+                throw(std::string("ERROR: z-stream suffered memory error"));
+            }
+            default:
+                break;
+            }
+            zHave = (STARCH_Z_CHUNK * STARCH_Z_CHUNK_MULTIPLIER) - static_cast<int>( zStream.avail_out );
+            zOutBuf[zHave] = '\0';
+            /* copy remainder buffer onto line buffer, if not NULL */
+            if (zRemainderBuf) {
+                strncpy(reinterpret_cast<char *>( zLineBuf ), reinterpret_cast<const char *>( zRemainderBuf ), strlen(reinterpret_cast<const char *>( zRemainderBuf )));
+                zBufOffset = strlen(reinterpret_cast<const char *>( zRemainderBuf ));
+            }
+            else 
+                zBufOffset = 0;
+            needToInflateZChunk = false;
+        }
+
+        /* read through zOutBuf for newlines */                    
         for (; zOutBufIdx < zHave; zBufIdx++) {
             if (zOutBuf[zOutBufIdx++] == '\n') {
                 zLineBuf[zBufIdx] = '\0';
                 zBufIdx = 0;
+#ifdef DEBUG_VERBOSE
+                std::fprintf(stderr, "\n--> full line [ %s ]\n", zLineBuf);
+#endif                
                 return EXIT_SUCCESS;
             }
             else
                 zLineBuf[zBufIdx] = zOutBuf[zOutBufIdx - 1];
         }
 
-        // if we do not find a newline in a sweep through zOutBuf, then we 
-        // will need to:
-        //
-        // -- put any remaining bytes into the remainder buffer (which
-        //    are put back at the start of the line buffer on the next read
-        //    of a z-chunk)
-        //
-        // -- read another z-chunk (if necessary; if we do read another
-        //    z-chunk, then we are in the middle of a line and need to
-        //    start parsing for newlines again)
-
-        if (std::strlen(zLineBuf) > 0) {            
-            if (std::strlen(zLineBuf) > std::strlen(zRemainderBuf)) {
-                free(zRemainderBuf), zRemainderBuf = NULL;
+        if (strlen(reinterpret_cast<const char *>( zLineBuf )) > 0) {
+            if (strlen(reinterpret_cast<const char *>( zLineBuf )) > strlen(reinterpret_cast<const char *>( zRemainderBuf ))) {
+                /* to minimize the chance of doing another (expensive) malloc, we double the length of zRemainderBuf */
+                free(zRemainderBuf);
                 zRemainderBuf = static_cast<char *>( std::malloc(std::strlen(zLineBuf) * 2) ); // resize remainder buffer, if necessary
             }
-            std::strncpy(zRemainderBuf, zLineBuf, static_cast<size_t>( zBufIdx ));
+
+            /* it is necessary to copy only that part of zLineBuf up to zBufIdx characters  */
+            /* (zBufIdx characters were read into zLineBuf before no newline was found and  */
+            /* we end up in this conditional) as well as terminate the remainder buffer     */
+            /* zRemainderBuf, so that any cruft from a previous iteration is ignored in the */
+            /* next iteration of parsing the chromosome's z-stream                          */
+
+            strncpy(reinterpret_cast<char *>( zRemainderBuf ), reinterpret_cast<const char *>( zLineBuf ), zBufIdx);
             zRemainderBuf[zBufIdx] = '\0';
-        }
+
+            /* we should only at most have to do this every STARCH_Z_CHUNK chars, and once  */
+            /* at the tail end of a chromosome's worth of a z-stream                        */
+        }              
 
         if (zOutBufIdx == zHave) {
             if (zHave == 0)
                 return EXIT_SUCCESS;
             else {
-                zOutBufIdx = 0;
-                zReadLine();
+                //zOutBufIdx = 0;
+                needToReadZChunk = true;
             }
         }
         
@@ -1842,6 +1897,7 @@ namespace starch
 #ifdef DEBUG
         std::fprintf(stderr, "\n--- Starch::setupPerLineAccess() ---\n");
 #endif        
+
         if (!archMd) // read in Metadata object from JSON header
             readJSONMetadata(false, false);
 

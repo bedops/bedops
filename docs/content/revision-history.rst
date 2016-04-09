@@ -12,6 +12,28 @@ Current version
 ===============
 
 -------
+v2.4.16
+-------
+
+Released: **April 5, 2016**
+
+* :ref:`bedmap <bedmap>`
+
+  * Added new ``--echo-ref-row-id`` option to report reference row ID elements.
+
+* Starch C++ API
+
+  * Fixed bug with extraction of archives made with ``starch --gzip`` (thanks to Brad Gulko for the bug report and Paul Verhoeven and Peter Weir for compile and testing assistance).
+
+* General improvements
+
+  * Small improvements to build cleanup targets.
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.15
 -------
 
@@ -28,10 +50,6 @@ Released: **January 21, 2016**
 * General improvements
 
   * Improved OS X 10.11 build process.
-  
-=================
-Previous versions
-=================
 
 -------
 v2.4.14

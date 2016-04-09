@@ -33,14 +33,14 @@ LIBRARIES                 = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 BINDIR                    = ../bin_${ARCH}
 WARNINGS                  = -Weverything -Wno-c++98-compat-pedantic -Wno-padded
 ARCH_VERSION              = v2.1
-BIN_VERSION               = v2.4.3
+BIN_VERSION               = v2.4.16
 TEST                      = ../test
 TEST_OSX_BINDIR           = ${TEST}/binaries/osx/${ARCH_VERSION}/bin
 
 CFLAGS                    = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 ${WARNINGS} -std=c99 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH} -x c++ -v -stdlib=libc++ -std=c++11
 CXXFLAGS                  = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 ${WARNINGS} -std=c++11 -stdlib=libc++ -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH}
-CDFLAGS                   = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g ${WARNINGS} -std=c99 -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH} -x c++ -v -stdlib=libc++ -std=c++11
-CXXDFLAGS                 = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g ${WARNINGS} -std=c++11 -stdlib=libc++ -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH}
+CDFLAGS                   = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g ${WARNINGS} -std=c99 -DDEBUG_VERBOSE=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH} -x c++ -v -stdlib=libc++ -std=c++11
+CXXDFLAGS                 = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g ${WARNINGS} -std=c++11 -stdlib=libc++ -DDEBUG_VERBOSE=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH}
 
 
 build: dependencies starchLibrary starch unstarch starchcat starchcluster
@@ -118,5 +118,8 @@ mkdirs:
 clean:
 	rm -f $(LOCALSTARCHLIB)
 	rm -f ${LOCALSTARCHLIBDEBUG}
-	rm -rf ${LOCALOBJDIR}
+	rm -Rf ${LOCALOBJDIR}
+	rm -Rf ${LOCALSTARCHLIBDIR}
 	rm -rf ${BINDIR}/*starch*
+	rm -Rf ${BINDIR}
+	rm -Rf ${THISDIR}/../bin

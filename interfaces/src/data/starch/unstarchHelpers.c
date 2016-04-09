@@ -54,7 +54,7 @@ namespace starch {
 int 
 UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, const Metadata *md, const uint64_t mdOffset, const Boolean headerFlag) 
 {
-#ifdef DEBUG
+#ifdef DEBUG_VERBOSE
     fprintf(stderr, "\n--- UNSTARCH_extractDataWithGzip() ---\n");
 #endif
     const Metadata *iter;
@@ -124,10 +124,16 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
     
             /* while stream is open, read line from stream, and reverse transform */
             do {
+#ifdef DEBUG_VERBOSE
+                fprintf(stderr, "--> (pre-read-chunk)  currently at byte [%013ld]\n", ftell(*inFp));
+#endif
 #ifdef __cplusplus
                 zStream.avail_in = static_cast<unsigned int>( fread(zInBuf, 1, STARCH_Z_CHUNK, *inFp) );
 #else
                 zStream.avail_in = (unsigned int) fread(zInBuf, 1, STARCH_Z_CHUNK, *inFp);
+#endif
+#ifdef DEBUG_VERBOSE
+                fprintf(stderr, "--> (post-read-chunk) currently at byte [%013ld]\n", ftell(*inFp));
 #endif
                 if (zStream.avail_in == 0)
                     break;
@@ -135,7 +141,14 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
                 do {
                     zStream.avail_out = STARCH_Z_CHUNK;
                     zStream.next_out = zOutBuf;
+#ifdef DEBUG_VERBOSE
+                    fprintf(stderr, "--> (pre-loop)  zStream.avail_out [%013d]\n", zStream.avail_out);
+#endif
                     zError = inflate(&zStream, Z_NO_FLUSH);
+#ifdef DEBUG_VERBOSE
+                    fprintf(stderr, "--> (post-loop) zStream.avail_out [%013d]\n", zStream.avail_out);
+                    //cnt++;
+#endif
                     switch (zError) {
                         case Z_NEED_DICT:  { fprintf(stderr, "ERROR: Z-stream needs dictionary\n");      return UNSTARCH_FATAL_ERROR; }
                         case Z_DATA_ERROR: { fprintf(stderr, "ERROR: Z-stream suffered data error\n");   return UNSTARCH_FATAL_ERROR; }
@@ -157,6 +170,12 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
                     else 
                         zBufOffset = 0;
 
+#ifdef DEBUG_VERBOSE
+                    fprintf(stderr, "zHave [%d]\n", zHave);        
+                    fprintf(stderr, "zBufIdx [%zu]\n", zBufOffset);
+                    fprintf(stderr, "zOutBufIdx [%d]\n", zOutBufIdx);
+#endif
+                    
                     /* read through zOutBuf for newlines */                    
                     for (zBufIdx = zBufOffset, zOutBufIdx = 0; zOutBufIdx < zHave; zBufIdx++, zOutBufIdx++) {
                         zLineBuf[zBufIdx] = zOutBuf[zOutBufIdx];
@@ -168,7 +187,7 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
                             zBufIdx = (size_t) -1;
 #endif
                             (!headerFlag) ? \
-                                    UNSTARCH_reverseTransformHeaderlessInput(chromosome, zLineBuf, '\t', &start, &pLength, &lastEnd, firstInputToken, secondInputToken, outFp):\
+                                UNSTARCH_reverseTransformHeaderlessInput(chromosome, zLineBuf, '\t', &start, &pLength, &lastEnd, firstInputToken, secondInputToken, outFp) : \
                                 UNSTARCH_reverseTransformInput(chromosome, zLineBuf, '\t', &start, &pLength, &lastEnd, firstInputToken, secondInputToken, outFp);
                             firstInputToken[0] = '\0';
                             secondInputToken[0] = '\0';

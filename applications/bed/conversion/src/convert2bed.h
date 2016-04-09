@@ -1,7 +1,7 @@
 /* 
    convert2bed.h
    -----------------------------------------------------------------------
-   Copyright (C) 2014-2015 Alex Reynolds
+   Copyright (C) 2014-2016 Alex Reynolds
 
    wig2bed components, (C) 2011-2016 Scott Kuehn and Shane Neph
 
@@ -51,7 +51,7 @@
 #include <sys/param.h>
 #include <sys/wait.h>
 
-#define C2B_VERSION "2.4.15"
+#define C2B_VERSION "2.4.16"
 
 typedef int boolean;
 extern const boolean kTrue;
@@ -558,11 +558,11 @@ typedef struct pipeline_stage {
 #define POPEN4_FLAG_CLOSE_CHILD_STDOUT          (1U << 4)
 #define POPEN4_FLAG_CLOSE_CHILD_STDERR          (1U << 5)
 
-static const char *general_name = "convert2bed";
+static const char *application_name = "convert2bed";
 
-static const char *version = C2B_VERSION;
+static const char *application_version = C2B_VERSION;
 
-static const char *authors = "Alex Reynolds";
+static const char *application_authors = "Alex Reynolds";
 
 static const char *general_usage = "\n"                                 \
     "  Usage:\n"                                                        \

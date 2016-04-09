@@ -29,7 +29,7 @@ SFLAGS              = -static
 dependency_names    = NaN starchConstants starchFileHelpers starchHelpers starchMetadataHelpers unstarchHelpers starchSha1Digest starchBase64Coding
 dependencies        = $(addprefix $(OBJDIR)/, $(addsuffix .o, $(dependency_names)))
 FLAGS               = ${SFLAGS} -s ${BLDFLAGS} $(dependencies) ${LIBLOCATION} ${INCLUDES}
-DFLAGS              = ${SFLAGS} -g -O0 -std=c++11 -fno-inline -Wall -pedantic $(dependencies) ${LIBLOCATION} ${INCLUDES}
+DFLAGS              = ${SFLAGS} -g -O0 -std=c++11 -DDEBUG_VERBOSE=1 -fno-inline -Wall -pedantic $(dependencies) ${LIBLOCATION} ${INCLUDES}
 GPROFFLAGS          = ${SFLAGS} -pg -O -std=c++11 -Wall -pedantic $(dependencies) ${LIBLOCATION} ${INCLUDES}
 
 SOURCE1             = Bedmap.cpp
@@ -63,3 +63,4 @@ clean:
 	rm -f ${BINDIR}/${PROG}
 	rm -f ${BINDIR}/*.${PROG}
 	rm -rf ${OBJDIR}
+	rm -rf ${BINDIR}

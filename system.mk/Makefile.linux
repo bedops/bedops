@@ -78,6 +78,7 @@ clean: clean_debug clean_gprof $(SUBDIRS)
 	rm -f ${PARTY3}/jansson
 	rm -rf ${WHICHZLIB}
 	rm -f ${PARTY3}/zlib
+	rm -rf ${BINDIR}
 
 clean_debug:
 	rm -f ${BINDIR}/debug.sort-bed
@@ -110,6 +111,7 @@ clean_debug:
 	rm -f ${BINDIR}/sam2starch
 	rm -f ${BINDIR}/vcf2starch
 	rm -f ${BINDIR}/wig2starch
+	rm -rf ${BINDIR}
 
 clean_gprof:
 	rm -f ${BINDIR}/gprof.sort-bed
@@ -142,7 +144,7 @@ clean_gprof:
 	rm -f ${BINDIR}/sam2starch
 	rm -f ${BINDIR}/vcf2starch
 	rm -f ${BINDIR}/wig2starch
-
+	rm -rf ${BINDIR}
 
 
 #
