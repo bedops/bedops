@@ -160,6 +160,9 @@ else
 	find docs/content -type f -exec sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" {} +
 endif
 
+docker: packaging/docker/Dockerfile
+	docker build -t bedops -f packaging/docker/Dockerfile  .
+
 rpm: packaging/rpm/Dockerfile
 	docker build -t bedops:rpm -f packaging/rpm/Dockerfile .
 
