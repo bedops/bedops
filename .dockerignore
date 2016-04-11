@@ -1,8 +1,4 @@
 .git
-docs
-LICENSE
-packaging
-README.md
 .travis.yml
 .gitignore
 .dockerignore
