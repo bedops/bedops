@@ -2292,15 +2292,15 @@ static void
 c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
 {
     /* 
-       Scan the src buffer (all src_size bytes of it) to build a list of tab delimiter 
-       offsets. Then write content to the dest buffer, using offsets taken from the reordered 
-       tab-offset list to grab fields in the correct order.
+       This functor is slightly more complex than c2b_line_convert_sam_to_bed_unsorted_without_split_operation() 
+       as we need to build a list of tab delimiters, as before, but first read in the CIGAR string (6th field) and
+       parse it for operation key-value pairs to loop through later on
     */
 
     ssize_t sam_field_offsets[C2B_MAX_FIELD_COUNT_VALUE];
     int sam_field_idx = 0;
     ssize_t current_src_posn = -1;
-    
+
     /* 
        Find offsets or process header line 
     */
@@ -2348,7 +2348,25 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
     }
 
     /* 
-       Firstly, is read mapped? If not, and c2b_globals.all_reads_flag is kFalse, we skip over this line
+       Translate CIGAR string to operations
+    */
+
+    ssize_t cigar_size = sam_field_offsets[5] - sam_field_offsets[4];
+    char cigar_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    memcpy(cigar_str, src + sam_field_offsets[4] + 1, cigar_size - 1);
+    cigar_str[cigar_size - 1] = '\0';
+    c2b_sam_cigar_str_to_ops(cigar_str);
+#ifdef DEBUG
+    c2b_sam_debug_cigar_ops(c2b_globals.sam->cigar);
+#endif
+    ssize_t cigar_length = 0;
+    ssize_t op_idx = 0;
+    for (op_idx = 0; op_idx < c2b_globals.sam->cigar->length; ++op_idx) {
+        cigar_length += c2b_globals.sam->cigar->ops[op_idx].bases;
+    }
+
+    /* 
+       Firstly, is the read mapped? If not, and c2b_globals.all_reads_flag is kFalse, we skip over this line
     */
 
     ssize_t flag_size = sam_field_offsets[1] - sam_field_offsets[0];
@@ -2358,110 +2376,142 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
     int flag_val = (int) strtol(flag_src_str, NULL, 10);
     boolean is_mapped = (boolean) !(4 & flag_val);
     if ((!is_mapped) && (!c2b_globals.all_reads_flag)) 
-        return;
+        return;    
 
-    /* Field 1 - RNAME */
+    /* 
+       Secondly, we need to retrieve RNAME, POS, QNAME parameters
+    */
+
+    /* RNAME */
+    char rname_str[C2B_MAX_FIELD_LENGTH_VALUE];
     if (is_mapped) {
-        ssize_t rname_size = sam_field_offsets[2] - sam_field_offsets[1];
-        memcpy(dest + *dest_size, src + sam_field_offsets[1] + 1, rname_size);
-        *dest_size += rname_size;
+        ssize_t rname_size = sam_field_offsets[2] - sam_field_offsets[1] - 1;
+        memcpy(rname_str, src + sam_field_offsets[1] + 1, rname_size);
+        rname_str[rname_size] = '\0';
     }
     else {
         char unmapped_read_chr_str[C2B_MAX_FIELD_LENGTH_VALUE];
         memcpy(unmapped_read_chr_str, c2b_unmapped_read_chr_name, strlen(c2b_unmapped_read_chr_name));
         unmapped_read_chr_str[strlen(c2b_unmapped_read_chr_name)] = '\t';
         unmapped_read_chr_str[strlen(c2b_unmapped_read_chr_name) + 1] = '\0';
-        memcpy(dest + *dest_size, unmapped_read_chr_str, strlen(unmapped_read_chr_str));
-        *dest_size += strlen(unmapped_read_chr_str);
+        memcpy(rname_str, unmapped_read_chr_str, strlen(unmapped_read_chr_str));
+        rname_str[strlen(unmapped_read_chr_str)] = '\0';
     }
 
-    /* Field 2 - POS - 1 */
+    /* POS */
     ssize_t pos_size = sam_field_offsets[3] - sam_field_offsets[2];
     char pos_src_str[C2B_MAX_FIELD_LENGTH_VALUE];
     memcpy(pos_src_str, src + sam_field_offsets[2] + 1, pos_size - 1);
     pos_src_str[pos_size - 1] = '\0';
     uint64_t pos_val = strtoull(pos_src_str, NULL, 10);
-    char start_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    sprintf(start_str, "%" PRIu64 "\t", (is_mapped) ? pos_val - 1 : 0);
-    memcpy(dest + *dest_size, start_str, strlen(start_str));
-    *dest_size += strlen(start_str);
+    uint64_t start_val = pos_val - 1; /* remember, start = POS - 1 */
+    uint64_t stop_val = start_val + cigar_length;
 
-    /* Field 3 - POS + length(CIGAR) - 1 */
-    ssize_t cigar_size = sam_field_offsets[5] - sam_field_offsets[4];
-    ssize_t cigar_length = 0;
-    char stop_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    char cigar_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    memcpy(cigar_str, src + sam_field_offsets[4] + 1, cigar_size - 1);
-    cigar_str[cigar_size - 1] = '\0';
-    c2b_sam_cigar_str_to_ops(cigar_str);
-    ssize_t block_idx = 0;
-    for (block_idx = 0; block_idx < c2b_globals.sam->cigar->length; ++block_idx) {
-        cigar_length += c2b_globals.sam->cigar->ops[block_idx].bases;
-    }
-    sprintf(stop_str, "%" PRIu64 "\t", (is_mapped) ? pos_val + cigar_length - 1 : 1);
-    memcpy(dest + *dest_size, stop_str, strlen(stop_str));
-    *dest_size += strlen(stop_str);
+    /* QNAME */
+    char qname_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t qname_size = sam_field_offsets[0];
+    memcpy(qname_str, src, qname_size);
+    qname_str[qname_size] = '\0';
 
-    /* Field 4 - QNAME */
-    ssize_t qname_size = sam_field_offsets[0] + 1;
-    memcpy(dest + *dest_size, src, qname_size);
-    *dest_size += qname_size;
-
-    /* Field 5 - MAPQ */
-    ssize_t mapq_size = sam_field_offsets[4] - sam_field_offsets[3];
-    memcpy(dest + *dest_size, src + sam_field_offsets[3] + 1, mapq_size);
-    *dest_size += mapq_size;
-
-    /* Field 6 - 16 & FLAG */
+    /* 16 & FLAG */
     int strand_val = 0x10 & flag_val;
     char strand_str[C2B_MAX_STRAND_LENGTH_VALUE];
-    sprintf(strand_str, "%c\t", (strand_val == 0x10) ? '-' : '+');
-    memcpy(dest + *dest_size, strand_str, strlen(strand_str));
-    *dest_size += strlen(strand_str);
+    sprintf(strand_str, "%c", (strand_val == 0x10) ? '-' : '+');
+    
+    /* MAPQ */
+    char mapq_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t mapq_size = sam_field_offsets[4] - sam_field_offsets[3] - 1;
+    memcpy(mapq_str, src + sam_field_offsets[3] + 1, mapq_size);
+    mapq_str[mapq_size] = '\0';
+    
+    /* RNEXT */
+    char rnext_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t rnext_size = sam_field_offsets[6] - sam_field_offsets[5] - 1;
+    memcpy(rnext_str, src + sam_field_offsets[5] + 1, rnext_size);
+    rnext_str[rnext_size] = '\0';
 
-    /* Field 7 - FLAG */
-    memcpy(dest + *dest_size, src + sam_field_offsets[0] + 1, flag_size);
-    *dest_size += flag_size;
+    /* PNEXT */
+    char pnext_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t pnext_size = sam_field_offsets[7] - sam_field_offsets[6] - 1;
+    memcpy(pnext_str, src + sam_field_offsets[6] + 1, pnext_size);
+    pnext_str[pnext_size] = '\0';
 
-    /* Field 8 - CIGAR */
-    memcpy(dest + *dest_size, src + sam_field_offsets[4] + 1, cigar_size);
-    *dest_size += cigar_size;
+    /* TLEN */
+    char tlen_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t tlen_size = sam_field_offsets[8] - sam_field_offsets[7] - 1;
+    memcpy(tlen_str, src + sam_field_offsets[7] + 1, tlen_size);
+    tlen_str[tlen_size] = '\0';
 
-    /* Field 9 - RNEXT */
-    ssize_t rnext_size = sam_field_offsets[6] - sam_field_offsets[5];
-    memcpy(dest + *dest_size, src + sam_field_offsets[5] + 1, rnext_size);
-    *dest_size += rnext_size;
+    /* SEQ */
+    char seq_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t seq_size = sam_field_offsets[9] - sam_field_offsets[8] - 1;
+    memcpy(seq_str, src + sam_field_offsets[8] + 1, seq_size);
+    seq_str[seq_size] = '\0';
 
-    /* Field 10 - PNEXT */
-    ssize_t pnext_size = sam_field_offsets[7] - sam_field_offsets[6];
-    memcpy(dest + *dest_size, src + sam_field_offsets[6] + 1, pnext_size);
-    *dest_size += pnext_size;
+    /* QUAL */
+    char qual_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    ssize_t qual_size = sam_field_offsets[10] - sam_field_offsets[9] - 1;
+    memcpy(qual_str, src + sam_field_offsets[9] + 1, qual_size);
+    qual_str[qual_size] = '\0';
 
-    /* Field 11 - TLEN */
-    ssize_t tlen_size = sam_field_offsets[8] - sam_field_offsets[7];
-    memcpy(dest + *dest_size, src + sam_field_offsets[7] + 1, tlen_size);
-    *dest_size += tlen_size;
-
-    /* Field 12 - SEQ */
-    ssize_t seq_size = sam_field_offsets[9] - sam_field_offsets[8];
-    memcpy(dest + *dest_size, src + sam_field_offsets[8] + 1, seq_size);
-    *dest_size += seq_size;
-
-    /* Field 13 - QUAL */
-    ssize_t qual_size = sam_field_offsets[10] - sam_field_offsets[9];
-    memcpy(dest + *dest_size, src + sam_field_offsets[9] + 1, qual_size);
-    *dest_size += qual_size;
-
-    /* Field 14+ - Optional fields */
-    if (sam_field_offsets[11] == -1)
-        return;
-
-    int field_idx;
-    for (field_idx = 11; field_idx <= sam_field_idx; field_idx++) {
-        ssize_t opt_size = sam_field_offsets[field_idx] - sam_field_offsets[field_idx - 1];
-        memcpy(dest + *dest_size, src + sam_field_offsets[field_idx - 1] + 1, opt_size);
-        *dest_size += opt_size;
+    /* Optional fields */
+    char opt_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    memset(opt_str, 0, strlen(opt_str));
+    if (sam_field_offsets[11] != -1) {
+        for (int field_idx = 11; field_idx <= sam_field_idx; field_idx++) {
+            ssize_t opt_size = sam_field_offsets[field_idx] - sam_field_offsets[field_idx - 1] - (field_idx == sam_field_idx ? 1 : 0);
+            memcpy(opt_str + strlen(opt_str), src + sam_field_offsets[field_idx - 1] + 1, opt_size);
+        opt_str[strlen(opt_str) + opt_size] = '\0';
+        }
     }
+
+    /* 
+       Loop through operations and process a line of input based on each operation and its associated value
+    */
+
+    ssize_t block_idx;
+    char previous_op = default_cigar_op_operation;
+    char modified_qname_str[C2B_MAX_FIELD_LENGTH_VALUE];
+
+    c2b_sam_t sam;
+    sam.rname = rname_str;
+    sam.start = start_val;
+    sam.stop = start_val;
+    sam.qname = qname_str;
+    sam.flag = flag_val;
+    sam.strand = strand_str;
+    sam.mapq = mapq_str;
+    sam.cigar = cigar_str;
+    sam.rnext = rnext_str;
+    sam.pnext = pnext_str;
+    sam.tlen = tlen_str;
+    sam.seq = seq_str;
+    sam.qual = qual_str;
+    sam.opt = opt_str;
+
+    for (op_idx = 0; op_idx < c2b_globals.sam->cigar->length; ++op_idx) {
+        char current_op = c2b_globals.sam->cigar->ops[op_idx].operation;
+        unsigned int bases = c2b_globals.sam->cigar->ops[op_idx].bases;
+        switch (current_op) 
+            {
+            case 'M':
+            case 'N':
+            case 'D':
+            case '=':
+            case 'X':
+                sam.stop += bases;
+            case 'H':
+            case 'I':
+            case 'P':
+            case 'S':
+                break;
+            default:
+                break;
+            }
+        previous_op = current_op;
+    }
+
+    c2b_line_convert_sam_to_bed(sam, dest, dest_size);
 }
 
 static void
