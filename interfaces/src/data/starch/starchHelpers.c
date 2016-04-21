@@ -2144,7 +2144,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 
                     /* test for out-of-order element */
                     if (pStart > start) {
-                        fprintf(stderr, "ERROR: BED data is not properly sorted by start coordinates at line %lu\n", lineIdx);
+                        fprintf(stderr, "ERROR: BED data is not properly sorted by start coordinates at line %lu [ pStart: %" PRId64 " | start: %" PRId64 " ]\n", lineIdx, pStart, start);
                         exit (EXIT_FAILURE);
                     }
                     else if ((pStart == start) && (pStop > stop)) {
@@ -2367,7 +2367,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 
             /* test for out-of-order element */
             if (pStart > start) {
-                fprintf(stderr, "ERROR: BED data is not properly sorted by start coordinates at line %lu\n", lineIdx);
+                fprintf(stderr, "ERROR: BED data is not properly sorted by start coordinates at line %lu [ pStart: %" PRId64 " | start: %" PRId64 " ]\n", lineIdx, pStart, start);
                 exit (EXIT_FAILURE);
             }
             else if ((pStart == start) && (pStop > stop)) {
@@ -3267,7 +3267,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 
                 /* test for out-of-order element */
                 if (pStart > start) {
-                    fprintf(stderr, "ERROR: BED data is not properly sorted by start coordinates at line %lu\n", lineIdx);
+                    fprintf(stderr, "ERROR: BED data is not properly sorted by start coordinates at line %lu [ pStart: %" PRId64 " | start: %" PRId64 " ]\n", lineIdx, pStart, start);
                     exit (EXIT_FAILURE);
                 }
                 else if ((pStart == start) && (pStop > stop)) {
@@ -3343,7 +3343,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #endif
             /* test for out-of-order element */
             if (pStart > start) {
-                fprintf(stderr, "ERROR: BED data is not properly sorted by start coordinates at line %lu\n", lineIdx);
+                fprintf(stderr, "ERROR: BED data is not properly sorted by start coordinates at line %lu [ pStart: %" PRId64 " | start: %" PRId64 " ]\n", lineIdx, pStart, start);
                 exit (EXIT_FAILURE);
             }
             else if ((pStart == start) && (pStop > stop)) {
