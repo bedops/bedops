@@ -83,13 +83,33 @@ Compilation of BEDOPS on Linux requires GCC 4.8.2 (both ``gcc`` and ``g++`` and 
 
    The specifics of this process will depend on your distribution and what you want to install. Please check with your system administration or support staff if you are unsure what your options are.
 
+   You may also need to install static libraries. For instance, in a CentOS- or RH-like environment:
+
+   ::
+
+     $ sudo yum install libstdc++-static
+     $ sudo yum install glibc-static
+
+   In Ubuntu, you might instead do:
+
+   ::
+
+     $ sudo apt-get install libc6-dev
+     $ sudo apt-get install build-essentials
+
 2. Install a ``git`` client of your choice, if you do not already have one installed. Github offers an `installation guide <https://help.github.com/articles/set-up-git#platform-all>`_.
 
-   Alternatively, use ``apt-get`` or another package manager to install one, *e.g.*
+   Alternatively, use ``apt-get`` or another package manager to install one, *e.g.* in Ubuntu:
 
    ::
 
      $ sudo apt-get install git
+
+   And in CentOS:
+
+   ::
+
+     $ sudo yum install git
 
 3. Clone the BEDOPS Git repository in an appropriate local directory: 
 
@@ -126,7 +146,7 @@ Compilation of BEDOPS on Linux requires GCC 4.8.2 (both ``gcc`` and ``g++`` and 
 Mac OS X
 --------
 
-In Mac OS X, you have two options to install BEDOPS via source code: Compile the code manually, or use the Homebrew package manager to manage compilation.
+In Mac OS X, you have two options to install BEDOPS via source code: Compile the code manually, or use the Homebrew package manager to manage installation of a prebuilt pacakge.
 
 Compilation of BEDOPS on Mac OS X via either procedure requires Clang/LLVM 3.5 or greater, which includes support for `C++11 <http://en.wikipedia.org/wiki/C%2B%2B11>`_ features required by core BEDOPS tools. Other tools may be required as described in the installation documentation that follows. GNU GCC is no longer required for compilation on OS X hosts.
 
@@ -175,11 +195,11 @@ Manual compilation
 
    Change this destination folder, as needed.
 
-^^^^^^^^^^^^^^^^^^^^^^^^
-Compilation via Homebrew
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Installation via Homebrew
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Homebrew is a popular package management toolkit for Mac OS X. It facilitates easy installation of common scientific and other packages.
+Homebrew is a popular package management toolkit for Mac OS X. It facilitates easy installation of common scientific and other packages. Homebrew can usually offer a version of BEDOPS concurrent with the present release; occasionally, it may be one or two minor versions behind.
 
 1. If you do not have Clang/LLVM 3.5 or greater installed, first do so. You can check this with ``clang -v``, *e.g.*: 
 
