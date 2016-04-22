@@ -17,6 +17,14 @@ v2.4.17
 
 Released: **TBD**
 
+* :ref:`bam2bed <bam2bed>` and :ref:`sam2bed <sam2bed>`
+
+  * Improved parsing of non-split BAM and SAM inputs.
+
+* Starch C++ API
+
+  * Fixed bug with extraction of bzip2- and gzip-backed archives with all other non-primary Starch tools (all tools except `starch`, `unstarch`, `starchcat`, and `sort-bed`).
+
 =================
 Previous versions
 =================
