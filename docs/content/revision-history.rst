@@ -15,11 +15,15 @@ Current version
 v2.4.17
 -------
 
-Released: **TBD**
+Released: **April 26, 2016**
 
 * :ref:`bam2bed <bam2bed>` and :ref:`sam2bed <sam2bed>`
 
   * Improved parsing of non-split BAM and SAM inputs.
+
+* Docker container build target added for Debian
+
+  * Thanks to Leo Comitale (Poldo) for writing a Makefile target and spec for creating a BEDOPS Docker container for the Debian target.
 
 * Starch C++ API
 
