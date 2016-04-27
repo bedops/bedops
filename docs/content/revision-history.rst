@@ -12,6 +12,22 @@ Current version
 ===============
 
 -------
+v2.4.18
+-------
+
+Released: **TBD**
+
+* :ref:`convert2bed <convert2bed>`
+
+  * Fixed compile warnings.
+
+* General documentation improvements
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.17
 -------
 
@@ -28,10 +44,6 @@ Released: **April 26, 2016**
 * Starch C++ API
 
   * Fixed bug with extraction of bzip2- and gzip-backed archives with all other non-primary Starch tools (all tools except `starch`, `unstarch`, `starchcat`, and `sort-bed`).
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.16

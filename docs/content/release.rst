@@ -15,7 +15,7 @@ Preparing a major, minor or maintenance release of BEDOPS from a development bra
 
    a. Close out open documentation or feature issues, making necessary pushes to the current development branch.
 
-   b. If any issues can't be closed out, rename the assigned version tag to the next anticipated release version (*e.g.*, *v2p4p17* to *v2p5p0*, etc.)
+   b. If any issues can't be closed out, rename the assigned version tag to the next anticipated release version (*e.g.*, *v2.4.18* to *v2p5p0*, etc.)
 
 2. Pull the most recent commit for the development branch to a local folder on build hosts (Linux with sufficiently old kernel, current OS X, etc.).
 
@@ -36,7 +36,7 @@ Preparing a major, minor or maintenance release of BEDOPS from a development bra
      bedops_linux_x86_64-vX.Y.Z.tar.bz2 (64-bit)
      bedops_linux_i386-vX.Y.Z.tar.bz2 (32-bit)
 
-   Run ``sha1sum`` on each tarball to get its SHA1 hash (store this SHA1 hash in a file for later retrieval).
+   Run ``shasum -a 256`` on each tarball to get its SHA256 hash (store this SHA256 hash in a file for later retrieval).
 
    For the OS X Installer, use ``productsign`` per :ref:`OS X Installer <installation_os_x_installer_construction>` documentation to digitally sign the package. Compress the Installer with the Finder or `zip`:
 
@@ -44,7 +44,7 @@ Preparing a major, minor or maintenance release of BEDOPS from a development bra
 
      BEDOPS.X.Y.Z.pkg.zip
 
-   The *X.Y.Z* scheme should follow the development branch name, *e.g.* 2.4.17, etc.
+   The *X.Y.Z* scheme should follow the development branch name, *e.g.* 2.4.18, etc.
 
 3. Collect tarballs and zipped Installer in one location for later addition with web browser, via BEDOPS Github web site.
 
@@ -63,7 +63,7 @@ Release
 
    Ideally, whatever steps are used to merge the development branch into the master branch should preserve the overall commit history.
 
-   As before, the *X.Y.Z* scheme should follow the development branch name, *e.g.* 2.4.17, etc.
+   As before, the *X.Y.Z* scheme should follow the development branch name, *e.g.* 2.4.18, etc.
 
 2. Add a `new release <https://github.com/bedops/bedops/releases/new>`_ via the Github site. Or click on the `Draft a new release <https://github.com/bedops/bedops/releases>`_ button from the Github Releases page.
 
@@ -84,8 +84,8 @@ Release
      ------
 
      ### Linux
-     **bedops_linux_x86_64-vX.Y.Z.tar.bz2** (64-bit, SHA1: ``abcd1234``)
-     **bedops_linux_i386-vX.Y.Z.tar.bz2** (32-bit, SHA1: ``abcd1234``)
+     **bedops_linux_x86_64-vX.Y.Z.tar.bz2** (64-bit, SHA256: ``abcd1234``)
+     **bedops_linux_i386-vX.Y.Z.tar.bz2** (32-bit, SHA256: ``abcd1234``)
      This package of BEDOPS vX.Y.Z binaries is for Linux 64- and 32-bit hosts. Pick the installer that matches your host architecture. If your host can run 64-bit binaries, we recommend downloading the 64-bit package.
 
      For installation instructions, please read [§2.1.1. Linux] (http://bedops.readthedocs.org/en/latest/content/installation.html#linux) of the BEDOPS Installation document.
@@ -94,7 +94,7 @@ Release
 
      ### Mac OS X
      **BEDOPS.X.Y.Z.pkg.zip**
-     This package of BEDOPS vX.Y.Z binaries is a digitally-signed installer for OS X (10.7 - 10.10) running on Intel-based Macs.
+     This package of BEDOPS vX.Y.Z binaries is a digitally-signed installer for OS X (10.7 - 10.11) running on Intel-based Macs.
 
      For installation instructions, please read [§2.1.2. Mac OS X] (http://bedops.readthedocs.org/en/latest/content/installation.html#mac-os-x) of the BEDOPS Installation document.
 

@@ -48,7 +48,7 @@ The ``--help`` option describes the various mapping and analytical operations an
 
   bedmap
     citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-    version:  2.4.17
+    version:  2.4.18
     authors:  Shane Neph & Scott Kuehn
 
    USAGE: bedmap [process-flags] [overlap-option] <operation(s)...> <ref-file> [map-file]
@@ -413,9 +413,9 @@ As an example of using the ``--echo-map-id`` operator in a biological context, w
 ::
 
   chr1    4534161 4534177 -V_GRE_C        4.20586e-06     -       CGTACACACAGTTCTT
-  chr1    4534192.4.174205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
+  chr1    4534192.4.184205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
   chr1    4534209 4534223 +V_HNF4_Q6_01   6.93604e-06     +       GGACCAGAGTCCAC
-  chr1    4962522.4.172540 -V_GCNF_01      9.4497e-06      -       CCCAAGGTCAAGATAAAG
+  chr1    4962522.4.182540 -V_GCNF_01      9.4497e-06      -       CCCAAGGTCAAGATAAAG
   chr1    4962529 4962539 +V_NUR77_Q5     8.43564e-06     +       TTGACCTTGG
   ...
 
@@ -667,9 +667,9 @@ To demonstrate their use, we revisit the ``Motifs`` dataset, which includes *p*-
 ::
 
   chr1    4534161 4534177 -V_GRE_C        4.20586e-06     -       CGTACACACAGTTCTT
-  chr1    4534192.4.174205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
+  chr1    4534192.4.184205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
   chr1    4534209 4534223 +V_HNF4_Q6_01   6.93604e-06     +       GGACCAGAGTCCAC
-  chr1    4962522.4.172540 -V_GCNF_01      9.4497e-06      -       CCCAAGGTCAAGATAAAG
+  chr1    4962522.4.182540 -V_GCNF_01      9.4497e-06      -       CCCAAGGTCAAGATAAAG
   chr1    4962529 4962539 +V_NUR77_Q5     8.43564e-06     +       TTGACCTTGG
   ...
 
