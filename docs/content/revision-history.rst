@@ -23,6 +23,9 @@ Released: **TBD**
 
 * General documentation improvements
 
+  * Updated OS X Installer and Github release instructions
+  * Added thank-you to Feng Tian for bug report
+
 =================
 Previous versions
 =================
@@ -43,7 +46,7 @@ Released: **April 26, 2016**
 
 * Starch C++ API
 
-  * Fixed bug with extraction of bzip2- and gzip-backed archives with all other non-primary Starch tools (all tools except `starch`, `unstarch`, `starchcat`, and `sort-bed`).
+  * Fixed bug with extraction of bzip2- and gzip-backed archives with all other non-primary Starch tools (all tools except `starch`, `unstarch`, `starchcat`, and `sort-bed`). Thanks to Feng Tian for reports.
 
 -------
 v2.4.16
