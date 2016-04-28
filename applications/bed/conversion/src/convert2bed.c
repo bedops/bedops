@@ -2292,9 +2292,8 @@ static void
 c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
 {
     /* 
-       This functor is slightly more complex than c2b_line_convert_sam_to_bed_unsorted_without_split_operation() 
-       as we need to build a list of tab delimiters, as before, but first read in the CIGAR string (6th field) and
-       parse it for operation key-value pairs to loop through later on
+       This functor builds a list of tab delimiters, but first reads in the CIGAR string (6th field) and
+       parses it for operation key-value pairs to loop through later on
     */
 
     ssize_t sam_field_offsets[C2B_MAX_FIELD_COUNT_VALUE];
@@ -2405,7 +2404,6 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
     pos_src_str[pos_size - 1] = '\0';
     uint64_t pos_val = strtoull(pos_src_str, NULL, 10);
     uint64_t start_val = pos_val - 1; /* remember, start = POS - 1 */
-    uint64_t stop_val = start_val + cigar_length;
 
     /* QNAME */
     char qname_str[C2B_MAX_FIELD_LENGTH_VALUE];
@@ -2456,22 +2454,17 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
 
     /* Optional fields */
     char opt_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    memset(opt_str, 0, strlen(opt_str));
     if (sam_field_offsets[11] != -1) {
-        for (int field_idx = 11; field_idx <= sam_field_idx; field_idx++) {
+          for (int field_idx = 11; field_idx <= sam_field_idx; field_idx++) {
             ssize_t opt_size = sam_field_offsets[field_idx] - sam_field_offsets[field_idx - 1] - (field_idx == sam_field_idx ? 1 : 0);
             memcpy(opt_str + strlen(opt_str), src + sam_field_offsets[field_idx - 1] + 1, opt_size);
-        opt_str[strlen(opt_str) + opt_size] = '\0';
+            opt_str[strlen(opt_str) + opt_size] = '\0';
         }
     }
 
     /* 
        Loop through operations and process a line of input based on each operation and its associated value
     */
-
-    ssize_t block_idx;
-    char previous_op = default_cigar_op_operation;
-    char modified_qname_str[C2B_MAX_FIELD_LENGTH_VALUE];
 
     c2b_sam_t sam;
     sam.rname = rname_str;
@@ -2508,7 +2501,6 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
             default:
                 break;
             }
-        previous_op = current_op;
     }
 
     c2b_line_convert_sam_to_bed(sam, dest, dest_size);
@@ -2518,9 +2510,8 @@ static void
 c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
 {
     /* 
-       This functor is slightly more complex than c2b_line_convert_sam_to_bed_unsorted_without_split_operation() 
-       as we need to build a list of tab delimiters, as before, but first read in the CIGAR string (6th field) and
-       parse it for operation key-value pairs to loop through later on
+       This functor builds a list of tab delimiters, but first reads in the CIGAR string (6th field) and
+       parses it for operation key-value pairs to loop through later on
     */
 
     ssize_t sam_field_offsets[C2B_MAX_FIELD_COUNT_VALUE];
@@ -2682,7 +2673,6 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
 
     /* Optional fields */
     char opt_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    memset(opt_str, 0, strlen(opt_str));
     if (sam_field_offsets[11] != -1) {
         for (int field_idx = 11; field_idx <= sam_field_idx; field_idx++) {
             ssize_t opt_size = sam_field_offsets[field_idx] - sam_field_offsets[field_idx - 1] - (field_idx == sam_field_idx ? 1 : 0);
@@ -2918,6 +2908,7 @@ c2b_line_convert_sam_to_bed(c2b_sam_t s, char *dest_line, ssize_t *dest_size)
                               s.seq,
                               s.qual,
                               s.opt);
+        memset(s.opt, 0, strlen(s.opt));
     } 
     else {
         *dest_size += sprintf(dest_line + *dest_size,
