@@ -15,7 +15,7 @@ Preparing a major, minor or maintenance release of BEDOPS from a development bra
 
    a. Close out open documentation or feature issues, making necessary pushes to the current development branch.
 
-   b. If any issues can't be closed out, rename the assigned version tag to the next anticipated release version (*e.g.*, *v2.4.18* to *v2p5p0*, etc.)
+   b. If any issues can't be closed out, rename the assigned version tag to the next anticipated release version (*e.g.*, *v2.4.19* to *v2p5p0*, etc.)
 
 2. Pull the most recent commit for the development branch to a local folder on build hosts (Linux with sufficiently old kernel, current OS X, etc.).
 
@@ -44,7 +44,7 @@ Preparing a major, minor or maintenance release of BEDOPS from a development bra
 
      BEDOPS.X.Y.Z.pkg.zip
 
-   The *X.Y.Z* scheme should follow the development branch name, *e.g.* 2.4.18, etc.
+   The *X.Y.Z* scheme should follow the development branch name, *e.g.* 2.4.19, etc.
 
 3. Collect tarballs and zipped Installer in one location for later addition with web browser, via BEDOPS Github web site.
 
@@ -63,7 +63,7 @@ Release
 
    Ideally, whatever steps are used to merge the development branch into the master branch should preserve the overall commit history.
 
-   As before, the *X.Y.Z* scheme should follow the development branch name, *e.g.* 2.4.18, etc.
+   As before, the *X.Y.Z* scheme should follow the development branch name, *e.g.* 2.4.19, etc.
 
 2. Add a `new release <https://github.com/bedops/bedops/releases/new>`_ via the Github site. Or click on the `Draft a new release <https://github.com/bedops/bedops/releases>`_ button from the Github Releases page.
 
@@ -79,7 +79,7 @@ Release
 
    ::
 
-     Downloads are available at the bottom of this page. Please read the [BEDOPS vX.Y.Z revision history](http://bedops.readthedocs.org/en/latest/content/revision-history.html#vX-Y-Z), which summarizes new features and fixes in this release.
+     Downloads are available at the bottom of this page. Please read the [BEDOPS vX.Y.Z revision history](http://bedops.readthedocs.io/en/latest/content/revision-history.html#vX-Y-Z), which summarizes new features and fixes in this release.
 
      ------
 
@@ -88,7 +88,7 @@ Release
      **bedops_linux_i386-vX.Y.Z.tar.bz2** (32-bit, SHA256: ``abcd1234``)
      This package of BEDOPS vX.Y.Z binaries is for Linux 64- and 32-bit hosts. Pick the installer that matches your host architecture. If your host can run 64-bit binaries, we recommend downloading the 64-bit package.
 
-     For installation instructions, please read [§2.1.1. Linux] (http://bedops.readthedocs.org/en/latest/content/installation.html#linux) of the BEDOPS Installation document.
+     For installation instructions, please read [§2.1.1. Linux] (http://bedops.readthedocs.io/en/latest/content/installation.html#linux) of the BEDOPS Installation document.
 
      ------
 
@@ -96,13 +96,13 @@ Release
      **BEDOPS.X.Y.Z.pkg.zip**
      This package of BEDOPS vX.Y.Z binaries is a digitally-signed installer for OS X (10.7 - 10.11) running on Intel-based Macs.
 
-     For installation instructions, please read [§2.1.2. Mac OS X] (http://bedops.readthedocs.org/en/latest/content/installation.html#mac-os-x) of the BEDOPS Installation document.
+     For installation instructions, please read [§2.1.2. Mac OS X] (http://bedops.readthedocs.io/en/latest/content/installation.html#mac-os-x) of the BEDOPS Installation document.
 
    d. Attach per-platform binaries to this release by dragging each of them into the field underneath the description text. It can take a few moments for the web browser to upload each binary into the release page, so be patient. There should be at least three binaries: two for Linux 64- and 32-bit, and one for (fat) Mac OS X.
 
    e. Click the *Publish Release* button.
 
-3. After at least 5-10 minutes from pushing the development branch to the master branch, check the `BEDOPS documentation site <http://bedops.readthedocs.org/en/latest/>`_ to ensure that the "latest" or default documenation shown is for the new version. 
+3. After at least 5-10 minutes from pushing the development branch to the master branch, check the `BEDOPS documentation site <http://bedops.readthedocs.io/en/latest/>`_ to ensure that the "latest" or default documenation shown is for the new version. 
 
    If not, take a look at the `build <https://readthedocs.org/builds/bedops/>`_ page to manually trigger document rebuilds, or examine error logs, if necessary.
 

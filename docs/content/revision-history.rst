@@ -12,6 +12,16 @@ Current version
 ===============
 
 -------
+v2.4.19
+-------
+
+Released: **TBD**
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.18
 -------
 
@@ -26,10 +36,6 @@ Released: **April 28, 2016**
 
   * Updated OS X Installer and Github release instructions
   * Added thank-you to Feng Tian for bug report
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.17
