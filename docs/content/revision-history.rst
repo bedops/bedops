@@ -15,11 +15,12 @@ Current version
 v2.4.18
 -------
 
-Released: **TBD**
+Released: **April 28, 2016**
 
 * :ref:`convert2bed <convert2bed>`
 
   * Fixed compile warnings.
+  * Fixed bug in BAM and SAM conversion with optional field line overflow.
 
 * General documentation improvements
 
