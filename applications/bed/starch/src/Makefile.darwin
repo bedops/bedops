@@ -43,66 +43,62 @@ CDFLAGS                   = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_L
 CXXDFLAGS                 = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g ${WARNINGS} -std=c++11 -stdlib=libc++ -DDEBUG_VERBOSE=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH}
 
 
-build: dependencies starchLibrary starch unstarch starchcat starchcluster
-	rm -f *~
+DEPENDENCY_NAMES          = starchFileHelpers.o starchHelpers.o starchMetadataHelpers.o starchSha1Digest.o unstarchHelpers.o starchConstants.o starchBase64Coding.o
+DEPENDENCIES              = $(addprefix $(LOCALOBJDIR)/, $(DEPENDENCY_NAMES))
+DEBUG_DEPENDENCIES        = $(addprefix $(LOCALOBJDIR)/debug., $(DEPENDENCY_NAMES))
 
-# dependencies-related recipes all have mkdirs prereqs
-#   and pretty much everything else has dependencies-related prereqs at some level
-#   -> let make figure out hierarchy and eliminate mkdir/rm race conditions
-dependencies: mkdirs
-	${CC} ${CFLAGS} -c ${OBJDIR}/starchConstants.c -o ${LOCALOBJDIR}/starchConstants.o ${INCLUDES}
-	${CC} ${CFLAGS} -c ${OBJDIR}/starchMetadataHelpers.c -o  ${LOCALOBJDIR}/starchMetadataHelpers.o ${INCLUDES}
-	${CC} ${CFLAGS} -c ${OBJDIR}/unstarchHelpers.c -o  ${LOCALOBJDIR}/unstarchHelpers.o ${INCLUDES}
-	${CC} ${CFLAGS} -c ${OBJDIR}/starchHelpers.c -o  ${LOCALOBJDIR}/starchHelpers.o ${INCLUDES}
-	${CC} ${CFLAGS} -c ${OBJDIR}/starchFileHelpers.c -o  ${LOCALOBJDIR}/starchFileHelpers.o ${INCLUDES}
-	${CC} ${CFLAGS} -c ${OBJDIR}/starchSha1Digest.c -o  ${LOCALOBJDIR}/starchSha1Digest.o ${INCLUDES}
-	${CC} ${CFLAGS} -c ${OBJDIR}/starchBase64Coding.c -o  ${LOCALOBJDIR}/starchBase64Coding.o ${INCLUDES}
+starch: $(BINDIR)/starch
+unstarch: $(BINDIR)/unstarch
+starchcat: $(BINDIR)/unstarch
+starch_debug: $(BINDIR)/debug.starch
+unstarch_debug: $(BINDIR)/debug.unstarch
+starchcat_debug: $(BINDIR)/debug.starchcat
+
+build: dependencies starchLibrary $(BINDIR)/starch $(BINDIR)/unstarch $(BINDIR)/starchcat starchcluster
+	rm -f *~
 
 build_debug: dependencies_debug starch_debug unstarch_debug starchcat_debug
 	rm -f *~
 
-dependencies_debug: mkdirs
-	${CC} ${CDFLAGS} -c ${OBJDIR}/starchConstants.c -o ${LOCALOBJDIR}/starchConstants.o ${INCLUDES}
-	${CC} ${CDFLAGS} -c ${OBJDIR}/unstarchHelpers.c -o  ${LOCALOBJDIR}/unstarchHelpers.o ${INCLUDES}
-	${CC} ${CDFLAGS} -c ${OBJDIR}/starchHelpers.c -o  ${LOCALOBJDIR}/starchHelpers.o ${INCLUDES}
-	${CC} ${CDFLAGS} -c ${OBJDIR}/starchMetadataHelpers.c -o  ${LOCALOBJDIR}/starchMetadataHelpers.o ${INCLUDES}
-	${CC} ${CDFLAGS} -c ${OBJDIR}/starchFileHelpers.c -o  ${LOCALOBJDIR}/starchFileHelpers.o ${INCLUDES}
-	${CC} ${CDFLAGS} -c ${OBJDIR}/starchSha1Digest.c -o  ${LOCALOBJDIR}/starchSha1Digest.o ${INCLUDES}
-	${CC} ${CDFLAGS} -c ${OBJDIR}/starchBase64Coding.c -o  ${LOCALOBJDIR}/starchBase64Coding.o ${INCLUDES}
+dependencies: mkdirs $(DEPENDENCIES)
 
-starchLibrary: dependencies
-	${AR} rcs ${LOCALSTARCHLIB} ${LOCALOBJDIR}/starchConstants.o  ${LOCALOBJDIR}/unstarchHelpers.o  ${LOCALOBJDIR}/starchHelpers.o  ${LOCALOBJDIR}/starchMetadataHelpers.o  ${LOCALOBJDIR}/starchFileHelpers.o ${LOCALOBJDIR}/starchSha1Digest.o ${LOCALOBJDIR}/starchBase64Coding.o
+dependencies_debug: mkdirs $(DEBUG_DEPENDENCIES)
 
-starchLibrary_debug: dependencies_debug
-	${AR} rcs ${LOCALSTARCHLIBDEBUG} ${LOCALOBJDIR}/starchConstants.o  ${LOCALOBJDIR}/unstarchHelpers.o  ${LOCALOBJDIR}/starchHelpers.o  ${LOCALOBJDIR}/starchMetadataHelpers.o  ${LOCALOBJDIR}/starchFileHelpers.o ${LOCALOBJDIR}/starchSha1Digest.o ${LOCALOBJDIR}/starchBase64Coding.o
+# Dependency building
+$(LOCALOBJDIR)/%.o : $(OBJDIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)
 
-starch: starchLibrary
-	${CC} ${CFLAGS} -c starch.c -o $(LOCALOBJDIR)/starch.o ${INCLUDES}
-	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/starch.o -o ${BINDIR}/starch ${LOCALSTARCHLIB} ${LIBRARIES}
+$(LOCALOBJDIR)/debug.%.o : $(OBJDIR)/%.c
+	$(CC) $(CDFLAGS) -c $< -o $@ $(INCLUDES)
 
-starch_debug: starchLibrary_debug
-	${CC} ${CDFLAGS} -c starch.c -o $(LOCALOBJDIR)/debug.starch.o ${INCLUDES}
-	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.starch.o -o ${BINDIR}/debug.starch ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
+$(LOCALOBJDIR)/%.o : %.c $(LOCALSTARCHLIB)
+	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDES)
 
-unstarch: starchLibrary
-	${CC} ${CFLAGS} -c unstarch.c -o $(LOCALOBJDIR)/unstarch.o ${INCLUDES}
-	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/unstarch.o -o ${BINDIR}/unstarch ${LOCALSTARCHLIB} ${LIBRARIES}
+$(LOCALOBJDIR)/debug.%.o : %.c $(LOCALSTARCHLIBDEBUG)
+	$(CC) $(CDFLAGS) -c $< -o $@ $(INCLUDES)
 
-unstarch_debug: starchLibrary_debug
-	${CC} ${CDFLAGS} -c unstarch.c -o $(LOCALOBJDIR)/debug.unstarch.o ${INCLUDES}
-	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.unstarch.o -o ${BINDIR}/debug.unstarch ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
+# Bin building
+#
+$(BINDIR)/% : $(LOCALOBJDIR)/%.o $(LOCALSTARCHLIB)
+	$(CXX) $(CXXFLAGS) -lc++ $< -o $@ $(LOCALSTARCHLIB) $(LIBRARIES)
 
-starchcluster: starchcat
+$(BINDIR)/debug.% : $(LOCALOBJDIR)/%.o $(LOCALSTARCHLIB)
+	$(CXX) $(CXXDFLAGS) -lc++ $< -o $@ $(LOCALSTARCHLIB) $(LIBRARIES)
+
+starchcluster: $(BINDIR)/starchcat
 	cp starchcluster_sge.tcsh ${BINDIR}/starchcluster_sge
 	cp starchcluster_gnuParallel.tcsh ${BINDIR}/starchcluster_gnuParallel
 
-starchcat: starchLibrary
-	${CC} ${CFLAGS} -c starchcat.c -o $(LOCALOBJDIR)/starchcat.o ${INCLUDES}
-	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/starchcat.o -o ${BINDIR}/starchcat ${LOCALSTARCHLIB} ${LIBRARIES}
+# Libraries
+starchLibrary: $(LOCALSTARCHLIB)
 
-starchcat_debug: starchLibrary_debug
-	${CC} ${CDFLAGS} -c starchcat.c -o $(LOCALOBJDIR)/starchcat.o ${INCLUDES}
-	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/starchcat.o -o ${BINDIR}/debug.starchcat ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
+$(LOCALSTARCHLIB): $(DEPENDENCIES)
+	${AR} rcs $@ $^
+
+starchLibrary_debug: $(LOCALSTARCHLIBDEBUG)
+
+$(LOCALSTARCHLIBDEBUG) : $(DEBUG_DEPENDENCIES)
+	${AR} rcs $@ $<
 
 test: starch unstarch starchcat
 	cp ${BINDIR}/starch ${TEST_OSX_BINDIR}/starch

@@ -11,28 +11,31 @@ OBJDIR                    = objects
 WRAPPERDIR                = wrappers
 PROG                      = convert2bed
 SOURCE                    = convert2bed.c
+MACFLAGS                  = -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH)
 
-all: setup build
+all: build
 
-.PHONY: setup build build_debug build_gprof clean
+.PHONY: build build_debug build_gprof clean
 
-setup:
+build: $(DISTDIR)/$(PROG)_$(ARCH)
+build_debug: $(DISTDIR)/debug.$(PROG)_$(ARCH)
+build_gprof: $(DISTDIR)/gprof.$(PROG)_$(ARCH)
+
+$(DISTDIR)/$(PROG)_$(ARCH): $(PROG).c
 	mkdir -p $(DISTDIR)
-	mkdir -p $(OBJDIR)
+	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CFLAGS) $(MACFLAGS) $(INCLUDES) $^ -o $@ $(LIBS)
 
-build: setup
-	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(BLDFLAGS) $(COMMONFLAGS) $(CFLAGS) -c $(SOURCE) -o $(OBJDIR)/$(PROG).o $(INCLUDES)
-	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(BLDFLAGS) $(COMMONFLAGS) $(CFLAGS) $(OBJDIR)/$(PROG).o -o $(DISTDIR)/$(PROG)_$(ARCH) $(LIBS)
+$(DISTDIR)/debug.$(PROG)_$(ARCH): $(PROG).c
+	mkdir -p $(DISTDIR)
+	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CDFLAGS) $(MACFLAGS) $(INCLUDES) $^ -o $@ $(LIBS)
 
-build_debug: setup
-	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(BLDFLAGS) $(COMMONFLAGS) $(CDFLAGS) -c $(SOURCE) -o $(OBJDIR)/$(PROG).o $(INCLUDES)
-	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(BLDFLAGS) $(COMMONFLAGS) $(CDFLAGS) $(OBJDIR)/$(PROG).o -o $(DISTDIR)/debug.$(PROG)_$(ARCH) $(LIBS)
-
-build_gprof: setup
-	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -shared -fPIC gprof-helper.c -o gprof-helper.so $(LIBS) -ldl
-	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(BLDFLAGS) $(COMMONFLAGS) $(CPFLAGS) -c $(SOURCE) -o $(OBJDIR)/$(PROG).o $(INCLUDES)
-	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(BLDFLAGS) $(COMMONFLAGS) $(CPFLAGS) $(OBJDIR)/$(PROG).o -o $(DISTDIR)/$(PROG)_$(ARCH) $(LIBS)
+$(DISTDIR)/gprof.$(PROG)_$(ARCH): $(PROG).c gprof-helper.so
+	mkdir -p $(DISTDIR)
+	$(CC) $(BLDFLAGS) $(COMMONFLAGS) $(CFLAGS) $(MACFLAGS) $(INCLUDES) $^ -o $@ $(LIBS)
 	@echo "\nNote: To profile convert2bed with gprof/pthreads, run:\n\t$$ LD_PRELOAD=/path/to/gprof-helper.so convert2bed"
+
+%.so: %.c
+	$(CC) $(MACFLAGS) -shared -fPIC $< -o $@ $(LIBS) -ldl
 
 clean:
 	rm -rf $(OBJDIR)

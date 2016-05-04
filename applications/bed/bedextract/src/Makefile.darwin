@@ -21,46 +21,62 @@ LOCALBZIP2LIBDIR     = ${LOCALBZIP2DIR}
 LOCALBZIP2LIB        = ${LOCALBZIP2LIBDIR}/${LIBBZIP2}
 LOCALBZIP2INCDIR     = ${LOCALBZIP2DIR}
 LOCALZLIBDIR         = ${PARTY3}/darwin_intel_${ARCH}/zlib
-LOCALZLIBLIBDIR      = ${LOCALZLIBDIR}
-LOCALZLIBLIB         = ${LOCALZLIBLIBDIR}/${LIBZLIB}
+LOCALZLIBLIB         = ${LOCALZLIBDIR}/${LIBZLIB}
 LOCALZLIBINCDIR      = ${LOCALZLIBDIR}
+OBJDIR               = objects_$(ARCH)
 INCLUDES             = -iquote$(HEAD) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-LIBLOCATION          = -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBLIBDIR}
+LIBLOCATION          = -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBDIR}
 LIBRARIES            = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 STDFLAGS             = -Wall -pedantic -std=c++11 -stdlib=libc++
 BLDFLAGS             = -O3 ${STDFLAGS}
 
+DEPENDENCIES         = $(addprefix $(OBJDIR)/,   \
+                         NaN.o                   \
+												 starchBase64Coding.o    \
+												 starchConstants.o       \
+												 starchFileHelpers.o     \
+												 starchHelpers.o         \
+												 starchMetadataHelpers.o \
+												 starchSha1Digest.o      \
+												 unstarchHelpers.o       )
 
-FLAGS                = $(BLDFLAGS) $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
+FLAGS                = $(BLDFLAGS) $(DEPENDENCIES) ${LIBLOCATION} ${INCLUDES}
 
-DFLAGS               = -g -O0 ${STDFLAGS} $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
+DFLAGS               = -g -O0 ${STDFLAGS} $(DEPENDENCIES) ${LIBLOCATION} ${INCLUDES}
 
-GPROFFLAGS           = -O -pg ${STDFLAGS} $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
+GPROFFLAGS           = -O -pg ${STDFLAGS} $(DEPENDENCIES) ${LIBLOCATION} ${INCLUDES}
 
 SOURCE1              = ExtractRows.cpp
 BINDIR               = ../bin
 PROG                 = bedextract
 
-build: dependencies
-	$(CXX) -o $(BINDIR)/$(PROG)_$(ARCH) $(FLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIBRARIES} $(SOURCE1)
+MACFLAGS             = -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH)
 
-build_debug: dependencies
-	$(CXX) -o $(BINDIR)/debug.$(PROG)_$(ARCH) $(DFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIBRARIES} $(SOURCE1)
+build: $(BINDIR)/$(PROG)_$(ARCH) $(DEPENDENCIES)
 
-build_gprof: dependencies
-	$(CXX) -o $(BINDIR)/gprof.$(PROG)_$(ARCH) $(GPROFFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIBRARIES} $(SOURCE1)
+build_debug: $(BINDIR)/debug.$(PROG)_$(ARCH)
 
-dependencies:
-	rm -rf $(OBJDIR)
-	mkdir -p $(OBJDIR)
-	$(CXX) -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB1)/NaN.cpp -o $(OBJDIR)/NaN.o ${INCLUDES}
-	$(CXX) -x c++ -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchConstants.c -o $(OBJDIR)/starchConstants.o ${INCLUDES}
-	$(CXX) -x c++ -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchFileHelpers.c -o $(OBJDIR)/starchFileHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchHelpers.c -o $(OBJDIR)/starchHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/starchMetadataHelpers.c -o $(OBJDIR)/starchMetadataHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -c $(BLDFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(LIB3)/unstarchHelpers.c -o $(OBJDIR)/unstarchHelpers.o ${INCLUDES}
-	${CXX} -x c++ -c ${BLDFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIB3}/starchSha1Digest.c -o  ${OBJDIR}/starchSha1Digest.o ${INCLUDES}
-	${CXX} -x c++ -c ${BLDFLAGS} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIB3}/starchBase64Coding.c -o  ${OBJDIR}/starchBase64Coding.o ${INCLUDES}
+build_gprof: $(BINDIR)/gprof.$(PROG)_$(ARCH)
+
+dependencies: $(DEPENDENCIES)
+
+# Binaries
+$(BINDIR)/$(PROG)_$(ARCH) : $(DEPENDENCIES) $(LIBRARIES)
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(FLAGS) $(MACFLAGS) $(LIBRARIES) $(SOURCE1)
+
+$(BINDIR)/debug.$(PROG)_$(ARCH) : $(DEPENDENCIES) $(LIBRARIES)
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(DFLAGS) $(MACFLAGS) $(LIBRARIES) $(SOURCE1)
+
+$(BINDIR)/gprof.$(PROG)_$(ARCH) : $(DEPENDENCIES) $(LIBRARIES)
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(GPROFFLAGS) $(MACFLAGS) $(LIBRARIES) $(SOURCE1)
+
+# Object files
+$(OBJDIR)/%.o : $(LIB1)/%.cpp
+	mkdir -p $(OBJDIR) && $(CXX) -c $(BLDFLAGS) $(MACFLAGS) $< -o $@ ${INCLUDES}
+
+$(OBJDIR)/%.o : $(LIB3)/%.c
+	$(CXX) -x c++ -c $(BLDFLAGS) $(MACFLAGS) $< -o $@ ${INCLUDES}
+
 
 clean:
 	rm -rf $(OBJDIR)
