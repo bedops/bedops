@@ -196,37 +196,51 @@ mkdirs:
 #
 # third-party libraries
 #
-support_intel_i386: jansson_support_intel_i386_c bzip2_support_intel_i386_c zlib_support_intel_i386_c
 
-support_intel_x86_64: jansson_support_intel_x86_64_c bzip2_support_intel_x86_64_c zlib_support_intel_x86_64_c
+JANNSON_LIB=jansson/lib/libjansson.a
+BZIP_LIB=bzip2/libbz2.a
+ZLIB_LIB=zlib/libz.a
+
+386_LIBS=$(addprefix $(PARTY3)/$(I386)/, $(JANNSON_LIB) $(BZIP_LIB) $(ZLIB_LIB))
+x64_LIBS=$(addprefix $(PARTY3)/$(X86_64)/, $(JANNSON_LIB) $(BZIP_LIB) $(ZLIB_LIB))
+
+support_intel_i386: $(386_LIBS)
+
+support_intel_x86_64: $(x64_LIBS)
 
 support_intel: support_intel_i386 support_intel_x86_64
 
 support: | mkdirs
 	$(MAKE) support_intel -f $(SELF)
 
-jansson_support_intel_i386_c:
-	bzcat ${WHICHJANSSON}.tar.bz2 | tar -x -C ${PARTY3}/$(I386)/
+$(PARTY3)/$(I386)/$(JANNSON_LIB): $(WHICHJANSSON).tar.bz2
+	rm -rf $(PARTY3)/$(I386)/$(JANSSONVERSION)
+	bzcat $< | tar -x -C ${PARTY3}/$(I386)/
 	cd ${PARTY3}/$(I386)/${JANSSONVERSION} && export MACOSX_DEPLOYMENT_TARGET=10.7 && export ARCH=i386 && export CC=${CC} && export CXX=${CXX} && ./configure --prefix=${WDIR}/${PARTY3}/$(I386)/${JANSSONVERSION} CFLAGS="-arch i386" --build="i386" && $(MAKE) && $(MAKE) install && cd ../ && rm -f jansson && ln -sf ${JANSSONVERSION} jansson && cd ${WDIR}
 
-jansson_support_intel_x86_64_c:
-	bzcat ${WHICHJANSSON}.tar.bz2 | tar -x -C ${PARTY3}/$(X86_64)/
+$(PARTY3)/$(X86_64)/$(JANNSON_LIB): ${WHICHJANSSON}.tar.bz2
+	rm -rf $(PARTY3)/$(X86_64)/$(JANSSONVERSION)
+	bzcat $< | tar -x -C ${PARTY3}/$(X86_64)/
 	cd ${PARTY3}/$(X86_64)/${JANSSONVERSION} && export MACOSX_DEPLOYMENT_TARGET=10.7 && export ARCH=x86_64 && export CC=${CC} && export CXX=${CXX} && ./configure --prefix=${WDIR}/${PARTY3}/$(X86_64)/${JANSSONVERSION} CFLAGS="-arch x86_64" --build="x86_64" && $(MAKE) && $(MAKE) install && cd ../ && rm -f jansson && ln -sf ${JANSSONVERSION} jansson && cd ${WDIR}
 
-bzip2_support_intel_i386_c:
-	bzcat ${WHICHBZIP2}.tar.bz2 | tar -x -C ${PARTY3}/$(I386)/
+$(PARTY3)/$(I386)/$(BZIP_LIB): ${WHICHBZIP2}.tar.bz2
+	-rm -rf $(PARTY3)/$(I386)/$(BZIP2VERSION)
+	bzcat $< | tar -x -C ${PARTY3}/$(I386)/
 	cd ${PARTY3}/$(I386)/${BZIP2VERSION} && export MACOSX_DEPLOYMENT_TARGET=10.7 && export ARCH=i386 && export CC=${CC} && export CXX=${CXX} && $(MAKE) -f Makefile.darwin_i386 libbz2.a && cd ../ && rm -f bzip2 && ln -sf ${BZIP2VERSION} bzip2 && cd ${WDIR}
 
-bzip2_support_intel_x86_64_c:
-	bzcat ${WHICHBZIP2}.tar.bz2 | tar -x -C ${PARTY3}/$(X86_64)/
+$(PARTY3)/$(X86_64)/$(BZIP_LIB): ${WHICHBZIP2}.tar.bz2
+	-rm -rf $(PARTY3)/$(X86_64)/$(BZIP2VERSION)
+	bzcat $< | tar -x -C ${PARTY3}/$(X86_64)/
 	cd ${PARTY3}/$(X86_64)/${BZIP2VERSION} && export MACOSX_DEPLOYMENT_TARGET=10.7 && export ARCH=x86_64 && export CC=${CC} && export CXX=${CXX} && $(MAKE) -f Makefile.darwin_x86_64 libbz2.a && cd ../ && rm -f bzip2 && ln -sf ${BZIP2VERSION} bzip2 && cd ${WDIR}
 
-zlib_support_intel_i386_c:
-	bzcat ${WHICHZLIB}.tar.bz2 | tar -x -C ${PARTY3}/$(I386)/
+$(PARTY3)/$(I386)/$(ZLIB_LIB): ${WHICHZLIB}.tar.bz2
+	-rm -rf $(PARTY3)/$(I386)/$(ZLIBVERSION)
+	bzcat $< | tar -x -C ${PARTY3}/$(I386)/
 	cd ${PARTY3}/$(I386)/${ZLIBVERSION} && export MACOSX_DEPLOYMENT_TARGET=10.7 && export ARCH=i386 && export CC=${CC} && export CXX=${CXX} && ./configure --static --archs="-arch i386" && $(MAKE) && cd ../ && rm -f zlib && ln -sf ${ZLIBVERSION} zlib && cd ${WDIR}
 
-zlib_support_intel_x86_64_c:
-	bzcat ${WHICHZLIB}.tar.bz2 | tar -x -C ${PARTY3}/$(X86_64)/
+$(PARTY3)/$(X86_64)/$(ZLIB_LIB): ${WHICHZLIB}.tar.bz2
+	-rm -rf $(PARTY3)/$(X86_64)/$(ZLIBVERSION)
+	bzcat $< | tar -x -C ${PARTY3}/$(X86_64)/
 	cd ${PARTY3}/$(X86_64)/${ZLIBVERSION} && export MACOSX_DEPLOYMENT_TARGET=10.7 && export ARCH=x86_64 && export CC=${CC} && export CXX=${CXX} && ./configure --static --archs="-arch x86_64" && $(MAKE) && cd ../ && rm -f zlib && ln -sf ${ZLIBVERSION} zlib && cd ${WDIR}
 
 
