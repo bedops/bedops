@@ -111,9 +111,9 @@ endif
 # extract information by chromosome and bam2bed it
 #####################################################
 
-@ chrom_count = (`samtools idxstats $input | cut -f1 | awk 'END { print NR }'`)
+@ chrom_count = (`samtools idxstats $input | awk '$1!~"^*"' | awk 'END { print NR }'`)
 
-samtools idxstats $input | cut -f1 | parallel "samtools view -b $input {} | bam2starch - > $here/$nm/{}.starch"
+samtools idxstats $input | awk '$1!~"^*"' | parallel "samtools view -b $input {} | bam2starch - > $here/$nm/{}.starch"
 
 @ converted_file_count = `find $here/$nm -name '*.starch' | wc -l`
 if ( $chrom_count != $converted_file_count ) then

@@ -17,6 +17,10 @@ v2.4.19
 
 Released: **TBD**
 
+* :ref:`convert2bed <convert2bed>`
+
+  * Fixed bug in BAM and SAM parallel conversion scripts (``*_gnuParallel`` and ``*_sge``) with inputs containing chromosome names without ``chr`` prefix. Thanks to Eric Haugen for the bug report!
+
 =================
 Previous versions
 =================

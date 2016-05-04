@@ -126,7 +126,7 @@ endif
 set files = ()
 set jids = ()
 @ cntr = 0
-foreach chrom (`samtools idxstats $input | cut -f1`)
+foreach chrom (`samtools idxstats $input | awk '$1!~"^*"'`)
   qsub $sge_opts -N $nm.$cntr > /dev/stderr << __EXTRACTION__
     samtools view -b $input $chrom | bam2bed - > $here/$nm/$cntr
 __EXTRACTION__
