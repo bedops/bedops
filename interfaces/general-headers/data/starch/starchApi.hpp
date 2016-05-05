@@ -1422,32 +1422,51 @@ namespace starch
         while (!isEOF()) {
 #ifdef DEBUG
             std::fprintf(stderr, "--> not isEOF()\n");
-            std::fprintf(stderr,"fPass [ %d ]  t_ [ %s | %s]  _curr [ %s | %" PRId64 " | %" PRId64 " ] line [ %s ]\n", (int) firstPass, t_firstInputToken, t_secondInputToken, _currChr, _currStart, _currStop, line.c_str());
+            std::fprintf(stderr,
+                         "selectChr [ %s ] - currChr [ %s ]  fPass [ %d ]  t_ [ %s | %s]  _curr [ %s | %" PRId64 " | %" PRId64 " ] line [ %s ]\n", 
+                         selectedChromosome.c_str(),
+                         getCurrentChromosome(),
+                         (int) firstPass, 
+                         t_firstInputToken, 
+                         t_secondInputToken, 
+                         _currChr, 
+                         _currStart, 
+                         _currStop, 
+                         line.c_str());
 #endif
 
-            if (firstPass) {
+            if ((std::strcmp(selectedChromosome.c_str(), "all") != 0) && (std::strcmp(selectedChromosome.c_str(), getCurrentChromosome()) != 0)) {
 #ifdef DEBUG
-                std::fprintf(stderr, "--> firstPass is true or line is empty, calling extractLine() again\n");
+                std::fprintf(stderr, "--> iterating chromosome record pointer\n");
 #endif
-                extractLine(line);
-                firstPass = false;
+                iterateArchiveMdIter();
+                seekCurrentInFpPosition();
             }
-
-            if ((t_firstInputToken[0] == 'p') && (archMdIter)) {
+            else {
+                if (firstPass) {
 #ifdef DEBUG
-                std::fprintf(stderr, "--> prefix is 'p'()\n");
+                    std::fprintf(stderr, "--> firstPass is true or line is empty, calling extractLine() again\n");
 #endif
-                extractLine(line);
-            }
-            else if (!line.empty()) {
+                    extractLine(line);
+                    firstPass = false;
+                }
+                
+                if ((t_firstInputToken[0] == 'p') && (archMdIter)) {
 #ifdef DEBUG
-                std::fprintf(stderr, "--> line is not empty, therefore break [ %s ]\n", line.c_str());
+                    std::fprintf(stderr, "--> prefix is 'p'\n");
 #endif
-                firstPass = true;
-                break;
-            }
-            else if (!firstPass && line.empty()) {
-                break;
+                    extractLine(line);
+                }
+                else if (!line.empty()) {
+#ifdef DEBUG
+                    std::fprintf(stderr, "--> line is not empty, therefore break [ %s ]\n", line.c_str());
+#endif
+                    firstPass = true;
+                    break;
+                }
+                else if (!firstPass && line.empty()) {
+                    break;
+                }
             }
         }
 
@@ -1734,18 +1753,6 @@ namespace starch
                     throw(std::string("ERROR: backend compression type is undefined"));
                 }
             }            
-        }
-
-        else {
-
-            // if we are not in the desired chromosome, we don't do any parsing
-            // but instead iterate the internal metadata iterator, seek the 
-            // new offset, and then we look at the next chromosome on the next
-            // run of extractLine() (if there is a next chromosome -- otherwise,
-            // we would be at EOF and we are done parsing altogether)
-
-            iterateArchiveMdIter();
-            seekCurrentInFpPosition();
         }
 
         if ((_currChr && archType == kGzip && !postBreakdownZValuesIdentical) || (_currChr && archType == kBzip2)) {
