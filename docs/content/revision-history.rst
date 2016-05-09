@@ -23,7 +23,7 @@ Released: **May 9, 2016**
 
 * Starch C++ API
 
-  * Fixed bug with extraction of bzip2- and gzip-backed archives with all other non-primary Starch tools (all tools except `starch`, `unstarch`, `starchcat`, and `sort-bed`). Thanks to Eric Haugan for the bug report!
+  * Fixed bug with extraction of bzip2- and gzip-backed archives with all other non-primary Starch tools (all tools except `starch`, `unstarch`, `starchcat`, and `sort-bed`). Thanks to Eric Haugen for the bug report!
 
 =================
 Previous versions
