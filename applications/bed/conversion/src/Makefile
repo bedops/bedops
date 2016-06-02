@@ -4,7 +4,7 @@ CFLAGS                    = -O3
 CDFLAGS                   = -DDEBUG=1 -g -O0 -fno-inline
 CPFLAGS                   = -pg
 LIBS                      = -lpthread
-INCLUDES                 := -iquote"${PWD}"
+INCLUDES                 := -iquote"${CURDIR}"
 DISTDIR                   = ../bin
 OBJDIR                    = objects
 WRAPPERDIR                = wrappers
