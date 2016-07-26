@@ -19,15 +19,25 @@ Released: **May 9, 2016**
 
 * :ref:`convert2bed <convert2bed>`
 
+  * Increased memory allocation for maximum number of per-read CIGAR operations in BAM and SAM conversion to help improve stability. Thanks to Adam Freedman for the report!
+
+=================
+Previous versions
+=================
+
+-------
+v2.4.19
+-------
+
+Released: **May 9, 2016**
+
+* :ref:`convert2bed <convert2bed>`
+
   * Fixed bug in BAM and SAM parallel conversion scripts (``*_gnuParallel`` and ``*_sge``) with inputs containing chromosome names without ``chr`` prefix. Thanks to Eric Haugen for the bug report!
 
 * Starch C++ API
 
   * Fixed bug with extraction of bzip2- and gzip-backed archives with all other non-primary Starch tools (all tools except `starch`, `unstarch`, `starchcat`, and `sort-bed`). Thanks to Eric Haugen for the bug report!
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.18
