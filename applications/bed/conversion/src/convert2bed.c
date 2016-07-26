@@ -1022,7 +1022,7 @@ c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     char *attributes_copy = NULL;
     attributes_copy = malloc(strlen(attributes_str) + 1);
     if (!attributes_copy) {
-        fprintf(stderr, "Error: Could not allocate space for GFF attributes copy\n");
+        fprintf(stderr, "Error: Could not allocate space for GTF attributes copy\n");
         exit(ENOMEM); /* Not enough space (POSIX.1) */
     }
     memcpy(attributes_copy, attributes_str, strlen(attributes_str) + 1);
@@ -1033,8 +1033,33 @@ c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
         id_str = strstr(kv_tok, gtf_id_prefix);
         if (id_str) {
             /* we remove quotation marks around ID string value */
-            memcpy(c2b_globals.gtf->id, kv_tok + strlen(gtf_id_prefix) + 1, strlen(kv_tok + strlen(gtf_id_prefix)) - 2);
-            c2b_globals.gtf->id[strlen(kv_tok + strlen(gtf_id_prefix)) - 2] = '\0';
+            char *gtf_id_start = NULL;
+            gtf_id_start = strchr(kv_tok + strlen(gtf_id_prefix), c2b_gtf_id_delimiter) + 1;
+            if (gtf_id_start - (kv_tok + strlen(gtf_id_prefix)) <= 0) {
+                gtf_id_start = NULL;
+            }
+            char *gtf_id_end = NULL;
+            if (gtf_id_start) {
+                gtf_id_end = strchr(gtf_id_start + 1, c2b_gtf_id_delimiter);
+                if (gtf_id_end - (kv_tok + strlen(gtf_id_prefix)) <= 0) {
+                    gtf_id_end = NULL;
+                }
+            }
+            if (!gtf_id_start || !gtf_id_end) {
+                fprintf(stderr, "Error: Could not parse ID from GTF attributes (malformed GTF at line [%" PRIu64 "]?)\n", c2b_globals.gtf->line_count + 1);
+                exit(ENODATA); /* No data available (POSIX.1) */
+            }
+            if ((gtf_id_start && gtf_id_end) && (gtf_id_start != gtf_id_end)) {
+                memcpy(c2b_globals.gtf->id, gtf_id_start, gtf_id_end - gtf_id_start);
+                c2b_globals.gtf->id[gtf_id_end - gtf_id_start] = '\0';
+            }
+            else {
+                c2b_globals.gtf->id[0] = '\0';
+            }
+            if (strlen(c2b_globals.gtf->id) == 0) {
+                fprintf(stderr, "Error: Could not parse ID from GTF attributes (malformed GTF at line [%" PRIu64 "]?)\n", c2b_globals.gtf->line_count + 1);
+                exit(ENODATA); /* No data available (POSIX.1) */
+            }
         }
     }
     free(attributes_copy), attributes_copy = NULL;
@@ -1045,6 +1070,7 @@ c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     */
 
     c2b_line_convert_gtf_to_bed(gtf, dest, dest_size);
+    c2b_globals.gtf->line_count++;
 }
 
 static inline void
@@ -4576,6 +4602,8 @@ c2b_init_global_gtf_state()
         exit(ENOMEM); /* Not enough space (POSIX.1) */
     }
     memset(c2b_globals.gtf->id, 0, C2B_MAX_FIELD_LENGTH_VALUE);
+
+    c2b_globals.gtf->line_count = 0;
 
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_init_global_gtf_state() - exit  ---\n");

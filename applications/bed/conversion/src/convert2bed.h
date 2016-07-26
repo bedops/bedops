@@ -100,6 +100,8 @@ extern const int c2b_gff_field_max;
 extern const char *c2b_gff_zero_length_insertion_attribute;
 extern const int c2b_gtf_field_min;
 extern const int c2b_gtf_field_max;
+extern const char c2b_gtf_id_delimiter;
+extern const char c2b_gtf_id_field_delimiter;
 extern const char c2b_gtf_comment;
 extern const char *c2b_gtf_zero_length_insertion_attribute;
 extern const char *c2b_gvf_header;
@@ -152,6 +154,8 @@ const int c2b_gff_field_max = 9;
 const char *c2b_gff_zero_length_insertion_attribute = ";zero_length_insertion=True";
 const int c2b_gtf_field_min = 9;
 const int c2b_gtf_field_max = 10;
+const char c2b_gtf_id_delimiter = '"';
+const char c2b_gtf_id_field_delimiter = ';';
 const char c2b_gtf_comment = '#';
 const char *c2b_gtf_zero_length_insertion_attribute = "; zero_length_insertion=True"; 
 const char *c2b_gvf_header = "##gvf-version 1.07";
@@ -1203,6 +1207,7 @@ typedef struct gff_state {
 
 typedef struct gtf_state {
     char *id;
+    uint64_t line_count;
 } c2b_gtf_state_t;
 
 typedef struct psl_state {
