@@ -2455,7 +2455,8 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
     /* Optional fields */
     char opt_str[C2B_MAX_FIELD_LENGTH_VALUE];
     if (sam_field_offsets[11] != -1) {
-          for (int field_idx = 11; field_idx <= sam_field_idx; field_idx++) {
+        opt_str[0] = '\0';
+        for (int field_idx = 11; field_idx <= sam_field_idx; field_idx++) {
             ssize_t opt_size = sam_field_offsets[field_idx] - sam_field_offsets[field_idx - 1] - (field_idx == sam_field_idx ? 1 : 0);
             memcpy(opt_str + strlen(opt_str), src + sam_field_offsets[field_idx - 1] + 1, opt_size);
             opt_str[strlen(opt_str) + opt_size] = '\0';
@@ -2835,7 +2836,10 @@ static void
 c2b_sam_delete_cigar_ops(c2b_cigar_t *c)
 {
     if (c) {
-        free(c->ops), c->ops = NULL, c->length = 0, c->size = 0;
+        if (c->ops) {
+            free(c->ops), c->ops = NULL; 
+        }
+        c->length = 0, c->size = 0;
         free(c), c = NULL;
     }
 }
