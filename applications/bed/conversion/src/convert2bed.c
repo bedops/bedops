@@ -1027,21 +1027,23 @@ c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     }
     memcpy(attributes_copy, attributes_str, strlen(attributes_str) + 1);
     const char *kv_tok;
-    const char *gtf_id_prefix = "gene_id ";
-    char *id_str;
-    while((kv_tok = c2b_strsep(&attributes_copy, ";")) != NULL) {
-        id_str = strstr(kv_tok, gtf_id_prefix);
-        if (id_str) {
+    char *gene_id_str = NULL;
+    char *transcript_id_str = NULL;
+    boolean gene_id_value_defined = kFalse;
+    boolean transcript_id_value_defined = kFalse;
+    while((kv_tok = c2b_strsep(&attributes_copy, c2b_gtf_field_delimiter)) != NULL) {
+        gene_id_str = strstr(kv_tok, c2b_gtf_gene_id_prefix);
+        if (gene_id_str) {
             /* we remove quotation marks around ID string value */
             char *gtf_id_start = NULL;
-            gtf_id_start = strchr(kv_tok + strlen(gtf_id_prefix), c2b_gtf_id_delimiter) + 1;
-            if (gtf_id_start - (kv_tok + strlen(gtf_id_prefix)) <= 0) {
+            gtf_id_start = strchr(kv_tok + strlen(c2b_gtf_gene_id_prefix), c2b_gtf_id_delimiter);
+            if (gtf_id_start - (kv_tok + strlen(c2b_gtf_gene_id_prefix)) < 0) {
                 gtf_id_start = NULL;
             }
             char *gtf_id_end = NULL;
             if (gtf_id_start) {
                 gtf_id_end = strchr(gtf_id_start + 1, c2b_gtf_id_delimiter);
-                if (gtf_id_end - (kv_tok + strlen(gtf_id_prefix)) <= 0) {
+                if (gtf_id_end - (kv_tok + strlen(c2b_gtf_gene_id_prefix)) <= 0) {
                     gtf_id_end = NULL;
                 }
             }
@@ -1050,17 +1052,25 @@ c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                 exit(ENODATA); /* No data available (POSIX.1) */
             }
             if ((gtf_id_start && gtf_id_end) && (gtf_id_start != gtf_id_end)) {
-                memcpy(c2b_globals.gtf->id, gtf_id_start, gtf_id_end - gtf_id_start);
-                c2b_globals.gtf->id[gtf_id_end - gtf_id_start] = '\0';
+                memcpy(c2b_globals.gtf->id, gtf_id_start + 1, gtf_id_end - gtf_id_start - 1);
+                c2b_globals.gtf->id[gtf_id_end - gtf_id_start - 1] = '\0';
             }
             else {
                 c2b_globals.gtf->id[0] = '\0';
             }
             if (strlen(c2b_globals.gtf->id) == 0) {
-                fprintf(stderr, "Error: Could not parse ID from GTF attributes (malformed GTF at line [%" PRIu64 "]?)\n", c2b_globals.gtf->line_count + 1);
-                exit(ENODATA); /* No data available (POSIX.1) */
+                strcpy(c2b_globals.gtf->id, c2b_gtf_field_placeholder);
             }
+            gene_id_value_defined = kTrue;
         }
+        transcript_id_str = strstr(kv_tok, c2b_gtf_transcript_id_prefix);
+        if (transcript_id_str) {
+            transcript_id_value_defined = kTrue;
+        }
+    }
+    if (!gene_id_value_defined || !transcript_id_value_defined) {
+        fprintf(stderr, "Error: Potentially missing gene or transcript ID from GTF attributes (malformed GTF at line [%" PRIu64 "]?)\n", c2b_globals.gtf->line_count + 1);
+        exit(ENODATA); /* No data available (POSIX.1) */        
     }
     free(attributes_copy), attributes_copy = NULL;
     gtf.id = c2b_globals.gtf->id;

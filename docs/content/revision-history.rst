@@ -15,13 +15,13 @@ Current version
 v2.4.20
 -------
 
-Released: **TBD**
+Released: **July 27, 2016**
 
 * :ref:`convert2bed <convert2bed>`
 
   * Increased memory allocation for maximum number of per-read CIGAR operations in BAM and SAM conversion to help improve stability. Thanks to Adam Freedman for the report!
 
-  * Improved reliability of gene ID parsing from GTF input. Thanks to blaiseli for the report!
+  * Improved reliability of gene ID parsing from GTF input, where ``gene_id`` field may be positioned at start, middle, or end of attributes string, or may be empty. Thanks to blaiseli for the report!
 
 =================
 Previous versions
