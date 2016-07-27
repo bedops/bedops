@@ -1089,7 +1089,7 @@ c2b_line_convert_gtf_to_bed(c2b_gtf_t g, char *dest_line, ssize_t *dest_size)
     /* 
        For GTF-formatted data, we use the mapping provided by BEDOPS convention described at:
 
-       http://bedops.readthedocs.org/en/latest/content/reference/file-management/conversion/gtf2bed.html
+       http://bedops.readthedocs.io/en/latest/content/reference/file-management/conversion/gtf2bed.html
 
        GTF field                 BED column index       BED field
        -------------------------------------------------------------------------
@@ -1353,7 +1353,7 @@ c2b_line_convert_gff_to_bed(c2b_gff_t g, char *dest_line, ssize_t *dest_size)
     /* 
        For GFF- and GVF-formatted data, we use the mapping provided by BEDOPS convention described at:
 
-       http://bedops.readthedocs.org/en/latest/content/reference/file-management/conversion/gff2bed.html
+       http://bedops.readthedocs.io/en/latest/content/reference/file-management/conversion/gff2bed.html
 
        GFF field                 BED column index       BED field
        -------------------------------------------------------------------------
@@ -1825,7 +1825,7 @@ c2b_line_convert_psl_to_bed(c2b_psl_t p, char *dest_line, ssize_t *dest_size)
     /* 
        For PSL-formatted data, we use the mapping provided by BEDOPS convention described at:
 
-       http://bedops.readthedocs.org/en/latest/content/reference/file-management/conversion/psl2bed.html
+       http://bedops.readthedocs.io/en/latest/content/reference/file-management/conversion/psl2bed.html
 
        PSL field                 BED column index       BED field
        -------------------------------------------------------------------------
@@ -2227,7 +2227,7 @@ c2b_line_convert_rmsk_to_bed(c2b_rmsk_t r, char *dest_line, ssize_t *dest_size)
        For RepeatMasker annotation-formatted data, we use the mapping provided by BEDOPS
        convention described at:
 
-       http://bedops.readthedocs.org/en/latest/content/reference/file-management/conversion/rmsk2bed.html
+       http://bedops.readthedocs.io/en/latest/content/reference/file-management/conversion/rmsk2bed.html
 
        RepeatMasker field        BED column index       BED field
        -------------------------------------------------------------------------
@@ -2886,7 +2886,7 @@ c2b_line_convert_sam_to_bed(c2b_sam_t s, char *dest_line, ssize_t *dest_size)
     /*
        For SAM-formatted data, we use the mapping provided by BEDOPS convention described at: 
 
-       http://bedops.readthedocs.org/en/latest/content/reference/file-management/conversion/sam2bed.html
+       http://bedops.readthedocs.io/en/latest/content/reference/file-management/conversion/sam2bed.html
 
        SAM field                 BED column index       BED field
        -------------------------------------------------------------------------
@@ -3235,7 +3235,7 @@ c2b_line_convert_vcf_to_bed(c2b_vcf_t v, char *dest_line, ssize_t *dest_size)
     /* 
        For VCF v4.2-formatted data, we use the mapping provided by BEDOPS convention described at:
 
-       http://bedops.readthedocs.org/en/latest/content/reference/file-management/conversion/vcf2bed.html
+       http://bedops.readthedocs.io/en/latest/content/reference/file-management/conversion/vcf2bed.html
 
        VCF field                 BED column index       BED field
        -------------------------------------------------------------------------
