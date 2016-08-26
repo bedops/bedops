@@ -60,7 +60,7 @@ The ``--help`` option describes the functionality available to the end user:
 
   bedextract
     citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-    version:  2.4.21
+    version:  2.4.20
     authors:  Shane Neph & Alex Reynolds
 
       Every input file must be sorted per sort-bed.
@@ -139,7 +139,7 @@ Three criteria make the use of :ref:`bedextract` in this mode very successful in
       | bedops --element-of 1 - Target \
       > answer.bed
 
-.. note:: You may change the final overlap criterion to the `bedops --element-of` as you see fit for your final answer.
+.. note:: You may change the final overlap criterion to the `bedops --element-of` as you see fit for your final answer.  Adding --range 10, for example, to `bedops -m Query > Query-Index` can often greatly reduce the size of Query-Index without much of an increase in the running time of this approach.
 
 .. _bedextract_nested_elements:
 
