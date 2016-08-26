@@ -1910,4 +1910,59 @@
         <CALL>--chop 100 -x --stagger 53 chop1.test chop2.test</CALL>
         <OUTPUT name="chop4xs.results"/>
     </TEST>
+
+    <!-- *******CHOP TEST******* -->
+    <!-- Creates chop3.test -->
+    <!-- Creates chop5.results -->
+    <!--  testing stagger and -x options of -w/chop -->
+    <TEST order="62">
+        <INPUT name="chop3.test">
+          chr1	10	15	id-1
+          chr2	10	15
+          chr3	10	15
+          chr9	10	15
+          chrM	10	15
+          chrX	10	15
+          chrY	10	15	id-2
+        </INPUT>
+        <ANSWER>
+            chr1	10	11
+            chr1	11	12
+            chr1	12	13
+            chr1	13	14
+            chr1	14	15
+            chr2	10	11
+            chr2	11	12
+            chr2	12	13
+            chr2	13	14
+            chr2	14	15
+            chr3	10	11
+            chr3	11	12
+            chr3	12	13
+            chr3	13	14
+            chr3	14	15
+            chr9	10	11
+            chr9	11	12
+            chr9	12	13
+            chr9	13	14
+            chr9	14	15
+            chrM	10	11
+            chrM	11	12
+            chrM	12	13
+            chrM	13	14
+            chrM	14	15
+            chrX	10	11
+            chrX	11	12
+            chrX	12	13
+            chrX	13	14
+            chrX	14	15
+            chrY	10	11
+            chrY	11	12
+            chrY	12	13
+            chrY	13	14
+            chrY	14	15
+        </ANSWER>
+        <CALL>--chop</CALL>
+        <OUTPUT name="chop5.results"/>
+    </TEST>
 </TEST_PLAN>
