@@ -28,7 +28,7 @@ The <a href="https://bedops.readthedocs.io/en/latest/content/overview.html#overv
 <tr>
 <td valign="top">
 <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
-<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.20/bedops_linux_x86_64-v2.4.20.tar.bz2">x86-64 (64-bit)</a> binaries</li>
+<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.20/bedops_linux_x86_64-v2.4.20.v2.tar.bz2">x86-64 (64-bit)</a> binaries</li>
 <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.20/bedops_linux_i386-v2.4.20.tar.bz2">i386 (32-bit)</a> binaries</li>
 <li><a href="http://bedops.readthedocs.io/en/latest/content/installation.html#linux">Installation instructions</a> for Linux hosts</li>
 </ul>
