@@ -27,6 +27,7 @@
 #include <cctype>
 #include <cstddef>
 #include <cstdlib>
+#include <fstream>
 #include <istream>
 #include <iterator>
 #include <limits>
@@ -86,6 +87,8 @@ namespace Bed {
       }
 
       isStarch_ = (fp_ && !is_namedpipe && (&is != &std::cin) && starch::Starch::isStarch(fn_));
+      if ( isStarch_ ) // Starch constructor opens a stream for us
+        dynamic_cast<std::ifstream&>(fp_).close(); // isStarch_ ensures fp_ is open and it's not std::cin/named pipe
 
       // compare pointers directly, to allow compilation with Clang/LLVM against C++11 standard
       if ( (&fp_ == &std::cin || is_namedpipe) && !all_ ) { // only BED through stdin; chromosome-specific
