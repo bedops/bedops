@@ -138,7 +138,6 @@ endif
 ##################################################
 
 set dependencies = `echo $jids | tr ' ' ':'`
-sbatch $slurm_opts -J $nm.union --dependency=afterok:$dependencies --wrap="module add bedops; starchcat $files > $output; cd $here; rm -rf $nm;"
-
+sbatch $slurm_opts -J $nm.union --dependency=afterok:$dependencies --wrap="module add bedops; starchcat $files > $output; cd $here; rm -rf $nm; if [ $clean != 0 ]; then rm -f $originput; fi;"
 
 exit 0
