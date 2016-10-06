@@ -11,8 +11,18 @@ This page summarizes some of the more important changes between releases.
 Current version
 ===============
 
+Released: **TBD**
+
+* :ref:`bedmap <bedmap>`
+
+  * Measurement values in `bedmap` did not allow `+` in the exponent (both `-` worked and no `+` for a positive value.  Similarly, out in front of the number, `+` was previously not allowed. Shane Neph posted the report and fix.
+
+=================
+Previous versions
+=================
+
 -------
-v2.4.21
+v2.4.20
 -------
 
 Released: **July 27, 2016**
@@ -22,10 +32,6 @@ Released: **July 27, 2016**
   * Increased memory allocation for maximum number of per-read CIGAR operations in BAM and SAM conversion to help improve stability. Thanks to Adam Freedman for the report!
 
   * Improved reliability of gene ID parsing from GTF input, where ``gene_id`` field may be positioned at start, middle, or end of attributes string, or may be empty. Thanks to blaiseli for the report!
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.19
