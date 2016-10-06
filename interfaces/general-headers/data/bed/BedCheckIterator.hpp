@@ -513,12 +513,12 @@ namespace Bed {
               }
               else if ( bl[marker] == ' ' )
                 msg = "Measurement value may not contain a space.";
-              else if ( bl[marker] == '-' ) {
+              else if ( bl[marker] == '-' || bl[marker] == '+' ) {
                 if ( marker != pos && expCount < 1 )
-                  msg = "Measurement value has '-' in wrong place.";
+                  msg = "Measurement value has '-' or '+' in wrong place.";
                 if ( msg.empty() && marker != pos ) {
                   if ( ++minusCount > 1 )
-                    msg = "Measurement value has multiple '-' characters.";
+                    msg = "Measurement value has multiple '-' and/or '+' characters.";
                   else if ( expPos + 1 != marker )
                     msg = "Measurement value has bad '-' in the exponent.";
                   minusPos = marker;
