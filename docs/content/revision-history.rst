@@ -17,6 +17,10 @@ Released: **TBD**
 
   * Measurement values in `bedmap` did not allow `+` in the exponent (both `-` worked and no `+` for a positive value.  Similarly, out in front of the number, `+` was previously not allowed. Shane Neph posted the report and fix.
 
+* :ref:`starchcluster <starchcluster>`
+
+  * SLURM-ready version of `starchcluster` script added, to help users of SLURM job scheduler with parallelizing creating Starch archives.
+
 =================
 Previous versions
 =================
