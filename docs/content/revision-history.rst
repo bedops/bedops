@@ -21,6 +21,10 @@ Released: **TBD**
 
   * SLURM-ready version of `starchcluster` script added, to help users of SLURM job scheduler with parallelizing creating Starch archives.
 
+* :ref:`starch <starch>`
+
+  * Added `--report-progress=N` option to report compression of the Nth element of the current chromosome to standard error stream.
+
 =================
 Previous versions
 =================

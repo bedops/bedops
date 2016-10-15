@@ -116,19 +116,25 @@ int     STARCH2_transformInput(unsigned char **header,
                        const CompressionType compressionType, 
                                   const char *tag,
                                   const char *note,
-                               const Boolean headerFlag);
+                               const Boolean headerFlag,
+                               const Boolean reportProgressFlag,
+                               const int64_t reportProgressN);
 
 int     STARCH2_transformHeaderedBEDInput(const FILE *inFp, 
                                             Metadata **md, 
                                const CompressionType compressionType, 
                                           const char *tag, 
-                                          const char *note);
+                                          const char *note,
+                                       const Boolean reportProgressFlag,
+                                       const int64_t reportProgressN);
 
 int     STARCH2_transformHeaderlessBEDInput(const FILE *inFp, 
                                               Metadata **md,
                                  const CompressionType compressionType,
                                             const char *tag,
-                                            const char *note);
+                                            const char *note,
+                                         const Boolean reportProgressFlag,
+                                         const int64_t reportProgressN);        
 
 int     STARCH2_writeStarchHeaderToOutputFp(const unsigned char *header, 
                                                      const FILE *fp);

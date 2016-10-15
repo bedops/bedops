@@ -63,6 +63,7 @@ Use the ``--help`` option to list all options:
 
       --note="foo bar..."   Append note to output archive metadata (optional)
       --bzip2 | --gzip      Specify backend compression type (optional, default is bzip2)
+      --report-progress=N   Report compression progress every N elements per chromosome to standard error stream (optional)
       --header              Support BED input with custom UCSC track, SAM or VCF headers, or generic comments (optional)
       <unique-tag>          Specify unique identifier for transformed data (optional)
       --help                Show this usage message
@@ -87,6 +88,14 @@ Use the ``--note="xyz..."`` option to add a custom string that describes the arc
 .. tip:: Examples of usage might include a description of the experiment associated with the data, a URL to a UCSC Genome Browser session, or a bar code or other unique identifier for internal lab or LIMS use.
 
 .. note:: The only limitation on the length of a note is the command-line shell's maximum argument length parameter (as found on most UNIX systems with the command ``getconf ARG_MAX``) minus the length of the non- ``--note="..."`` command components. On most desktop systems, this value will be approximately 256 kB.
+
+--------------------
+Compression progress
+--------------------
+
+To optionally track the progress of compression, use the ``--report-progress=N`` option, specifying a positive integer ``N`` to report the compression of the *N* -th element for the current chromosome. The report is printed to the standard error stream.
+
+.. note:: For instance, specifying a value of ``1`` reports the compression of every input element of all chromosomes, while a value of ``1000`` would report the compression of every 1000th element of the current chromosome.
 
 -------
 Headers

@@ -1079,7 +1079,7 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
     return 0;
 }
 
-int 
+int
 STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const CompressionType type, const char *tag, const Boolean finalizeFlag, const char *note) 
 {
 #ifdef DEBUG
@@ -1587,7 +1587,7 @@ STARCH_strndup(const char *s, size_t n)
 }
 
 int 
-STARCH2_transformInput(unsigned char **header, Metadata **md, const FILE *inFp, const CompressionType compressionType, const char *tag, const char *note, const Boolean headerFlag)
+STARCH2_transformInput(unsigned char **header, Metadata **md, const FILE *inFp, const CompressionType compressionType, const char *tag, const char *note, const Boolean headerFlag, const Boolean reportProgressFlag, const int64_t reportProgressN)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH2_transformInput() ---\n");
@@ -1638,13 +1638,13 @@ STARCH2_transformInput(unsigned char **header, Metadata **md, const FILE *inFp, 
     }
 
     if (headerFlag == kStarchFalse) {
-        if (STARCH2_transformHeaderlessBEDInput(inFp, md, compressionType, tag, note) != STARCH_EXIT_SUCCESS) {
+        if (STARCH2_transformHeaderlessBEDInput(inFp, md, compressionType, tag, note, reportProgressFlag, reportProgressN) != STARCH_EXIT_SUCCESS) {
             fprintf(stderr, "ERROR: Could not write transformed/compressed data to output file pointer.\n");
             return STARCH_EXIT_FAILURE;
         }
     }
     else {
-        if (STARCH2_transformHeaderedBEDInput(inFp, md, compressionType, tag, note) != STARCH_EXIT_SUCCESS) {
+        if (STARCH2_transformHeaderedBEDInput(inFp, md, compressionType, tag, note, reportProgressFlag, reportProgressN) != STARCH_EXIT_SUCCESS) {
             fprintf(stderr, "ERROR: Could not write transformed/compressed data to output file pointer.\n");
             return STARCH_EXIT_FAILURE;
         }
@@ -1672,7 +1672,7 @@ STARCH2_transformInput(unsigned char **header, Metadata **md, const FILE *inFp, 
 }
 
 int
-STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const CompressionType compressionType, const char *tag, const char *note)
+STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const CompressionType compressionType, const char *tag, const char *note, const Boolean reportProgressFlag, const int64_t reportProgressN)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH2_transformHeaderedBEDInput() ---\n");
@@ -1822,6 +1822,9 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 
             if (STARCH_createTransformTokens(untransformedBuffer, '\t', &chromosome, &start, &stop, &remainder, &lineType) == 0) 
             {
+                if ((reportProgressFlag == kStarchTrue) && (lineIdx % reportProgressN == 0)) {
+                    fprintf(stderr, "PROGRESS: Transforming element [%ld] of chromosome [%s] -> [%s]\n", lineIdx, chromosome, untransformedBuffer);
+                }
                 if ( (lineType == kBedLineCoordinates) && ((!prevChromosome) || (strcmp(chromosome, prevChromosome) != 0)) ) 
                 {
                     if (prevChromosome) 
@@ -2674,7 +2677,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 }
 
 int
-STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const CompressionType compressionType, const char *tag, const char *note)
+STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const CompressionType compressionType, const char *tag, const char *note, const Boolean reportProgressFlag, const int64_t reportProgressN)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH2_transformHeaderlessBEDInput() ---\n");
@@ -2822,6 +2825,9 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 
             if (STARCH_createTransformTokensForHeaderlessInput(untransformedBuffer, '\t', &chromosome, &start, &stop, &remainder) == 0) 
             {
+                if ((reportProgressFlag == kStarchTrue) && (lineIdx % reportProgressN == 0)) {
+                    fprintf(stderr, "PROGRESS: Transforming element [%ld] of chromosome [%s] -> [%s]\n", lineIdx, chromosome, untransformedBuffer);
+                }            
                 if ( (!prevChromosome) || (strcmp(chromosome, prevChromosome) != 0) ) {
                     if (prevChromosome) {
 #ifdef __cplusplus

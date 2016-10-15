@@ -53,6 +53,8 @@ main (int argc, char **argv)
     char *bedFn = NULL;
     FILE *bedFnPtr = NULL;
     Metadata *metadata = NULL;
+    Boolean bedReportProgressFlag = kStarchFalse;
+    int64_t bedReportProgressN = 0;
     Boolean bedHeaderFlag = kStarchFalse;
     unsigned char *starchHeader = NULL;
 
@@ -77,6 +79,8 @@ main (int argc, char **argv)
     bedFn = starch_client_global_args.inputFile;
     type = starch_client_global_args.compressionType;
     tag = starch_client_global_args.uniqueTag;
+    bedReportProgressFlag = starch_client_global_args.reportProgressFlag;
+    bedReportProgressN = starch_client_global_args.reportProgressN;
     bedHeaderFlag = starch_client_global_args.headerFlag;
 
     if (STARCH_MAJOR_VERSION == 1)
@@ -176,7 +180,9 @@ main (int argc, char **argv)
 				   static_cast<const CompressionType>( type ), 
 				   reinterpret_cast<const char *>( tag ), 
 				   reinterpret_cast<const char *>( note ), 
-				   static_cast<const Boolean>( bedHeaderFlag )) != STARCH_EXIT_SUCCESS) 
+				   static_cast<const Boolean>( bedHeaderFlag ),
+                                   static_cast<const Boolean>( bedReportProgressFlag ),
+                                   static_cast<const int64_t>( bedReportProgressN )) != STARCH_EXIT_SUCCESS) 
         {
             exit (EXIT_FAILURE);
         }
@@ -187,7 +193,9 @@ main (int argc, char **argv)
            (const CompressionType) type, 
                     (const char *) tag, 
                     (const char *) note, 
-                   (const Boolean) bedHeaderFlag) != STARCH_EXIT_SUCCESS) 
+                   (const Boolean) bedHeaderFlag,
+                   (const Boolean) bedReportProgressFlag,
+                   (const int64_t) bedReportProgressN) != STARCH_EXIT_SUCCESS) 
         {
             exit (EXIT_FAILURE);
         }
@@ -228,6 +236,8 @@ STARCH_initializeGlobals ()
 #endif
     starch_client_global_args.note = NULL;
     starch_client_global_args.compressionType = STARCH_DEFAULT_COMPRESSION_TYPE;
+    starch_client_global_args.reportProgressFlag = kStarchFalse;
+    starch_client_global_args.reportProgressN = 0;
     starch_client_global_args.headerFlag = kStarchFalse;
     starch_client_global_args.inputFile = NULL;
     starch_client_global_args.uniqueTag = NULL;
@@ -255,27 +265,36 @@ STARCH_parseCommandLineOptions (int argc, char **argv)
 
     while (starch_client_opt != -1) {
         switch (starch_client_opt) {
-	        case 'v':
-                return STARCH_VERSION_ERROR;
-            case 'n':
-                starch_client_global_args.note = optarg;
-                break;
-            case 'b':
-                starch_client_global_args.compressionType = kBzip2;
-                break;
-            case 'g':
-                starch_client_global_args.compressionType = kGzip;
-                break;
-            case 'e':
-                starch_client_global_args.headerFlag = kStarchTrue;
-                break;
-            case 'h':
-                return STARCH_HELP_ERROR;
-            case '?':
+        case 'v':
+            return STARCH_VERSION_ERROR;
+        case 'n':
+            starch_client_global_args.note = optarg;
+            break;
+        case 'b':
+            starch_client_global_args.compressionType = kBzip2;
+            break;
+        case 'g':
+            starch_client_global_args.compressionType = kGzip;
+            break;
+        case 'r':
+            starch_client_global_args.reportProgressFlag = kStarchTrue;
+            errno = 0;
+            starch_client_global_args.reportProgressN = strtoimax(optarg, NULL, 10);
+            if ((errno == ERANGE) || (starch_client_global_args.reportProgressN < 0)) {
+                fprintf (stderr, "ERROR: Numerical value of report progress option value is outside of range.\n");
                 return STARCH_FATAL_ERROR;
-            default:
-                break;
-	    }
+            }
+            break;
+        case 'e':
+            starch_client_global_args.headerFlag = kStarchTrue;
+            break;
+        case 'h':
+            return STARCH_HELP_ERROR;
+        case '?':
+            return STARCH_FATAL_ERROR;
+        default:
+            break;
+        }
         starch_client_opt = getopt_long (argc, argv, starch_client_opt_string, starch_client_long_options, &starch_client_long_index);
     }
 

@@ -27,6 +27,8 @@
 #define STARCH_H
 
 #include <getopt.h>
+#include <inttypes.h>
+#include <errno.h>
 
 #include "data/starch/starchMetadataHelpers.h"
 
@@ -39,7 +41,7 @@ namespace {
 static const char *name = "starch";
 static const char *authors = "Alex Reynolds and Shane Neph";
 static const char *usage = "\n" \
-    "USAGE: starch [--note=\"foo bar...\"] [--bzip2 | --gzip] [--header] [<unique-tag>] <bed-file>\n" \
+    "USAGE: starch [--note=\"foo bar...\"] [--bzip2 | --gzip] [--report-progress=N] [--header] [<unique-tag>] <bed-file>\n" \
     "    \n" \
     "    * BED input must be sorted lexicographically (e.g., using BEDOPS sort-bed).\n" \
     "    * Please use '-' to indicate reading BED data from standard input.\n" \
@@ -49,6 +51,7 @@ static const char *usage = "\n" \
     "    Process Flags:\n\n" \
     "    --note=\"foo bar...\"   Append note to output archive metadata (optional)\n" \
     "    --bzip2 | --gzip      Specify backend compression type (optional, default is bzip2)\n" \
+    "    --report-progress=N   Report compression progress every N elements per chromosome to standard error stream (optional)\n" \
     "    --header              Support BED input with custom UCSC track, SAM or VCF headers, or generic comments (optional)\n" \
     "    <unique-tag>          Specify unique identifier for transformed data (optional)\n" \
     "    --help                Show this usage message\n" \
@@ -57,6 +60,8 @@ static const char *usage = "\n" \
 static struct starch_client_global_args_t {
     char *note;
     CompressionType compressionType;
+    Boolean reportProgressFlag;
+    int64_t reportProgressN;
     Boolean headerFlag;
     char *inputFile;
     char *uniqueTag;
@@ -66,25 +71,17 @@ static struct starch_client_global_args_t {
 } starch_client_global_args;
 
 static struct option starch_client_long_options[] = {    
-    {"note",    required_argument, NULL, 'n'},
-    {"bzip2",   no_argument,       NULL, 'b'},
-    {"gzip",    no_argument,       NULL, 'g'},
-    {"header",  no_argument,       NULL, 'e'},
-    {"version", no_argument,       NULL, 'v'},
-    {"help",    no_argument,       NULL, 'h'},
-    {NULL,      no_argument,       NULL, 0}
+    {"note",            required_argument, NULL, 'n'},
+    {"bzip2",           no_argument,       NULL, 'b'},
+    {"gzip",            no_argument,       NULL, 'g'},
+    {"report-progress", required_argument, NULL, 'r'},
+    {"header",          no_argument,       NULL, 'e'},
+    {"version",         no_argument,       NULL, 'v'},
+    {"help",            no_argument,       NULL, 'h'},
+    {NULL,              no_argument,       NULL,  0 }
 };
 
-static const char *starch_client_opt_string = "n:bgevh?";
-
-/* 
-   On Darwin, file I/O is 64-bit by default (OS X 10.5 at least) so we use standard 
-   types and calls 
-*/
-
-#ifdef __APPLE__
-#define off64_t off_t
-#endif
+static const char *starch_client_opt_string = "n:bgrevh?";
 
 #ifdef __cplusplus
 namespace starch {
