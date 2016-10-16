@@ -1173,7 +1173,7 @@ lexSortBedData(BedData *beds)
     /* sort coords */
     for(i = 0; i < beds->numChroms; ++i) 
         {            
-	        qsort(beds->chroms[i]->coords, static_cast<size_t>(beds->chroms[i]->numCoords), sizeof(BedCoordData), numCompareBedData);
+	        qsort(beds->chroms[i]->coords, static_cast<size_t>(beds->chroms[i]->numCoords), sizeof(BedCoordData), numCompareBedDataStable);
         }
 
     /* sort chroms */
@@ -1182,21 +1182,49 @@ lexSortBedData(BedData *beds)
 }
 
 int
-numCompareBedData(const void *pos1, const void *pos2) 
+numCompareBedDataStable(const void *pos1, const void *pos2) 
 {
-    Bed::SignedCoordType diff = (static_cast<const BedCoordData *>(pos1))->startCoord - (static_cast<const BedCoordData *>(pos2))->startCoord;
+    /* return value is 0, 1, or -1 or whatever strcmp() returns b/c it must be an
+       int while a Bed::SignedCoordType could be bigger than an int can hold
+    */
+
+    const BedCoordData *bedPos1 = static_cast<const BedCoordData *>(pos1);
+    const BedCoordData *bedPos2 = static_cast<const BedCoordData *>(pos2);
+
+    Bed::SignedCoordType diff = (bedPos1->startCoord - bedPos2->startCoord);
     if(diff)
         {
             return (diff > 0) ? 1 : -1;
         }
-    diff = (static_cast<const BedCoordData *>(pos1))->endCoord - (static_cast<const BedCoordData *>(pos2))->endCoord;
-    return (diff > 0) ? 1 : ((diff < 0) ? -1 : 0);
+    diff = (bedPos1->endCoord - bedPos2->endCoord);
+    if(diff)
+        {
+            return (diff > 0) ? 1 : -1;
+        }
+
+    // so far equivalent, check data member for differences
+    if(bedPos1->data != NULL)
+        {
+            if(bedPos2->data != NULL)
+                {
+                    return strcmp(bedPos1->data, bedPos2->data);
+                }
+            else
+                {
+                    return 1;
+                }
+        }
+    else if(bedPos2->data != NULL)
+        {
+            return -1;
+        }
+    return 0;
 }
 
 int 
 lexCompareBedData(const void *chrPos1, const void *chrPos2) 
 {
-    ChromBedData **chrPos1Cbd = static_cast<ChromBedData **>(const_cast<void *>(chrPos1));
-    ChromBedData **chrPos2Cbd = static_cast<ChromBedData **>(const_cast<void *>(chrPos2));
+    ChromBedData* const* chrPos1Cbd = static_cast<ChromBedData* const*>(chrPos1);
+    ChromBedData* const* chrPos2Cbd = static_cast<ChromBedData* const*>(chrPos2);
     return strcmp((*chrPos1Cbd)->chromName, (*chrPos2Cbd)->chromName);
 }

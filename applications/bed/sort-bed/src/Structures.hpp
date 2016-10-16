@@ -96,11 +96,9 @@ BedData*
 initializeBedData(double* bytes);
 
 int
-numCompareBedData(const void *pos1, const void *pos2);
+numCompareBedDataStable(const void *pos1, const void *pos2);
 
 int
 lexCompareBedData(const void *pos1, const void *pos2);
-
-
 
 #endif /* BED_STRUCTURES_H */
