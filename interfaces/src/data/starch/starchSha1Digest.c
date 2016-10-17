@@ -272,10 +272,10 @@ sha1_process_bytes (const void *buffer, size_t len, struct sha1_ctx *ctx)
 	{
 	    
 #ifndef __GLIBC__
-#define _STRING_ARCH_unaligned 0
+#define GLIBC_STRING_ARCH_unaligned 0
 #endif
 	    
-#if !_STRING_ARCH_unaligned
+#if !GLIBC_STRING_ARCH_unaligned
 # define alignof(type) offsetof (offset_test, x)
 #ifdef __cplusplus
 # define UNALIGNED_P(p) ((reinterpret_cast<size_t>( const_cast<void *>( p ) )) % alignof (sha1_uint32) != 0)

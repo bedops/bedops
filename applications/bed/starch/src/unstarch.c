@@ -946,7 +946,7 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
         (strcmp(*fn, "--archive-type") == 0) ||
         (strcmp(*fn, "--archive-version") == 0) ||
         (strcmp(*fn, "--archive-timestamp") == 0) ||
-        (strcmp(*fn, "--sha1-signature") == 0) ||
+        (strcmp(*fn, "--signature-metadata") == 0) ||
         (strcmp(*fn, "--is-starch") == 0) ) 
     {
         if (ftr1)
@@ -984,7 +984,7 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
             *pval = UNSTARCH_ARCHIVE_CREATION_TIMESTAMP_ERROR;
             return *pval;
         }
-        else if (strcmp(*optn, "sha1-signature") == 0) {
+        else if (strcmp(*optn, "signature-metadata") == 0) {
             *pval = UNSTARCH_METADATA_SHA1_SIGNATURE_ERROR;
             return *pval;
         }

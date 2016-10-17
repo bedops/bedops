@@ -61,7 +61,7 @@ static struct starch_client_global_args_t {
     char *note;
     CompressionType compressionType;
     Boolean reportProgressFlag;
-    int64_t reportProgressN;
+    uint64_t reportProgressN;
     Boolean headerFlag;
     char *inputFile;
     char *uniqueTag;

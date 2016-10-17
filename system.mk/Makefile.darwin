@@ -22,7 +22,8 @@ X86_64           = darwin_intel_x86_64
 default: support
 	$(MAKE) build -f $(SELF)
 
-SUBDIRS = bedmap/src sort-bed/src bedops/src closestfeats/src bedextract/src starch/src conversion/src
+#SUBDIRS = bedmap/src sort-bed/src bedops/src closestfeats/src bedextract/src starch/src conversion/src
+SUBDIRS = starch/src
 SUBDIRS_FULL := $(patsubst %,${APPDIR}/%,$(SUBDIRS))
 SUBDIRS_I386 := $(patsubst %,%_i386,$(SUBDIRS))
 SUBDIRS_X86_64 := $(patsubst %,%_x86_64,$(SUBDIRS))

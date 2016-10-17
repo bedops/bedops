@@ -53,6 +53,10 @@ namespace starch {
     using namespace Bed;
 #endif
     
+/* cf. https://github.com/attractivechaos/klib/issues/49 */
+const int STARCH_khStrInt = 33;
+KHASH_MAP_INIT_STR(STARCH_khStrInt, int)
+
 char *
 STARCH_strdup(const char *str)
 {
@@ -1587,7 +1591,7 @@ STARCH_strndup(const char *s, size_t n)
 }
 
 int 
-STARCH2_transformInput(unsigned char **header, Metadata **md, const FILE *inFp, const CompressionType compressionType, const char *tag, const char *note, const Boolean headerFlag, const Boolean reportProgressFlag, const int64_t reportProgressN)
+STARCH2_transformInput(unsigned char **header, Metadata **md, const FILE *inFp, const CompressionType compressionType, const char *tag, const char *note, const Boolean headerFlag, const Boolean reportProgressFlag, const uint64_t reportProgressN)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH2_transformInput() ---\n");
@@ -1672,7 +1676,7 @@ STARCH2_transformInput(unsigned char **header, Metadata **md, const FILE *inFp, 
 }
 
 int
-STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const CompressionType compressionType, const char *tag, const char *note, const Boolean reportProgressFlag, const int64_t reportProgressN)
+STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const CompressionType compressionType, const char *tag, const char *note, const Boolean reportProgressFlag, const uint64_t reportProgressN)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH2_transformHeaderedBEDInput() ---\n");
@@ -2677,7 +2681,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 }
 
 int
-STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const CompressionType compressionType, const char *tag, const char *note, const Boolean reportProgressFlag, const int64_t reportProgressN)
+STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const CompressionType compressionType, const char *tag, const char *note, const Boolean reportProgressFlag, const uint64_t reportProgressN)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH2_transformHeaderlessBEDInput() ---\n");
@@ -2730,6 +2734,12 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     char footerBuffer[STARCH2_MD_FOOTER_LENGTH] = {0};
     char const *nullChr = "null";
     char const *nullCompressedFn = "null";
+
+    /* cf. https://github.com/attractivechaos/klib/issues/49 */
+    /* cf. http://attractivechaos.github.io/klib/#Khash%3A%20generic%20hash%20table */
+    int32_t h_return;
+    khiter_t k;
+    khash_t(STARCH_khStrInt) *h = NULL;
 
     /* increment total file size by header bytes */
 #ifdef DEBUG
@@ -2811,6 +2821,10 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
         }
     }
 
+    /* create new hash table */
+    fprintf(stderr, "HASH: creating hash table...\n");
+    h = kh_init(STARCH_khStrInt);
+
     /* fill up a "transformation" buffer with data and then compress it */
 #ifdef __cplusplus
     while ((c = fgetc(const_cast<FILE *>( inFp ))) != EOF) {
@@ -2825,17 +2839,33 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 
             if (STARCH_createTransformTokensForHeaderlessInput(untransformedBuffer, '\t', &chromosome, &start, &stop, &remainder) == 0) 
             {
-                if ((reportProgressFlag == kStarchTrue) && (lineIdx % reportProgressN == 0)) {
+                if ( (reportProgressFlag == kStarchTrue) && (lineIdx % reportProgressN == 0) ) {
                     fprintf(stderr, "PROGRESS: Transforming element [%ld] of chromosome [%s] -> [%s]\n", lineIdx, chromosome, untransformedBuffer);
-                }            
+                }
+
+                /* hash the untransformedBuffer */
+                /* make the untransformedBuffer's hash a key in the hash table, increment the value, if necessary */
+                fprintf(stderr, "HASH: adding to hash [%s]...\n", untransformedBuffer);
+                k = kh_put(STARCH_khStrInt, h, untransformedBuffer, &h_return);
+                if (h_return) {
+                    // the key doesn't exist, so we duplicate the string
+                    kh_key(h, k) = STARCH_strndup(untransformedBuffer, strlen(untransformedBuffer));
+                    kh_value(h, k) = 1;
+                }
+                else {
+                    // increment the hash count
+                    kh_value(h, k) = kh_value(h, k) + 1;
+                }
+                
+
                 if ( (!prevChromosome) || (strcmp(chromosome, prevChromosome) != 0) ) {
                     if (prevChromosome) {
 #ifdef __cplusplus
-		        if (STARCH_chromosomeInMetadataRecords(reinterpret_cast<const Metadata *>( firstRecord ), chromosome) == STARCH_EXIT_SUCCESS) {
+                        if (STARCH_chromosomeInMetadataRecords(reinterpret_cast<const Metadata *>( firstRecord ), chromosome) == STARCH_EXIT_SUCCESS) {
 #else
-		        if (STARCH_chromosomeInMetadataRecords((const Metadata *)firstRecord, chromosome) == STARCH_EXIT_SUCCESS) {
+                        if (STARCH_chromosomeInMetadataRecords((const Metadata *)firstRecord, chromosome) == STARCH_EXIT_SUCCESS) {
 #endif
-	    	            fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+                            fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
                             return STARCH_FATAL_ERROR;
                         }
                         sprintf(compressedFn, "%s.%s", prevChromosome, tag);
@@ -2909,6 +2939,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                                 return STARCH_FATAL_ERROR;
                             }
 
+                            /* destroy hash table (remember to free keys) */
+                            //fprintf(stderr, "HASH: destroying hash table...\n");
+                            //kh_destroy(STARCH_khStrInt, h);
+                            //h = NULL;
+
                             /* start again, anew, with a fresh bzip2 BZFILE pointer */
 #ifdef DEBUG
                             fprintf(stderr, "\t(final-between-chromosome) resetting bzip2 stream...\n");
@@ -2942,6 +2977,9 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                                     }
                                 }
                             }
+                            /* create new hash table */
+                            //fprintf(stderr, "HASH: creating hash table...\n");
+                            //h = kh_init(STARCH_khStrInt);
                         }
 
                         else if (compressionType == kGzip) 
@@ -3019,6 +3057,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                                 return STARCH_FATAL_ERROR;
                             }
 
+                            /* destroy hash table (remember to free key strings) */
+                            //fprintf(stderr, "HASH: destroying hash table...\n");
+                            //kh_destroy(STARCH_khStrInt, h);
+                            //h = NULL;
+
                             /* begin anew with a fresh compression z-stream */
 #ifdef DEBUG
                             fprintf(stderr, "\t(final-between-chromosome) creating fresh z-stream\n");
@@ -3051,6 +3094,9 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #ifdef DEBUG
                             fprintf(stderr, "\t(final-between-chromosome) initialized z-stream\n");
 #endif
+                            /* create new hash table */
+                            //fprintf(stderr, "HASH: creating hash table...\n");
+                            //h = kh_init(STARCH_khStrInt);
                         }
                     }
 
@@ -3127,8 +3173,9 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                     transformedBuffer[currentTransformedBufferLength] = '\0';
                     currentTransformedBufferLength = 0U;
                 }
-                else 
+                else {
                     withinChr = kStarchTrue;
+                }
 
                 /* transform */
                 if (stop > start)
@@ -3619,10 +3666,28 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
             return STARCH_EXIT_FAILURE;
         }
         firstRecord = *md;
-    }        
+    }
 
     /* reset metadata pointer */
     *md = firstRecord;
+
+    /* print current hash table */
+    fprintf(stderr, "HASH: printing hash table at chromosome [%s]...\n", prevChromosome);
+    for (k = kh_begin(h); k != kh_end(h); ++k) {
+        if (kh_exist(h, k)) {
+            const char *key = kh_key(h, k);
+            int tval = kh_value(h, k);
+            fprintf(stderr, "key=[%s] val=[%d]\n", key, tval);
+        }
+    }
+
+    /* destroy hash table */
+    fprintf(stderr, "HASH: destroying hash table...\n");
+    for (k = kh_begin(h); k < kh_end(h); ++k) {
+        if (kh_exist(h, k))
+            free((char*)kh_key(h, k));
+    }
+    kh_destroy(STARCH_khStrInt, h);
 
     /* write metadata */
 #ifdef DEBUG

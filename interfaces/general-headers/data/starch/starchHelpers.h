@@ -37,10 +37,16 @@
 #endif
 
 #include "data/starch/starchMetadataHelpers.h"
+#include "data/starch/starchKhash.h"
 
 #ifdef __cplusplus
 namespace starch {
 #endif
+
+/* cf. https://github.com/attractivechaos/klib/issues/49 */
+/* cf. http://attractivechaos.github.io/klib/#Khash%3A%20generic%20hash%20table */
+#define STARCH_kh_get_val(kname, hash, key, defVal) ({k=kh_get(kname, hash, key);(k!=kh_end(hash)?kh_val(hash,k):defVal);})
+#define STARCH_kh_set(kname, hash, key, val) ({int ret; k = kh_put(kname, hash,key,&ret); kh_value(hash,k) = val; ret;})
 
 #define STARCH_BUFFER_MAX_LENGTH 1024*1024
 #define STARCH_Z_CHUNK STARCH_BUFFER_MAX_LENGTH
@@ -118,7 +124,7 @@ int     STARCH2_transformInput(unsigned char **header,
                                   const char *note,
                                const Boolean headerFlag,
                                const Boolean reportProgressFlag,
-                               const int64_t reportProgressN);
+                              const uint64_t reportProgressN);
 
 int     STARCH2_transformHeaderedBEDInput(const FILE *inFp, 
                                             Metadata **md, 
@@ -126,7 +132,7 @@ int     STARCH2_transformHeaderedBEDInput(const FILE *inFp,
                                           const char *tag, 
                                           const char *note,
                                        const Boolean reportProgressFlag,
-                                       const int64_t reportProgressN);
+                                      const uint64_t reportProgressN);
 
 int     STARCH2_transformHeaderlessBEDInput(const FILE *inFp, 
                                               Metadata **md,
@@ -134,7 +140,7 @@ int     STARCH2_transformHeaderlessBEDInput(const FILE *inFp,
                                             const char *tag,
                                             const char *note,
                                          const Boolean reportProgressFlag,
-                                         const int64_t reportProgressN);        
+                                        const uint64_t reportProgressN);        
 
 int     STARCH2_writeStarchHeaderToOutputFp(const unsigned char *header, 
                                                      const FILE *fp);

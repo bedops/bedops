@@ -37,19 +37,13 @@
 
 #include "jansson.h"
 
-/* current "stable" binary version:  2.4.2 */
-/* current "dev" binary version:     2.5.0 */
-
-/* current "stable" archive version: 2.0.0 */
-/* current "dev" archive version:    2.1.0 */
-
 #ifdef __cplusplus
   namespace starch {
   using namespace Bed;
 #endif
 
 #define STARCH_MAJOR_VERSION 2
-#define STARCH_MINOR_VERSION 1
+#define STARCH_MINOR_VERSION 2
 #define STARCH_REVISION_VERSION 0
 
 #define STARCH_DEFAULT_COMPRESSION_TYPE kBzip2

@@ -49,7 +49,7 @@ static const char *usage = "\n" \
     "    --list-chr,                      List all or specified chromosome in starch archive (similar to \"bedextract --list-chr\"). If <chromosome> is specified but is not in the output list, nothing is returned.\n" \
     "    --list-chromosomes \n" \
     "    --note                           Show descriptive note, if available.\n" \
-    "    --sha1-signature                 Show SHA1 signature of JSON-formatted metadata (Base64-encoded).\n" \
+    "    --signature-metadata             Show SHA1 signature of JSON-formatted metadata (Base64-encoded).\n" \
     "    --archive-timestamp              Show archive creation timestamp (ISO 8601 format).\n" \
     "    --archive-type                   Show archive compression type.\n" \
     "    --archive-version                Show archive version.\n" \

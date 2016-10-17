@@ -54,7 +54,7 @@ main (int argc, char **argv)
     FILE *bedFnPtr = NULL;
     Metadata *metadata = NULL;
     Boolean bedReportProgressFlag = kStarchFalse;
-    int64_t bedReportProgressN = 0;
+    uint64_t bedReportProgressN = 0;
     Boolean bedHeaderFlag = kStarchFalse;
     unsigned char *starchHeader = NULL;
 
@@ -176,26 +176,26 @@ main (int argc, char **argv)
 #ifdef __cplusplus
         if (STARCH2_transformInput(&starchHeader, 
                                    &metadata, 
-				   reinterpret_cast<const FILE *>( bedFnPtr ), 
-				   static_cast<const CompressionType>( type ), 
-				   reinterpret_cast<const char *>( tag ), 
-				   reinterpret_cast<const char *>( note ), 
-				   static_cast<const Boolean>( bedHeaderFlag ),
+                                   reinterpret_cast<const FILE *>( bedFnPtr ), 
+                                   static_cast<const CompressionType>( type ), 
+                                   reinterpret_cast<const char *>( tag ), 
+                                   reinterpret_cast<const char *>( note ), 
+                                   static_cast<const Boolean>( bedHeaderFlag ),
                                    static_cast<const Boolean>( bedReportProgressFlag ),
-                                   static_cast<const int64_t>( bedReportProgressN )) != STARCH_EXIT_SUCCESS) 
+                                   static_cast<const uint64_t>( bedReportProgressN )) != STARCH_EXIT_SUCCESS) 
         {
             exit (EXIT_FAILURE);
         }
 #else
         if (STARCH2_transformInput(&starchHeader, 
                                    &metadata, 
-                    (const FILE *) bedFnPtr, 
-           (const CompressionType) type, 
-                    (const char *) tag, 
-                    (const char *) note, 
-                   (const Boolean) bedHeaderFlag,
-                   (const Boolean) bedReportProgressFlag,
-                   (const int64_t) bedReportProgressN) != STARCH_EXIT_SUCCESS) 
+                                   (const FILE *) bedFnPtr, 
+                                   (const CompressionType) type, 
+                                   (const char *) tag, 
+                                   (const char *) note, 
+                                   (const Boolean) bedHeaderFlag,
+                                   (const Boolean) bedReportProgressFlag,
+                                   (const uint64_t) bedReportProgressN) != STARCH_EXIT_SUCCESS) 
         {
             exit (EXIT_FAILURE);
         }
@@ -279,8 +279,8 @@ STARCH_parseCommandLineOptions (int argc, char **argv)
         case 'r':
             starch_client_global_args.reportProgressFlag = kStarchTrue;
             errno = 0;
-            starch_client_global_args.reportProgressN = strtoimax(optarg, NULL, 10);
-            if ((errno == ERANGE) || (starch_client_global_args.reportProgressN < 0)) {
+            starch_client_global_args.reportProgressN = strtoumax(optarg, NULL, 10);
+            if (errno == ERANGE) {
                 fprintf (stderr, "ERROR: Numerical value of report progress option value is outside of range.\n");
                 return STARCH_FATAL_ERROR;
             }
