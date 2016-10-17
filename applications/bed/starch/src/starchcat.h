@@ -35,6 +35,7 @@
 #include <getopt.h>
 #include <bzlib.h>
 #include <zlib.h>
+#include <errno.h>
 
 #include "data/starch/unstarchHelpers.h"
 #include "data/starch/starchMetadataHelpers.h"
@@ -135,7 +136,7 @@ typedef struct chromosomeSummaries {
 static const char *name = "starchcat";
 static const char *authors = "Alex Reynolds and Shane Neph";
 static const char *usage = "\n" \
-    "USAGE: starchcat [ --note=\"...\" ] [ --bzip2 | --gzip ] <starch-file-1> [<starch-file-2> ...]\n" \
+    "USAGE: starchcat [ --note=\"...\" ] [ --bzip2 | --gzip ] [ --report-progress=N ] <starch-file-1> [<starch-file-2> ...]\n" \
     "\n" \
     "    * At least one lexicographically-sorted, headerless starch archive is required.\n" \
     "      While two or more inputs make sense for a multiset union operation, you can starchcat \n" \
@@ -148,6 +149,7 @@ static const char *usage = "\n" \
     "    Process Flags:\n\n" \
     "    --note=\"foo bar...\"   Append note to output archive metadata (optional)\n" \
     "    --bzip2 | --gzip      Specify backend compression type (optional, default is bzip2)\n" \
+    "    --report-progress=N   Report compression progress every N elements per chromosome to standard error stream (optional)\n" \
     "    --version             Show binary version\n" \
     "    --help                Show this usage message\n";
 
@@ -156,18 +158,21 @@ static struct starchcat_client_global_args_t {
     char *note;
     char **inputFiles;
     size_t numberInputFiles;
+    Boolean reportProgressFlag;
+    LineCountType reportProgressN;
 } starchcat_client_global_args;
 
 static struct option starchcat_client_long_options[] = {    
-    {"note",    required_argument, NULL, 'n'},
-    {"bzip2",   no_argument,       NULL, 'b'},
-    {"gzip",    no_argument,       NULL, 'g'},
-    {"version", no_argument,       NULL, 'v'},
-    {"help",    no_argument,       NULL, 'h'},
-    {NULL,      no_argument,       NULL, 0}
+    {"note",            required_argument, NULL, 'n'},
+    {"bzip2",           no_argument,       NULL, 'b'},
+    {"gzip",            no_argument,       NULL, 'g'},
+    {"report-progress", required_argument, NULL, 'r'},
+    {"version",         no_argument,       NULL, 'v'},
+    {"help",            no_argument,       NULL, 'h'},
+    {NULL,              no_argument,       NULL,  0 }
 };
 
-static const char *starchcat_client_opt_string = "n:bgvh?";
+static const char *starchcat_client_opt_string = "n:bgrvh?";
 
 void     STARCHCAT_initializeGlobals();
 
@@ -179,7 +184,8 @@ int      STARCHCAT2_copyInputRecordToOutput (Metadata **outMd,
                                 const CompressionType outType,
                                            const char *inChr,
                                  const MetadataRecord *inRec,
-                                               size_t *cumulativeOutputSize);
+                                               size_t *cumulativeOutputSize,
+                                        const Boolean reportProgressFlag);
 
 int      STARCHCAT_copyInputRecordToOutput (Metadata **outMd,
                                           const char *outTag,
@@ -192,7 +198,9 @@ int      STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd,
                                    const CompressionType outType, 
                                               const char *inChr, 
                                     const MetadataRecord *inRec,
-                                                  size_t *cumulativeOutputSize);
+                                                  size_t *cumulativeOutputSize,
+                                           const Boolean reportProgressFlag,
+                                     const LineCountType reportProgressN);
 
 int      STARCHCAT_rewriteInputRecordToOutput (Metadata **outMd,
                                              const char *outTag,
@@ -229,7 +237,9 @@ int      STARCHCAT_mergeChromosomeStreams (const ChromosomeSummaries *chrSums,
 int      STARCHCAT2_mergeChromosomeStreams (const ChromosomeSummaries *chrSums,
                                                 const CompressionType outputType,
                                                            const char *note,
-                                                               size_t *cumulativeOutputSize);
+                                                               size_t *cumulativeOutputSize,
+                                                        const Boolean reportProgressFlag,
+                                                  const LineCountType reportProgressN);
 
 int      STARCHCAT_freeChromosomeNames (char ***chrs, 
                                 unsigned int numChromosomes);

@@ -41,7 +41,7 @@ namespace {
 static const char *name = "starch";
 static const char *authors = "Alex Reynolds and Shane Neph";
 static const char *usage = "\n" \
-    "USAGE: starch [--note=\"foo bar...\"] [--bzip2 | --gzip] [--report-progress=N] [--header] [<unique-tag>] <bed-file>\n" \
+    "USAGE: starch [ --note=\"foo bar...\" ] [ --bzip2 | --gzip ] [ --report-progress=N ] [ --header ] [ <unique-tag> ] <bed-file>\n" \
     "    \n" \
     "    * BED input must be sorted lexicographically (e.g., using BEDOPS sort-bed).\n" \
     "    * Please use '-' to indicate reading BED data from standard input.\n" \
@@ -61,7 +61,7 @@ static struct starch_client_global_args_t {
     char *note;
     CompressionType compressionType;
     Boolean reportProgressFlag;
-    int64_t reportProgressN;
+    LineCountType reportProgressN;
     Boolean headerFlag;
     char *inputFile;
     char *uniqueTag;

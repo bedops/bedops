@@ -54,7 +54,7 @@ main (int argc, char **argv)
     FILE *bedFnPtr = NULL;
     Metadata *metadata = NULL;
     Boolean bedReportProgressFlag = kStarchFalse;
-    int64_t bedReportProgressN = 0;
+    LineCountType bedReportProgressN = 0;
     Boolean bedHeaderFlag = kStarchFalse;
     unsigned char *starchHeader = NULL;
 
@@ -90,13 +90,13 @@ main (int argc, char **argv)
             /* process stdin */
             if ((bedHeaderFlag == kStarchTrue) &&
 #ifdef __cplusplus
-     	        (STARCH_transformInput(&metadata, 
+                 (STARCH_transformInput(&metadata, 
                                        NULL, 
                                        static_cast<const CompressionType>( type ), 
                                        reinterpret_cast<const char *>( tag ), 
                                        reinterpret_cast<const char *>( note )) != 0))
 #else
-     	        (STARCH_transformInput(&metadata, 
+                 (STARCH_transformInput(&metadata, 
                                        NULL, 
                                        (const CompressionType) type, 
                                        (const char *) tag, 
@@ -169,33 +169,33 @@ main (int argc, char **argv)
             bedFnPtr = STARCH_fopen (bedFn, "r");
             if (!bedFnPtr) {
                 fprintf (stderr, "ERROR: Could not open input BED file pointer from (%s)\n", bedFn);
-	            exit (EXIT_FAILURE);
-	        }
-	    }
+                exit (EXIT_FAILURE);
+            }
+        }
 
 #ifdef __cplusplus
         if (STARCH2_transformInput(&starchHeader, 
                                    &metadata, 
-				   reinterpret_cast<const FILE *>( bedFnPtr ), 
-				   static_cast<const CompressionType>( type ), 
-				   reinterpret_cast<const char *>( tag ), 
-				   reinterpret_cast<const char *>( note ), 
-				   static_cast<const Boolean>( bedHeaderFlag ),
+                                   reinterpret_cast<const FILE *>( bedFnPtr ), 
+                                   static_cast<const CompressionType>( type ), 
+                                   reinterpret_cast<const char *>( tag ), 
+                                   reinterpret_cast<const char *>( note ), 
+                                   static_cast<const Boolean>( bedHeaderFlag ),
                                    static_cast<const Boolean>( bedReportProgressFlag ),
-                                   static_cast<const int64_t>( bedReportProgressN )) != STARCH_EXIT_SUCCESS) 
+                                   static_cast<const LineCountType>( bedReportProgressN )) != STARCH_EXIT_SUCCESS) 
         {
             exit (EXIT_FAILURE);
         }
 #else
         if (STARCH2_transformInput(&starchHeader, 
                                    &metadata, 
-                    (const FILE *) bedFnPtr, 
-           (const CompressionType) type, 
-                    (const char *) tag, 
-                    (const char *) note, 
-                   (const Boolean) bedHeaderFlag,
-                   (const Boolean) bedReportProgressFlag,
-                   (const int64_t) bedReportProgressN) != STARCH_EXIT_SUCCESS) 
+                                   (const FILE *) bedFnPtr, 
+                                   (const CompressionType) type, 
+                                   (const char *) tag, 
+                                   (const char *) note, 
+                                   (const Boolean) bedHeaderFlag,
+                                   (const Boolean) bedReportProgressFlag,
+                                   (const LineCountType) bedReportProgressN) != STARCH_EXIT_SUCCESS) 
         {
             exit (EXIT_FAILURE);
         }
@@ -260,7 +260,7 @@ STARCH_parseCommandLineOptions (int argc, char **argv)
         return STARCH_FATAL_ERROR;
     }
 
-    opterr = 0;			/* disable error reporting by GNU getopt -- we handle this */
+    opterr = 0;            /* disable error reporting by GNU getopt -- we handle this */
     STARCH_initializeGlobals ();
 
     while (starch_client_opt != -1) {
@@ -279,9 +279,9 @@ STARCH_parseCommandLineOptions (int argc, char **argv)
         case 'r':
             starch_client_global_args.reportProgressFlag = kStarchTrue;
             errno = 0;
-            starch_client_global_args.reportProgressN = strtoimax(optarg, NULL, 10);
-            if ((errno == ERANGE) || (starch_client_global_args.reportProgressN < 0)) {
-                fprintf (stderr, "ERROR: Numerical value of report progress option value is outside of range.\n");
+            starch_client_global_args.reportProgressN = strtoumax(optarg, NULL, 10);
+            if (errno == ERANGE) {
+                fprintf (stderr, "ERROR: Numerical value is outside of range.\n");
                 return STARCH_FATAL_ERROR;
             }
             break;
@@ -375,7 +375,7 @@ STARCH_printRevision ()
     if (avStr != NULL) {
         int result = sprintf (avStr, "%d.%d.%d", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION);
         if (result != -1)
-	        fprintf (stderr, "%s\n binary version: %s (creates archive version: %s)\n", name, BEDOPS::revision(), avStr);
+            fprintf (stderr, "%s\n binary version: %s (creates archive version: %s)\n", name, BEDOPS::revision(), avStr);
         free (avStr);
     }
 }

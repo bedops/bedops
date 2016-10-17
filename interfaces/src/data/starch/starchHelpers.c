@@ -1587,7 +1587,7 @@ STARCH_strndup(const char *s, size_t n)
 }
 
 int 
-STARCH2_transformInput(unsigned char **header, Metadata **md, const FILE *inFp, const CompressionType compressionType, const char *tag, const char *note, const Boolean headerFlag, const Boolean reportProgressFlag, const int64_t reportProgressN)
+STARCH2_transformInput(unsigned char **header, Metadata **md, const FILE *inFp, const CompressionType compressionType, const char *tag, const char *note, const Boolean headerFlag, const Boolean reportProgressFlag, const LineCountType reportProgressN)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH2_transformInput() ---\n");
@@ -1672,7 +1672,7 @@ STARCH2_transformInput(unsigned char **header, Metadata **md, const FILE *inFp, 
 }
 
 int
-STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const CompressionType compressionType, const char *tag, const char *note, const Boolean reportProgressFlag, const int64_t reportProgressN)
+STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const CompressionType compressionType, const char *tag, const char *note, const Boolean reportProgressFlag, const LineCountType reportProgressN)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH2_transformHeaderedBEDInput() ---\n");
@@ -2677,7 +2677,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 }
 
 int
-STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const CompressionType compressionType, const char *tag, const char *note, const Boolean reportProgressFlag, const int64_t reportProgressN)
+STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const CompressionType compressionType, const char *tag, const char *note, const Boolean reportProgressFlag, const LineCountType reportProgressN)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH2_transformHeaderlessBEDInput() ---\n");
