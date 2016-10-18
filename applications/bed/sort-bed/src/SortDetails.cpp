@@ -1182,46 +1182,6 @@ lexSortBedData(BedData *beds)
     return;
 }
 
-int
-numCompareBedData(const void *pos1, const void *pos2) 
-{
-    /* return value is 0, 1, or -1 or whatever strcmp() returns b/c it must be an
-       int while a Bed::SignedCoordType could be bigger than an int can hold
-    */
-
-    const BedCoordData *bedPos1 = static_cast<const BedCoordData *>(pos1);
-    const BedCoordData *bedPos2 = static_cast<const BedCoordData *>(pos2);
-
-    Bed::SignedCoordType diff = (bedPos1->startCoord - bedPos2->startCoord);
-    if(diff)
-        {
-            return (diff > 0) ? 1 : -1;
-        }
-    diff = (bedPos1->endCoord - bedPos2->endCoord);
-    if(diff)
-        {
-            return (diff > 0) ? 1 : -1;
-        }
-
-    // so far equivalent, check data member for differences
-    if(bedPos1->data != NULL)
-        {
-            if(bedPos2->data != NULL)
-                {
-                    return strcmp(bedPos1->data, bedPos2->data);
-                }
-            else
-                {
-                    return 1;
-                }
-        }
-    else if(bedPos2->data != NULL)
-        {
-            return -1;
-        }
-    return 0;
-}
-
 int 
 lexCompareBedData(const void *chrPos1, const void *chrPos2) 
 {
