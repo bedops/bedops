@@ -22,6 +22,7 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
+#include <algorithm>
 #include <cinttypes>
 #include <cerrno>
 #include <cstdio>
@@ -1108,7 +1109,7 @@ printBed(FILE *out, BedData *beds)
     if(beds == NULL) 
         return;
 
-    for(i = 0; i < beds->numChroms; i++) 
+    for(i = 0; i < beds->numChroms; i++)
         for(j = 0; j < beds->chroms[i]->numCoords; j++) 
             {
                 fprintf(out, "%s\t%" PRId64 "\t%" PRId64, beds->chroms[i]->chromName, beds->chroms[i]->coords[j].startCoord, 
@@ -1171,9 +1172,9 @@ lexSortBedData(BedData *beds)
         }
 
     /* sort coords */
-    for(i = 0; i < beds->numChroms; ++i) 
-        {            
-	        qsort(beds->chroms[i]->coords, static_cast<size_t>(beds->chroms[i]->numCoords), sizeof(BedCoordData), numCompareBedDataStable);
+    for(i = 0; i < beds->numChroms; ++i)
+        {
+            std::sort(beds->chroms[i]->coords, (beds->chroms[i]->coords+static_cast<size_t>(beds->chroms[i]->numCoords)));
         }
 
     /* sort chroms */
@@ -1182,7 +1183,7 @@ lexSortBedData(BedData *beds)
 }
 
 int
-numCompareBedDataStable(const void *pos1, const void *pos2) 
+numCompareBedData(const void *pos1, const void *pos2) 
 {
     /* return value is 0, 1, or -1 or whatever strcmp() returns b/c it must be an
        int while a Bed::SignedCoordType could be bigger than an int can hold
