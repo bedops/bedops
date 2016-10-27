@@ -67,6 +67,7 @@ install_gprof: prep_c install_conversion_scripts install_starchcluster_scripts
 install_starchcluster_scripts: prep_c
 	-cp ${APPDIR}/starch/bin/starchcluster_sge ${BINDIR}/
 	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/starchcluster_slurm ${BINDIR}/
 
 install_conversion_scripts: prep_c
 	-cp ${APPDIR}/conversion/src/wrappers/bam2bed ${BINDIR}/bam2bed
@@ -104,6 +105,7 @@ install_osx_packaging_bins: prep_c
 	-cp ${APPDIR}/starch/bin/starchcat ${OSXPKGDIR}/
 	-cp ${APPDIR}/starch/bin/starchcluster_sge ${OSXPKGDIR}/starchcluster_sge
 	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel ${OSXPKGDIR}/starchcluster_gnuParallel
+	-cp ${APPDIR}/starch/bin/starchcluster_slurm ${OSXPKGDIR}/starchcluster_slurm
 	-cp ${APPDIR}/conversion/bin/convert2bed ${OSXPKGDIR}/
 	-cp ${APPDIR}/conversion/src/wrappers/bam2bed ${OSXPKGDIR}/bam2bed
 	-cp ${APPDIR}/conversion/src/wrappers/gff2bed ${OSXPKGDIR}/gff2bed

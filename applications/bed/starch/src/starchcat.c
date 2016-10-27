@@ -1133,7 +1133,7 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                                                                       &nRetransformLineBufPos );
 
                                 if ((reportProgressFlag == kStarchTrue) && (t_lineIdx % reportProgressN == 0)) {
-                                    fprintf(stderr, "PROGRESS: Retransforming element [%llu] of chromosome [%s] -> [%s\t%" PRIu64 "\t%" PRIu64 "\t%s]\n", t_lineIdx, t_currChr, t_currChr, t_currStart, t_currStop, t_currRemainder);
+                                    fprintf(stderr, "PROGRESS: Retransforming element [%" PRIu64 "] of chromosome [%s] -> [%s\t%" PRId64 "\t%" PRId64 "\t%s]\n", t_lineIdx, t_currChr, t_currChr, t_currStart, t_currStop, t_currRemainder);
                                 }
 
                                 /* adjust per-stream statistics */
@@ -1597,7 +1597,7 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                                                                       &nRetransformLineBufPos );
 
                                 if ((reportProgressFlag == kStarchTrue) && (t_lineIdx % reportProgressN == 0)) {
-                                    fprintf(stderr, "PROGRESS: Retransforming element [%llu] of chromosome [%s] -> [%s\t%" PRIu64 "\t%" PRIu64 "\t%s]\n", t_lineIdx, t_currChr, t_currChr, t_currStart, t_currStop, t_currRemainder);
+                                    fprintf(stderr, "PROGRESS: Retransforming element [%" PRIu64 "] of chromosome [%s] -> [%s\t%" PRId64 "\t%" PRId64 "\t%s]\n", t_lineIdx, t_currChr, t_currChr, t_currStart, t_currStop, t_currRemainder);
                                 }
 
                                 /* adjust statistics */

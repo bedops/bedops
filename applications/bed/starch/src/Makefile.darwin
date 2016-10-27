@@ -95,6 +95,7 @@ unstarch_debug: starchLibrary_debug
 starchcluster: starchcat
 	cp starchcluster_sge.tcsh ${BINDIR}/starchcluster_sge
 	cp starchcluster_gnuParallel.tcsh ${BINDIR}/starchcluster_gnuParallel
+	cp starchcluster_slurm.tcsh ${BINDIR}/starchcluster_slurm
 
 starchcat: starchLibrary
 	${CC} ${CFLAGS} -c starchcat.c -o $(LOCALOBJDIR)/starchcat.o ${INCLUDES}

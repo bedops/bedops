@@ -163,6 +163,7 @@ namespace starch
                 json_t *_mdJSONStreams = NULL;
                 char *_archStreamChr = NULL;
                 char *_archStreamFn = NULL;
+                char *_archStreamSignature = NULL;
                 size_t _mdJSONStreamIdx;
                 json_t *_mdJSONStream = NULL;
                 json_t *_mdJSONStreamChr = NULL;
@@ -173,6 +174,7 @@ namespace starch
                 json_t *_mdJSONStreamUniqueBaseCount = NULL;
                 json_t *_mdJSONStreamDuplicateElementExists = NULL;
                 json_t *_mdJSONStreamNestedElementExists = NULL;
+                // json_t *_mdJSONStreamSignature = NULL;
                 uint64_t _archStreamSize = 0;
                 Bed::LineCountType _archStreamLineCount = 0;
                 Bed::BaseCountType _archStreamNonUniqueBaseCount = 0;
@@ -399,7 +401,7 @@ namespace starch
                         }
                         else 
                             _archStreamNestedElementExists = static_cast<Boolean>( json_is_true(_mdJSONStreamNestedElementExists) );
-                        
+                        // we skip _mdJSONStreamSignature in v1 metadata
                         if (_recIdx == 0) {
                             _testMd = STARCH_createMetadata(_archStreamChr,
                                                             _archStreamFn,
@@ -408,7 +410,8 @@ namespace starch
                                                             _archStreamNonUniqueBaseCount,
                                                             _archStreamUniqueBaseCount,
                                                             _archStreamDuplicateElementExists,
-                                                            _archStreamNestedElementExists);
+                                                            _archStreamNestedElementExists,
+                                                            _archStreamSignature);
                             _firstMd = _testMd;
                         }
                         else
@@ -420,7 +423,8 @@ namespace starch
                                                          _archStreamNonUniqueBaseCount,
                                                          _archStreamUniqueBaseCount,
                                                          _archStreamDuplicateElementExists,
-                                                         _archStreamNestedElementExists);
+                                                         _archStreamNestedElementExists,
+                                                         _archStreamSignature);
                         _recIdx++;
                         _mdJSONStreamChr = NULL;
                         _mdJSONStreamFn = NULL;
@@ -570,7 +574,8 @@ namespace starch
                                                                 _recNonUniqueBaseCountValue,
                                                                 _recUniqueBaseCountValue,
                                                                 _recDuplicateElementExists,
-                                                                _recNestedElementExists);
+                                                                _recNestedElementExists,
+                                                                NULL);
                                 _firstMd = _testMd;
                             }
                             else
@@ -582,7 +587,8 @@ namespace starch
                                                              _recNonUniqueBaseCountValue,
                                                              _recUniqueBaseCountValue,
                                                              _recDuplicateElementExists,
-                                                             _recNestedElementExists);
+                                                             _recNestedElementExists,
+                                                             NULL);
                         }
                         else
                             break;

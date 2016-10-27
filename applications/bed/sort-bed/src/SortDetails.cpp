@@ -22,6 +22,7 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
+#include <algorithm>
 #include <cinttypes>
 #include <cerrno>
 #include <cstdio>
@@ -1108,7 +1109,7 @@ printBed(FILE *out, BedData *beds)
     if(beds == NULL) 
         return;
 
-    for(i = 0; i < beds->numChroms; i++) 
+    for(i = 0; i < beds->numChroms; i++)
         for(j = 0; j < beds->chroms[i]->numCoords; j++) 
             {
                 fprintf(out, "%s\t%" PRId64 "\t%" PRId64, beds->chroms[i]->chromName, beds->chroms[i]->coords[j].startCoord, 
@@ -1171,54 +1172,14 @@ lexSortBedData(BedData *beds)
         }
 
     /* sort coords */
-    for(i = 0; i < beds->numChroms; ++i) 
-        {            
-	        qsort(beds->chroms[i]->coords, static_cast<size_t>(beds->chroms[i]->numCoords), sizeof(BedCoordData), numCompareBedDataStable);
+    for(i = 0; i < beds->numChroms; ++i)
+        {
+            std::sort(beds->chroms[i]->coords, (beds->chroms[i]->coords+static_cast<size_t>(beds->chroms[i]->numCoords)));
         }
 
     /* sort chroms */
     qsort(beds->chroms, static_cast<size_t>(beds->numChroms), sizeof(ChromBedData *), lexCompareBedData);
     return;
-}
-
-int
-numCompareBedDataStable(const void *pos1, const void *pos2) 
-{
-    /* return value is 0, 1, or -1 or whatever strcmp() returns b/c it must be an
-       int while a Bed::SignedCoordType could be bigger than an int can hold
-    */
-
-    const BedCoordData *bedPos1 = static_cast<const BedCoordData *>(pos1);
-    const BedCoordData *bedPos2 = static_cast<const BedCoordData *>(pos2);
-
-    Bed::SignedCoordType diff = (bedPos1->startCoord - bedPos2->startCoord);
-    if(diff)
-        {
-            return (diff > 0) ? 1 : -1;
-        }
-    diff = (bedPos1->endCoord - bedPos2->endCoord);
-    if(diff)
-        {
-            return (diff > 0) ? 1 : -1;
-        }
-
-    // so far equivalent, check data member for differences
-    if(bedPos1->data != NULL)
-        {
-            if(bedPos2->data != NULL)
-                {
-                    return strcmp(bedPos1->data, bedPos2->data);
-                }
-            else
-                {
-                    return 1;
-                }
-        }
-    else if(bedPos2->data != NULL)
-        {
-            return -1;
-        }
-    return 0;
 }
 
 int 
