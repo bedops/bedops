@@ -32,10 +32,11 @@
 static const char *name = "unstarch";
 static const char *authors = "Alex Reynolds and Shane Neph";
 static const char *usage = "\n" \
-    "USAGE: unstarch [ <chromosome> ]  [ --elements | --bases | --bases-uniq | --has-duplicates | --has-nested | --list | --list-json | --list-chromosomes | --archive-timestamp | --note | --archive-version | --is-starch ] <starch-file>\n" \
+    "USAGE: unstarch [ <chromosome> ]  [ --elements | --bases | --bases-uniq | --has-duplicates | --has-nested | --list | --list-json | --list-chromosomes | --archive-timestamp | --note | --archive-version | --is-starch | --signature | --verify-signature ] <starch-file>\n" \
     "\n" \
+    "    Modifiers:\n\n" \
+    "    <chromosome>                     Optional. Either unarchives chromosome-specific records from the starch archive file or restricts action of operator to chromosome (e.g., chr1, chrY, etc.).\n\n" \
     "    Process Flags:\n\n" \
-    "    <chromosome>                     Optional. Either unarchives chromosome-specific records from the starch archive file or restricts action of operator to chromosome (e.g., chr1, chrY, etc.).\n" \
     "    --elements                       Show total element count for archive. If <chromosome> is specified, the result shows the element count for the chromosome.\n" \
     "    --bases,\n" \
     "    --bases-uniq                     Show total and unique base counts, respectively, for archive. If <chromosome> is specified, the count is specific to the chromosome, if available.\n" \
@@ -49,22 +50,14 @@ static const char *usage = "\n" \
     "    --list-chr,                      List all or specified chromosome in starch archive (similar to \"bedextract --list-chr\"). If <chromosome> is specified but is not in the output list, nothing is returned.\n" \
     "    --list-chromosomes \n" \
     "    --note                           Show descriptive note, if available.\n" \
-    "    --sha1-signature                 Show SHA1 signature of JSON-formatted metadata (Base64-encoded).\n" \
+    "    --signature                      Display the Base64-encoded SHA-1 data integrity signature for specified <chromosome>, or the signatures of the metadata and all available chromosomes, if the <chromosome> is unspecified.\n" \
+    "    --verify-signature               Verify data integrity of specified <chromosome>, or the integrity of all available chromosomes, if the <chromosome> is unspecified.\n" \
     "    --archive-timestamp              Show archive creation timestamp (ISO 8601 format).\n" \
     "    --archive-type                   Show archive compression type.\n" \
     "    --archive-version                Show archive version.\n" \
     "    --is-starch                      Test if <starch-file> is a valid archive and print 0/1 (false/true) to standard output.\n" \
     "    --version                        Show binary version.\n" \
     "    --help                           Show this usage message.\n";
-
-/* 
-   On Darwin, file I/O is 64-bit by default (OS X 10.5 at least) so we use standard 
-   types and calls 
-*/
-
-#ifdef __APPLE__
-#define off64_t off_t
-#endif
 
 #ifdef __cplusplus
 namespace starch {

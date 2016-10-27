@@ -79,6 +79,7 @@
 #define STARCH_METADATA_STREAM_LIST_KEY "streams"
 #define STARCH_METADATA_STREAM_CHROMOSOME_KEY "chromosome"
 #define STARCH_METADATA_STREAM_FILENAME_KEY "filename"
+#define STARCH_METADATA_STREAM_SIGNATURE_KEY "signature"
 #define STARCH_METADATA_STREAM_SIZE_KEY "size"
 #define STARCH_METADATA_STREAM_LINECOUNT_KEY "uncompressedLineCount"
 #define STARCH_METADATA_STREAM_TOTALNONUNIQUEBASES_KEY "nonUniqueBaseCount"
@@ -154,6 +155,7 @@ typedef struct metadata {
     BaseCountType totalUniqueBases;
     Boolean duplicateElementExists;
     Boolean nestedElementExists;
+    char *signature;
     struct metadata *next;
 } Metadata;
 
@@ -182,16 +184,6 @@ typedef enum {
 typedef 
 unsigned int HeaderFlag;
 
-/* 
-   On Darwin, file I/O is 64-bit by default (OS X 10.5 at least) so we use standard 
-   types and calls 
-*/
-
-#ifdef __APPLE__
-#define off64_t off_t
-#define fopen64 fopen
-#endif
-
 Metadata *       STARCH_createMetadata(char const *chr, 
                                        char const *fn, 
                                          uint64_t size,
@@ -199,7 +191,8 @@ Metadata *       STARCH_createMetadata(char const *chr,
                                     BaseCountType totalNonUniqueBases,
                                     BaseCountType totalUniqueBases,
                                           Boolean duplicateElementExists, 
-                                          Boolean nestedElementExists);
+                                          Boolean nestedElementExists,
+                                       char const *signature);
 
 Metadata *       STARCH_addMetadata(Metadata *md, 
                                         char *chr, 
@@ -209,7 +202,8 @@ Metadata *       STARCH_addMetadata(Metadata *md,
                                BaseCountType totalNonUniqueBases,
                                BaseCountType totalUniqueBases,
                                      Boolean duplicateElementExists, 
-                                     Boolean nestedElementExists);
+                                     Boolean nestedElementExists,
+                                        char *signature);
 
 Metadata *       STARCH_copyMetadata(const Metadata *md);
 
@@ -221,7 +215,8 @@ int              STARCH_updateMetadataForChromosome(Metadata **md,
                                                BaseCountType totalNonUniqueBases,
                                                BaseCountType totalUniqueBases,
                                                      Boolean duplicateElementExists, 
-                                                     Boolean nestedElementExists);
+                                                     Boolean nestedElementExists,
+                                                        char *signature);
 
 int              STARCH_listMetadata(const Metadata *md,
                                          const char *chr);

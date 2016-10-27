@@ -79,7 +79,7 @@ The archive key scheme is described below:
       "type": "starch",
       "customUCSCHeaders": (Boolean),
       "creationTimestamp": (string),
-      "version": { "major": 2, "minor": 1, "revision": 0 },
+      "version": { "major": 2, "minor": 2, "revision": 0 },
       "compressionFormat": (unsigned integer),
       "note": (string, optional)
     },
@@ -92,7 +92,9 @@ The ``customUCSCHeaders`` value is either ``true`` or ``false``. If ``true``, th
 
 The ``creationTimestamp`` value is an `ISO 8601 <http://en.wikipedia.org/wiki/ISO-8601>`_ string that specifies the creation date and time of the archive. Most scripting and programming languages can parse ISO 8601-formatted date strings with little or no extra work.
 
-The ``version`` is a triplet of integer values specifying the version of the archive. For a v2.x archive, the major version will be set to ``2``. Major, minor and revision values need not necessarily be the identical to the version of the :ref:`starch` binary used to create the archive. At this time (April 2014), we offer v2 and v2.1 archives: each make different stream metadata fields available.
+The ``version`` is a triplet of integer values specifying the version of the archive. For a v2.x archive, the major version will be set to ``2``. Major, minor and revision values need not necessarily be the identical to the version of the :ref:`starch` binary used to create the archive. 
+
+At this time (November 2016), we offer v2.0, v2.1, and v2.2 archives: Each version makes different stream metadata fields available.
 
 The ``compressionFormat`` key specifies the backend compression format used for the chromosome streams contained within the archive. We currently use ``0`` to specify ``bzip2`` and ``1`` to specify ``gzip``. No other backend formats are available at this time.
 
@@ -119,7 +121,8 @@ The ``streams`` key scheme contains an array of objects, each describing the att
         "nonUniqueBaseCount": (unsigned integer),
         "uniqueBaseCount": (unsigned integer),
         "duplicateElementExists": (Boolean),
-        "nestedElementExists": (Boolean)
+        "nestedElementExists": (Boolean),
+        "signature": (string)
       },
       ...
     ]
@@ -140,6 +143,8 @@ The ``uniqueBaseCount`` key specifies the sum of unique bases across all BED ele
 The ``duplicateElementExists`` key specifies if there is a duplicate BED element somewhere within the compressed chromosome stream. A duplicate element is defined by matching chromosome name and start and stop coordinates; id, score, strand and other optional information are ignored when determining if a duplicate element exists.
 
 The ``nestedElementExists`` key specifies if there is a nested BED element somewhere within the compressed chromosome stream. Refer to BEDOPS documentation to see how :ref:`nested elements <nested_elements>` are defined. 
+
+The ``signature`` key, available in v2.2 archives, specifies the Base64-encoded SHA-1 data integrity signature generated from the transformed chromosome stream (not the raw BED data, but the reduced or transformed form that is compressed). This can be used to compare the transformed bytes for chromosomes from different archives, or to validate the genomic data in a Starch archive by chromosome, or in entirety.
 
 .. _starch_archive_metadata_offset:
 
@@ -163,7 +168,7 @@ Hash
 
 The metadata hash is a 28-byte long, `Base64 <http://en.wikipedia.org/wiki/Base64>`_ -encoded `SHA-1 <http://en.wikipedia.org/wiki/SHA-1#Data_Integrity>`_ hash of the bytes that make up the JSON-formatted metadata string.
 
-This data is used to validate the integrity of the metadata: Any change to the metadata (*e.g.*, data corruption that changes stream offset values) causes :ref:`unstarch` and other Starch utilities and applications to exit early with a fatal, informative error.
+This data is used to validate the integrity of the metadata: Any change to the metadata (*e.g.*, data corruption that changes stream offset values, or the data integrity signatures for each chromosome stream) causes :ref:`unstarch` and other Starch utilities and applications to exit early with a fatal, informative error.
 
 .. _starch_archive_padding:
 

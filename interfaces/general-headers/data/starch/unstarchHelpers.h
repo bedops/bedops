@@ -69,6 +69,8 @@
 #define UNSTARCH_ELEMENT_NESTED_CHR_STR_ERROR 30
 #define UNSTARCH_ELEMENT_NESTED_ALL_STR_ERROR 31
 #define UNSTARCH_IS_STARCH_ARCHIVE_ERROR 32
+#define UNSTARCH_SIGNATURE_ERROR 33
+#define UNSTARCH_SIGNATURE_VERIFY_ERROR 34
 
 int                UNSTARCH_reverseTransformInput(const char *chr,
                                          const unsigned char *str,
@@ -189,24 +191,24 @@ char *             UNSTARCH_strndup(const char *s,
 void               UNSTARCH_bzReadLine(BZFILE *input, 
                                 unsigned char **output);
 
-LineCountType UNSTARCH_lineCountForChromosome(const Metadata *md, 
-                                                  const char *chr);
+LineCountType      UNSTARCH_lineCountForChromosome(const Metadata *md, 
+                                                       const char *chr);
 
 void               UNSTARCH_printLineCountForChromosome(const Metadata *md,
                                                             const char *chr);
 
 void               UNSTARCH_printLineCountForAllChromosomes(const Metadata *md);
 
-BaseCountType UNSTARCH_nonUniqueBaseCountForChromosome(const Metadata *md, 
-                                                           const char *chr);
+BaseCountType      UNSTARCH_nonUniqueBaseCountForChromosome(const Metadata *md, 
+                                                                const char *chr);
 
 void               UNSTARCH_printNonUniqueBaseCountForChromosome(const Metadata *md,
                                                                      const char *chr);
 
 void               UNSTARCH_printNonUniqueBaseCountForAllChromosomes(const Metadata *md);
 
-BaseCountType UNSTARCH_uniqueBaseCountForChromosome(const Metadata *md, 
-                                                        const char *chr);
+BaseCountType      UNSTARCH_uniqueBaseCountForChromosome(const Metadata *md, 
+                                                             const char *chr);
 
 void               UNSTARCH_printUniqueBaseCountForChromosome(const Metadata *md,
                                                                   const char *chr);
@@ -238,6 +240,37 @@ void               UNSTARCH_printNestedElementExistsIntegerForChromosome(const M
                                                                              const char *chr);
 
 void               UNSTARCH_printNestedElementExistsIntegersForAllChromosomes(const Metadata *md);
+
+void               UNSTARCH_printSignature(const Metadata *md, 
+                                               const char *chr,
+                                      const unsigned char *mdSha1Buffer);
+
+char *             UNSTARCH_signatureForChromosome(const Metadata *md, 
+                                                       const char *chr);
+
+void               UNSTARCH_printAllSignatures(const Metadata *md,
+                                          const unsigned char *mdSha1Buffer);
+
+void               UNSTARCH_printMetadataSignature(const unsigned char *mdSha1Buffer);
+
+Boolean            UNSTARCH_verifySignature(FILE **inFp,
+                                  const Metadata *md, 
+                                  const uint64_t mdOffset,
+                                      const char *chr,
+                                 CompressionType compType);
+
+char *             UNSTARCH_observedSignatureForChromosome(FILE **inFp,
+                                                 const Metadata *md, 
+                                                 const uint64_t mdOffset,
+                                                     const char *chr,
+                                                CompressionType compType);
+
+Boolean            UNSTARCH_verifyAllSignatures(FILE **inFp,
+                                      const Metadata *md,
+                                      const uint64_t mdOffset,
+                                     CompressionType compType);
+
+void               UNSTARCH_printAllChromosomeSignatures(const Metadata *md);
 
 const char *       UNSTARCH_booleanToString(const Boolean val);
 

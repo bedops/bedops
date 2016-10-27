@@ -74,6 +74,7 @@ Use the ``--help`` option to list all options:
 
       --note="foo bar..."   Append note to output archive metadata (optional)
       --bzip2 | --gzip      Specify backend compression type (optional, default is bzip2)
+      --report-progress=N   Report compression progress every N elements per chromosome to standard error stream (optional)
       --version             Show binary version
       --help                Show this usage message
 
@@ -89,7 +90,7 @@ Let's say we have a set of 23 :ref:`starch` archives, one for each chromosome of
 
 The :ref:`starchcat` utility parses the metadata from each of the 23 inputs, determines what data to either simple copy or reprocess, and then it performs the merge. Cleanup is performed afterwards, as necessary, and the output is a brand new :ref:`starch` file, written to ``humanGenome.starch``.
 
-.. note:: No filtering or processing is performed on extracted BED elements, before they are written to the final output. Thus, *it is possible for duplicate BED elements to occur*. 
+.. note:: No filtering or processing is performed on extracted BED elements, before they are written to the final output. Thus, *it is possible for duplicate BED elements to occur*. It would be easy to use the ``--signature`` option to validate the expected content of a new Starch archive.
 
    However, the final archive is sorted per :ref:`sort-bed` ordering, so that data extracted from this archive will be ready for use with BEDOPS utilities.
 

@@ -15,15 +15,15 @@ For this script, we use :ref:`bedextract` to quickly build a list of chromosomes
 Script
 ======
 
-Two versions of the ``starchcluster`` script are included with the source and package distributions of BEDOPS (see :ref:`Installation <installation>` for more detail). 
+Three versions of the ``starchcluster`` script are included with the source and package distributions of BEDOPS (see :ref:`Installation <installation>` for more detail). 
 
-One version makes use of an `Oracle Grid Engine <http://en.wikipedia.org/wiki/Oracle_Grid_Engine>`_ (or Sun Grid Engine) cluster environment to distribute per-chromosome tasks, while the other script uses `GNU Parallel <http://www.gnu.org/software/parallel/>`_ to split the workload over cores or processors on the local host.
+One version makes use of an `Oracle Grid Engine <http://en.wikipedia.org/wiki/Oracle_Grid_Engine>`_ (or Sun Grid Engine) cluster environment to distribute per-chromosome tasks, another script uses `GNU Parallel <http://www.gnu.org/software/parallel/>`_ to split the workload over cores or processors on the local host. Finally, we include a version that implements a `SLURM <https://en.wikipedia.org/wiki/Slurm_Workload_Manager>`_ -capable script.
 
 ==========
 Discussion
 ==========
 
-The overview that follows applies to the Grid Engine-based version of the `starchcluster` script. However, the general algorithm is identical for both the Grid Engine- and GNU Parallel-based compression scripts.
+The overview that follows applies to the Grid Engine-based version of the `starchcluster` script. However, the general algorithm is identical for the Grid Engine-, GNU Parallel-, and SLURM-based compression scripts.
 
 -------------------
 Splitting BED files

@@ -112,6 +112,7 @@ typedef struct transformState {
     uint64_t                 r_totalUniqueBases;
     Boolean                  r_duplicateElementExists;
     Boolean                  r_nestedElementExists;
+    char *                   r_signature;
     size_t                   r_nRetransBuf;
 } TransformState;
 
@@ -349,7 +350,8 @@ int      STARCHCAT2_finalizeMetadata (Metadata **outMd,
                                       uint64_t finalTotalNonUniqueBases, 
                                       uint64_t finalTotalUniqueBases,
                                        Boolean finalDuplicateElementExists,
-                                       Boolean finalNestedElementExists);
+                                       Boolean finalNestedElementExists,
+                                          char *finalSignature);
 
 #ifdef __cplusplus
 } // namespace starch

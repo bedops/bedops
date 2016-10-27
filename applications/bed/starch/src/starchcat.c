@@ -317,6 +317,7 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
     uint64_t endOffset = 0;
     uint64_t outFileSize = 0;
     uint64_t outFileSizeCounter = 0;
+    char *outSignature = NULL;
     LineCountType outFileLineCount = 0;
     BaseCountType outFileNonUniqueBases = 0;
     BaseCountType outFileUniqueBases = 0;
@@ -387,6 +388,7 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
                 outFileUniqueBases = iter->totalUniqueBases;
                 outDuplicateElementExists = iter->duplicateElementExists;
                 outNestedElementExists = iter->nestedElementExists;
+                outSignature = STARCH_strndup(iter->signature, strlen(iter->signature) + 1);
             }
             else if ((av->major == 1) && (av->minor >= 3))
                 outFileLineCount = iter->lineCount;
@@ -494,7 +496,8 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
                                         outFileNonUniqueBases, 
                                         outFileUniqueBases,
                                         outDuplicateElementExists,
-                                        outNestedElementExists );
+                                        outNestedElementExists,
+                                        outSignature );
     }
     else {
 #ifdef DEBUG
@@ -512,7 +515,8 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
                                      outFileNonUniqueBases, 
                                      outFileUniqueBases,
                                      outDuplicateElementExists,
-                                     outNestedElementExists );
+                                     outNestedElementExists,
+                                     outSignature );
     }
     
     return STARCHCAT_EXIT_SUCCESS;
@@ -544,6 +548,7 @@ STARCHCAT_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const C
     char buffer[STARCHCAT_COPY_BUFFER_MAXSIZE];
     FILE *outFnPtr = NULL;
     char *outFn = NULL;
+    char *outSignature = NULL;
     size_t nBytesRead = 0;
 
     if (!inMd) {
@@ -644,40 +649,40 @@ STARCHCAT_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const C
     fseeko(inRec->fp, (off_t) startOffset, SEEK_SET);
 #endif
     do {
-    if (outFileSizeCounter > STARCHCAT_COPY_BUFFER_MAXSIZE) {
+        if (outFileSizeCounter > STARCHCAT_COPY_BUFFER_MAXSIZE) {
 #ifdef __cplusplus
-        nBytesRead = fread(buffer, sizeof(char), static_cast<size_t>( STARCHCAT_COPY_BUFFER_MAXSIZE ), inRec->fp);
+            nBytesRead = fread(buffer, sizeof(char), static_cast<size_t>( STARCHCAT_COPY_BUFFER_MAXSIZE ), inRec->fp);
 #else
-        nBytesRead = fread(buffer, sizeof(char), (size_t) STARCHCAT_COPY_BUFFER_MAXSIZE, inRec->fp);
+            nBytesRead = fread(buffer, sizeof(char), (size_t) STARCHCAT_COPY_BUFFER_MAXSIZE, inRec->fp);
 #endif
-        if (nBytesRead != STARCHCAT_COPY_BUFFER_MAXSIZE * sizeof(char)) {
-        fprintf(stderr, "ERROR: Was not able to copy sufficient bytes into buffer (STARCHCAT_COPY_BUFFER_MAXSIZE).\n");
-        return STARCHCAT_EXIT_FAILURE;
+            if (nBytesRead != STARCHCAT_COPY_BUFFER_MAXSIZE * sizeof(char)) {
+                fprintf(stderr, "ERROR: Was not able to copy sufficient bytes into buffer (STARCHCAT_COPY_BUFFER_MAXSIZE).\n");
+                return STARCHCAT_EXIT_FAILURE;
+            }
+#ifdef __cplusplus
+            fwrite(buffer, sizeof(char), static_cast<size_t>( STARCHCAT_COPY_BUFFER_MAXSIZE ), outFnPtr);
+#else
+            fwrite(buffer, sizeof(char), (size_t) STARCHCAT_COPY_BUFFER_MAXSIZE, outFnPtr);
+#endif
+            outFileSizeCounter -= STARCHCAT_COPY_BUFFER_MAXSIZE;
         }
+        else {
 #ifdef __cplusplus
-        fwrite(buffer, sizeof(char), static_cast<size_t>( STARCHCAT_COPY_BUFFER_MAXSIZE ), outFnPtr);
+            nBytesRead = fread(buffer, sizeof(char), static_cast<size_t>( outFileSizeCounter ), inRec->fp);
 #else
-        fwrite(buffer, sizeof(char), (size_t) STARCHCAT_COPY_BUFFER_MAXSIZE, outFnPtr);
+            nBytesRead = fread(buffer, sizeof(char), (size_t) outFileSizeCounter, inRec->fp);
 #endif
-        outFileSizeCounter -= STARCHCAT_COPY_BUFFER_MAXSIZE;
-    }
-    else {
+            if (nBytesRead != outFileSizeCounter * sizeof(char)) {
+                fprintf(stderr, "ERROR: Was not able to copy sufficient bytes into buffer (outFileSizeCounter).\n");
+                return STARCHCAT_EXIT_FAILURE;
+            }
 #ifdef __cplusplus
-        nBytesRead = fread(buffer, sizeof(char), static_cast<size_t>( outFileSizeCounter ), inRec->fp);
+            fwrite(buffer, sizeof(char), static_cast<size_t>( outFileSizeCounter ), outFnPtr);
 #else
-        nBytesRead = fread(buffer, sizeof(char), (size_t) outFileSizeCounter, inRec->fp);
+            fwrite(buffer, sizeof(char), (size_t) outFileSizeCounter, outFnPtr);
 #endif
-        if (nBytesRead != outFileSizeCounter * sizeof(char)) {
-        fprintf(stderr, "ERROR: Was not able to copy sufficient bytes into buffer (outFileSizeCounter).\n");
-        return STARCHCAT_EXIT_FAILURE;
+            outFileSizeCounter = 0ULL;
         }
-#ifdef __cplusplus
-        fwrite(buffer, sizeof(char), static_cast<size_t>( outFileSizeCounter ), outFnPtr);
-#else
-        fwrite(buffer, sizeof(char), (size_t) outFileSizeCounter, outFnPtr);
-#endif
-        outFileSizeCounter = 0ULL;
-    }
     } while (outFileSizeCounter > 0);
 
     /* update output metadata */
@@ -696,7 +701,8 @@ STARCHCAT_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const C
                                         outFileNonUniqueBases, 
                                         outFileUniqueBases,
                                         outDuplicateElementExists,
-                                        outNestedElementExists);
+                                        outNestedElementExists,
+                                        outSignature);
     }
     else {
 #ifdef DEBUG
@@ -714,7 +720,8 @@ STARCHCAT_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const C
                                      outFileNonUniqueBases, 
                                      outFileUniqueBases,
                                      outDuplicateElementExists,
-                                     outNestedElementExists);
+                                     outNestedElementExists,
+                                     outSignature);
     }
     /* fprintf(stderr, "\t\tchr: %s, outFn: %s, size: %llu\n", (*outMd)->chromosome, (*outMd)->filename, (*outMd)->size); */
 
@@ -810,6 +817,11 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
     Boolean t_nestedElementExists = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
     size_t t_fileSize = 0U;
 
+    /* hash variables */
+    struct sha1_ctx t_perChromosomeHashCtx;
+    unsigned char t_sha1Digest[STARCH2_MD_FOOTER_SHA1_LENGTH];
+    char *t_base64EncodedSha1Digest = NULL;
+
     static const char tab = '\t';
 
 #ifdef DEBUG
@@ -870,6 +882,9 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
 #else
     fseeko(inFp, (off_t) startOffset, SEEK_SET);
 #endif
+
+    /* set up per-chromosome hash context */
+    sha1_init_ctx (&t_perChromosomeHashCtx);
 
     /*
         Set up I/O streams 
@@ -1168,6 +1183,14 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                                         outbound compression type, add retransformLineBuf to the start of 
                                         retransformBuf, and set nRetransformBuf.
                                     */
+
+                                    /* hash the transformed buffer */
+#ifdef __cplusplus
+                                    sha1_process_bytes (retransformBuf, static_cast<size_t>( nRetransformBuf ), &t_perChromosomeHashCtx);
+#else
+                                    sha1_process_bytes (retransformBuf, (size_t) nRetransformBuf, &t_perChromosomeHashCtx);
+#endif
+
                                     switch (outType) {
                                         /* compress with bzip2 */
                                         case kBzip2: {
@@ -1312,6 +1335,13 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                     }
                 }
             }
+
+            /* hash the transformed buffer */
+#ifdef __cplusplus
+            sha1_process_bytes (retransformBuf, static_cast<size_t>( nRetransformBuf ), &t_perChromosomeHashCtx);
+#else
+            sha1_process_bytes (retransformBuf, (size_t) nRetransformBuf, &t_perChromosomeHashCtx);
+#endif
 
             /* compress whatever is left in the retransform buffer */
             switch (outType) {
@@ -1613,6 +1643,13 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                                     nRetransformLineBuf = 0;
                                 }
                                 else {
+
+                                    /* hash the transformed buffer */
+#ifdef __cplusplus
+                                    sha1_process_bytes (retransformBuf, static_cast<size_t>( nRetransformBuf ), &t_perChromosomeHashCtx);
+#else
+                                    sha1_process_bytes (retransformBuf, (size_t) nRetransformBuf, &t_perChromosomeHashCtx);
+#endif
                                     /* 
                                         Compress whatever is already in retransformBuf given the specified
                                         outbound compression type, add retransformLineBuf to the start of 
@@ -1732,7 +1769,14 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                     }
                 } while (zInStream.avail_out == 0);
             } while (zInError != Z_STREAM_END);
-        
+
+            /* hash the transformed buffer */
+#ifdef __cplusplus
+            sha1_process_bytes (retransformBuf, static_cast<size_t>( nRetransformBuf ), &t_perChromosomeHashCtx);
+#else
+            sha1_process_bytes (retransformBuf, (size_t) nRetransformBuf, &t_perChromosomeHashCtx);
+#endif
+  
             /* process any remainder */
             switch (outType) {
                 case kBzip2: {
@@ -1815,6 +1859,22 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
             break;
         }
     }
+
+    sha1_finish_ctx (&t_perChromosomeHashCtx, t_sha1Digest);
+#ifdef __cplusplus
+    STARCH_encodeBase64(&t_base64EncodedSha1Digest, 
+                        static_cast<size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
+                        reinterpret_cast<const unsigned char *>( t_sha1Digest ), 
+                        static_cast<size_t>( STARCH2_MD_FOOTER_SHA1_LENGTH ) );
+#else
+    STARCH_encodeBase64(&t_base64EncodedSha1Digest, 
+                        (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
+                        (const unsigned char *) t_sha1Digest, 
+                        (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
+#endif
+#ifdef DEBUG
+    fprintf(stderr, "\nPROGRESS: SHA-1 digest for chr [%s] is [%s]\n", inChr, t_base64EncodedSha1Digest);
+#endif
 
     /* clean up outbound compression stream */
     switch (outType) {
@@ -1902,7 +1962,8 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                                         t_totalNonUniqueBases, 
                                         t_totalUniqueBases,
                                         t_duplicateElementExists,
-                                        t_nestedElementExists );    
+                                        t_nestedElementExists,
+                                        t_base64EncodedSha1Digest );    
     else
         *outMd = STARCH_addMetadata( *outMd, 
 #ifdef __cplusplus
@@ -1916,11 +1977,14 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                                      t_totalNonUniqueBases, 
                                      t_totalUniqueBases,
                                      t_duplicateElementExists,
-                                     t_nestedElementExists );
+                                     t_nestedElementExists,
+                                     t_base64EncodedSha1Digest );
 
     /* cleanup */
     if (outTagFn)
         free(outTagFn), outTagFn = NULL;
+    if (t_base64EncodedSha1Digest)
+        free(t_base64EncodedSha1Digest), t_base64EncodedSha1Digest = NULL;
 
     return STARCHCAT_EXIT_SUCCESS;
 }
@@ -2312,6 +2376,7 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
     BaseCountType finalTotalUniqueBases = 0;
     Boolean finalDuplicateElementExists = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
     Boolean finalNestedElementExists = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
+    char *finalSignature = NULL;
     char *finalOutTagFn = NULL;
     MetadataRecord *inRecord = NULL;
     size_t *nBzReads = NULL;
@@ -2322,6 +2387,11 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
     Boolean flushZStreamFlag = kStarchFalse;
     size_t nCompressionBuffer = STARCHCAT_RETRANSFORM_LINE_COUNT_MAX * TOKENS_MAX_LENGTH + 1;
     int lowestElementRes = STARCHCAT_EXIT_SUCCESS;
+
+    /* hash variables */
+    struct sha1_ctx r_perChromosomeHashCtx;
+    unsigned char r_sha1Digest[STARCH2_MD_FOOTER_SHA1_LENGTH];
+    char *r_base64EncodedSha1Digest = NULL;
 
     /* setup */
 #ifdef __cplusplus
@@ -2370,7 +2440,10 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
 
     memset(outputRetransformState->r_chromosome, 0, TOKEN_CHR_MAX_LENGTH);
 
-    /* test if we allocated memory - TO-DO */
+    /* set up per-chromosome hash context */
+    sha1_init_ctx (&r_perChromosomeHashCtx);
+
+    /* test if we allocated memory */
     if (!compressionBuffer) {
         fprintf(stderr, "ERROR: Could not allocate space for compression buffer!\n");
         return STARCHCAT_EXIT_FAILURE;
@@ -2561,6 +2634,7 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
         outputRetransformState->r_lastPosition              = 0;
         outputRetransformState->r_totalNonUniqueBases       = 0;
         outputRetransformState->r_totalUniqueBases          = 0;
+        outputRetransformState->r_signature                 = NULL;
         outputRetransformState->r_duplicateElementExists    = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
         outputRetransformState->r_nestedElementExists       = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
         outputRetransformState->r_previousStop              = 0;
@@ -2634,9 +2708,10 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
 
             /* 4 -- extract lowest element to extracted elements buffer */
             STARCHCAT2_extractBedLine( &eobFlags[lowestStartElementIdx], 
-                       extractionBuffers[lowestStartElementIdx], 
-                       &extractionBufferOffsets[lowestStartElementIdx], 
-                       &extractedElements[lowestStartElementIdx]);
+                                       extractionBuffers[lowestStartElementIdx], 
+                                       &extractionBufferOffsets[lowestStartElementIdx], 
+                                       &extractedElements[lowestStartElementIdx]);
+
             extractedLineCounts[lowestStartElementIdx]--;
 
             /* 
@@ -2730,6 +2805,10 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
 #ifdef DEBUG
             fprintf(stderr, "STEP 5 - COMP BUFFER [%s] -->\nCOMPRESS RETRANSFORMATION BUFFER (FULL)\n[%s]\n", compressionBuffer, retransformedOutputBuffer);
 #endif
+            
+            /* hash the transformed buffer */
+            sha1_process_bytes (retransformedOutputBuffer, strlen(retransformedOutputBuffer), &r_perChromosomeHashCtx);
+
             STARCHCAT2_resetCompressionBuffer(compressionBuffer, &compressionLineCount);           
             switch (outType) {
                 case kBzip2: {
@@ -2758,6 +2837,24 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
         }
 
     } while (allEOF == kStarchFalse);
+
+    /* finalize the hash of the transformed buffer */
+    sha1_finish_ctx (&r_perChromosomeHashCtx, r_sha1Digest);
+#ifdef __cplusplus
+    STARCH_encodeBase64(&r_base64EncodedSha1Digest, 
+                        static_cast<size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
+                        reinterpret_cast<const unsigned char *>( r_sha1Digest ), 
+                        static_cast<size_t>( STARCH2_MD_FOOTER_SHA1_LENGTH ) );
+#else
+    STARCH_encodeBase64(&r_base64EncodedSha1Digest, 
+                        (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
+                        (const unsigned char *) r_sha1Digest, 
+                        (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
+#endif
+    outputRetransformState->r_signature = r_base64EncodedSha1Digest;
+#ifdef DEBUG
+    fprintf(stderr, "\nPROGRESS: SHA-1 digest for chr [%s] is [%s]\n", inChr, r_base64EncodedSha1Digest);
+#endif
 
     /* breakdown output stream */
     switch (outType) {
@@ -2806,6 +2903,7 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
     finalTotalUniqueBases = outputRetransformState->r_totalUniqueBases;
     finalDuplicateElementExists = outputRetransformState->r_duplicateElementExists;
     finalNestedElementExists = outputRetransformState->r_nestedElementExists;
+    finalSignature = outputRetransformState->r_signature;
 
     STARCHCAT2_finalizeMetadata( outMd, 
 #ifdef __cplusplus
@@ -2819,7 +2917,8 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
                                  finalTotalNonUniqueBases, 
                                  finalTotalUniqueBases,
                                  finalDuplicateElementExists,
-                                 finalNestedElementExists );
+                                 finalNestedElementExists,
+                                 finalSignature );
 
     /* breakdown */
     for (inRecIdx = 0U; inRecIdx < summary->numRecords; inRecIdx++) {
@@ -2896,6 +2995,8 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
         free(outputRetransformState), outputRetransformState = NULL;
     if (finalOutTagFn)
         free(finalOutTagFn), finalOutTagFn = NULL;
+    if (r_base64EncodedSha1Digest)
+        free(r_base64EncodedSha1Digest), r_base64EncodedSha1Digest = NULL;
     
     return STARCHCAT_EXIT_SUCCESS;
 }
@@ -6190,7 +6291,7 @@ STARCHCAT2_resetCompressionBuffer (char *compressionBuffer, LineCountType *compr
 }
 
 int      
-STARCHCAT2_finalizeMetadata (Metadata **outMd, char *finalChromosome, char *finalOutTagFn, uint64_t finalStreamSize, LineCountType finalLineCount, uint64_t finalTotalNonUniqueBases, uint64_t finalTotalUniqueBases, Boolean finalDuplicateElementExists, Boolean finalNestedElementExists)
+STARCHCAT2_finalizeMetadata (Metadata **outMd, char *finalChromosome, char *finalOutTagFn, uint64_t finalStreamSize, LineCountType finalLineCount, uint64_t finalTotalNonUniqueBases, uint64_t finalTotalUniqueBases, Boolean finalDuplicateElementExists, Boolean finalNestedElementExists, char *finalSignature)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCHCAT2_finalizeMetadata() ---\n");
@@ -6204,7 +6305,8 @@ STARCHCAT2_finalizeMetadata (Metadata **outMd, char *finalChromosome, char *fina
                                         finalTotalNonUniqueBases, 
                                         finalTotalUniqueBases,
                                         finalDuplicateElementExists,
-                                        finalNestedElementExists );
+                                        finalNestedElementExists,
+                                        finalSignature );
     else
         *outMd = STARCH_addMetadata( *outMd, 
                                      finalChromosome, 
@@ -6214,7 +6316,8 @@ STARCHCAT2_finalizeMetadata (Metadata **outMd, char *finalChromosome, char *fina
                                      finalTotalNonUniqueBases, 
                                      finalTotalUniqueBases,
                                      finalDuplicateElementExists,
-                                     finalNestedElementExists );
+                                     finalNestedElementExists,
+                                     finalSignature );
 
     return STARCH_EXIT_SUCCESS;
 }

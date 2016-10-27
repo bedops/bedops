@@ -43,14 +43,17 @@ Use the ``--help`` option to list all options:
 
   unstarch
    citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-   binary version: 2.4.21 (extracts archive version: 2.1.0 or older)
+   binary version: 2.4.21 (extracts archive version: 2.2.0 or older)
    authors: Alex Reynolds and Shane Neph
 
-  USAGE: unstarch [ <chromosome> ]  [ --elements | --bases | --bases-uniq | --duplicatesExist | --nestedsExist | --list | --list-json | --list-chromosomes | --archive-timestamp | --note | --archive-version | --is-starch ] <starch-file>
+  USAGE: unstarch [ <chromosome> ]  [ --elements | --bases | --bases-uniq | --has-duplicates | --has-nested | --list | --list-json | --list-chromosomes | --archive-timestamp | --note | --archive-version | --is-starch | --signature ] <starch-file>
+
+      Modifiers:
+
+      <chromosome>                     Optional. Either unarchives chromosome-specific records from the starch archive file or restricts action of operator to chromosome (e.g., chr1, chrY, etc.).
 
       Process Flags:
 
-      <chromosome>                     Optional. Either unarchives chromosome-specific records from the starch archive file or restricts action of operator to chromosome (e.g., chr1, chrY, etc.).
       --elements                       Show total element count for archive. If <chromosome> is specified, the result shows the element count for the chromosome.
       --bases,
       --bases-uniq                     Show total and unique base counts, respectively, for archive. If <chromosome> is specified, the count is specific to the chromosome, if available.
@@ -64,11 +67,12 @@ Use the ``--help`` option to list all options:
       --list-chr,                      List all or specified chromosome in starch archive (similar to "bedextract --list-chr"). If <chromosome> is specified but is not in the output list, nothing is returned.
       --list-chromosomes 
       --note                           Show descriptive note, if available.
-      --sha1-signature                 Show SHA1 signature of JSON-formatted metadata (Base64-encoded).
+      --signature                      Display the Base64-encoded SHA-1 data integrity signature for specified <chromosome>, or the signatures of the metadata and all available chromosomes, if the <chromosome> is unspecified.
+      --verify-signature               Verify data integrity of specified <chromosome>, or the integrity of all available chromosomes, if the <chromosome> is unspecified.
       --archive-timestamp              Show archive creation timestamp (ISO 8601 format).
       --archive-type                   Show archive compression type.
       --archive-version                Show archive version.
-      --is-starch                      Test if <starch-file> is a valid archive and print 0/1 (false/true) to standard output.
+      --is-starch                      Test if <starch-file> is a valid archive and print 0/1 (false/true) to standard output. False result also sets non-zero error status on command-line.
       --version                        Show binary version.
       --help                           Show this usage message.
 
@@ -107,7 +111,7 @@ Use the ``--list-json`` or ``--list`` options to export the archive metadata as 
       "creationTimestamp": "2014-05-01T14:09:29-0700",
       "version": {
         "major": 2,
-        "minor": 1,
+        "minor": 2,
         "revision": 0
       },
       "compressionFormat": 0
@@ -121,7 +125,8 @@ Use the ``--list-json`` or ``--list`` options to export the archive metadata as 
         "nonUniqueBaseCount": 549829,
         "uniqueBaseCount": 548452,
         "duplicateElementExists": false,
-        "nestedElementExists": false
+        "nestedElementExists": false,
+        "signature": "XtnjojM1LyuMnZI4CIneSzgLI5Q="
       },
       ...
     ]
@@ -166,6 +171,20 @@ The ``--version`` option reports the Starch archive version. This value is diffe
 ---------------------------------------
 Whole-file or per-chromosome attributes
 ---------------------------------------
+
+^^^^^^^^^^^^^^
+Data integrity
+^^^^^^^^^^^^^^
+
+For a specified chromosome, the ``--signature`` operator reports the very nearly unique "signature" or message digest generated from hashing the extracted, post-transform bytes within the chromosome stream with the `SHA-1 hash function <https://en.wikipedia.org/wiki/SHA-1>`_, followed with an encoding step with the `Base64 <https://en.wikipedia.org/wiki/Base64>`_ scheme to turn it into a human-readable string.
+
+If no chromosome is specified, this operator reports the encoded SHA-1 digests of the archive metadata and the signatures of each chromosome stream. 
+
+Signatures can be used to compare chromosome streams between two or more archives.
+
+Further, use of the ``--verify-signature`` option with a chromosome name will compare the signature stored in the metadata (the "expected" signature) with an "observed" value generated from extracting the bytes of the chromosome record and hashing them, and then Base64-encoding the result. 
+
+If the observed and expected signatures or digests are identical, this validates or verifies the integrity of the chromosome record. A mismatch would result in a non-zero exit state and suggest potential data corruption and the need for further investigation.
 
 ^^^^^^^^
 Elements
@@ -261,6 +280,25 @@ To show when the archive was created:
 
   $ unstarch --archive-timestamp example.starch
   2014-05-01T14:09:29-0700
+
+To get the SHA-1 message digest, or "signature" of chromosome ``chr8``, use the ``--signature`` operator:
+
+::
+
+  $ unstarch chr8 --signature example.starch
+  nZI4CIneSzgLI5QXtnjojM1LyuM=
+
+The signature is written to the standard output stream.
+
+To verify the data integrity of the same chromosome, use ``--verify-signature``:
+
+::
+
+  $ unstarch chr8 --verify-signature example.starch
+  PROGRESS: Expected and observed data integrity signatures match for chromosome [chr8]
+
+Any output from ``--verify-signature`` is written to the standard error stream.
+
 
 .. note:: Some option calls will not work with legacy v1.x or v2.0 archives. For instance, to get a result for nested or duplicate elements, you need to input a v2.1 archive. If you have a v1.x or v2.0 archive, use the :ref:`starchcat` utility to upgrade an older archive to a Starch v2.1 file, which will recalculate and make all current attributes available.
 

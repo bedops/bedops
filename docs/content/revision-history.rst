@@ -11,19 +11,53 @@ This page summarizes some of the more important changes between releases.
 Current version
 ===============
 
+-------
+v2.4.21
+-------
+
 Released: **TBD**
 
 * :ref:`bedmap <bedmap>`
 
   * Measurement values in `bedmap` did not allow `+` in the exponent (both `-` worked and no `+` for a positive value.  Similarly, out in front of the number, `+` was previously not allowed. Shane Neph posted the report and fix.
 
+* :ref:`sort-bed <sort-bed>`
+
+  * Sorting of BED input now leads to unambiguous result when two or more elements have the same genomic interval (chromosome name and start and stop position), but different content in remaining columns (ID, score, etc.). 
+
+  Formerly, elements with the same genomic interval that have different content in fourth and subsequent columns could be printed in a non-consistent ordering on repeated sorts. A deterministic sort order facilitates the use of data integrity functions on sorted BED and Starch data.
+
 * :ref:`starchcluster <starchcluster>`
 
-  * SLURM-ready version of `starchcluster` script added, to help users of SLURM job scheduler with parallelizing creating Starch archives.
+  * SLURM-ready version of `starchcluster` script added, to help SLURM job scheduler users with parallelizing the creation of Starch archives.
+
+* :ref:`unstarch <unstarch>`
+
+  * Added `--signature` option to report the Base64-encoded SHA-1 data integrity signature of the Starch-transformed bytes of a specified chromosome, or to report the signature of the metadata string as well as the signatures of all chromosomes, if unspecified.
+
+  * Added `--verify-signature` option to compare the "expected" Base64-encoded SHA-1 data integrity signature stored within the archive's metadata with the "observed" data integrity signature generated from extracting the specified chromosome. 
+
+    If the observed and expected signatures differ, then this suggests that the chromosome record may be corrupted in some way; `unstarch` will exit with a non-zero error code. If the signatures agree, the archive data should be intact and `unstarch` will exit with a helpful notice and a zero error code.
+
+    If no chromosome is specified, `unstarch` will loop through all chromosomes in the archive metadata, comparing observed and expected values for each chromosome record. Upon completion, error and progress messages will be reported to the standard error stream, and `unstarch` will exit with a zero error code, if all signatures match, or a non-zero exit state, if one or more signatures do not agree.
+
+  * The output from the `--list` option includes a `signature` column to report the data integrity signature of all Starch-transformed chromosome data.
+
+  * The output from the `--list-json` option includes a `signature` key in each chromosome record in the archive metadata, reporting the same information.
+
+  * The `--is-starch` option now quits with a non-zero exit code, if the specified input file is not a Starch archive.
 
 * :ref:`starch <starch>`
 
-  * Added `--report-progress=N` option to report compression of the Nth element of the current chromosome to standard error stream.
+  * Added `--report-progress=N` option to (optionally) report compression of the Nth element of the current chromosome to standard error stream.
+
+  * As a chromosome is compressed, the input Starch-transform bytes are continually run through a SHA-1 hash function. The resulting data integrity signature is stored as a Base64-encoded string in the output archive's metadata. Signatures can be compared between and within archives to help better ensure the data integrity of the archive. 
+
+* :ref:`starchcat <starchcat>`
+
+  * Added `--report-progress=N` option to (optionally) report compression of the Nth element of the current chromosome to standard error stream.
+
+  * As in `starch`, at the conclusion of compressing a chromosome made from one or more input Starch archives, the input Starch-transform bytes are continually run through a SHA-1 hash function. The resulting data integrity signature is stored as a Base64-encoded string in the chromosome's entry in the new archive's metadata.
 
 =================
 Previous versions

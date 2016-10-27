@@ -79,6 +79,7 @@ main(int argc, char **argv)
     const Boolean preserveJSONRef = kStarchFalse; /* we generally do not want to preserve JSON reference */
     char *jsonString = NULL;
     unsigned char mdHashBuffer[STARCH2_MD_FOOTER_SHA1_LENGTH + 1] = {0};
+    Boolean signatureVerificationFlag = kStarchFalse;
 
     /*
         unstarch overview
@@ -189,6 +190,14 @@ main(int argc, char **argv)
                 resultValue = UNSTARCH_ELEMENT_NESTED_ALL_STR_ERROR;
                 break;
             }
+            case UNSTARCH_SIGNATURE_ERROR: {
+                resultValue = UNSTARCH_SIGNATURE_ERROR;
+                break;
+            }
+            case UNSTARCH_SIGNATURE_VERIFY_ERROR: {
+                resultValue = UNSTARCH_SIGNATURE_VERIFY_ERROR;
+                break;
+            }
         }
     }
 
@@ -211,7 +220,7 @@ main(int argc, char **argv)
         (resultValue == UNSTARCH_ELEMENT_NESTED_CHR_INT_ERROR) ||
         (resultValue == UNSTARCH_ELEMENT_NESTED_ALL_INT_ERROR) ||
         (resultValue == UNSTARCH_ELEMENT_NESTED_CHR_STR_ERROR) ||
-        (resultValue == UNSTARCH_ELEMENT_NESTED_ALL_STR_ERROR) )
+        (resultValue == UNSTARCH_ELEMENT_NESTED_ALL_STR_ERROR))
     {
         if (STARCH_readJSONMetadata( &metadataJSON, 
 				     &inFilePtr, 
@@ -251,13 +260,16 @@ main(int argc, char **argv)
 				     &metadataOffset, 
 				     &headerFlag, 
 				     kStarchTrue, 
-				     kStarchTrue) != STARCH_EXIT_SUCCESS)
+				     kStarchTrue) != STARCH_EXIT_SUCCESS) {
             fprintf(stdout, "0\n"); /* false -- no valid metadata, therefore not a starch archive */
-        else
+            return EXIT_FAILURE;
+        }
+        else {
             fprintf(stdout, "1\n"); /* true -- valid metadata, therefore a starch archive */
-        return EXIT_SUCCESS;
+            return EXIT_SUCCESS;
+        }
     }
-    else if (resultValue == UNSTARCH_METADATA_SHA1_SIGNATURE_ERROR) 
+    else if ( (resultValue == UNSTARCH_METADATA_SHA1_SIGNATURE_ERROR) || (resultValue == UNSTARCH_SIGNATURE_ERROR) || (resultValue == UNSTARCH_SIGNATURE_VERIFY_ERROR) )
     {
         if (STARCH_readJSONMetadata( &metadataJSON, 
 				     &inFilePtr, 
@@ -722,10 +734,57 @@ main(int argc, char **argv)
                 }
                 break;
             }
+            case UNSTARCH_SIGNATURE_ERROR: {
+                if ((archiveVersion->major == 2) && (archiveVersion->minor >= 2)) {
+                    if (whichChromosome) {
+                        UNSTARCH_printSignature(records, whichChromosome, mdHashBuffer);
+                    }
+                    else {
+                        UNSTARCH_printMetadataSha1Signature(mdHashBuffer);
+                    }
+                }
+                else {
+                    fprintf(stderr, "ERROR: Archive version (%d.%d.%d) does not support per-chromosome signatures (starchcat or extract/recompress the archive to bring its version to v2.2.0 or greater)\n", archiveVersion->major, archiveVersion->minor, archiveVersion->revision);
+                    resultValue = EXIT_FAILURE;
+                }
+                break;
+            }
+            case UNSTARCH_SIGNATURE_VERIFY_ERROR: {
+                if ((archiveVersion->major == 2) && (archiveVersion->minor >= 2)) {
+                    if (whichChromosome) {
+                        signatureVerificationFlag = UNSTARCH_verifySignature(&inFilePtr, 
+                                                                             records,
+#ifdef __cplusplus
+                                                                             static_cast<const unsigned long long>( sizeof(starchRevision2HeaderBytes) ), 
+#else
+                                                                             (const unsigned long long) sizeof(starchRevision2HeaderBytes), 
+#endif
+                                                                             whichChromosome,
+                                                                             type);
+                    }
+                    else {
+                        signatureVerificationFlag = UNSTARCH_verifyAllSignatures(&inFilePtr, 
+                                                                                 records, 
+#ifdef __cplusplus
+                                                                                 static_cast<const unsigned long long>( sizeof(starchRevision2HeaderBytes) ), 
+#else
+                                                                                 (const unsigned long long) sizeof(starchRevision2HeaderBytes), 
+#endif
+                                                                                 type);
+                    }
+                }
+                else {
+                    fprintf(stderr, "ERROR: Archive version (%d.%d.%d) does not support per-chromosome signature verification (starchcat or extract/recompress the archive to bring its version to v2.2.0 or greater)\n", archiveVersion->major, archiveVersion->minor, archiveVersion->revision);
+                    resultValue = EXIT_FAILURE;
+                }
+            }
         }
     }
 
-    if ((resultValue == UNSTARCH_HELP_ERROR) || 
+    if ((resultValue == UNSTARCH_SIGNATURE_VERIFY_ERROR) && (signatureVerificationFlag == kStarchFalse)) {
+        resultValue = EXIT_FAILURE;
+    }
+    else if ((resultValue == UNSTARCH_HELP_ERROR) || 
         (resultValue == UNSTARCH_VERSION_ERROR) || 
         (resultValue == UNSTARCH_ARCHIVE_VERSION_ERROR) ||
         (resultValue == UNSTARCH_ARCHIVE_CREATION_TIMESTAMP_ERROR) ||
@@ -745,8 +804,13 @@ main(int argc, char **argv)
         (resultValue == UNSTARCH_ELEMENT_NESTED_CHR_INT_ERROR) ||
         (resultValue == UNSTARCH_ELEMENT_NESTED_ALL_INT_ERROR) ||
         (resultValue == UNSTARCH_ELEMENT_NESTED_CHR_STR_ERROR) ||
-        (resultValue == UNSTARCH_ELEMENT_NESTED_ALL_STR_ERROR) )
+        (resultValue == UNSTARCH_ELEMENT_NESTED_ALL_STR_ERROR) ||
+        (resultValue == UNSTARCH_SIGNATURE_ERROR) ||
+        (resultValue == UNSTARCH_SIGNATURE_VERIFY_ERROR) ) 
+    {
         resultValue = EXIT_SUCCESS;
+    }
+        
 
     /* cleanup */
     if (option)
@@ -935,19 +999,21 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
 #endif
 
 
-    if ((! *fn) || 
-        (! *chr) || 
-        (strcmp(*fn, "-") == 0) || 
-        (strcmp(*fn, "--list") == 0) || 
-        (strcmp(*fn, "--listJSON") == 0) || 
-        (strcmp(*fn, "--list-json") == 0) ||
-        (strcmp(*fn, "--list-json-no-trailing-newline") == 0) ||
-        (strcmp(*fn, "--note") == 0) ||
-        (strcmp(*fn, "--archive-type") == 0) ||
-        (strcmp(*fn, "--archive-version") == 0) ||
-        (strcmp(*fn, "--archive-timestamp") == 0) ||
-        (strcmp(*fn, "--sha1-signature") == 0) ||
-        (strcmp(*fn, "--is-starch") == 0) ) 
+    if ( (! *fn)                                               || 
+         (! *chr)                                              || 
+         (strcmp(*fn, "-") == 0)                               || 
+         (strcmp(*fn, "--list") == 0)                          || 
+         (strcmp(*fn, "--listJSON") == 0)                      || 
+         (strcmp(*fn, "--list-json") == 0)                     || 
+         (strcmp(*fn, "--list-json-no-trailing-newline") == 0) || 
+         (strcmp(*fn, "--note") == 0)                          || 
+         (strcmp(*fn, "--archive-type") == 0)                  || 
+         (strcmp(*fn, "--archive-version") == 0)               || 
+         (strcmp(*fn, "--archive-timestamp") == 0)             || 
+         (strcmp(*fn, "--sha1-signature") == 0)                || 
+         (strcmp(*fn, "--signature") == 0)                     || 
+         (strcmp(*fn, "--verify-signature") == 0)              || 
+         (strcmp(*fn, "--is-starch") == 0) ) 
     {
         if (ftr1)
             free(ftr1);
@@ -986,6 +1052,14 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
         }
         else if (strcmp(*optn, "sha1-signature") == 0) {
             *pval = UNSTARCH_METADATA_SHA1_SIGNATURE_ERROR;
+            return *pval;
+        }
+        else if (strcmp(*optn, "signature") == 0) {
+            *pval = UNSTARCH_SIGNATURE_ERROR;
+            return *pval;
+        }
+        else if (strcmp(*optn, "verify-signature") == 0) {
+            *pval = UNSTARCH_SIGNATURE_VERIFY_ERROR;
             return *pval;
         }
         else if (strcmp(*optn, "note") == 0) {
@@ -1183,7 +1257,7 @@ UNSTARCH_printMetadataSha1Signature(unsigned char *sha1Buffer)
 #endif
 
     if (!jsonBase64String) {
-        fprintf(stderr, "ERROR: Could not allocate space for base64-encoded metadata string representation\n");
+        fprintf(stderr, "ERROR: Could not allocate space for Base64-encoded metadata string representation\n");
         exit(-1);
     }
     fprintf(stdout, "%s\n", jsonBase64String);
