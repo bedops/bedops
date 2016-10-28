@@ -246,7 +246,7 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
 
     charCnt = 0U;
     sCnt = 0U;
-    elemCnt = -1;
+    elemCnt = 0U;
 
     do {
         buffer[charCnt++] = s[sCnt];
@@ -254,7 +254,6 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
             if (elemCnt < 3) {
                 buffer[(charCnt - 1)] = '\0';
                 charCnt = 0;
-                elemCnt++;
             }
 #ifdef DEBUG
             fprintf(stderr, "\t--- s [%s] buffer [%s], charCnt [%u], strlen(buffer) [%zu], sCnt [%u], strlen(s) [%zu]\n", s, buffer, charCnt, strlen(buffer), sCnt, strlen(s));
@@ -414,9 +413,10 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
                     break;
                 }
                 /* just keep filling the buffer until we reach s[sCnt]'s null -- we do tests later */
-                case 3:                    
+                case 3:
                     break;
             }
+            elemCnt++;
         }
     } while (s[sCnt++] != '\0');
 

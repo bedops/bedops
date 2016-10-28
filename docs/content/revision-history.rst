@@ -21,15 +21,18 @@ Released: **TBD**
 
   * Measurement values in `bedmap` did not allow `+` in the exponent (both `-` worked and no `+` for a positive value.  Similarly, out in front of the number, `+` was previously not allowed. Shane Neph posted the report and fix.
 
+
 * :ref:`sort-bed <sort-bed>`
 
   * Sorting of BED input now leads to unambiguous result when two or more elements have the same genomic interval (chromosome name and start and stop position), but different content in remaining columns (ID, score, etc.). 
 
-  Formerly, elements with the same genomic interval that have different content in fourth and subsequent columns could be printed in a non-consistent ordering on repeated sorts. A deterministic sort order facilitates the use of data integrity functions on sorted BED and Starch data.
+    Formerly, elements with the same genomic interval that have different content in fourth and subsequent columns could be printed in a non-consistent ordering on repeated sorts. A deterministic sort order facilitates the use of data integrity functions on sorted BED and Starch data.
+
 
 * :ref:`starchcluster <starchcluster>`
 
   * SLURM-ready version of `starchcluster` script added, to help SLURM job scheduler users with parallelizing the creation of Starch archives.
+
 
 * :ref:`unstarch <unstarch>`
 
@@ -47,17 +50,22 @@ Released: **TBD**
 
   * The `--is-starch` option now quits with a non-zero exit code, if the specified input file is not a Starch archive.
 
+
 * :ref:`starch <starch>`
 
   * Added `--report-progress=N` option to (optionally) report compression of the Nth element of the current chromosome to standard error stream.
 
-  * As a chromosome is compressed, the input Starch-transform bytes are continually run through a SHA-1 hash function. The resulting data integrity signature is stored as a Base64-encoded string in the output archive's metadata. Signatures can be compared between and within archives to help better ensure the data integrity of the archive. 
+  * As a chromosome is compressed, the input Starch-transform bytes are continually run through a SHA-1 hash function. The resulting data integrity signature is stored as a Base64-encoded string in the output archive's metadata. Signatures can be compared between and within archives to help better ensure the data integrity of the archive.
+
+  * Fixed `--header` transform bug reported in `Issue 161 <https://github.com/bedops/bedops/issues/161>`_. Thanks to Shane Neph for the bug report!
+
 
 * :ref:`starchcat <starchcat>`
 
   * Added `--report-progress=N` option to (optionally) report compression of the Nth element of the current chromosome to standard error stream.
 
   * As in `starch`, at the conclusion of compressing a chromosome made from one or more input Starch archives, the input Starch-transform bytes are continually run through a SHA-1 hash function. The resulting data integrity signature is stored as a Base64-encoded string in the chromosome's entry in the new archive's metadata.
+
 
 =================
 Previous versions
