@@ -1514,6 +1514,7 @@ void selectWork(const Input& input, BedFiles& bedFiles) {
   switch ( modeType ) {
     case CHOP:
       doChop(bedFiles, input.ChopChunkSize(), input.ChopStaggerSize(), input.ChopExcludeShort());
+      break;
     case COMPLEMENT:
       doComplement(bedFiles, input.ComplementFullLeft());
       break;
