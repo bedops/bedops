@@ -66,12 +66,13 @@ const boolean kFalse = 0;
 #define C2B_MAX_LINE_LENGTH_VALUE 131072
 #define C2B_MAX_LONGER_LINE_LENGTH_VALUE 1048576
 #define C2B_MAX_LINES_VALUE 32
-#define C2B_MAX_OPERATIONS_VALUE 1024
 #define C2B_MAX_CHROMOSOME_LENGTH 32
 #define C2B_MAX_PSL_BLOCKS 1024
 #define C2B_MAX_PSL_BLOCK_SIZES_STRING_LENGTH 20
 #define C2B_MAX_PSL_T_STARTS_STRING_LENGTH 20
 #define C2B_MAX_VCF_FIELD_COUNT_VALUE 24576
+#define C2B_SAM_CIGAR_OPS_VALUE_INITIAL 1
+#define C2B_SAM_CIGAR_OPS_VALUE_INCREMENT 1000
 
 extern const char *c2b_samtools;
 extern const char *c2b_sort_bed;
@@ -1366,6 +1367,7 @@ extern "C" {
     static void              c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *dest_size, char *src, ssize_t src_size); 
     static inline void       c2b_sam_cigar_str_to_ops(char *s);
     static void              c2b_sam_init_cigar_ops(c2b_cigar_t **c, const ssize_t size);
+    static void              c2b_sam_resize_cigar_ops(c2b_cigar_t **new_c, c2b_cigar_t *old_c);
     static void              c2b_sam_debug_cigar_ops(c2b_cigar_t *c);
     static void              c2b_sam_delete_cigar_ops(c2b_cigar_t *c);
     static inline void       c2b_line_convert_sam_to_bed(c2b_sam_t s, char *dest_line, ssize_t *dest_size);

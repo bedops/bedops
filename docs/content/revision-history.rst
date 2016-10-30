@@ -22,6 +22,11 @@ Released: **TBD**
   * Measurement values in `bedmap` did not allow `+` in the exponent (both `-` worked and no `+` for a positive value.  Similarly, out in front of the number, `+` was previously not allowed. Shane Neph posted the report and fix.
 
 
+* :ref:`bedops <bedops>`
+
+  * Fixed issue with `-chop` where complement operation could potentially be included. Shane Neph posted the fix.
+
+
 * :ref:`sort-bed <sort-bed>`
 
   * Sorting of BED input now leads to unambiguous result when two or more elements have the same genomic interval (chromosome name and start and stop position), but different content in remaining columns (ID, score, etc.). 
@@ -65,6 +70,11 @@ Released: **TBD**
   * Added `--report-progress=N` option to (optionally) report compression of the Nth element of the current chromosome to standard error stream.
 
   * As in `starch`, at the conclusion of compressing a chromosome made from one or more input Starch archives, the input Starch-transform bytes are continually run through a SHA-1 hash function. The resulting data integrity signature is stored as a Base64-encoded string in the chromosome's entry in the new archive's metadata.
+
+
+* :ref:`convert2bed <convert2bed>`
+
+  * Switched to handle dynamic number of CIGAR operations as reported in `Issue 157 <https://github.com/bedops/bedops/issues/157>`_.
 
 
 =================

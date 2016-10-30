@@ -2347,8 +2347,8 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
         }
         else {
             /* copy header line to destination stream buffer */
-            char src_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
-            char dest_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
+            char src_header_line_str[C2B_MAX_LINE_LENGTH_VALUE] = {0};
+            char dest_header_line_str[C2B_MAX_LINE_LENGTH_VALUE] = {0};
             memcpy(src_header_line_str, src, src_size);
             src_header_line_str[src_size] = '\0';
             sprintf(dest_header_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), src_header_line_str);
@@ -2387,7 +2387,7 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
     */
 
     ssize_t cigar_size = sam_field_offsets[5] - sam_field_offsets[4];
-    char cigar_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char cigar_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     memcpy(cigar_str, src + sam_field_offsets[4] + 1, cigar_size - 1);
     cigar_str[cigar_size - 1] = '\0';
     c2b_sam_cigar_str_to_ops(cigar_str);
@@ -2405,7 +2405,7 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
     */
 
     ssize_t flag_size = sam_field_offsets[1] - sam_field_offsets[0];
-    char flag_src_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char flag_src_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     memcpy(flag_src_str, src + sam_field_offsets[0] + 1, flag_size);
     flag_src_str[flag_size] = '\0';
     int flag_val = (int) strtol(flag_src_str, NULL, 10);
@@ -2418,14 +2418,14 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
     */
 
     /* RNAME */
-    char rname_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char rname_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     if (is_mapped) {
         ssize_t rname_size = sam_field_offsets[2] - sam_field_offsets[1] - 1;
         memcpy(rname_str, src + sam_field_offsets[1] + 1, rname_size);
         rname_str[rname_size] = '\0';
     }
     else {
-        char unmapped_read_chr_str[C2B_MAX_FIELD_LENGTH_VALUE];
+        char unmapped_read_chr_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
         memcpy(unmapped_read_chr_str, c2b_unmapped_read_chr_name, strlen(c2b_unmapped_read_chr_name));
         unmapped_read_chr_str[strlen(c2b_unmapped_read_chr_name)] = '\t';
         unmapped_read_chr_str[strlen(c2b_unmapped_read_chr_name) + 1] = '\0';
@@ -2435,14 +2435,14 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
 
     /* POS */
     ssize_t pos_size = sam_field_offsets[3] - sam_field_offsets[2];
-    char pos_src_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char pos_src_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     memcpy(pos_src_str, src + sam_field_offsets[2] + 1, pos_size - 1);
     pos_src_str[pos_size - 1] = '\0';
     uint64_t pos_val = strtoull(pos_src_str, NULL, 10);
     uint64_t start_val = pos_val - 1; /* remember, start = POS - 1 */
 
     /* QNAME */
-    char qname_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char qname_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t qname_size = sam_field_offsets[0];
     memcpy(qname_str, src, qname_size);
     qname_str[qname_size] = '\0';
@@ -2453,43 +2453,43 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
     sprintf(strand_str, "%c", (strand_val == 0x10) ? '-' : '+');
     
     /* MAPQ */
-    char mapq_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char mapq_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t mapq_size = sam_field_offsets[4] - sam_field_offsets[3] - 1;
     memcpy(mapq_str, src + sam_field_offsets[3] + 1, mapq_size);
     mapq_str[mapq_size] = '\0';
     
     /* RNEXT */
-    char rnext_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char rnext_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t rnext_size = sam_field_offsets[6] - sam_field_offsets[5] - 1;
     memcpy(rnext_str, src + sam_field_offsets[5] + 1, rnext_size);
     rnext_str[rnext_size] = '\0';
 
     /* PNEXT */
-    char pnext_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char pnext_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t pnext_size = sam_field_offsets[7] - sam_field_offsets[6] - 1;
     memcpy(pnext_str, src + sam_field_offsets[6] + 1, pnext_size);
     pnext_str[pnext_size] = '\0';
 
     /* TLEN */
-    char tlen_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char tlen_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t tlen_size = sam_field_offsets[8] - sam_field_offsets[7] - 1;
     memcpy(tlen_str, src + sam_field_offsets[7] + 1, tlen_size);
     tlen_str[tlen_size] = '\0';
 
     /* SEQ */
-    char seq_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char seq_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t seq_size = sam_field_offsets[9] - sam_field_offsets[8] - 1;
     memcpy(seq_str, src + sam_field_offsets[8] + 1, seq_size);
     seq_str[seq_size] = '\0';
 
     /* QUAL */
-    char qual_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char qual_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t qual_size = sam_field_offsets[10] - sam_field_offsets[9] - 1;
     memcpy(qual_str, src + sam_field_offsets[9] + 1, qual_size);
     qual_str[qual_size] = '\0';
 
     /* Optional fields */
-    char opt_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char opt_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     if (sam_field_offsets[11] != -1) {
         opt_str[0] = '\0';
         for (int field_idx = 11; field_idx <= sam_field_idx; field_idx++) {
@@ -2566,10 +2566,10 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
         }
         else {
             /* copy header line to destination stream buffer */
-            char src_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
-            char dest_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
+            char src_header_line_str[C2B_MAX_LINE_LENGTH_VALUE] = {0};
+            char dest_header_line_str[C2B_MAX_LINE_LENGTH_VALUE] = {0};
             memcpy(src_header_line_str, src, src_size);
-            src_header_line_str[src_size] = '\0';
+            //src_header_line_str[src_size] = '\0';
             sprintf(dest_header_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), src_header_line_str);
             memcpy(dest + *dest_size, dest_header_line_str, strlen(dest_header_line_str));
             *dest_size += strlen(dest_header_line_str);
@@ -2606,7 +2606,7 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
     */
 
     ssize_t cigar_size = sam_field_offsets[5] - sam_field_offsets[4];
-    char cigar_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char cigar_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     memcpy(cigar_str, src + sam_field_offsets[4] + 1, cigar_size - 1);
     cigar_str[cigar_size - 1] = '\0';
     c2b_sam_cigar_str_to_ops(cigar_str);
@@ -2624,7 +2624,7 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
     */
 
     ssize_t flag_size = sam_field_offsets[1] - sam_field_offsets[0];
-    char flag_src_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char flag_src_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     memcpy(flag_src_str, src + sam_field_offsets[0] + 1, flag_size);
     flag_src_str[flag_size] = '\0';
     int flag_val = (int) strtol(flag_src_str, NULL, 10);
@@ -2637,14 +2637,14 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
     */
 
     /* RNAME */
-    char rname_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char rname_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     if (is_mapped) {
         ssize_t rname_size = sam_field_offsets[2] - sam_field_offsets[1] - 1;
         memcpy(rname_str, src + sam_field_offsets[1] + 1, rname_size);
         rname_str[rname_size] = '\0';
     }
     else {
-        char unmapped_read_chr_str[C2B_MAX_FIELD_LENGTH_VALUE];
+        char unmapped_read_chr_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
         memcpy(unmapped_read_chr_str, c2b_unmapped_read_chr_name, strlen(c2b_unmapped_read_chr_name));
         unmapped_read_chr_str[strlen(c2b_unmapped_read_chr_name)] = '\t';
         unmapped_read_chr_str[strlen(c2b_unmapped_read_chr_name) + 1] = '\0';
@@ -2654,7 +2654,7 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
 
     /* POS */
     ssize_t pos_size = sam_field_offsets[3] - sam_field_offsets[2];
-    char pos_src_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char pos_src_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     memcpy(pos_src_str, src + sam_field_offsets[2] + 1, pos_size - 1);
     pos_src_str[pos_size - 1] = '\0';
     uint64_t pos_val = strtoull(pos_src_str, NULL, 10);
@@ -2673,48 +2673,48 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
     sprintf(strand_str, "%c", (strand_val == 0x10) ? '-' : '+');
     
     /* MAPQ */
-    char mapq_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char mapq_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t mapq_size = sam_field_offsets[4] - sam_field_offsets[3] - 1;
     memcpy(mapq_str, src + sam_field_offsets[3] + 1, mapq_size);
     mapq_str[mapq_size] = '\0';
     
     /* RNEXT */
-    char rnext_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char rnext_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t rnext_size = sam_field_offsets[6] - sam_field_offsets[5] - 1;
     memcpy(rnext_str, src + sam_field_offsets[5] + 1, rnext_size);
     rnext_str[rnext_size] = '\0';
 
     /* PNEXT */
-    char pnext_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char pnext_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t pnext_size = sam_field_offsets[7] - sam_field_offsets[6] - 1;
     memcpy(pnext_str, src + sam_field_offsets[6] + 1, pnext_size);
     pnext_str[pnext_size] = '\0';
 
     /* TLEN */
-    char tlen_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char tlen_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t tlen_size = sam_field_offsets[8] - sam_field_offsets[7] - 1;
     memcpy(tlen_str, src + sam_field_offsets[7] + 1, tlen_size);
     tlen_str[tlen_size] = '\0';
 
     /* SEQ */
-    char seq_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char seq_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t seq_size = sam_field_offsets[9] - sam_field_offsets[8] - 1;
     memcpy(seq_str, src + sam_field_offsets[8] + 1, seq_size);
     seq_str[seq_size] = '\0';
 
     /* QUAL */
-    char qual_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char qual_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t qual_size = sam_field_offsets[10] - sam_field_offsets[9] - 1;
     memcpy(qual_str, src + sam_field_offsets[9] + 1, qual_size);
     qual_str[qual_size] = '\0';
 
     /* Optional fields */
-    char opt_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char opt_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     if (sam_field_offsets[11] != -1) {
         for (int field_idx = 11; field_idx <= sam_field_idx; field_idx++) {
             ssize_t opt_size = sam_field_offsets[field_idx] - sam_field_offsets[field_idx - 1] - (field_idx == sam_field_idx ? 1 : 0);
             memcpy(opt_str + strlen(opt_str), src + sam_field_offsets[field_idx - 1] + 1, opt_size);
-	    opt_str[strlen(opt_str) + opt_size] = '\0';
+            opt_str[strlen(opt_str) + opt_size] = '\0';
         }
     }
 
@@ -2803,6 +2803,13 @@ c2b_sam_cigar_str_to_ops(char *s)
                 op_idx++;
                 operation_flag = kFalse;
                 bases_flag = kTrue;
+                /* if op_idx >= size property of CIGAR entity, we need to resize this entity */
+                if (op_idx >= c2b_globals.sam->cigar->size) {
+                    c2b_cigar_t *resized_cigar = NULL;
+                    c2b_sam_resize_cigar_ops(&resized_cigar, c2b_globals.sam->cigar);
+                    c2b_sam_delete_cigar_ops(c2b_globals.sam->cigar);
+                    c2b_globals.sam->cigar = resized_cigar;
+                }
             }
             curr_bases_field[bases_idx++] = curr_char;
             curr_bases_field[bases_idx] = '\0';
@@ -2834,17 +2841,47 @@ c2b_sam_init_cigar_ops(c2b_cigar_t **c, const ssize_t size)
         c2b_print_usage(stderr);
         exit(ENOMEM); /* Not enough space (POSIX.1) */
     }
-    (*c)->ops = malloc(size * sizeof(c2b_cigar_op_t));
+    (*c)->size = size;
+    (*c)->ops = malloc((*c)->size * sizeof(c2b_cigar_op_t));
     if (!(*c)->ops) {
-        fprintf(stderr, "Error: Could not allocate space for CIGAR struct operation pointer\n");
+        fprintf(stderr, "Error: Could not allocate space for CIGAR struct malloc operation pointer\n");
         c2b_print_usage(stderr);
         exit(ENOMEM); /* Not enough space (POSIX.1) */
     }
-    (*c)->size = size;
     (*c)->length = 0;
     for (ssize_t idx = 0; idx < size; idx++) {
         (*c)->ops[idx].bases = default_cigar_op_bases;
         (*c)->ops[idx].operation = default_cigar_op_operation;
+    }
+}
+
+static void
+c2b_sam_resize_cigar_ops(c2b_cigar_t **new_c, c2b_cigar_t *old_c)
+{
+    *new_c = malloc(sizeof(c2b_cigar_t));
+    if (!*new_c) {
+        fprintf(stderr, "Error: Could not allocate space for larger CIGAR struct pointer\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    /* we increment the size of the input CIGAR entity by C2B_SAM_CIGAR_OPS_VALUE_INCREMENT */
+    (*new_c)->size = old_c->size + C2B_SAM_CIGAR_OPS_VALUE_INCREMENT;
+    (*new_c)->ops = malloc((*new_c)->size * sizeof(c2b_cigar_op_t));
+    if (!(*new_c)->ops) {
+        fprintf(stderr, "Error: Could not allocate space for larger CIGAR struct malloc operation pointer\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*new_c)->length = old_c->length;
+    /* copy operations from input CIGAR entity to new entity */
+    for (ssize_t idx = 0; idx < old_c->size; idx++) {
+        (*new_c)->ops[idx].bases = old_c->ops[idx].bases;
+        (*new_c)->ops[idx].operation = old_c->ops[idx].operation;
+    }
+    /* set default base and operation values for new entity */
+    for (ssize_t idx = old_c->size; idx < (*new_c)->size; idx++) {
+        (*new_c)->ops[idx].bases = default_cigar_op_bases;
+        (*new_c)->ops[idx].operation = default_cigar_op_operation;
     }
 }
 
@@ -2875,7 +2912,8 @@ c2b_sam_delete_cigar_ops(c2b_cigar_t *c)
         if (c->ops) {
             free(c->ops), c->ops = NULL; 
         }
-        c->length = 0, c->size = 0;
+        c->length = 0;
+        c->size = 0;
         free(c), c = NULL;
     }
 }
@@ -4751,7 +4789,7 @@ c2b_init_global_sam_state()
 
     c2b_globals.sam->samtools_path = NULL;
 
-    c2b_globals.sam->cigar = NULL, c2b_sam_init_cigar_ops(&(c2b_globals.sam->cigar), C2B_MAX_OPERATIONS_VALUE);
+    c2b_globals.sam->cigar = NULL, c2b_sam_init_cigar_ops(&(c2b_globals.sam->cigar), C2B_SAM_CIGAR_OPS_VALUE_INITIAL);
 
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_init_global_sam_state() - exit  ---\n");
