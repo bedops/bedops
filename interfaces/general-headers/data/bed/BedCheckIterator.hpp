@@ -632,19 +632,7 @@ namespace Bed {
       maxEnd_ = lastEnd_;
       return true;
     }
-/*
-    // member function require templates to work with overloads
-    template <typename B=BedType>
-    inline typename std::enable_if<B::UseRest, std::string>::type getRest() {
-      return _M_value->rest();
-    }
 
-    // member function require templates to work with overloads
-    template <typename B=BedType>
-    inline typename std::enable_if<!B::UseRest, std::string>::type getRest() {
-      return "";
-    }
-*/
   private:
     std::istream& fp_;
     bool _M_ok;
