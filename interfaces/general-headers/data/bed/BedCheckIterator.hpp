@@ -33,6 +33,7 @@
 #include <limits>
 #include <sstream>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 #include <sys/stat.h>
@@ -61,16 +62,16 @@ namespace Bed {
     typedef BedType**                 pointer;
     typedef BedType*&                 reference;
   
-    static const int nFields_  = BedType::NumFields;
-    static const bool hasRest_ = BedType::UseRest;
+    static constexpr int nFields_  = BedType::NumFields;
+    static constexpr bool hasRest_ = BedType::UseRest;
   
     bed_check_iterator() : fp_(std::cin), _M_ok(false), _M_value(0), fn_(""), cnt_(0),
-                           lastChr_(""), lastStart_(1), lastEnd_(0), nestCheck_(false),
+                           lastChr_(""), lastRest_(""), lastStart_(1), lastEnd_(0), nestCheck_(false),
                            maxEnd_(0), chr_(""), isStarch_(false), all_(true), archive_(0)
       { /* */ }
 
     bed_check_iterator(std::istream& is, const std::string& filename, const std::string& chr = "all", bool nestCheck = false)
-      : fp_(is), _M_ok(fp_), _M_value(0), fn_(filename), cnt_(0), lastChr_(""), lastStart_(1),
+      : fp_(is), _M_ok(fp_), _M_value(0), fn_(filename), cnt_(0), lastChr_(""), lastRest_(""), lastStart_(1),
         lastEnd_(0), nestCheck_(nestCheck), maxEnd_(0), chr_(chr),
         isStarch_(false), all_(chr_ == "all"),
         archive_(0) {
@@ -308,18 +309,18 @@ namespace Bed {
       std::string t(s);
       for ( std::size_t i = 0; i < t.size(); ++i )
         t[i] = static_cast<char>(std::tolower(t[i]));
-      return(t);
+      return t;
     }
   
     bool isUCSCheader(const std::string& bl) {
       std::string tmp = lowerstr(bl);
-      return(tmp == "browser" || tmp == "track");
+      return (tmp == "browser" || tmp == "track");
     }
   
     bool get_starch(std::string& line) {
       if ( archive_ == NULL || !archive_->extractBEDLine(line) )
-        return(false);
-      return(!line.empty());
+        return false;
+      return !line.empty();
     }
   
     bool check(const std::string& bl) {
@@ -330,28 +331,28 @@ namespace Bed {
       if ( bl.empty() )
         msg = "Empty line found.";
       else if ( isUCSCheader(bl) )
-        return(false);
+        return false;
   
       // Check chromosome
       std::string::size_type marker = 0, sz = bl.size();
       while ( msg.empty() && marker < sz ) {
         if ( bl[marker] == ' ' ) {
           if ( isUCSCheader(bl.substr(0, marker)) )
-            return(false);
+            return false;
           msg = "First column should not have spaces.  Consider 'chr1' vs. 'chr1 '.  These are different names.\nsort-bed can correct this for you.";
         }
         else if ( 0 == marker && bl[marker] == '@' ) {
-          return(false); // SAM format header supported by starch
+          return false; // SAM format header supported by starch
         }
         else if ( 0 == marker && bl[marker] == '#' ) {
-          return(false); // VCF format header supported by starch
+          return false; // VCF format header supported by starch
         }
         else if ( bl[marker] == '\t' ) {
           if ( 0 == marker )
             msg = "First column name should not start with a tab.";
           else {
             if ( isUCSCheader(bl.substr(0, marker)) )
-              return(false);
+              return false;
             break;
           }
         }
@@ -394,7 +395,7 @@ namespace Bed {
         }
         ++marker;
       } // while
-  
+
       if ( msg.empty() ) {
         if ( sz <= marker )
           msg = "No tabs after start coordinate.";
@@ -409,10 +410,10 @@ namespace Bed {
             ++marker; // increment passed tab
         }
       }
-  
-  
+
       // Check end coordinate
       pos = marker;
+      auto restMarker = marker;
       while ( msg.empty() && marker < sz ) {
         if ( !std::isdigit(bl[marker]) ) {
           if ( bl[marker] == '\t' && pos != marker )
@@ -430,7 +431,7 @@ namespace Bed {
         }
         ++marker;
       } // while
-  
+
       if ( msg.empty() ) {
         if ( sz <= marker && nFields_ > 3 ) {
           std::stringstream con; con << nFields_;
@@ -447,8 +448,7 @@ namespace Bed {
             ++marker; // increment passed tab
         }
       }
-  
-  
+
       if ( nFields_ > 3 ) { // check ID field
         pos = marker;
         while ( msg.empty() && marker < sz ) {
@@ -461,7 +461,7 @@ namespace Bed {
   
           ++marker;
         } // while
-  
+
         if ( msg.empty() ) {
           if ( sz <= marker && nFields_ > 4 ) {
             std::stringstream con; con << nFields_;
@@ -480,8 +480,7 @@ namespace Bed {
           else
             ++marker; // increment passed tab
         }
-  
-  
+
         if ( nFields_ > 4 ) { // check measurement column
           pos = marker;
           static int decimalCount = 0;
@@ -592,7 +591,7 @@ namespace Bed {
         s << cnt_;
         throw(Exception("in " + fn_ + "\n" + msg + "\nSee row: " + s.str()));
       }
-  
+
       _M_value = new BedType(bl);
       if ( msg.empty() && !lastChr_.empty() ) {
         cmp = std::strcmp(_M_value->chrom(), lastChr_.c_str());
@@ -601,16 +600,22 @@ namespace Bed {
         else if ( cmp == 0 ) {
           if ( _M_value->start() < lastStart_ )
             msg = "Bed file not properly sorted by start coordinates.";
-          else if ( _M_value->start() == lastStart_ && _M_value->end() < lastEnd_ )
-            msg = "Bed file not properly sorted by end coordinates when start coordinates are identical.";
-  
+          else if ( _M_value->start() == lastStart_ ) {
+            if ( _M_value->end() < lastEnd_ )
+              msg = "Bed file not properly sorted by end coordinates when start coordinates are identical.";
+            else if ( hasRest_ && _M_value->end() == lastEnd_ ) {
+              if ( std::strcmp(bl.substr(restMarker).c_str(), lastRest_.c_str()) < 0 )
+                msg = "Bed file not sorted by information following the 3rd column (columns 1-3 equal to previous row).";
+            }
+          }
+
           if ( msg.empty() && nestCheck_ ) { // _M_value->start() > lastStart_
             if ( _M_value->end() < maxEnd_ )
               msg = "Fully nested component found.";
           }
         }
       }
-  
+
       if ( msg.empty() && _M_value->end() <= _M_value->start() )
         msg = "End coordinates must be greater than start coordinates.";
   
@@ -623,18 +628,30 @@ namespace Bed {
       lastChr_ = _M_value->chrom();
       lastStart_ = _M_value->start();
       lastEnd_ = _M_value->end();
+      lastRest_ = bl.substr(restMarker);
       maxEnd_ = lastEnd_;
-      return(true);
+      return true;
     }
-  
-  
+/*
+    // member function require templates to work with overloads
+    template <typename B=BedType>
+    inline typename std::enable_if<B::UseRest, std::string>::type getRest() {
+      return _M_value->rest();
+    }
+
+    // member function require templates to work with overloads
+    template <typename B=BedType>
+    inline typename std::enable_if<!B::UseRest, std::string>::type getRest() {
+      return "";
+    }
+*/
   private:
     std::istream& fp_;
     bool _M_ok;
     BedType* _M_value;
     std::string fn_;
     Bed::CoordType cnt_;
-    std::string lastChr_;
+    std::string lastChr_, lastRest_;
     Bed::CoordType lastStart_, lastEnd_;
     bool allowHeaders_;
     bool nestCheck_;

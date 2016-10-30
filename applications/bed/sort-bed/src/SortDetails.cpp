@@ -391,9 +391,10 @@ mergeSort(FILE* output, FILE **tmpFiles, unsigned int numFiles)
     /* error checking in processData() has already been performed, headers and empty rows removed, etc. */
     unsigned int i = 0U;
     int done = 0, currMin = 0, val = 0;
+    char* currRest = NULL;
     char **chroms = static_cast<char**>( malloc(sizeof(char*) * static_cast<size_t>(numFiles)) );
-
-    if(chroms == NULL)
+ 
+   if(chroms == NULL)
         return -1;
 
     Bed::SignedCoordType *starts = static_cast<Bed::SignedCoordType*>( malloc(sizeof(Bed::SignedCoordType) * static_cast<size_t>(numFiles)) );
@@ -420,6 +421,7 @@ mergeSort(FILE* output, FILE **tmpFiles, unsigned int numFiles)
         rests[i] = static_cast<char*>( malloc(sizeof(char) * (BED_LINE_LEN+1)) );
         if(rests[i] == NULL)
             return -1;
+        rests[i][0] = '\0';
     } /* for */
 
     for(i=0; i < numFiles; ++i)
@@ -438,18 +440,32 @@ mergeSort(FILE* output, FILE **tmpFiles, unsigned int numFiles)
     while(!done)
         {
             currMin = -1;
+            currRest = NULL;
             for(i=0; i < numFiles; ++i)
                 {
                     if(starts[i]>=0)
                         {
                             if(currMin<0 || (val = strcmp(chroms[i], chroms[currMin]))<0)
-                                currMin = static_cast<int>(i);
+                                currMin = static_cast<int>(i), currRest = rests[i];
                             else if(0 == val)
                                 {
                                     if(starts[i] < starts[currMin])
                                         currMin = static_cast<int>(i);
                                     else if(starts[i] == starts[currMin] && ends[i] < ends[currMin])
                                         currMin = static_cast<int>(i);
+                                    else if(starts[i] == starts[currMin] && ends[i] == ends[currMin])
+                                        {
+                                            if (currRest == NULL)
+                                                {
+                                                    currMin = static_cast<int>(i);
+                                                    currRest = rests[i];
+                                                }
+                                            else if (strcmp(rests[i], currRest) < 0)
+                                                {
+                                                    currMin = static_cast<int>(i);
+                                                    currRest = rests[i];
+                                                }
+                                        }
                                 }
                         }
                 } /* for */
@@ -463,6 +479,7 @@ mergeSort(FILE* output, FILE **tmpFiles, unsigned int numFiles)
                 fprintf(output, "%s\t%" PRId64 "\t%" PRId64 "%s\n", chroms[currMin],
                         starts[currMin], ends[currMin], rests[currMin]);
 
+            rests[currMin][0] = '\0';
             fields[currMin] = fscanf(tmpFiles[currMin], "%s\t%" SCNd64 "\t%" SCNd64 "%[^\n]s\n",
                                      chroms[currMin], &starts[currMin],
                                      &ends[currMin], rests[currMin]);
