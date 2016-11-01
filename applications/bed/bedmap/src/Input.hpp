@@ -34,6 +34,7 @@
 #include <string>
 #include <vector>
 
+#include "data/bed/BedCompare.hpp"
 #include "algorithm/visitors/BedVisitors.hpp"
 #include "algorithm/visitors/helpers/NamedVisitors.hpp"
 #include "utility/Assertion.hpp"
@@ -247,12 +248,16 @@ namespace BedMap {
           hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::Indicator>());
         else if ( next == details::name<typename VT::Max>() )
           hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::Max>());
-        else if ( next == details::name<typename VT::MaxElement>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::MaxElement>());
+        else if ( next == details::name<typename VT::MaxElementRand>() )
+          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::MaxElementRand>());
+        else if ( next == details::name<typename VT::MaxElementStable>() )
+          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::MaxElementStable>());
         else if ( next == details::name<typename VT::Min>() )
           hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::Min>());
-        else if ( next == details::name<typename VT::MinElement>() )
-          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::MinElement>());
+        else if ( next == details::name<typename VT::MinElementRand>() )
+          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::MinElementRand>());
+        else if ( next == details::name<typename VT::MinElementStable>() )
+          hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::MinElementStable>());
         else if ( next == details::name<typename VT::Average>() )
           hasVisitor = addNoArgVisitor(Ext::Type2Type<typename VT::Average>());
         else if ( next == details::name<typename VT::Variance>() )
@@ -500,11 +505,13 @@ namespace BedMap {
     usage << "      --" + details::name<VT::MedianAbsoluteDeviation>() + " <mult=1>      The median absolute deviation of overlapping elements in <map-file>.\n";
     usage << "                            Multiply mad score by <mult>.  0 < mult, and mult is 1 by default.\n";
     usage << "      --" + details::name<VT::Max>() + "               The highest score from overlapping elements in <map-file>.\n";
-    usage << "      --" + details::name<VT::MaxElement>() + "       An element with the highest score from overlapping elements in <map-file>.\n";
+    usage << "      --" + details::name<VT::MaxElementStable>() + "       A (non-random) highest-scoring and overlapping element in <map-file>.\n";
+    usage << "      --" + details::name<VT::MaxElementRand>() + "  A random highest-scoring and overlapping element in <map-file>.\n";
     usage << "      --" + details::name<VT::Average>() + "              The average score from overlapping elements in <map-file>.\n";
     usage << "      --" + details::name<VT::Median>() + "            The median score from overlapping elements in <map-file>.\n";
     usage << "      --" + details::name<VT::Min>() + "               The lowest score from overlapping elements in <map-file>.\n";
-    usage << "      --" + details::name<VT::MinElement>() + "       An element with the lowest score from overlapping elements in <map-file>.\n";
+    usage << "      --" + details::name<VT::MinElementStable>() + "       A (non-random) lowest-scoring and overlapping element in <map-file>.\n";
+    usage << "      --" + details::name<VT::MinElementRand>() + "  A random lowest-scoring and overlapping element in <map-file>.\n";
     usage << "      --" + details::name<VT::StdDev>() + "             The square root of the result of --" + details::name<VT::Variance>() + ".\n";
     usage << "      --" + details::name<VT::Sum>() + "               Accumulated scores from overlapping elements in <map-file>.\n";
     usage << "      --" + details::name<VT::TMean>() + " <low> <hi>  The mean score from overlapping elements in <map-file>, after\n";

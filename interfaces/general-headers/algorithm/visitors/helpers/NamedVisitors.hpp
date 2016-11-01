@@ -34,6 +34,7 @@
 #include "algorithm/visitors/OtherVisitors.hpp"
 #include "algorithm/visitors/helpers/ProcessBedVisitorRow.hpp"
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
+#include "data/bed/BedCompare.hpp"
 #include "utility/OrderCompare.hpp"
 
 // Names returned via VisitorName<...>::Name() must be unique
@@ -102,8 +103,8 @@ namespace Visitors {
         { return "mad"; }
     };
 
-    template <typename A, typename B, typename C>
-    struct VisitorName< Visitors::Extreme< A,B,Ordering::CompValueThenAddressGreater<C,C> > > {
+    template <typename A, typename B, typename C, typename D>
+    struct VisitorName< Visitors::Extreme< A,B,Ordering::CompValueThenAddressGreater<C,C>,D > > {
       static std::string Name()
         { return "max"; }
     };
@@ -120,8 +121,8 @@ namespace Visitors {
         { return "median"; }
     };
 
-    template <typename A, typename B, typename C>
-    struct VisitorName< Visitors::Extreme< A,B,Ordering::CompValueThenAddressLesser<C, C> > > {
+    template <typename A, typename B, typename C, typename D>
+    struct VisitorName< Visitors::Extreme< A,B,Ordering::CompValueThenAddressLesser<C, C>,D > > {
       static std::string Name()
         { return "min"; }
     };
@@ -176,16 +177,28 @@ namespace Visitors {
         { return "bases-uniq-f"; }
     };
 
-    template <typename B, typename C>
-    struct VisitorName< Visitors::Extreme< Visitors::BedHelpers::PrintAllScorePrecision,B,Ordering::CompValueThenAddressGreater<C,C> > > {
+    template <typename B, typename C, typename D>
+    struct VisitorName< Visitors::Extreme< Visitors::BedHelpers::PrintAllScorePrecision,B,Bed::ScoreThenGenomicCompareGreater<C,C>, D > > {
       static std::string Name()
         { return "max-element"; }
     };
 
-    template <typename B, typename C>
-    struct VisitorName< Visitors::Extreme< Visitors::BedHelpers::PrintAllScorePrecision,B,Ordering::CompValueThenAddressLesser<C, C> > > {
+    template <typename B, typename C, typename D>
+    struct VisitorName< Visitors::Extreme< Visitors::BedHelpers::PrintAllScorePrecision,B,Ordering::CompValueThenAddressGreater<C,C>, D > > {
+      static std::string Name()
+        { return "max-element-rand"; }
+    };
+
+    template <typename B, typename C, typename D>
+    struct VisitorName< Visitors::Extreme< Visitors::BedHelpers::PrintAllScorePrecision,B,Bed::ScoreThenGenomicCompareLesser<C,C>, D > > {
       static std::string Name()
         { return "min-element"; }
+    };
+
+    template <typename B, typename C, typename D>
+    struct VisitorName< Visitors::Extreme< Visitors::BedHelpers::PrintAllScorePrecision,B,Ordering::CompValueThenAddressLesser<C, C>, D > > {
+      static std::string Name()
+        { return "min-element-rand"; }
     };
 
     template <template<class X> class A, class B>

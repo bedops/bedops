@@ -26,6 +26,8 @@
 
 #include <cstring>
 #include <functional>
+#include <limits>
+#include <type_traits>
 
 namespace Bed {
 
@@ -86,6 +88,103 @@ namespace Bed {
      : public std::binary_function<BedType1 const*, BedType2 const*, bool> {
 
     bool operator()(BedType1 const* one, BedType2 const* two) const {
+      if ( one->start() != two->start() )
+        return one->start() < two->start();
+      if ( one->end() != two->end() )
+        return one->end() < two->end();
+      return one < two;
+    }
+  };
+
+  template <typename BedType1, typename BedType2 = BedType1>
+  struct CoordRestCompare // not caring about chrom here
+    : public std::binary_function<BedType1 const*, BedType2 const*, bool> {
+
+    template <typename T=BedType1, typename U=BedType2>
+    typename std::enable_if<T::UseRest && U::UseRest, bool>::type
+    operator()(BedType1 const* one, BedType2 const* two) const {
+      if ( one->start() != two->start() )
+        return one->start() < two->start();
+      if ( one->end() != two->end() )
+        return one->end() < two->end();
+      return std::strcmp(one->full_rest(), two->full_rest()) < 0;
+    }
+
+    template <typename T=BedType1, typename U=BedType2>
+    typename std::enable_if<T::UseRest && !U::UseRest, bool>::type
+    operator()(BedType1 const* one, BedType2 const* two) const {
+      if ( one->start() != two->start() )
+        return one->start() < two->start();
+      if ( one->end() != two->end() )
+        return one->end() < two->end();
+      return std::strlen(one->full_rest()) == 0;
+    }
+
+    template <typename T=BedType1, typename U=BedType2>
+    typename std::enable_if<!T::UseRest && U::UseRest, bool>::type
+    operator()(BedType1 const* one, BedType2 const* two) const {
+      if ( one->start() != two->start() )
+        return one->start() < two->start();
+      if ( one->end() != two->end() )
+        return one->end() < two->end();
+      std::strlen(two->full_rest()) != 0;
+    }
+
+    template <typename T=BedType1, typename U=BedType2>
+    typename std::enable_if<!T::UseRest && !U::UseRest, bool>::type
+    operator()(BedType1 const* one, BedType2 const* two) const {
+      if ( one->start() != two->start() )
+        return one->start() < two->start();
+      return one->end() < two->end();
+    }
+  };
+
+  template <typename BedType1, typename BedType2 = BedType1>
+  struct CoordRestAddressCompare // not caring about chrom here
+    : public std::binary_function<BedType1 const*, BedType2 const*, bool> {
+
+    template <typename T=BedType1, typename U=BedType2>
+    typename std::enable_if<T::UseRest && U::UseRest, bool>::type
+    operator()(BedType1 const* one, BedType2 const* two) const {
+      if ( one->start() != two->start() )
+        return one->start() < two->start();
+      if ( one->end() != two->end() )
+        return one->end() < two->end();
+      int val = std::strcmp(one->full_rest(), two->full_rest());
+      if ( val != 0 )
+        return val < 0;
+      return one < two;
+    }
+
+    template <typename T=BedType1, typename U=BedType2>
+    typename std::enable_if<T::UseRest && !U::UseRest, bool>::type
+    operator()(BedType1 const* one, BedType2 const* two) const {
+      if ( one->start() != two->start() )
+        return one->start() < two->start();
+      if ( one->end() != two->end() )
+        return one->end() < two->end();
+      auto n = std::strlen(one->full_rest());
+      if ( n != 0 )
+        return false;
+      return one < two;
+    }
+
+    template <typename T=BedType1, typename U=BedType2>
+    typename std::enable_if<!T::UseRest && U::UseRest, bool>::type
+    operator()(BedType1 const* one, BedType2 const* two) const {
+      if ( one->start() != two->start() )
+        return one->start() < two->start();
+      if ( one->end() != two->end() )
+        return one->end() < two->end();
+      auto n = std::strlen(two->full_rest());
+      if ( n != 0 )
+        return true;
+      return one < two;
+    }
+
+    template <typename T=BedType1, typename U=BedType2>
+    typename std::enable_if<!T::UseRest && !U::UseRest, bool>::type
+    operator()(BedType1 const* one, BedType2 const* two) const {
       if ( one->start() != two->start() )
         return one->start() < two->start();
       if ( one->end() != two->end() )

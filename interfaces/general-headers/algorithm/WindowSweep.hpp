@@ -71,8 +71,8 @@ namespace WindowSweep {
     sweep() Assumptions:
     1) in terms of RangeComp(a, b):
          return 0 if a and b are 'within range' of each other
-         return less than 0 if a is 'greater than' b
-         return greater than 0 if a is 'less than' b
+         return less than 0 if a is 'less than' b
+         return greater than 0 if a is 'greater than' b
 
     2) in terms of RangeComp(c, c):
          return 0 : object must always be in range of itself

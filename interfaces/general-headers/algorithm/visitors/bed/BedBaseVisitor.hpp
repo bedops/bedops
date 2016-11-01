@@ -123,7 +123,7 @@ namespace Visitors {
 
   protected:
      // typedefs
-     typedef std::set<MapType*, Bed::CoordAddressCompare<MapType>> OrderLesser;
+     typedef std::set<MapType*, Bed::CoordRestAddressCompare<MapType>> OrderLesser;
      typedef OrderLesser OrderCache;
      typedef OrderLesser OrderWin;
 

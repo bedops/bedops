@@ -27,7 +27,9 @@
 #include "algorithm/visitors/BedVisitors.hpp"
 #include "algorithm/visitors/helpers/ProcessBedVisitorRow.hpp"
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
+#include "data/bed/BedCompare.hpp"
 #include "utility/Exception.hpp"
+#include "utility/OrderCompare.hpp"
 
 namespace BedMap {
 
@@ -58,25 +60,31 @@ namespace BedMap {
 
     typedef typename BaseClass::RefType RefType;
     typedef typename BaseClass::MapType MapType;
-    typedef Ordering::CompValueThenAddressGreater<MapType, MapType> MaxOrder;
-    typedef Ordering::CompValueThenAddressLesser<MapType, MapType> MinOrder;
+    typedef Ordering::CompValueThenAddressGreater<MapType, MapType> MaxOrderArb;  // arbitrary on ties
+    typedef Ordering::CompValueThenAddressLesser<MapType, MapType> MinOrderArb;   // arbitrary on ties
+    typedef Ordering::CompValueThenAddressGreater<MapType, MapType> MaxOrderRand; // on ties, return a random element (keep all elements around)
+    typedef Ordering::CompValueThenAddressLesser<MapType, MapType> MinOrderRand;  // on ties, return a random element (keep all elements around)
+    typedef Bed::ScoreThenGenomicCompareGreater<MapType, MapType> MaxOrderStable; // on ties, return first genomic element observed (only first kept on value+genomic ties)
+    typedef Bed::ScoreThenGenomicCompareLesser<MapType, MapType> MinOrderStable;  // on ties, return first genomic element observed (only first kept on value+genomic ties)
 
     typedef Visitors::Average<ProcessScorePrecision, BaseClass> Average;
     typedef Visitors::CoeffVariation<ProcessScorePrecision, BaseClass> CoeffVariation;
     typedef Visitors::Count<ProcessScore, BaseClass> Count;
     typedef Visitors::RollingKthAverage<ProcessScorePrecision, BaseClass, Ext::ArgumentError> KthAverage;
-    typedef Visitors::Extreme<ProcessScorePrecision, BaseClass, MaxOrder> Max;
+    typedef Visitors::Extreme<ProcessScorePrecision, BaseClass, MaxOrderArb> Max;
     typedef Visitors::Indicator<ProcessScore, BaseClass> Indicator;
     typedef Visitors::Median<ProcessScorePrecision, BaseClass> Median;
     typedef Visitors::MedianAbsoluteDeviation<ProcessScorePrecision, BaseClass> MedianAbsoluteDeviation;
-    typedef Visitors::Extreme<ProcessScorePrecision, BaseClass, MinOrder> Min;
+    typedef Visitors::Extreme<ProcessScorePrecision, BaseClass, MinOrderArb> Min;
     typedef Visitors::StdDev<ProcessScorePrecision, BaseClass> StdDev;
     typedef Visitors::Sum<ProcessScorePrecision, BaseClass> Sum;
     typedef Visitors::TrimmedMean<ProcessScorePrecision, BaseClass, Ext::ArgumentError> TMean;
     typedef Visitors::Variance<ProcessScorePrecision, BaseClass> Variance;
 
-    typedef Visitors::Extreme<ProcessOne, BaseClass, MaxOrder> MaxElement;
-    typedef Visitors::Extreme<ProcessOne, BaseClass, MinOrder> MinElement;
+    typedef Visitors::Extreme<ProcessOne, BaseClass, MaxOrderRand, Visitors::RandTie> MaxElementRand;
+    typedef Visitors::Extreme<ProcessOne, BaseClass, MinOrderRand, Visitors::RandTie> MinElementRand;
+    typedef Visitors::Extreme<ProcessOne, BaseClass, MaxOrderStable> MaxElementStable;
+    typedef Visitors::Extreme<ProcessOne, BaseClass, MinOrderStable> MinElementStable;
 
     typedef Visitors::BedSpecific::EchoMapBed<ProcessRangeDelimAll, BaseClass> EchoMapAll;
     typedef Visitors::BedSpecific::EchoMapBed<ProcessRangeDelimID, BaseClass> EchoMapID;
