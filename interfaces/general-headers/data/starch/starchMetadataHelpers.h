@@ -288,6 +288,9 @@ ArchiveVersion * STARCH_copyArchiveVersion(const ArchiveVersion *oav);
 int              STARCH_chromosomeInMetadataRecords(const Metadata *md, 
                                                         const char *chr);
 
+int              STARCH_chromosomePositionedBeforeExistingMetadataRecord(const Metadata *md, 
+                                                                             const char *chr);
+
 #ifdef __cplusplus
 } // namespace starch
 #endif

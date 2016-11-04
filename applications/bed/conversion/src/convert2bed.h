@@ -73,6 +73,9 @@ const boolean kFalse = 0;
 #define C2B_MAX_VCF_FIELD_COUNT_VALUE 24576
 #define C2B_SAM_CIGAR_OPS_VALUE_INITIAL 1
 #define C2B_SAM_CIGAR_OPS_VALUE_INCREMENT 1000
+#define C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
+#define C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION 32
+#define C2B_TEST_BUFFER_SIZE 5000000
 
 extern const char *c2b_samtools;
 extern const char *c2b_sort_bed;
@@ -255,19 +258,33 @@ const char default_cigar_op_operation = '-';
 
 typedef struct sam {
     char *qname;
+    ssize_t qname_capacity;
+    char *modified_qname;
+    ssize_t modified_qname_capacity;
     int flag;
     char *strand;
+    ssize_t strand_capacity;
     char *rname;
+    ssize_t rname_capacity;
     uint64_t start;
     uint64_t stop;
     char *mapq;
+    ssize_t mapq_capacity;
     char *cigar;
+    ssize_t cigar_capacity;
     char *rnext;
+    ssize_t rnext_capacity;
     char *pnext;
+    ssize_t pnext_capacity;
     char *tlen;
+    ssize_t tlen_capacity;
     char *seq;
+    ssize_t seq_capacity;
     char *qual;
+    ssize_t qual_capacity;
     char *opt;
+    ssize_t opt_length;
+    ssize_t opt_capacity;
 } c2b_sam_t;
 
 /* 
@@ -553,6 +570,7 @@ typedef struct pipeline_stage {
     int status;
     char *description;
     pid_t pid;
+    ssize_t buffer_size;
 } c2b_pipeline_stage_t;
 
 #define PIPE4_FLAG_NONE       (0U)
@@ -1231,6 +1249,7 @@ typedef struct rmsk_state {
 typedef struct sam_state {
     char *samtools_path;
     c2b_cigar_t *cigar;
+    c2b_sam_t *element;
 } c2b_sam_state_t;
 
 typedef struct vcf_state {
@@ -1366,11 +1385,13 @@ extern "C" {
     static void              c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
     static void              c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *dest_size, char *src, ssize_t src_size); 
     static inline void       c2b_sam_cigar_str_to_ops(char *s);
+    static void              c2b_sam_init_element(c2b_sam_t **e);
+    static void              c2b_sam_delete_element(c2b_sam_t *e);
     static void              c2b_sam_init_cigar_ops(c2b_cigar_t **c, const ssize_t size);
     static void              c2b_sam_resize_cigar_ops(c2b_cigar_t **new_c, c2b_cigar_t *old_c);
     static void              c2b_sam_debug_cigar_ops(c2b_cigar_t *c);
     static void              c2b_sam_delete_cigar_ops(c2b_cigar_t *c);
-    static inline void       c2b_line_convert_sam_to_bed(c2b_sam_t s, char *dest_line, ssize_t *dest_size);
+    static inline void       c2b_line_convert_sam_ptr_to_bed(c2b_sam_t *s, char *dest_line, ssize_t *dest_size, boolean print_modified_qname);
     static void              c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
     static inline boolean    c2b_vcf_allele_is_id(char *s);
     static inline boolean    c2b_vcf_record_is_snv(char *ref, char *alt);

@@ -187,6 +187,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
     char bed_unsorted2bed_sorted_cmd[C2B_MAX_LINE_LENGTH_VALUE];
     char bed_sorted2starch_cmd[C2B_MAX_LINE_LENGTH_VALUE];
     void (*generic2bed_unsorted_line_functor)(char *, ssize_t *, char *, ssize_t) = to_bed_line_functor;
+    ssize_t buffer_size = C2B_TEST_BUFFER_SIZE;
     int errsv = 0;
 
     if ((!c2b_globals.sort->is_enabled) && (c2b_globals.output_format_idx == BED_FORMAT)) {
@@ -197,6 +198,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         cat2generic_stage.description = "Generic data from stdin";
         cat2generic_stage.pid = 0;
         cat2generic_stage.status = 0;
+        cat2generic_stage.buffer_size = buffer_size;
         
         generic2bed_unsorted_stage.pipeset = p;
         generic2bed_unsorted_stage.line_functor = generic2bed_unsorted_line_functor;
@@ -205,6 +207,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         generic2bed_unsorted_stage.description = "Generic data to unsorted BED";
         generic2bed_unsorted_stage.pid = 0;
         generic2bed_unsorted_stage.status = 0;
+        generic2bed_unsorted_stage.buffer_size = buffer_size;
 
         bed_unsorted2stdout_stage.pipeset = p;
         bed_unsorted2stdout_stage.line_functor = NULL;
@@ -213,6 +216,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         bed_unsorted2stdout_stage.description = "Unsorted BED to stdout";
         bed_unsorted2stdout_stage.pid = 0;
         bed_unsorted2stdout_stage.status = 0;
+        bed_unsorted2stdout_stage.buffer_size = buffer_size;
     }
     else if (c2b_globals.output_format_idx == BED_FORMAT) {
         cat2generic_stage.pipeset = p;
@@ -222,6 +226,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         cat2generic_stage.description = "Generic data from stdin"; 
         cat2generic_stage.pid = 0;
         cat2generic_stage.status = 0;
+        cat2generic_stage.buffer_size = buffer_size;
         
         generic2bed_unsorted_stage.pipeset = p;
         generic2bed_unsorted_stage.line_functor = generic2bed_unsorted_line_functor;
@@ -230,6 +235,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         generic2bed_unsorted_stage.description = "Generic data to unsorted BED";
         generic2bed_unsorted_stage.pid = 0;
         generic2bed_unsorted_stage.status = 0;
+        generic2bed_unsorted_stage.buffer_size = buffer_size;
         
         bed_unsorted2bed_sorted_stage.pipeset = p;
         bed_unsorted2bed_sorted_stage.line_functor = NULL;
@@ -238,6 +244,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         bed_unsorted2bed_sorted_stage.description = "Unsorted BED to sorted BED";
         bed_unsorted2bed_sorted_stage.pid = 0;
         bed_unsorted2bed_sorted_stage.status = 0;
+        bed_unsorted2bed_sorted_stage.buffer_size = buffer_size;
 
         bed_sorted2stdout_stage.pipeset = p;
         bed_sorted2stdout_stage.line_functor = NULL;
@@ -246,6 +253,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         bed_sorted2stdout_stage.description = "Sorted BED to stdout";
         bed_sorted2stdout_stage.pid = 0;
         bed_sorted2stdout_stage.status = 0;
+        bed_sorted2stdout_stage.buffer_size = buffer_size;
     }
     else if (c2b_globals.output_format_idx == STARCH_FORMAT) {
         cat2generic_stage.pipeset = p;
@@ -255,6 +263,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         cat2generic_stage.description = "Generic data from stdin";
         cat2generic_stage.pid = 0;
         cat2generic_stage.status = 0;
+        cat2generic_stage.buffer_size = buffer_size;
         
         generic2bed_unsorted_stage.pipeset = p;
         generic2bed_unsorted_stage.line_functor = generic2bed_unsorted_line_functor;
@@ -263,6 +272,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         generic2bed_unsorted_stage.description = "Generic data to unsorted BED";
         generic2bed_unsorted_stage.pid = 0;
         generic2bed_unsorted_stage.status = 0;
+        generic2bed_unsorted_stage.buffer_size = buffer_size;
 
         bed_unsorted2bed_sorted_stage.pipeset = p;
         bed_unsorted2bed_sorted_stage.line_functor = NULL;
@@ -271,6 +281,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         bed_unsorted2bed_sorted_stage.description = "Unsorted BED to sorted BED";
         bed_unsorted2bed_sorted_stage.pid = 0;
         bed_unsorted2bed_sorted_stage.status = 0;
+        bed_unsorted2bed_sorted_stage.buffer_size = buffer_size;
 
         bed_sorted2starch_stage.pipeset = p;
         bed_sorted2starch_stage.line_functor = NULL;
@@ -279,6 +290,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         bed_sorted2stdout_stage.description = "Sorted BED to Starch";
         bed_sorted2starch_stage.pid = 0;
         bed_sorted2starch_stage.status = 0;
+        bed_sorted2starch_stage.buffer_size = buffer_size;
 
         starch2stdout_stage.pipeset = p;
         starch2stdout_stage.line_functor = NULL;
@@ -287,6 +299,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         starch2stdout_stage.description = "Starch to stdout";
         starch2stdout_stage.pid = 0;
         starch2stdout_stage.status = 0;
+        starch2stdout_stage.buffer_size = buffer_size;
     }
     else {
         fprintf(stderr, "Error: Unknown conversion parameter combination\n");
@@ -472,6 +485,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
     char bed_unsorted2bed_sorted_cmd[C2B_MAX_LINE_LENGTH_VALUE];
     char bed_sorted2starch_cmd[C2B_MAX_LINE_LENGTH_VALUE];
     void (*sam2bed_unsorted_line_functor)(char *, ssize_t *, char *, ssize_t) = NULL;
+    ssize_t buffer_size = C2B_TEST_BUFFER_SIZE;
     int errsv = errno;
 
     sam2bed_unsorted_line_functor = (!c2b_globals.split_flag ?
@@ -486,6 +500,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         bam2sam_stage.description = "BAM data from stdin to SAM";
         bam2sam_stage.pid = 0;
         bam2sam_stage.status = 0;
+        bam2sam_stage.buffer_size = buffer_size;
         
         sam2bed_unsorted_stage.pipeset = p;
         sam2bed_unsorted_stage.line_functor = sam2bed_unsorted_line_functor;
@@ -494,6 +509,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         sam2bed_unsorted_stage.description = "SAM to unsorted BED";
         sam2bed_unsorted_stage.pid = 0;
         sam2bed_unsorted_stage.status = 0;
+        sam2bed_unsorted_stage.buffer_size = buffer_size;
 
         bed_unsorted2stdout_stage.pipeset = p;
         bed_unsorted2stdout_stage.line_functor = NULL;
@@ -502,6 +518,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         bed_unsorted2stdout_stage.description = "Unsorted BED to stdout";
         bed_unsorted2stdout_stage.pid = 0;
         bed_unsorted2stdout_stage.status = 0;
+        bed_unsorted2stdout_stage.buffer_size = buffer_size;
     }
     else if (c2b_globals.output_format_idx == BED_FORMAT) {
         bam2sam_stage.pipeset = p;
@@ -511,6 +528,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         bam2sam_stage.description = "BAM data from stdin to SAM";
         bam2sam_stage.pid = 0;
         bam2sam_stage.status = 0;
+        bam2sam_stage.buffer_size = buffer_size;
         
         sam2bed_unsorted_stage.pipeset = p;
         sam2bed_unsorted_stage.line_functor = sam2bed_unsorted_line_functor;
@@ -519,6 +537,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         sam2bed_unsorted_stage.description = "SAM to unsorted BED";
         sam2bed_unsorted_stage.pid = 0;
         sam2bed_unsorted_stage.status = 0;
+        sam2bed_unsorted_stage.buffer_size = buffer_size;
         
         bed_unsorted2bed_sorted_stage.pipeset = p;
         bed_unsorted2bed_sorted_stage.line_functor = NULL;
@@ -527,6 +546,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         bed_unsorted2bed_sorted_stage.description = "Unsorted BED to sorted BED";
         bed_unsorted2bed_sorted_stage.pid = 0;
         bed_unsorted2bed_sorted_stage.status = 0;
+        bed_unsorted2bed_sorted_stage.buffer_size = buffer_size;
 
         bed_sorted2stdout_stage.pipeset = p;
         bed_sorted2stdout_stage.line_functor = NULL;
@@ -535,6 +555,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         bed_sorted2stdout_stage.description = "Sorted BED to stdout";
         bed_sorted2stdout_stage.pid = 0;
         bed_sorted2stdout_stage.status = 0;
+        bed_sorted2stdout_stage.buffer_size = buffer_size;
     }
     else if (c2b_globals.output_format_idx == STARCH_FORMAT) {
         bam2sam_stage.pipeset = p;
@@ -544,7 +565,8 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         bam2sam_stage.description = "BAM data from stdin to SAM";
         bam2sam_stage.pid = 0;
         bam2sam_stage.status = 0;
-        
+        bam2sam_stage.buffer_size = buffer_size;
+
         sam2bed_unsorted_stage.pipeset = p;
         sam2bed_unsorted_stage.line_functor = sam2bed_unsorted_line_functor;
         sam2bed_unsorted_stage.src = 0;
@@ -552,6 +574,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         sam2bed_unsorted_stage.description = "SAM to unsorted BED";
         sam2bed_unsorted_stage.pid = 0;
         sam2bed_unsorted_stage.status = 0;
+        sam2bed_unsorted_stage.buffer_size = buffer_size;
 
         bed_unsorted2bed_sorted_stage.pipeset = p;
         bed_unsorted2bed_sorted_stage.line_functor = NULL;
@@ -560,6 +583,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         bed_unsorted2bed_sorted_stage.description = "Unsorted BED to sorted BED";
         bed_unsorted2bed_sorted_stage.pid = 0;
         bed_unsorted2bed_sorted_stage.status = 0;
+        bed_unsorted2bed_sorted_stage.buffer_size = buffer_size;
 
         bed_sorted2starch_stage.pipeset = p;
         bed_sorted2starch_stage.line_functor = NULL;
@@ -568,6 +592,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         bed_sorted2starch_stage.description = "Sorted BED to Starch";
         bed_sorted2starch_stage.pid = 0;
         bed_sorted2starch_stage.status = 0;
+        bed_sorted2starch_stage.buffer_size = buffer_size;
 
         starch2stdout_stage.pipeset = p;
         starch2stdout_stage.line_functor = NULL;
@@ -576,6 +601,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         starch2stdout_stage.description = "Starch to stdout";
         starch2stdout_stage.pid = 0;
         starch2stdout_stage.status = 0;
+        starch2stdout_stage.buffer_size = buffer_size;
     }
     else {
         fprintf(stderr, "Error: Unknown BAM conversion parameter combination\n");
@@ -2387,10 +2413,21 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
     */
 
     ssize_t cigar_size = sam_field_offsets[5] - sam_field_offsets[4];
-    char cigar_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
-    memcpy(cigar_str, src + sam_field_offsets[4] + 1, cigar_size - 1);
-    cigar_str[cigar_size - 1] = '\0';
-    c2b_sam_cigar_str_to_ops(cigar_str);
+    if (cigar_size >= c2b_globals.sam->element->cigar_capacity) {
+        char *cigar_resized = NULL;
+        cigar_resized = realloc(c2b_globals.sam->element->cigar, cigar_size + 1);
+        if (cigar_resized) {
+            c2b_globals.sam->element->cigar = cigar_resized;
+            c2b_globals.sam->element->cigar_capacity = cigar_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize CIGAR string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->cigar, src + sam_field_offsets[4] + 1, cigar_size - 1);
+    c2b_globals.sam->element->cigar[cigar_size - 1] = '\0';
+    c2b_sam_cigar_str_to_ops(c2b_globals.sam->element->cigar);
 #ifdef DEBUG
     c2b_sam_debug_cigar_ops(c2b_globals.sam->cigar);
 #endif
@@ -2408,8 +2445,8 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
     char flag_src_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     memcpy(flag_src_str, src + sam_field_offsets[0] + 1, flag_size);
     flag_src_str[flag_size] = '\0';
-    int flag_val = (int) strtol(flag_src_str, NULL, 10);
-    boolean is_mapped = (boolean) !(4 & flag_val);
+    c2b_globals.sam->element->flag = (int) strtol(flag_src_str, NULL, 10);
+    boolean is_mapped = (boolean) !(4 & c2b_globals.sam->element->flag);
     if ((!is_mapped) && (!c2b_globals.all_reads_flag)) 
         return;    
 
@@ -2418,19 +2455,40 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
     */
 
     /* RNAME */
-    char rname_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     if (is_mapped) {
         ssize_t rname_size = sam_field_offsets[2] - sam_field_offsets[1] - 1;
-        memcpy(rname_str, src + sam_field_offsets[1] + 1, rname_size);
-        rname_str[rname_size] = '\0';
+        if (rname_size >= c2b_globals.sam->element->rname_capacity) {
+            char *rname_resized = NULL;
+            rname_resized = realloc(c2b_globals.sam->element->rname, rname_size + 1);
+            if (rname_resized) {
+                c2b_globals.sam->element->rname = rname_resized;
+                c2b_globals.sam->element->rname_capacity = rname_size + 1;
+            }
+            else {
+                fprintf(stderr, "Error: Could not resize RNAME string in SAM element struct\n");
+                exit(ENOMEM);
+            }
+        }
+        memcpy(c2b_globals.sam->element->rname, src + sam_field_offsets[1] + 1, rname_size);
+        c2b_globals.sam->element->rname[rname_size] = '\0';
     }
     else {
-        char unmapped_read_chr_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
-        memcpy(unmapped_read_chr_str, c2b_unmapped_read_chr_name, strlen(c2b_unmapped_read_chr_name));
-        unmapped_read_chr_str[strlen(c2b_unmapped_read_chr_name)] = '\t';
-        unmapped_read_chr_str[strlen(c2b_unmapped_read_chr_name) + 1] = '\0';
-        memcpy(rname_str, unmapped_read_chr_str, strlen(unmapped_read_chr_str));
-        rname_str[strlen(unmapped_read_chr_str)] = '\0';
+        ssize_t c2b_unmapped_read_chr_name_size = strlen(c2b_unmapped_read_chr_name);
+        if (c2b_unmapped_read_chr_name_size >= c2b_globals.sam->element->rname_capacity) {
+            char *rname_resized = NULL;
+            rname_resized = realloc(c2b_globals.sam->element->rname, c2b_unmapped_read_chr_name_size + 2);
+            if (rname_resized) {
+                c2b_globals.sam->element->rname = rname_resized;
+                c2b_globals.sam->element->rname_capacity = c2b_unmapped_read_chr_name_size + 2;
+            }
+            else {
+                fprintf(stderr, "Error: Could not resize RNAME string in SAM element struct\n");
+                exit(ENOMEM);
+            }
+        }
+        memcpy(c2b_globals.sam->element->rname, c2b_unmapped_read_chr_name, c2b_unmapped_read_chr_name_size);
+        c2b_globals.sam->element->rname[c2b_unmapped_read_chr_name_size] = '\t';
+        c2b_globals.sam->element->rname[c2b_unmapped_read_chr_name_size + 1] = '\0';
     }
 
     /* POS */
@@ -2440,84 +2498,175 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
     pos_src_str[pos_size - 1] = '\0';
     uint64_t pos_val = strtoull(pos_src_str, NULL, 10);
     uint64_t start_val = pos_val - 1; /* remember, start = POS - 1 */
+    c2b_globals.sam->element->start = start_val;
+    c2b_globals.sam->element->stop = start_val; /* this will be adjusted after CIGAR string is parsed */
 
     /* QNAME */
-    char qname_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t qname_size = sam_field_offsets[0];
-    memcpy(qname_str, src, qname_size);
-    qname_str[qname_size] = '\0';
+    if (qname_size >= c2b_globals.sam->element->qname_capacity) {
+        char *qname_resized = NULL;
+        qname_resized = realloc(c2b_globals.sam->element->qname, qname_size + 1);
+        if (qname_resized) {
+            c2b_globals.sam->element->qname = qname_resized;
+            c2b_globals.sam->element->qname_capacity = qname_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize QNAME string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->qname, src, qname_size);
+    c2b_globals.sam->element->qname[qname_size] = '\0';
 
     /* 16 & FLAG */
-    int strand_val = 0x10 & flag_val;
-    char strand_str[C2B_MAX_STRAND_LENGTH_VALUE];
+    int strand_val = 0x10 & c2b_globals.sam->element->flag;
+    char strand_str[C2B_MAX_STRAND_LENGTH_VALUE] = {0};
     sprintf(strand_str, "%c", (strand_val == 0x10) ? '-' : '+');
-    
+    ssize_t strand_size = strlen(strand_str);
+    if (strand_size >= c2b_globals.sam->element->strand_capacity) {
+        char *strand_resized = NULL;
+        strand_resized = realloc(c2b_globals.sam->element->strand, strand_size + 1);
+        if (strand_resized) {
+            c2b_globals.sam->element->strand = strand_resized;
+            c2b_globals.sam->element->strand_capacity = strand_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize STRAND string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->strand, strand_str, strand_size);
+    c2b_globals.sam->element->strand[strand_size] = '\0';
+
     /* MAPQ */
-    char mapq_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t mapq_size = sam_field_offsets[4] - sam_field_offsets[3] - 1;
-    memcpy(mapq_str, src + sam_field_offsets[3] + 1, mapq_size);
-    mapq_str[mapq_size] = '\0';
-    
+    if (mapq_size >= c2b_globals.sam->element->mapq_capacity) {
+        char *mapq_resized = NULL;
+        mapq_resized = realloc(c2b_globals.sam->element->mapq, mapq_size + 1);
+        if (mapq_resized) {
+            c2b_globals.sam->element->mapq = mapq_resized;
+            c2b_globals.sam->element->mapq_capacity = mapq_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize MAPQ string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->mapq, src + sam_field_offsets[3] + 1, mapq_size);
+    c2b_globals.sam->element->mapq[mapq_size] = '\0';
+
     /* RNEXT */
-    char rnext_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t rnext_size = sam_field_offsets[6] - sam_field_offsets[5] - 1;
-    memcpy(rnext_str, src + sam_field_offsets[5] + 1, rnext_size);
-    rnext_str[rnext_size] = '\0';
+    if (rnext_size >= c2b_globals.sam->element->rnext_capacity) {
+        char *rnext_resized = NULL;
+        rnext_resized = realloc(c2b_globals.sam->element->rnext, rnext_size + 1);
+        if (rnext_resized) {
+            c2b_globals.sam->element->rnext = rnext_resized;
+            c2b_globals.sam->element->rnext_capacity = rnext_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize RNEXT string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->rnext, src + sam_field_offsets[5] + 1, rnext_size);
+    c2b_globals.sam->element->rnext[rnext_size] = '\0';
 
     /* PNEXT */
-    char pnext_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t pnext_size = sam_field_offsets[7] - sam_field_offsets[6] - 1;
-    memcpy(pnext_str, src + sam_field_offsets[6] + 1, pnext_size);
-    pnext_str[pnext_size] = '\0';
+    if (pnext_size >= c2b_globals.sam->element->pnext_capacity) {
+        char *pnext_resized = NULL;
+        pnext_resized = realloc(c2b_globals.sam->element->pnext, pnext_size + 1);
+        if (pnext_resized) {
+            c2b_globals.sam->element->pnext = pnext_resized;
+            c2b_globals.sam->element->pnext_capacity = pnext_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize PNEXT string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->pnext, src + sam_field_offsets[6] + 1, pnext_size);
+    c2b_globals.sam->element->pnext[pnext_size] = '\0';
 
     /* TLEN */
-    char tlen_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t tlen_size = sam_field_offsets[8] - sam_field_offsets[7] - 1;
-    memcpy(tlen_str, src + sam_field_offsets[7] + 1, tlen_size);
-    tlen_str[tlen_size] = '\0';
+    if (tlen_size >= c2b_globals.sam->element->tlen_capacity) {
+        char *tlen_resized = NULL;
+        tlen_resized = realloc(c2b_globals.sam->element->tlen, tlen_size + 1);
+        if (tlen_resized) {
+            c2b_globals.sam->element->tlen = tlen_resized;
+            c2b_globals.sam->element->tlen_capacity = tlen_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize TLEN string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->tlen, src + sam_field_offsets[7] + 1, tlen_size);
+    c2b_globals.sam->element->tlen[tlen_size] = '\0';
 
     /* SEQ */
-    char seq_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t seq_size = sam_field_offsets[9] - sam_field_offsets[8] - 1;
-    memcpy(seq_str, src + sam_field_offsets[8] + 1, seq_size);
-    seq_str[seq_size] = '\0';
+    if (seq_size >= c2b_globals.sam->element->seq_capacity) {
+        char *seq_resized = NULL;
+        seq_resized = realloc(c2b_globals.sam->element->seq, seq_size + 1);
+        if (seq_resized) {
+            c2b_globals.sam->element->seq = seq_resized;
+            c2b_globals.sam->element->seq_capacity = seq_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize SEQ string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->seq, src + sam_field_offsets[8] + 1, seq_size);
+    c2b_globals.sam->element->seq[seq_size] = '\0';
 
     /* QUAL */
-    char qual_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t qual_size = sam_field_offsets[10] - sam_field_offsets[9] - 1;
-    memcpy(qual_str, src + sam_field_offsets[9] + 1, qual_size);
-    qual_str[qual_size] = '\0';
+    if (qual_size >= c2b_globals.sam->element->qual_capacity) {
+        char *qual_resized = NULL;
+        qual_resized = realloc(c2b_globals.sam->element->qual, qual_size + 1);
+        if (qual_resized) {
+            c2b_globals.sam->element->qual = qual_resized;
+            c2b_globals.sam->element->qual_capacity = qual_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize QUAL string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->qual, src + sam_field_offsets[9] + 1, qual_size);
+    c2b_globals.sam->element->qual[qual_size] = '\0';
 
     /* Optional fields */
-    char opt_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
+    c2b_globals.sam->element->opt[0] = '\0';
+    c2b_globals.sam->element->opt_length = 0;
     if (sam_field_offsets[11] != -1) {
-        opt_str[0] = '\0';
         for (int field_idx = 11; field_idx <= sam_field_idx; field_idx++) {
             ssize_t opt_size = sam_field_offsets[field_idx] - sam_field_offsets[field_idx - 1] - (field_idx == sam_field_idx ? 1 : 0);
-            memcpy(opt_str + strlen(opt_str), src + sam_field_offsets[field_idx - 1] + 1, opt_size);
-            opt_str[strlen(opt_str) + opt_size] = '\0';
+            if ((c2b_globals.sam->element->opt_length + opt_size) >= c2b_globals.sam->element->opt_capacity) {
+                char *opt_resized = NULL;
+                opt_resized = realloc(c2b_globals.sam->element->opt, c2b_globals.sam->element->opt_length + opt_size + 1);
+                if (opt_resized) {
+                    c2b_globals.sam->element->opt = opt_resized;
+                    c2b_globals.sam->element->opt_capacity = c2b_globals.sam->element->opt_length + opt_size + 1;
+                }
+                else {
+                    fprintf(stderr, "Error: Could not resize OPT string in SAM element struct\n");
+                    exit(ENOMEM);
+                }
+            }
+            memcpy(c2b_globals.sam->element->opt + c2b_globals.sam->element->opt_length, src + sam_field_offsets[field_idx - 1] + 1, opt_size);
+            c2b_globals.sam->element->opt[c2b_globals.sam->element->opt_length + opt_size] = '\0';
+            c2b_globals.sam->element->opt_length += opt_size;
         }
     }
 
     /* 
        Loop through operations and process a line of input based on each operation and its associated value
     */
-
-    c2b_sam_t sam;
-    sam.rname = rname_str;
-    sam.start = start_val;
-    sam.stop = start_val;
-    sam.qname = qname_str;
-    sam.flag = flag_val;
-    sam.strand = strand_str;
-    sam.mapq = mapq_str;
-    sam.cigar = cigar_str;
-    sam.rnext = rnext_str;
-    sam.pnext = pnext_str;
-    sam.tlen = tlen_str;
-    sam.seq = seq_str;
-    sam.qual = qual_str;
-    sam.opt = opt_str;
 
     for (op_idx = 0; op_idx < c2b_globals.sam->cigar->length; ++op_idx) {
         char current_op = c2b_globals.sam->cigar->ops[op_idx].operation;
@@ -2529,7 +2678,7 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
             case 'D':
             case '=':
             case 'X':
-                sam.stop += bases;
+                c2b_globals.sam->element->stop += bases;
             case 'H':
             case 'I':
             case 'P':
@@ -2540,7 +2689,7 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
             }
     }
 
-    c2b_line_convert_sam_to_bed(sam, dest, dest_size);
+    c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, kFalse);
 }
 
 static void
@@ -2606,10 +2755,21 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
     */
 
     ssize_t cigar_size = sam_field_offsets[5] - sam_field_offsets[4];
-    char cigar_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
-    memcpy(cigar_str, src + sam_field_offsets[4] + 1, cigar_size - 1);
-    cigar_str[cigar_size - 1] = '\0';
-    c2b_sam_cigar_str_to_ops(cigar_str);
+    if (cigar_size >= c2b_globals.sam->element->cigar_capacity) {
+        char *cigar_resized = NULL;
+        cigar_resized = realloc(c2b_globals.sam->element->cigar, cigar_size + 1);
+        if (cigar_resized) {
+            c2b_globals.sam->element->cigar = cigar_resized;
+            c2b_globals.sam->element->cigar_capacity = cigar_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize CIGAR string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->cigar, src + sam_field_offsets[4] + 1, cigar_size - 1);
+    c2b_globals.sam->element->cigar[cigar_size - 1] = '\0';
+    c2b_sam_cigar_str_to_ops(c2b_globals.sam->element->cigar);
 #ifdef DEBUG
     c2b_sam_debug_cigar_ops(c2b_globals.sam->cigar);
 #endif
@@ -2627,29 +2787,50 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
     char flag_src_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     memcpy(flag_src_str, src + sam_field_offsets[0] + 1, flag_size);
     flag_src_str[flag_size] = '\0';
-    int flag_val = (int) strtol(flag_src_str, NULL, 10);
-    boolean is_mapped = (boolean) !(4 & flag_val);
+    c2b_globals.sam->element->flag = (int) strtol(flag_src_str, NULL, 10);
+    boolean is_mapped = (boolean) !(4 & c2b_globals.sam->element->flag);
     if ((!is_mapped) && (!c2b_globals.all_reads_flag)) 
-        return;    
+        return;   
 
     /* 
        Secondly, we need to retrieve RNAME, POS, QNAME parameters
     */
 
     /* RNAME */
-    char rname_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     if (is_mapped) {
         ssize_t rname_size = sam_field_offsets[2] - sam_field_offsets[1] - 1;
-        memcpy(rname_str, src + sam_field_offsets[1] + 1, rname_size);
-        rname_str[rname_size] = '\0';
+        if (rname_size >= c2b_globals.sam->element->rname_capacity) {
+            char *rname_resized = NULL;
+            rname_resized = realloc(c2b_globals.sam->element->rname, rname_size + 1);
+            if (rname_resized) {
+                c2b_globals.sam->element->rname = rname_resized;
+                c2b_globals.sam->element->rname_capacity = rname_size + 1;
+            }
+            else {
+                fprintf(stderr, "Error: Could not resize RNAME string in SAM element struct\n");
+                exit(ENOMEM);
+            }
+        }
+        memcpy(c2b_globals.sam->element->rname, src + sam_field_offsets[1] + 1, rname_size);
+        c2b_globals.sam->element->rname[rname_size] = '\0';
     }
     else {
-        char unmapped_read_chr_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
-        memcpy(unmapped_read_chr_str, c2b_unmapped_read_chr_name, strlen(c2b_unmapped_read_chr_name));
-        unmapped_read_chr_str[strlen(c2b_unmapped_read_chr_name)] = '\t';
-        unmapped_read_chr_str[strlen(c2b_unmapped_read_chr_name) + 1] = '\0';
-        memcpy(rname_str, unmapped_read_chr_str, strlen(unmapped_read_chr_str));
-        rname_str[strlen(unmapped_read_chr_str)] = '\0';
+        ssize_t c2b_unmapped_read_chr_name_size = strlen(c2b_unmapped_read_chr_name);
+        if (c2b_unmapped_read_chr_name_size >= c2b_globals.sam->element->rname_capacity) {
+            char *rname_resized = NULL;
+            rname_resized = realloc(c2b_globals.sam->element->rname, c2b_unmapped_read_chr_name_size + 2);
+            if (rname_resized) {
+                c2b_globals.sam->element->rname = rname_resized;
+                c2b_globals.sam->element->rname_capacity = c2b_unmapped_read_chr_name_size + 2;
+            }
+            else {
+                fprintf(stderr, "Error: Could not resize RNAME string in SAM element struct\n");
+                exit(ENOMEM);
+            }
+        }
+        memcpy(c2b_globals.sam->element->rname, c2b_unmapped_read_chr_name, c2b_unmapped_read_chr_name_size);
+        c2b_globals.sam->element->rname[c2b_unmapped_read_chr_name_size] = '\t';
+        c2b_globals.sam->element->rname[c2b_unmapped_read_chr_name_size + 1] = '\0';
     }
 
     /* POS */
@@ -2659,62 +2840,168 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
     pos_src_str[pos_size - 1] = '\0';
     uint64_t pos_val = strtoull(pos_src_str, NULL, 10);
     uint64_t start_val = pos_val - 1; /* remember, start = POS - 1 */
-    uint64_t stop_val = start_val + cigar_length;
+    c2b_globals.sam->element->start = start_val;
+    c2b_globals.sam->element->stop = start_val; /* this will be adjusted after CIGAR string is parsed */
 
     /* QNAME */
-    char qname_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t qname_size = sam_field_offsets[0];
-    memcpy(qname_str, src, qname_size);
-    qname_str[qname_size] = '\0';
+    if (qname_size >= c2b_globals.sam->element->qname_capacity) {
+        char *qname_resized = NULL;
+        qname_resized = realloc(c2b_globals.sam->element->qname, qname_size + 1);
+        if (qname_resized) {
+            c2b_globals.sam->element->qname = qname_resized;
+            c2b_globals.sam->element->qname_capacity = qname_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize QNAME string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->qname, src, qname_size);
+    c2b_globals.sam->element->qname[qname_size] = '\0';
 
     /* 16 & FLAG */
-    int strand_val = 0x10 & flag_val;
-    char strand_str[C2B_MAX_STRAND_LENGTH_VALUE];
+    int strand_val = 0x10 & c2b_globals.sam->element->flag;
+    char strand_str[C2B_MAX_STRAND_LENGTH_VALUE] = {0};
     sprintf(strand_str, "%c", (strand_val == 0x10) ? '-' : '+');
+    ssize_t strand_size = strlen(strand_str);
+    if (strand_size >= c2b_globals.sam->element->strand_capacity) {
+        char *strand_resized = NULL;
+        strand_resized = realloc(c2b_globals.sam->element->strand, strand_size + 1);
+        if (strand_resized) {
+            c2b_globals.sam->element->strand = strand_resized;
+            c2b_globals.sam->element->strand_capacity = strand_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize STRAND string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->strand, strand_str, strand_size);
+    c2b_globals.sam->element->strand[strand_size] = '\0';
     
     /* MAPQ */
-    char mapq_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t mapq_size = sam_field_offsets[4] - sam_field_offsets[3] - 1;
-    memcpy(mapq_str, src + sam_field_offsets[3] + 1, mapq_size);
-    mapq_str[mapq_size] = '\0';
+    if (mapq_size >= c2b_globals.sam->element->mapq_capacity) {
+        char *mapq_resized = NULL;
+        mapq_resized = realloc(c2b_globals.sam->element->mapq, mapq_size + 1);
+        if (mapq_resized) {
+            c2b_globals.sam->element->mapq = mapq_resized;
+            c2b_globals.sam->element->mapq_capacity = mapq_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize MAPQ string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->mapq, src + sam_field_offsets[3] + 1, mapq_size);
+    c2b_globals.sam->element->mapq[mapq_size] = '\0';
     
     /* RNEXT */
-    char rnext_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t rnext_size = sam_field_offsets[6] - sam_field_offsets[5] - 1;
-    memcpy(rnext_str, src + sam_field_offsets[5] + 1, rnext_size);
-    rnext_str[rnext_size] = '\0';
+    if (rnext_size >= c2b_globals.sam->element->rnext_capacity) {
+        char *rnext_resized = NULL;
+        rnext_resized = realloc(c2b_globals.sam->element->rnext, rnext_size + 1);
+        if (rnext_resized) {
+            c2b_globals.sam->element->rnext = rnext_resized;
+            c2b_globals.sam->element->rnext_capacity = rnext_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize RNEXT string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->rnext, src + sam_field_offsets[5] + 1, rnext_size);
+    c2b_globals.sam->element->rnext[rnext_size] = '\0';
 
     /* PNEXT */
-    char pnext_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t pnext_size = sam_field_offsets[7] - sam_field_offsets[6] - 1;
-    memcpy(pnext_str, src + sam_field_offsets[6] + 1, pnext_size);
-    pnext_str[pnext_size] = '\0';
+    if (pnext_size >= c2b_globals.sam->element->pnext_capacity) {
+        char *pnext_resized = NULL;
+        pnext_resized = realloc(c2b_globals.sam->element->pnext, pnext_size + 1);
+        if (pnext_resized) {
+            c2b_globals.sam->element->pnext = pnext_resized;
+            c2b_globals.sam->element->pnext_capacity = pnext_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize PNEXT string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->pnext, src + sam_field_offsets[6] + 1, pnext_size);
+    c2b_globals.sam->element->pnext[pnext_size] = '\0';
 
     /* TLEN */
-    char tlen_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t tlen_size = sam_field_offsets[8] - sam_field_offsets[7] - 1;
-    memcpy(tlen_str, src + sam_field_offsets[7] + 1, tlen_size);
-    tlen_str[tlen_size] = '\0';
+    if (tlen_size >= c2b_globals.sam->element->tlen_capacity) {
+        char *tlen_resized = NULL;
+        tlen_resized = realloc(c2b_globals.sam->element->tlen, tlen_size + 1);
+        if (tlen_resized) {
+            c2b_globals.sam->element->tlen = tlen_resized;
+            c2b_globals.sam->element->tlen_capacity = tlen_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize TLEN string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->tlen, src + sam_field_offsets[7] + 1, tlen_size);
+    c2b_globals.sam->element->tlen[tlen_size] = '\0';
 
     /* SEQ */
-    char seq_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t seq_size = sam_field_offsets[9] - sam_field_offsets[8] - 1;
-    memcpy(seq_str, src + sam_field_offsets[8] + 1, seq_size);
-    seq_str[seq_size] = '\0';
+    if (seq_size >= c2b_globals.sam->element->seq_capacity) {
+        char *seq_resized = NULL;
+        seq_resized = realloc(c2b_globals.sam->element->seq, seq_size + 1);
+        if (seq_resized) {
+            c2b_globals.sam->element->seq = seq_resized;
+            c2b_globals.sam->element->seq_capacity = seq_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize SEQ string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->seq, src + sam_field_offsets[8] + 1, seq_size);
+    c2b_globals.sam->element->seq[seq_size] = '\0';
 
     /* QUAL */
-    char qual_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     ssize_t qual_size = sam_field_offsets[10] - sam_field_offsets[9] - 1;
-    memcpy(qual_str, src + sam_field_offsets[9] + 1, qual_size);
-    qual_str[qual_size] = '\0';
+    if (qual_size >= c2b_globals.sam->element->qual_capacity) {
+        char *qual_resized = NULL;
+        qual_resized = realloc(c2b_globals.sam->element->qual, qual_size + 1);
+        if (qual_resized) {
+            c2b_globals.sam->element->qual = qual_resized;
+            c2b_globals.sam->element->qual_capacity = qual_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize QUAL string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->qual, src + sam_field_offsets[9] + 1, qual_size);
+    c2b_globals.sam->element->qual[qual_size] = '\0';
 
-    /* Optional fields */
-    char opt_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
+    c2b_globals.sam->element->opt[0] = '\0';
+    c2b_globals.sam->element->opt_length = 0;
     if (sam_field_offsets[11] != -1) {
         for (int field_idx = 11; field_idx <= sam_field_idx; field_idx++) {
             ssize_t opt_size = sam_field_offsets[field_idx] - sam_field_offsets[field_idx - 1] - (field_idx == sam_field_idx ? 1 : 0);
-            memcpy(opt_str + strlen(opt_str), src + sam_field_offsets[field_idx - 1] + 1, opt_size);
-            opt_str[strlen(opt_str) + opt_size] = '\0';
+            if ((c2b_globals.sam->element->opt_length + opt_size) >= c2b_globals.sam->element->opt_capacity) {
+                char *opt_resized = NULL;
+                opt_resized = realloc(c2b_globals.sam->element->opt, c2b_globals.sam->element->opt_length + opt_size + 1);
+                if (opt_resized) {
+                    c2b_globals.sam->element->opt = opt_resized;
+                    c2b_globals.sam->element->opt_capacity = c2b_globals.sam->element->opt_length + opt_size + 1;
+                }
+                else {
+                    fprintf(stderr, "Error: Could not resize OPT string in SAM element struct\n");
+                    exit(ENOMEM);
+                }
+            }
+            memcpy(c2b_globals.sam->element->opt + c2b_globals.sam->element->opt_length, src + sam_field_offsets[field_idx - 1] + 1, opt_size);
+            c2b_globals.sam->element->opt[c2b_globals.sam->element->opt_length + opt_size] = '\0';
+            c2b_globals.sam->element->opt_length += opt_size;
         }
     }
 
@@ -2724,23 +3011,6 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
 
     ssize_t block_idx;
     char previous_op = default_cigar_op_operation;
-    char modified_qname_str[C2B_MAX_FIELD_LENGTH_VALUE];
-
-    c2b_sam_t sam;
-    sam.rname = rname_str;
-    sam.start = start_val;
-    sam.stop = start_val;
-    sam.qname = qname_str;
-    sam.flag = flag_val;
-    sam.strand = strand_str;
-    sam.mapq = mapq_str;
-    sam.cigar = cigar_str;
-    sam.rnext = rnext_str;
-    sam.pnext = pnext_str;
-    sam.tlen = tlen_str;
-    sam.seq = seq_str;
-    sam.qual = qual_str;
-    sam.opt = opt_str;
 
     for (op_idx = 0, block_idx = 1; op_idx < c2b_globals.sam->cigar->length; ++op_idx) {
         char current_op = c2b_globals.sam->cigar->ops[op_idx].operation;
@@ -2748,18 +3018,32 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
         switch (current_op) 
             {
             case 'M':
-                sam.stop += bases;
+                c2b_globals.sam->element->stop += bases;
                 if ((previous_op == default_cigar_op_operation) || (previous_op == 'D') || (previous_op == 'N')) {
-                    sprintf(modified_qname_str, "%s/%zu", qname_str, block_idx++);
-                    sam.qname = modified_qname_str;
-                    c2b_line_convert_sam_to_bed(sam, dest, dest_size);
-                    sam.start = stop_val;
+                    ssize_t desired_modified_qname_capacity = c2b_globals.sam->element->qname_capacity + C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION;
+                    if (c2b_globals.sam->element->modified_qname_capacity <= desired_modified_qname_capacity) {
+                        // resize modified qname capacity to fit
+                        char *modified_qname_resized = NULL;
+                        modified_qname_resized = realloc(c2b_globals.sam->element->modified_qname, desired_modified_qname_capacity + 1);
+                        if (modified_qname_resized) {
+                            c2b_globals.sam->element->modified_qname = modified_qname_resized;
+                            c2b_globals.sam->element->modified_qname_capacity = desired_modified_qname_capacity + 1;
+                        }
+                        else {
+                            fprintf(stderr, "Error: Could not resize modified QNAME string in SAM element struct\n");
+                            exit(ENOMEM);
+                        }
+                    }
+                    // block_idx string can be up to (C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION-1) characters long
+                    sprintf(c2b_globals.sam->element->modified_qname, "%s/%zu", c2b_globals.sam->element->qname, block_idx++);
+                    c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, kTrue);
+                    c2b_globals.sam->element->start = c2b_globals.sam->element->stop;
                 }
                 break;
             case 'N':
             case 'D':
-                sam.stop += bases;
-                sam.start = sam.stop;
+                c2b_globals.sam->element->stop += bases;
+                c2b_globals.sam->element->start = c2b_globals.sam->element->stop;
             case 'H':
             case 'I':
             case 'P':
@@ -2778,7 +3062,7 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
     */
 
     if (block_idx == 1) {
-        c2b_line_convert_sam_to_bed(sam, dest, dest_size);
+        c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, kFalse);
     }
 }
 
@@ -2833,18 +3117,148 @@ c2b_sam_cigar_str_to_ops(char *s)
 }
 
 static void
+c2b_sam_init_element(c2b_sam_t **e)
+{
+    *e = malloc(sizeof(c2b_sam_t));
+    if (!*e) {
+        fprintf(stderr, "Error: Could not allocate space for SAM element pointer\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    
+    (*e)->qname = NULL, (*e)->qname = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->qname)));
+    if (!(*e)->qname) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element qname malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->qname_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->modified_qname = NULL, (*e)->modified_qname = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->modified_qname)));
+    if (!(*e)->modified_qname) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element modified qname malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->modified_qname_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->strand = NULL, (*e)->strand = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->strand)));
+    if (!(*e)->strand) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element strand malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->strand_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->rname = NULL, (*e)->rname = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->rname)));
+    if (!(*e)->rname) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element rname malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->rname_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->mapq = NULL, (*e)->mapq = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->mapq)));
+    if (!(*e)->mapq) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element mapq malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->mapq_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->cigar = NULL, (*e)->cigar = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->cigar)));
+    if (!(*e)->cigar) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element cigar malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->cigar_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->rnext = NULL, (*e)->rnext = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->rnext)));
+    if (!(*e)->rnext) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element rnext malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->rnext_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->pnext = NULL, (*e)->pnext = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->pnext)));
+    if (!(*e)->pnext) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element pnext malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->pnext_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->tlen = NULL, (*e)->tlen = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->tlen)));
+    if (!(*e)->tlen) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element tlen malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->tlen_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->seq = NULL, (*e)->seq = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->seq)));
+    if (!(*e)->seq) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element seq malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->seq_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->qual = NULL, (*e)->qual = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->qual)));
+    if (!(*e)->qual) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element qual malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->qual_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->opt = NULL, (*e)->opt = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->opt)));
+    if (!(*e)->opt) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element opt malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->opt_length = 0;
+    (*e)->opt_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->flag = 0;
+    (*e)->start = 0;
+    (*e)->stop = 0;
+}
+
+static void
+c2b_sam_delete_element(c2b_sam_t *e) 
+{
+    if (e->qname)           { free(e->qname),           e->qname = NULL;           }
+    if (e->modified_qname)  { free(e->modified_qname),  e->modified_qname = NULL;  }
+    if (e->strand)          { free(e->strand),          e->strand = NULL;          }
+    if (e->rname)           { free(e->rname),           e->rname = NULL;           }
+    if (e->mapq)            { free(e->mapq),            e->mapq = NULL;            }
+    if (e->cigar)           { free(e->cigar),           e->cigar = NULL;           }
+    if (e->rnext)           { free(e->rnext),           e->rnext = NULL;           }
+    if (e->pnext)           { free(e->pnext),           e->pnext = NULL;           }
+    if (e->tlen)            { free(e->tlen),            e->tlen = NULL;            }
+    if (e->seq)             { free(e->seq),             e->seq = NULL;             }
+    if (e->qual)            { free(e->qual),            e->qual = NULL;            }
+    if (e->opt)             { free(e->opt),             e->opt = NULL;             }
+    if (e)                  { free(e),                  e = NULL;                  }
+}
+
+static void
 c2b_sam_init_cigar_ops(c2b_cigar_t **c, const ssize_t size)
 {
     *c = malloc(sizeof(c2b_cigar_t));
     if (!*c) {
-        fprintf(stderr, "Error: Could not allocate space for CIGAR struct pointer\n");
+        fprintf(stderr, "Error: Could not allocate space for SAM CIGAR struct pointer\n");
         c2b_print_usage(stderr);
         exit(ENOMEM); /* Not enough space (POSIX.1) */
     }
     (*c)->size = size;
     (*c)->ops = malloc((*c)->size * sizeof(c2b_cigar_op_t));
     if (!(*c)->ops) {
-        fprintf(stderr, "Error: Could not allocate space for CIGAR struct malloc operation pointer\n");
+        fprintf(stderr, "Error: Could not allocate space for SAM CIGAR struct malloc operation pointer\n");
         c2b_print_usage(stderr);
         exit(ENOMEM); /* Not enough space (POSIX.1) */
     }
@@ -2860,7 +3274,7 @@ c2b_sam_resize_cigar_ops(c2b_cigar_t **new_c, c2b_cigar_t *old_c)
 {
     *new_c = malloc(sizeof(c2b_cigar_t));
     if (!*new_c) {
-        fprintf(stderr, "Error: Could not allocate space for larger CIGAR struct pointer\n");
+        fprintf(stderr, "Error: Could not allocate space for larger SAM CIGAR struct pointer\n");
         c2b_print_usage(stderr);
         exit(ENOMEM); /* Not enough space (POSIX.1) */
     }
@@ -2868,7 +3282,7 @@ c2b_sam_resize_cigar_ops(c2b_cigar_t **new_c, c2b_cigar_t *old_c)
     (*new_c)->size = old_c->size + C2B_SAM_CIGAR_OPS_VALUE_INCREMENT;
     (*new_c)->ops = malloc((*new_c)->size * sizeof(c2b_cigar_op_t));
     if (!(*new_c)->ops) {
-        fprintf(stderr, "Error: Could not allocate space for larger CIGAR struct malloc operation pointer\n");
+        fprintf(stderr, "Error: Could not allocate space for larger SAM CIGAR struct malloc operation pointer\n");
         c2b_print_usage(stderr);
         exit(ENOMEM); /* Not enough space (POSIX.1) */
     }
@@ -2919,7 +3333,7 @@ c2b_sam_delete_cigar_ops(c2b_cigar_t *c)
 }
 
 static inline void
-c2b_line_convert_sam_to_bed(c2b_sam_t s, char *dest_line, ssize_t *dest_size)
+c2b_line_convert_sam_ptr_to_bed(c2b_sam_t *s, char *dest_line, ssize_t *dest_size, boolean print_modified_qname)
 {
     /*
        For SAM-formatted data, we use the mapping provided by BEDOPS convention described at: 
@@ -2956,7 +3370,7 @@ c2b_line_convert_sam_to_bed(c2b_sam_t s, char *dest_line, ssize_t *dest_size)
        Alignment fields          14+                    -
     */
 
-    if (strlen(s.opt)) {
+    if (s->opt_length > 0) {
         *dest_size += sprintf(dest_line + *dest_size,
                               "%s\t"            \
                               "%" PRIu64 "\t"   \
@@ -2972,21 +3386,21 @@ c2b_line_convert_sam_to_bed(c2b_sam_t s, char *dest_line, ssize_t *dest_size)
                               "%s\t"            \
                               "%s\t"            \
                               "%s\n",
-                              s.rname,
-                              s.start,
-                              s.stop,
-                              s.qname,
-                              s.mapq,
-                              s.strand,
-                              s.flag,
-                              s.cigar,
-                              s.rnext,
-                              s.pnext,
-                              s.tlen,
-                              s.seq,
-                              s.qual,
-                              s.opt);
-        memset(s.opt, 0, strlen(s.opt));
+                              s->rname,
+                              s->start,
+                              s->stop,
+                              (print_modified_qname ? s->modified_qname : s->qname),
+                              s->mapq,
+                              s->strand,
+                              s->flag,
+                              s->cigar,
+                              s->rnext,
+                              s->pnext,
+                              s->tlen,
+                              s->seq,
+                              s->qual,
+                              s->opt);
+        //memset(s->opt, 0, strlen(s->opt));
     } 
     else {
         *dest_size += sprintf(dest_line + *dest_size,
@@ -3003,19 +3417,19 @@ c2b_line_convert_sam_to_bed(c2b_sam_t s, char *dest_line, ssize_t *dest_size)
                               "%s\t"            \
                               "%s\t"            \
                               "%s\n",
-                              s.rname,
-                              s.start,
-                              s.stop,
-                              s.qname,
-                              s.mapq,
-                              s.strand,
-                              s.flag,
-                              s.cigar,
-                              s.rnext,
-                              s.pnext,
-                              s.tlen,
-                              s.seq,
-                              s.qual);
+                              s->rname,
+                              s->start,
+                              s->stop,
+                              (print_modified_qname ? s->modified_qname : s->qname),
+                              s->mapq,
+                              s->strand,
+                              s->flag,
+                              s->cigar,
+                              s->rnext,
+                              s->pnext,
+                              s->tlen,
+                              s->seq,
+                              s->qual);
     }
 }
 
@@ -3700,7 +4114,8 @@ c2b_read_bytes_from_stdin(void *arg)
 {
     c2b_pipeline_stage_t *stage = (c2b_pipeline_stage_t *) arg;
     c2b_pipeset_t *pipes = stage->pipeset;
-    char buffer[C2B_MAX_LINE_LENGTH_VALUE];
+    char *buffer = NULL;
+    ssize_t buffer_size = stage->buffer_size;
     ssize_t bytes_read;
     int exit_status = 0;
 
@@ -3708,13 +4123,21 @@ c2b_read_bytes_from_stdin(void *arg)
     fprintf(stderr, "\t-> c2b_read_bytes_from_stdin | reading from fd     (%02d) | writing to fd     (%02d)\n", STDIN_FILENO, pipes->in[stage->dest][PIPE_WRITE]);
 #endif
 
+    buffer = (char *) malloc(buffer_size);
+    if (!buffer) {
+        fprintf(stderr, "Error: Could not allocate space to c2b_read_bytes_from_stdin() buffer\n");
+        exit(ENOMEM);
+    }
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result"
-    while ((bytes_read = read(STDIN_FILENO, buffer, C2B_MAX_LINE_LENGTH_VALUE)) > 0) {
+    while ((bytes_read = read(STDIN_FILENO, buffer, buffer_size)) > 0) {
         write(pipes->in[stage->dest][PIPE_WRITE], buffer, bytes_read);
     }
 #pragma GCC diagnostic pop
     close(pipes->in[stage->dest][PIPE_WRITE]);
+
+    free(buffer), buffer = NULL;
 
     if (WIFEXITED(stage->status) || WIFSIGNALED(stage->status)) {
         waitpid(stage->pid, &stage->status, WUNTRACED);
@@ -3726,7 +4149,6 @@ c2b_read_bytes_from_stdin(void *arg)
                     stage->status, 
                     exit_status);
     }
-
 
     pthread_exit(NULL);
 }
@@ -3898,19 +4320,28 @@ c2b_write_in_bytes_to_in_process(void *arg)
 {
     c2b_pipeline_stage_t *stage = (c2b_pipeline_stage_t *) arg;
     c2b_pipeset_t *pipes = stage->pipeset;
-    char buffer[C2B_MAX_LINE_LENGTH_VALUE];
+    char *buffer = NULL;
+    ssize_t buffer_size = stage->buffer_size;
     ssize_t bytes_read;
     int exit_status = 0;
+
+    buffer = (char *) malloc(buffer_size);
+    if (!buffer) {
+        fprintf(stderr, "Error: Could not allocate space to c2b_write_in_bytes_to_in_process() buffer\n");
+        exit(ENOMEM);
+    }
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result"
     /* read buffer from p->in[1] and write buffer to p->in[2] */
-    while ((bytes_read = read(pipes->in[stage->src][PIPE_READ], buffer, C2B_MAX_LINE_LENGTH_VALUE)) > 0) { 
+    while ((bytes_read = read(pipes->in[stage->src][PIPE_READ], buffer, buffer_size)) > 0) { 
         write(pipes->in[stage->dest][PIPE_WRITE], buffer, bytes_read);
     }
 #pragma GCC diagnostic pop
 
     close(pipes->in[stage->dest][PIPE_WRITE]);
+
+    free(buffer), buffer = NULL;
 
     if (WIFEXITED(stage->status) || WIFSIGNALED(stage->status)) {
         waitpid(stage->pid, &stage->status, WUNTRACED);
@@ -3931,19 +4362,28 @@ c2b_write_out_bytes_to_in_process(void *arg)
 {
     c2b_pipeline_stage_t *stage = (c2b_pipeline_stage_t *) arg;
     c2b_pipeset_t *pipes = stage->pipeset;
-    char buffer[C2B_MAX_LINE_LENGTH_VALUE];
+    char *buffer = NULL;
+    ssize_t buffer_size = stage->buffer_size;
     ssize_t bytes_read;
     int exit_status = 0;
+
+    buffer = (char *) malloc(buffer_size);
+    if (!buffer) {
+        fprintf(stderr, "Error: Could not allocate space to c2b_write_out_bytes_to_in_process() buffer\n");
+        exit(ENOMEM);
+    }
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result"
     /* read buffer from p->out[1] and write buffer to p->in[2] */
-    while ((bytes_read = read(pipes->out[stage->src][PIPE_READ], buffer, C2B_MAX_LINE_LENGTH_VALUE)) > 0) { 
+    while ((bytes_read = read(pipes->out[stage->src][PIPE_READ], buffer, buffer_size)) > 0) { 
         write(pipes->in[stage->dest][PIPE_WRITE], buffer, bytes_read);
     }
 #pragma GCC diagnostic pop
 
     close(pipes->in[stage->dest][PIPE_WRITE]);
+
+    free(buffer), buffer = NULL;
 
     if (WIFEXITED(stage->status) || WIFSIGNALED(stage->status)) {
         waitpid(stage->pid, &stage->status, WUNTRACED);
@@ -3964,16 +4404,25 @@ c2b_write_in_bytes_to_stdout(void *arg)
 {
     c2b_pipeline_stage_t *stage = (c2b_pipeline_stage_t *) arg;
     c2b_pipeset_t *pipes = stage->pipeset;
-    char buffer[C2B_MAX_LINE_LENGTH_VALUE];
+    char *buffer = NULL;
+    ssize_t buffer_size = stage->buffer_size;
     ssize_t bytes_read;
     int exit_status = 0;
 
+    buffer = (char *) malloc(buffer_size);
+    if (!buffer) {
+        fprintf(stderr, "Error: Could not allocate space to c2b_write_in_bytes_to_stdout() buffer\n");
+        exit(ENOMEM);
+    }
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result"
-    while ((bytes_read = read(pipes->in[stage->src][PIPE_READ], buffer, C2B_MAX_LINE_LENGTH_VALUE)) > 0) {
+    while ((bytes_read = read(pipes->in[stage->src][PIPE_READ], buffer, buffer_size)) > 0) {
         write(STDOUT_FILENO, buffer, bytes_read);
     }
 #pragma GCC diagnostic pop
+
+    free(buffer), buffer = NULL;
 
     if (WIFEXITED(stage->status) || WIFSIGNALED(stage->status)) {
         waitpid(stage->pid, &stage->status, WUNTRACED);
@@ -3994,16 +4443,25 @@ c2b_write_out_bytes_to_stdout(void *arg)
 {
     c2b_pipeline_stage_t *stage = (c2b_pipeline_stage_t *) arg;
     c2b_pipeset_t *pipes = stage->pipeset;
-    char buffer[C2B_MAX_LINE_LENGTH_VALUE];
+    char *buffer = NULL;
+    ssize_t buffer_size = stage->buffer_size;
     ssize_t bytes_read;
     int exit_status = 0;
 
+    buffer = (char *) malloc(buffer_size);
+    if (!buffer) {
+        fprintf(stderr, "Error: Could not allocate space to c2b_write_out_bytes_to_stdout() buffer\n");
+        exit(ENOMEM);
+    }
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result"
-    while ((bytes_read = read(pipes->out[stage->src][PIPE_READ], buffer, C2B_MAX_LINE_LENGTH_VALUE)) > 0) {
+    while ((bytes_read = read(pipes->out[stage->src][PIPE_READ], buffer, buffer_size)) > 0) {
         write(STDOUT_FILENO, buffer, bytes_read);
     }
 #pragma GCC diagnostic pop
+
+    free(buffer), buffer = NULL;
 
     if (WIFEXITED(stage->status) || WIFSIGNALED(stage->status)) {
         waitpid(stage->pid, &stage->status, WUNTRACED);
@@ -4791,6 +5249,8 @@ c2b_init_global_sam_state()
 
     c2b_globals.sam->cigar = NULL, c2b_sam_init_cigar_ops(&(c2b_globals.sam->cigar), C2B_SAM_CIGAR_OPS_VALUE_INITIAL);
 
+    c2b_globals.sam->element = NULL, c2b_sam_init_element(&(c2b_globals.sam->element));
+
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_init_global_sam_state() - exit  ---\n");
 #endif
@@ -4808,6 +5268,9 @@ c2b_delete_global_sam_state()
     
     if (c2b_globals.sam->cigar)
         c2b_sam_delete_cigar_ops(c2b_globals.sam->cigar);
+
+    if (c2b_globals.sam->element)
+        c2b_sam_delete_element(c2b_globals.sam->element);
     
     free(c2b_globals.sam), c2b_globals.sam = NULL;
 

@@ -1843,11 +1843,21 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                     if (prevChromosome) 
                     {
 #ifdef __cplusplus
-		        if (STARCH_chromosomeInMetadataRecords(reinterpret_cast<const Metadata *>( firstRecord ), chromosome) == STARCH_EXIT_SUCCESS) {
+                        if (STARCH_chromosomeInMetadataRecords(reinterpret_cast<const Metadata *>( firstRecord ), chromosome) == STARCH_EXIT_SUCCESS)
 #else
-		        if (STARCH_chromosomeInMetadataRecords((const Metadata *)firstRecord, chromosome) == STARCH_EXIT_SUCCESS) {
+                        if (STARCH_chromosomeInMetadataRecords((const Metadata *)firstRecord, chromosome) == STARCH_EXIT_SUCCESS)
 #endif
-	    	            fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+                        {
+                            fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+                            return STARCH_FATAL_ERROR;
+                        }
+#ifdef __cplusplus
+                        if (STARCH_chromosomePositionedBeforeExistingMetadataRecord(reinterpret_cast<const Metadata *>( firstRecord ), chromosome) == STARCH_EXIT_SUCCESS)
+#else
+                        if (STARCH_chromosomePositionedBeforeExistingMetadataRecord((const Metadata *)firstRecord, chromosome) == STARCH_EXIT_SUCCESS)
+#endif
+                        {
+                            fprintf(stderr, "ERROR: Chromosome name not ordered lexicographically. Possible sorting issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
                             return STARCH_FATAL_ERROR;
                         }
                         sprintf(compressedFn, "%s.%s", prevChromosome, tag);
@@ -2908,13 +2918,21 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                     if (prevChromosome) 
                     {
 #ifdef __cplusplus
-                        if (STARCH_chromosomeInMetadataRecords(reinterpret_cast<const Metadata *>( firstRecord ), chromosome) == STARCH_EXIT_SUCCESS) 
-                        {
+                        if (STARCH_chromosomeInMetadataRecords(reinterpret_cast<const Metadata *>( firstRecord ), chromosome) == STARCH_EXIT_SUCCESS)
 #else
-                        if (STARCH_chromosomeInMetadataRecords((const Metadata *)firstRecord, chromosome) == STARCH_EXIT_SUCCESS) 
-                        {
+                        if (STARCH_chromosomeInMetadataRecords((const Metadata *)firstRecord, chromosome) == STARCH_EXIT_SUCCESS)
 #endif
-    	    	            fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+                        {
+                            fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+                            return STARCH_FATAL_ERROR;
+                        }
+#ifdef __cplusplus
+                        if (STARCH_chromosomePositionedBeforeExistingMetadataRecord(reinterpret_cast<const Metadata *>( firstRecord ), chromosome) == STARCH_EXIT_SUCCESS)
+#else
+                        if (STARCH_chromosomePositionedBeforeExistingMetadataRecord((const Metadata *)firstRecord, chromosome) == STARCH_EXIT_SUCCESS)
+#endif
+                        {
+                            fprintf(stderr, "ERROR: Chromosome name not ordered lexicographically. Possible sorting issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
                             return STARCH_FATAL_ERROR;
                         }
                         sprintf(compressedFn, "%s.%s", prevChromosome, tag);

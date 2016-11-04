@@ -1953,6 +1953,26 @@ STARCH_chromosomeInMetadataRecords(const Metadata *md,
     return STARCH_EXIT_FAILURE;
 }
 
+int
+STARCH_chromosomePositionedBeforeExistingMetadataRecord(const Metadata *md, 
+                                                        const char *chr) {
+#ifdef DEBUG
+    fprintf(stderr, "\n--- STARCH_chromosomePositionedBeforeExistingMetadataRecord() ---\n");
+#endif
+    const Metadata *iter;
+
+    if (!md) {
+        fprintf(stderr, "ERROR: Could not list chromosomes (metadata structure is empty)\n");
+        return STARCH_EXIT_FAILURE;
+    }
+
+    for (iter = md; iter != NULL; iter = iter->next)
+        if (strcmp(chr, iter->chromosome) < 0)
+        return STARCH_EXIT_SUCCESS;
+    
+    return STARCH_EXIT_FAILURE;
+}
+
 #ifdef __cplusplus
 } // namespace starch
 #endif
