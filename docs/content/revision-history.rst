@@ -19,12 +19,16 @@ Released: **TBD**
 
 * :ref:`bedmap <bedmap>`
 
-  * Measurement values in `bedmap` did not allow `+` in the exponent (both `-` worked and no `+` for a positive value.  Similarly, out in front of the number, `+` was previously not allowed. Shane Neph posted the report and fix.<br />
+  * Measurement values in `bedmap` did not allow `+` in the exponent (both `-` worked and no `+` for a positive value.  Similarly, out in front of the number, `+` was previously not allowed. Shane Neph posted the report and fix.
+
+  * The `--min-element` and `--max-element` operations in :ref:`bedmap <bedmap>` now process elements in unambiguous order. Former behavior is moved to the operations `--min-element-rand` and `--max-element-rand`, respectively.<br />
 
 
 * :ref:`bedops <bedops>`
 
-  * Fixed issue with `-chop` where complement operation could potentially be included. Shane Neph posted the fix.<br />
+  * Fixed issue with `-chop` where complement operation could potentially be included. Shane Neph posted the fix.
+
+  * The `bedops --everything` or `bedops -u` (union) operation now writes elements to standard output in unambiguous sort order.<br />
 
 
 * :ref:`sort-bed <sort-bed>`
@@ -47,7 +51,7 @@ Released: **TBD**
 
     If the observed and expected signatures differ, then this suggests that the chromosome record may be corrupted in some way; `unstarch` will exit with a non-zero error code. If the signatures agree, the archive data should be intact and `unstarch` will exit with a helpful notice and a zero error code.
 
-    If no chromosome is specified, `unstarch` will loop through all chromosomes in the archive metadata, comparing observed and expected values for each chromosome record. Upon completion, error and progress messages will be reported to the standard error stream, and `unstarch` will exit with a zero error code, if all signatures match, or a non-zero exit state, if one or more signatures do not agree.
+    If no chromosome is specified, :ref:`unstarch <unstarch>` will loop through all chromosomes in the archive metadata, comparing observed and expected values for each chromosome record. Upon completion, error and progress messages will be reported to the standard error stream, and `unstarch` will exit with a zero error code, if all signatures match, or a non-zero exit state, if one or more signatures do not agree.
 
   * The output from the `--list` option includes a `signature` column to report the data integrity signature of all Starch-transformed chromosome data.
 
@@ -66,13 +70,13 @@ Released: **TBD**
 
   * Added chromosome name order test to `STARCH2_transformHeaderlessBEDInput` and `STARCH2_transformHeaderedBEDInput` functions. 
 
-    Compression with `starch` ends with a fatal error, should any of the following comparison tests fail:
+    Compression with :ref:`starch <starch>` ends with a fatal error, should any of the following comparison tests fail:
 
     1. The chromosome names are not lexicographically ordered (*e.g.*, `chr1` records coming after `chr2` records indicates the data are not correctly sorted).
     2. The start position of an input element is less than the start position of a previous input element on the same chromosome (*e.g.*, `chr1:1000-1234` coming after `chr1:2000-2345` is not correctly sorted).
     3. The stop positions of two or more input elements are not in ascending order when their start positions are equal (*e.g.*, `chr1:1000:1234` coming after `chr1:1000-2345` is not correctly sorted). 
 
-    If the sort order of the input data is unknown or uncertain, simply use `sort-bed <sort-bed>` to generate the correct ordering and pipe the output from that to `starch`, *e.g.* `$ cat elements.bed | sort-bed - | starch - > elements.starch`.<br />
+    If the sort order of the input data is unknown or uncertain, simply use :ref:`sort-bed <sort-bed>` to generate the correct ordering and pipe the output from that to `starch`, *e.g.* `$ cat elements.bed | sort-bed - | starch - > elements.starch`.<br />
 
 
 * :ref:`starchcat <starchcat>`
