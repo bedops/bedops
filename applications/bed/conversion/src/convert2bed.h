@@ -75,7 +75,7 @@ const boolean kFalse = 0;
 #define C2B_SAM_CIGAR_OPS_VALUE_INCREMENT 1000
 #define C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
 #define C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION 32
-#define C2B_TEST_BUFFER_SIZE 5000000
+#define C2B_THREAD_IO_BUFFER_SIZE 5000000
 
 extern const char *c2b_samtools;
 extern const char *c2b_sort_bed;

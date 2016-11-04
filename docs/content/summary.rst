@@ -114,8 +114,13 @@ Set operation and statistical utilities
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--max``                     | Reports the highest score from overlapping elements in ``map-file``. | 1                | 2                | 5                |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--max-element``             | An element with the highest score from overlapping elements in       | 1                | 2                | 5                |
-|                               | ``map-file``. If no overlapping element exists, ``NAN`` is reported. |                  |                  |                  |
+| ``--max-element``             | The lexicographically "smallest" element with the highest score from | 1                | 2                | 5                |
+|                               | overlapping elements in ``map-file``. If no overlapping element      |                  |                  |                  |
+|                               | exists, ``NAN`` is reported (unless ``--skip-unmapped`` is used).    |                  |                  |                  |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--max-element-rand``        | A randomly-chosed element with the highest score from overlapping    | 1                | 2                | 5                |
+|                               | elements in ``map-file``. If no overlapping element exists, ``NAN``  |                  |                  |                  |
+|                               | is reported (unless ``--skip-unmapped`` is used).                    |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--mean``                    | Reports the average score from overlapping elements in ``map-file``. | 1                | 2                | 5                |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
@@ -123,8 +128,13 @@ Set operation and statistical utilities
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--min``                     | Reports the lowest score from overlapping elements in ``map-file``.  | 1                | 2                | 5                |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--min-element``             | An element with the lowest score from overlapping elements in        | 1                | 2                | 5                |
-|                               | ``map-file``. If no overlapping element exists, ``NAN`` is reported. |                  |                  |                  |
+| ``--min-element``             | The lexicographically "smallest" element with the lowest score from  | 1                | 2                | 5                |
+|                               | overlapping elements in ``map-file``. If no overlapping element      |                  |                  |                  |
+|                               | exists, ``NAN`` is reported (unless ``--skip-unmapped`` is used).    |                  |                  |                  |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--min-element-rand``        | A randomly-chosed element with the lowest score from overlapping     | 1                | 2                | 5                |
+|                               | elements in ``map-file``. If no overlapping element exists, ``NAN``  |                  |                  |                  |
+|                               | is reported (unless ``--skip-unmapped`` is used).                    |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--skip-unmapped``           | Omits printing reference elements which do not associate with any    | 1                | 2                | 3                |
 |                               | mapped elements.                                                     |                  |                  |                  |
@@ -272,6 +282,8 @@ Compression and extraction
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--note="foo bar..."``       | Append note to output archive metadata (optional).                   | 1                | 1                | 3                |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--report-progress=N``       | Write progress to standard error stream for every N input elements.  | 1                | 1                | 3                |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 
 ------------
 ``unstarch``
@@ -321,7 +333,11 @@ Compression and extraction
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--note``                    | Show descriptive note (if originally added to archive).              | 1                | 1                | NA               |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--sha1-signature``          | Show SHA1 signature of JSON-formatted metadata (Base64-encoded).     | 1                | 1                | NA               |
+| ``--signature`` with          | Show SHA-1 signature of specified chromosome (Base64-encoded)        | 1                | 1                | NA               |
+| ``<chromosome>``              | or all signatures if chromosome is not specified.                    |                  |                  |                  |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--verify-signature`` with   | Compare SHA-1 signature of specified chromosome with signature that  | 1                | 1                | NA               |
+| ``<chromosome>``              | is stored in the archive metadata, reporting error is mismatched.    |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 
 -------------
@@ -341,6 +357,8 @@ Compression and extraction
 |                               | extraction time performance.                                         |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--note="foo bar..."``       | Append note to output archive metadata (optional).                   | 1                | No imposed limit | NA               |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--report-progress=N``       | Write progress to standard error stream for every N input elements.  | 1                | No imposed limit | NA               |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 
 .. |--| unicode:: U+2013   .. en dash

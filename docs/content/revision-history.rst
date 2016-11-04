@@ -21,23 +21,23 @@ Released: **TBD**
 
   * Measurement values in :code:`bedmap` did not allow :code:`+` in the exponent (both :code:`-` worked and no :code:`+` for a positive value.  Similarly, out in front of the number, :code:`+` was previously not allowed. Shane Neph posted the report and fix.
 
-  * The :code:`--min-element` and :code:`--max-element` operations in :ref:`bedmap <bedmap>` now process elements in unambiguous order. Former behavior is moved to the operations :code:`--min-element-rand` and :code:`--max-element-rand`, respectively.|br|
+  * The :code:`--min-element` and :code:`--max-element` operations in :ref:`bedmap <bedmap>` now process elements in unambiguous order. Former behavior is moved to the operations :code:`--min-element-rand` and :code:`--max-element-rand`, respectively.
 
 * :ref:`bedops <bedops>`
 
   * Fixed issue with :code:`-chop` where complement operation could potentially be included. Shane Neph posted the fix.
 
-  * The :code:`bedops --everything` or :code:`bedops -u` (union) operation now writes elements to standard output in unambiguous sort order.|br|
+  * The :code:`bedops --everything` or :code:`bedops -u` (union) operation now writes elements to standard output in unambiguous sort order.
 
 * :ref:`sort-bed <sort-bed>`
 
   * Sorting of BED input now leads to unambiguous result when two or more elements have the same genomic interval (chromosome name and start and stop position), but different content in remaining columns (ID, score, etc.). 
 
-    Formerly, elements with the same genomic interval that have different content in fourth and subsequent columns could be printed in a non-consistent ordering on repeated sorts. A deterministic sort order facilitates the use of data integrity functions on sorted BED and Starch data.|br|
+    Formerly, elements with the same genomic interval that have different content in fourth and subsequent columns could be printed in a non-consistent ordering on repeated sorts. A deterministic sort order facilitates the use of data integrity functions on sorted BED and Starch data.
 
 * :ref:`starchcluster <starchcluster>`
 
-  * A SLURM-ready version of the :code:`starchcluster` script was added to help SLURM job scheduler users with parallelizing the creation of Starch archives.|br|
+  * A SLURM-ready version of the :code:`starchcluster` script was added to help SLURM job scheduler users with parallelizing the creation of Starch archives.
 
 * :ref:`unstarch <unstarch>`
 
@@ -53,7 +53,7 @@ Released: **TBD**
 
   * The output from the :code:`--list-json` option includes a :code:`signature` key in each chromosome record in the archive metadata, reporting the same information.
 
-  * The :code:`--is-starch` option now quits with a non-zero exit code, if the specified input file is not a Starch archive.|br|
+  * The :code:`--is-starch` option now quits with a non-zero exit code, if the specified input file is not a Starch archive.
 
 * :ref:`starch <starch>`
 
@@ -71,13 +71,13 @@ Released: **TBD**
     2. The start position of an input element is less than the start position of a previous input element on the same chromosome (*e.g.*, :code:`chr1:1000-1234` coming after :code:`chr1:2000-2345` is not correctly sorted).
     3. The stop positions of two or more input elements are not in ascending order when their start positions are equal (*e.g.*, :code:`chr1:1000:1234` coming after :code:`chr1:1000-2345` is not correctly sorted). 
 
-    If the sort order of the input data is unknown or uncertain, simply use :code:`sort-bed` to generate the correct ordering and pipe the output from that to :code:`starch`, *e.g.* :bash:`$ cat elements.bed | sort-bed - | starch - > elements.starch`.|br|
+    If the sort order of the input data is unknown or uncertain, simply use :code:`sort-bed` to generate the correct ordering and pipe the output from that to :code:`starch`, *e.g.* :code:`$ cat elements.bed | sort-bed - | starch - > elements.starch`.
 
 * :ref:`starchcat <starchcat>`
 
   * Added :code:`--report-progress=N` option to (optionally) report compression of the *N* th element of the current chromosome to standard error stream.
 
-  * As in :code:`starch`, at the conclusion of compressing a chromosome made from one or more input Starch archives, the input Starch-transform bytes are continually run through a SHA-1 hash function. The resulting data integrity signature is stored as a Base64-encoded string in the chromosome's entry in the new archive's metadata.|br|
+  * As in :code:`starch`, at the conclusion of compressing a chromosome made from one or more input Starch archives, the input Starch-transform bytes are continually run through a SHA-1 hash function. The resulting data integrity signature is stored as a Base64-encoded string in the chromosome's entry in the new archive's metadata.
 
 * :ref:`convert2bed <convert2bed>`
 
@@ -89,7 +89,7 @@ Released: **TBD**
 
     * conversion of dynamically-sized read fields (up to system memory and/or interthread buffer size limit)
 
-    These patches follow up on bug reports in `Issue 157 <https://github.com/bedops/bedops/issues/157>`_.|br|
+    These patches follow up on bug reports in `Issue 157 <https://github.com/bedops/bedops/issues/157>`_.
 
 =================
 Previous versions
@@ -807,7 +807,5 @@ Released: **August 17, 2012**
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
    :trim:
-.. |br| raw:: html
-   <br />
 .. role:: bash(code)
    :language: bash

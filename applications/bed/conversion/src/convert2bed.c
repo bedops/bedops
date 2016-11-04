@@ -187,7 +187,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
     char bed_unsorted2bed_sorted_cmd[C2B_MAX_LINE_LENGTH_VALUE];
     char bed_sorted2starch_cmd[C2B_MAX_LINE_LENGTH_VALUE];
     void (*generic2bed_unsorted_line_functor)(char *, ssize_t *, char *, ssize_t) = to_bed_line_functor;
-    ssize_t buffer_size = C2B_TEST_BUFFER_SIZE;
+    ssize_t buffer_size = C2B_THREAD_IO_BUFFER_SIZE;
     int errsv = 0;
 
     if ((!c2b_globals.sort->is_enabled) && (c2b_globals.output_format_idx == BED_FORMAT)) {
@@ -485,7 +485,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
     char bed_unsorted2bed_sorted_cmd[C2B_MAX_LINE_LENGTH_VALUE];
     char bed_sorted2starch_cmd[C2B_MAX_LINE_LENGTH_VALUE];
     void (*sam2bed_unsorted_line_functor)(char *, ssize_t *, char *, ssize_t) = NULL;
-    ssize_t buffer_size = C2B_TEST_BUFFER_SIZE;
+    ssize_t buffer_size = C2B_THREAD_IO_BUFFER_SIZE;
     int errsv = errno;
 
     sam2bed_unsorted_line_functor = (!c2b_globals.split_flag ?
@@ -860,9 +860,9 @@ c2b_cmd_starch_bed(char *cmd)
 
 #ifdef DEBUG
     fprintf(stderr, "Debug: c2b_globals.starch->bzip2: [%d]\n", c2b_globals.starch->bzip2);
-    fprintf(stderr, "Debug: c2b_globals.starch->gzip: [%d]\n", c2b_globals.starch->gzip);
-    fprintf(stderr, "Debug: c2b_globals.starch->note: [%s]\n", c2b_globals.starch->note);
-    fprintf(stderr, "Debug: starch_args: [%s]\n", starch_args);
+    fprintf(stderr, "Debug: c2b_globals.starch->gzip:  [%d]\n", c2b_globals.starch->gzip);
+    fprintf(stderr, "Debug: c2b_globals.starch->note:  [%s]\n", c2b_globals.starch->note);
+    fprintf(stderr, "Debug: starch_args:               [%s]\n", starch_args);
 #endif
 
     if (c2b_globals.starch->note) {
@@ -3400,7 +3400,6 @@ c2b_line_convert_sam_ptr_to_bed(c2b_sam_t *s, char *dest_line, ssize_t *dest_siz
                               s->seq,
                               s->qual,
                               s->opt);
-        //memset(s->opt, 0, strlen(s->opt));
     } 
     else {
         *dest_size += sprintf(dest_line + *dest_size,
