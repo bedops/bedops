@@ -19,72 +19,65 @@ Released: **TBD**
 
 * :ref:`bedmap <bedmap>`
 
-  * Measurement values in `bedmap` did not allow `+` in the exponent (both `-` worked and no `+` for a positive value.  Similarly, out in front of the number, `+` was previously not allowed. Shane Neph posted the report and fix.
+  * Measurement values in :code:`bedmap` did not allow :code:`+` in the exponent (both :code:`-` worked and no :code:`+` for a positive value.  Similarly, out in front of the number, :code:`+` was previously not allowed. Shane Neph posted the report and fix.
 
-  * The `--min-element` and `--max-element` operations in :ref:`bedmap <bedmap>` now process elements in unambiguous order. Former behavior is moved to the operations `--min-element-rand` and `--max-element-rand`, respectively.<br />
-
+  * The :code:`--min-element` and :code:`--max-element` operations in :ref:`bedmap <bedmap>` now process elements in unambiguous order. Former behavior is moved to the operations :code:`--min-element-rand` and :code:`--max-element-rand`, respectively.|br|
 
 * :ref:`bedops <bedops>`
 
-  * Fixed issue with `-chop` where complement operation could potentially be included. Shane Neph posted the fix.
+  * Fixed issue with :code:`-chop` where complement operation could potentially be included. Shane Neph posted the fix.
 
-  * The `bedops --everything` or `bedops -u` (union) operation now writes elements to standard output in unambiguous sort order.<br />
-
+  * The :code:`bedops --everything` or :code:`bedops -u` (union) operation now writes elements to standard output in unambiguous sort order.|br|
 
 * :ref:`sort-bed <sort-bed>`
 
   * Sorting of BED input now leads to unambiguous result when two or more elements have the same genomic interval (chromosome name and start and stop position), but different content in remaining columns (ID, score, etc.). 
 
-    Formerly, elements with the same genomic interval that have different content in fourth and subsequent columns could be printed in a non-consistent ordering on repeated sorts. A deterministic sort order facilitates the use of data integrity functions on sorted BED and Starch data.<br />
-
+    Formerly, elements with the same genomic interval that have different content in fourth and subsequent columns could be printed in a non-consistent ordering on repeated sorts. A deterministic sort order facilitates the use of data integrity functions on sorted BED and Starch data.|br|
 
 * :ref:`starchcluster <starchcluster>`
 
-  * SLURM-ready version of `starchcluster` script added, to help SLURM job scheduler users with parallelizing the creation of Starch archives.<br />
-
+  * A SLURM-ready version of the :code:`starchcluster` script was added to help SLURM job scheduler users with parallelizing the creation of Starch archives.|br|
 
 * :ref:`unstarch <unstarch>`
 
-  * Added `--signature` option to report the Base64-encoded SHA-1 data integrity signature of the Starch-transformed bytes of a specified chromosome, or to report the signature of the metadata string as well as the signatures of all chromosomes, if unspecified.
+  * Added :code:`--signature` option to report the Base64-encoded SHA-1 data integrity signature of the Starch-transformed bytes of a specified chromosome, or to report the signature of the metadata string as well as the signatures of all chromosomes, if unspecified.
 
-  * Added `--verify-signature` option to compare the "expected" Base64-encoded SHA-1 data integrity signature stored within the archive's metadata with the "observed" data integrity signature generated from extracting the specified chromosome. 
+  * Added :code:`--verify-signature` option to compare the "expected" Base64-encoded SHA-1 data integrity signature stored within the archive's metadata with the "observed" data integrity signature generated from extracting the specified chromosome. 
 
-    If the observed and expected signatures differ, then this suggests that the chromosome record may be corrupted in some way; `unstarch` will exit with a non-zero error code. If the signatures agree, the archive data should be intact and `unstarch` will exit with a helpful notice and a zero error code.
+    If the observed and expected signatures differ, then this suggests that the chromosome record may be corrupted in some way; :code:`unstarch` will exit with a non-zero error code. If the signatures agree, the archive data should be intact and `unstarch` will exit with a helpful notice and a zero error code.
 
-    If no chromosome is specified, :ref:`unstarch <unstarch>` will loop through all chromosomes in the archive metadata, comparing observed and expected values for each chromosome record. Upon completion, error and progress messages will be reported to the standard error stream, and `unstarch` will exit with a zero error code, if all signatures match, or a non-zero exit state, if one or more signatures do not agree.
+    If no chromosome is specified, :code:`unstarch` will loop through all chromosomes in the archive metadata, comparing observed and expected values for each chromosome record. Upon completion, error and progress messages will be reported to the standard error stream, and :code:`unstarch` will exit with a zero error code, if all signatures match, or a non-zero exit state, if one or more signatures do not agree.
 
-  * The output from the `--list` option includes a `signature` column to report the data integrity signature of all Starch-transformed chromosome data.
+  * The output from the :code:`--list` option includes a :code:`signature` column to report the data integrity signature of all Starch-transformed chromosome data.
 
-  * The output from the `--list-json` option includes a `signature` key in each chromosome record in the archive metadata, reporting the same information.
+  * The output from the :code:`--list-json` option includes a :code:`signature` key in each chromosome record in the archive metadata, reporting the same information.
 
-  * The `--is-starch` option now quits with a non-zero exit code, if the specified input file is not a Starch archive.<br />
-
+  * The :code:`--is-starch` option now quits with a non-zero exit code, if the specified input file is not a Starch archive.|br|
 
 * :ref:`starch <starch>`
 
-  * Added `--report-progress=N` option to (optionally) report compression of the Nth element of the current chromosome to standard error stream.
+  * Added :code:`--report-progress=N` option to (optionally) report compression of the Nth element of the current chromosome to standard error stream.
 
   * As a chromosome is compressed, the input Starch-transform bytes are continually run through a SHA-1 hash function. The resulting data integrity signature is stored as a Base64-encoded string in the output archive's metadata. Signatures can be compared between and within archives to help better ensure the data integrity of the archive.
 
-  * Fixed `--header` transform bug reported in `Issue 161 <https://github.com/bedops/bedops/issues/161>`_. Thanks to Shane Neph for the bug report!
+  * Fixed :code:`--header` transform bug reported in `Issue 161 <https://github.com/bedops/bedops/issues/161>`_. Thanks to Shane Neph for the bug report!
 
-  * Added chromosome name order test to `STARCH2_transformHeaderlessBEDInput` and `STARCH2_transformHeaderedBEDInput` functions. 
+  * Added chromosome name order test to :code:`STARCH2_transformHeaderlessBEDInput` and :code:`STARCH2_transformHeaderedBEDInput` functions. 
 
-    Compression with :ref:`starch <starch>` ends with a fatal error, should any of the following comparison tests fail:
+    Compression with :code:`starch` ends with a fatal error, should any of the following comparison tests fail:
 
-    1. The chromosome names are not lexicographically ordered (*e.g.*, `chr1` records coming after `chr2` records indicates the data are not correctly sorted).
-    2. The start position of an input element is less than the start position of a previous input element on the same chromosome (*e.g.*, `chr1:1000-1234` coming after `chr1:2000-2345` is not correctly sorted).
-    3. The stop positions of two or more input elements are not in ascending order when their start positions are equal (*e.g.*, `chr1:1000:1234` coming after `chr1:1000-2345` is not correctly sorted). 
+    1. The chromosome names are not lexicographically ordered (*e.g.*, :code:`chr1` records coming after :code:`chr2` records indicates the data are not correctly sorted).
+    2. The start position of an input element is less than the start position of a previous input element on the same chromosome (*e.g.*, :code:`chr1:1000-1234` coming after :code:`chr1:2000-2345` is not correctly sorted).
+    3. The stop positions of two or more input elements are not in ascending order when their start positions are equal (*e.g.*, :code:`chr1:1000:1234` coming after :code:`chr1:1000-2345` is not correctly sorted). 
 
-    If the sort order of the input data is unknown or uncertain, simply use :ref:`sort-bed <sort-bed>` to generate the correct ordering and pipe the output from that to `starch`, *e.g.* `$ cat elements.bed | sort-bed - | starch - > elements.starch`.<br />
-
+    If the sort order of the input data is unknown or uncertain, simply use :code:`sort-bed` to generate the correct ordering and pipe the output from that to :code:`starch`, *e.g.* :bash:`$ cat elements.bed | sort-bed - | starch - > elements.starch`.|br|
 
 * :ref:`starchcat <starchcat>`
 
-  * Added `--report-progress=N` option to (optionally) report compression of the Nth element of the current chromosome to standard error stream.
+  * Added :code:`--report-progress=N` option to (optionally) report compression of the *N* th element of the current chromosome to standard error stream.
 
-  * As in `starch`, at the conclusion of compressing a chromosome made from one or more input Starch archives, the input Starch-transform bytes are continually run through a SHA-1 hash function. The resulting data integrity signature is stored as a Base64-encoded string in the chromosome's entry in the new archive's metadata.<br />
-
+  * As in :code:`starch`, at the conclusion of compressing a chromosome made from one or more input Starch archives, the input Starch-transform bytes are continually run through a SHA-1 hash function. The resulting data integrity signature is stored as a Base64-encoded string in the chromosome's entry in the new archive's metadata.|br|
 
 * :ref:`convert2bed <convert2bed>`
 
@@ -96,8 +89,7 @@ Released: **TBD**
 
     * conversion of dynamically-sized read fields (up to system memory and/or interthread buffer size limit)
 
-    These patches follow up on bug reports in `Issue 157 <https://github.com/bedops/bedops/issues/157>`_.<br />
-
+    These patches follow up on bug reports in `Issue 157 <https://github.com/bedops/bedops/issues/157>`_.|br|
 
 =================
 Previous versions
@@ -113,7 +105,7 @@ Released: **July 27, 2016**
 
   * Increased memory allocation for maximum number of per-read CIGAR operations in BAM and SAM conversion to help improve stability. Thanks to Adam Freedman for the report!
 
-  * Improved reliability of gene ID parsing from GTF input, where ``gene_id`` field may be positioned at start, middle, or end of attributes string, or may be empty. Thanks to blaiseli for the report!
+  * Improved reliability of gene ID parsing from GTF input, where :code:`gene_id` field may be positioned at start, middle, or end of attributes string, or may be empty. Thanks to blaiseli for the report!
 
 -------
 v2.4.19
@@ -123,11 +115,11 @@ Released: **May 9, 2016**
 
 * :ref:`convert2bed <convert2bed>`
 
-  * Fixed bug in BAM and SAM parallel conversion scripts (``*_gnuParallel`` and ``*_sge``) with inputs containing chromosome names without ``chr`` prefix. Thanks to Eric Haugen for the bug report!
+  * Fixed bug in BAM and SAM parallel conversion scripts (:code:`*_gnuParallel` and :code:`*_sge`) with inputs containing chromosome names without :code:`chr` prefix. Thanks to Eric Haugen for the bug report!
 
 * Starch C++ API
 
-  * Fixed bug with extraction of bzip2- and gzip-backed archives with all other non-primary Starch tools (all tools except `starch`, `unstarch`, `starchcat`, and `sort-bed`). Thanks to Eric Haugen for the bug report!
+  * Fixed bug with extraction of bzip2- and gzip-backed archives with all other non-primary Starch tools (all tools except :code:`starch`, :code:`unstarch`, :code:`starchcat`, and :code:`sort-bed`). Thanks to Eric Haugen for the bug report!
 
 -------
 v2.4.18
@@ -161,7 +153,7 @@ Released: **April 26, 2016**
 
 * Starch C++ API
 
-  * Fixed bug with extraction of bzip2- and gzip-backed archives with all other non-primary Starch tools (all tools except `starch`, `unstarch`, `starchcat`, and `sort-bed`). Thanks to Feng Tian for reports.
+  * Fixed bug with extraction of bzip2- and gzip-backed archives with all other non-primary Starch tools (all tools except :code:`starch`, :code:`unstarch`, :code:`starchcat`, and :code:`sort-bed`). Thanks to Feng Tian for reports.
 
 -------
 v2.4.16
@@ -171,11 +163,11 @@ Released: **April 5, 2016**
 
 * :ref:`bedmap <bedmap>`
 
-  * Added new ``--echo-ref-row-id`` option to report reference row ID elements.
+  * Added new :code:`--echo-ref-row-id` option to report reference row ID elements.
 
 * Starch C++ API
 
-  * Fixed bug with extraction of archives made with ``starch --gzip`` (thanks to Brad Gulko for the bug report and Paul Verhoeven and Peter Weir for compile and testing assistance).
+  * Fixed bug with extraction of archives made with :code:`starch --gzip` (thanks to Brad Gulko for the bug report and Paul Verhoeven and Peter Weir for compile and testing assistance).
 
 * General improvements
 
@@ -193,7 +185,7 @@ Released: **January 21, 2016**
 
 * :ref:`convert2bed <convert2bed>`
 
-  * Fixed buffer overflows in ``convert2bed`` to improve conversion reliability for VCF files (thanks to Jared Andrews and Kousik Kundu for bug reports).
+  * Fixed buffer overflows in :code:`convert2bed` to improve conversion reliability for VCF files (thanks to Jared Andrews and Kousik Kundu for bug reports).
 
 * General improvements
 
@@ -207,11 +199,11 @@ Released: **April 21, 2015**
 
 * :ref:`convert2bed <convert2bed>`
 
-  * Fixed missing ``samtools`` variable references in cluster conversion scripts (thanks to Brad Gulko for the bug report).
+  * Fixed missing :code:`samtools` variable references in cluster conversion scripts (thanks to Brad Gulko for the bug report).
 
 * General suite-wide improvements
 
-  * Fixed exception error message for ``stdin`` check (thanks to Brad Gulko for the bug report).
+  * Fixed exception error message for :code:`stdin` check (thanks to Brad Gulko for the bug report).
 
 
 -------
@@ -222,7 +214,7 @@ Released: **April 20, 2015**
 
 * :ref:`bedops <bedops>`
 
-  * Resolved issue in using ``--ec`` with ``bedops`` when reading from ``stdin`` (thanks to Brad Gulko for the bug report).
+  * Resolved issue in using :code:`--ec` with :code:`bedops` when reading from :code:`stdin` (thanks to Brad Gulko for the bug report).
 
 * General suite-wide improvements
 
@@ -236,22 +228,27 @@ Released: **March 13, 2015**
 
 * :ref:`bedops <bedops>`
 
-  * Checks have been added to determine if an integer argument is a file in the current working directory, before interpreting that argument as an overlap criterion for ``-e`` and ``-n`` options. To reduce ambiguity, if an integer is used as a file input, ``bedops`` issues a warning of the interpretation and provides guidance on how to force that value to instead be used as an overlap specification, if desired (thanks to E. Rynes for the pointer).
+  * Checks have been added to determine if an integer argument is a file in the current working directory, before interpreting that argument as an overlap criterion for :code:`-e` and :code:`-n` options. 
+
+    To reduce ambiguity, if an integer is used as a file input, :code:`bedops` issues a warning of the interpretation and provides guidance on how to force that value to instead be used as an overlap specification, if desired (thanks to E. Rynes for the pointer).
 
 * :ref:`bedmap <bedmap>`
 
-  * Added support for ``--prec``/``--sci`` with ``--min-element`` and ``--max-element`` operations (thanks to E. Rynes for the pointer).
+  * Added support for :code:`--prec` / :code:`--sci` with :code:`--min-element` and :code:`--max-element` operations (thanks to E. Rynes for the pointer).
 
 * :REF:`bedops <bedops>` | :ref:`bedmap <bedmap>` | :ref:`closest-features <closest-features>`
 
-  * Added support for ``bash`` process substitution/named pipes with specification of ``--chrom`` and/or ``--ec`` options (thanks to B. Gulko for the bug report).
-  * Fixed code that extracts ``gzip``-backed Starch archives from ``bedops`` and other core tools (thanks again to B. Gulko for the bug report).
+  * Added support for :code:`bash` process substitution/named pipes with specification of :code:`--chrom` and/or :code:`--ec` options (thanks to B. Gulko for the bug report).
+
+  * Fixed code that extracts :code:`gzip`-backed Starch archives from :code:`bedops` and other core tools (thanks again to B. Gulko for the bug report).
 
 * :ref:`convert2bed <convert2bed>`
 
-  * Switched ``matches`` and ``qSize`` fields in order of :ref:`psl2bed <psl2bed>` output. Refer to documentation for new field order.
+  * Switched :code:`matches` and :code:`qSize` fields in order of :code:`psl2bed` output. Refer to documentation for new field order.
+
   * Added null sentinel to GTF ID value.
-  * To help reduce the chance of buffer overflows, the `convert2bed` tool increases the maximum field length from 8191 to 24575 characters to allow parsing of inputs with longer field length, such as very long attributes from `mosquito GFF3 <https://www.vectorbase.org/download/aedes-aegypti-liverpoolbasefeaturesaaegl33gff3gz>`_ data (thanks to T. Karginov for the bug report).
+
+  * To help reduce the chance of buffer overflows, the :code:`convert2bed` tool increases the maximum field length from 8191 to 24575 characters to allow parsing of inputs with longer field length, such as very long attributes from `mosquito GFF3 <https://www.vectorbase.org/download/aedes-aegypti-liverpoolbasefeaturesaaegl33gff3gz>`_ data (thanks to T. Karginov for the bug report).
 
 -------
 v2.4.11
@@ -261,7 +258,7 @@ Released: **February 24, 2015**
 
 * :ref:`convert2bed <convert2bed>`
 
-  * Fixed bug in :ref:`psl2bed <psl2bed>` where ``matches`` column value was truncated by one character. Updated unit tests. Thanks to M. Wirthlin for the bug report.
+  * Fixed bug in :code:`psl2bed` where :code:`matches` column value was truncated by one character. Updated unit tests. Thanks to M. Wirthlin for the bug report.
 
 -------
 v2.4.10
@@ -271,13 +268,13 @@ Released: **February 23, 2015**
 
 * :ref:`starch <starch>`
 
-  * In addition to checking chromosome interleaving, the ``starch`` tool now enforces :ref:`sort-bed <sort-bed>` sort ordering on BED input and exits with an ``EINVAL`` error if the data are not sorted correctly.
+  * In addition to checking chromosome interleaving, the :code:`starch` tool now enforces :code:`sort-bed` sort ordering on BED input and exits with an :code:`EINVAL` POSIX error code if the data are not sorted correctly.
 
 * :ref:`convert2bed <convert2bed>`
 
-  * Added ``--zero-indexed`` option to ``wig2bed`` and ``wig2starch`` wrappers and ``convert2bed`` binary, which converts WIG data that are zero-indexed without any coordinate adjustments. This is useful for WIG data sourced from the UCSC Kent tool ``bigWigToWig``, where the ``bigWig`` data can potentially be sourced from 0-indexed BAM- or bedGraph-formatted data. 
+  * Added :code:`--zero-indexed` option to :code:`wig2bed` and :code:`wig2starch` wrappers and :code:`convert2bed` binary, which converts WIG data that are zero-indexed without any coordinate adjustments. This is useful for WIG data sourced from the UCSC Kent tool :code:`bigWigToWig`, where the :code:`bigWig` data can potentially be sourced from 0-indexed BAM- or bedGraph-formatted data. 
 
-  * If the WIG input contains any element with a start coordinate of 0, the default use of ``wig2bed``, ``wig2starch`` and ``convert2bed`` will exit early with an error condition, suggesting the use of ``--zero-indexed``.
+  * If the WIG input contains any element with a start coordinate of 0, the default use of :code:`wig2bed`, :code:`wig2starch` and :code:`convert2bed` will exit early with an error condition, suggesting the use of :code:`--zero-indexed`.
 
   * Updated copyright date range of wrapper scripts
 
@@ -289,15 +286,15 @@ Released: **February 17, 2015**
 
 * :ref:`sort-bed <sort-bed>`
 
-  * Added support for ``--check-sort`` to report if input is sorted (or not)
+  * Added support for :code:`--check-sort` to report if input is sorted (or not)
 
 * Starch
 
-  * Improved support for ``starch --header``, where header contains tab-delimited fields
+  * Improved support for :code:`starch --header`, where header contains tab-delimited fields
 
 * Starch C++ API
 
-  * Fixed bug with ``starch --header`` functionality, such that BEDOPS core tools (``bedops``, etc.) would be unable to extract correct data from headered Starch archive
+  * Fixed bug with :code:`starch --header` functionality, such that BEDOPS core tools (:code:`bedops`, etc.) would be unable to extract correct data from headered Starch archive
 
 ------
 v2.4.8
@@ -323,9 +320,11 @@ Released: **February 2, 2015**
 
 * :ref:`convert2bed <convert2bed>` fixes and improvements
 
-  * Fixed `--split` support in :ref:`psl2bed <psl2bed>` (thanks to Marco A.)
+  * Fixed :code:`--split` support in :code:`psl2bed` (thanks to Marco A.)
+
   * Fixed compilation warning regarding comparison of signed and unsigned values
-  * Fixed corrupted :ref:`psl2bed <psl2bed>` test inputs
+
+  * Fixed corrupted :code:`psl2bed` test inputs
 
 ------
 v2.4.6
@@ -335,19 +334,19 @@ Released: **January 30, 2015**
 
 * :ref:`convert2bed <convert2bed>` fixes and improvements
   
-  * Added support for conversion of the `GVF file format <http://www.sequenceontology.org/resources/gvf.html#summary>`_, including wrapper scripts and unit tests. Refer to the :ref:`gvf2bed <gvf2bed>` documentation for more information.
+  * Added support for conversion of the `GVF file format <http://www.sequenceontology.org/resources/gvf.html#summary>`_, including wrapper scripts and unit tests. Refer to the :code:`gvf2bed` documentation for more information.
 
-  * Fixed bug in string copy of zero-length element attribute for :ref:`gff2bed` and :ref:`gtf2bed` (GFF and GTF) formats
+  * Fixed bug in string copy of zero-length element attribute for :code:`gff2bed` and :code:`gtf2bed` (GFF and GTF) formats
 
 * General fixes and improvements
 
   * Fixed possibly corrupt bzip2, Jansson and zlib tarballs (thanks to rekado, Shane N. and Richard S.)
 
-  * Fixed typo in :ref:`bedextract <bedextract>` documentation
+  * Fixed typo in :code:`bedextract` documentation
 
   * Fixed broken image in :ref:`Overview <overview>`
 
-  * Removed 19 MB ``_build`` intermediate result directory (which should improve overall ``git clone`` time considerably!)
+  * Removed 19 MB :code:`_build` intermediate result directory (which should improve overall :code:`git clone` time considerably!)
 
 ------
 v2.4.5
@@ -355,9 +354,9 @@ v2.4.5
 
 Released: **January 28, 2015**
 
-* ``convert2bed`` improvements
+* :ref:`convert2bed <convert2bed>` improvements
 
-  * Addition of RepeatMasker annotation output (``.out``) file conversion support, ``rmsk2bed`` and ``rmsk2starch`` wrappers, and unit tests
+  * Addition of RepeatMasker annotation output (:code:`.out`) file conversion support, :code:`rmsk2bed` and :code:`rmsk2starch` wrappers, and unit tests
 
 ------
 v2.4.4
@@ -379,21 +378,21 @@ Released: **December 18, 2014**
 
 * Compilation improvements
 
-  * Shane Neph put in a great deal of work to enable parallel builds (*e.g.*, ``make -j N`` to build various targets in parallel). Depending on the end user's environment, this can speed up compilation time by a factor of 2, 4 or more.
+  * Shane Neph put in a great deal of work to enable parallel builds (*e.g.*, :code:`make -j N` to build various targets in parallel). Depending on the end user's environment, this can speed up compilation time by a factor of 2, 4 or more.
 
-  * Fixed numerous compilation warnings of debug builds of :ref:`starch` toolkit under RHEL6/GCC and OS X 10.10.1/LLVM.
+  * Fixed numerous compilation warnings of debug builds of :code:`starch` toolkit under RHEL6/GCC and OS X 10.10.1/LLVM.
 
 * New :ref:`bedops` features
 
-  * Added ``--chop`` and ``--stagger`` options to "melt" inputs into contiguous or staggered disjoint regions of equivalent size.
+  * Added :code:`--chop` and :code:`--stagger` options to "melt" inputs into contiguous or staggered disjoint regions of equivalent size.
 
-  * For less confusion, arguments for ``--element-of``, ``--chop`` and other ``bedops`` operations that take numerical modifiers no longer require a leading hyphen character. For instance, ``--element-of 1`` is now equivalent to the former usage of ``--element-of -1``.
+  * For less confusion, arguments for :code:`--element-of`, :code:`--chop` and other :code:`bedops` operations that take numerical modifiers no longer require a leading hyphen character. For instance, :code:`--element-of 1` is now equivalent to the former usage of :code:`--element-of -1`.
 
 * New :ref:`bedmap` features
 
-  * The ``--sweep-all`` option reads through the entire map file without early termination and can help deal with ``SIGPIPE`` errors. It adds to execution time, but the penalty is not as severe as with the use of ``--ec``. Using ``--ec`` alone will enable error checking, but will now no longer read through the entire map file. The ``--ec`` option can be used in conjunction with ``--sweep-all``, with the associated time penalties. (Another method for dealing with issue this is to override how ``SIGPIPE`` errors are caught by the interpreter (bash, Python, etc.) and retrapping them or ignoring them. However, it may not a good idea to do this as other situations may arise in production pipelines where it is ideal to trap and handle all I/O errors in a default manner.)
+  * The :code:`--sweep-all` option reads through the entire map file without early termination and can help deal with :code:`SIGPIPE` errors. It adds to execution time, but the penalty is not as severe as with the use of :code:`--ec`. Using :code:`--ec` alone will enable error checking, but will now no longer read through the entire map file. The :code:`--ec` option can be used in conjunction with :code:`--sweep-all`, with the associated time penalties. (Another method for dealing with issue this is to override how :code:`SIGPIPE` errors are caught by the interpreter (:code:`bash`, Python, *etc.*) and retrapping them or ignoring them. However, it may not a good idea to do this as other situations may arise in production pipelines where it is ideal to trap and handle all I/O errors in a default manner.)
 
-  * New ``--echo-ref-size`` and ``--echo-ref-name`` operations report genomic length of reference element, and rename the reference element in ``chrom:start-end`` (useful for labeling rows for input for ``matrix2png`` or ``R`` or other applications).
+  * New :code:`--echo-ref-size` and :code:`--echo-ref-name` operations report genomic length of reference element, and rename the reference element in :code:`chrom:start-end` (useful for labeling rows for input for :code:`matrix2png` or :code:`R` or other applications).
 
 * :ref:`bedextract`
 
@@ -401,21 +400,21 @@ Released: **December 18, 2014**
 
 * :ref:`conversion scripts <conversion_scripts>`
 
-  * Brand new C99 binary called :ref:`convert2bed`, which wrapper scripts (``bam2bed``, etc.) now call. No more Python version dependencies, and the C-based rewrite offers massive performance improvements over old Python-based scripts.
+  * Brand new C99 binary called :code:`convert2bed`, which wrapper scripts (:code:`bam2bed`, *etc.*) now call. No more Python version dependencies, and the C-based rewrite offers massive performance improvements over old Python-based scripts.
 
-  * Added :ref:`parallel_bam2starch` script, which parallelizes creation of :ref:`Starch <starch_specification>` archive from very large BAM files in SGE environments.
+  * Added :code:`parallel_bam2starch` script, which parallelizes creation of :ref:`Starch <starch_specification>` archive from very large BAM files in SGE environments.
 
   * Added bug fix for missing code in :ref:`starchcluster.gnu_parallel <starchcluster>` script, where the final collation step was missing.
 
-  * The :ref:`vcf2bed` script now accepts the ``--do-not-split`` option, which prints one BED element for all alternate alleles.
+  * The :code:`vcf2bed` script now accepts the :code:`--do-not-split` option, which prints one BED element for all alternate alleles.
 
 * :ref:`Starch <starch_specification>` archival format and compression/extraction tools
 
-  * Added duplicate- and :ref:`nested-element <nested_elements>` flags in v2.1 of Starch metadata, which denote if a chromosome contains one or more duplicate and/or nested elements. BED files compressed with :ref:`starch` v2.5 or greater, or Starch archives updated with :ref:`starchcat` v2.5 or greater will include these values in the archive metadata. The :ref:`unstarch` extraction tool offers ``--has-duplicate`` and ``--has-nested`` options to retrieve these flag values for a specified chromosome (or for all chromosomes).
+  * Added duplicate- and :ref:`nested-element <nested_elements>` flags in v2.1 of Starch metadata, which denote if a chromosome contains one or more duplicate and/or nested elements. BED files compressed with :code:`starch` v2.5 or greater, or Starch archives updated with :code:`starchcat` v2.5 or greater will include these values in the archive metadata. The :code:`unstarch` extraction tool offers :code:`--has-duplicate` and :code:`--has-nested` options to retrieve these flag values for a specified chromosome (or for all chromosomes).
 
-  * Added ``--is-starch`` option to :ref:`unstarch` to test if specified input file is a Starch v1 or v2 archive.
+  * Added :code:`--is-starch` option to :code:`unstarch` to test if specified input file is a Starch v1 or v2 archive.
  
-  * Added bug fix for compressing BED files with :ref:`starch`, where the archive would not include the last element of the BED input, if the BED input lacked a trailing newline. The compression tools now include a routine for capturing the last line, if there is no newline.
+  * Added bug fix for compressing BED files with :code:`starch`, where the archive would not include the last element of the BED input, if the BED input lacked a trailing newline. The compression tools now include a routine for capturing the last line, if there is no newline.
 
 * Documentation improvements
 
@@ -429,13 +428,13 @@ Released: **April 10, 2014**
 
 * :ref:`conversion scripts <conversion_scripts>`
 
-  * Added support for :ref:`sort-bed` ``--tmpdir`` option to conversion scripts, to allow specification of alternative temporary directory for sorted results when used in conjunction with ``--max-mem`` option.
+  * Added support for :code:`sort-bed --tmpdir` option to conversion scripts, to allow specification of alternative temporary directory for sorted results when used in conjunction with :code:`--max-mem` option.
 
-  * Added support for GFF3 files which include a FASTA directive in ``gff2bed`` and ``gff2starch`` (thanks to Keith Hughitt).
+  * Added support for GFF3 files which include a FASTA directive in :code:`gff2bed` and :code:`gff2starch` (thanks to Keith Hughitt).
 
-  * Extended support for Python-based conversion scripts to support use with Python v2.6.2 and forwards, except for ``sam2bed`` and ``sam2starch``, which still require Python v2.7 or greater (and under Python3).
+  * Extended support for Python-based conversion scripts to support use with Python v2.6.2 and forwards, except for :code:`sam2bed` and :code:`sam2starch`, which still require Python v2.7 or greater (and under Python3).
 
-  * Fixed ``--insertions`` option in :ref:`vcf2bed` to now report a single-base BED element (thanks to Matt Maurano).
+  * Fixed :code:`--insertions` option in :code:`vcf2bed` to now report a single-base BED element (thanks to Matt Maurano).
 
 ------
 v2.4.1
@@ -445,33 +444,33 @@ Released: **February 26, 2014**
 
 * :ref:`bedmap`
 
-  * Added ``--fraction-both`` and ``--exact`` (``--fraction-both 1``) to list of compatible overlap options with ``--faster``.
+  * Added :code:`--fraction-both` and :code:`--exact` (:code:`--fraction-both 1`) to list of compatible overlap options with :code:`--faster`.
 
-  * Added 5% performance improvement with `bedmap` operations without ``--faster``.
+  * Added 5% performance improvement with :code:`bedmap` operations without :code:`--faster`.
 
   * Fixed scenario that can yield incorrect results (cf. `Issue 43 <https://github.com/bedops/bedops/issues/43>`_).
 
 * :ref:`sort-bed`
 
-  * Added ``--tmpdir`` option to allow specification of an alternative temporary directory, when used in conjunction with ``--max-mem`` option. This is useful if the host operating system's standard temporary directory (*e.g.*, ``/tmp`` on Linux or OS X) does not have sufficient space to hold intermediate results.
+  * Added :code:`--tmpdir` option to allow specification of an alternative temporary directory, when used in conjunction with :code:`--max-mem` option. This is useful if the host operating system's standard temporary directory (*e.g.*, :code:`/tmp` on Linux or OS X) does not have sufficient space to hold intermediate results.
 
 * All :ref:`conversion scripts <conversion_scripts>`
 
   * Improvements to error handling in Python-based conversion scripts, in the case where no input is specified.
 
-  * Fixed typos in :ref:`gff2bed` and :ref:`psl2bed` documentation (cf. `commit a091e18 <https://github.com/bedops/bedops/commit/a091e18>`_).
+  * Fixed typos in :code:`gff2bed` and :code:`psl2bed` documentation (cf. `commit a091e18 <https://github.com/bedops/bedops/commit/a091e18>`_).
 
 * OS X compilation improvements
 
   * We have completed changes to the OS X build process for the remaining half of the BEDOPS binaries, which now allows direct, full compilation with Clang/LLVM (part of the Apple Xcode distribution). 
 
-    All OS X BEDOPS binaries now use Apple's system-level C++ library, instead of GNU's ``libstdc++``. It is no longer required (or recommended) to use GNU gcc to compile BEDOPS on OS X.
+    All OS X BEDOPS binaries now use Apple's system-level C++ library, instead of GNU's :code:`libstdc++`. It is no longer required (or recommended) to use GNU :code:`gcc` to compile BEDOPS on OS X.
 
     Compilation is faster and simpler, and we can reduce the size and complexity of Mac OS X builds and installer packages. By using Apple's C++ library, we also eliminate the likelihood of missing library errors. 
 
     In the longer term, this gets us closer to moving BEDOPS to using the CMake build system, to further abstract and simplify the build process.
 
-* Cleaned up various compilation warnings found with ``clang``/``clang++`` and GCC kits.
+* Cleaned up various compilation warnings found with :code:`clang` / :code:`clang++` and GCC kits.
 
 ------
 v2.4.0
@@ -481,9 +480,9 @@ Released: **January 9, 2014**
 
 * :ref:`bedmap`
 
-  * Added new ``--echo-map-size`` and ``--echo-overlap-size`` options to calculate sizes of mapped elements and overlaps between mapped and reference elements.
+  * Added new :code:`--echo-map-size` and :code:`--echo-overlap-size` options to calculate sizes of mapped elements and overlaps between mapped and reference elements.
 
-  * Improved performance for all ``--echo-map-*`` operations.
+  * Improved performance for all :code:`--echo-map-*` operations.
 
   * Updated documentation.
 
@@ -495,7 +494,7 @@ Released: **January 9, 2014**
 
   * Added support for millions of distinct chromosomes.
 
-  * Improved internal estimation of memory usage with ``--max-mem`` option.
+  * Improved internal estimation of memory usage with :code:`--max-mem` option.
 
 * Added support for compilation on Cygwin (64-bit). Refer to the :ref:`installation documentation <installation_via_source_code_on_cygwin>` for build instructions.
 
@@ -505,39 +504,39 @@ Released: **January 9, 2014**
 
 * All :ref:`conversion scripts <conversion_scripts>`
 
-  * Python-based scripts no longer use temporary files, which reduces file I/O and improves performance. This change also reduces the need for large amounts of free space in a user's ``/tmp`` folder, particularly relevant for users converting multi-GB BAM files.
+  * Python-based scripts no longer use temporary files, which reduces file I/O and improves performance. This change also reduces the need for large amounts of free space in a user's :code:`/tmp` folder, particularly relevant for users converting multi-GB BAM files.
 
-  * We now test for ability to locate ``starch``, ``sort-bed``, ``wig2bed_bin`` and ``samtools`` in user environment, quitting with the appropriate error state if the dependencies cannot be found.
+  * We now test for ability to locate :code:`starch`, :code:`sort-bed`, :code:`wig2bed_bin` and :code:`samtools` in user environment, quitting with the appropriate error state if the dependencies cannot be found.
 
   * Improved documentation. In particular, we have added descriptive tables to each script's documentation page which describe how columns map from original data input to BED output.
 
   * :ref:`bam2bed` and :ref:`sam2bed`
 
-    * Added ``--custom-tags <value>`` command-line option to support a comma-separated list of custom tags (cf. `Biostars discussion <http://www.biostars.org/p/87062/>`_), *i.e.*, tags which are not part of the original SAMtools specification.
+    * Added :code:`--custom-tags <value>` command-line option to support a comma-separated list of custom tags (cf. `Biostars discussion <http://www.biostars.org/p/87062/>`_), *i.e.*, tags which are not part of the original SAMtools specification.
 
-    * Added ``--keep-header`` option to preserve header and metadata as BED elements that use ``_header`` as the chromosome name. This now makes these conversion scripts fully "non-lossy".
+    * Added :code:`--keep-header` option to preserve header and metadata as BED elements that use :code:`_header` as the chromosome name. This now makes these conversion scripts fully "non-lossy".
 
   * :ref:`vcf2bed`
 
-    * Added new ``--snvs``, ``--insertions`` and ``--deletions`` options that filter VCF variants into three separate subcategories.
+    * Added new :code:`--snvs`, :code:`--insertions` and :code:`--deletions` options that filter VCF variants into three separate subcategories.
 
-    * Added ``--keep-header`` option to preserve header and metadata as BED elements that use ``_header`` as the chromosome name. This now makes these conversion scripts fully "non-lossy".
+    * Added :code:`--keep-header` option to preserve header and metadata as BED elements that use :code:`_header` as the chromosome name. This now makes these conversion scripts fully "non-lossy".
 
   * :ref:`gff2bed`
 
-    * Added ``--keep-header`` option to preserve header and metadata as BED elements that use ``_header`` as the chromosome name. This now makes these conversion scripts fully "non-lossy".
+    * Added :code:`--keep-header` option to preserve header and metadata as BED elements that use :code:`_header` as the chromosome name. This now makes these conversion scripts fully "non-lossy".
 
   * :ref:`psl2bed`
 
-    * Added ``--keep-header`` option to preserve header and metadata as BED elements that use ``_header`` as the chromosome name. This now makes these conversion scripts fully "non-lossy".
+    * Added :code:`--keep-header` option to preserve header and metadata as BED elements that use :code:`_header` as the chromosome name. This now makes these conversion scripts fully "non-lossy".
 
   * :ref:`wig2bed`
 
-    * Added ``--keep-header`` option to :ref:`wig2bed` binary and ``wig2bed``/``wig2starch`` wrapper scripts, to preserve header and metadata as BED elements that use ``_header`` as the chromosome name. This now makes these conversion scripts fully "non-lossy".
+    * Added :code:`--keep-header` option to :code:`wig2bed` binary and :code:`wig2bed` / :code:`wig2starch` wrapper scripts, to preserve header and metadata as BED elements that use :code:`_header` as the chromosome name. This now makes these conversion scripts fully "non-lossy".
 
 * Added OS X uninstaller project to allow end user to more easily remove BEDOPS tools from this platform.
 
-* Cleaned up various compilation warnings found with ``clang``/``clang++`` and GCC kits.
+* Cleaned up various compilation warnings found with :code:`clang` / :code:`clang++` and GCC kits.
 
 ------
 v2.3.0
@@ -549,33 +548,33 @@ Released: **October 2, 2013**
 
   * Due to changes with Google Code hosting policies at the end of the year, we have decided to change our process for distributing code, packages and documentation. While most of the work is done, we appreciate feedback on any problems you may encounter. Please email us at `bedops@stamlab.org <mailto:bedops@stamlab.org>`_ with details.
 
-  * Migration to Github should facilitate requests for code by those who are familiar with ``git`` and want to fork our project to submit `pull requests <https://help.github.com/articles/using-pull-requests>`_.
+  * Migration to Github should facilitate requests for code by those who are familiar with :code:`git` and want to fork our project to submit `pull requests <https://help.github.com/articles/using-pull-requests>`_.
 
 * :ref:`bedops`
 
-  * General ``--ec`` performance improvements.
+  * General :code:`--ec` performance improvements.
 
 * :ref:`bedmap`
 
-  * Adds support for the new ``--skip-unmapped`` option, which filters out reference elements which do not have mapped elements associated with them. See the end of the :ref:`score operations <bedmap_score_operations>` section of the :ref:`bedmap` documentation for more detail.
+  * Adds support for the new :code:`--skip-unmapped` option, which filters out reference elements which do not have mapped elements associated with them. See the end of the :ref:`score operations <bedmap_score_operations>` section of the :ref:`bedmap` documentation for more detail.
 
-  * General ``--ec`` performance improvements.
+  * General :code:`--ec` performance improvements.
 
 * :ref:`starch`
 
-  * Fixed bug with :ref:`starch` where zero-byte BED input (*i.e.*, an "empty set") created a truncated and unusable archive. We now put in a "dummy" chromosome for zero-byte input, which :ref:`unstarch` can now unpack. 
+  * Fixed bug with :code:`starch` where zero-byte BED input (*i.e.*, an "empty set") created a truncated and unusable archive. We now put in a "dummy" chromosome for zero-byte input, which :code:`unstarch` can now unpack. 
 
-    This should simplify error handling with certain pipelines, specifically where set or other BEDOPS operations yield an "empty set" BED file that is subsequently compressed with :ref:`starch`.
+    This should simplify error handling with certain pipelines, specifically where set or other BEDOPS operations yield an "empty set" BED file that is subsequently compressed with :code:`starch`.
 
 * :ref:`unstarch`
 
-  * Can now unpack zero-byte ("empty set") compressed :ref:`starch` archive (see above).
+  * Can now unpack zero-byte ("empty set") compressed :code:`starch` archive (see above).
 
-  * Changed ``unstarch --list`` option to print to ``stdout`` stream (this was previously sent to ``stderr``).
+  * Changed :code:`unstarch --list` option to print to :code:`stdout` stream (this was previously sent to :code:`stderr`).
 
 * :ref:`starch` metadata library
 
-  * Fixed array overflow bug with BEDOPS tools that take :ref:`starch <starch_specification>` archives as inputs, which affected use of archives as inputs to :ref:`closest-features`, :ref:`bedops` and :ref:`bedmap`.
+  * Fixed array overflow bug with BEDOPS tools that take :ref:`starch <starch_specification>` archives as inputs, which affected use of archives as inputs to :code:`closest-features`, :code:`bedops` and :code:`bedmap`.
 
 * All :ref:`conversion scripts <conversion_scripts>`
 
@@ -583,25 +582,25 @@ Released: **October 2, 2013**
 
   * Improved (more "Pythonic") error code handling.
 
-  * Disabled support for ``--max-mem`` sort parameter until :ref:`sort-bed` `issue <https://github.com/bedops/bedops/issues/1>`_ is resolved. Scripts will continue to sort, but they will be limited to available system memory. If you are processing files larger than system memory, please contact us at `bedops@stamlab.org <mailto:bedops@stamlab.org>`_ for details of a temporary workaround.
+  * Disabled support for :code:`--max-mem` sort parameter until :ref:`sort-bed` `issue <https://github.com/bedops/bedops/issues/1>`_ is resolved. Scripts will continue to sort, but they will be limited to available system memory. If you are processing files larger than system memory, please contact us at `bedops@stamlab.org <mailto:bedops@stamlab.org>`_ for details of a temporary workaround.
 
 * :ref:`gff2bed` conversion script
 
-  * Resolved ``IndexError`` exceptions by fixing header support, bringing script in line with `v1.21 GFF3 spec <http://www.sequenceontology.org/gff3.shtml>`_.
+  * Resolved :code:`IndexError` exceptions by fixing header support, bringing script in line with `v1.21 GFF3 spec <http://www.sequenceontology.org/gff3.shtml>`_.
 
 * :ref:`bam2bed` and :ref:`sam2bed` conversion scripts
 
-  * Rewritten ``bam2*`` and ``sam2*`` scripts from ``bash`` into Python (v2.7+ support).
+  * Rewritten :code:`bam2*` and :code:`sam2*` scripts from :code:`bash` into Python (v2.7+ support).
 
   * Improved BAM and SAM input validation against the `v1.4 SAM spec <http://samtools.sourceforge.net/SAMv1.pdf>`_.
 
-  * New ``--split`` option prints reads with ``N`` CIGAR operations as separated BED elements.
+  * New :code:`--split` option prints reads with :code:`N` CIGAR operations as separated BED elements.
 
-  * New ``--all-reads`` option prints all reads, mapped and unmapped.
+  * New :code:`--all-reads` option prints all reads, mapped and unmapped.
 
 * :ref:`bedextract`
 
-  * Fixed ``stdin`` bug with :ref:`bedextract`.
+  * Fixed :code:`stdin` bug with :code:`bedextract`.
 
 * New documentation via `readthedocs.org <readthedocs.org>`_.
 
@@ -615,11 +614,11 @@ Released: **October 2, 2013**
 
 * OS X compilation improvements
 
-  * We have made changes to the OS X build process for half of the BEDOPS binaries, which allows direct compilation with Clang/LLVM (part of the Apple Xcode distribution). Those binaries now use Apple's system-level C++ library, instead of GNU's ``libstdc++``. 
+  * We have made changes to the OS X build process for half of the BEDOPS binaries, which allows direct compilation with Clang/LLVM (part of the Apple Xcode distribution). Those binaries now use Apple's system-level C++ library, instead of GNU's :code:`libstdc++`. 
 
     This change means that we require Mac OS X 10.7 ("Lion") or greater |---| we do not support 10.6 at this time.
 
-    Compilation is faster and simpler, and we can reduce the size and complexity of Mac OS X builds and installer packages. By using Apple's C++ library, we also reduce the likelihood of missing library errors. When this process is completed for the remaining binaries, it will no longer be necessary to install GCC 4.7+ (by way of MacPorts or other package managers) in order to build BEDOPS on OS X, nor will we have to bundle ``libstdc++`` with the installer.
+    Compilation is faster and simpler, and we can reduce the size and complexity of Mac OS X builds and installer packages. By using Apple's C++ library, we also reduce the likelihood of missing library errors. When this process is completed for the remaining binaries, it will no longer be necessary to install GCC 4.7+ (by way of MacPorts or other package managers) in order to build BEDOPS on OS X, nor will we have to bundle :code:`libstdc++` with the installer.
 
 -------
 v2.2.0b
@@ -639,11 +638,11 @@ Released: **May 22, 2013**
 
 * :ref:`Starch v2 test suite <starch_specification>`
 
-  * We have added a test suite for the Starch archive toolkit with the source download. Test inputs include randomized BED data generated from chromosome and bounds data stored on UCSC servers as well as static FIMO search results. Tests put :ref:`starch`, :ref:`unstarch` and :ref:`starchcat` through various usage scenarios. Please refer to the Starch-specific Makefiles and the test target and subfolder's `README` doc for more information.
+  * We have added a test suite for the Starch archive toolkit with the source download. Test inputs include randomized BED data generated from chromosome and bounds data stored on UCSC servers as well as static FIMO search results. Tests put :code:`starch`, :code:`unstarch` and :code:`starchcat` through various usage scenarios. Please refer to the Starch-specific Makefiles and the test target and subfolder's `README` doc for more information.
 
 * :ref:`starchcat`
 
-  * Resolves bug with ``--gzip`` option, allowing updates of ``gzip`` -backed v1.2 and v1.5 archives to the :ref:`v2 Starch format <starch_specification>` (either ``bzip2`` - or ``gzip`` -backed).
+  * Resolves bug with :code:`--gzip` option, allowing updates of :code:`gzip` -backed v1.2 and v1.5 archives to the :ref:`v2 Starch format <starch_specification>` (either :code:`bzip2` - or :code:`gzip` -backed).
 
 * :ref:`unstarch`
 
@@ -651,7 +650,7 @@ Released: **May 22, 2013**
 
 * :ref:`conversion scripts <conversion_scripts>`
 
-  * We have partially reverted :ref:`wig2bed`, providing a Bash shell wrapper to the original C binary. This preserves consistency of command-line options across the conversion suite, while making use of the C binary to recover performance lost from the Python-based v2.1 revision of :ref:`wig2bed` (which at this time is no longer supported). (Thanks to Matt Maurano for reporting this issue.)
+  * We have partially reverted :code:`wig2bed`, providing a Bash shell wrapper to the original C binary. This preserves consistency of command-line options across the conversion suite, while making use of the C binary to recover performance lost from the Python-based v2.1 revision of :code:`wig2bed` (which at this time is no longer supported). (Thanks to Matt Maurano for reporting this issue.)
 
 ------
 v2.1.1
@@ -661,15 +660,15 @@ Released: **May 3, 2013**
 
 * :ref:`bedmap`
 
-  * Major performance improvements made in v2.1.1, such that current :ref:`bedmap` now operates as fast or faster than the v1.2.5 version of :ref:`bedmap`!
+  * Major performance improvements made in v2.1.1, such that current :code:`bedmap` now operates as fast or faster than the v1.2.5 version of :code:`bedmap`!
 
 * :ref:`bedops`
 
-  * Resolves bug with ``--partition`` option.
+  * Resolves bug with :code:`--partition` option.
 
 * :ref:`conversion scripts <conversion_scripts>`
 
-  * All v2.1.0 Python-based scripts now include fix for ``SIGPIPE`` handling, such that use of ``head`` or other common UNIX utilities to process buffered standard output no longer yields ``IOError`` exceptions. (Thanks to Matt Maurano for reporting this bug.)
+  * All v2.1.0 Python-based scripts now include fix for :code:`SIGPIPE` handling, such that use of :code:`head` or other common UNIX utilities to process buffered standard output no longer yields :code:`IOError` exceptions. (Thanks to Matt Maurano for reporting this bug.)
 
 * 32-bit Linux binary support
 
@@ -689,25 +688,25 @@ Released: **April 22, 2013**
 
 * :ref:`bedops`
 
-  * New ``--partition`` operator efficiently generates disjoint segments made from genomic boundaries of all overlapping inputs.
+  * New :code:`--partition` operator efficiently generates disjoint segments made from genomic boundaries of all overlapping inputs.
 
 * :ref:`conversion scripts <conversion_scripts>`
 
-  * All scripts now use :ref:`sort-bed` behind the scenes to output sorted BED output, ready for use with BEDOPS utilities. It is no longer necessary to pipe data to or otherwise post-process converted data with :ref:`sort-bed`.
+  * All scripts now use :code:`sort-bed` behind the scenes to output sorted BED output, ready for use with BEDOPS utilities. It is no longer necessary to pipe data to or otherwise post-process converted data with :code:`sort-bed`.
 
-  * New :ref:`psl2bed` conversion script, converting `PSL-formatted UCSC BLAT output <http://genome.ucsc.edu/FAQ/FAQformat.html#format2>`_ to BED.
+  * New :code:`psl2bed` conversion script, converting `PSL-formatted UCSC BLAT output <http://genome.ucsc.edu/FAQ/FAQformat.html#format2>`_ to BED.
 
-  * New :ref:`wig2bed` conversion script written in Python.
+  * New :code:`wig2bed` conversion script written in Python.
 
-  * New ``*2starch`` :ref:`conversion scripts <conversion_scripts>` offered for all ``*2bed`` scripts, which output Starch v2 archives.
+  * New :code:`*2starch` :ref:`conversion scripts <conversion_scripts>` offered for all :code:`*2bed` scripts, which output Starch v2 archives.
 
 * :ref:`closest-features`
 
-  * Replaced ``--shortest`` option name with ``--closest``, for clarity. (Old scripts which use ``--shortest`` will continue to work with the deprecated option name for now. We advise editing pipelines, as needed.)
+  * Replaced :code:`--shortest` option name with :code:`--closest`, for clarity. (Old scripts which use :code:`--shortest` will continue to work with the deprecated option name for now. We advise editing pipelines, as needed.)
 
 * :ref:`starch`
 
-  * Improved error checking for interleaved records. This also makes use of ``*2starch`` conversion scripts with the ``--do-not-sort`` option safer.
+  * Improved error checking for interleaved records. This also makes use of :code:`*2starch` conversion scripts with the :code:`--do-not-sort` option safer.
 
 * Improved Mac OS X support
 
@@ -721,9 +720,9 @@ v2.0.0b
 
 Released: **February 19, 2013**
 
-* Added :ref:`starchcluster` script variant which supports task distribution with `GNU Parallel <http://www.gnu.org/software/parallel/>`_.
+* Added :code:`starchcluster` script variant which supports task distribution with `GNU Parallel <http://www.gnu.org/software/parallel/>`_.
 
-* Fixed minor problem with :ref:`bam2bed` and :ref:`sam2bed` conversion scripts.
+* Fixed minor problem with :code:`bam2bed` and :code:`sam2bed` conversion scripts.
 
 -------
 v2.0.0a
@@ -735,41 +734,41 @@ Released: **February 7, 2013**
 
   * Takes in Starch-formatted archives as input, as well as raw BED (i.e., it is no longer required to extract a Starch archive to an intermediate, temporary file or named pipe before applying operations).
 
-  * New ``--chrom`` operator jumps to and operates on information for specified chromosome only.
+  * New :code:`--chrom` operator jumps to and operates on information for specified chromosome only.
 
-  * New ``--echo-map-id-uniq`` operator lists unique IDs from overlapping mapping elements.
+  * New :code:`--echo-map-id-uniq` operator lists unique IDs from overlapping mapping elements.
 
-  * New ``--max-element`` and ``--min-element`` operators return the highest or lowest scoring overlapping map element.
+  * New :code:`--max-element` and :code:`--min-element` operators return the highest or lowest scoring overlapping map element.
 
 * :ref:`bedops`
 
   * Takes in Starch-formatted archives as input, as well as raw BED.
 
-  * New ``--chrom`` operator jumps to and operates on information for specified chromosome only.
+  * New :code:`--chrom` operator jumps to and operates on information for specified chromosome only.
 
 * :ref:`closest-features`
 
   * Takes in Starch-formatted archives as input, as well as raw BED.
 
-  * New ``--chrom`` operator jumps to and operates on information for specified chromosome only.
+  * New :code:`--chrom` operator jumps to and operates on information for specified chromosome only.
 
 * :ref:`sort-bed` and ``bbms``
 
-  * New ``--max-mem`` option to limit system memory on large BED inputs.
+  * New :code:`--max-mem` option to limit system memory on large BED inputs.
 
-  * Incorporated ``bbms`` functionality into :ref:`sort-bed` with use of ``--max-mem`` operator.
+  * Incorporated :code:`bbms` functionality into :code:`sort-bed` with use of :code:`--max-mem` operator.
 
 * :ref:`starch`, :ref:`starchcat` and :ref:`unstarch`
 
-  * New metadata enhancements to Starch-format archival and extraction, including: ``--note``, ``--elements``, ``--bases``, ``--bases-uniq``, ``--list-chromosomes``, ``--archive-timestamp``, ``--archive-type`` and ``--archive-version`` (see ``--help`` to :ref:`starch`, :ref:`starchcat` and :ref:`unstarch` binaries, or view the documentation for these applications for more detail).
+  * New metadata enhancements to Starch-format archival and extraction, including: :code:`--note`, :code:`--elements`, :code:`--bases`, :code:`--bases-uniq`, :code:`--list-chromosomes`, :code:`--archive-timestamp`, :code:`--archive-type` and :code:`--archive-version` (see :code:`--help` to :code:`starch`, :code:`starchcat` and :code:`unstarch` binaries, or view the documentation for these applications for more detail).
 
-  * Adds 20-35% performance boost to creating Starch archives with :ref:`starch` utility.
+  * Adds 20-35% performance boost to creating Starch archives with :code:`starch` utility.
 
   * New documentation with technical overview of the Starch format specification.
 
 * :ref:`conversion scripts <conversion_scripts>`
 
-  * New :ref:`gtf2bed` conversion script, converting GTF (v2.2) to BED.
+  * New :code:`gtf2bed` conversion script, converting GTF (v2.2) to BED.
 
 * Scripts are now part of main download; it is no longer necessary to download the BEDOPS companion separately.
 
@@ -781,7 +780,7 @@ Released: **January 14, 2013**
 
 * Adds support for Apple 32- and 64-bit Intel hardware running OS X 10.5 through 10.8.
 
-* Adds ``README`` for companion download.
+* Adds :code:`README` for companion download.
 
 * Removes some obsolete code.
 
@@ -791,9 +790,9 @@ v1.2.5
 
 Released: **October 13, 2012**
 
-* Fixed unusual bug with :ref:`unstarch`, where an extra (and incorrect) line of BED data can potentially be extracted from an archive.
+* Fixed unusual bug with :code:`unstarch`, where an extra (and incorrect) line of BED data can potentially be extracted from an archive.
 
-* Updated companion download with updated :ref:`bam2bed` and :ref:`sam2bed` conversion scripts to address 0-indexing error with previous revisions.
+* Updated companion download with updated :code:`bam2bed` and :code:`sam2bed` conversion scripts to address 0-indexing error with previous revisions.
 
 ------
 v1.2.3
@@ -801,10 +800,14 @@ v1.2.3
 
 Released: **August 17, 2012**
 
-* Added ``--indicator`` option to :ref:`bedmap`.
+* Added :code:`--indicator` option to :code:`bedmap`.
 
 * Assorted changes to conversion scripts and associated companion download.
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
    :trim:
+.. |br| raw:: html
+   <br />
+.. role:: bash(code)
+   :language: bash
