@@ -2273,6 +2273,124 @@ STARCHCAT2_identifyLowestBedElement (const Boolean *eobFlags, const SignedCoordT
     return STARCHCAT_EXIT_SUCCESS;
 }
 
+int 
+STARCHCAT2_identifyLowestBedElementV2p2 (const Boolean *eobFlags, const SignedCoordType *starts, const SignedCoordType *stops, const char **remainders, const size_t numRecords, size_t *lowestIdx) 
+{
+#ifdef DEBUG
+    fprintf (stderr, "\n--- STARCHCAT2_identifyLowestBedElementV2p2() ---\n");
+#endif    
+    size_t recIdx;
+
+#ifdef __cplusplus
+    SignedCoordType currentStart = std::numeric_limits<int64_t>::min();
+    SignedCoordType currentStop = std::numeric_limits<int64_t>::min();
+    SignedCoordType lowestStart = std::numeric_limits<int64_t>::max();
+    SignedCoordType lowestStop = std::numeric_limits<int64_t>::max();
+#else
+    SignedCoordType currentStart = INT64_MIN;
+    SignedCoordType currentStop = INT64_MIN;
+    SignedCoordType lowestStart = INT64_MAX;
+    SignedCoordType lowestStop = INT64_MAX;
+#endif
+    Boolean checkStopFlag = kStarchFalse;
+
+#ifdef __cplusplus
+    *lowestIdx = static_cast<size_t>( -1 );
+#else
+    *lowestIdx = (size_t) -1;
+#endif
+
+    for (recIdx = 0U; recIdx < numRecords; recIdx++) {
+        if (eobFlags[recIdx] == kStarchFalse) {
+            currentStart = starts[recIdx];
+            currentStop = stops[recIdx];
+#ifdef DEBUG
+            fprintf(stderr, "\trecIdx -> %zu \n", recIdx);
+            fprintf(stderr, "\tstarts[recIdx] -> %" PRId64 " \n", currentStart);
+            fprintf(stderr, "\tstops[recIdx] -> %" PRId64 " \n", currentStop);
+            fprintf(stderr, "\tlowestStart -> %" PRId64 "\n", lowestStart);
+#endif
+            if (currentStart < lowestStart) {
+                lowestStart = currentStart;
+                *lowestIdx = recIdx;
+            }
+            else if (currentStart == lowestStart) {
+                checkStopFlag = kStarchTrue;
+            }
+        }
+    }
+
+    /* 
+        if the start coordinates match, we decide upon comparison of the stop coordinates 
+        by keeping an array of matches on lowest-stop coordinates -- when there are no more 
+        records to check, then compare remainders between matching lowest-stop records 
+    */
+
+    if (checkStopFlag == kStarchTrue) {
+        
+        size_t *lowestStopMatches = NULL;
+        size_t lowestStopMatchesCapacity = 0;
+#ifdef __cplusplus
+        lowestStopMatches = static_cast<size_t *> (malloc(numRecords * sizeof(*lowestStopMatches)));
+#else
+        lowestStopMatches = malloc(numRecords * sizeof(*lowestStopMatches));
+#endif
+        if (!lowestStopMatches) {
+            fprintf(stderr, "ERROR: Could not allocate space for lowest-stop matches array!\n");
+            exit(ENOMEM);
+        }
+
+        for (recIdx = 0U; recIdx < numRecords; recIdx++) {
+            currentStart = starts[recIdx];
+            currentStop = stops[recIdx];
+            if (eobFlags[recIdx] == kStarchFalse) {
+                if ((currentStart == lowestStart) && (currentStop < lowestStop)) { 
+                    lowestStop = currentStop;
+                    *lowestIdx = recIdx;
+                    /* empty out the lowestStopMatches array and add this element */
+                    lowestStopMatchesCapacity = 0;
+                    lowestStopMatches[lowestStopMatchesCapacity++] = recIdx;
+                }
+                else if ((currentStart == lowestStart) && (currentStop == lowestStop)) { 
+                    lowestStopMatches[lowestStopMatchesCapacity++] = recIdx;
+                }
+            }
+        }
+        
+        /*
+            process remainders when there are two or more lowestStopMatches entries
+            (the lowestStopMatches array points to record indices, so we dereference
+            from there to the original index)
+        */
+
+        size_t lowestStopMatchIdx;
+        if (lowestStopMatchesCapacity > 1) {
+            const char *lowestRemainder = remainders[lowestStopMatches[0]];
+            for (lowestStopMatchIdx = 1U; lowestStopMatchIdx < lowestStopMatchesCapacity; lowestStopMatchIdx++) {
+                if (strcmp(lowestRemainder, remainders[lowestStopMatches[lowestStopMatchIdx]]) > 0) {
+                    *lowestIdx = lowestStopMatches[lowestStopMatchIdx];
+                }
+            }
+        }
+
+        free(lowestStopMatches), lowestStopMatches = NULL;
+    }
+
+#ifdef DEBUG
+    fprintf(stderr, "\tLE STATE *lowestIdx -> %zu\n", *lowestIdx);
+#endif
+
+#ifdef __cplusplus
+    if (*lowestIdx == static_cast<size_t>( -1 ))
+        return STARCHCAT_EXIT_FAILURE;
+#else
+    if (*lowestIdx == (size_t) -1)
+        return STARCHCAT_EXIT_FAILURE;
+#endif
+
+    return STARCHCAT_EXIT_SUCCESS;
+}
+
 int    
 STARCHCAT2_pullNextBedElement (const size_t recIdx, const char **inLinesBuf, const LineCountType *nInLinesBuf, char **outLineBuf, uint64_t **inBufNewlineOffsets)
 {
@@ -2356,6 +2474,8 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
     char **extractedElements = NULL;
     SignedCoordType *starts = NULL;
     SignedCoordType *stops = NULL;
+    char **remainders = NULL;
+    size_t remainderCapacity = TOKENS_MAX_LENGTH + 1;
     size_t lowestStartElementIdx = 0U;
     Boolean *eobFlags = NULL;
     Boolean *eofFlags = NULL;
@@ -2405,6 +2525,7 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
     eofFlags                       = static_cast<Boolean *>(                malloc(sizeof(Boolean)              * summary->numRecords) );
     starts                         = static_cast<SignedCoordType *>(        malloc(sizeof(SignedCoordType)      * summary->numRecords) );
     stops                          = static_cast<SignedCoordType *>(        malloc(sizeof(SignedCoordType)      * summary->numRecords) );
+    remainders                     = static_cast<char **>(                  malloc(sizeof(char *)               * summary->numRecords) );
     transformStates                = static_cast<TransformState **>(        malloc(sizeof(TransformState *)     * summary->numRecords) );
     extractionRemainderBufs        = static_cast<char **>(                  malloc(sizeof(char *)               * summary->numRecords) );
     nExtractionRemainderBufs       = static_cast<size_t *>(                 malloc(sizeof(size_t)               * summary->numRecords) );
@@ -2426,6 +2547,7 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
     eofFlags                       = malloc(sizeof(Boolean)              * summary->numRecords);
     starts                         = malloc(sizeof(SignedCoordType)      * summary->numRecords);
     stops                          = malloc(sizeof(SignedCoordType)      * summary->numRecords);
+    remainders                     = malloc(sizeof(char *)               * summary->numRecords);
     transformStates                = malloc(sizeof(TransformState *)     * summary->numRecords);
     extractionRemainderBufs        = malloc(sizeof(char *)               * summary->numRecords); 
     nExtractionRemainderBufs       = malloc(sizeof(size_t)               * summary->numRecords);
@@ -2557,17 +2679,17 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
                 }
                 if (STARCHCAT2_fillExtractionBufferFromBzip2Stream(&eofFlags[inRecIdx], 
 #ifdef __cplusplus
-                                   const_cast<char *>( inChr ), 
+                                                                   const_cast<char *>( inChr ), 
 #else
-                                   (char *) inChr, 
+                                                                   (char *) inChr, 
 #endif
-                                   extractionBuffers[inRecIdx], 
-                                   &nExtractionBuffers[inRecIdx], 
-                                   &bzInFps[inRecIdx], 
-                                   &nBzReads[inRecIdx], 
-                                   extractionRemainderBufs[inRecIdx], 
-                                   &nExtractionRemainderBufs[inRecIdx], 
-                                   transformStates[inRecIdx]) != STARCHCAT_EXIT_SUCCESS) {
+                                                                   extractionBuffers[inRecIdx], 
+                                                                   &nExtractionBuffers[inRecIdx], 
+                                                                   &bzInFps[inRecIdx], 
+                                                                   &nBzReads[inRecIdx], 
+                                                                   extractionRemainderBufs[inRecIdx], 
+                                                                   &nExtractionRemainderBufs[inRecIdx], 
+                                                                   transformStates[inRecIdx]) != STARCHCAT_EXIT_SUCCESS) {
                     fprintf(stderr, "ERROR: Could not extract data from bzip2 input stream at index [%zu]!\n", inRecIdx);
                     return STARCHCAT_EXIT_FAILURE;
                 }
@@ -2580,19 +2702,19 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
                     return STARCHCAT_EXIT_FAILURE;
                 }
                 if (STARCHCAT2_fillExtractionBufferFromGzipStream(&eofFlags[inRecIdx], 
-                                  &zInFps[inRecIdx], 
+                                                                  &zInFps[inRecIdx], 
 #ifdef __cplusplus
-                                  const_cast<char *>( inChr ), 
+                                                                  const_cast<char *>( inChr ), 
 #else
-                                  (char *) inChr, 
+                                                                  (char *) inChr, 
 #endif
-                                  extractionBuffers[inRecIdx], 
-                                  &nExtractionBuffers[inRecIdx], 
-                                  &zInStreams[inRecIdx], 
-                                  &nZReads[inRecIdx], 
-                                  &extractionRemainderBufs[inRecIdx], 
-                                  &nExtractionRemainderBufs[inRecIdx], 
-                                  transformStates[inRecIdx]) != STARCHCAT_EXIT_SUCCESS) {
+                                                                  extractionBuffers[inRecIdx], 
+                                                                  &nExtractionBuffers[inRecIdx], 
+                                                                  &zInStreams[inRecIdx], 
+                                                                  &nZReads[inRecIdx], 
+                                                                  &extractionRemainderBufs[inRecIdx], 
+                                                                  &nExtractionRemainderBufs[inRecIdx], 
+                                                                  transformStates[inRecIdx]) != STARCHCAT_EXIT_SUCCESS) {
                     fprintf(stderr, "ERROR: Could not extract data from gzip input stream at index [%zu]!\n", inRecIdx);
                     return STARCHCAT_EXIT_FAILURE;
                 }
@@ -2617,9 +2739,9 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
 
         /* eobFlags[inRecIdx] = kStarchFalse; */
         STARCHCAT2_extractBedLine(&eobFlags[inRecIdx], 
-                  extractionBuffers[inRecIdx], 
-                  &extractionBufferOffsets[inRecIdx], 
-                  &extractedElements[inRecIdx]);
+                                  extractionBuffers[inRecIdx], 
+                                  &extractionBufferOffsets[inRecIdx], 
+                                  &extractedElements[inRecIdx]);
         extractedLineCounts[inRecIdx]--;
         
         /* memset(outputRetransformState->r_chromosome, 0, TOKEN_CHR_MAX_LENGTH); */
@@ -2648,6 +2770,17 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
 
         starts[inRecIdx] = 0;
         stops[inRecIdx] = 0;
+
+#ifdef __cplusplus
+        remainders[inRecIdx] = static_cast<char *>( malloc(remainderCapacity) );
+#else
+        remainders[inRecIdx] = malloc(remainderCapacity);
+#endif
+        if (!remainders[inRecIdx]) {
+            fprintf(stderr, "ERROR: Could not allocate memory for remainder buffer!\n");
+            return STARCHCAT_EXIT_FAILURE;
+        }
+        memset(remainders[inRecIdx], 0, remainderCapacity);
     }
 
     /* merge */
@@ -2662,48 +2795,55 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
         }
 
         /* 2, 3 -- parse coordinates for each record's current bed element (this gets us the start and stop coords) */
+
         for (inRecIdx = 0U; inRecIdx < summary->numRecords; inRecIdx++) {
 #ifdef DEBUG
             fprintf(stderr, "inRecIdx -> %zu\teobFlags[inRecIdx] -> %d\teofFlags[inRecIdx] -> %d\n", inRecIdx, eobFlags[inRecIdx], eofFlags[inRecIdx]);
 #endif
             //if ((eobFlags[inRecIdx] == kStarchFalse) && (eofFlags[inRecIdx] == kStarchFalse))
-            if (eobFlags[inRecIdx] == kStarchFalse)
+            if (eobFlags[inRecIdx] == kStarchFalse) {
 #ifdef __cplusplus
-                STARCHCAT2_parseCoordinatesFromBedLineV2( &eobFlags[inRecIdx], 
-                              reinterpret_cast<const char *>( extractedElements[inRecIdx] ), 
-                              &starts[inRecIdx], 
-                              &stops[inRecIdx]);
+                STARCHCAT2_parseCoordinatesFromBedLineV2p2( &eobFlags[inRecIdx], 
+                                                            reinterpret_cast<const char *>( extractedElements[inRecIdx] ), 
+                                                            &starts[inRecIdx], 
+                                                            &stops[inRecIdx],
+                                                            &remainders[inRecIdx]);
 #else
-                STARCHCAT2_parseCoordinatesFromBedLineV2( &eobFlags[inRecIdx], 
-                              (const char *) extractedElements[inRecIdx], 
-                              &starts[inRecIdx], 
-                              &stops[inRecIdx]);
+                STARCHCAT2_parseCoordinatesFromBedLineV2p2( &eobFlags[inRecIdx], 
+                                                            (const char *) extractedElements[inRecIdx], 
+                                                            &starts[inRecIdx], 
+                                                            &stops[inRecIdx],
+                                                            &remainders[inRecIdx]);
 #endif
+            }
         }
 
         /* identify the lowest element, put it into the compression buffer for later processing, and refill from the input stream, if needed */
+
 #ifdef __cplusplus
-        lowestElementRes = STARCHCAT2_identifyLowestBedElement( reinterpret_cast<const Boolean *>( eobFlags ), 
-                                reinterpret_cast<const SignedCoordType *>( starts ), 
-                                reinterpret_cast<const SignedCoordType *>( stops ), 
-                                static_cast<const size_t>( summary->numRecords ), 
-                                &lowestStartElementIdx);
+        lowestElementRes = STARCHCAT2_identifyLowestBedElementV2p2( reinterpret_cast<const Boolean *>( eobFlags ), 
+                                                                    reinterpret_cast<const SignedCoordType *>( starts ), 
+                                                                    reinterpret_cast<const SignedCoordType *>( stops ),
+                                                                    const_cast<const char **>( remainders ), 
+                                                                    static_cast<const size_t>( summary->numRecords ), 
+                                                                    &lowestStartElementIdx);
 #else
-        lowestElementRes = STARCHCAT2_identifyLowestBedElement( (const Boolean *) eobFlags, 
-                                (const SignedCoordType *) starts, 
-                                (const SignedCoordType *) stops, 
-                                (const size_t) summary->numRecords, 
-                                &lowestStartElementIdx);
+        lowestElementRes = STARCHCAT2_identifyLowestBedElementV2p2( (const Boolean *) eobFlags, 
+                                                                    (const SignedCoordType *) starts, 
+                                                                    (const SignedCoordType *) stops, 
+                                                                    (const char **) remainders, 
+                                                                    (const size_t) summary->numRecords, 
+                                                                    &lowestStartElementIdx);
 #endif
         if ((eobFlags) && (starts) && (stops) && (lowestElementRes == STARCHCAT_EXIT_SUCCESS)) {
 #ifdef __cplusplus
             STARCHCAT2_addLowestBedElementToCompressionBuffer( compressionBuffer, 
-                                   static_cast<const char *>( extractedElements[lowestStartElementIdx] ), 
-                                   &compressionLineCount);
+                                                               static_cast<const char *>( extractedElements[lowestStartElementIdx] ), 
+                                                               &compressionLineCount);
 #else
             STARCHCAT2_addLowestBedElementToCompressionBuffer( compressionBuffer, 
-                                   (const char *) extractedElements[lowestStartElementIdx], 
-                                   &compressionLineCount);
+                                                               (const char *) extractedElements[lowestStartElementIdx], 
+                                                               &compressionLineCount);
 #endif
 
             /* 4 -- extract lowest element to extracted elements buffer */
@@ -2735,17 +2875,17 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
                     case kBzip2: {
                         if (STARCHCAT2_fillExtractionBufferFromBzip2Stream(&eofFlags[lowestStartElementIdx], 
 #ifdef __cplusplus
-                                       const_cast<char *>( inChr ), 
+                                                                           const_cast<char *>( inChr ), 
 #else
-                                       (char *) inChr, 
+                                                                           (char *) inChr, 
 #endif
-                                       extractionBuffers[lowestStartElementIdx], 
-                                       &nExtractionBuffers[lowestStartElementIdx], 
-                                       &bzInFps[lowestStartElementIdx], 
-                                       &nBzReads[lowestStartElementIdx], 
-                                       extractionRemainderBufs[lowestStartElementIdx], 
-                                       &nExtractionRemainderBufs[lowestStartElementIdx], 
-                                       transformStates[lowestStartElementIdx]) != STARCHCAT_EXIT_SUCCESS) {
+                                                                           extractionBuffers[lowestStartElementIdx], 
+                                                                           &nExtractionBuffers[lowestStartElementIdx], 
+                                                                           &bzInFps[lowestStartElementIdx], 
+                                                                           &nBzReads[lowestStartElementIdx], 
+                                                                           extractionRemainderBufs[lowestStartElementIdx], 
+                                                                           &nExtractionRemainderBufs[lowestStartElementIdx], 
+                                                                           transformStates[lowestStartElementIdx]) != STARCHCAT_EXIT_SUCCESS) {
                             fprintf(stderr, "ERROR: Could not extract data from bzip2 input stream at index [%zu]!\n", lowestStartElementIdx);
                             return STARCHCAT_EXIT_FAILURE;
                         }
@@ -2753,19 +2893,19 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
                     }
                     case kGzip: {
                         if (STARCHCAT2_fillExtractionBufferFromGzipStream(&eofFlags[lowestStartElementIdx], 
-                                      &zInFps[lowestStartElementIdx], 
+                                                                          &zInFps[lowestStartElementIdx], 
 #ifdef __cplusplus
-                                      const_cast<char *>( inChr ), 
+                                                                          const_cast<char *>( inChr ), 
 #else
-                                      (char *) inChr, 
+                                                                          (char *) inChr, 
 #endif
-                                      extractionBuffers[lowestStartElementIdx], 
-                                      &nExtractionBuffers[lowestStartElementIdx], 
-                                      &zInStreams[lowestStartElementIdx], 
-                                      &nZReads[lowestStartElementIdx], 
-                                      &extractionRemainderBufs[lowestStartElementIdx], 
-                                      &nExtractionRemainderBufs[lowestStartElementIdx], 
-                                      transformStates[lowestStartElementIdx]) != STARCHCAT_EXIT_SUCCESS) {
+                                                                          extractionBuffers[lowestStartElementIdx], 
+                                                                          &nExtractionBuffers[lowestStartElementIdx], 
+                                                                          &zInStreams[lowestStartElementIdx], 
+                                                                          &nZReads[lowestStartElementIdx], 
+                                                                          &extractionRemainderBufs[lowestStartElementIdx], 
+                                                                          &nExtractionRemainderBufs[lowestStartElementIdx], 
+                                                                          transformStates[lowestStartElementIdx]) != STARCHCAT_EXIT_SUCCESS) {
                             fprintf(stderr, "ERROR: Could not extract data from gzip input stream at index [%zu]!\n", lowestStartElementIdx);
                             return STARCHCAT_EXIT_FAILURE;
                         }
@@ -2785,9 +2925,9 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
                 */
                 extractionBufferOffsets[lowestStartElementIdx] = 0;
                 STARCHCAT2_extractBedLine(&eobFlags[lowestStartElementIdx], 
-                      extractionBuffers[lowestStartElementIdx], 
-                      &extractionBufferOffsets[lowestStartElementIdx], 
-                      &extractedElements[lowestStartElementIdx]);
+                                          extractionBuffers[lowestStartElementIdx], 
+                                          &extractionBufferOffsets[lowestStartElementIdx], 
+                                          &extractedElements[lowestStartElementIdx]);
                 extractedLineCounts[lowestStartElementIdx]--;
             }
         }
@@ -2929,6 +3069,8 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
                 free(extractedElements[inRecIdx]), extractedElements[inRecIdx] = NULL;
             if (extractionRemainderBufs[inRecIdx])
                 free(extractionRemainderBufs[inRecIdx]), extractionRemainderBufs[inRecIdx] = NULL;
+            if (remainders[inRecIdx])
+                free(remainders[inRecIdx]), remainders[inRecIdx] = NULL;
             inRecord = *(summary->records) + inRecIdx;
             inType = inRecord->type; /* get record type of input stream */
             switch (inType) {
@@ -2975,6 +3117,8 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
         free(starts), starts = NULL;
     if (stops)
         free(stops), stops = NULL;
+    if (remainders)
+        free(remainders), remainders = NULL;
     if (transformStates)
         free(transformStates), transformStates = NULL;
     if (extractionRemainderBufs)
@@ -5985,11 +6129,105 @@ STARCHCAT2_parseCoordinatesFromBedLineV2 (Boolean *eobFlag, const char *extracte
 
     switch (errno) {
         case EINVAL: {
+            fprintf(stderr, "ERROR: Result from parsing stop coordinate is not a valid number!\n");
+            return STARCH_EXIT_FAILURE;
+        }
+        case ERANGE: {
+            fprintf(stderr, "ERROR: Result from parsing stop coordinate is not within range of SignedCoordType (int64_t)!\n");
+            return STARCH_EXIT_FAILURE;
+        }
+    }
+    *stop = result;
+
+    return STARCH_EXIT_SUCCESS;
+}
+
+int      
+STARCHCAT2_parseCoordinatesFromBedLineV2p2 (Boolean *eobFlag, const char *extractedElement, SignedCoordType *start, SignedCoordType *stop, char **remainder)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- STARCHCAT2_parseCoordinatesFromBedLineV2p2() ---\n");
+#endif
+
+    if (strlen(extractedElement) == 0) {
+#ifdef DEBUG
+        fprintf(stderr, "LEAVING EARLY\n");
+#endif
+        *eobFlag = kStarchTrue;
+        return STARCHCAT_EXIT_SUCCESS;
+    }
+    
+    errno = 0;
+    int fieldIdx = 0;
+    int charIdx = 0;
+    int withinFieldIdx = 0;
+    static const char tab = '\t';
+    char startStr[MAX_DEC_INTEGERS + 1] = {0};
+    char stopStr[MAX_DEC_INTEGERS + 1] = {0};
+    SignedCoordType result = 0;
+
+    while (extractedElement[charIdx] != '\0') {
+        if (extractedElement[charIdx] == tab) {
+            if (fieldIdx < 3) {
+                withinFieldIdx = 0;
+                fieldIdx++;
+            }
+            charIdx++;
+            continue;
+        }
+        switch (fieldIdx) {
+        case 1: {
+            startStr[withinFieldIdx++] = extractedElement[charIdx];
+            startStr[withinFieldIdx] = '\0';
+            break;
+        }
+        case 2: {
+            stopStr[withinFieldIdx++] = extractedElement[charIdx];
+            stopStr[withinFieldIdx] = '\0';
+            break;
+        }
+        case 3: {
+            (*remainder)[withinFieldIdx++] = extractedElement[charIdx];
+            (*remainder)[withinFieldIdx] = '\0';
+            break;
+        }
+        default:
+            break;
+        }
+        charIdx++;
+    }
+    
+#ifdef __cplusplus
+    result = static_cast<SignedCoordType>( strtoll(startStr, NULL, STARCH_RADIX) );
+#else
+    result = (SignedCoordType) strtoll(startStr, NULL, STARCH_RADIX);
+#endif
+
+    switch (errno) {
+        case EINVAL: {
             fprintf(stderr, "ERROR: Result from parsing start coordinate is not a valid number!\n");
             return STARCH_EXIT_FAILURE;
         }
         case ERANGE: {
-            fprintf(stderr, "ERROR: Result from parsing start coordinate is not within range of SignedCoordType (uint64_t)!\n");
+            fprintf(stderr, "ERROR: Result from parsing start coordinate is not within range of SignedCoordType (int64_t)!\n");
+            return STARCH_EXIT_FAILURE;
+        }
+    }
+    *start = result;
+
+#ifdef __cplusplus
+    result = static_cast<SignedCoordType>( strtoll(stopStr, NULL, STARCH_RADIX) );
+#else
+    result = (SignedCoordType) strtoll(stopStr, NULL, STARCH_RADIX);
+#endif
+
+    switch (errno) {
+        case EINVAL: {
+            fprintf(stderr, "ERROR: Result from parsing stop coordinate is not a valid number!\n");
+            return STARCH_EXIT_FAILURE;
+        }
+        case ERANGE: {
+            fprintf(stderr, "ERROR: Result from parsing stop coordinate is not within range of SignedCoordType (int64_t)!\n");
             return STARCH_EXIT_FAILURE;
         }
     }

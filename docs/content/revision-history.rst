@@ -25,7 +25,7 @@ Released: **TBD**
 
 * :ref:`bedops <bedops>`
 
-  * Fixed issue with :code:`-chop` where complement operation could potentially be included. Shane Neph posted the fix.
+  * Fixed issue with :code:`--chop` where complement operation could potentially be included. Shane Neph posted the fix.
 
   * The :code:`bedops --everything` or :code:`bedops -u` (union) operation now writes elements to standard output in unambiguous sort order.
 
@@ -63,13 +63,17 @@ Released: **TBD**
 
   * Fixed :code:`--header` transform bug reported in `Issue 161 <https://github.com/bedops/bedops/issues/161>`_. Thanks to Shane Neph for the bug report!
 
-  * Added chromosome name order test to :code:`STARCH2_transformHeaderlessBEDInput` and :code:`STARCH2_transformHeaderedBEDInput` functions. 
+  * Added chromosome name and "remainder" order tests to :code:`STARCH2_transformHeaderlessBEDInput` and :code:`STARCH2_transformHeaderedBEDInput` functions. 
 
     Compression with :code:`starch` ends with a fatal error, should any of the following comparison tests fail:
 
     1. The chromosome names are not lexicographically ordered (*e.g.*, :code:`chr1` records coming after :code:`chr2` records indicates the data are not correctly sorted).
+
     2. The start position of an input element is less than the start position of a previous input element on the same chromosome (*e.g.*, :code:`chr1:1000-1234` coming after :code:`chr1:2000-2345` is not correctly sorted).
-    3. The stop positions of two or more input elements are not in ascending order when their start positions are equal (*e.g.*, :code:`chr1:1000:1234` coming after :code:`chr1:1000-2345` is not correctly sorted). 
+
+    3. The stop positions of two or more input elements are not in ascending order when their start positions are equal (*e.g.*, :code:`chr1:1000-1234` coming after :code:`chr1:1000-2345` is not correctly sorted). 
+    
+    4. The start and stop positions of two or more input elements are equivalent, and their "remainders" (fourth and subsequent columns) are not in ascending order (*e.g.*, :code:`chr1:1000-1234:id-0` coming after :code:`chr1:1000-1234:id-1` is not correctly sorted). 
 
     If the sort order of the input data is unknown or uncertain, simply use :code:`sort-bed` to generate the correct ordering and pipe the output from that to :code:`starch`, *e.g.* :code:`$ cat elements.bed | sort-bed - | starch - > elements.starch`.
 
@@ -78,6 +82,8 @@ Released: **TBD**
   * Added :code:`--report-progress=N` option to (optionally) report compression of the *N* th element of the current chromosome to standard error stream.
 
   * As in :code:`starch`, at the conclusion of compressing a chromosome made from one or more input Starch archives, the input Starch-transform bytes are continually run through a SHA-1 hash function. The resulting data integrity signature is stored as a Base64-encoded string in the chromosome's entry in the new archive's metadata.
+
+  * As in :code:`starch`, if data should need to be extracted and recompressed, the output is written so that the order is unambiguous: ascending lexicographic ordering on chromosome names, numerical ordering on start positions, the same ordering on stop positions where start positions match, and ascending lexicographic ordering on the remainder of the BED element (fourth and subsequent columns, where present).
 
 * :ref:`convert2bed <convert2bed>`
 

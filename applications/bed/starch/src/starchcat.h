@@ -220,6 +220,13 @@ int      STARCHCAT2_identifyLowestBedElement(const Boolean *eobFlags,
                                               const size_t numRecords, 
                                                     size_t *lowestIdx);
 
+int      STARCHCAT2_identifyLowestBedElementV2p2(const Boolean *eobFlags,
+                                         const SignedCoordType *starts, 
+                                         const SignedCoordType *stops, 
+                                                    const char **remainders,
+                                                  const size_t numRecords, 
+                                                        size_t *lowestIdx);
+
 int      STARCHCAT2_pullNextBedElement (const size_t recIdx,
                                           const char **inLinesBuf,
                                  const LineCountType *nInLinesBuf,
@@ -336,6 +343,7 @@ int      STARCHCAT2_fillExtractionBufferFromBzip2Stream (Boolean *eofFlag, char 
 int      STARCHCAT2_fillExtractionBufferFromGzipStream (Boolean *eofFlag, FILE **inputFp, char *recordChromosome, char *extractionBuffer, size_t *nExtractionBuffer, z_stream *zStream, size_t *nZRead, char **zRemainderBuf, size_t *nZRemainderBuf, TransformState *t_state);
 int      STARCHCAT2_extractBedLine (Boolean *eobFlag, char *extractionBuffer, int *extractionBufferOffset, char **extractedElement);
 int      STARCHCAT2_parseCoordinatesFromBedLineV2 (Boolean *eobFlag, const char *extractedElement, SignedCoordType *start, SignedCoordType *stop);
+int      STARCHCAT2_parseCoordinatesFromBedLineV2p2 (Boolean *eobFlag, const char *extractedElement, SignedCoordType *start, SignedCoordType *stop, char **remainder);
 int      STARCHCAT2_addLowestBedElementToCompressionBuffer (char *compressionBuffer, const char *extractedElement, LineCountType *compressionLineCount);
 int      STARCHCAT2_transformCompressionBuffer (const char *compressionBuffer, char *retransformedOutputBuffer, TransformState *retransState);
 int      STARCHCAT2_squeezeRetransformedOutputBufferToBzip2Stream (BZFILE **bzStream, char *transformedBuffer);

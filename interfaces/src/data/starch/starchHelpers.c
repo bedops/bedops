@@ -706,14 +706,13 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
             lineIdx++;
             buffer[cIdx] = '\0';
             if (STARCH_createTransformTokens(buffer, '\t', &chromosome, &start, &stop, &remainder, &lineType) == 0) {
-		/* 
-		   Either previous chromosome is NULL, or current chromosome does 
-                   not equal previous chromosome, but the line must be of the 
-                   type 'kBedLineCoordinates' (cf. 'starchMetadataHelpers.h')
+                /* 
+                    Either previous chromosome is NULL, or current chromosome does 
+                    not equal previous chromosome, but the line must be of the 
+                    type 'kBedLineCoordinates' (cf. 'starchMetadataHelpers.h')
                 */
-		
                 if ( (lineType == kBedLineCoordinates) && ((!prevChromosome) || (strcmp(chromosome, prevChromosome) != 0)) ) {
-		    /* close old output file pointer */
+                    /* close old output file pointer */
                     if (outFnPtr != NULL) {
                         fclose(outFnPtr); 
                         outFnPtr = NULL;
@@ -726,7 +725,7 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                                 return STARCH_FATAL_ERROR;
                             }
 #else
-			    if (STARCH_compressFileWithBzip2((const char *)outFn, &outCompressedFn, (off_t *) &outCompressedFnSize ) != 0) {
+                            if (STARCH_compressFileWithBzip2((const char *)outFn, &outCompressedFn, (off_t *) &outCompressedFnSize ) != 0) {
                                 fprintf(stderr, "ERROR: Could not bzip2 compress per-chromosome output file %s\n", outFn);
                                 return STARCH_FATAL_ERROR;
                             }
@@ -740,8 +739,8 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                                 return STARCH_FATAL_ERROR;
                             }
 #else
-			    if (STARCH_compressFileWithGzip((const char*) outFn, &outCompressedFn, (off_t *) &outCompressedFnSize ) != 0) {
-				fprintf(stderr, "ERROR: Could not gzip compress per-chromosome output file %s\n", outFn);
+                            if (STARCH_compressFileWithGzip((const char*) outFn, &outCompressedFn, (off_t *) &outCompressedFnSize ) != 0) {
+                                fprintf(stderr, "ERROR: Could not gzip compress per-chromosome output file %s\n", outFn);
                                 return STARCH_FATAL_ERROR;
                             }
 #endif
@@ -782,12 +781,12 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
 		    /* test if current chromosome is already a Metadata record */
 #ifdef __cplusplus
 		    if (STARCH_chromosomeInMetadataRecords(reinterpret_cast<const Metadata *>( *md ), chromosome) == STARCH_EXIT_SUCCESS) {
-		        fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+		        fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue?\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
                         return STARCH_FATAL_ERROR;
 		    }
 #else
 		    if (STARCH_chromosomeInMetadataRecords((const Metadata *)*md, chromosome) == STARCH_EXIT_SUCCESS) {
-		        fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+		        fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue?\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
                         return STARCH_FATAL_ERROR;
 		    }
 #endif
@@ -1209,7 +1208,7 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
 #else
 		    if (STARCH_chromosomeInMetadataRecords((const Metadata *)*md, chromosome) == STARCH_EXIT_SUCCESS) {
 #endif
-		        fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+		        fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue?\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
                         return STARCH_FATAL_ERROR;
 		    }
 
@@ -1695,6 +1694,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     int64_t stop = 0;
     int64_t pStart = -1;
     int64_t pStop = -1;
+    char *pRemainder = NULL;
     int64_t previousStop = 0;
     int64_t lastPosition = 0;
     int64_t lcDiff = 0;
@@ -1833,11 +1833,20 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
             lineIdx++;
             untransformedBuffer[cIdx] = '\0';
 
-            if (STARCH_createTransformTokens(untransformedBuffer, '\t', &chromosome, &start, &stop, &remainder, &lineType) == 0) 
-            {
+            if (STARCH_createTransformTokens(untransformedBuffer, '\t', &chromosome, &start, &stop, &remainder, &lineType) == 0) {
+                if (pRemainder) {
+                    /* if previous start and stop coordinates are the same, compare the remainder here */
+                    if ((start == pStart) && (stop == pStop) && (strcmp(remainder, pRemainder) < 0)) {
+                        fprintf(stderr, "ERROR: Elements with same start and stop coordinates have remainders in wrong sort order.\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+                        return STARCH_FATAL_ERROR;
+                    }
+                    free(pRemainder), pRemainder = NULL;
+                }
+
                 if ((reportProgressFlag == kStarchTrue) && (lineIdx % reportProgressN == 0)) {
                     fprintf(stderr, "PROGRESS: Transforming element [%ld] of chromosome [%s] -> [%s]\n", lineIdx, chromosome, untransformedBuffer);
                 }
+
                 if ( (lineType == kBedLineCoordinates) && ((!prevChromosome) || (strcmp(chromosome, prevChromosome) != 0)) ) 
                 {
                     if (prevChromosome) 
@@ -1848,7 +1857,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                         if (STARCH_chromosomeInMetadataRecords((const Metadata *)firstRecord, chromosome) == STARCH_EXIT_SUCCESS)
 #endif
                         {
-                            fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+                            fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue?\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
                             return STARCH_FATAL_ERROR;
                         }
 #ifdef __cplusplus
@@ -1857,7 +1866,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                         if (STARCH_chromosomePositionedBeforeExistingMetadataRecord((const Metadata *)firstRecord, chromosome) == STARCH_EXIT_SUCCESS)
 #endif
                         {
-                            fprintf(stderr, "ERROR: Chromosome name not ordered lexicographically. Possible sorting issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+                            fprintf(stderr, "ERROR: Chromosome name not ordered lexicographically. Possible sorting issue?\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
                             return STARCH_FATAL_ERROR;
                         }
                         sprintf(compressedFn, "%s.%s", prevChromosome, tag);
@@ -2164,6 +2173,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                     lastPosition = 0;
                     pStart = -1;
                     pStop = -1;
+                    if (pRemainder) { free(pRemainder), pRemainder = NULL; }
                     previousStop = 0;
                     lcDiff = 0;
                     lineIdx = 0UL;
@@ -2392,6 +2402,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                     /* set pElement values */
                     pStart = start;
                     pStop = stop;
+                    if (pRemainder) { 
+                        free(pRemainder);
+                        pRemainder = NULL;
+                    }
+                    pRemainder = STARCH_strndup(remainder, strlen(remainder));
                 }
 
                 if (withinChr == kStarchTrue) 
@@ -2491,6 +2506,15 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
             /* test for nested element */
             if ((pStart < start) && (pStop > stop))
                 nestedElementExistsFlag = kStarchTrue;
+
+            if (pRemainder) {
+                /* if previous start and stop coordinates are the same, compare the remainder here */
+                if ((start == pStart) && (stop == pStop) && (strcmp(remainder, pRemainder) < 0)) {
+                    fprintf(stderr, "ERROR: Elements with same start and stop coordinates have remainders in wrong sort order.\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+                    return STARCH_FATAL_ERROR;
+                }
+                free(pRemainder), pRemainder = NULL;
+            }
         }
         else {
             fprintf(stderr, "ERROR: BED data is corrupt at line %lu\n", lineIdx);
@@ -2773,6 +2797,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     int64_t stop = 0;
     int64_t pStart = -1;
     int64_t pStop = -1;
+    char *pRemainder = NULL;
     int64_t previousStop = 0;
     int64_t lastPosition = 0;
     int64_t lcDiff = 0;
@@ -2910,9 +2935,19 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
             untransformedBuffer[cIdx] = '\0';
 
             if (STARCH_createTransformTokensForHeaderlessInput(untransformedBuffer, '\t', &chromosome, &start, &stop, &remainder) == 0) {
+                if (pRemainder) {
+                    /* if previous start and stop coordinates are the same, compare the remainder here */
+                    if ((start == pStart) && (stop == pStop) && (strcmp(remainder, pRemainder) < 0)) {
+                        fprintf(stderr, "ERROR: Elements with same start and stop coordinates have remainders in wrong sort order.\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+                        return STARCH_FATAL_ERROR;
+                    }
+                    free(pRemainder), pRemainder = NULL;
+                }
+
                 if ((reportProgressFlag == kStarchTrue) && (lineIdx % reportProgressN == 0)) {
                     fprintf(stderr, "PROGRESS: Transforming element [%ld] of chromosome [%s] -> [%s]\n", lineIdx, chromosome, untransformedBuffer);
-                }            
+                }
+
                 if ( (!prevChromosome) || (strcmp(chromosome, prevChromosome) != 0) ) 
                 {
                     if (prevChromosome) 
@@ -2923,7 +2958,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                         if (STARCH_chromosomeInMetadataRecords((const Metadata *)firstRecord, chromosome) == STARCH_EXIT_SUCCESS)
 #endif
                         {
-                            fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+                            fprintf(stderr, "ERROR: Found same chromosome in earlier portion of file. Possible interleaving issue?\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
                             return STARCH_FATAL_ERROR;
                         }
 #ifdef __cplusplus
@@ -2932,7 +2967,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                         if (STARCH_chromosomePositionedBeforeExistingMetadataRecord((const Metadata *)firstRecord, chromosome) == STARCH_EXIT_SUCCESS)
 #endif
                         {
-                            fprintf(stderr, "ERROR: Chromosome name not ordered lexicographically. Possible sorting issue? Be sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+                            fprintf(stderr, "ERROR: Chromosome name not ordered lexicographically. Possible sorting issue?\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
                             return STARCH_FATAL_ERROR;
                         }
                         sprintf(compressedFn, "%s.%s", prevChromosome, tag);
@@ -3239,6 +3274,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                     lastPosition = 0;
                     pStart = -1;
                     pStop = -1;
+                    if (pRemainder) { free(pRemainder), pRemainder = NULL; }
                     previousStop = 0;
                     lcDiff = 0;
                     lineIdx = 0UL;
@@ -3453,6 +3489,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                 /* set pElement values */
                 pStart = start;
                 pStop = stop;
+                if (pRemainder) { 
+                    free(pRemainder);
+                    pRemainder = NULL;
+                }
+                pRemainder = STARCH_strndup(remainder, strlen(remainder));
 
                 if (withinChr == kStarchTrue) 
                     free(chromosome), chromosome = NULL;
@@ -3581,6 +3622,15 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
             /* test for nested element */
             if ((pStart < start) && (pStop > stop))
                 nestedElementExistsFlag = kStarchTrue;
+
+            if (pRemainder) {
+                /* if previous start and stop coordinates are the same, compare the remainder here */
+                if ((start == pStart) && (stop == pStop) && (strcmp(remainder, pRemainder) < 0)) {
+                    fprintf(stderr, "ERROR: Elements with same start and stop coordinates have remainders in wrong sort order.\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+                    return STARCH_FATAL_ERROR;
+                }
+                free(pRemainder), pRemainder = NULL;
+            }
         }
         else {
             fprintf(stderr, "ERROR: BED data is corrupt at line %lu\n", lineIdx);

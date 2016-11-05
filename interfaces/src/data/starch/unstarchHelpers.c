@@ -2105,7 +2105,7 @@ UNSTARCH_verifySignature(FILE **inFp, const Metadata *md, const uint64_t mdOffse
             signaturesVerifiedFlag = kStarchFalse;
         }
         else {
-            fprintf(stderr, "PROGRESS: Expected and observed data integrity signatures match for chromosome [%s]\n", chr);
+            fprintf(stderr, "Expected and observed data integrity signatures match for chromosome [%s]\n", chr);
             signaturesVerifiedFlag = kStarchTrue;
         }
     }

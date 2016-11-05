@@ -106,11 +106,13 @@ The ``--help`` option describes the various mapping and analytical operations an
         --mad <mult=1>      The median absolute deviation of overlapping elements in <map-file>.
                               Multiply mad score by <mult>.  0 < mult, and mult is 1 by default.
         --max               The highest score from overlapping elements in <map-file>.
-        --max-element       An element with the highest score from overlapping elements in <map-file>.
+        --max-element       A (non-random) highest-scoring and overlapping element in <map-file>.
+        --max-element-rand  A random highest-scoring and overlapping element in <map-file>.
         --mean              The average score from overlapping elements in <map-file>.
         --median            The median score from overlapping elements in <map-file>.
         --min               The lowest score from overlapping elements in <map-file>.
-        --min-element       An element with the lowest score from overlapping elements in <map-file>.
+        --min-element       A (non-random) lowest-scoring and overlapping element in <map-file>.
+        --min-element-rand  A random lowest-scoring and overlapping element in <map-file>.
         --stdev             The square root of the result of --variance.
         --sum               Accumulated scores from overlapping elements in <map-file>.
         --tmean <low> <hi>  The mean score from overlapping elements in <map-file>, after
@@ -371,7 +373,9 @@ Likewise, we can repeat this operation, but look for the lowest scoring elements
   chr21   33031400        33031800        ref-2|chr21     33031525        33031545        map-19  13
   chr21   33031900        33032000        ref-3|chr21     33031985        33032005        map-42  138
 
-.. note:: Where there are ties in score values, there is no guarantee about which tied element will be chosen. In this case, the ``--echo-map`` operator can be used to manually examine the full list of elements and apply different logic.
+.. note:: Where there are ties in score values, using ``--max-element`` or ``--min-element`` now selects the lexicographically smallest element amongst the set of tied elements. This generally means that the first element in the lexicographic ordering of the ID fields (fourth column) will determine the selection. 
+
+   A random selection process was used for ``--max-element`` and ``--min-element`` in versions 2.4.20 and previous. If you wish to randomly sample a maximum- or minimum-scoring element from amongst tied elements (say, to reproduce the procedure of prior analyses), you may use the ``--max-element-rand`` or ``--min-element-rand`` options, respectively.
 
 We can also perform multiple score operations, which are summarized on one line, *e.g.*, to show the mean, standard deviation, and minimum and maximum signal over each ``Reference`` element, we simply add the requisite options in series:
 
