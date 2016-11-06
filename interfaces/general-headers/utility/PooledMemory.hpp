@@ -108,6 +108,8 @@ namespace Ext {
       cnt /= NVAL;
     }
 
+    std::size_t size() const { return _children.size(); }
+
     template <std::size_t A, std::size_t B, std::size_t C>
     friend
     typename std::enable_if<!BitMonitor<A,B,C>::STOP, std::ostream&>::type
@@ -177,6 +179,8 @@ namespace Ext {
       cnt = bit/NVAL;
       if ( _nxt == npos ) { _nxt = bit; } 
     }
+
+    std::size_t size() const { return _bset.size(); }
 
     template <std::size_t A, std::size_t B, std::size_t C>
     friend
@@ -287,12 +291,10 @@ namespace Ext {
 
       ~Chunk() {
         if ( CallDestruct ) {
-          while ( _any ) {
-            std::size_t trackpos = _tracker.get_open();
-            DataType* address = static_cast<DataType*>(_data+trackpos);
-            address->~DataType();
-            _any &= _tracker.set(trackpos);
-          } // while
+          for ( std::size_t i = 0; i < _tracker.size(); ++i ) {
+            DataType* address = static_cast<DataType*>(_data+i);
+            if ( address ) { address->~DataType(); }
+          } // for
         }
       }
 
