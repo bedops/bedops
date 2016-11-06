@@ -285,6 +285,17 @@ namespace Ext {
         --_cntr;
       }
 
+      ~Chunk() {
+        if ( CallDestruct ) {
+          while ( _any ) {
+            std::size_t trackpos = _tracker.get_open();
+            DataType* address = static_cast<DataType*>(_data+trackpos);
+            address->~DataType();
+            _any &= _tracker.set(trackpos);
+          } // while
+        }
+      }
+
       bool _any, _enough;
       const std::size_t _thold;
       std::size_t _cntr;
