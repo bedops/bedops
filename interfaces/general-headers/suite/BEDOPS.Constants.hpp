@@ -39,7 +39,7 @@
 #define INT_TOKEN_CHR_FIELD_INDEX 0
 #define INT_TOKEN_START_FIELD_INDEX 1
 #define INT_TOKEN_STOP_FIELD_INDEX 2
-
+#define INT_MEM_CHUNK_SZ 64 // how many BED elements allocated at a time
 
 #ifdef __cplusplus
 
@@ -53,16 +53,17 @@ namespace Bed {
     
   static_assert(sizeof(SignedCoordType) >= sizeof(INT_MAX_COORD_VALUE), "INT_MAX_COORD_VALUE is too big!"); // expected-warning {{static_assert declarations are incompatible with C++98}}
 
-  const unsigned long   TOKEN_CHR_MAX_LENGTH     = INT_TOKEN_CHR_MAX_LENGTH;
-  const unsigned long   TOKEN_ID_MAX_LENGTH      = INT_TOKEN_ID_MAX_LENGTH;
-  const unsigned long   TOKEN_REST_MAX_LENGTH    = INT_TOKEN_REST_MAX_LENGTH;
-  const unsigned long   MAX_DEC_INTEGERS         = INT_MAX_DEC_INTEGERS;
-  const SignedCoordType MAX_COORD_VALUE          = INT_MAX_COORD_VALUE;
-  const unsigned long   TOKENS_MAX_LENGTH        = INT_TOKENS_MAX_LENGTH;
-  const unsigned long   TOKENS_HEADER_MAX_LENGTH = INT_TOKENS_HEADER_MAX_LENGTH;
-  const unsigned long   TOKEN_CHR_FIELD_INDEX    = INT_TOKEN_CHR_FIELD_INDEX;
-  const unsigned long   TOKEN_START_FIELD_INDEX  = INT_TOKEN_START_FIELD_INDEX;
-  const unsigned long   TOKEN_STOP_FIELD_INDEX   = INT_TOKEN_STOP_FIELD_INDEX;
+  constexpr unsigned long   TOKEN_CHR_MAX_LENGTH     = INT_TOKEN_CHR_MAX_LENGTH;
+  constexpr unsigned long   TOKEN_ID_MAX_LENGTH      = INT_TOKEN_ID_MAX_LENGTH;
+  constexpr unsigned long   TOKEN_REST_MAX_LENGTH    = INT_TOKEN_REST_MAX_LENGTH;
+  constexpr unsigned long   MAX_DEC_INTEGERS         = INT_MAX_DEC_INTEGERS;
+  constexpr SignedCoordType MAX_COORD_VALUE          = INT_MAX_COORD_VALUE;
+  constexpr unsigned long   TOKENS_MAX_LENGTH        = INT_TOKENS_MAX_LENGTH;
+  constexpr unsigned long   TOKENS_HEADER_MAX_LENGTH = INT_TOKENS_HEADER_MAX_LENGTH;
+  constexpr unsigned long   TOKEN_CHR_FIELD_INDEX    = INT_TOKEN_CHR_FIELD_INDEX;
+  constexpr unsigned long   TOKEN_START_FIELD_INDEX  = INT_TOKEN_START_FIELD_INDEX;
+  constexpr unsigned long   TOKEN_STOP_FIELD_INDEX   = INT_TOKEN_STOP_FIELD_INDEX;
+  constexpr std::size_t     CHUNKSZ                  = INT_MEM_CHUNK_SZ;
 } // namespace Bed
     
 #else
@@ -85,6 +86,7 @@ namespace Bed {
 #define TOKEN_CHR_FIELD_INDEX INT_TOKEN_CHR_FIELD_INDEX
 #define TOKEN_START_FIELD_INDEX INT_TOKEN_START_FIELD_INDEX
 #define TOKEN_STOP_FIELD_INDEX INT_TOKEN_STOP_FIELD_INDEX
+#define CHUNKSZ INT_MEM_CHUNK_SZ
 
 #endif
 

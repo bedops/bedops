@@ -229,6 +229,7 @@ namespace Ext {
      }
 
     template <typename... Args>
+    inline
     DataType* construct(Args... parameters) {
       if ( !_curr->any() ) {
         _curr = new MemChunk();
@@ -239,10 +240,10 @@ namespace Ext {
       return _curr->add(parameters...);
     }
 
+    inline
     void release(DataType* b) {
       if ( 1 == _blockstarts.size() ) {
-        MemChunk* m = _r[*_blockstarts.begin()];
-        m->remove(b);
+        _curr->remove(b);
       } else { // possible Chunk removal
         auto iter = _blockstarts.lower_bound(b);
         MemChunk* m = _r[*iter];
