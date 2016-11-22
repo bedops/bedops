@@ -27,24 +27,29 @@
 
 #include "data/bed/BedCheckIterator.hpp"
 #include "data/bed/BedTypes.hpp"
+#include "suite/BEDOPS.Constants.hpp"
 #include "utility/Exception.hpp"
+#include "utility/PooledMemory.hpp"
 
 #include "Structures.hpp"
 
 int
 checkSort(char const **bedFileNames, unsigned int numFiles)
 {
-  typedef Bed::bed_check_iterator<Bed::B3Rest*> IterType;
+  constexpr std::size_t PoolSz = 8*2;
+  typedef Bed::bed_check_iterator<Bed::B3Rest*, PoolSz> IterType;
   int rtnval = EXIT_FAILURE;
   try {
+    static constexpr bool NODESTRUCT = false;
+    Ext::PooledMemory<Bed::B3Rest, PoolSz, NODESTRUCT> pool;
     for ( unsigned int i = 0; i < numFiles; ++i ) {
       std::ifstream infile(bedFileNames[i]);
       if ( 0 != std::strcmp(bedFileNames[i], "-") && !infile )
         throw(Ext::UserError("Unable to find: " + std::string(bedFileNames[i])));
       IterType start((std::strcmp(bedFileNames[i], "-") == 0) ? std::cin : infile,
-                     bedFileNames[i]), end;
+                     bedFileNames[i], pool), end;
       while ( start != end )
-        delete *start++;
+        pool.release(*start++);
     } // for each file
     rtnval = EXIT_SUCCESS;
   } catch(std::exception& s) {

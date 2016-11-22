@@ -21,8 +21,8 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#ifndef SPECIAL_BED_ITERATOR_HEADERS_STARCH_CHR_SPECIFIC_POOL_HPP
-#define SPECIAL_BED_ITERATOR_HEADERS_STARCH_CHR_SPECIFIC_POOL_HPP
+#ifndef SPECIAL_BED_ITERATOR_HEADERS_STARCH_CHR_SPECIFIC_BOOST_POOL_HPP
+#define SPECIAL_BED_ITERATOR_HEADERS_STARCH_CHR_SPECIFIC_BOOST_POOL_HPP
 
 #include <cctype>
 #include <cstddef>
@@ -38,6 +38,8 @@
 
 #include <sys/stat.h>
 
+#include <boost/pool/object_pool.hpp>
+
 #include "algorithm/bed/FindBedRange.hpp"
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
 #include "data/bed/Bed.hpp"
@@ -45,15 +47,14 @@
 #include "suite/BEDOPS.Constants.hpp"
 #include "utility/ByLine.hpp"
 #include "utility/Exception.hpp"
-#include "utility/PooledMemory.hpp"
 
 namespace Bed {
 
-  template <class BedType, std::size_t SZ=Bed::CHUNKSZ>
-  class bed_check_iterator;
+  template <class BedType>
+  class bed_check_iterator_play;
 
-  template <class BedType, std::size_t SZ>
-  class bed_check_iterator<BedType*, SZ> {
+  template <class BedType>
+  class bed_check_iterator_play<BedType*> {
 
   public:
     typedef Ext::UserError            Exception;
@@ -66,13 +67,13 @@ namespace Bed {
     static constexpr int nFields_  = BedType::NumFields;
     static constexpr bool hasRest_ = BedType::UseRest;
 
-    bed_check_iterator() : fp_(std::cin), _M_ok(false), _M_value(0), fn_(""), cnt_(0),
+    bed_check_iterator_play() : fp_(std::cin), _M_ok(false), _M_value(0), fn_(""), cnt_(0),
                                 lastChr_(""), lastRest_(""), lastStart_(1), lastEnd_(0), nestCheck_(false),
                                 maxEnd_(0), chr_(""), isStarch_(false), all_(true), archive_(0), pool_(0)
       { /* */ }
 
-    bed_check_iterator(std::istream& is, const std::string& filename, Ext::PooledMemory<BedType, SZ>& p,
-                       const std::string& chr = "all", bool nestCheck = false)
+    bed_check_iterator_play(std::istream& is, const std::string& filename, boost::object_pool<BedType>& p,
+                            const std::string& chr = "all", bool nestCheck = false)
       : fp_(is), _M_ok(fp_), _M_value(0), fn_(filename), cnt_(0), lastChr_(""), lastRest_(""), lastStart_(1),
         lastEnd_(0), nestCheck_(nestCheck), maxEnd_(0), chr_(chr),
         isStarch_(false), all_(chr_ == "all"),
@@ -110,7 +111,7 @@ namespace Bed {
           } // while
           if ( _M_value->chrom() == chr_ )
             return;
-          pool_->release(_M_value);
+          pool_->free(_M_value);
           _M_value = static_cast<BedType*>(0);
         } // while
         _M_value = static_cast<BedType*>(0);
@@ -235,7 +236,7 @@ namespace Bed {
     reference operator*() { return _M_value; }
     pointer operator->() { return &(operator*()); }
 
-    bed_check_iterator& operator++() {
+    bed_check_iterator_play& operator++() {
       static Ext::ByLine bl;
       if ( _M_ok ) {
         if ( !isStarch_ ) { // bed
@@ -246,7 +247,7 @@ namespace Bed {
               s << cnt_;
               throw(Exception("in " + fn_ + "\nHeader found but should be at top of file.\nSee row: " + s.str()));
             } else if ( !all_ && (_M_value->chrom() != chr_) ) {
-              pool_->release(_M_value);
+              pool_->free(_M_value);
               _M_value = static_cast<BedType*>(0);
               _M_ok = false;
             }
@@ -265,7 +266,7 @@ namespace Bed {
       return *this;
     }
 
-    bed_check_iterator operator++(int)  {
+    bed_check_iterator_play operator++(int)  {
       auto __tmp = *this;
       static Ext::ByLine bl;
       if ( _M_ok ) {
@@ -277,7 +278,7 @@ namespace Bed {
               s << cnt_;
               throw(Exception("in " + fn_ + "\nHeader found but should be at top of file.\nSee row: " + s.str()));
             } else if ( !all_ && (_M_value->chrom() != chr_ ) ) {
-              pool_->release(_M_value);
+              pool_->free(_M_value);
               _M_value = static_cast<BedType*>(0);
               _M_ok = false;
             }
@@ -296,17 +297,17 @@ namespace Bed {
       return __tmp;
     }
 
-    Ext::PooledMemory<BedType, SZ>& get_pool() { return *pool_; }
+    boost::object_pool<BedType>& get_pool() { return *pool_; }
 
     void clean() {
       if ( archive_ )
         delete archive_;
     }
 
-    bool _M_equal(const bed_check_iterator& __x) const
+    bool _M_equal(const bed_check_iterator_play& __x) const
       { return ( (_M_ok == __x._M_ok) && (!_M_ok || &fp_ == &__x.fp_) ); }
 
-    bool operator=(const bed_check_iterator& b);
+    bool operator=(const bed_check_iterator_play& b);
 
   protected:
     std::string lowerstr(const std::string& s) {
@@ -453,7 +454,6 @@ namespace Bed {
         }
       }
 
-      std::size_t idsz = 0, measurementsz = 0;
       if ( nFields_ > 3 ) { // check ID field
         pos = marker;
         while ( msg.empty() && marker < sz ) {
@@ -482,10 +482,8 @@ namespace Bed {
             msg += "\nMAXIDSIZE = " + a.str();
             msg += "; Size given = " + b.str();
           }
-          else {
+          else
             ++marker; // increment passed tab
-            idsz = (marker-pos); // include tab
-          }
         }
 
         if ( nFields_ > 4 ) { // check measurement column
@@ -547,11 +545,10 @@ namespace Bed {
               msg = "Fifth (measure) column is empty.";
             else if ( minusPos > 0 && minusPos + 1 == marker )
               msg = "Measurement value ends with a '-'.";
-            else {
+            else
               ++marker; // increment passed tab
-              measurementsz = (marker-pos); // include tab
-            }
           }
+
 
           if ( nFields_ > 5 ) { // check strand column
             pos = marker;
@@ -582,11 +579,13 @@ namespace Bed {
         }
       }
 
-      if ( msg.empty() && hasRest_ && marker <= sz && (sz - marker + idsz + measurementsz) > Bed::MAXRESTSIZE ) { // idsz/measurementsz for fullrest_
-        msg = "The 'rest' of the input row (everything beyond the first 3";
-        std::stringstream a, b;
+      if ( msg.empty() && hasRest_ && marker < sz && sz - marker > Bed::MAXRESTSIZE ) {
+        msg = "The 'rest' of the input row (everything beyond the first ";
+        std::stringstream a, b, c;
         a << Bed::MAXRESTSIZE;
         b << bl.substr(marker).size();
+        c << nFields_;
+        msg += c.str();
         msg += " fields) cannot fit into MAXRESTSIZE chars.\nIncrease TOKEN_REST_MAX_LENGTH in BEDOPS.Constants.hpp and recompile BEDOPS.";
         msg += "\nMAXRESTSIZE = " + a.str();
         msg += "; Size given = " + b.str();
@@ -654,23 +653,23 @@ namespace Bed {
     bool isStarch_;
     const bool all_;
     starch::Starch* archive_;
-    Ext::PooledMemory<BedType, SZ>* pool_;
+    boost::object_pool<BedType>* pool_;
   };
 
-  template <class BedType, std::size_t Sz>
+  template <class BedType>
   inline bool 
-  operator==(const bed_check_iterator<BedType, Sz>& __x,
-             const bed_check_iterator<BedType, Sz>& __y) {
+  operator==(const bed_check_iterator_play<BedType>& __x,
+             const bed_check_iterator_play<BedType>& __y) {
     return __x._M_equal(__y);
   }
 
-  template <class BedType, std::size_t Sz>
+  template <class BedType>
   inline bool 
-  operator!=(const bed_check_iterator<BedType, Sz>& __x,
-             const bed_check_iterator<BedType, Sz>& __y) {
+  operator!=(const bed_check_iterator_play<BedType>& __x,
+             const bed_check_iterator_play<BedType>& __y) {
     return !__x._M_equal(__y);
   }
 
 } // namespace Bed
 
-#endif // SPECIAL_BED_ITERATOR_HEADERS_STARCH_CHR_SPECIFIC_POOL_HPP
+#endif // SPECIAL_BED_ITERATOR_HEADERS_STARCH_CHR_SPECIFIC_BOOST_POOL_HPP

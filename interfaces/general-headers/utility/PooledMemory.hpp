@@ -360,7 +360,7 @@ namespace Ext {
   // PooledMemory
   //==============
   template <typename DataType, std::size_t chunksz = 512, bool CallDestruct = false>
-  struct PooledMemory; // atm, chunksz needs to be >=16 and divisible by 8
+  struct PooledMemory; // atm, chunksz needs to be a power of 8 and at least 64
 
   template <typename DataType, std::size_t chunksz, bool CallDestruct>
   struct PooledMemory {

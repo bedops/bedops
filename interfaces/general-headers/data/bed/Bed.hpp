@@ -21,8 +21,8 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#ifndef BED_HPP
-#define BED_HPP
+#ifndef BED_NONEW_HPP
+#define BED_NONEW_HPP
 
 #include <cstddef>
 #include <cstdio>
@@ -50,9 +50,6 @@
 
 namespace Bed {
 
-  // For Bed6<> items, but much easier to use if directly in Bed namespace
-  enum Strand { PLUS = '+', MINUS = '-' };
-
   const CoordType MAXCHROMSIZE = TOKEN_CHR_MAX_LENGTH;
   const CoordType MAXIDSIZE = TOKEN_ID_MAX_LENGTH;
   const CoordType MAXRESTSIZE = TOKEN_REST_MAX_LENGTH;
@@ -63,48 +60,26 @@ namespace Bed {
   /*****************************************/
 
   // ChromInfo non-specialized declaration
-  template <bool IsNonStatic>
+  template <bool isNonStatic>
   struct ChromInfo {
+    static constexpr bool IsNonStatic = isNonStatic;
 
-    ChromInfo() : chrom_(new char[1]) { chrom_[0] = '\0'; }
-    ChromInfo(const ChromInfo& c)
-        : chrom_(new char[(c.chrom_ != NULL) ? (std::strlen(c.chrom_) + 1) : 1])
-      { *chrom_ = '\0'; if ( c.chrom_ != NULL ) std::strcpy(chrom_, c.chrom_); }
-    explicit ChromInfo(char const* c)
-        : chrom_(new char[(c != NULL) ? (std::strlen(c)+1) : 1])
-      { *chrom_ = '\0'; if ( c != NULL ) std::strcpy(chrom_, c); }
+    ChromInfo() { chrom_[0] = '\0'; }
+    ChromInfo(const ChromInfo& c) { std::strcpy(chrom_, c.chrom_); }
+    explicit ChromInfo(char const* c)  { std::strcpy(chrom_, c); }
 
     // Properties
-    char const* chrom() const { return chrom_; }
-    void chrom(char const* chrom) {
-      if ( chrom_ )
-        delete [] chrom_;
-      if ( chrom != NULL ) {
-        chrom_ = new char[std::strlen(chrom) + 1];
-        std::strcpy(chrom_, chrom);
-      } else {
-        chrom_ = new char[1];
-        *chrom_ = '\0';
-      }
-    }
+    inline char const* chrom() const { return chrom_; }
+    inline void chrom(char const* chrom) { std::strcpy(chrom_, chrom); }
 
     // Operators
     ChromInfo& operator=(const ChromInfo& c) {
-      if ( chrom_ )
-        delete [] chrom_;
-      chrom_ = new char[(c.chrom_ != NULL) ? (std::strlen(c.chrom_) + 1) : 1];
-      *chrom_ = '\0'; if ( c.chrom_ != NULL ) std::strcpy(chrom_, c.chrom_);
+      std::strcpy(chrom_, c.chrom_);
       return *this;
     }
 
-    ~ChromInfo() { 
-      if ( chrom_ )
-        delete [] chrom_;
-      chrom_ = NULL;
-    }
-
   protected:
-    char* chrom_;
+    char chrom_[MAXCHROMSIZE+1];
   };
 
 
@@ -117,8 +92,8 @@ namespace Bed {
     /* Desire default-shallow copy-construction & copy-assignment */
 
     // Properties
-    char const* chrom() const { return chrom_; }
-    void chrom(char const* chrom) { std::strcpy(chrom_, chrom); }
+    inline char const* chrom() const { return chrom_; }
+    inline void chrom(char const* chrom) { std::strcpy(chrom_, chrom); }
 
   protected:
     static char chrom_[MAXCHROMSIZE+1];
@@ -151,8 +126,8 @@ namespace Bed {
       { this->readline(inS); }
 
     // Properties
-    CoordType length() const { return end_ - start_; }
-    CoordType median() const { return start_ + ((end_ - start_) / 2); }
+    inline CoordType length() const { return end_ - start_; }
+    inline CoordType median() const { return start_ + ((end_ - start_) / 2); }
     inline CoordType distance(const BasicCoords& a) const {
       if ( 0 == std::strcmp(chrom_, a.chrom_) )
         return start_ - a.start_;
@@ -163,10 +138,10 @@ namespace Bed {
         return end_ - a.start_;
       return std::numeric_limits<CoordType>::max();
     }
-    void start(CoordType start) { start_ = start; }
-    CoordType start() const { return start_; }
-    void end(CoordType end) { end_ = end; }
-    CoordType end() const { return end_; }
+    inline void start(CoordType start) { start_ = start; }
+    inline CoordType start() const { return start_; }
+    inline void end(CoordType end) { end_ = end; }
+    inline CoordType end() const { return end_; }
 
     // Comparison utilities
     inline CoordType overlap(const BasicCoords& a) const {
@@ -231,26 +206,22 @@ namespace Bed {
       std::printf(format, chrom_, start_, end_);
     }
     inline int readline(const std::string& inputLine) {
-      static char chrBuf[MAXCHROMSIZE + 1];
-      chrBuf[0] = '\0';
       static const std::string lclStatic = inFormatter();
       static char const* format = lclStatic.c_str();
+      *chrom_ = '\0';
       int numScan = std::sscanf(inputLine.c_str(),
-                                format, chrBuf,
+                                format, chrom_,
                                 &start_, &end_);
-      this->chrom(chrBuf);
       return numScan;
     }
     inline int readline(FILE* inputFile) {
-      static char chrBuf[MAXCHROMSIZE + 1];
-      chrBuf[0] = '\0';
       static std::string lclstatic = inFormatter();
       static char const* format = lclstatic.c_str();
+      *chrom_ = '\0';
       int numScan = std::fscanf(inputFile,
-                                format, chrBuf, 
+                                format, chrom_,
                                 &start_, &end_);
       std::fgetc(inputFile); // chomp newline
-      this->chrom(chrBuf);
       return numScan;
     }
 
@@ -278,10 +249,10 @@ namespace Bed {
   struct BasicCoords
     : public BasicCoords<IsNonStaticChrom, false> {
 
-    BasicCoords() : BaseClass(), rest_(new char[1]) { *rest_ = '\0'; }
+    BasicCoords() : BaseClass() { rest_[0] = '\0'; }
     BasicCoords(char const* chrom, CoordType start, CoordType end, char const* rest = NULL)
-      : BaseClass(chrom, start, end), rest_(new char[(rest != NULL) ? (std::strlen(rest)+1) : 1]) {
-      *rest_ = '\0';
+      : BaseClass(chrom, start, end) {
+      rest_[0] = '\0';
       if ( rest && std::strcmp(rest, "") != 0 ) {
         if ( rest[0] != '\t' )
           rest_[0] = '\t';
@@ -289,26 +260,20 @@ namespace Bed {
       }
     }
     BasicCoords(const BasicCoords& c)
-      : BaseClass(c), rest_(new char[(c.rest_ != NULL) ? (std::strlen(c.rest_) + 1) : 1])
-      { *rest_ = '\0'; if ( c.rest_ != NULL ) std::strcpy(rest_, c.rest_); }
-    explicit BasicCoords(FILE* inF) : BaseClass(), rest_(0)
+      : BaseClass(c)
+      { std::strcpy(rest_, c.rest_); }
+    explicit BasicCoords(FILE* inF) : BaseClass()
       { this->readline(inF); }
-    explicit BasicCoords(const std::string& inS) : BaseClass(), rest_(0)
+    explicit BasicCoords(const std::string& inS) : BaseClass()
       { this->readline(inS); }
 
     // Properties
-    char const* rest() const { return rest_; }
-    char const* full_rest() const { return rest(); }
+    inline char const* rest() const { return rest_; }
 
     // Operators
     BasicCoords& operator=(const BasicCoords& c) {
       BaseClass::operator=(c);
-      if ( rest_ )
-        delete [] rest_;
-      rest_ = new char[(c.rest_ != NULL) ? (std::strlen(c.rest_) + 1) : 1];
-      *rest_ = '\0';
-      if ( c.rest_ != NULL )
-        std::strcpy(rest_, c.rest_);
+      std::strcpy(rest_, c.rest_);
       return *this;
     }
 
@@ -324,44 +289,25 @@ namespace Bed {
       std::printf(format, chrom_, start_, end_, rest_);
     }
     inline int readline(const std::string& inputLine) {
-      static char chrBuf[MAXCHROMSIZE + 1];
-      chrBuf[0] = '\0';
-      static char restBuf[MAXRESTSIZE + 1];
-      restBuf[0] = '\0';
       static const std::string lclStatic = inFormatter();
       static char const* format = lclStatic.c_str();
+      chrom_[0]='\0';
+      rest_[0]='\0'; // required
       int numScan = std::sscanf(inputLine.c_str(), 
-                                format, chrBuf, &start_,
-                                &end_, restBuf);
-      this->chrom(chrBuf);
-      if ( rest_ )
-        delete [] rest_;
-      rest_ = new char[std::strlen(restBuf) + 1];
-      std::strcpy(rest_, restBuf);
+                                format, chrom_, &start_,
+                                &end_, rest_);
       return numScan;
     }
     inline int readline(FILE* inputFile) {
-      static char chrBuf[MAXCHROMSIZE + 1];
-      chrBuf[0] = '\0';
-      static char restBuf[MAXRESTSIZE + 1];
-      restBuf[0] = '\0';
       static const std::string lclStatic = inFormatter();
       static char const* format = lclStatic.c_str();
+      chrom_[0]='\0';
+      rest_[0]='\0'; // required
       int numScan = std::fscanf(inputFile, format,
-                                chrBuf, &start_,
-                                &end_, restBuf);
+                                chrom_, &start_,
+                                &end_, rest_);
       std::fgetc(inputFile); // chomp newline
-      this->chrom(chrBuf);
-      if ( rest_ )
-        delete [] rest_;
-      rest_ = new char[std::strlen(restBuf) + 1];
-      std::strcpy(rest_, restBuf);
       return numScan;
-    }
-
-    ~BasicCoords() {
-      if ( rest_ )
-        delete [] rest_;
     }
 
     static const bool UseRest = true;
@@ -371,7 +317,7 @@ namespace Bed {
     using BaseClass::chrom_;
     using BaseClass::start_;
     using BaseClass::end_;
-    char* rest_;
+    char rest_[MAXRESTSIZE+1];
 
     static std::string outFormatter() {
       return(std::string("%s\t%" PRIu64 "\t%" PRIu64 "%s"));
@@ -396,52 +342,35 @@ namespace Bed {
   struct Bed4<BasicCoords<IsNonStaticChrom, B3HasRest>, false> 
     : public BasicCoords<IsNonStaticChrom, false> {
 
-    Bed4() : BaseClass(), id_(new char[1]) { *id_ = '\0'; }
+    Bed4() : BaseClass() { *id_ = '\0'; }
     Bed4(char const* chrom, CoordType start, CoordType end, char const* id)
-      : BaseClass(chrom, start, end), id_(new char[(id != NULL) ? (std::strlen(id)+1) : 1])
+      : BaseClass(chrom, start, end)
       { *id_ = '\0'; if ( id != NULL ) std::strcpy(id_, id); }
     Bed4(const Bed4& c)
-      : BaseClass(c), id_(new char[(c.id_ != NULL) ? (std::strlen(c.id_) + 1) : 1])
+      : BaseClass(c)
       { *id_ = '\0'; if ( c.id_ != NULL ) std::strcpy(id_, c.id_); }
-    explicit Bed4(FILE* inF) : BaseClass(), id_(0)
+    explicit Bed4(FILE* inF) : BaseClass()
       { this->readline(inF); }
-    explicit Bed4(const std::string& inS) : BaseClass(), id_(0)
+    explicit Bed4(const std::string& inS) : BaseClass()
       { this->readline(inS); }
 
     // IO
     inline int readline(const std::string& inputLine) {
-      static char chrBuf[MAXCHROMSIZE + 1];
-      chrBuf[0] = '\0';
-      static char idBuf[MAXIDSIZE + 1];
-      idBuf[0] = '\0';
-
       static const std::string lclStatic = inFormatter();
       static char const* format = lclStatic.c_str();
-      int numScanned = std::sscanf(inputLine.c_str(), format,
-                                   chrBuf,
-                                   &start_,
-                                   &end_,
-                                   idBuf);
-      this->chrom(chrBuf);
-      this->id(idBuf);
-      return numScanned;
+      *chrom_ = '\0';
+      *id_ = '\0';
+      return std::sscanf(inputLine.c_str(), format,
+                         chrom_, &start_, &end_, id_);
     }
     inline int readline(FILE* inputFile) {
-      static char chrBuf[MAXCHROMSIZE + 1];
-      chrBuf[0] = '\0';
-      static char idBuf[MAXIDSIZE + 1];
-      idBuf[0] = '\0';
-
       static const std::string lclStatic = inFormatter();
       static char const* format = lclStatic.c_str();
+      *chrom_ = '\0';
+      *id_ = '\0';
       int numScanned = std::fscanf(inputFile, format,
-                                   chrBuf,
-                                   &start_,
-                                   &end_, 
-                                   idBuf);
+                                   chrom_, &start_, &end_, id_);
       std::fgetc(inputFile); // read and discard newline
-      this->chrom(chrBuf);
-      this->id(idBuf);
       return numScanned;
     }
     inline void print() const {
@@ -456,28 +385,14 @@ namespace Bed {
     }
 
     // Properties
-    void id(char const* id) {
-      if ( id_ )
-        delete [] id_;
-      id_ = new char[(id != NULL) ? (std::strlen(id) + 1) : 1];
-      *id_ = '\0'; if ( id != NULL ) std::strcpy(id_, id);
-    }
-    char const* id() const { return id_; }
+    inline void id(char const* id) { *id_ = '\0'; if ( id != NULL ) std::strcpy(id_, id); }
+    inline char const* id() const { return id_; }
 
     // Operators
     Bed4& operator=(const Bed4& c) {
       BaseClass::operator=(c);
-      if ( id_ )
-        delete [] id_;
-      id_ = new char[(c.id_ != NULL) ? (std::strlen(c.id_) + 1) : 1];
       *id_ = '\0'; if ( c.id_ != NULL ) std::strcpy(id_, c.id_);
       return *this;
-    }
-
-    ~Bed4() {
-      if ( id_ )
-        delete [] id_;
-      id_ = NULL;
     }
 
     static const int NumFields = 4;
@@ -489,7 +404,7 @@ namespace Bed {
     using BaseClass::start_;
     using BaseClass::end_;
 
-    char* id_;
+    char id_[MAXIDSIZE+1];
 
     static std::string outFormatter() {
       return(BaseClass::outFormatter() + "\t%s");
@@ -501,148 +416,95 @@ namespace Bed {
   };
 
   // Specialization 2: Extend specialization 1 with "rest-size" information
-  template <typename BedType, bool HasRest>
-  struct Bed4 
-    : public Bed4<BedType, false> {
+  template <bool IsNonStaticChrom, bool HasRest>
+  struct Bed4<BasicCoords<IsNonStaticChrom, HasRest>, HasRest>
+    : public BasicCoords<IsNonStaticChrom, HasRest> {
 
-    Bed4() : BaseClass(), rest_(new char[1]), fullrest_(new char[1]) { *rest_ = '\0'; *fullrest_ = '\0'; }
+    Bed4() : BaseClass() { *rest_ = '\0'; }
     Bed4(const Bed4& c)
-      : BaseClass(c), rest_(new char[(c.rest_ != NULL) ? (std::strlen(c.rest_)+1) : 1]),
-                     fullrest_(new char[(c.fullrest_ != NULL) ? (std::strlen(c.fullrest_)+1) : 1])
-       { *rest_ = '\0'; *fullrest_ = '\0';
-         if ( c.rest_ != NULL ) std::strcpy(rest_, c.rest_);
-         if ( c.fullrest_ != NULL ) std::strcpy(fullrest_, c.fullrest_);
+      : BaseClass(c)
+       {
+         *id_ = '\0';
+         if ( c.id_ != NULL ) std::strcpy(id_, c.id_);
        }
     Bed4(char const* chrom, CoordType start, CoordType end, char const* id, char const* rest = NULL)
-      : BaseClass(chrom, start, end, id), rest_(new char[(rest != NULL) ? (std::strlen(rest)+1) : 1]),
-            fullrest_(new char[((rest != NULL) ? (std::strlen(rest)+1) : 1) + ((id != NULL) ? (std::strlen(id)+1) : 1)]) {
-      *rest_ = '\0'; *fullrest_ = '\0';
+      : BaseClass(chrom, start, end, rest) {
+      *id_ = '\0';
       if ( id && std::strcmp(id, "") != 0 )
-        std::strcpy(fullrest_, id);
-
-      if ( rest && std::strcmp(rest, "") != 0 ) {
-        if ( rest[0] != '\t' )
-          rest_[0] = '\t';
-        std::strcat(rest_, rest);
-        std::strcat(fullrest_, rest_);
-      }
+        std::strcpy(id_, id);
     }
-    explicit Bed4(FILE* inF) : BaseClass(), rest_(0), fullrest_(0)
+    explicit Bed4(FILE* inF) : BaseClass()
       { this->readline(inF); }
-    explicit Bed4(const std::string& inS) : BaseClass(), rest_(0), fullrest_(0)
+    explicit Bed4(const std::string& inS) : BaseClass()
       { this->readline(inS); }
 
     // Properties
-    char const* rest() const { return rest_; }
-    char const* full_rest() const { return fullrest_; }
+    inline void id(char const* id) { *id_ = '\0'; if ( id != NULL ) std::strcpy(id_, id); }
+    inline char const* id() const { return id_; }
 
     // IO
     inline void print() const {
       static const std::string lclStatic = outFormatter();
       static char const* format = lclStatic.c_str();
-      std::printf(format, chrom_, start_, end_, id_, rest_);
+      std::printf(format, chrom_, start_, end_, rest_);
     }
     inline void println() const {
       static const std::string heapFormat = (outFormatter() + "\n");
       static char const* format = heapFormat.c_str();
-      std::printf(format, chrom_, start_, end_, id_, rest_);
+      std::printf(format, chrom_, start_, end_, rest_);
     }
     inline int readline(const std::string& inputLine) {
-      static char chrBuf[MAXCHROMSIZE + 1];
-      chrBuf[0] = '\0';
-      static char idBuf[MAXIDSIZE + 1];
-      idBuf[0] = '\0';
-      static char restBuf[MAXRESTSIZE + 1];
-      restBuf[0] = '\0';
       static const std::string lclStatic = inFormatter();
       static char const* format = lclStatic.c_str();
+      chrom_[0]='\0';
+      id_[0]='\0';
+      rest_[0]='\0';
       int numScanned = std::sscanf(inputLine.c_str(),
-                                   format, chrBuf,
-                                   &start_, &end_, idBuf, 
-                                   restBuf);
-      this->chrom(chrBuf);
-      this->id(idBuf);
-      if ( rest_ )
-        delete [] rest_;
-      rest_ = new char[std::strlen(restBuf) + 1];
-      std::strcpy(rest_, restBuf);
-      if ( fullrest_ )
-        delete [] fullrest_;
-      std::size_t sz = (std::strlen(restBuf)+1) + (std::strlen(idBuf) + 1);
-      fullrest_ = new char[sz];
-      std::strcpy(fullrest_, idBuf);
-      std::strcat(fullrest_, restBuf);
+                                   format, chrom_,
+                                   &start_, &end_, rest_);
+      std::sscanf(rest_, "%s", id_);
       return numScanned;
     }
     inline int readline(FILE* inputFile) {
-      static char chrBuf[MAXCHROMSIZE + 1];
-      chrBuf[0] = '\0';
-      static char idBuf[MAXIDSIZE + 1];
-      idBuf[0] = '\0';
-      static char restBuf[MAXRESTSIZE + 1];
-      restBuf[0] = '\0';
-
       static const std::string lclStatic = inFormatter();
       static char const* format = lclStatic.c_str();
+      chrom_[0] = '\0';
+      id_[0] = '\0';
+      rest_[0] = '\0';
       int numScanned = std::fscanf(inputFile,
-                                   format, chrBuf, 
-                                   &start_, &end_, idBuf, 
-                                   restBuf);
-
+                                   format, chrom_,
+                                   &start_, &end_,
+                                   rest_);
       std::fgetc(inputFile); // Read and discard trailing newline
-      this->chrom(chrBuf);
-      this->id(idBuf);
-      if ( rest_ )
-        delete [] rest_;
-      rest_ = new char[std::strlen(restBuf) + 1];
-      std::strcpy(rest_, restBuf);
-      std::size_t sz = (std::strlen(restBuf)+1) + (std::strlen(idBuf) + 1);
-      if ( fullrest_ )
-        delete [] fullrest_;
-      fullrest_ = new char[sz];
-      std::strcpy(fullrest_, idBuf);
-      std::strcat(fullrest_, restBuf);
+      std::sscanf(rest_, "%s%*s", id_);
       return numScanned;
     }
 
     // Operators
     Bed4& operator=(const Bed4& c) {
       BaseClass::operator=(c);
-      if ( rest_ )
-        delete [] rest_;
-      if ( fullrest_ )
-        delete [] fullrest_;
-      rest_ = new char[(c.rest_ != NULL) ? (std::strlen(c.rest_) + 1) : 1];
-      *rest_ = '\0'; if ( c.rest_ != NULL ) std::strcpy(rest_, c.rest_);
-      fullrest_ = new char[(c.fullrest_ != NULL) ? (std::strlen(c.fullrest_) + 1) : 1];
-      *fullrest_ = '\0'; if ( c.fullrest_ != NULL ) std::strcpy(fullrest_, c.fullrest_);
+      *id_ = '\0'; if ( c.id_ != NULL ) std::strcpy(id_, c.id_);
       return *this;
     }
 
-    ~Bed4() {
-      if ( rest_ )
-        delete [] rest_;
-      if ( fullrest_ )
-        delete [] fullrest_;
-    }
-
+    static const int NumFields = 4;
     static const bool UseRest = true;
 
   protected:
-    typedef Bed4<BedType, false> BaseClass;
+    typedef BasicCoords<IsNonStaticChrom, HasRest> BaseClass;
     using BaseClass::chrom_;
     using BaseClass::start_;
     using BaseClass::end_;
-    using BaseClass::id_;
+    using BaseClass::rest_;
 
-    char* rest_;
-    char* fullrest_;
+    char id_[MAXIDSIZE+1];
+
     static std::string outFormatter() {
-      return(BaseClass::outFormatter() + "%s");
+      return(BaseClass::outFormatter());
     }
 
     static std::string inFormatter() {
-      return(BaseClass::outFormatter() + "%[^\n]s\n");
+      return(BaseClass::inFormatter());
     }
   };
 
@@ -679,35 +541,24 @@ namespace Bed {
 
     // IO
     inline int readline(const std::string& inputLine) {
-      static char chrBuf[MAXCHROMSIZE + 1];
-      chrBuf[0] = '\0';
-      static char idBuf[MAXIDSIZE + 1];
-      idBuf[0] = '\0';
       static const std::string lclStatic = inFormatter();
       static char const* format = lclStatic.c_str();
-      int numScanned = std::sscanf(inputLine.c_str(),
-                                   format, chrBuf,
-                                   &start_, &end_, idBuf, 
-                                   &measurement_);
-      this->chrom(chrBuf);
-      this->id(idBuf);
-      return numScanned;
+      *chrom_ = '\0';
+      *id_ = '\0';
+      return std::sscanf(inputLine.c_str(),
+                         format, chrom_,
+                         &start_, &end_, id_, 
+                         &measurement_);
     }
     inline int readline(FILE* inputFile) {
-      static char chrBuf[MAXCHROMSIZE + 1];
-      chrBuf[0] = '\0';
-      static char idBuf[MAXIDSIZE + 1];
-      idBuf[0] = '\0';
       static const std::string lclStatic = inFormatter();
       static char const* format = lclStatic.c_str();
+      *chrom_ = '\0';
+      *id_ = '\0';
       int numScanned = std::fscanf(inputFile,
-                                   format, chrBuf, 
-                                   &start_, &end_, idBuf, 
-                                   &measurement_);
-
+                                   format, chrom_,
+                                   &start_, &end_, id_, measurement_);
       std::fgetc(inputFile); // Read and discard trailing newline
-      this->chrom(chrBuf);
-      this->id(idBuf);
       return numScanned;
     }
     inline void print() const {
@@ -749,160 +600,113 @@ namespace Bed {
 
 
   // Specialization 2: Extend specialization 1 with "rest-size" information
-  template <typename Bed4Type, typename MeasureType, bool HasRest>
-  struct Bed5
-    : public Bed5<Bed4Type, MeasureType, false> { /* Bed4Type is forced to be Bed4<> specialization above */
+  template <bool IsNonStaticChrom, typename MeasureType, bool HasRest>
+  struct Bed5<BasicCoords<IsNonStaticChrom, HasRest>, MeasureType, HasRest>
+    : public BasicCoords<IsNonStaticChrom, HasRest> {
 
-    Bed5() : BaseClass(), rest_(new char[1]) { *rest_ = '\0'; }
-    Bed5(const Bed5& c)
-      : BaseClass(c), rest_(new char[(c.rest_ != NULL) ? (std::strlen(c.rest_+1)) : 1]),
-        fullrest_(new char[(c.fullrest_ != NULL) ? (std::strlen(c.fullrest_+1)) : 1])
+    // Parameters
+    typedef MeasureType MeasurementType;
+    static const int NumFields = 5;
+    static const bool UseRest = true;
+
+    Bed5() : BaseClass() { *id_ = '\0'; }
+    Bed5(const Bed5& c) : BaseClass(c)
       {
-        *rest_ = '\0'; if ( c.rest_ != NULL ) std::strcpy(rest_, c.rest_);
-        *fullrest_ = '\0'; if ( c.fullrest_ != NULL ) std::strcpy(fullrest_, c.fullrest_);
+        *id_ = '\0';
+        static const char* f = (std::string("%s\t") + MFormat).c_str();
+        sscanf(rest_, f, id_, &measurement_);
       }
     Bed5(char const* chrom, CoordType start, CoordType end,
          char const* id, MeasureType measurement, char const* rest = NULL)
-      : BaseClass(chrom, start, end, id, measurement),
-        rest_(new char[(rest != NULL) ? (std::strlen(rest)+1) : 1]),
-        fullrest_(new char[((rest != NULL) ? (std::strlen(rest)+1) : 1) + ((id != NULL) ? (std::strlen(id)+1) : 1)])
+      : BaseClass(chrom, start, end, rest)
     {
-      *rest_ = '\0'; *fullrest_ = '\0';
+      id_[0] = '\0';
       if ( id && std::strcmp(id, "") != 0 )
-        std::strcpy(fullrest_, id);
-
-      if ( rest && 0 != std::strcmp(rest, "") ) {
-        if ( rest[0] != '\t' )
-          rest_[0] = '\t';
-        std::strcat(rest_, rest);
-        std::strcat(fullrest_, rest_);
-      }
+        std::strcpy(id_, id);
+      measurement_ = measurement;
     }
-    explicit Bed5(FILE* inF) : BaseClass(), rest_(0), fullrest_(0)
+    explicit Bed5(FILE* inF) : BaseClass()
       { this->readline(inF); }
-    explicit Bed5(const std::string& inS) : BaseClass(), rest_(0), fullrest_(0)
+    explicit Bed5(const std::string& inS) : BaseClass()
       { this->readline(inS); }
 
     // Properties
-    char const* rest() const { return rest_; }
-    char const* full_rest() const { return fullrest_; }
+    inline void id(char const* id) { *id_ = '\0'; if ( id != NULL ) std::strcpy(id_, id); }
+    inline char const* id() const { return id_; }
+    inline MeasurementType measurement() const { return measurement_; }
+    inline char const* rest() const { return rest_; }
 
     // IO
     inline void print() const {
       static const std::string lclStatic = outFormatter();
       static char const* format = lclStatic.c_str();
-      std::printf(format, chrom_, start_, end_, id_, measurement_, rest_);
+      std::printf(format, chrom_, start_, end_, rest_);
     }
     inline void println() const {
       static const std::string heapFormat = outFormatter() + "\n";
       static char const* format = heapFormat.c_str();
-      std::printf(format, chrom_, start_, end_, id_, measurement_, rest_);
+      std::printf(format, chrom_, start_, end_, rest_);
     }
     inline int readline(const std::string& inputLine) {
-      static char chrBuf[MAXCHROMSIZE + 1];
-      chrBuf[0] = '\0';
-      static char idBuf[MAXIDSIZE + 1];
-      idBuf[0] = '\0';
-      static char restBuf[MAXRESTSIZE + 1];
-      restBuf[0] = '\0';
+      *chrom_ = '\0';
+      *id_ = '\0';
+      *rest_ = '\0';
       static const std::string lclStatic = inFormatter();
       static char const* format = lclStatic.c_str();
       int numScanned = std::sscanf(inputLine.c_str(),
-                                   format, chrBuf,
-                                   &start_, &end_, idBuf, 
-                                   &measurement_, restBuf);
-
-      this->chrom(chrBuf);
-      this->id(idBuf);
-      if ( rest_ )
-        delete [] rest_;
-      rest_ = new char[std::strlen(restBuf) + 1];
-      std::strcpy(rest_, restBuf);
-      if ( fullrest_ )
-        delete [] fullrest_;
-      std::size_t sz = (std::strlen(restBuf)+1) + (std::strlen(idBuf) + 1);
-      fullrest_ = new char[sz];
-      std::strcpy(fullrest_, idBuf);
-      std::strcat(fullrest_, restBuf);
-      return numScanned;
+                                   format, chrom_,
+                                   &start_, &end_, rest_);
+      static const char* f = (std::string("%s\t") + MFormat).c_str();
+      sscanf(rest_, f, id_, &measurement_);
+      return numScanned + 2;
     }
     inline int readline(FILE* inputFile) {
-      static char chrBuf[MAXCHROMSIZE + 1];
-      chrBuf[0] = '\0';
-      static char idBuf[MAXIDSIZE + 1];
-      idBuf[0] = '\0';
-      static char restBuf[MAXRESTSIZE + 1];
-      restBuf[0] = '\0';
-
+      *chrom_ = '\0';
+      *id_ = '\0';
+      *rest_ = '\0';
       static const std::string lclStatic = inFormatter();
       static char const* format = lclStatic.c_str();
       int numScanned = std::fscanf(inputFile,
-                                   format, chrBuf, 
-                                   &start_, &end_, idBuf, 
-                                   &measurement_, restBuf);
-
+                                   format, chrom_,
+                                   &start_, &end_, rest_);
+      static const std::string lclf = (std::string("%s\t") + MFormat);
+      static const char* f = lclf.c_str();
+      sscanf(rest_, f, id_, &measurement_);
       std::fgetc(inputFile); // Read and discard trailing newline
-      this->chrom(chrBuf);
-      this->id(idBuf);
-      if ( rest_ )
-        delete [] rest_;
-      rest_ = new char[std::strlen(restBuf) + 1];
-      std::strcpy(rest_, restBuf);
-
-      if ( fullrest_ )
-        delete [] fullrest_;
-      std::size_t sz = (std::strlen(restBuf)+1) + (std::strlen(idBuf) + 1);
-      fullrest_ = new char[sz];
-      std::strcpy(fullrest_, idBuf);
-      std::strcat(fullrest_, restBuf);
-
-      return numScanned;
+      return numScanned + 2;
     }
 
     // Operators
     Bed5& operator=(const Bed5& c) {
       BaseClass::operator=(c);
-      if ( rest_ )
-        delete [] rest_;
-      if ( fullrest_ )
-        delete [] fullrest_;
-      rest_ = new char[(c.rest_ != NULL) ? (std::strlen(c.rest_) + 1) : 1];
-      *rest_ = '\0'; if ( c.rest_ != NULL ) std::strcpy(rest_, c.rest_);
-      fullrest_ = new char[(c.fullrest_ != NULL) ? (std::strlen(c.fullrest_) + 1) : 1];
-      *fullrest_ = '\0'; if ( c.fullrest_ != NULL ) std::strcpy(fullrest_, c.fullrest_);
+      static const char* f = (std::string("%s\t") + MFormat).c_str();
+      sscanf(rest_, f, id_, &measurement_);
       return *this;
     }
-
-    ~Bed5() {
-      if ( rest_ )
-        delete [] rest_;
-      if ( fullrest_ )
-        delete [] fullrest_;
-    }
-
-    // Parameters
-    static const bool UseRest = true;
+    inline operator MeasurementType() const { return measurement_; }
 
   protected:
-    typedef Bed5<Bed4Type, MeasureType, false> BaseClass;
+    typedef BasicCoords<IsNonStaticChrom, HasRest> BaseClass;
     using BaseClass::chrom_;
     using BaseClass::start_;
     using BaseClass::end_;
-    using BaseClass::id_;
-    using BaseClass::measurement_;
+    using BaseClass::rest_;
 
-    char* rest_;
-    char* fullrest_;
+    typedef typename std::remove_cv<MeasureType>::type MType;
+    static constexpr char const* MFormat = Formats::Format(MType());
+
+    char id_[MAXIDSIZE+1];
+    MeasureType measurement_;
 
     static std::string outFormatter() {
-      return(BaseClass::outFormatter() + "%s");
+      return(BaseClass::outFormatter());
     }
 
     static std::string inFormatter() {
-      return(BaseClass::outFormatter() + "%[^\n]s\n");
+      return(BaseClass::inFormatter());
     }
   };
 
 } // namespace Bed
 
-#endif // BED_HPP
+#endif // BED_NONEW_HPP

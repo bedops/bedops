@@ -21,8 +21,8 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#ifndef SPECIAL_STARCH_ALLOCATE_NEW_ITERATOR_CHR_SPECIFIC_POOL_HPP
-#define SPECIAL_STARCH_ALLOCATE_NEW_ITERATOR_CHR_SPECIFIC_POOL_HPP
+#ifndef SPECIAL_STARCH_ALLOCATE_NEW_ITERATOR_CHR_SPECIFIC_POOL_BOOST_HPP
+#define SPECIAL_STARCH_ALLOCATE_NEW_ITERATOR_CHR_SPECIFIC_POOL_BOOST_HPP
 
 #include <algorithm>
 #include <cstddef>
@@ -33,22 +33,21 @@
 
 #include <sys/stat.h>
 
-#include "utility/PooledMemory.hpp"
+#include <boost/pool/object_pool.hpp>
 
 #include "algorithm/bed/FindBedRange.hpp"
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
 #include "data/bed/Bed.hpp"
 #include "data/starch/starchApi.hpp"
-#include "suite/BEDOPS.Constants.hpp"
 #include "utility/FPWrap.hpp"
 
 namespace Bed {
 
-  template <class BedType, std::size_t SZ=Bed::CHUNKSZ>
-  class allocate_iterator_starch_bed;
+  template <class BedType>
+  class allocate_iterator_starch_bed_play;
   
-  template <class BedType, std::size_t SZ>
-  class allocate_iterator_starch_bed<BedType*, SZ> {
+  template <class BedType>
+  class allocate_iterator_starch_bed_play<BedType*> {
   
   public:
     typedef std::forward_iterator_tag iterator_category;
@@ -57,11 +56,11 @@ namespace Bed {
     typedef BedType**                 pointer;
     typedef BedType*&                 reference;
 
-    allocate_iterator_starch_bed() : fp_(NULL), _M_ok(false), _M_value(0), is_starch_(false),
+    allocate_iterator_starch_bed_play() : fp_(NULL), _M_ok(false), _M_value(0), is_starch_(false),
                                           all_(false), archive_(NULL), pool_(NULL) { chr_[0] = '\0'; }
 
     template <typename ErrorType>
-    allocate_iterator_starch_bed(Ext::FPWrap<ErrorType>& fp, Ext::PooledMemory<BedType, SZ>& p,
+    allocate_iterator_starch_bed_play(Ext::FPWrap<ErrorType>& fp, boost::object_pool<BedType>& p,
                                       const std::string& chr = "all") /* this ASSUMES fp is open and meaningful */
       : fp_(fp), _M_ok(fp_ && !std::feof(fp_)), _M_value(0),
         is_starch_(_M_ok && (fp_ != stdin) && starch::Starch::isStarch(fp_)),
@@ -95,7 +94,7 @@ namespace Bed {
             _M_ok = (fp_ && !std::feof(fp_));
             break;
           }
-          pool_->release(_M_value);
+          pool_->free(_M_value);
         } // while
         if ( !_M_ok && fp_ )
           fp_ = NULL;
@@ -174,7 +173,7 @@ namespace Bed {
     reference operator*() { return _M_value; }
     pointer operator->() { return &(operator*()); }
   
-    allocate_iterator_starch_bed& operator++() { 
+    allocate_iterator_starch_bed_play& operator++() { 
       if ( _M_ok ) {
         if ( !is_starch_ ) {
           _M_value = pool_->construct(fp_);
@@ -191,7 +190,7 @@ namespace Bed {
       return *this;
     }
   
-    allocate_iterator_starch_bed operator++(int)  {
+    allocate_iterator_starch_bed_play operator++(int)  {
       auto __tmp = *this;
       if ( _M_ok ) {
         if ( !is_starch_ ) {
@@ -209,15 +208,15 @@ namespace Bed {
       return __tmp;
     }
   
-    bool _M_equal(const allocate_iterator_starch_bed& __x) const {
+    bool _M_equal(const allocate_iterator_starch_bed_play& __x) const {
        return (
                 (_M_ok == __x._M_ok) &&
                 (!_M_ok || fp_ == __x.fp_)
               ); 
     }
 
-    Ext::PooledMemory<BedType, SZ>& get_pool() { return *pool_; }
-
+    boost::object_pool<BedType>& get_pool() { return *pool_; }
+  
   private:
     inline BedType* get_starch() {
       static std::string line;
@@ -234,23 +233,23 @@ namespace Bed {
     bool is_starch_;
     const bool all_;
     starch::Starch* archive_;
-    Ext::PooledMemory<BedType, SZ>* pool_;
+    boost::object_pool<BedType>* pool_;
   };
   
-  template <class BedType, std::size_t sz>
+  template <class BedType>
   inline bool 
-  operator==(const allocate_iterator_starch_bed<BedType, sz>& __x,
-             const allocate_iterator_starch_bed<BedType, sz>& __y) {
+  operator==(const allocate_iterator_starch_bed_play<BedType>& __x,
+             const allocate_iterator_starch_bed_play<BedType>& __y) {
     return __x._M_equal(__y);
   }
   
-  template <class BedType, std::size_t sz>
+  template <class BedType>
   inline bool 
-  operator!=(const allocate_iterator_starch_bed<BedType, sz>& __x,
-             const allocate_iterator_starch_bed<BedType, sz>& __y) {
+  operator!=(const allocate_iterator_starch_bed_play<BedType>& __x,
+             const allocate_iterator_starch_bed_play<BedType>& __y) {
     return !__x._M_equal(__y);
   }
 
 } // namespace Bed
 
-#endif // SPECIAL_STARCH_ALLOCATE_NEW_ITERATOR_CHR_SPECIFIC_POOL_HPP
+#endif // SPECIAL_STARCH_ALLOCATE_NEW_ITERATOR_CHR_SPECIFIC_POOL_BOOST_HPP

@@ -23,7 +23,6 @@
 
 #include <cstdlib>
 #include <deque>
-#include <type_traits>
 
 #include "data/bed/BedCheckIterator.hpp"
 #include "data/bed/BedDistances.hpp"
@@ -31,6 +30,20 @@
 #include "utility/AllocateIterator.hpp"
 
 namespace WindowSweep {
+
+  /*
+    why the specialization? From BedBaseVisitor.hpp
+      chr1  1   200  a  1
+      chr1  10  20   b  3
+      chr1  50  150  c  4
+
+      when used with bedmap --bp-ovr 11 --count <one-file>
+
+      row 2 has no hits, but row 1 goes with row 3's output.  Cannot assume that once
+        row 2 is out of range that everything to the left of it is out of range too,
+        even when looking at straight bp's.  The main issue shown here is that the
+        --bp-ovr 11 is larger than row 2's range.  It can never qualify but row 1 can.
+  */
 
   // See WindowSweep.hpp for detailed assumptions of sweep()
 
@@ -58,6 +71,7 @@ namespace WindowSweep {
     TypePtr cache = zero;
     bool first = true;
     bool reset = true;
+    InputIterator orig = start;
 
     // Loop through inputs
     while ( start != end || cache || !win.empty() ) {
@@ -67,14 +81,14 @@ namespace WindowSweep {
         while ( !win.empty() && inRange.Map2Ref(win[0], win[index]) < 0 ) {
           if ( win[0]->length() >= inRange.ovrRequired_ )
             visitor.OnDelete(win[0]);
-          delete win[0];
+          Details::clean(orig, win[0]);
           win.pop_front(), --index;
         } // while
       } else { // last item in windowed buffer, reset buffer
         if ( start == end && !cache ) { // stopping condition
           visitor.OnEnd();
           while ( !win.empty() ) { // deletions belonging to NO ref
-            delete win[0];
+            Details::clean(orig, win[0]);
             win.pop_front();
           } // while
           break;
@@ -113,7 +127,7 @@ namespace WindowSweep {
             while ( !win.empty() ) { // deletions on behalf of new ref
               if ( win[0]->length() >= inRange.ovrRequired_ )
                 visitor.OnDelete(win[0]);
-              delete win[0];
+              Details::clean(orig, win[0]);
               win.pop_front();
             } // while
           }
@@ -133,7 +147,7 @@ namespace WindowSweep {
     } // while !done
 
     if ( cache )
-      delete cache; // never given to visitor
+      Details::clean(orig, cache); // never given to visitor
 
   } // sweep() overload1
 

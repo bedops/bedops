@@ -107,7 +107,7 @@ namespace Bed {
         return one->start() < two->start();
       if ( one->end() != two->end() )
         return one->end() < two->end();
-      return std::strcmp(one->full_rest(), two->full_rest()) < 0;
+      return std::strcmp(one->rest(), two->rest()) < 0;
     }
 
     template <typename T=BedType1, typename U=BedType2>
@@ -117,7 +117,7 @@ namespace Bed {
         return one->start() < two->start();
       if ( one->end() != two->end() )
         return one->end() < two->end();
-      return std::strlen(one->full_rest()) == 0;
+      return std::strlen(one->rest()) == 0;
     }
 
     template <typename T=BedType1, typename U=BedType2>
@@ -127,7 +127,7 @@ namespace Bed {
         return one->start() < two->start();
       if ( one->end() != two->end() )
         return one->end() < two->end();
-      std::strlen(two->full_rest()) != 0;
+      std::strlen(two->rest()) != 0;
     }
 
     template <typename T=BedType1, typename U=BedType2>
@@ -150,7 +150,7 @@ namespace Bed {
         return one->start() < two->start();
       if ( one->end() != two->end() )
         return one->end() < two->end();
-      int val = std::strcmp(one->full_rest(), two->full_rest());
+      int val = std::strcmp(one->rest(), two->rest());
       if ( val != 0 )
         return val < 0;
       return one < two;
@@ -163,7 +163,7 @@ namespace Bed {
         return one->start() < two->start();
       if ( one->end() != two->end() )
         return one->end() < two->end();
-      auto n = std::strlen(one->full_rest());
+      auto n = std::strlen(one->rest());
       if ( n != 0 )
         return false;
       return one < two;
@@ -176,7 +176,7 @@ namespace Bed {
         return one->start() < two->start();
       if ( one->end() != two->end() )
         return one->end() < two->end();
-      auto n = std::strlen(two->full_rest());
+      auto n = std::strlen(two->rest());
       if ( n != 0 )
         return true;
       return one < two;

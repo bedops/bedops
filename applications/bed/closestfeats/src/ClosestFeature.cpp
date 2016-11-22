@@ -56,6 +56,7 @@ namespace FeatDist {
   const char* none = "NA";
   const Bed::SignedCoordType plus_infinite = std::numeric_limits<Bed::SignedCoordType>::max();
   const Bed::SignedCoordType minus_infinite = std::numeric_limits<Bed::SignedCoordType>::min();
+  const std::size_t PoolSz = 8*8*8; // only 2 file inputs
 
   void doWork(const Input&);
 } // namespace FeatDist
@@ -121,17 +122,39 @@ void runDistances(BedFile1& refFile, BedFile2& nonRefFile, const Input& input) {
     findDistances(refFile, nonRefFile, input.AllowOverlaps(), PrintAll(input.Delimiter(), printDistances, suppressRefField));
 }
 
+//=============
+// get_pool()
+//============
+template <typename BedTypePtr>
+Ext::PooledMemory<typename std::remove_pointer<BedTypePtr>::type, PoolSz>&
+get_pool() {
+  static Ext::PooledMemory<typename std::remove_pointer<BedTypePtr>::type, PoolSz> pool;
+  return pool;
+}
+
+//==========
+// remove()
+//==========
+template <typename BedType>
+inline
+void remove(BedType* b) {
+  static auto& p = get_pool<BedType*>();
+  p.release(b);
+}
+
 //=================
 // createWork<T,U>
 //=================
 template <typename BedType1, typename BedType2>
 struct createWork {
   static void run(const Input& input) {
+    auto& mem1 = get_pool<BedType1*>();
+    auto& mem2 = get_pool<BedType2*>();
     if ( input.ErrorCheck() ) {
       typedef Ext::UserError UE;
       typedef std::ifstream* StreamPtr;
-      typedef Bed::bed_check_iterator<BedType1*> IterType1;
-      typedef Bed::bed_check_iterator<BedType2*> IterType2;
+      typedef Bed::bed_check_iterator<BedType1*, PoolSz> IterType1;
+      typedef Bed::bed_check_iterator<BedType2*, PoolSz> IterType2;
       typedef BedReader<IterType1> BedReaderType1;
       typedef BedReader<IterType2> BedReaderType2;
   
@@ -143,24 +166,24 @@ struct createWork {
       bool isStdin = (input.GetReferenceFileName() == "-");
       refFilePtr = new std::ifstream(input.GetReferenceFileName().c_str());
       if ( isStdin ) {
-        IterType1 fileI(std::cin, "stdin", input.Chrome());
+        IterType1 fileI(std::cin, "stdin", mem1, input.Chrome());
         refFile = new BedReaderType1(fileI);
       } else {
         if ( !refFilePtr || !(*refFilePtr) )
           throw(UE("Unable to find file: " + input.GetReferenceFileName()));
-        IterType1 fileI(*refFilePtr, input.GetReferenceFileName(), input.Chrome());
+        IterType1 fileI(*refFilePtr, input.GetReferenceFileName(), mem1, input.Chrome());
         refFile = new BedReaderType1(fileI);
       }
   
       isStdin = (input.GetNonReferenceFileName() == "-");
       nonRefFilePtr = new std::ifstream(input.GetNonReferenceFileName().c_str());
       if ( isStdin ) {
-        IterType2 fileJ(std::cin, input.GetNonReferenceFileName(), input.Chrome());
+        IterType2 fileJ(std::cin, input.GetNonReferenceFileName(), mem2, input.Chrome());
         nonRefFile = new BedReaderType2(fileJ);
       } else {
         if ( !nonRefFilePtr || !(*nonRefFilePtr) )
           throw(UE("Unable to find file: " + input.GetNonReferenceFileName()));
-        IterType2 fileJ(*nonRefFilePtr, input.GetNonReferenceFileName(), input.Chrome());
+        IterType2 fileJ(*nonRefFilePtr, input.GetNonReferenceFileName(), mem2, input.Chrome());
         nonRefFile = new BedReaderType2(fileJ);
       }
 
@@ -181,8 +204,8 @@ struct createWork {
   
     } else { // fast-mode
       typedef Ext::FPWrap<Ext::InvalidFile> FPType;
-      typedef Bed::allocate_iterator_starch_bed<BedType1*> IterType1;
-      typedef Bed::allocate_iterator_starch_bed<BedType2*> IterType2;
+      typedef Bed::allocate_iterator_starch_bed<BedType1*, PoolSz> IterType1;
+      typedef Bed::allocate_iterator_starch_bed<BedType2*, PoolSz> IterType2;
       typedef BedReader<IterType1> BedReaderType1;
       typedef BedReader<IterType2> BedReaderType2;
   
@@ -192,10 +215,10 @@ struct createWork {
       BedReaderType2* nonRefFile = static_cast<BedReaderType2*>(0);
   
       refFilePtr = new FPType(input.GetReferenceFileName());
-      refFile = new BedReaderType1(IterType1(*refFilePtr, input.Chrome()));
+      refFile = new BedReaderType1(IterType1(*refFilePtr, mem1, input.Chrome()));
   
       nonRefFilePtr = new FPType(input.GetNonReferenceFileName());
-      nonRefFile = new BedReaderType2(IterType2(*nonRefFilePtr, input.Chrome()));
+      nonRefFile = new BedReaderType2(IterType2(*nonRefFilePtr, mem2, input.Chrome()));
 
       runDistances(*refFile, *nonRefFile, input);
 
@@ -284,7 +307,7 @@ void findDistances(BedFile1& ref, BedFile2& nonRef, bool allowOverlaps, const Pr
     while ( (c = nonRef.ReadLine()) ) {
       dist = getDistance(c, b);
       if ( dist == minus_infinite ) { // different chromosomes; catch nonref up
-        delete c;
+        remove(c);
         continue;
       } else if ( dist == plus_infinite ) { // different chromosomes; catch ref up
         if ( left && !leftCached )
@@ -299,18 +322,18 @@ void findDistances(BedFile1& ref, BedFile2& nonRef, bool allowOverlaps, const Pr
       // Deal with left and right closest elements
       if ( dist < 0 && dist >= leftDist ) {
         while ( !read.empty() ) { // new best left makes all others obsolete
-          delete read.front();
+          remove(read.front());
           read.pop_front();
         } // while
         if ( left && !leftCached )
-          delete left; // never closest left element again
+          remove(left); // never closest left element again
         leftDist = dist;
         left = c;
         leftCached = false;
       } else if ( dist < 0 ) { // happens if previous element starts sooner and stops later
         if ( !leftCached ) // must keep things in sort order; left is not zero if here
           read.push_back(left);
-        delete c;
+        remove(c);
         leftCached = true;
       } else if ( dist > 0 && dist < rightDist ) {
         // right must be zero (overlap sets rightDist to 0); done processing left
@@ -334,7 +357,7 @@ void findDistances(BedFile1& ref, BedFile2& nonRef, bool allowOverlaps, const Pr
         //  Remember start coordinates only increase or stay the same.
         if ( c->start() <= b->start() ) { // hanging over left edge of ref
           if ( left && left->end() <= c->end() && !leftCached )
-            delete left; // never closest left element again
+            remove(left); // never closest left element again
           else if ( left && !leftCached ) // current left has end coordinate greater than c
             read.push_back(left);
           left = c;
@@ -368,11 +391,11 @@ void findDistances(BedFile1& ref, BedFile2& nonRef, bool allowOverlaps, const Pr
             }
           } else if ( proportion >= 0.5 ) { // new left element
             while ( !read.empty() ) { // new best left makes all others obsolete
-              delete read.front();
+              remove(read.front());
               read.pop_front();
             } // while
             if ( left && !leftCached ) // non-overlapping, current left element
-              delete left; // never closest left element again
+              remove(left); // never closest left element again
             leftCached = false;
             left = c;
             leftDist = 0;
@@ -408,7 +431,7 @@ void findDistances(BedFile1& ref, BedFile2& nonRef, bool allowOverlaps, const Pr
     read.clear();
 
     printer(b, left, right);
-    delete b;
+    remove(b);
   } // while more in ref
 }
 

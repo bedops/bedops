@@ -36,8 +36,9 @@ namespace Bed {
   struct BedTypes {
     typedef MType                                   MeasureType;
     typedef BasicCoords<UseNonStaticChrom, UseRest> Bed3Type;
-    typedef Bed4< Bed3Type, UseRest >               Bed4Type;
-    typedef Bed5< Bed4Type, MeasureType, UseRest >  Bed5Type;
+    typedef Bed4<Bed3Type, UseRest>                 Bed4Type;
+    typedef Bed5<Bed4Type, MeasureType, false>      Bed5TypeNoRest;
+    typedef Bed5<Bed3Type, MeasureType, UseRest>    Bed5TypeRest;
   };
 
   enum { Rest = true, NoRest = false, OneChrom = false, AllChrom = true };
@@ -58,13 +59,9 @@ namespace Bed {
 
   typedef BTAllRest::Bed4Type   B4Rest;
   typedef BTAllNoRest::Bed4Type B4NoRest;
-  typedef BTOneRest::Bed4Type   B4OneChromRest;
-  typedef BTOneNoRest::Bed4Type B4OneChromNoRest;
 
-  typedef BTAllRest::Bed5Type   B5Rest;
-  typedef BTAllNoRest::Bed5Type B5NoRest;
-  typedef BTOneRest::Bed5Type   B5OneChromRest;
-  typedef BTOneNoRest::Bed5Type B5OneChromNoRest;
+  typedef BTAllRest::Bed5TypeRest     B5Rest;
+  typedef BTAllNoRest::Bed5TypeNoRest B5NoRest;
 } // namespace Bed
 
 #endif // BEDTYPES_HPP

@@ -50,6 +50,7 @@ namespace {
   const std::string citation = BEDOPS::citation();
   const std::string version = BEDOPS::revision();
   const std::string authors = "Shane Neph & Alex Reynolds";
+  constexpr std::size_t PoolSz = 2*8;
 
   //======
   // Help
@@ -238,6 +239,16 @@ namespace {
     return(c == EOF);
   }
 
+  //=============
+  // get_pool()
+  //============
+  template <typename BedTypePtr, bool NoDestruct=false>
+  Ext::PooledMemory<typename std::remove_pointer<BedTypePtr>::type, PoolSz, NoDestruct>&
+  get_pool() {
+    static Ext::PooledMemory<typename std::remove_pointer<BedTypePtr>::type, PoolSz, NoDestruct> pool;
+    return pool;
+  }
+
   //==========
   // doWork()
   //==========
@@ -253,11 +264,13 @@ namespace {
     if ( mode == Input::TWOFILE ) { // find elements of file1 that overlap specified ranges of file2
       Visitors::BedHelpers::Println printer;
       if ( input.File2Name() == "stdin" ) {
-        Bed::bed_check_iterator<TargetBedType*> titer(std::cin, input.File2Name()), teof;
+        auto& mem = get_pool<TargetBedType*>();
+        Bed::bed_check_iterator<TargetBedType*, PoolSz> titer(std::cin, input.File2Name(), mem), teof;
         find_bed_range(f, titer, teof, printer);
       } else {
         std::ifstream* infile = new std::ifstream(input.File2Name().c_str());
-        Bed::bed_check_iterator<TargetBedType*> titer(*infile, input.File2Name()), teof;
+        auto& mem = get_pool<TargetBedType*>();
+        Bed::bed_check_iterator<TargetBedType*, PoolSz> titer(*infile, input.File2Name(), mem), teof;
         find_bed_range(f, titer, teof, printer);
         delete infile;
       }

@@ -30,7 +30,10 @@
 #define MULTIVISITOR_HPP
 
 #include <algorithm>
+#include <condition_variable>
 #include <functional>
+#include <mutex>
+#include <thread>
 #include <vector>
 
 
@@ -68,15 +71,21 @@ namespace Visitors {
         pAll_(processAll), cnt_(0)
       { /* */ }
 
-    void Add(MapType* u) {
-      void (BaseClass::*memberFuncPtr)(MapType*) = &BaseClass::Add;
-      std::for_each(t_.begin(), t_.end(), std::bind2nd(std::mem_fun(memberFuncPtr), u));
+    void Add(MapType const* u) {
+      void (BaseClass::*memberFuncPtr)(MapType const*) = &BaseClass::Add;
+      std::vector<std::thread> threads;
+      for ( std::size_t i = 0; i < t_.size(); ++i )
+        threads.push_back(std::thread(memberFuncPtr, std::ref(t_[i]), u));
+      for ( auto& thread : threads ) thread.join();
       ++cnt_;
     }
     
-    void Delete(MapType* u) {
-      void (BaseClass::*memberFuncPtr)(MapType*) = &BaseClass::Delete;
-      std::for_each(t_.begin(), t_.end(), std::bind2nd(std::mem_fun(memberFuncPtr), u));
+    void Delete(MapType const* u) {
+      void (BaseClass::*memberFuncPtr)(MapType const*) = &BaseClass::Delete;
+      std::vector<std::thread> threads;
+      for ( std::size_t i = 0; i < t_.size(); ++i )
+        threads.push_back(std::thread(memberFuncPtr, std::ref(t_[i]), u));
+      for ( auto& thread : threads ) thread.join();
       --cnt_;
     }
     
@@ -97,9 +106,12 @@ namespace Visitors {
       pRows_.operator()();
     }
 
-    void SetReference(RefType* t) {
-      void (BaseClass::*memberFuncPtr)(RefType*) = &BaseClass::SetReference;
-      std::for_each(t_.begin(), t_.end(), std::bind2nd(std::mem_fun(memberFuncPtr), t));
+    void SetReference(RefType const* t) {
+      void (BaseClass::*memberFuncPtr)(RefType const*) = &BaseClass::SetReference;
+      std::vector<std::thread> threads;
+      for ( std::size_t i = 0; i < t_.size(); ++i )
+        threads.push_back(std::thread(memberFuncPtr, std::ref(t_[i]), t));
+      for ( auto& thread : threads ) thread.join();
     }
 
     /* not used by BED visitors to date.  Pain if it is with nested elements. */
@@ -110,7 +122,10 @@ namespace Visitors {
     */
 
     void End() {
-      std::for_each(t_.begin(), t_.end(), std::mem_fun(&BaseClass::End));
+      std::vector<std::thread> threads;
+      for ( std::size_t i = 0; i < t_.size(); ++i )
+        threads.push_back(std::thread(&BaseClass::End, std::ref(t_[i])));
+      for ( auto& thread : threads ) thread.join();
     }
 
     virtual ~MultiVisitor() {

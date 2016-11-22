@@ -46,6 +46,8 @@
 #include "suite/BEDOPS.Version.hpp"
 #include "utility/Exception.hpp"
 #include "utility/FPWrap.hpp"
+#include "utility/PooledMemory.hpp"
+#include "utility/Typify.hpp"
 
 #include "BedPadReader.hpp"
 #include "Input.hpp"
@@ -59,6 +61,43 @@ namespace { // unnamed
   // not a valid coordinate range
   static const PType NADA_NOTHING = std::make_pair(1, 0);
 
+  constexpr std::size_t PoolSz = 512; // could be many input files though all will share through get_pool()
+  constexpr bool NODESTRUCT = false;
+  Ext::PooledMemory<Bed::B3Rest, PoolSz, NODESTRUCT> memRest;
+  Ext::PooledMemory<Bed::B3NoRest, PoolSz, NODESTRUCT> memNoRest;
+
+  inline
+  void Remove(Bed::B3Rest* p) {
+    memRest.release(p);
+  }
+
+  inline
+  Bed::B3Rest* CopyCreate(Bed::B3Rest const* p) {
+    return memRest.construct(*p);
+  }
+
+  inline
+  void Remove(Bed::B3NoRest* p) {
+    memNoRest.release(p);
+  }
+
+  inline
+  Bed::B3NoRest* CopyCreate(Bed::B3NoRest const* p) {
+    return memNoRest.construct(*p);
+  }
+
+  auto
+  get_pool_details(Ext::Type2Type<Bed::B3Rest*>) -> decltype(memRest)&
+    { return memRest; }
+
+  auto
+  get_pool_details(Ext::Type2Type<Bed::B3NoRest*>) -> decltype(memNoRest)&
+    { return memNoRest; }
+
+  template <typename BedTypePtr>
+  auto
+  get_pool() -> decltype( get_pool_details(Ext::Type2Type<BedTypePtr>()) )
+    { return get_pool_details(Ext::Type2Type<BedTypePtr>()); }
 } // unnamed
 
 
@@ -225,14 +264,17 @@ struct createWork {
     std::vector<FPType*> filePointers;
     BedReaderType1* refFile = static_cast<BedReaderType1*>(0);
     BedReaderContainer bedFiles;
+    auto& mem1 = get_pool<typename IterType1::value_type>();
+    auto& mem2 = get_pool<typename IterType2::value_type>();
+
     for ( int i = 0; i < input.NumberFiles(); ++i ) {
       nextFilePtr = new FPType(input.GetFileName(i));
       filePointers.push_back(nextFilePtr);
       if ( 0 == i ) {
-        IterType1 fileI(*nextFilePtr, input.Chrom());
+        IterType1 fileI(*nextFilePtr, mem1, input.Chrom());
         refFile = new BedReaderType1(fileI, 0, 0); // never pad sole reference file
       } else {
-        IterType2 t(*nextFilePtr, input.Chrom());
+        IterType2 t(*nextFilePtr, mem2, input.Chrom());
         bedFiles.push_back(new BedReaderType2(t, input.GetLeftPad(), input.GetRightPad()));
       }
     } // for
@@ -266,10 +308,11 @@ struct createWork<IterType, IterType> {
     FPType* nextFilePtr = static_cast<FPType*>(0);
     std::vector<FPType*> filePointers;
     BedReaderContainer bedFiles;
+    auto& mem = get_pool<typename IterType::value_type>();
     for ( int i = 0; i < input.NumberFiles(); ++i ) {
       nextFilePtr = new FPType(input.GetFileName(i));
       filePointers.push_back(nextFilePtr);
-      IterType t(*nextFilePtr, input.Chrom());
+      IterType t(*nextFilePtr, mem, input.Chrom());
       bedFiles.push_back(new BedReaderType(t, input.GetLeftPad(), input.GetRightPad()));
     } // for
 
@@ -288,21 +331,24 @@ struct createWork<IterType, IterType> {
 //=================
 // createWork<T,U> : specialization for error checking
 //=================
-template <typename BedType1, typename BedType2>
-struct createWork< Bed::bed_check_iterator<BedType1*>, Bed::bed_check_iterator<BedType2*> > {
+template <typename BedType1, typename BedType2, std::size_t Sz>
+struct createWork< Bed::bed_check_iterator<BedType1*, Sz>, Bed::bed_check_iterator<BedType2*, Sz> > {
   static void run(const Input& input) {
     typedef std::ifstream* StreamPtr;
-    typedef Bed::bed_check_iterator<BedType1*> IterType1;
-    typedef Bed::bed_check_iterator<BedType2*> IterType2;
+    typedef Bed::bed_check_iterator<BedType1*, Sz> IterType1;
+    typedef Bed::bed_check_iterator<BedType2*, Sz> IterType2;
     typedef BedPadReader<IterType1> BedReaderType1;
     typedef BedPadReader<IterType2> BedReaderType2;
     typedef std::vector<BedReaderType2*> BedReaderContainer;
-    typedef typename Bed::bed_check_iterator<BedType1*>::Exception Error;
+    typedef typename Bed::bed_check_iterator<BedType1*, Sz>::Exception Error;
 
     StreamPtr nextFilePtr = static_cast<StreamPtr>(0);
     std::vector<StreamPtr> filePointers;
     BedReaderType1* refFile = static_cast<BedReaderType1*>(0);
     BedReaderContainer bedFiles;
+    auto& mem1 = get_pool<BedType1*>();
+    auto& mem2 = get_pool<BedType2*>();
+
     for ( int i = 0; i < input.NumberFiles(); ++i ) {
       // Create file handle iterators
       bool isStdin = (input.GetFileName(i) == "-");
@@ -313,22 +359,22 @@ struct createWork< Bed::bed_check_iterator<BedType1*>, Bed::bed_check_iterator<B
 
       if ( 0 == i ) {
         if ( isStdin ) {
-          IterType1 fileI(std::cin, "stdin", input.Chrom());
+          IterType1 fileI(std::cin, "stdin", mem1, input.Chrom());
           refFile = new BedReaderType1(fileI, 0, 0); // never pad sole Reference File
         } else {
           if ( !nextFilePtr || !(*nextFilePtr) )
             throw(Error("Unable to find file: " + input.GetFileName(i)));
-          IterType1 fileI(*nextFilePtr, input.GetFileName(i), input.Chrom());
+          IterType1 fileI(*nextFilePtr, input.GetFileName(i), mem1, input.Chrom());
           refFile = new BedReaderType1(fileI, 0, 0); // never pad sole Reference File
         }
       } else {
         if ( isStdin ) {
-          IterType2 fileI(std::cin, "stdin", input.Chrom());
+          IterType2 fileI(std::cin, "stdin", mem2, input.Chrom());
           bedFiles.push_back(new BedReaderType2(fileI, input.GetLeftPad(), input.GetRightPad()));
         } else {
           if ( !nextFilePtr || !(*nextFilePtr) )
             throw(Error("Unable to find file: " + input.GetFileName(i)));
-          IterType2 fileI(*nextFilePtr, input.GetFileName(i), input.Chrom());
+          IterType2 fileI(*nextFilePtr, input.GetFileName(i), mem2, input.Chrom());
           bedFiles.push_back(new BedReaderType2(fileI, input.GetLeftPad(), input.GetRightPad()));
         }
       }
@@ -354,30 +400,32 @@ struct createWork< Bed::bed_check_iterator<BedType1*>, Bed::bed_check_iterator<B
 //=================
 // createWork<T,T> : specialization for error checking
 //=================
-template <typename BedType>
-struct createWork< Bed::bed_check_iterator<BedType*>, Bed::bed_check_iterator<BedType*> > {
+template <typename BedType, std::size_t Sz>
+struct createWork< Bed::bed_check_iterator<BedType*, Sz>, Bed::bed_check_iterator<BedType*, Sz> > {
   static void run(const Input& input) {
     typedef std::ifstream* StreamPtr;
-    typedef Bed::bed_check_iterator<BedType*> IterType;
+    typedef Bed::bed_check_iterator<BedType*, Sz> IterType;
     typedef BedPadReader<IterType> BedReaderType;
     typedef std::vector<BedReaderType*> BedReaderContainer;
-    typedef typename Bed::bed_check_iterator<BedType*>::Exception Error;
+    typedef typename Bed::bed_check_iterator<BedType*, Sz>::Exception Error;
 
     StreamPtr nextFilePtr = static_cast<StreamPtr>(0);
     std::vector<StreamPtr> filePointers;
     BedReaderContainer bedFiles;
+    auto& mem = get_pool<BedType*>();
+
     for ( int i = 0; i < input.NumberFiles(); ++i ) {
       // Create file handle iterators
       bool isStdin = (input.GetFileName(i) == "-");
       if ( isStdin ) {
-        IterType fileI(std::cin, "stdin", input.Chrom());
+        IterType fileI(std::cin, "stdin", mem, input.Chrom());
         bedFiles.push_back(new BedReaderType(fileI, input.GetLeftPad(), input.GetRightPad()));
       } else {
         nextFilePtr = new std::ifstream(input.GetFileName(i).c_str());
         filePointers.push_back(nextFilePtr);
         if ( !nextFilePtr || !(*nextFilePtr) )
           throw(Error("Unable to find file: " + input.GetFileName(i)));
-        IterType fileI(*nextFilePtr, input.GetFileName(i), input.Chrom());
+        IterType fileI(*nextFilePtr, input.GetFileName(i), mem, input.Chrom());
         bedFiles.push_back(new BedReaderType(fileI, input.GetLeftPad(), input.GetRightPad()));
       }
     } // for
@@ -405,26 +453,26 @@ void doWork(const Input& input) {
   if ( mode == UNIONALL ) { // Keep all columns in all files
     typedef Bed::B3Rest BedType;
     if ( errorCheck )
-      createWork< Bed::bed_check_iterator<BedType*> >::run(input);
+      createWork< Bed::bed_check_iterator<BedType*, PoolSz> >::run(input);
     else
-      createWork< Bed::allocate_iterator_starch_bed<BedType*> >::run(input);
+      createWork< Bed::allocate_iterator_starch_bed<BedType*, PoolSz> >::run(input);
   }
   else if ( mode == ELEMENTOF || mode == NOTELEMENTOF ) { // Keep all columns only in first file
     typedef Bed::B3Rest BedType1;
     typedef Bed::B3NoRest BedType2;
     if ( errorCheck )
-      createWork< Bed::bed_check_iterator<BedType1*>,
-                  Bed::bed_check_iterator<BedType2*> >::run(input);
+      createWork< Bed::bed_check_iterator<BedType1*, PoolSz>,
+                  Bed::bed_check_iterator<BedType2*, PoolSz> >::run(input);
     else
-      createWork< Bed::allocate_iterator_starch_bed<BedType1*>,
-                  Bed::allocate_iterator_starch_bed<BedType2*> >::run(input);
+      createWork< Bed::allocate_iterator_starch_bed<BedType1*, PoolSz>,
+                  Bed::allocate_iterator_starch_bed<BedType2*, PoolSz> >::run(input);
   }
   else { // Only use 3 columns
     typedef Bed::B3NoRest BedType;
     if ( errorCheck )
-      createWork< Bed::bed_check_iterator<BedType*> >::run(input);
+      createWork< Bed::bed_check_iterator<BedType*, PoolSz> >::run(input);
     else
-      createWork< Bed::allocate_iterator_starch_bed<BedType*> >::run(input);
+      createWork< Bed::allocate_iterator_starch_bed<BedType*, PoolSz> >::run(input);
   }
 }
 
@@ -462,7 +510,7 @@ void doChop(BedFiles& bedFiles, Bed::CoordType chunkSize, Bed::CoordType stagger
       else
         i += stagger;
     } // for
-    delete r;
+    Remove(r);
   } // while
 }
 
@@ -483,7 +531,7 @@ void doComplement(BedFiles& bedFiles, bool fullLeft) {
       break;
     else if ( !nextline.first ) {
       record(nextline.second);
-      delete nextline.second;
+      Remove(nextline.second);
     }
   } // while
 }
@@ -494,19 +542,20 @@ void doComplement(BedFiles& bedFiles, bool fullLeft) {
 template <typename BedFiles>
 std::pair<bool, typename GetType<BedFiles>::BedType*>
   nextDifferenceLine(BedFiles&,
-                     typename GetType<BedFiles>::BedType*& nextRefMerge,
+                     typename GetType<BedFiles>::BedType*&,
                      typename GetType<BedFiles>::BedType*&);
 
 template <typename BedFiles>
 void doDifference(BedFiles& bedFiles) {
   typedef typename GetType<BedFiles>::BedType BedType;
   static BedType* const zero = static_cast<BedType*>(0);
-  const int noRef = 1; // 0 is master index
+  const int refIdx = 0;
+  const int noRefIdx = 1;
 
   bool done = false;
   std::pair<bool, BedType*> nextline = std::make_pair(false, zero);
   BedType* nextRefMerge = zero;
-  BedType* nextNonRefMerge = nextMergeAllLines(noRef, bedFiles.size(), bedFiles);
+  BedType* nextNonRefMerge = nextMergeAllLines(noRefIdx, bedFiles.size(), bedFiles);
   while ( !done ) {
     nextline = nextDifferenceLine(bedFiles, nextRefMerge, nextNonRefMerge);
     if ( !nextline.second )
@@ -514,11 +563,11 @@ void doDifference(BedFiles& bedFiles) {
     else if ( !nextline.first ) {
       record(nextline.second);
       if ( nextRefMerge == nextline.second ) {
-        delete nextRefMerge;
+        bedFiles[refIdx]->Remove(nextRefMerge);
         nextRefMerge = zero;
       }
-      else
-        delete nextline.second;
+      else // begotten from CopyCreate() in nextDifferenceLine
+        Remove(nextline.second);
     }
   } // while
 }
@@ -555,12 +604,12 @@ void doElementOf(RefFile& refFile, NonRefFiles& nonRefBedFiles, double thres, bo
     else if ( !r.first && r.second )
       record(nextRef);
 
-    delete nextRef;
+    Remove(nextRef);
     nextRef = getNextFileLine(refFile); // unmerged; may be zero
   } // while
 
   while ( !q.empty() ) {
-    delete q.front();
+    Remove(q.front());
     q.pop_front();
   } // while
 }
@@ -582,7 +631,7 @@ void doIntersection(BedFiles& bedFiles) {
     if ( !next )
       break;
     record(next);
-    delete next;
+    Remove(next);
   } // while
 }
 
@@ -600,7 +649,7 @@ void doMerge(BedFiles& bedFiles) {
     if ( !r )
       break;
     record(r);
-    delete r;
+    Remove(r);
     r = zero;
   } // while
 }
@@ -627,20 +676,20 @@ void doPartitions(BedFiles& bedFiles) {
     pq.pop();
     if ( pq.empty() ) {
       record(mn);
-      delete mn;
+      Remove(mn);
     } else {
-      BedType lcl = *mn;
+      BedType* lcl = CopyCreate(mn);
       BedType* curr = mn;
       while ( !pq.empty() ) {
         BedType* ct = pq.top(); // guaranteed to overlap mn, and not extend beyond mn
         pq.pop();
         if ( curr->end() <= ct->start() ) {
           record(curr);
-          delete curr;
+          Remove(curr);
           curr = ct;
         } else if ( ct->start() == curr->start() ) {
           if ( ct->end() == curr->end() ) { // dups
-            delete ct;
+            Remove(ct);
           } else { // ct->end() > curr->end()
             ct->start(curr->end());
             pq.push(ct);
@@ -651,9 +700,9 @@ void doPartitions(BedFiles& bedFiles) {
             } // while
             ct = pq.top(); // may not be an element whose start() we just redefined
                            // not popping on purpose
-            lcl.start(curr->start());
-            lcl.end(ct->start());
-            record(&lcl);
+            lcl->start(curr->start());
+            lcl->end(ct->start());
+            record(lcl);
 
             if ( curr->end() != ct->start() ) {
               // ct could be fully nested in curr
@@ -661,15 +710,15 @@ void doPartitions(BedFiles& bedFiles) {
               curr->start(ct->start());
               pq.push(curr);
             } else { // curr is no longer useful
-              delete curr;
+              Remove(curr);
             }
             curr = pq.top();
             pq.pop();
           }
         } else { // overlap and curr->start() < ct->start()
-          lcl.start(curr->start());
-          lcl.end(ct->start());
-          record(&lcl);
+          lcl->start(curr->start());
+          lcl->end(ct->start());
+          record(lcl);
           // ct could be fully nested in curr, and
           //  order could change after next modification.
           curr->start(ct->start());
@@ -679,8 +728,9 @@ void doPartitions(BedFiles& bedFiles) {
           pq.pop();
         }
       } // while
+      Remove(lcl);
       record(curr);
-      delete curr;
+      Remove(curr);
     }
   } // while
 }
@@ -708,7 +758,7 @@ void doSymmetricDifference(BedFiles& bedFiles) {
     if ( !nextDiff.second ) {
       if ( !first ) {
         record(toRecord);
-        delete toRecord;
+        Remove(toRecord);
         toRecord = zero;
       }
       break;
@@ -719,7 +769,7 @@ void doSymmetricDifference(BedFiles& bedFiles) {
       if ( !toRecord || std::strcmp(toRecord->chrom(), nextDiff.second->chrom()) != 0 ) {
         if ( !first && toRecord ) {
           record(toRecord);
-          delete toRecord;
+          Remove(toRecord);
         }
         toRecord = nextDiff.second;
       }
@@ -728,13 +778,13 @@ void doSymmetricDifference(BedFiles& bedFiles) {
         if ( !overlap ) {
           if ( !first ) {
             record(toRecord);
-            delete toRecord;
+            Remove(toRecord);
           }
           toRecord = nextDiff.second;
         }
         else {
-          delete toRecord;
-          delete nextDiff.second;
+          Remove(toRecord);
+          Remove(nextDiff.second);
           toRecord = overlap;
         }
       }
@@ -743,7 +793,7 @@ void doSymmetricDifference(BedFiles& bedFiles) {
   } // while
 
   if ( toRecord )
-    delete toRecord;
+    Remove(toRecord);
 }
 
 //==============
@@ -770,7 +820,7 @@ void doUnionAll(BedFiles& bedFiles) {
     while ( bedFiles[0]->HasNext() ) {
       r = bedFiles[0]->ReadLine();
       record(r);
-      delete r;
+      bedFiles[0]->Remove(r);
     } // while
     return;
   }
@@ -781,7 +831,7 @@ void doUnionAll(BedFiles& bedFiles) {
     if ( !r )
       break;
     record(r);
-    delete r;
+    Remove(r);
   } // while
 }
 
@@ -801,8 +851,8 @@ typename BedFile::BedType* getNextFileMergedCoords(BedFile& bedFile) {
     BedType* next = bedFile.ReadLine();
     BedType* merged = mergeOverlap(next, toRtn);
     if ( merged ) {
-      delete toRtn;
-      delete next;
+      bedFile.Remove(toRtn);
+      bedFile.Remove(next);
       toRtn = merged;
       next = zero;
     } else {
@@ -870,16 +920,16 @@ BedType* mergeOverlap(const BedType* p1, const BedType* p2) {
     return(toRtn);
   } else if ( p1->start() < p2->start() ) {
     if ( p1->end() >= p2->start() ) {
-      toRtn = new BedType(*p1);
+      toRtn = CopyCreate(p1);
       toRtn->end(std::max(p1->end(), p2->end()));
     }
   } else if ( p1->start() > p2->start() ) {
     if ( p2->end() >= p1->start() ) {
-      toRtn = new BedType(*p2);
+      toRtn = CopyCreate(p2);
       toRtn->end(std::max(p1->end(), p2->end()));
     }
   } else { // p1->start() == p2->start()
-    toRtn = new BedType(*p1);
+    toRtn = CopyCreate(p1);
     toRtn->end(std::max(p1->end(), p2->end()));
   }
   return(toRtn);
@@ -900,35 +950,35 @@ std::pair<bool, typename GetType<BedFiles>::BedType*> nextComplementLine(BedFile
       return(std::make_pair(false, zero));
     else if ( fullLeft ) {
       // new chromosome -> first complement starts at base 0
-      BedType* tmp = new BedType(*last);
+      BedType* tmp = CopyCreate(last);
       tmp->start(0);
       tmp->end(last->start());
       if ( tmp->start() != tmp->end() )
         return(std::make_pair(false, tmp));
       else { // input coordinates include base 0 -> not part of complement
-        delete tmp;
+        Remove(tmp);
         return(std::make_pair(true, last));
       }
     }
   }
   BedType* nextline = nextMergeAllLines(0, bedFiles.size(), bedFiles);
   if ( nextline == zero ) { // stop condition
-    delete last;
+    Remove(last);
     last = zero;
     return(std::make_pair(false, zero));
   }
 
   if ( 0 != std::strcmp(nextline->chrom(), last->chrom()) ) {
-    delete last;
+    Remove(last);
     last = nextline;
     if ( fullLeft ) { // chrom change -> first complement starts at base 0
-      BedType* tmp = new BedType(*last);
+      BedType* tmp = CopyCreate(last);
       tmp->start(0);
       tmp->end(last->start());
       if ( tmp->start() != tmp->end() )
         return(std::make_pair(false, tmp));
       else { // input coordinates include base 0 -> not part of complement
-        delete tmp;
+        Remove(tmp);
         return(std::make_pair(true, last));
       }
     }
@@ -952,6 +1002,7 @@ std::pair<bool, typename GetType<BedFiles>::BedType*>
     nextDifferenceLine(BedFiles& bedFiles,
                        typename GetType<BedFiles>::BedType*& nextRefMerge,
                        typename GetType<BedFiles>::BedType*& nextNonRefMerge) {
+
   // Index 0 is the reference file
   typedef typename GetType<BedFiles>::BedType BedType;
   static BedType* const zero = static_cast<BedType*>(0);
@@ -976,7 +1027,7 @@ std::pair<bool, typename GetType<BedFiles>::BedType*>
   // Increment nextNonRefMerge until its back within range of nextRefMerge
   int cmp = std::strcmp(nextNonRefMerge->chrom(), nextRefMerge->chrom());
   while ( cmp < 0 || (0 == cmp && nextNonRefMerge->end() <= nextRefMerge->start()) ) {
-    delete nextNonRefMerge;
+    Remove(nextNonRefMerge);
     nextNonRefMerge = nextMergeAllLines(noRef, bedFiles.size(), bedFiles);
     if ( !nextNonRefMerge ) // always true after first true
       return(std::make_pair(noRecurse, nextRefMerge));
@@ -989,19 +1040,19 @@ std::pair<bool, typename GetType<BedFiles>::BedType*>
     return(std::make_pair(noRecurse, nextRefMerge));
   } else if ( nextNonRefMerge->start() <= nextRefMerge->start() && nextNonRefMerge->end() >= nextRefMerge->end() ) {
     /* complete reference overlap */
-    delete nextRefMerge;
+    bedFiles[ref]->Remove(nextRefMerge);
     nextRefMerge = getNextFileMergedCoords(*bedFiles[ref]);
     return(std::make_pair(callAgain, nextRefMerge)); // possible for nextRefMerge to be zero
     // direct recursion removed to prevent any possible stack overflow
     // return(nextDifferenceLine(bedFiles, nextRefMerge, nextNonRefMerge)); // curse some more
   } else if ( nextNonRefMerge->start() > nextRefMerge->start() ) {
     /* difference found up to nextNonRefMerge->start() */
-    BedType* toRtn = new BedType(*nextRefMerge);
+    BedType* toRtn = CopyCreate(nextRefMerge);
     toRtn->end(nextNonRefMerge->start());
     cmp = 0;
     nextRefMerge->start(nextNonRefMerge->end()); // safe if > nextRefMerge->end() momentarily
     while ( 0 == cmp && nextNonRefMerge->end() >= nextRefMerge->end() ) {
-      delete nextRefMerge;
+      bedFiles[ref]->Remove(nextRefMerge);
       nextRefMerge = getNextFileMergedCoords(*bedFiles[ref]);
       if ( !nextRefMerge )
         break;
@@ -1050,7 +1101,7 @@ std::pair<bool, typename RefFile::BedType*>
   // Increment nextMerge until its back within range of nextRef
   int cmp = std::strcmp(nextMerge->chrom(), nextRef->chrom());
   while ( cmp < 0 || (0 == cmp && nextMerge->end() <= nextRef->start()) ) {
-    delete nextMerge;
+    Remove(nextMerge);
     nextMerge = getNextMerge(mergeList, 0, nonRefBedFiles.size(), nonRefBedFiles);
     if ( !nextMerge ) {
       if ( !invert ) // ref cannot be an element of nothing
@@ -1134,13 +1185,13 @@ typename GetType<BedFiles>::BedType* nextIntersectLine(BedFiles& bedFiles) {
   } // for
 
 
-  toRtn = new BedType(*toRtn);
+  toRtn = CopyCreate(toRtn);
   int marker = -1;
   Bed::CoordType maxVal = std::numeric_limits<Bed::CoordType>::max();
   for ( int i = 0; i < static_cast<int>(bedFiles.size()); ++i ) { // find next intersection
     if ( !bedFiles[i]->HasNext() ) { // no more intersections
       if ( toRtn )
-        delete toRtn;
+        Remove(toRtn);
       return(zero);
     }
 
@@ -1148,10 +1199,10 @@ typename GetType<BedFiles>::BedType* nextIntersectLine(BedFiles& bedFiles) {
 
     int val = std::strcmp(next->chrom(), toRtn->chrom());
     while ( val < 0 || (val == 0 && next->end() <= toRtn->start()) ) {
-      delete next;
+      Remove(next);
       next = getNextFileMergedCoords(*bedFiles[i]);
       if ( !next ) { // no more intersections
-        delete toRtn;
+        Remove(toRtn);
         return(zero);
       }
       val = std::strcmp(next->chrom(), toRtn->chrom());
@@ -1159,8 +1210,8 @@ typename GetType<BedFiles>::BedType* nextIntersectLine(BedFiles& bedFiles) {
 
     bedFiles[i]->PushBack(next);
     if ( val > 0 || next->start() >= toRtn->end() ) {
-      delete toRtn;
-      toRtn = new BedType(*next);
+      Remove(toRtn);
+      toRtn = CopyCreate(next);
       i = -1;
       marker = -1;
       maxVal = std::numeric_limits<Bed::CoordType>::max();
@@ -1176,7 +1227,7 @@ typename GetType<BedFiles>::BedType* nextIntersectLine(BedFiles& bedFiles) {
     }
   } // for
   next = getNextFileMergedCoords(*bedFiles[marker]); // at least one file increment
-  delete next;
+  Remove(next);
   return(toRtn);
 }
 
@@ -1184,7 +1235,8 @@ typename GetType<BedFiles>::BedType* nextIntersectLine(BedFiles& bedFiles) {
 // nextMergeAllLines()
 //====================
 template <typename BedFiles>
-typename GetType<BedFiles>::BedType* nextMergeAllLines(int start, int end, BedFiles& bedFiles) {
+typename GetType<BedFiles>::BedType*
+nextMergeAllLines(int start, int end, BedFiles& bedFiles) {
 
   // Merge coordinates between files
   typedef typename GetType<BedFiles>::BedType BedType;
@@ -1221,7 +1273,7 @@ typename GetType<BedFiles>::BedType* nextMergeAllLines(int start, int end, BedFi
       continue;
     bt = bedFiles[i]->ReadLine();
     while ( 0 == (val = std::strcmp(bt->chrom(), toRtn->chrom())) && bt->end() <= toRtn->end() ) {
-      delete bt;
+      bedFiles[i]->Remove(bt);
       bt = bedFiles[i]->ReadLine();
       if ( !bt )
         break;
@@ -1233,7 +1285,7 @@ typename GetType<BedFiles>::BedType* nextMergeAllLines(int start, int end, BedFi
          bt->start() <= toRtn->end() &&
          bt->end() > toRtn->end() ) {
       toRtn->end(bt->end());
-      delete bt;
+      bedFiles[i]->Remove(bt);
       i = (start - 1); // start over on next iteration
     } else if ( bt ) {
       bedFiles[i]->PushBack(bt);
@@ -1302,7 +1354,7 @@ void nextPartitionGroup(BedFiles& bedFiles, PQueue& pq) {
 
       if ( bt->start() == minelem->start() ) {
         if ( bt->end() == minelem->end() ) // duplicate
-          delete bt;
+          bedFiles[i]->Remove(bt);
         else { // bt->end() > minelem->end(), no new info for pq
           bt->start(minelem->end());
           lclQ.push(bt);
@@ -1320,7 +1372,7 @@ void nextPartitionGroup(BedFiles& bedFiles, PQueue& pq) {
         if ( bt->end() <= minelem->end() ) // fully-nested or shared-end coord
           pq.push(bt);
         else { // bt->end() > minelem->end()
-          BedType* cpy = new BedType(*bt);
+          BedType* cpy = CopyCreate(bt);
           cpy->start(minelem->end());
           lclQ.push(cpy);
           bt->end(minelem->end());
@@ -1427,7 +1479,7 @@ std::pair<bool, typename GetType<BedFiles>::BedType*>
         b->start(minSecond);
         bedFiles[allMins[x]]->PushBack(b);
       } else {
-        delete b;
+        bedFiles[allMins[x]]->Remove(b);
       }
     } // for
     return(std::make_pair(callAgain, min)); // min just has to be nonzero; not used
@@ -1436,7 +1488,7 @@ std::pair<bool, typename GetType<BedFiles>::BedType*>
   } else if ( allMins.size() == 1 ) { // case 3
     BedType* b = bedFiles[allMins[0]]->ReadLine();
     if ( minSecond > nextFirst ) {
-      BedType* c = new BedType(*b);
+      BedType* c = CopyCreate(b);
       c->end(nextFirst);
       b->start(nextFirst); // multiple new mins for next time
       bedFiles[allMins[0]]->PushBack(b);
@@ -1458,7 +1510,7 @@ std::pair<bool, typename GetType<BedFiles>::BedType*>
           b->start(minSecond);
           bedFiles[allMins[x]]->PushBack(b);
         } else {
-          delete b;
+          bedFiles[allMins[x]]->Remove(b);
         }
       } // for
     }
