@@ -23,11 +23,13 @@ Released: **TBD**
 
   * The :code:`--min-element` and :code:`--max-element` operations in :ref:`bedmap <bedmap>` now process elements in unambiguous order. Former behavior is moved to the operations :code:`--min-element-rand` and :code:`--max-element-rand`, respectively.
 
+  * Fixed issue with use of `--echo-overlap-size` with `--multidelim` (cf. `Issue 165 <https://github.com/bedops/bedops/issues/165>`_. Shane Neph posted the fix. Thanks to Jeff Vierstra for the bug report!
+
 * :ref:`bedops <bedops>`
 
   * Fixed issue with :code:`--chop` where complement operation could potentially be included. Shane Neph posted the fix.
 
-  * The :code:`bedops --everything` or :code:`bedops -u` (union) operation now writes elements to standard output in unambiguous sort order.
+  * The :code:`bedops --everything` or :code:`bedops -u` (union) operation now writes elements to standard output in unambiguous sort order. If any data are contained in fourth or subsequent fields, a lexicographical sort on that data is applied for resolving order of interval matches.
 
 * :ref:`sort-bed <sort-bed>`
 
@@ -93,7 +95,7 @@ Released: **TBD**
 
     * conversion of dynamic number of CIGAR operations (up to system memory)
 
-    * conversion of dynamically-sized read fields (up to system memory and/or interthread buffer size limit)
+    * conversion of dynamically-sized read fields (up to system memory and inter-thread buffer allocations)
 
     These patches follow up on bug reports in `Issue 157 <https://github.com/bedops/bedops/issues/157>`_.
 
