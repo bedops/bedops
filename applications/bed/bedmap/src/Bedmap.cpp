@@ -402,11 +402,15 @@ namespace BedMap {
         typedef typename PT::PType PType;
         rtn = new typename VTypes::EchoMapAll(PT(PType(), multivalColSep));
       }
-      else if ( nm == visName<typename VTypes::EchoMapLength>() )
-        rtn = new typename VTypes::EchoMapLength;
-      else if ( nm == visName<typename VTypes::EchoMapIntersectLength>() )
-        rtn = new typename VTypes::EchoMapIntersectLength;
-      else if ( nm == visName<typename VTypes::EchoMapRange>() )
+      else if ( nm == visName<typename VTypes::EchoMapLength>() ) {
+        typedef typename VTypes::EchoMapLength::ProcessType PT;
+        typedef typename PT::PType PType;
+        rtn = new typename VTypes::EchoMapLength(PT(PType(), multivalColSep));
+      } else if ( nm == visName<typename VTypes::EchoMapIntersectLength>() ) {
+        typedef typename VTypes::EchoMapIntersectLength::ProcessType PT;
+        typedef typename PT::PType PType;
+        rtn = new typename VTypes::EchoMapIntersectLength(PT(PType(), multivalColSep));
+      } else if ( nm == visName<typename VTypes::EchoMapRange>() )
         rtn = new typename VTypes::EchoMapRange;
       else if ( nm == visName<typename VTypes::EchoRefAll>() )
         rtn = new typename VTypes::EchoRefAll;

@@ -37,11 +37,12 @@ namespace Visitors {
     // Collect the total number of overlapping positions
   
     template <
-              typename ProcessType,
+              typename Process,
               typename BaseVisitor
              >
     struct EchoMapIntersectLength : BaseVisitor {
       typedef BaseVisitor BaseClass;
+      typedef Process ProcessType;
       typedef typename BaseClass::RefType RefType;
       typedef typename BaseClass::MapType MapType;
   
