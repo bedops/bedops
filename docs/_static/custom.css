@@ -87,3 +87,11 @@ ul {
    background-color: #d0e8ff;
    border: 1px solid #97bee6;
 }
+
+ul.simple > li {
+    margin-bottom: 10px;
+}
+
+.section > ul > li {
+    margin-bottom: 10px;
+}

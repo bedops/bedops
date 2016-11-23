@@ -23,7 +23,7 @@ Released: **TBD**
 
   * The :code:`--min-element` and :code:`--max-element` operations in :ref:`bedmap <bedmap>` now process elements in unambiguous order. Former behavior is moved to the operations :code:`--min-element-rand` and :code:`--max-element-rand`, respectively.
 
-  * Fixed issue with use of :code:`--echo-overlap-size` with :code:`--multidelim` (cf. `Issue 165 <https://github.com/bedops/bedops/issues/165>`_. Shane Neph posted the fix. Thanks to Jeff Vierstra for the bug report!
+  * Fixed issue with use of :code:`--echo-overlap-size` with :code:`--multidelim` (cf. `Issue 165 <https://github.com/bedops/bedops/issues/165>`_). Shane Neph posted the fix. Thanks to Jeff Vierstra for the bug report!
 
 * :ref:`bedops <bedops>`
 
