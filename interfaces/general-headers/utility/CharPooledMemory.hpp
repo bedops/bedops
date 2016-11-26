@@ -1,3 +1,25 @@
+/*
+  Author: Shane Neph
+  Date:   Thu Nov 24 20:16:29 PST 2016
+*/
+//
+//    BEDOPS
+//    Copyright (C) 2011-2016 Shane Neph, Scott Kuehn and Alex Reynolds
+//
+//    This program is free software; you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation; either version 2 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License along
+//    with this program; if not, write to the Free Software Foundation, Inc.,
+//    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
 #ifndef __UTILS_SIMPLE_CHARARRAY_MEM__
 #define __UTILS_SIMPLE_CHARARRAY_MEM__
 
@@ -30,9 +52,10 @@ namespace Ext {
     construct(char const* val)
       {
         auto p = _curr->add(val);
-        if ( p.first )
-          return p.first;
+        if ( p )
+          return p;
 
+        /* current memory block is full */
         if ( _cache ) {
           _cache->clear();
           _curr = _cache;
@@ -47,8 +70,10 @@ namespace Ext {
             */
             if ( i != _curr ) {
               auto q = i->add(val);
-              if ( q.first )
-                return q.first;
+              if ( q ) {
+                _curr = i;
+                return q;
+              }
             }
           } // for
           if ( std::strlen(val) > Sz )
@@ -58,7 +83,7 @@ namespace Ext {
           _blockstarts.insert(_curr->_data);
           _r.insert(std::make_pair(_curr->_data, _curr));
         }
-        return _curr->add(val).first;
+        return _curr->add(val);
       }
 
     inline void
@@ -86,7 +111,8 @@ namespace Ext {
               _cache = m;
             else
               delete m;
-            _curr = *(_blocks.begin()); // important if we drop back to 1 block
+            if ( m == _curr )
+              _curr = *(_blocks.begin()); // important if we drop back to 1 block
           }
         }
       }
@@ -107,6 +133,7 @@ namespace Ext {
       CharChunk() : _cc(0), _cntr(0), _data{}
         {
           _data[nelements] = '\0';
+          /* leave _open empty until we've exhausted first pass of nelements */
         }
 
       inline bool
@@ -115,18 +142,17 @@ namespace Ext {
           return _cntr == 0;
         }
 
-      inline std::pair<char*, std::size_t>
+      inline char*
       add(char const* c)
         {
-
+          /* not protecting against c == nullptr in private, nested class */
           if ( _cc == nelements ) {
             auto a = find_open(c);
-            if ( a.first )
+            if ( a )
               ++_cntr;
             return a;
           }
 
-          /* not protecting against c == nullptr in private, nested class */
           std::size_t i = 0, start = _cc;
           bool ok = false;
           while ( start < nelements ) {
@@ -138,16 +164,16 @@ namespace Ext {
           } // while
 
           if ( start == nelements && c[i] == '\0' ) {
-            _data[start] = '\0'; // start is at most nelements and _data has +1
+            _data[start] = '\0'; // _data has nelements+1
             ok = true;
           }
 
           if ( ok ) {
             std::swap(start, _cc);
             ++_cntr;
-            return std::make_pair(_data+start, std::size_t(0));
+            return _data+start;
           }
-          return std::make_pair(nullptr, nelements-_cc);
+          return nullptr;
         }
 
       inline void
@@ -169,19 +195,23 @@ namespace Ext {
         }
 
     private:
-      inline std::pair<char*, std::size_t>
+      inline char*
       find_open(char const* c)
         {
           std::size_t sz = std::strlen(c);
           auto nxt = _open.upper_bound(sz); // upper_bound -> +1 dealt with
           if ( nxt != _open.end() ) {
             std::strcpy(_data+nxt->second, c);
-            return std::make_pair(_data+nxt->second, std::size_t(0));
+            std::size_t newlength = (nxt->first-sz);
+            if ( newlength > 1 ) // if == 1, can only hold '\0'
+              _open.insert(std::make_pair(newlength-1, nxt->second+sz+1));
+            _open.erase(nxt);
+            return _data+nxt->second;
           }
           return clean(c, sz);
         }
 
-      std::pair<char*, std::size_t> 
+      char*
       clean(char const* c, std::size_t need)
         {
           // potentially very slow; try to find first location that fits c
@@ -191,15 +221,15 @@ namespace Ext {
             if ( lng >= need ) {
               std::strcpy(_data+pos, c);
               if ( lng-need > 1 ) // if == 1, can only hold '\0'
-                _open.insert(std::make_pair(lng-need-1, (pos)+need+1));
+                _open.insert(std::make_pair(lng-need-1, pos+need+1));
               _dirty.erase(iter);
-              return std::make_pair(_data+pos, 0);
+              return _data+pos;
             }
             else
               _open.insert(std::make_pair(lng, pos));
           } // for
           _dirty.clear();
-          return std::make_pair(nullptr, max());
+          return nullptr;
         }
 
       inline std::size_t

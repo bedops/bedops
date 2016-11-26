@@ -212,15 +212,15 @@ namespace Ext {
   /* forcing N to be a power of 8 as less than 8 with a bitset is not that great,
        though it can be done by modifying Iter requirements.
   */
-  template <std::size_t N,
+  template <std::size_t Base,
             std::size_t StopLevel,
-            std::size_t Iter=(N%std::numeric_limits<unsigned char>::digits==0) &&
-                             (StopLevel%N==0) &&
-                             (Pow<N, IntLogN<N, StopLevel>::value>::value==StopLevel)>
+            std::size_t Iter=(Base%std::numeric_limits<unsigned char>::digits==0) &&
+                             (StopLevel%Base==0) &&
+                             (Pow<Base, IntLogN<Base, StopLevel>::value>::value==StopLevel)>
   struct BitMonitor {
-    static constexpr std::size_t NVAL = N;
-    static constexpr std::size_t MYSZ = Pow<NVAL,Iter>::value;
-    static constexpr std::size_t PARENTSZ = Pow<NVAL,Iter-1>::value;
+    static constexpr std::size_t BASE = Base;
+    static constexpr std::size_t MYSZ = Pow<BASE,Iter>::value;
+    static constexpr std::size_t PARENTSZ = Pow<BASE,Iter-1>::value;
     static constexpr std::size_t TOTALSZ = MYSZ+PARENTSZ;
     static constexpr std::size_t LEVEL = Iter;
     static constexpr bool        STOP = false;
@@ -238,8 +238,8 @@ namespace Ext {
 
     std::size_t find_open(std::size_t pbin) {
       // don't call this - use get_open()
-      pbin *= NVAL;
-      for ( std::size_t idx = pbin; idx < pbin+NVAL; ++idx ) {
+      pbin *= BASE;
+      for ( std::size_t idx = pbin; idx < pbin+BASE; ++idx ) {
         if ( !_bset[idx] ) {
           _nxt = idx;
           return _nxt;
@@ -253,10 +253,10 @@ namespace Ext {
       std::size_t val = 0;
       if ( !_children.set(bit, val) ) {
         _bset[val] = true;
-        cnt = val/NVAL;
-        std::size_t pbin = cnt*NVAL;
+        cnt = val/BASE;
+        std::size_t pbin = cnt*BASE;
         _nxt = npos;
-        for ( std::size_t idx = pbin; idx < pbin+NVAL; ++idx ) {
+        for ( std::size_t idx = pbin; idx < pbin+BASE; ++idx ) {
           if ( !_bset[idx] ) {
             _nxt = idx;
             break;
@@ -271,7 +271,7 @@ namespace Ext {
       _children.unset(bit, cnt);
       _bset[cnt] = false;
       _nxt = cnt;
-      cnt /= NVAL;
+      cnt /= BASE;
     }
 
     inline std::size_t size() const { return _children.size(); }
@@ -283,14 +283,14 @@ namespace Ext {
 
     std::size_t _nxt;
     std::bitset<MYSZ> _bset; // all zeroes by default
-    BitMonitor<NVAL, StopLevel/NVAL, Iter+1> _children;
+    BitMonitor<BASE, StopLevel/BASE, Iter+1> _children;
   };
 
-  template <std::size_t N, std::size_t Iter>
-  struct BitMonitor<N,N,Iter> {
-    static constexpr std::size_t NVAL = N;
-    static constexpr std::size_t MYSZ = Pow<NVAL,Iter>::value;
-    static constexpr std::size_t PARENTSZ = Pow<NVAL,Iter-1>::value;
+  template <std::size_t Base, std::size_t Iter>
+  struct BitMonitor<Base,Base,Iter> {
+    static constexpr std::size_t BASE = Base;
+    static constexpr std::size_t MYSZ = Pow<BASE,Iter>::value;
+    static constexpr std::size_t PARENTSZ = Pow<BASE,Iter-1>::value;
     static constexpr std::size_t TOTALSZ = MYSZ+PARENTSZ;
     static constexpr std::size_t LEVEL = Iter;
     static constexpr bool        STOP = true;
@@ -305,8 +305,8 @@ namespace Ext {
     }
 
     std::size_t find_open(std::size_t pbin) {
-      pbin *= NVAL;
-      for ( std::size_t idx = pbin; idx < pbin+NVAL; ++idx ) {
+      pbin *= BASE;
+      for ( std::size_t idx = pbin; idx < pbin+BASE; ++idx ) {
         if ( !_bset[idx] ) {
           _nxt = idx;
           return _nxt;
@@ -321,10 +321,10 @@ namespace Ext {
       Zeros::NC_ZERO = Zeros::C_ZERO;
 
       // make pbin the group that the parent class is monitoring
-      cnt = bit/NVAL;
-      std::size_t pbin = cnt*NVAL;
+      cnt = bit/BASE;
+      std::size_t pbin = cnt*BASE;
       _nxt = npos;
-      for ( std::size_t idx = bit+1; idx < pbin+NVAL; ++idx ) {
+      for ( std::size_t idx = bit+1; idx < pbin+BASE; ++idx ) {
         if ( !_bset[idx] ) {
           _nxt = idx;
           return _nxt != npos;
@@ -342,7 +342,7 @@ namespace Ext {
     inline void unset(std::size_t bit, std::size_t& cnt) {
       _bset[bit] = false;
       Zeros::NC_ZERO = Zeros::C_ZERO;
-      cnt = bit/NVAL;
+      cnt = bit/BASE;
       if ( _nxt == npos ) { _nxt = bit; } 
     }
 
@@ -437,7 +437,8 @@ namespace Ext {
             _cache = m;
           else
             delete m;
-          _curr = *(_blocks.begin()); // important if we drop back to 1 block
+          if ( m == _curr )
+            _curr = *(_blocks.begin()); // important if we drop back to 1 block
         }
       }
     }
