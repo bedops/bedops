@@ -27,11 +27,23 @@
 namespace Ext {
   template <typename T>
   struct SingletonType {
-    static T* Instance() {
-      static T t;
-      return(&t);
+    static T& Instance() {
+      if ( !_instance )
+        _instance = new T();
+      return *_instance;
     }
+
+  private:
+    SingletonType();
+    ~SingletonType() {}
+    SingletonType(const SingletonType&); // undefined
+    SingletonType& operator=(const SingletonType&); // undefined
+
+    void Cleanup();
+    static T* _instance;
   };
 } // namespace Ext
+
+#include "../../src/utility/SingletonType.cpp"
 
 #endif // SINGLETONTYPE_H
