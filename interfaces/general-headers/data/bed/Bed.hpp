@@ -290,7 +290,7 @@ namespace Bed {
       rest_[0] = '\0';
       if ( rest && std::strcmp(rest, "") != 0 ) {
         if ( rest[0] != '\t' )
-          rest[0] = '\t';
+          rest_[0] = '\t';
         std::strcat(rest_, rest);
       }
     }
