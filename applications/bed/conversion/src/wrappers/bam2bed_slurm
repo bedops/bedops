@@ -1,0 +1,145 @@
+#!/bin/tcsh -ef
+
+#    bam2bed_slurm
+#    -----------------------------------------------------------------------
+#    Copyright (C) 2011-2016 Shane Neph and Alex Reynolds
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+####################################################
+# cluster variables:
+#  change to match your environment
+####################################################
+
+set slurm_opts = "-D $PWD -o /dev/null -e /dev/null"
+
+############################
+# some input error checking
+############################
+
+set help = "\nUsage: bam2bed_slurm [--help] [--clean] <input-indexed-bam-file> [output-bed-file]\n\n"
+set help = "$help  Pass in the name of an indexed BAM file to create a sorted BED file using the cluster.\n\n"
+set help = "$help  (stdin isn't supported through this wrapper script.)\n\n"
+set help = "$help  Add --clean to remove <input-indexed-bam-file> after turning it into BED.\n\n"
+set help = "$help  You can pass in the name of the output bed archive to be created.\n"
+set help = "$help  Otherwise, the output will have the same name as the input file, with an additional\n"
+set help = "$help   '.bed' ending.  If the input file ends with '.bam', that will be stripped off.\n"
+
+if ( $#argv == 0 ) then
+  printf "$help"
+  exit -1
+endif
+
+@ inputset = 0
+@ clean = 0
+foreach argc (`seq 1 $#argv`)
+  if ( "$argv[$argc]" == "--help" ) then
+    printf "$help"
+    exit 0
+  else if ( "$argv[$argc]" == "--clean" ) then
+    @ clean = 1
+  else if ( $argc == $#argv ) then
+    if ( $inputset > 0 ) then
+      set output = "$argv[$argc]"
+    else
+      set originput = "$argv[$argc]"
+      set output = $originput:t.bed
+    endif
+    @ inputset = 1
+  else if ( $inputset > 0 ) then
+    printf "$help"
+    printf "Multiple input files cannot be specified\n"
+    exit -1
+  else
+    set originput = "$argv[$argc]"
+    set output = $originput:t.bed
+    @ inputset = 1
+  endif
+end
+
+if ( $inputset == 0 ) then
+  printf "No input file specified\n"
+  exit -1
+else if ( ! -s $originput ) then
+  printf "Unable to find BAM file: %s\n" $originput
+  exit -1
+else if ( "$output" == "$originput:t.bed" && "$originput:e" == "bam" ) then
+  set output = "$originput:t:r.bed"
+endif
+
+set origininputindex = "$originput.bai"
+if ( ! -s $origininputindex ) then
+  printf "Unable to find associated BAI file (is the BAM file indexed?): %s\n" $origininputindex
+  exit -1
+endif
+
+###############################################################
+# new working directory to keep file pileups local to this job
+###############################################################
+
+set nm = b2scs.`uname -a | cut -f2 -d' '`.$$
+if ( -d $nm ) then
+  rm -rf $nm
+endif
+mkdir -p $nm
+
+set here = `pwd`
+cd $nm
+if ( -s ../$originput ) then
+  set input = ../$originput
+else
+  # $originput includes absolute path
+  set input = $originput
+endif
+
+# $output:h gives back $output if there is no directory information
+if ( -d ../$output:h || "$output:h" == "$output" ) then
+  set output = $here/$output
+else if ( `echo $output | awk '{ print substr($0, 1, 1); }'` == "/" ) then
+  # $output includes absolute path
+else
+  # $output includes non-absolute path
+  set output = $here/$output
+endif
+
+#####################################################
+# extract information by chromosome and bam2bed it
+#####################################################
+
+set files = ()
+set jids = ()
+@ cntr = 0
+foreach chrom (`samtools idxstats $input | awk '$1!~"^*"'`)
+  set res = `sbatch $slurm_opts -J "$nm.$cntr" --wrap="module add samtools; module add bedops; samtools view -b $input $chrom | bam2bed - > $here/$nm/$cntr"`
+  set slurm_jid = `echo $res | sed 's|^Submitted batch job ||'`
+  set jids = ($jids $slurm_jid)
+  set files = ($files $here/$nm/$cntr)
+  @ cntr++
+end
+
+if ( $cntr == 0 ) then
+  printf "Program problem: no files were submitted to the cluster? If samtools is not found, please use 'module add samtools' or similar.\n"
+  rm -rf $nm
+  exit -1
+endif
+
+##################################################
+# create final bed archive and clean things up
+##################################################
+
+set dependencies = `echo $jids | tr ' ' ':'`
+sbatch $slurm_opts -J $nm.union --dependency=afterok:$dependencies --wrap="module add bedops; bedops --everything $files > $output; cd $here; rm -rf $nm; if [ $clean != 0 ]; then rm -f $originput; fi;"
+
+exit 0

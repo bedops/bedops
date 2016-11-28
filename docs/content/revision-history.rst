@@ -41,6 +41,10 @@ Released: **TBD**
 
   * A SLURM-ready version of the :code:`starchcluster` script was added to help SLURM job scheduler users with parallelizing the creation of Starch archives.
 
+* :ref:`bam2bed <bam2bed>` and :ref:`bam2starch <bam2starch>`
+
+  * SLURM-ready versions of these scripts were added to help parallelize the conversion of BAM to BED files (:code:`bam2bed_slurm`) or to Starch archives (:code:`bam2starch_slurm`).
+
 * :ref:`unstarch <unstarch>`
 
   * Added :code:`--signature` option to report the Base64-encoded SHA-1 data integrity signature of the Starch-transformed bytes of a specified chromosome, or to report the signature of the metadata string as well as the signatures of all chromosomes, if unspecified.
