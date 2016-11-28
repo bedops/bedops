@@ -129,7 +129,9 @@ namespace Ext {
         _any = true;
         --_cntr;
       }
-/*
+
+      /* temporary disable -> double destruction is happening at times
+           for now, use with types that have trivial destructors
       ~Chunk() {
         if ( CallDestruct ) {
           for ( std::size_t i = 0; i < _tracker.size(); ++i ) {
@@ -138,7 +140,8 @@ namespace Ext {
           } // for
         }
       }
-*/
+      */
+
       bool _any;
       std::size_t _cntr;
       type _data[nelements];

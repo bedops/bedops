@@ -33,7 +33,6 @@
 #include <set>
 #include <utility>
 
-#include <boost/dynamic_bitset.hpp>
 
 #include "utility/BitMonitor.hpp"
 
@@ -87,8 +86,7 @@ namespace Ext {
           _blockstarts.insert(_curr->_data);
           _r.insert(std::make_pair(_curr->_data, _curr));
         }
-        auto r = _curr->add(val);
-        return r;
+        return _curr->add(val);
       }
 
     inline void
@@ -264,8 +262,6 @@ namespace Ext {
       std::size_t _cc;
       std::size_t _cntr;
       char _data[nelements+1];
-//      boost::dynamic_bitset<> _tracker;
-//      boost::dynamic_bitset<> _dirty;
       BSet<nelements> _tracker, _dirty;
       std::multimap<std::size_t, std::size_t> _open; // size, position
     };
@@ -476,20 +472,12 @@ namespace Ext {
           // potentially very slow; try to find first location that fits c
           for ( auto iter = _dirty.begin(); iter != _dirty.end(); iter = _dirty.erase(iter) ) {
             std::size_t pos = *iter;
-//            std::size_t lng = std::strlen(_data+pos);
             std::size_t lng = _tracker.next_set(pos, nelements);
             if ( lng != _tracker.npos )
               lng -= (pos+1); // +1 for '\0'; lng is at least 1 bigger than pos
             else
               lng = nelements + 1 - pos; // +1 b/c _data has nelements+1 elements with last == '\0'
-/*
-            while ( pos+lng+1 < nelements ) {
-              if ( _data[pos+lng+1] == '\0' )
-                ++lng;
-              else
-                break;
-            } // while
-*/
+
             if ( lng >= need ) {
               std::strcpy(_data+pos, c);
               _tracker.set(pos);

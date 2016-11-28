@@ -224,7 +224,7 @@ namespace Ext {
     inline void set_all() {
       for ( auto& c : _charset )
         c = FULL;
-      _nxt = 0;
+      _nxt = npos;
     }
 
     inline void unset(std::size_t bit) {
