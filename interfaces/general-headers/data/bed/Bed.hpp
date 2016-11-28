@@ -33,7 +33,9 @@
 #include <type_traits>
 
 #include "suite/BEDOPS.Constants.hpp"
+//#include "utility/CharPooledMemory.hpp"
 #include "utility/Formats.hpp"
+#include "utility/SingletonType.hpp"
 
 /*
   sjn
@@ -50,10 +52,43 @@
 
 namespace Bed {
 
-  const CoordType MAXCHROMSIZE = TOKEN_CHR_MAX_LENGTH;
-  const CoordType MAXIDSIZE = TOKEN_ID_MAX_LENGTH;
-  const CoordType MAXRESTSIZE = TOKEN_REST_MAX_LENGTH;
+  constexpr CoordType MAXCHROMSIZE = TOKEN_CHR_MAX_LENGTH;
+  constexpr CoordType MAXIDSIZE = TOKEN_ID_MAX_LENGTH;
+  constexpr CoordType MAXRESTSIZE = TOKEN_REST_MAX_LENGTH;
 
+/*
+  namespace details {
+    template <typename BedType>
+    inline
+    typename std::enable_if<BedType::UseRest, Ext::PooledCharMemory2<MAXCHROMSIZE + MAXIDSIZE + MAXRESTSIZE>&>::type
+    get_bed_char_detail() {
+      typedef Ext::PooledCharMemory2<MAXCHROMSIZE + MAXIDSIZE + MAXRESTSIZE> P;
+      return Ext::SingletonType<P>::Instance();
+    }
+
+    template <typename BedType>
+    inline
+    typename std::enable_if<!BedType::UseRest && (BedType::NumFields > 3), Ext::PooledCharMemory<MAXCHROMSIZE + MAXIDSIZE>&>::type
+    get_bed_char_detail() {
+      typedef Ext::PooledCharMemory<MAXCHROMSIZE + MAXIDSIZE> P;
+      return Ext::SingletonType<P>::Instance();
+    }
+
+    template <typename BedType>
+    inline
+    typename std::enable_if<!BedType::UseRest && BedType::NumFields == 3, Ext::PooledCharMemory<MAXCHROMSIZE>&>::type
+    get_bed_char_detail() {
+      typedef Ext::PooledCharMemory<MAXCHROMSIZE> P;
+      return Ext::SingletonType<P>::Instance();
+    }
+  } // namespace details
+
+  template <typename T>
+  auto
+  get_bed_char_pool() -> decltype(details::get_bed_char_detail<T>()) {
+    return details::get_bed_char_detail<T>();
+  }
+*/
 
   /*****************************************/
   /* ChromInfo Classes                     */
@@ -250,12 +285,12 @@ namespace Bed {
     : public BasicCoords<IsNonStaticChrom, false> {
 
     BasicCoords() : BaseClass() { rest_[0] = '\0'; }
-    BasicCoords(char const* chrom, CoordType start, CoordType end, char const* rest = NULL)
+    BasicCoords(char const* chrom, CoordType start, CoordType end, char const* rest = nullptr)
       : BaseClass(chrom, start, end) {
       rest_[0] = '\0';
       if ( rest && std::strcmp(rest, "") != 0 ) {
         if ( rest[0] != '\t' )
-          rest_[0] = '\t';
+          rest[0] = '\t';
         std::strcat(rest_, rest);
       }
     }
@@ -292,7 +327,7 @@ namespace Bed {
       static const std::string lclStatic = inFormatter();
       static char const* format = lclStatic.c_str();
       chrom_[0]='\0';
-      rest_[0]='\0'; // required
+      rest_[0] = '\0';
       int numScan = std::sscanf(inputLine.c_str(), 
                                 format, chrom_, &start_,
                                 &end_, rest_);
@@ -302,7 +337,7 @@ namespace Bed {
       static const std::string lclStatic = inFormatter();
       static char const* format = lclStatic.c_str();
       chrom_[0]='\0';
-      rest_[0]='\0'; // required
+      rest_[0] = '\0';
       int numScan = std::fscanf(inputFile, format,
                                 chrom_, &start_,
                                 &end_, rest_);
@@ -317,7 +352,8 @@ namespace Bed {
     using BaseClass::chrom_;
     using BaseClass::start_;
     using BaseClass::end_;
-    char rest_[MAXRESTSIZE+1];
+
+    char rest_[MAXRESTSIZE + 1];
 
     static std::string outFormatter() {
       return(std::string("%s\t%" PRIu64 "\t%" PRIu64 "%s"));
@@ -345,10 +381,10 @@ namespace Bed {
     Bed4() : BaseClass() { *id_ = '\0'; }
     Bed4(char const* chrom, CoordType start, CoordType end, char const* id)
       : BaseClass(chrom, start, end)
-      { *id_ = '\0'; if ( id != NULL ) std::strcpy(id_, id); }
+      { *id_ = '\0'; if ( id != nullptr ) std::strcpy(id_, id); }
     Bed4(const Bed4& c)
       : BaseClass(c)
-      { *id_ = '\0'; if ( c.id_ != NULL ) std::strcpy(id_, c.id_); }
+      { *id_ = '\0'; if ( c.id_ != nullptr ) std::strcpy(id_, c.id_); }
     explicit Bed4(FILE* inF) : BaseClass()
       { this->readline(inF); }
     explicit Bed4(const std::string& inS) : BaseClass()
@@ -385,13 +421,13 @@ namespace Bed {
     }
 
     // Properties
-    inline void id(char const* id) { *id_ = '\0'; if ( id != NULL ) std::strcpy(id_, id); }
+    inline void id(char const* id) { *id_ = '\0'; if ( id != nullptr ) std::strcpy(id_, id); }
     inline char const* id() const { return id_; }
 
     // Operators
     Bed4& operator=(const Bed4& c) {
       BaseClass::operator=(c);
-      *id_ = '\0'; if ( c.id_ != NULL ) std::strcpy(id_, c.id_);
+      *id_ = '\0'; if ( c.id_ != nullptr ) std::strcpy(id_, c.id_);
       return *this;
     }
 
@@ -420,14 +456,14 @@ namespace Bed {
   struct Bed4<BasicCoords<IsNonStaticChrom, HasRest>, HasRest>
     : public BasicCoords<IsNonStaticChrom, HasRest> {
 
-    Bed4() : BaseClass() { *rest_ = '\0'; }
+    Bed4() : BaseClass() { }
     Bed4(const Bed4& c)
       : BaseClass(c)
        {
          *id_ = '\0';
-         if ( c.id_ != NULL ) std::strcpy(id_, c.id_);
+         if ( c.id_ != nullptr ) std::strcpy(id_, c.id_);
        }
-    Bed4(char const* chrom, CoordType start, CoordType end, char const* id, char const* rest = NULL)
+    Bed4(char const* chrom, CoordType start, CoordType end, char const* id, char const* rest = nullptr)
       : BaseClass(chrom, start, end, rest) {
       *id_ = '\0';
       if ( id && std::strcmp(id, "") != 0 )
@@ -439,7 +475,7 @@ namespace Bed {
       { this->readline(inS); }
 
     // Properties
-    inline void id(char const* id) { *id_ = '\0'; if ( id != NULL ) std::strcpy(id_, id); }
+    inline void id(char const* id) { *id_ = '\0'; if ( id != nullptr ) std::strcpy(id_, id); }
     inline char const* id() const { return id_; }
 
     // IO
@@ -462,7 +498,7 @@ namespace Bed {
       int numScanned = std::sscanf(inputLine.c_str(),
                                    format, chrom_,
                                    &start_, &end_, rest_);
-      std::sscanf(rest_, "%s", id_);
+      std::sscanf(rest_, "%s%*s", id_);
       return numScanned;
     }
     inline int readline(FILE* inputFile) {
@@ -483,7 +519,7 @@ namespace Bed {
     // Operators
     Bed4& operator=(const Bed4& c) {
       BaseClass::operator=(c);
-      *id_ = '\0'; if ( c.id_ != NULL ) std::strcpy(id_, c.id_);
+      *id_ = '\0'; if ( c.id_ != nullptr ) std::strcpy(id_, c.id_);
       return *this;
     }
 
@@ -617,7 +653,7 @@ namespace Bed {
         sscanf(rest_, f, id_, &measurement_);
       }
     Bed5(char const* chrom, CoordType start, CoordType end,
-         char const* id, MeasureType measurement, char const* rest = NULL)
+         char const* id, MeasureType measurement, char const* rest = nullptr)
       : BaseClass(chrom, start, end, rest)
     {
       id_[0] = '\0';
@@ -631,7 +667,7 @@ namespace Bed {
       { this->readline(inS); }
 
     // Properties
-    inline void id(char const* id) { *id_ = '\0'; if ( id != NULL ) std::strcpy(id_, id); }
+    inline void id(char const* id) { *id_ = '\0'; if ( id != nullptr ) std::strcpy(id_, id); }
     inline char const* id() const { return id_; }
     inline MeasurementType measurement() const { return measurement_; }
     inline char const* rest() const { return rest_; }

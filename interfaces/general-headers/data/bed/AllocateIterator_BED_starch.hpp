@@ -30,6 +30,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <iterator>
+#include <type_traits>
 
 #include <sys/stat.h>
 

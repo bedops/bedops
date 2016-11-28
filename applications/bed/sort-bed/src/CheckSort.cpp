@@ -40,8 +40,8 @@ checkSort(char const **bedFileNames, unsigned int numFiles)
   typedef Bed::bed_check_iterator<Bed::B3Rest*, PoolSz> IterType;
   int rtnval = EXIT_FAILURE;
   try {
-    static constexpr bool NODESTRUCT = false;
-    Ext::PooledMemory<Bed::B3Rest, PoolSz, NODESTRUCT> pool;
+    constexpr bool DestructPolicy = true;
+    Ext::PooledMemory<Bed::B3Rest, PoolSz, DestructPolicy> pool;
     for ( unsigned int i = 0; i < numFiles; ++i ) {
       std::ifstream infile(bedFileNames[i]);
       if ( 0 != std::strcmp(bedFileNames[i], "-") && !infile )

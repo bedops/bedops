@@ -59,6 +59,105 @@ namespace Ext {
     static constexpr std::size_t value = 0;
   };
 
+  template <std::size_t Total>
+  struct BSet {
+    static constexpr std::size_t BITS = Total;
+    static constexpr std::size_t BASE = std::numeric_limits<unsigned char>::digits;
+    static constexpr std::size_t npos = std::numeric_limits<std::size_t>::max();
+
+    BSet() { for( std::size_t i=0; i<TBYTE; ++i) _charset[i]=CZERO; }
+
+    inline void set(std::size_t bit) {
+      std::size_t bin = bit/BASE;
+      _charset[bin] |= (1 << (bit%BASE));
+    }
+
+    inline void set_all() {
+      for ( auto& c : _charset )
+        c = FULL;
+    }
+
+    inline void unset(std::size_t bit) {
+      std::size_t bin = bit/BASE;
+      _charset[bin] &= ~(1 << (bit%BASE));
+    }
+
+    inline void unset_all() {
+      for ( auto& c : _charset )
+        c = CZERO;
+    }
+
+    inline std::size_t next_set(std::size_t start) const {
+      start += 1;
+      std::size_t bin = start/BASE;
+      for ( std::size_t i = start%BASE; i < BASE; ++i ) {
+        if (_charset[bin] & (1 << i))
+          return bin*BASE+i;
+      } // for
+
+      for ( std::size_t b = bin+1; b < TBYTE; ++b ) {
+        if ( _charset[b] ) {
+          for ( std::size_t i = 0; i < BASE; ++i ) {
+            if ( _charset[b] & (1 << i) )
+              return b*BASE+i;
+          } // for
+        }
+      } // for
+      return npos;
+    }
+
+    inline std::size_t find_first_set() const {
+      if ( _charset[0] & (1 << 0) )
+        return 0;
+      return next_set(0);
+    }
+
+    inline std::size_t next_unset(std::size_t start) const {
+      start += 1;
+      std::size_t bin = start/BASE;
+      for ( std::size_t i = start%BASE; i < BASE; ++i ) {
+        if ( !(_charset[bin] & (1 << i)) )
+          return bin*BASE+i;
+      } // for
+
+      for ( std::size_t b = bin+1; b < TBYTE; ++b ) {
+        if ( _charset[b] != FULL ) {
+          for ( std::size_t i = 0; i < BASE; ++i ) {
+            if ( !(_charset[b] & (1 << i)) )
+              return b*BASE+i;
+          } // for
+        }
+      } // for
+      return npos;
+    }
+
+    inline std::size_t find_first_unset() const {
+      if ( !(_charset[0] & (1 << 0) ) )
+        return 0;
+      return next_unset(0);
+    }
+
+    template <std::size_t A>
+    friend
+    std::ostream&
+    operator<<(std::ostream& os, const BSet<A>& r);
+
+  private:
+    static constexpr std::size_t TBYTE = BITS/BASE;
+    static constexpr unsigned char CZERO = (unsigned char)0;
+    static constexpr unsigned char FULL = std::numeric_limits<unsigned char>::max();
+
+    std::array<unsigned char, TBYTE> _charset;
+  };
+
+  template <std::size_t A>
+  std::ostream&
+  operator<<(std::ostream& os, const BSet<A>& r) {
+    std::copy(r._charset.begin(), r._charset.end(), std::ostream_iterator<std::bitset<8>>(os, " "));
+    os << std::endl;
+    return os;
+  }
+
   template <std::size_t Base,
             std::size_t Total, // undefined when Check==false
             bool Check=(Base==std::numeric_limits<unsigned char>::digits) &&
@@ -156,7 +255,7 @@ namespace Ext {
     inline void unset_all() {
       for ( auto& c : _charset )
         c = CZERO;
-      _nxt = npos;
+      _nxt = 0;
     }
 
     inline std::size_t next_set(std::size_t start, std::size_t end = BITS, bool include_start = false) const {

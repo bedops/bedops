@@ -61,7 +61,7 @@ namespace Bed {
     typedef QueryBedType TargetBedType; // file 2 -> must be same type as QueryBedType
     typedef std::map< QueryBedType, ByteOffset, CompBed<QueryBedType> > MType;
 
-    template <typename BedType, std::size_t Sz>
+    template <typename BedType, std::size_t Sz, bool CD>
     inline
     void remove(Bed::bed_check_iterator<BedType*, Sz>& b, BedType* p)
       { b.get_pool().release(p); }

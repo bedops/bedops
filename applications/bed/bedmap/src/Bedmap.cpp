@@ -194,10 +194,10 @@ namespace BedMap {
   //=============
   // get_pool()
   //============
-  template <typename BedTypePtr, bool NoDestruct=false>
-  Ext::PooledMemory<typename std::remove_pointer<BedTypePtr>::type, PoolSz, NoDestruct>&
+  template <typename BedTypePtr>
+  Ext::PooledMemory<typename std::remove_pointer<BedTypePtr>::type, PoolSz>&
   get_pool() {
-    static Ext::PooledMemory<typename std::remove_pointer<BedTypePtr>::type, PoolSz, NoDestruct> pool;
+    static Ext::PooledMemory<typename std::remove_pointer<BedTypePtr>::type, PoolSz> pool;
     return pool;
   }
 
