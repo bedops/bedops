@@ -137,21 +137,27 @@ typedef struct chromosomeSummaries {
 static const char *name = "starchcat";
 static const char *authors = "Alex Reynolds and Shane Neph";
 static const char *usage = "\n" \
-    "USAGE: starchcat [ --note=\"...\" ] [ --bzip2 | --gzip ] [ --report-progress=N ] <starch-file-1> [<starch-file-2> ...]\n" \
+    "USAGE: starchcat [ --note=\"...\" ]\n" \
+    "                 [ --bzip2 | --gzip ]\n" \
+    "                 [ --report-progress=N ] <starch-file-1> [<starch-file-2> ...]\n" \
     "\n" \
-    "    * At least one lexicographically-sorted, headerless starch archive is required.\n" \
-    "      While two or more inputs make sense for a multiset union operation, you can starchcat \n" \
-    "      one file in order to update its metadata, recompress it with a different backend method,\n" \
-    "      or add a note annotation.\n" \
+    "    * At least one lexicographically-sorted, headerless starch archive is\n" \
+    "      required.\n\n" \
+    "    * While two or more inputs make sense for a multiset union operation, you\n" \
+    "      can starchcat one file in order to update its metadata, recompress it\n" \
+    "      with a different backend method, or add a note annotation.\n" \
     "\n" \
-    "    * Compressed data are sent to standard output. Use the '>' operator to redirect\n" \
-    "      to a file.\n" \
+    "    * Compressed data are sent to standard output. Use the '>' operator to\n" \
+    "      redirect to a file.\n" \
     "\n" \
-    "    Process Flags:\n\n" \
-    "    --note=\"foo bar...\"   Append note to output archive metadata (optional)\n" \
-    "    --bzip2 | --gzip      Specify backend compression type (optional, default is bzip2)\n" \
-    "    --report-progress=N   Report compression progress every N elements per chromosome to standard error stream (optional)\n" \
-    "    --version             Show binary version\n" \
+    "    Process Flags\n" \
+    "    --------------------------------------------------------------------------\n" \
+    "    --note=\"foo bar...\"   Append note to output archive metadata (optional)\n\n" \
+    "    --bzip2 | --gzip      Specify backend compression type (optional, default\n" \
+    "                          is bzip2)\n\n" \
+    "    --report-progress=N   Report compression progress every N elements per\n" \
+    "                          chromosome to standard error stream (optional)\n\n" \
+    "    --version             Show binary version\n\n" \
     "    --help                Show this usage message\n";
 
 static struct starchcat_client_global_args_t {

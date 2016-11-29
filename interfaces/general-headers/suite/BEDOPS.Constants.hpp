@@ -45,6 +45,7 @@
 
 #include <cinttypes>
 #include <cstddef>
+
 namespace Bed {
   // Use these typedef's in applications
   typedef uint64_t CoordType;

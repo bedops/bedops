@@ -4588,7 +4588,7 @@ STARCHCAT_printUsage (int errorType)
                 case STARCHCAT_FATAL_ERROR:
                 case STARCHCAT_HELP_ERROR:
                 default:
-                    fprintf(stderr, "%s\n  citation: %s\n  version:  %s\n  authors:  %s\n%s\n", name, BEDOPS::citation(), BEDOPS::revision(), authors, usage);
+                    fprintf(stderr, "%s\n citation: %s\n version:  %s\n authors:  %s\n%s\n", name, BEDOPS::citation(), BEDOPS::revision(), authors, usage);
                     break;
             }
         }
