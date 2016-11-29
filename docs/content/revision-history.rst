@@ -41,7 +41,7 @@ Released: **TBD**
 
   * A SLURM-ready version of the :code:`starchcluster` script was added to help SLURM job scheduler users with parallelizing the creation of Starch archives.
 
-* :ref:`bam2bed <bam2bed>` and :ref:`bam2starch <bam2starch>`
+* Parallel :ref:`bam2bed <parallel_bam2bed>` and :ref:`bam2starch <parallel_bam2starch>`
 
   * SLURM-ready versions of these scripts were added to help parallelize the conversion of BAM to BED files (:code:`bam2bed_slurm`) or to Starch archives (:code:`bam2starch_slurm`).
 
