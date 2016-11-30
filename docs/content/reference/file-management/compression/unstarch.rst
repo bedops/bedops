@@ -46,34 +46,105 @@ Use the ``--help`` option to list all options:
    binary version: 2.4.21 (extracts archive version: 2.2.0 or older)
    authors: Alex Reynolds and Shane Neph
 
-  USAGE: unstarch [ <chromosome> ]  [ --elements | --bases | --bases-uniq | --has-duplicates | --has-nested | --list | --list-json | --list-chromosomes | --archive-timestamp | --note | --archive-version | --is-starch | --signature ] <starch-file>
+  USAGE: unstarch [ <chromosome> ]  [ --elements | 
+                                      --elements-max-string-length |
+                                      --bases | --bases-uniq |
+                                      --has-duplicates | --has-nested | --list |
+                                      --list-json | --list-chromosomes |
+                                      --archive-timestamp | --note |
+                                      --archive-version | --is-starch |
+                                      --signature | --verify-signature ]
+                                      <starch-file>
 
-      Modifiers:
+      Modifiers
+      --------------------------------------------------------------------------
+      <chromosome>                     Optional. Either unarchives chromosome-
+                                       specific records from the starch archive
+                                       file or restricts action of operator to
+                                       chromosome (e.g., chr1, chrY, etc.).
 
-      <chromosome>                     Optional. Either unarchives chromosome-specific records from the starch archive file or restricts action of operator to chromosome (e.g., chr1, chrY, etc.).
+      Process Flags
+      --------------------------------------------------------------------------
+      --elements                       Show total element count for archive. If
+                                       <chromosome> is specified, the result
+                                       shows the element count for the
+                                       chromosome.
 
-      Process Flags:
+      --elements-max-string-length     Show the maximum string length over all
+                                       elements in <chromosome>, if specified.
+                                       If <chromosome> is not specified, the
+                                       maximum string length is shown over all
+                                       chromosomes.
 
-      --elements                       Show total element count for archive. If <chromosome> is specified, the result shows the element count for the chromosome.
       --bases,
-      --bases-uniq                     Show total and unique base counts, respectively, for archive. If <chromosome> is specified, the count is specific to the chromosome, if available.
-      --has-duplicate,                 Show whether there is one or more duplicate elements in the specified chromosome, either as a numerical (1/0) or string (true/false) value. If no <chromosome> is specified, the value given indicates if there is one or more duplicate elements across all chromosome records.
-      --has-duplicate-as-string
-      --has-nested,                    Show whether there is one ore more nested elements in the specified chromosome, either as a numerical (1/0) or string (true/false) value. If no <chromosome> is specified, the value given indicates if there is one or more nested elements across all chromosome records.
-      --has-nested-as-string
-      --list                           List archive metadata (output is in text format). If chromosome is specified, the attributes of the given chromosome are shown.
-      --list-json,                     List archive metadata (output is in JSON format)
-      --list-json-no-trailing-newline  
-      --list-chr,                      List all or specified chromosome in starch archive (similar to "bedextract --list-chr"). If <chromosome> is specified but is not in the output list, nothing is returned.
-      --list-chromosomes 
+      --bases-uniq                     Show total and unique base counts,
+                                       respectively, for archive. If
+                                       <chromosome> is specified, the count is
+                                       specific to the chromosome, if available.
+
+      --has-duplicate-as-string, 
+      --has-duplicate                  Show whether there is one or more
+                                       duplicate elements in the specified
+                                       chromosome, either as a numerical (1/0)
+                                       or string (true/false) value. If no
+                                       <chromosome> is specified, the value
+                                       given indicates if there is one or more
+                                       duplicate elements across all chromosome
+                                       records.
+
+      --has-nested-as-string, 
+      --has-nested                     Show whether there is one ore more nested
+                                       elements in the specified chromosome,
+                                       either as a numerical (1/0) or string
+                                       (true/false) value. If no <chromosome> is
+                                       specified, the value given indicates if
+                                       there is one or more nested elements
+                                       across all chromosome records.
+
+      --list                           List archive metadata (output is in text
+                                       format). If chromosome is specified, the
+                                       attributes of the given chromosome are
+                                       shown.
+
+      --list-json, 
+      --list-json-no-trailing-newline  List archive metadata (output is in JSON
+                                       format)
+
+      --list-chr,                      
+      --list-chromosomes               List all or specified chromosome in
+                                       starch archive (like "bedextract --list-
+                                       chr"). If <chromosome> is specified but
+                                       is not in the output list, nothing is
+                                       returned.
+
       --note                           Show descriptive note, if available.
-      --signature                      Display the Base64-encoded SHA-1 data integrity signature for specified <chromosome>, or the signatures of the metadata and all available chromosomes, if the <chromosome> is unspecified.
-      --verify-signature               Verify data integrity of specified <chromosome>, or the integrity of all available chromosomes, if the <chromosome> is unspecified.
-      --archive-timestamp              Show archive creation timestamp (ISO 8601 format).
+    
+      --signature                      Display the Base64-encoded SHA-1 data
+                                       integrity signature for specified
+                                       <chromosome>, or the signatures of the
+                                       metadata and all available chromosomes,
+                                       if the <chromosome> is unspecified.
+
+      --verify-signature               Verify data integrity of specified
+                                       <chromosome>, or the integrity of all
+                                       available chromosomes, if the
+                                       <chromosome> is unspecified.
+
+      --archive-timestamp              Show archive creation timestamp (ISO 8601
+                                       format).
+
       --archive-type                   Show archive compression type.
+
       --archive-version                Show archive version.
-      --is-starch                      Test if <starch-file> is a valid archive and print 0/1 (false/true) to standard output. False result also sets non-zero error status on command-line.
+
+      --is-starch                      Test if <starch-file> is a valid archive
+                                       and print 0/1 (false/true) to standard
+                                       output. Unstarch will also return a non-
+                                       zero error code if the input file is not
+                                       a valid archive.
+
       --version                        Show binary version.
+
       --help                           Show this usage message.
 
 ----------
@@ -127,6 +198,7 @@ Use the ``--list-json`` or ``--list`` options to export the archive metadata as 
         "duplicateElementExists": false,
         "nestedElementExists": false,
         "signature": "XtnjojM1LyuMnZI4CIneSzgLI5Q="
+        "uncompressedLineMaxStringLength": 371
       },
       ...
     ]
@@ -193,6 +265,8 @@ Elements
 The ``--elements`` operator reports the number of BED elements that were compressed into the chromosome stream, if specified. If no chromosome is specified, the sum of elements over all chromosomes is reported.
 
 .. tip:: This option is equivalent to a ``wc -l`` (line count) operation performed on BED elements that match the given chromosome, but is much, much faster as data are precomputed and stored with the archive, retrieved from the metadata in O(1) time.
+
+The ``--elements-max-string-length`` operator reports the maximum string length of BED elements over the specified chromosome, or the maximum string length over all chromosomes, if no chromosome name is specified.
 
 ^^^^^
 Bases
@@ -300,7 +374,7 @@ To verify the data integrity of the same chromosome, use ``--verify-signature``:
 Any output from ``--verify-signature`` is written to the standard error stream.
 
 
-.. note:: Some option calls will not work with legacy v1.x or v2.0 archives. For instance, to get a result for nested or duplicate elements, you need to input a v2.1 archive. If you have a v1.x or v2.0 archive, use the :ref:`starchcat` utility to upgrade an older archive to a Starch v2.1 file, which will recalculate and make all current attributes available.
+.. note:: Some option calls will not work with legacy v1.x or v2.0 archives. For instance, to get a result for nested or duplicate elements, you need to input a v2.1 (or greater) archive. If you have a v1.x or v2.0 archive, use the :ref:`starchcat` utility to upgrade an older archive to a Starch v2.2 file, which will recalculate the metadata and make all current attributes available.
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace

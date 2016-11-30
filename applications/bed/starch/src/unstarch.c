@@ -198,6 +198,14 @@ main(int argc, char **argv)
                 resultValue = UNSTARCH_SIGNATURE_VERIFY_ERROR;
                 break;
             }
+            case UNSTARCH_ELEMENT_MAX_STRING_LENGTH_CHR_ERROR: {
+                resultValue = UNSTARCH_ELEMENT_MAX_STRING_LENGTH_CHR_ERROR;
+                break;
+            }
+            case UNSTARCH_ELEMENT_MAX_STRING_LENGTH_ALL_ERROR: {
+                resultValue = UNSTARCH_ELEMENT_MAX_STRING_LENGTH_ALL_ERROR;
+                break;
+            }
         }
     }
 
@@ -220,7 +228,9 @@ main(int argc, char **argv)
         (resultValue == UNSTARCH_ELEMENT_NESTED_CHR_INT_ERROR) ||
         (resultValue == UNSTARCH_ELEMENT_NESTED_ALL_INT_ERROR) ||
         (resultValue == UNSTARCH_ELEMENT_NESTED_CHR_STR_ERROR) ||
-        (resultValue == UNSTARCH_ELEMENT_NESTED_ALL_STR_ERROR))
+        (resultValue == UNSTARCH_ELEMENT_NESTED_ALL_STR_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_MAX_STRING_LENGTH_CHR_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_MAX_STRING_LENGTH_ALL_ERROR))
     {
         if (STARCH_readJSONMetadata( &metadataJSON, 
 				     &inFilePtr, 
@@ -777,6 +787,27 @@ main(int argc, char **argv)
                     fprintf(stderr, "ERROR: Archive version (%d.%d.%d) does not support per-chromosome signature verification (starchcat or extract/recompress the archive to bring its version to v2.2.0 or greater)\n", archiveVersion->major, archiveVersion->minor, archiveVersion->revision);
                     resultValue = EXIT_FAILURE;
                 }
+                break;
+            }
+            case UNSTARCH_ELEMENT_MAX_STRING_LENGTH_CHR_ERROR: {
+                if ((archiveVersion->major == 2) && (archiveVersion->minor >= 2)) {
+                    UNSTARCH_printLineMaxStringLengthForChromosome(records, whichChromosome);
+                }
+                else {
+                    fprintf(stderr, "ERROR: Archive version (%d.%d.%d) does not support element maximum string length reporting (starchcat or extract/recompress the archive to bring its version to v2.2.0 or greater)\n", archiveVersion->major, archiveVersion->minor, archiveVersion->revision);
+                    resultValue = EXIT_FAILURE;
+                }
+                break;
+            }
+            case UNSTARCH_ELEMENT_MAX_STRING_LENGTH_ALL_ERROR: {
+                if ((archiveVersion->major == 2) && (archiveVersion->minor >= 2)) {
+                    UNSTARCH_printLineMaxStringLengthForAllChromosomes(records);
+                }
+                else {
+                    fprintf(stderr, "ERROR: Archive version (%d.%d.%d) does not support element maximum string length reporting (starchcat or extract/recompress the archive to bring its version to v2.2.0 or greater)\n", archiveVersion->major, archiveVersion->minor, archiveVersion->revision);
+                    resultValue = EXIT_FAILURE;
+                }
+                break;
             }
         }
     }
@@ -806,7 +837,9 @@ main(int argc, char **argv)
         (resultValue == UNSTARCH_ELEMENT_NESTED_CHR_STR_ERROR) ||
         (resultValue == UNSTARCH_ELEMENT_NESTED_ALL_STR_ERROR) ||
         (resultValue == UNSTARCH_SIGNATURE_ERROR) ||
-        (resultValue == UNSTARCH_SIGNATURE_VERIFY_ERROR) ) 
+        (resultValue == UNSTARCH_SIGNATURE_VERIFY_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_MAX_STRING_LENGTH_CHR_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_MAX_STRING_LENGTH_ALL_ERROR) ) 
     {
         resultValue = EXIT_SUCCESS;
     }
@@ -1076,6 +1109,10 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
         }
         else if (strcmp(*optn, "elements") == 0) {
             *pval = (strcmp(*chr, "--elements") == 0) ? UNSTARCH_ELEMENT_COUNT_ALL_ERROR : UNSTARCH_ELEMENT_COUNT_CHR_ERROR;
+            return *pval;
+        }
+        else if (strcmp(*optn, "elements-max-string-length") == 0) {
+            *pval = (strcmp(*chr, "--elements-max-string-length") == 0) ? UNSTARCH_ELEMENT_MAX_STRING_LENGTH_ALL_ERROR : UNSTARCH_ELEMENT_MAX_STRING_LENGTH_CHR_ERROR;
             return *pval;
         }
         else if (strcmp(*optn, "bases") == 0) {

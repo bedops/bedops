@@ -1701,6 +1701,55 @@ UNSTARCH_printLineCountForAllChromosomes(const Metadata *md)
     fprintf(stdout, "%" PRIu64 "\n", totalLineCount);
 }
 
+LineLengthType
+UNSTARCH_lineMaxStringLengthForChromosome(const Metadata *md, const char *chr)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_lineMaxStringLengthForChromosome() ---\n");
+#endif
+    const Metadata *iter;
+
+    for (iter = md; iter != NULL; iter = iter->next) {
+        if (strcmp(chr, iter->chromosome) == 0) {
+            return iter->lineMaxStringLength;
+        }
+    }
+
+#ifdef __cplusplus
+    return static_cast<LineLengthType>( STARCH_DEFAULT_LINE_STRING_LENGTH );
+#else
+    return (LineLengthType) STARCH_DEFAULT_LINE_STRING_LENGTH;
+#endif
+}
+
+void
+UNSTARCH_printLineMaxStringLengthForChromosome(const Metadata *md, const char *chr)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_printLineMaxStringLengthForChromosome() ---\n");
+#endif
+
+    if (strcmp(chr, "all") == 0)
+        UNSTARCH_printLineMaxStringLengthForAllChromosomes(md);
+    else
+        fprintf(stdout, "%d\n", UNSTARCH_lineMaxStringLengthForChromosome(md, chr));
+}
+
+void
+UNSTARCH_printLineMaxStringLengthForAllChromosomes(const Metadata *md)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_printLineMaxStringLengthForAllChromosomes() ---\n");
+#endif
+    const Metadata *iter;
+    LineLengthType lineMaxStringLength = STARCH_DEFAULT_LINE_STRING_LENGTH;
+
+    for (iter = md; iter != NULL; iter = iter->next)
+        lineMaxStringLength = (lineMaxStringLength >= iter->lineMaxStringLength) ? lineMaxStringLength : iter->lineMaxStringLength;
+
+    fprintf(stdout, "%d\n", lineMaxStringLength);
+}
+
 BaseCountType
 UNSTARCH_nonUniqueBaseCountForChromosome(const Metadata *md, const char *chr)
 {

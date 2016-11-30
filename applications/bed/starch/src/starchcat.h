@@ -113,6 +113,7 @@ typedef struct transformState {
     Boolean                  r_duplicateElementExists;
     Boolean                  r_nestedElementExists;
     char *                   r_signature;
+    LineLengthType           r_lineMaxStringLength;
     size_t                   r_nRetransBuf;
 } TransformState;
 
@@ -365,7 +366,8 @@ int      STARCHCAT2_finalizeMetadata (Metadata **outMd,
                                       uint64_t finalTotalUniqueBases,
                                        Boolean finalDuplicateElementExists,
                                        Boolean finalNestedElementExists,
-                                          char *finalSignature);
+                                          char *finalSignature,
+                                LineLengthType finalLineMaxStringLength);
 
 #ifdef __cplusplus
 } // namespace starch

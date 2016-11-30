@@ -58,7 +58,7 @@ dependencies: mkdirs
 	${CC} ${CFLAGS} -c ${OBJDIR}/starchSha1Digest.c -o  ${LOCALOBJDIR}/starchSha1Digest.o ${INCLUDES}
 	${CC} ${CFLAGS} -c ${OBJDIR}/starchBase64Coding.c -o  ${LOCALOBJDIR}/starchBase64Coding.o ${INCLUDES}
 
-build_debug: dependencies_debug starch_debug unstarch_debug starchcat_debug
+build_debug: dependencies_debug starchLibrary_debug starch_debug unstarch_debug starchcat_debug
 	rm -f *~
 
 dependencies_debug: mkdirs

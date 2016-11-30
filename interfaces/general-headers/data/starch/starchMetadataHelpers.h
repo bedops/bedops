@@ -62,6 +62,7 @@
 #define STARCH_STREAM_METADATA_FILENAME_MAX_LENGTH 1024
 #define STARCH_STREAM_METADATA_MAX_LENGTH 1048576
 #define STARCH_DEFAULT_LINE_COUNT 0
+#define STARCH_DEFAULT_LINE_STRING_LENGTH 0
 #define STARCH_DEFAULT_NON_UNIQUE_BASE_COUNT 0
 #define STARCH_DEFAULT_UNIQUE_BASE_COUNT 0
 #ifdef __cplusplus
@@ -82,6 +83,7 @@
 #define STARCH_METADATA_STREAM_SIGNATURE_KEY "signature"
 #define STARCH_METADATA_STREAM_SIZE_KEY "size"
 #define STARCH_METADATA_STREAM_LINECOUNT_KEY "uncompressedLineCount"
+#define STARCH_METADATA_STREAM_LINEMAXSTRINGLENGTH_KEY "uncompressedLineMaxStringLength"
 #define STARCH_METADATA_STREAM_TOTALNONUNIQUEBASES_KEY "nonUniqueBaseCount"
 #define STARCH_METADATA_STREAM_TOTALUNIQUEBASES_KEY "uniqueBaseCount"
 #define STARCH_METADATA_STREAM_DUPLICATEELEMENTEXISTS_KEY "duplicateElementExists"
@@ -151,6 +153,7 @@ typedef struct metadata {
     char *filename;
     uint64_t size;
     LineCountType lineCount;
+    LineLengthType lineMaxStringLength;
     BaseCountType totalNonUniqueBases;
     BaseCountType totalUniqueBases;
     Boolean duplicateElementExists;
@@ -192,7 +195,8 @@ Metadata *       STARCH_createMetadata(char const *chr,
                                     BaseCountType totalUniqueBases,
                                           Boolean duplicateElementExists, 
                                           Boolean nestedElementExists,
-                                       char const *signature);
+                                       char const *signature,
+                                   LineLengthType lineMaxStringLength);
 
 Metadata *       STARCH_addMetadata(Metadata *md, 
                                         char *chr, 
@@ -203,7 +207,8 @@ Metadata *       STARCH_addMetadata(Metadata *md,
                                BaseCountType totalUniqueBases,
                                      Boolean duplicateElementExists, 
                                      Boolean nestedElementExists,
-                                        char *signature);
+                                        char *signature,
+                              LineLengthType lineMaxStringLength);
 
 Metadata *       STARCH_copyMetadata(const Metadata *md);
 
@@ -216,7 +221,8 @@ int              STARCH_updateMetadataForChromosome(Metadata **md,
                                                BaseCountType totalUniqueBases,
                                                      Boolean duplicateElementExists, 
                                                      Boolean nestedElementExists,
-                                                        char *signature);
+                                                        char *signature,
+                                              LineLengthType lineMaxStringLength);
 
 int              STARCH_listMetadata(const Metadata *md,
                                          const char *chr);

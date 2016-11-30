@@ -61,6 +61,8 @@ Released: **TBD**
 
   * The :code:`--is-starch` option now quits with a non-zero exit code, if the specified input file is not a Starch archive.
 
+  * The :code:`--elements-max-string-length` option reports the length of the longest string within the specified chromosome, or the longest string over all chromosomes (if no chromosome name is specified).
+
 * :ref:`starch <starch>`
 
   * Added :code:`--report-progress=N` option to (optionally) report compression of the Nth element of the current chromosome to standard error stream.

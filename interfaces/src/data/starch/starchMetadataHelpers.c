@@ -64,7 +64,8 @@ STARCH_createMetadata(char const *chr,
                       BaseCountType totalUniqueBases, 
                       Boolean duplicateElementExists, 
                       Boolean nestedElementExists, 
-                      char const *signature)
+                      char const *signature,
+                      LineLengthType lineMaxStringLength)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_createMetadata() ---\n");
@@ -129,6 +130,7 @@ STARCH_createMetadata(char const *chr,
 
         newMetadata->size = size;
         newMetadata->lineCount = lineCount;
+        newMetadata->lineMaxStringLength = lineMaxStringLength;
         newMetadata->totalNonUniqueBases = totalNonUniqueBases;
         newMetadata->totalUniqueBases = totalUniqueBases;
         newMetadata->duplicateElementExists = duplicateElementExists;
@@ -156,7 +158,8 @@ STARCH_addMetadata(Metadata *md,
                    BaseCountType totalUniqueBases, 
                    Boolean duplicateElementExists, 
                    Boolean nestedElementExists, 
-                   char *signature)
+                   char *signature,
+                   LineLengthType lineMaxStringLength)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_addMetadata() ---\n");
@@ -169,7 +172,8 @@ STARCH_addMetadata(Metadata *md,
                                             totalUniqueBases,
                                             duplicateElementExists,
                                             nestedElementExists,
-                                            signature);
+                                            signature,
+                                            lineMaxStringLength);
 
     if ((newMd != NULL) && (md->next == NULL))
         md->next = newMd;
@@ -200,7 +204,8 @@ STARCH_copyMetadata(const Metadata *md)
                                  md->totalUniqueBases,
                                  md->duplicateElementExists,
                                  md->nestedElementExists,
-                                 md->signature);
+                                 md->signature,
+                                 md->lineMaxStringLength);
     firstRec = copy;
     md = md->next;
 
@@ -215,7 +220,8 @@ STARCH_copyMetadata(const Metadata *md)
                                   iter->totalUniqueBases,
                                   iter->duplicateElementExists,
                                   iter->nestedElementExists,
-                                  iter->signature);
+                                  iter->signature,
+                                  iter->lineMaxStringLength);
     }
 
     if (!firstRec) {
@@ -236,7 +242,8 @@ STARCH_updateMetadataForChromosome(Metadata **md,
                                    BaseCountType totalUniqueBases, 
                                    Boolean duplicateElementExists, 
                                    Boolean nestedElementExists, 
-                                   char *signature) 
+                                   char *signature,
+                                   LineLengthType lineMaxStringLength) 
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_updateMetadataForChromosome() ---\n");
@@ -298,6 +305,7 @@ STARCH_updateMetadataForChromosome(Metadata **md,
             iter->totalUniqueBases = totalUniqueBases;
             iter->duplicateElementExists = duplicateElementExists;
             iter->nestedElementExists = nestedElementExists;
+            iter->lineMaxStringLength = lineMaxStringLength;
             break;
         }
     }
@@ -339,11 +347,12 @@ STARCH_listMetadata(const Metadata *md,
 
     if (chrFound == kStarchTrue) {
         fprintf(stdout, 
-                "%-25s|%-65s|%-15s|%-25s|%-20s|%-20s|%-25s|%-25s|%-25s\n", 
+                "%-25s|%-65s|%-15s|%-25s|%-25s|%-20s|%-20s|%-25s|%-25s|%-25s\n", 
                 "chr", 
                 "filename", 
                 "compressedSize", 
                 "uncompressedLineCount", 
+                "uncompressedLineMaxStrLength",
                 "totalNonUniqueBases", 
                 "totalUniqueBases", 
                 "duplicateElementExists", 
@@ -356,11 +365,12 @@ STARCH_listMetadata(const Metadata *md,
             if ( (strcmp((const char *)iter->chromosome, chr) == 0) || (strcmp("all", chr) == 0) )
 #endif
                 fprintf(stdout, 
-                        "%-25s|%-65s|%-15" PRIu64 "|%-25" PRIu64 "|%-20" PRIu64 "|%-20" PRIu64 "|%-25s|%-25s|%-25s\n", 
+                        "%-25s|%-65s|%-15" PRIu64 "|%-25" PRIu64 "|%-25" PRIu64 "|%-20" PRIu64 "|%-20" PRIu64 "|%-25s|%-25s|%-25s\n", 
                         iter->chromosome, 
                         iter->filename, 
                         iter->size, 
                         iter->lineCount, 
+                        iter->lineMaxStringLength,
                         iter->totalNonUniqueBases, 
                         iter->totalUniqueBases, 
                         (iter->duplicateElementExists == kStarchTrue ? t : f), 
@@ -495,6 +505,7 @@ STARCH_generateJSONMetadata(const Metadata *md,
     json_t *streamFilename = NULL;
     json_t *streamSize = NULL;
     json_t *streamLineCount = NULL;
+    json_t *streamLineMaxStringLength = NULL;
     json_t *streamTotalNonUniqueBases = NULL;
     json_t *streamTotalUniqueBases = NULL;
     json_t *streamCustomHeaderFlag = NULL;
@@ -519,6 +530,7 @@ STARCH_generateJSONMetadata(const Metadata *md,
     size_t creationTimestampLength = STARCH_CREATION_TIMESTAMP_LENGTH;
     uint64_t filenameSize = 0;
     LineCountType filenameLineCount = 0;
+    LineLengthType filenameLineMaxStringLength = 0UL;
     BaseCountType totalNonUniqueBases = 0;
     BaseCountType totalUniqueBases = 0;
     time_t creationTime;
@@ -707,10 +719,19 @@ STARCH_generateJSONMetadata(const Metadata *md,
 
         /* 2.2+ archive */
         if ((json_integer_value(streamArchiveVersionMajor) > 2) || ((json_integer_value(streamArchiveVersionMajor) == 2) && (json_integer_value(streamArchiveVersionMinor) >= 2))) {
+            /* data integrity signature */
             recordSignature = STARCH_strndup(iter->signature, strlen(iter->signature) + 1);
             streamSignature = json_string(recordSignature);
             json_object_set_new(stream, STARCH_METADATA_STREAM_SIGNATURE_KEY, streamSignature);
             free(recordSignature);
+            /* maximum string length */
+            filenameLineMaxStringLength = iter->lineMaxStringLength;
+#ifdef __cplusplus
+            streamLineMaxStringLength = json_integer(static_cast<json_int_t>(filenameLineMaxStringLength));
+#else
+            streamLineMaxStringLength = json_integer((json_int_t)filenameLineMaxStringLength);
+#endif
+            json_object_set_new(stream, STARCH_METADATA_STREAM_LINEMAXSTRINGLENGTH_KEY, streamLineMaxStringLength);
         }
 
         json_array_append_new(streams, stream);
@@ -860,6 +881,7 @@ STARCH_readJSONMetadata(json_t **metadataJSON,
     json_t *streamSignature = NULL;
     json_t *streamSize = NULL;
     json_t *streamLineCount = NULL;
+    json_t *streamLineMaxStringLength = NULL;
     json_t *streamTotalNonUniqueBases = NULL;
     json_t *streamTotalUniqueBases = NULL;
     json_t *streamDuplicateElementExistsFlag = NULL;
@@ -879,6 +901,7 @@ STARCH_readJSONMetadata(json_t **metadataJSON,
     const char *jsonObjAvKey = NULL;
     json_t *jsonObjAvValue = NULL;
     LineCountType streamLineCountValue = STARCH_DEFAULT_LINE_COUNT;
+    LineLengthType streamLineMaxStringLengthValue = STARCH_DEFAULT_LINE_STRING_LENGTH;
     BaseCountType streamTotalNonUniqueBasesValue = STARCH_DEFAULT_NON_UNIQUE_BASE_COUNT;
     BaseCountType streamTotalUniqueBasesValue = STARCH_DEFAULT_UNIQUE_BASE_COUNT;
     Boolean streamDuplicateElementExistsValue = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
@@ -1570,6 +1593,7 @@ STARCH_readJSONMetadata(json_t **metadataJSON,
             }
 
             /* v2.2+ */
+            /* data integrity signature */
             streamSignature = json_object_get(stream, STARCH_METADATA_STREAM_SIGNATURE_KEY);
             if (!streamSignature) {
                 if (((*version)->major > 2) || (((*version)->major == 2) && ((*version)->minor >= 2))) {
@@ -1581,17 +1605,43 @@ STARCH_readJSONMetadata(json_t **metadataJSON,
                     fprintf(stderr, "ERROR: Could not retrieve stream signature object\n");
                 return STARCH_EXIT_FAILURE;
             }
+            /* maximum string length */
+            streamLineMaxStringLength = json_object_get(stream, STARCH_METADATA_STREAM_LINEMAXSTRINGLENGTH_KEY);
+#ifdef __cplusplus
+            streamLineMaxStringLengthValue = static_cast<LineLengthType>( json_integer_value(streamLineMaxStringLength) );
+#else
+            streamLineMaxStringLengthValue = (LineLengthType) json_integer_value(streamLineMaxStringLength);
+#endif
             
             strncpy(streamChr, json_string_value(streamChromosome), strlen(json_string_value(streamChromosome)) + 1);
             strncpy(streamFn, json_string_value(streamFilename), strlen(json_string_value(streamFilename)) + 1);
             strncpy(streamSig, json_string_value(streamSignature), strlen(json_string_value(streamSignature)) + 1);
 
             if (streamIdx == 0) {
-                *rec = STARCH_createMetadata(streamChr, streamFn, streamSizeValue, streamLineCountValue, streamTotalNonUniqueBasesValue, streamTotalUniqueBasesValue, streamDuplicateElementExistsValue, streamNestedElementExistsValue, streamSig);
+                *rec = STARCH_createMetadata(streamChr, 
+                                             streamFn, 
+                                             streamSizeValue, 
+                                             streamLineCountValue, 
+                                             streamTotalNonUniqueBasesValue, 
+                                             streamTotalUniqueBasesValue, 
+                                             streamDuplicateElementExistsValue, 
+                                             streamNestedElementExistsValue, 
+                                             streamSig, 
+                                             streamLineMaxStringLengthValue);
                 firstRec = *rec;
             }
             else
-                *rec = STARCH_addMetadata(*rec, streamChr, streamFn, streamSizeValue, streamLineCountValue, streamTotalNonUniqueBasesValue, streamTotalUniqueBasesValue, streamDuplicateElementExistsValue, streamNestedElementExistsValue, streamSig);
+                *rec = STARCH_addMetadata(*rec, 
+                                          streamChr, 
+                                          streamFn, 
+                                          streamSizeValue, 
+                                          streamLineCountValue, 
+                                          streamTotalNonUniqueBasesValue, 
+                                          streamTotalUniqueBasesValue, 
+                                          streamDuplicateElementExistsValue, 
+                                          streamNestedElementExistsValue, 
+                                          streamSig, 
+                                          streamLineMaxStringLengthValue);
         }
 
         /* reset Metadata record pointer to first record */
@@ -1844,7 +1894,8 @@ STARCH_readLegacyMetadata(const char *buf,
                                                  recUniqueBaseCountValue, 
                                                  recDuplicateElementExistsFlagValue, 
                                                  recNestedElementExistsFlagValue,
-                                                 NULL);
+                                                 NULL,
+                                                 STARCH_DEFAULT_LINE_STRING_LENGTH);
                     firstRec = *rec;
                 }
                 else
@@ -1857,7 +1908,8 @@ STARCH_readLegacyMetadata(const char *buf,
                                               recUniqueBaseCountValue, 
                                               recDuplicateElementExistsFlagValue, 
                                               recNestedElementExistsFlagValue,
-                                              NULL);
+                                              NULL,
+                                              STARCH_DEFAULT_LINE_STRING_LENGTH);
 
                 /* cleanup */
                 if (recFilename)

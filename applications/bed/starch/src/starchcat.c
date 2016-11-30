@@ -319,6 +319,7 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
     uint64_t outFileSizeCounter = 0;
     char *outSignature = NULL;
     LineCountType outFileLineCount = 0;
+    LineLengthType outFileLineMaxStringLength = STARCH_DEFAULT_LINE_STRING_LENGTH;
     BaseCountType outFileNonUniqueBases = 0;
     BaseCountType outFileUniqueBases = 0;
     Boolean outDuplicateElementExists = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
@@ -384,6 +385,7 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
         if (strcmp(iter->chromosome, inChr) == 0) {
             if (((av->major == 1) && (av->minor >= 4)) || (av->major == 2)) {
                 outFileLineCount = iter->lineCount;
+                outFileLineMaxStringLength = iter->lineMaxStringLength;
                 outFileNonUniqueBases = iter->totalNonUniqueBases;
                 outFileUniqueBases = iter->totalUniqueBases;
                 outDuplicateElementExists = iter->duplicateElementExists;
@@ -497,7 +499,8 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
                                         outFileUniqueBases,
                                         outDuplicateElementExists,
                                         outNestedElementExists,
-                                        outSignature );
+                                        outSignature,
+                                        outFileLineMaxStringLength );
     }
     else {
 #ifdef DEBUG
@@ -516,7 +519,8 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
                                      outFileUniqueBases,
                                      outDuplicateElementExists,
                                      outNestedElementExists,
-                                     outSignature );
+                                     outSignature,
+                                     outFileLineMaxStringLength );
     }
     
     return STARCHCAT_EXIT_SUCCESS;
@@ -539,6 +543,7 @@ STARCHCAT_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const C
     uint64_t outFileSize = 0;
     uint64_t outFileSizeCounter = 0;
     LineCountType outFileLineCount = 0;
+    LineLengthType outFileLineMaxStringLength = STARCH_DEFAULT_LINE_STRING_LENGTH;
     BaseCountType outFileNonUniqueBases = 0;
     BaseCountType outFileUniqueBases = 0;
     Boolean outDuplicateElementExists = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
@@ -702,7 +707,8 @@ STARCHCAT_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const C
                                         outFileUniqueBases,
                                         outDuplicateElementExists,
                                         outNestedElementExists,
-                                        outSignature);
+                                        outSignature,
+                                        outFileLineMaxStringLength);
     }
     else {
 #ifdef DEBUG
@@ -721,7 +727,8 @@ STARCHCAT_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const C
                                      outFileUniqueBases,
                                      outDuplicateElementExists,
                                      outNestedElementExists,
-                                     outSignature);
+                                     outSignature,
+                                     outFileLineMaxStringLength);
     }
     /* fprintf(stderr, "\t\tchr: %s, outFn: %s, size: %llu\n", (*outMd)->chromosome, (*outMd)->filename, (*outMd)->size); */
 
@@ -816,6 +823,7 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
     Boolean t_duplicateElementExists = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
     Boolean t_nestedElementExists = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
     size_t t_fileSize = 0U;
+    LineLengthType t_lineMaxStringLength = STARCH_DEFAULT_LINE_STRING_LENGTH;
 
     /* hash variables */
     struct sha1_ctx t_perChromosomeHashCtx;
@@ -1067,6 +1075,12 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                         */
                         if (bufChar == '\n') {
                             bzLineBuf[bufCharIndex - 1] = '\0';
+#ifdef __cplusplus
+                            t_lineMaxStringLength = (t_lineMaxStringLength >= static_cast<LineLengthType>(bufCharIndex - 1)) ? t_lineMaxStringLength : static_cast<LineLengthType>(bufCharIndex - 1);
+#else
+                            t_lineMaxStringLength = (t_lineMaxStringLength >= (LineLengthType)(bufCharIndex - 1)) ? t_lineMaxStringLength : (LineLengthType)(bufCharIndex - 1);
+#endif
+
 #ifdef DEBUG
                             /*
                             fprintf(stderr, "\tbzLineBuf: %s\n", bzLineBuf);
@@ -1561,7 +1575,11 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
 
                         if (bufChar == '\n') {
                             zLineBuf[bufCharIndex - 1] = '\0';
-
+#ifdef __cplusplus
+                            t_lineMaxStringLength = (t_lineMaxStringLength >= static_cast<LineLengthType>(bufCharIndex - 1)) ? t_lineMaxStringLength : static_cast<LineLengthType>(bufCharIndex - 1);
+#else
+                            t_lineMaxStringLength = (t_lineMaxStringLength >= (LineLengthType)(bufCharIndex - 1)) ? t_lineMaxStringLength : (LineLengthType)(bufCharIndex - 1);
+#endif
                             /* extract a line of transformed data */
                             UNSTARCH_extractRawLine( inChr, 
                                                      zLineBuf, 
@@ -1963,7 +1981,8 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                                         t_totalUniqueBases,
                                         t_duplicateElementExists,
                                         t_nestedElementExists,
-                                        t_base64EncodedSha1Digest );    
+                                        t_base64EncodedSha1Digest,
+                                        t_lineMaxStringLength );    
     else
         *outMd = STARCH_addMetadata( *outMd, 
 #ifdef __cplusplus
@@ -1978,7 +1997,8 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                                      t_totalUniqueBases,
                                      t_duplicateElementExists,
                                      t_nestedElementExists,
-                                     t_base64EncodedSha1Digest );
+                                     t_base64EncodedSha1Digest,
+                                     t_lineMaxStringLength );
 
     /* cleanup */
     if (outTagFn)
@@ -2492,6 +2512,7 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
     uint64_t bzOutBytesWritten = 0;
     uint64_t finalStreamSize = 0;
     LineCountType finalLineCount = 0;
+    LineLengthType finalLineMaxStringLength = STARCH_DEFAULT_LINE_STRING_LENGTH;
     BaseCountType finalTotalNonUniqueBases = 0;
     BaseCountType finalTotalUniqueBases = 0;
     Boolean finalDuplicateElementExists = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
@@ -2757,6 +2778,7 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
         outputRetransformState->r_totalNonUniqueBases       = 0;
         outputRetransformState->r_totalUniqueBases          = 0;
         outputRetransformState->r_signature                 = NULL;
+        outputRetransformState->r_lineMaxStringLength       = STARCH_DEFAULT_LINE_STRING_LENGTH;
         outputRetransformState->r_duplicateElementExists    = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
         outputRetransformState->r_nestedElementExists       = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
         outputRetransformState->r_previousStop              = 0;
@@ -2837,10 +2859,14 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
 #endif
         if ((eobFlags) && (starts) && (stops) && (lowestElementRes == STARCHCAT_EXIT_SUCCESS)) {
 #ifdef __cplusplus
+            LineLengthType leLineMaxStringLength = static_cast<LineLengthType>(strlen(static_cast<const char *>( extractedElements[lowestStartElementIdx] )) - 1);
+            outputRetransformState->r_lineMaxStringLength = (outputRetransformState->r_lineMaxStringLength >= leLineMaxStringLength) ? outputRetransformState->r_lineMaxStringLength : leLineMaxStringLength;
             STARCHCAT2_addLowestBedElementToCompressionBuffer( compressionBuffer, 
                                                                static_cast<const char *>( extractedElements[lowestStartElementIdx] ), 
                                                                &compressionLineCount);
 #else
+            LineLengthType leLineMaxStringLength = (LineLengthType) strlen(extractedElements[lowestStartElementIdx]) - 1;
+            outputRetransformState->r_lineMaxStringLength = (outputRetransformState->r_lineMaxStringLength >= leLineMaxStringLength) ? outputRetransformState->r_lineMaxStringLength : leLineMaxStringLength;
             STARCHCAT2_addLowestBedElementToCompressionBuffer( compressionBuffer, 
                                                                (const char *) extractedElements[lowestStartElementIdx], 
                                                                &compressionLineCount);
@@ -3044,6 +3070,7 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
     finalDuplicateElementExists = outputRetransformState->r_duplicateElementExists;
     finalNestedElementExists = outputRetransformState->r_nestedElementExists;
     finalSignature = outputRetransformState->r_signature;
+    finalLineMaxStringLength = outputRetransformState->r_lineMaxStringLength;
 
     STARCHCAT2_finalizeMetadata( outMd, 
 #ifdef __cplusplus
@@ -3058,7 +3085,8 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
                                  finalTotalUniqueBases,
                                  finalDuplicateElementExists,
                                  finalNestedElementExists,
-                                 finalSignature );
+                                 finalSignature,
+                                 finalLineMaxStringLength );
 
     /* breakdown */
     for (inRecIdx = 0U; inRecIdx < summary->numRecords; inRecIdx++) {
@@ -5606,16 +5634,16 @@ STARCHCAT2_fillExtractionBufferFromBzip2Stream (Boolean *eofFlag, char *recordCh
                                     bzLineBuf,
                                     tab,
                                     t_startPtr, 
-                    t_pLengthPtr, 
-                    t_lastEndPtr,
+                                    t_pLengthPtr, 
+                                    t_lastEndPtr,
                                     t_firstInputToken, 
-                    t_secondInputToken,
+                                    t_secondInputToken,
                                     &t_currentChromosome, 
-                    t_currentChromosomeLengthPtr, 
-                    t_currentStartPtr, 
-                    t_currentStopPtr,
+                                    t_currentChromosomeLengthPtr, 
+                                    t_currentStartPtr, 
+                                    t_currentStopPtr,
                                     &t_currentRemainder, 
-                    t_currentRemainderLengthPtr);
+                                    t_currentRemainderLengthPtr);
 
             if (bzLineBuf[0] != 'p') {
                 (*t_lineIdxPtr)++;
@@ -5624,14 +5652,14 @@ STARCHCAT2_fillExtractionBufferFromBzip2Stream (Boolean *eofFlag, char *recordCh
 #else
                 UNSTARCH_reverseTransformCoordinates( (const LineCountType) *t_lineIdxPtr,
 #endif
-                              t_lastPositionPtr,
-                              t_lcDiffPtr,
-                              t_currentStartPtr, 
-                              t_currentStopPtr, 
-                              &t_currentRemainder, 
-                              retransformedLineBuffer, 
-                              &nRetransformedLineBuffer, 
-                              &nRetransformedLineBufferPosition );
+                                                      t_lastPositionPtr,
+                                                      t_lcDiffPtr,
+                                                      t_currentStartPtr, 
+                                                      t_currentStopPtr, 
+                                                      &t_currentRemainder, 
+                                                      retransformedLineBuffer, 
+                                                      &nRetransformedLineBuffer, 
+                                                      &nRetransformedLineBufferPosition );
                               
                 /* resize the extraction buffer, if we're getting too close to the maximum size of a line */
 #ifdef __cplusplus
@@ -5904,19 +5932,19 @@ STARCHCAT2_fillExtractionBufferFromGzipStream (Boolean *eofFlag, FILE **inputFp,
                 fprintf(stderr, "\tzLineBuf -> [%s]\n", zLineBuf);
 #endif
                 UNSTARCH_extractRawLine( recordChromosome,
-                     zLineBuf,
-                     tab,
-                     t_startPtr, 
-                     t_pLengthPtr, 
-                     t_lastEndPtr,
-                     t_firstInputToken, 
-                     t_secondInputToken,
-                     &t_currentChromosome, 
-                     t_currentChromosomeLengthPtr, 
-                     t_currentStartPtr, 
-                     t_currentStopPtr,
-                     &t_currentRemainder, 
-                     t_currentRemainderLengthPtr);
+                                         zLineBuf,
+                                         tab,
+                                         t_startPtr, 
+                                         t_pLengthPtr, 
+                                         t_lastEndPtr,
+                                         t_firstInputToken, 
+                                         t_secondInputToken,
+                                         &t_currentChromosome, 
+                                         t_currentChromosomeLengthPtr, 
+                                         t_currentStartPtr, 
+                                         t_currentStopPtr,
+                                         &t_currentRemainder, 
+                                         t_currentRemainderLengthPtr);
                 if (zLineBuf[0] != 'p') {
                     (*t_lineIdxPtr)++;
 #ifdef __cplusplus
@@ -5924,14 +5952,14 @@ STARCHCAT2_fillExtractionBufferFromGzipStream (Boolean *eofFlag, FILE **inputFp,
 #else
                     UNSTARCH_reverseTransformCoordinates( (const LineCountType) *t_lineIdxPtr,
 #endif
-                              t_lastPositionPtr,
-                              t_lcDiffPtr,
-                              t_currentStartPtr, 
-                              t_currentStopPtr, 
-                              &t_currentRemainder, 
-                              retransformedLineBuffer, 
-                              &nRetransformedLineBuffer, 
-                              &nRetransformedLineBufferPosition);
+                                                          t_lastPositionPtr,
+                                                          t_lcDiffPtr,
+                                                          t_currentStartPtr, 
+                                                          t_currentStopPtr, 
+                                                          &t_currentRemainder, 
+                                                          retransformedLineBuffer, 
+                                                          &nRetransformedLineBuffer, 
+                                                          &nRetransformedLineBufferPosition);
 
                     /* resize the extraction buffer, if we're getting too close to the maximum size of a line */
                     if ((*nExtractionBuffer - *t_nExtractionBufferPos) < TOKENS_MAX_LENGTH) {
@@ -6529,7 +6557,7 @@ STARCHCAT2_resetCompressionBuffer (char *compressionBuffer, LineCountType *compr
 }
 
 int      
-STARCHCAT2_finalizeMetadata (Metadata **outMd, char *finalChromosome, char *finalOutTagFn, uint64_t finalStreamSize, LineCountType finalLineCount, uint64_t finalTotalNonUniqueBases, uint64_t finalTotalUniqueBases, Boolean finalDuplicateElementExists, Boolean finalNestedElementExists, char *finalSignature)
+STARCHCAT2_finalizeMetadata (Metadata **outMd, char *finalChromosome, char *finalOutTagFn, uint64_t finalStreamSize, LineCountType finalLineCount, uint64_t finalTotalNonUniqueBases, uint64_t finalTotalUniqueBases, Boolean finalDuplicateElementExists, Boolean finalNestedElementExists, char *finalSignature, LineLengthType finalLineMaxStringLength)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCHCAT2_finalizeMetadata() ---\n");
@@ -6544,7 +6572,8 @@ STARCHCAT2_finalizeMetadata (Metadata **outMd, char *finalChromosome, char *fina
                                         finalTotalUniqueBases,
                                         finalDuplicateElementExists,
                                         finalNestedElementExists,
-                                        finalSignature );
+                                        finalSignature,
+                                        finalLineMaxStringLength );
     else
         *outMd = STARCH_addMetadata( *outMd, 
                                      finalChromosome, 
@@ -6555,7 +6584,8 @@ STARCHCAT2_finalizeMetadata (Metadata **outMd, char *finalChromosome, char *fina
                                      finalTotalUniqueBases,
                                      finalDuplicateElementExists,
                                      finalNestedElementExists,
-                                     finalSignature );
+                                     finalSignature,
+                                     finalLineMaxStringLength );
 
     return STARCH_EXIT_SUCCESS;
 }

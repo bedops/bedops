@@ -52,16 +52,17 @@ namespace Bed {
   typedef int64_t SignedCoordType;
   typedef CoordType LineCountType;
   typedef CoordType BaseCountType;
+  typedef int LineLengthType;
     
   static_assert(sizeof(SignedCoordType) >= sizeof(INT_MAX_COORD_VALUE), "INT_MAX_COORD_VALUE is too big!"); // expected-warning {{static_assert declarations are incompatible with C++98}}
 
-  constexpr unsigned long   TOKEN_CHR_MAX_LENGTH     = INT_TOKEN_CHR_MAX_LENGTH;
-  constexpr unsigned long   TOKEN_ID_MAX_LENGTH      = INT_TOKEN_ID_MAX_LENGTH;
-  constexpr unsigned long   TOKEN_REST_MAX_LENGTH    = INT_TOKEN_REST_MAX_LENGTH;
+  constexpr LineLengthType  TOKEN_CHR_MAX_LENGTH     = INT_TOKEN_CHR_MAX_LENGTH;
+  constexpr LineLengthType  TOKEN_ID_MAX_LENGTH      = INT_TOKEN_ID_MAX_LENGTH;
+  constexpr LineLengthType  TOKEN_REST_MAX_LENGTH    = INT_TOKEN_REST_MAX_LENGTH;
   constexpr unsigned long   MAX_DEC_INTEGERS         = INT_MAX_DEC_INTEGERS;
   constexpr SignedCoordType MAX_COORD_VALUE          = INT_MAX_COORD_VALUE;
-  constexpr unsigned long   TOKENS_MAX_LENGTH        = INT_TOKENS_MAX_LENGTH;
-  constexpr unsigned long   TOKENS_HEADER_MAX_LENGTH = INT_TOKENS_HEADER_MAX_LENGTH;
+  constexpr LineLengthType  TOKENS_MAX_LENGTH        = INT_TOKENS_MAX_LENGTH;
+  constexpr LineLengthType  TOKENS_HEADER_MAX_LENGTH = INT_TOKENS_HEADER_MAX_LENGTH;
   constexpr unsigned long   TOKEN_CHR_FIELD_INDEX    = INT_TOKEN_CHR_FIELD_INDEX;
   constexpr unsigned long   TOKEN_START_FIELD_INDEX  = INT_TOKEN_START_FIELD_INDEX;
   constexpr unsigned long   TOKEN_STOP_FIELD_INDEX   = INT_TOKEN_STOP_FIELD_INDEX;
@@ -77,6 +78,7 @@ namespace Bed {
   typedef int64_t SignedCoordType;
   typedef CoordType LineCountType;
   typedef CoordType BaseCountType;
+  typedef int LineLengthType;
 
 #define TOKEN_CHR_MAX_LENGTH INT_TOKEN_CHR_MAX_LENGTH
 #define TOKEN_ID_MAX_LENGTH INT_TOKEN_ID_MAX_LENGTH

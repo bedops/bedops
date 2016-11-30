@@ -32,7 +32,9 @@
 static const char *name = "unstarch";
 static const char *authors = "Alex Reynolds and Shane Neph";
 static const char *usage = "\n" \
-    "USAGE: unstarch [ <chromosome> ]  [ --elements | --bases | --bases-uniq |\n" \
+    "USAGE: unstarch [ <chromosome> ]  [ --elements | \n" \
+    "                                    --elements-max-string-length |\n" \
+    "                                    --bases | --bases-uniq |\n" \
     "                                    --has-duplicates | --has-nested | --list |\n" \
     "                                    --list-json | --list-chromosomes |\n" \
     "                                    --archive-timestamp | --note |\n" \
@@ -52,6 +54,11 @@ static const char *usage = "\n" \
     "                                     <chromosome> is specified, the result\n" \
     "                                     shows the element count for the\n" \
     "                                     chromosome.\n\n" \
+    "    --elements-max-string-length     Show the maximum string length over all\n" \
+    "                                     elements in <chromosome>, if specified.\n" \
+    "                                     If <chromosome> is not specified, the\n" \
+    "                                     maximum string length is shown over all\n" \
+    "                                     chromosomes.\n\n" \
     "    --bases,\n" \
     "    --bases-uniq                     Show total and unique base counts,\n" \
     "                                     respectively, for archive. If\n" \

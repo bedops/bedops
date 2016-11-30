@@ -71,6 +71,8 @@
 #define UNSTARCH_IS_STARCH_ARCHIVE_ERROR 32
 #define UNSTARCH_SIGNATURE_ERROR 33
 #define UNSTARCH_SIGNATURE_VERIFY_ERROR 34
+#define UNSTARCH_ELEMENT_MAX_STRING_LENGTH_CHR_ERROR 35
+#define UNSTARCH_ELEMENT_MAX_STRING_LENGTH_ALL_ERROR 36
 
 int                UNSTARCH_reverseTransformInput(const char *chr,
                                          const unsigned char *str,
@@ -198,6 +200,14 @@ void               UNSTARCH_printLineCountForChromosome(const Metadata *md,
                                                             const char *chr);
 
 void               UNSTARCH_printLineCountForAllChromosomes(const Metadata *md);
+
+LineLengthType     UNSTARCH_lineMaxStringLengthForChromosome(const Metadata *md, 
+                                                                 const char *chr);
+
+void               UNSTARCH_printLineMaxStringLengthForChromosome(const Metadata *md, 
+                                                                      const char *chr);
+
+void               UNSTARCH_printLineMaxStringLengthForAllChromosomes(const Metadata *md);
 
 BaseCountType      UNSTARCH_nonUniqueBaseCountForChromosome(const Metadata *md, 
                                                                 const char *chr);
