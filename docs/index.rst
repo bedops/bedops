@@ -172,7 +172,7 @@ Contents
           <img src="_images/toc_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
           <ul style="list-style-type:square; font-size:smaller; margin:0; margin-right:2px; padding-right:0px; padding-left:20px;">
              <li><a href="content/summary.html">Table summary</a> of <strong>BEDOPS</strong> toolkit</li>
-             <li><a href="content/reference/file-management/compression/starch-specification.html">Starch v2.1</a> format specification</li>
+             <li><a href="content/reference/file-management/compression/starch-specification.html">Starch v2.2</a> format specification</li>
              <li><a href="content/reference/set-operations/nested-elements.html">About nested elements</a>
              <li><a href="content/revision-history.html">Revision history</a></li>
              <li><a href="content/release.html">Github release instructions</a></li>
@@ -281,7 +281,7 @@ Contents
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
    <li><a href="content/summary.html">Table summary</a> of <strong>BEDOPS</strong> toolkit</li>
-   <li><a href="content/reference/file-management/compression/starch-specification.html">Starch v2.1</a> format specification</li>
+   <li><a href="content/reference/file-management/compression/starch-specification.html">Starch v2.2</a> format specification</li>
    <li><a href="content/reference/set-operations/nested-elements.html">About nested elements</a>
    <li><a href="content/revision-history.html">Revision history</a></li>
    <li><a href="content/release.html">Github release instructions</a></li>
