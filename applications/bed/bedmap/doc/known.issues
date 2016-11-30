@@ -23,7 +23,7 @@ chr1 3  6
 chr1 10 30
 
 You use:
-bedmap --fraction-map 1 --echo-mapRange --echo-mapScore File2 File1
+bedmap --fraction-map 1 --echo-map-range --echo-mapScore File2 File1
 
 You receive:
 chr1 1 2|1

@@ -65,75 +65,106 @@ namespace Ext {
     static constexpr std::size_t BASE = std::numeric_limits<unsigned char>::digits;
     static constexpr std::size_t npos = std::numeric_limits<std::size_t>::max();
 
-    BSet() { for( std::size_t i=0; i<TBYTE; ++i) _charset[i]=CZERO; }
+    BSet() : _count(0), _open(0) { for (std::size_t i=0; i<TBYTE; ++i) _charset[i]=CZERO; }
 
-    inline void set(std::size_t bit) {
-      std::size_t bin = bit/BASE;
-      _charset[bin] |= (1 << (bit%BASE));
+    inline bool any() const { return _count < BITS; }
+    inline bool empty() const { return _count == 0; }
+    inline std::size_t size() const { return BITS; }
+    inline std::size_t get_open() { return (npos != _open) ? _open : find_first_unset(); }
+
+    inline bool set(std::size_t bit) {
+      _charset[bit/BASE] |= (1 << (bit%BASE));
+      bool has_open = (++_count < BITS);
+      if ( bit == _open && has_open )
+        _open = (bit+1 < BITS) ? next_unset(bit) : find_first_unset(bit); // could still become npos
+      return has_open;
     }
 
     inline void set_all() {
       for ( auto& c : _charset )
         c = FULL;
+      _count = BITS;
+      _open = npos;
     }
 
     inline void unset(std::size_t bit) {
-      std::size_t bin = bit/BASE;
-      _charset[bin] &= ~(1 << (bit%BASE));
+      _charset[bit/BASE] &= ~(1 << (bit%BASE));
+      --_count;
+      if ( npos == _open )
+        _open = bit;
     }
 
     inline void unset_all() {
       for ( auto& c : _charset )
         c = CZERO;
+      _count = 0;
+      _open = 0;
     }
 
     inline std::size_t next_set(std::size_t start) const {
       start += 1;
       std::size_t bin = start/BASE;
-      for ( std::size_t i = start%BASE; i < BASE; ++i ) {
-        if (_charset[bin] & (1 << i))
-          return bin*BASE+i;
-      } // for
+      if ( _charset[bin] ) {
+        for ( std::size_t i = start%BASE; i < BASE; ++i ) {
+          if (_charset[bin] & (1 << i))
+            return bin*BASE+i;
+          else if ( npos == _open )
+            _open = bin*BASE+i;
+        } // for
+      }
 
       for ( std::size_t b = bin+1; b < TBYTE; ++b ) {
         if ( _charset[b] ) {
           for ( std::size_t i = 0; i < BASE; ++i ) {
             if ( _charset[b] & (1 << i) )
               return b*BASE+i;
+            else if ( npos == _open )
+              _open = bin*BASE+i;
           } // for
         }
       } // for
       return npos;
     }
 
-    inline std::size_t find_first_set() const {
+    inline std::size_t find_first_set() {
       if ( _charset[0] & (1 << 0) )
         return 0;
+      else if ( npos == _open )
+        _open = 0;
       return next_set(0);
     }
 
-    inline std::size_t next_unset(std::size_t start) const {
+    inline std::size_t next_unset(std::size_t start) {
       start += 1;
       std::size_t bin = start/BASE;
       for ( std::size_t i = start%BASE; i < BASE; ++i ) {
-        if ( !(_charset[bin] & (1 << i)) )
+        if ( !(_charset[bin] & (1 << i)) ) {
+          if ( npos == _open )
+            _open = bin*BASE+i;
           return bin*BASE+i;
+        }
       } // for
 
       for ( std::size_t b = bin+1; b < TBYTE; ++b ) {
         if ( _charset[b] != FULL ) {
           for ( std::size_t i = 0; i < BASE; ++i ) {
-            if ( !(_charset[b] & (1 << i)) )
+            if ( !(_charset[b] & (1 << i)) ) {
+              if ( npos == _open )
+                _open = b*BASE+i;
               return b*BASE+i;
+            }
           } // for
         }
       } // for
       return npos;
     }
 
-    inline std::size_t find_first_unset() const {
-      if ( !(_charset[0] & (1 << 0) ) )
+    inline std::size_t find_first_unset() {
+      if ( !(_charset[0] & (1 << 0) ) ) {
+        if ( npos == _open )
+          _open = 0;
         return 0;
+      }
       return next_unset(0);
     }
 
@@ -147,6 +178,7 @@ namespace Ext {
     static constexpr unsigned char CZERO = (unsigned char)0;
     static constexpr unsigned char FULL = std::numeric_limits<unsigned char>::max();
 
+    std::size_t _count, _open;
     std::array<unsigned char, TBYTE> _charset;
   };
 
