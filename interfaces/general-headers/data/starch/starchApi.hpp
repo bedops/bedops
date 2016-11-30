@@ -181,6 +181,7 @@ namespace starch
                 Bed::BaseCountType _archStreamUniqueBaseCount = 0;
                 Boolean _archStreamDuplicateElementExists = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
                 Boolean _archStreamNestedElementExists = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
+                LineLengthType _archStreamMaxElementLength = STARCH_DEFAULT_LINE_STRING_LENGTH;
                 Metadata *_testMd = NULL;
                 Metadata *_firstMd = NULL;
                 unsigned int _recIdx = 0U;
@@ -411,7 +412,8 @@ namespace starch
                                                             _archStreamUniqueBaseCount,
                                                             _archStreamDuplicateElementExists,
                                                             _archStreamNestedElementExists,
-                                                            _archStreamSignature);
+                                                            _archStreamSignature,
+                                                            _archStreamMaxElementLength);
                             _firstMd = _testMd;
                         }
                         else
@@ -424,7 +426,8 @@ namespace starch
                                                          _archStreamUniqueBaseCount,
                                                          _archStreamDuplicateElementExists,
                                                          _archStreamNestedElementExists,
-                                                         _archStreamSignature);
+                                                         _archStreamSignature,
+                                                         _archStreamMaxElementLength);
                         _recIdx++;
                         _mdJSONStreamChr = NULL;
                         _mdJSONStreamFn = NULL;
@@ -506,6 +509,7 @@ namespace starch
                 Bed::BaseCountType _recUniqueBaseCountValue = 0;
                 Boolean _recDuplicateElementExists = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
                 Boolean _recNestedElementExists = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
+                LineLengthType _recStreamMaxElementLength = STARCH_DEFAULT_LINE_STRING_LENGTH;
 
                 /* read first 8 kilobytes into buffer */
 
@@ -575,7 +579,8 @@ namespace starch
                                                                 _recUniqueBaseCountValue,
                                                                 _recDuplicateElementExists,
                                                                 _recNestedElementExists,
-                                                                NULL);
+                                                                NULL,
+                                                                _recStreamMaxElementLength);
                                 _firstMd = _testMd;
                             }
                             else
@@ -588,7 +593,8 @@ namespace starch
                                                              _recUniqueBaseCountValue,
                                                              _recDuplicateElementExists,
                                                              _recNestedElementExists,
-                                                             NULL);
+                                                             NULL,
+                                                             _recStreamMaxElementLength);
                         }
                         else
                             break;

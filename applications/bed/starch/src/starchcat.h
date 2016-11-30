@@ -153,13 +153,13 @@ static const char *usage = "\n" \
     "\n" \
     "    Process Flags\n" \
     "    --------------------------------------------------------------------------\n" \
-    "    --note=\"foo bar...\"   Append note to output archive metadata (optional)\n\n" \
+    "    --note=\"foo bar...\"   Append note to output archive metadata (optional).\n\n" \
     "    --bzip2 | --gzip      Specify backend compression type (optional, default\n" \
-    "                          is bzip2)\n\n" \
+    "                          is bzip2).\n\n" \
     "    --report-progress=N   Report compression progress every N elements per\n" \
     "                          chromosome to standard error stream (optional)\n\n" \
-    "    --version             Show binary version\n\n" \
-    "    --help                Show this usage message\n";
+    "    --version             Show binary version.\n\n" \
+    "    --help                Show this usage message.\n";
 
 static struct starchcat_client_global_args_t {
     CompressionType compressionType;

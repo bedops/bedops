@@ -54,17 +54,17 @@ static const char *usage = "\n" \
     "    \n" \
     "    Process Flags\n" \
     "    --------------------------------------------------------------------------\n" \
-    "    --note=\"foo bar...\"   Append note to output archive metadata (optional)\n\n" \
+    "    --note=\"foo bar...\"   Append note to output archive metadata (optional).\n\n" \
     "    --bzip2 | --gzip      Specify backend compression type (optional, default\n" \
-    "                          is bzip2)\n\n" \
+    "                          is bzip2).\n\n" \
     "    --report-progress=N   Report compression progress every N elements per\n" \
     "                          chromosome to standard error stream (optional)\n\n" \
     "    --header              Support BED input with custom UCSC track, SAM or VCF\n" \
-    "                          headers, or generic comments (optional)\n\n" \
+    "                          headers, or generic comments (optional).\n\n" \
     "    <unique-tag>          Optional. Specify unique identifier for transformed\n" \
     "                          data.\n\n" \
-    "    --help                Show this usage message\n\n" \
-    "    --version             Show binary version\n";
+    "    --version             Show binary version.\n\n" \
+    "    --help                Show this usage message.\n";
 
 static struct starch_client_global_args_t {
     char *note;

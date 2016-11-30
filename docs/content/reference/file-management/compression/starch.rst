@@ -52,22 +52,36 @@ Use the ``--help`` option to list all options:
    binary version: 2.4.21 (creates archive version: 2.2.0)
    authors:  Alex Reynolds and Shane Neph
 
-  USAGE: starch [--note="foo bar..."] [--bzip2 | --gzip] [--header] [<unique-tag>] <bed-file>
+  USAGE: starch [ --note="foo bar..." ]
+                [ --bzip2 | --gzip ]
+                [ --report-progress=N ]
+                [ --header ] [ <unique-tag> ] <bed-file>
     
       * BED input must be sorted lexicographically (e.g., using BEDOPS sort-bed).
       * Please use '-' to indicate reading BED data from standard input.
       * Output must be directed to a regular file.
-      * The bzip2 compression type makes smaller archives, while gzip extracts faster.
+      * The bzip2 compression type makes smaller archives, while gzip extracts
+        faster.
     
-      Process Flags:
+      Process Flags
+      --------------------------------------------------------------------------
+      --note="foo bar..."   Append note to output archive metadata (optional).
 
-      --note="foo bar..."   Append note to output archive metadata (optional)
-      --bzip2 | --gzip      Specify backend compression type (optional, default is bzip2)
-      --report-progress=N   Report compression progress every N elements per chromosome to standard error stream (optional)
-      --header              Support BED input with custom UCSC track, SAM or VCF headers, or generic comments (optional)
-      <unique-tag>          Specify unique identifier for transformed data (optional)
-      --help                Show this usage message
-      --version             Show binary version
+      --bzip2 | --gzip      Specify backend compression type (optional, default
+                            is bzip2).
+
+      --report-progress=N   Report compression progress every N elements per
+                            chromosome to standard error stream (optional)
+
+      --header              Support BED input with custom UCSC track, SAM or VCF
+                            headers, or generic comments (optional).
+
+      <unique-tag>          Optional. Specify unique identifier for transformed
+                            data.
+
+      --version             Show binary version.
+
+      --help                Show this usage message.
 
 =======
 Options

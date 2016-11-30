@@ -56,27 +56,37 @@ Use the ``--help`` option to list all options:
 ::
 
   starchcat
-    citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-    version:  2.4.21
-    authors:  Alex Reynolds and Shane Neph
+   citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
+   version:  2.4.21
+   authors:  Alex Reynolds and Shane Neph
 
-  USAGE: starchcat [ --note="..." ] [ --bzip2 | --gzip ] <starch-file-1> [<starch-file-2> ...]
- 
-      * At least one lexicographically-sorted, headerless starch archive is required.
-        While two or more inputs make sense for a multiset union operation, you can starchcat 
-        one file in order to update its metadata, recompress it with a different backend method,
-        or add a note annotation.
+  USAGE: starchcat [ --note="..." ]
+                   [ --bzip2 | --gzip ]
+                   [ --report-progress=N ] <starch-file-1> [<starch-file-2> ...]
 
-      * Compressed data are sent to standard output. Use the '>' operator to redirect
-        to a file.
+      * At least one lexicographically-sorted, headerless starch archive is
+        required.
 
-      Process Flags:
+      * While two or more inputs make sense for a multiset union operation, you
+        can starchcat one file in order to update its metadata, recompress it
+        with a different backend method, or add a note annotation.
 
-      --note="foo bar..."   Append note to output archive metadata (optional)
-      --bzip2 | --gzip      Specify backend compression type (optional, default is bzip2)
-      --report-progress=N   Report compression progress every N elements per chromosome to standard error stream (optional)
-      --version             Show binary version
-      --help                Show this usage message
+      * Compressed data are sent to standard output. Use the '>' operator to
+        redirect to a file.
+
+      Process Flags
+      --------------------------------------------------------------------------
+      --note="foo bar..."   Append note to output archive metadata (optional).
+
+      --bzip2 | --gzip      Specify backend compression type (optional, default
+                            is bzip2).
+
+      --report-progress=N   Report compression progress every N elements per
+                            chromosome to standard error stream (optional)
+
+      --version             Show binary version.
+
+      --help                Show this usage message.
 
 -------
 Example

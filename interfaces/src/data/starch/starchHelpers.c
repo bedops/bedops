@@ -489,7 +489,7 @@ STARCH_createTransformTokensForHeaderlessInput(const char *s, const char delim, 
 #endif
                     /* test if element string is longer than allowed bounds */
                     if (strlen(buffer) > TOKEN_CHR_MAX_LENGTH) {
-                        fprintf(stderr, "ERROR: Chromosome field length is too long (must be no longer than %ld characters)\n", TOKEN_CHR_MAX_LENGTH);
+                        fprintf(stderr, "ERROR: Chromosome field length is too long (must be no longer than %d characters)\n", TOKEN_CHR_MAX_LENGTH);
                         return STARCH_FATAL_ERROR;
                     }
                     /* copy element to chromosome variable, if memory is available */
