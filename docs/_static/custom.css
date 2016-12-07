@@ -23,7 +23,7 @@ h2 {
 }
 
 tt {
-   font-size: 0.9em;
+   font-size: 1em;
 }
 
 .index_cols {
@@ -36,7 +36,7 @@ tt {
 }
 
 .col_element {
-   display: inline-block;
+   display: block;
 }
 
 @media only screen and (min-device-width : 320px) and (max-device-width : 568px) and (orientation : landscape) { 
@@ -86,4 +86,12 @@ ul {
 .note {
    background-color: #d0e8ff;
    border: 1px solid #97bee6;
+}
+
+ul.simple > li {
+    margin-bottom: 10px;
+}
+
+.section > ul > li {
+    margin-bottom: 10px;
 }
