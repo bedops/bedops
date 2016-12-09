@@ -9,8 +9,6 @@ DIST_DIR             = ../bin
 OBJ_DIR              = objects_${ARCH}
 OPTIMIZE             = -O3 -std=c++11 -stdlib=libc++
 WARNINGS             = -Wall
-MAIN                 = ../../../..
-HEAD                 = ${MAIN}/interfaces/general-headers
 THISDIR              = ${shell pwd}
 PARTY3               = ${THISDIR}/$(MAIN)/third-party
 LIBJANSSON           = libjansson.a
@@ -32,55 +30,54 @@ INCLUDES             = -iquote$(HEAD) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCD
 LIBLOCATION          = -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBDIR}
 LIBRARIES            = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 BLDFLAGS             = ${WARNINGS} ${OPTIMIZE}
-INCLUDES             = -iquote$(HEAD) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
-STARCHOBJS           = $(OBJ_DIR)/starchConstants.o $(OBJ_DIR)/starchFileHelpers.o $(OBJ_DIR)/starchHelpers.o $(OBJ_DIR)/starchMetadataHelpers.o $(OBJ_DIR)/unstarchHelpers.o $(OBJ_DIR)/starchSha1Digest.o $(OBJ_DIR)/starchBase64Coding.o
 
-build: sort
+build: $(DIST_DIR)/$(PROG)_$(ARCH) $(LIBRARIES)
 
-sort: sortbuild
-	${CXX} -o ${DIST_DIR}/${PROG}_${ARCH} ${BLDFLAGS} ${LIBLOCATION} ${INCLUDES} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -lc++ ${STARCHOBJS} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o ${OBJ_DIR}/CheckSort.o ${LIBRARIES}
+build_debug: $(DIST_DIR)/debug.$(PROG)_$(ARCH)
 
-sortbuild: prep
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -c ${BLDFLAGS} ${LIB3}/starchConstants.c -o ${OBJ_DIR}/starchConstants.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -c ${BLDFLAGS} ${LIB3}/starchFileHelpers.c -o ${OBJ_DIR}/starchFileHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -c ${BLDFLAGS} ${LIB3}/starchHelpers.c -o ${OBJ_DIR}/starchHelpers.o -iquote${HEAD} ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -c ${BLDFLAGS} ${LIB3}/starchMetadataHelpers.c -o ${OBJ_DIR}/starchMetadataHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -c ${BLDFLAGS} ${LIB3}/unstarchHelpers.c -o ${OBJ_DIR}/unstarchHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -c ${BLDFLAGS} ${LIB3}/starchSha1Digest.c -o  ${OBJ_DIR}/starchSha1Digest.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -c ${BLDFLAGS} ${LIB3}/starchBase64Coding.c -o  ${OBJ_DIR}/starchBase64Coding.o ${INCLUDES}
-	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -c ${BLDFLAGS} SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD} 
-	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -c ${BLDFLAGS} Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
-	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -c ${BLDFLAGS} CheckSort.cpp -o ${OBJ_DIR}/CheckSort.o ${INCLUDES}
+build_gprof: $(DIST_DIR)/gprof.$(PROG)_$(ARCH)
 
-build_debug: prep
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -g -O0 -std=c++11 -stdlib=libc++ -c ${LIB3}/starchConstants.c -o ${OBJ_DIR}/starchConstants.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -g -O0 -std=c++11 -stdlib=libc++ -c ${LIB3}/starchFileHelpers.c -o ${OBJ_DIR}/starchFileHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -g -O0 -std=c++11 -stdlib=libc++ -c ${LIB3}/starchHelpers.c -o ${OBJ_DIR}/starchHelpers.o -iquote${HEAD} ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -g -O0 -std=c++11 -stdlib=libc++ -c ${LIB3}/starchMetadataHelpers.c -o ${OBJ_DIR}/starchMetadataHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -g -O0 -std=c++11 -stdlib=libc++ -c ${LIB3}/unstarchHelpers.c -o ${OBJ_DIR}/unstarchHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -g -O0 -std=c++11 -stdlib=libc++ -c ${LIB3}/starchSha1Digest.c -o  ${OBJ_DIR}/starchSha1Digest.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -g -O0 -std=c++11 -stdlib=libc++ -c ${LIB3}/starchBase64Coding.c -o  ${OBJ_DIR}/starchBase64Coding.o ${INCLUDES}
-	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -g -O0 -std=c++11 -stdlib=libc++ -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
-	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -g -O0 -std=c++11 -stdlib=libc++ -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
-	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -g -O0 -std=c++11 -stdlib=libc++ -c CheckSort.cpp -o ${OBJ_DIR}/CheckSort.o ${INCLUDES}
-	${CXX} -o ${DIST_DIR}/debug.${PROG}_${ARCH} ${LIBLOCATION} ${INCLUDES} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -g -lc++ ${STARCHOBJS} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o ${OBJ_DIR}/CheckSort.o ${LIBRARIES}
+dependency_names    = starchConstants starchFileHelpers starchHelpers starchMetadataHelpers unstarchHelpers starchSha1Digest starchBase64Coding SortDetails Sort CheckSort
+dependencies        = $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(dependency_names)))
+debug_dependencies    = $(addprefix $(OBJ_DIR)/debug., $(addsuffix .o, $(dependency_names)))
+gprof_dependencies    = $(addprefix $(OBJ_DIR)/gprof., $(addsuffix .o, $(dependency_names)))
 
-build_gprof: prep
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -pg -O -std=c++11 -stdlib=libc++ -c ${LIB3}/starchConstants.c -o ${OBJ_DIR}/starchConstants.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -pg -O -std=c++11 -stdlib=libc++ -c ${LIB3}/starchFileHelpers.c -o ${OBJ_DIR}/starchFileHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -pg -O -std=c++11 -stdlib=libc++ -c ${LIB3}/starchHelpers.c -o ${OBJ_DIR}/starchHelpers.o -iquote${HEAD} ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -pg -O -std=c++11 -stdlib=libc++ -c ${LIB3}/starchMetadataHelpers.c -o ${OBJ_DIR}/starchMetadataHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -pg -O -std=c++11 -stdlib=libc++ -c ${LIB3}/unstarchHelpers.c -o ${OBJ_DIR}/unstarchHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -pg -O -std=c++11 -stdlib=libc++ -c ${LIB3}/starchSha1Digest.c -o  ${OBJ_DIR}/starchSha1Digest.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -pg -O -std=c++11 -stdlib=libc++ -c ${LIB3}/starchBase64Coding.c -o  ${OBJ_DIR}/starchBase64Coding.o ${INCLUDES}
-	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -pg -O -std=c++11 -stdlib=libc++ -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
-	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -pg -O -std=c++11 -stdlib=libc++ -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
-	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -pg -O -std=c++11 -stdlib=libc++ -c CheckSort.cpp -o ${OBJ_DIR}/CheckSort.o ${INCLUDES}
-	${CXX} -o ${DIST_DIR}/gprof.${PROG}_${ARCH} ${LIBLOCATION} ${INCLUDES} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -g -lc++ ${STARCHOBJS} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o ${OBJ_DIR}/CheckSort.o ${LIBRARIES}
+DBGFLAGS              = -g -O0 -std=c++11 -stdlib=libc++ $(WARNINGS)
+GPROFFLAGS            = -pg -O -std=c++11 -stdlib=libc++ $(WARNINGS)
 
-prep:
-	rm -rf ${OBJ_DIR}
-	mkdir -p ${OBJ_DIR}
+MACFLAGS = -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH)
+
+# Normal build
+$(DIST_DIR)/$(PROG)_$(ARCH) : $(dependencies) $(LIBRARIES)
+	mkdir -p $(DIST_DIR) && ${CXX} -o $@ ${BLDFLAGS} ${LIBLOCATION} ${INCLUDES} $(MACFLAGS) -lc++ $^
+
+$(OBJ_DIR)/%.o : $(LIB3)/%.c
+	mkdir -p $(OBJ_DIR) && $(CXX) -x c++ $(MACFLAGS) -c ${BLDFLAGS} $^ -o $@ ${INCLUDES}
+
+$(OBJ_DIR)/%.o : %.cpp
+	mkdir -p $(OBJ_DIR) && ${CXX} $(MACFLAGS) -c ${BLDFLAGS} $< -o $@ $(INCLUDES)
+
+
+# Debug version
+$(DIST_DIR)/debug.$(PROG)_$(ARCH) : $(debug_dependencies) $(LIBRARIES)
+	mkdir -p $(DIST_DIR) && ${CXX} -o $@ ${LIBLOCATION} ${INCLUDES} $(MACFLAGS) -g -lc++ $^
+
+$(OBJ_DIR)/debug.%.o : $(LIB3)/%.c
+	mkdir -p $(OBJ_DIR) && $(CXX) -x c++ $(MACFLAGS) -c ${DBGFLAGS} $< -o $@ ${INCLUDES}
+
+$(OBJ_DIR)/debug.%.o : %.cpp
+	mkdir -p $(OBJ_DIR) && ${CXX} $(MACFLAGS) -c ${DBGFLAGS} $< -o $@ $(INCLUDES)
+
+
+# For profiling
+$(DIST_DIR)/gprof.$(PROG)_$(ARCH) : $(gprof_dependencies) $(LIBRARIES)
+	mkdir -p $(DIST_DIR) && ${CXX} -o $@ ${LIBLOCATION} ${INCLUDES} $(MACFLAGS) -g -lc++ $^
+
+$(OBJ_DIR)/gprof.%.o : $(LIB3)/%.c
+	mkdir -p $(OBJ_DIR) && $(CXX) -x c++ $(MACFLAGS) -c ${GPROFFLAGS} $< -o $@ ${INCLUDES}
+
+$(OBJ_DIR)/gprof.%.o : %.cpp
+	mkdir -p $(OBJ_DIR) && ${CXX} $(MACFLAGS) -c ${GPROFFLAGS} $< -o $@ $(INCLUDES)
 
 clean:
 	rm -rf ${OBJ_DIR}*
