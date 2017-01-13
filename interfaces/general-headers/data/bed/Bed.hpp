@@ -158,7 +158,7 @@ namespace Bed {
         return start_ - a.start_;
       return std::numeric_limits<CoordType>::max();
     }
-    inline CoordType sepDistance(const BasicCoords& a) const {
+    inline SignedCoordType sepDistance(const BasicCoords& a) const {
       if( 0 == std::strcmp(chrom_, a.chrom_) )
         return end_ - a.start_;
       return std::numeric_limits<CoordType>::max();
