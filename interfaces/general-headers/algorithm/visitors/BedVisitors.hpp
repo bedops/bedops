@@ -30,6 +30,7 @@
 #include "bed/OvrAggregateVisitor.hpp"
 #include "bed/OvrUniqueVisitor.hpp"
 #include "bed/OvrUniqueFractionVisitor.hpp"
+#include "bed/WeightedAverageVisitor.hpp"
 #include "NumericalVisitors.hpp"
 #include "other/EchoVisitor.hpp"
 #include "other/MultiVisitor.hpp"

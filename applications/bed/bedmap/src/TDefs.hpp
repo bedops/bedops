@@ -79,6 +79,7 @@ namespace BedMap {
     typedef Visitors::StdDev<ProcessScorePrecision, BaseClass> StdDev;
     typedef Visitors::Sum<ProcessScorePrecision, BaseClass> Sum;
     typedef Visitors::TrimmedMean<ProcessScorePrecision, BaseClass, Ext::ArgumentError> TMean;
+    typedef Visitors::WeightedAverage<ProcessScorePrecision, BaseClass> WMean;
     typedef Visitors::Variance<ProcessScorePrecision, BaseClass> Variance;
 
     typedef Visitors::Extreme<ProcessOne, BaseClass, MaxOrderRand, Visitors::RandTie> MaxElementRand;

@@ -177,6 +177,48 @@ namespace Visitors {
         { return "bases-uniq-f"; }
     };
 
+    template <template<class X> class A, class B>
+    struct VisitorName< Visitors::BedSpecific::EchoMapBed<A<Visitors::BedHelpers::Print>,B> > {
+      static std::string Name()
+        { return "echo-map"; }
+    };
+
+    template <template<class X> class A, class B>
+    struct VisitorName< Visitors::BedSpecific::EchoMapBed<A<Visitors::BedHelpers::PrintID>,B> > {
+      static std::string Name()
+        { return "echo-map-id"; }
+    };
+
+    template <class B>
+    struct VisitorName< Visitors::BedSpecific::EchoMapBed<Visitors::BedHelpers::PrintUniqueRangeIDs, B> > {
+      static std::string Name()
+        { return "echo-map-id-uniq"; }
+    };
+
+    template <class B>
+    struct VisitorName< Visitors::BedSpecific::EchoMapBed< Visitors::BedHelpers::PrintGenomicRange<Visitors::BedHelpers::PrintBED3>, B> > {
+      static std::string Name()
+        { return "echo-map-range"; }
+    };
+
+    template <template<class X> class A, class B>
+    struct VisitorName< Visitors::BedSpecific::EchoMapBed< A<Visitors::BedHelpers::PrintScorePrecision>, B> > {
+      static std::string Name()
+        { return "echo-map-score"; }
+    };
+
+    template <template<class X> class A, class B>
+    struct VisitorName< Visitors::BedSpecific::EchoMapBed<A<Visitors::BedHelpers::PrintLength>,B> > {
+      static std::string Name()
+        { return "echo-map-size"; }
+    };
+
+    template <class A, class B>
+    struct VisitorName< Visitors::BedSpecific::EchoMapIntersectLength<A, B> > {
+      static std::string Name()
+        { return "echo-overlap-size"; }
+    };
+
     template <typename B, typename C, typename D>
     struct VisitorName< Visitors::Extreme< Visitors::BedHelpers::PrintAllScorePrecision,B,Bed::ScoreThenGenomicCompareGreater<C,C>, D > > {
       static std::string Name()
@@ -201,46 +243,10 @@ namespace Visitors {
         { return "min-element-rand"; }
     };
 
-    template <template<class X> class A, class B>
-    struct VisitorName< Visitors::BedSpecific::EchoMapBed<A<Visitors::BedHelpers::Print>,B> > {
+    template <typename A, typename B>
+    struct VisitorName< Visitors::WeightedAverage<A,B> > {
       static std::string Name()
-        { return "echo-map"; }
-    };
-
-    template <template<class X> class A, class B>
-    struct VisitorName< Visitors::BedSpecific::EchoMapBed<A<Visitors::BedHelpers::PrintID>,B> > {
-      static std::string Name()
-        { return "echo-map-id"; }
-    };
-
-    template <class B>
-    struct VisitorName< Visitors::BedSpecific::EchoMapBed<Visitors::BedHelpers::PrintUniqueRangeIDs, B> > {
-      static std::string Name()
-        { return "echo-map-id-uniq"; }
-    };
-
-    template <template<class X> class A, class B>
-    struct VisitorName< Visitors::BedSpecific::EchoMapBed<A<Visitors::BedHelpers::PrintLength>,B> > {
-      static std::string Name()
-        { return "echo-map-size"; }
-    };
-
-    template <class A, class B>
-    struct VisitorName< Visitors::BedSpecific::EchoMapIntersectLength<A, B> > {
-      static std::string Name()
-        { return "echo-overlap-size"; }
-    };
-
-    template <class B>
-    struct VisitorName< Visitors::BedSpecific::EchoMapBed< Visitors::BedHelpers::PrintGenomicRange<Visitors::BedHelpers::PrintBED3>, B> > {
-      static std::string Name()
-        { return "echo-map-range"; }
-    };
-
-    template <template<class X> class A, class B>
-    struct VisitorName< Visitors::BedSpecific::EchoMapBed< A<Visitors::BedHelpers::PrintScorePrecision>, B> > {
-      static std::string Name()
-        { return "echo-map-score"; }
+        { return "wmean"; }
     };
 
   } // namespace Helpers
