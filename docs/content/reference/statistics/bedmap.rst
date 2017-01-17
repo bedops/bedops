@@ -119,6 +119,8 @@ The ``--help`` option describes the various mapping and analytical operations an
                               ignoring the bottom <low> and top <hi> fractions of those scores.
                               0 <= low <= 1.  0 <= hi <= 1.  low+hi <= 1.
         --variance          The variance of scores from overlapping elements in <map-file>.
+        --wmean             Weighted mean, scaled in proportion to the coverage of the <ref-file>
+                              element by each overlapping <map-file> element.
 
        ----------
         NON-SCORE:
