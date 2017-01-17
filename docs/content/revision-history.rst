@@ -19,7 +19,9 @@ Released: **TBD**
 
 * :ref:`bedmap <bedmap>`
 
-  * Measurement values in :code:`bedmap` did not allow :code:`+` in the exponent (both :code:`-` worked and no :code:`+` for a positive value.  Similarly, out in front of the number, :code:`+` was previously not allowed. Shane Neph posted the report and fix.
+  * New :code:`--wmean` operation offers a weighted mean calculation. The "weight" is derived from the proportion of the reference element covered by overlapping map elements: *i.e.*, a map element that covers more of the reference element has its signal given a larger weight or greater impact than another map element with a shorter overlap.
+
+  * Measurement values in :code:`bedmap` did not allow :code:`+` in the exponent (both :code:`-` worked and no :code:`+` for a positive value.  Similarly, out in front of the number, :code:`+` was previously not allowed. Shane Neph posted the report and the fix.
 
   * The :code:`--min-element` and :code:`--max-element` operations in :ref:`bedmap <bedmap>` now process elements in unambiguous order. Former behavior is moved to the operations :code:`--min-element-rand` and :code:`--max-element-rand`, respectively.
 
@@ -32,6 +34,8 @@ Released: **TBD**
   * The :code:`bedops --everything` or :code:`bedops -u` (union) operation now writes elements to standard output in unambiguous sort order. If any data are contained in fourth or subsequent fields, a lexicographical sort on that data is applied for resolving order of interval matches.
 
 * :ref:`sort-bed <sort-bed>`
+
+  * Improved sort times from replacing quicksort (:code:`std::qsort`) with inlined C++ :code:`std::sort`.
 
   * Sorting of BED input now leads to unambiguous result when two or more elements have the same genomic interval (chromosome name and start and stop position), but different content in remaining columns (ID, score, etc.). 
 
