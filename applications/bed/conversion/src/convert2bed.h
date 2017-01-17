@@ -75,6 +75,8 @@ const boolean kFalse = 0;
 #define C2B_SAM_CIGAR_OPS_VALUE_INCREMENT 1000
 #define C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
 #define C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION 32
+#define C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
+#define C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION 32
 #define C2B_THREAD_IO_BUFFER_SIZE 5000000
 
 extern const char *c2b_samtools;
@@ -500,17 +502,26 @@ typedef struct rmsk {
 
 typedef struct vcf {
     char *chrom;
+    ssize_t chrom_capacity;
     uint64_t pos;
     uint64_t start;
     uint64_t end;
     char *id;
+    ssize_t id_capacity;
     char *ref;
+    ssize_t ref_capacity;
     char *alt;
+    ssize_t alt_capacity;
     char *qual;
+    ssize_t qual_capacity;
     char *filter;
+    ssize_t filter_capacity;
     char *info;
+    ssize_t info_capacity;
     char *format;
+    ssize_t format_capacity;
     char *samples;
+    ssize_t samples_capacity;
 } c2b_vcf_t;
 
 /* 
@@ -1258,6 +1269,7 @@ typedef struct vcf_state {
     boolean only_insertions;
     boolean only_deletions;
     unsigned int filter_count;
+    c2b_vcf_t *element;
 } c2b_vcf_state_t;
 
 typedef struct wig_state {
@@ -1397,7 +1409,9 @@ extern "C" {
     static inline boolean    c2b_vcf_record_is_snv(char *ref, char *alt);
     static inline boolean    c2b_vcf_record_is_insertion(char *ref, char *alt);
     static inline boolean    c2b_vcf_record_is_deletion(char *ref, char *alt);
-    static inline void       c2b_line_convert_vcf_to_bed(c2b_vcf_t v, char *dest_line, ssize_t *dest_size);
+    static void              c2b_vcf_init_element(c2b_vcf_t **e);
+    static void              c2b_vcf_delete_element(c2b_vcf_t *e);
+    static inline void       c2b_line_convert_vcf_ptr_to_bed(c2b_vcf_t *v, char *dest_line, ssize_t *dest_size);
     static void              c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
     static void *            c2b_read_bytes_from_stdin(void *arg);
     static void *            c2b_process_intermediate_bytes_by_lines(void *arg);

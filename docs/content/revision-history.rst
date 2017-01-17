@@ -109,6 +109,8 @@ Released: **TBD**
 
     These patches follow up on bug reports in `Issue 157 <https://github.com/bedops/bedops/issues/157>`_.
 
+  * Improvements in support for VCF inputs, to allow aribtrary-sized fields (up to system memory and inter-thread buffer allocations), which should reduce or eliminate segmentation faults from buffer overruns on fields larger than former stack defaults.
+
 =================
 Previous versions
 =================

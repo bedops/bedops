@@ -3470,40 +3470,24 @@ c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
         exit(ENOMEM); /* Not enough space (POSIX.1) */        
     }
 
-    if ((vcf_field_idx + 1) < c2b_vcf_field_min) {
-        /* Legal header cases: line starts with "##" or "#" */
-        if ((vcf_field_idx == 0) && (src[0] == c2b_vcf_header_prefix)) { 
-            if (c2b_globals.keep_header_flag) { 
-                /* copy header line to destination stream buffer */
-                memcpy(src_header_line_str, src, src_size);
-                src_header_line_str[src_size] = '\0';
-                sprintf(dest_header_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), src_header_line_str);
-                fprintf(stderr, "%s", dest_header_line_str);
-                memcpy(dest + *dest_size, dest_header_line_str, strlen(dest_header_line_str));
-                *dest_size += strlen(dest_header_line_str);
-                c2b_globals.header_line_idx++;
-                free(src_header_line_str), src_header_line_str = NULL;
-                free(dest_header_line_str), dest_header_line_str = NULL;
-                return;
-            }
-            else {
-                return;
-            }
+    /* 0 - CHROM */
+    ssize_t chrom_size = vcf_field_offsets[0];
+    if (chrom_size >= c2b_globals.vcf->element->chrom_capacity) {
+        char *chrom_resized = NULL;
+        chrom_resized = realloc(c2b_globals.vcf->element->chrom, chrom_size + 1);
+        if (chrom_resized) {
+            c2b_globals.vcf->element->chrom = chrom_resized;
+            c2b_globals.vcf->element->chrom_capacity = chrom_size + 1;
         }
-        else if (vcf_field_idx == 0) {
-            fprintf(stderr, "Error: Invalid field count (%d) -- input file may not match input format\n", vcf_field_idx);
-            c2b_print_usage(stderr);
-            exit(EINVAL); /* Invalid argument (POSIX.1) */
+        else {
+            fprintf(stderr, "Error: Could not resize CHROM string in VCF element struct\n");
+            exit(ENOMEM);
         }
     }
+    memcpy(c2b_globals.vcf->element->chrom, src, chrom_size);
+    c2b_globals.vcf->element->chrom[chrom_size] = '\0';
 
-    /* 0 - CHROM */
-    char chrom_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    ssize_t chrom_size = vcf_field_offsets[0];
-    memcpy(chrom_str, src, chrom_size);
-    chrom_str[chrom_size] = '\0';
-
-    if ((chrom_str[0] == c2b_vcf_header_prefix) && (c2b_globals.keep_header_flag)) {
+    if ((c2b_globals.vcf->element->chrom[0] == c2b_vcf_header_prefix) && (c2b_globals.keep_header_flag)) {
         memcpy(src_header_line_str, src, src_size);
         src_header_line_str[src_size] = '\0';
         sprintf(dest_header_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), src_header_line_str);
@@ -3512,148 +3496,204 @@ c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
         c2b_globals.header_line_idx++;
         return;
     }
-    else if (chrom_str[0] == c2b_vcf_header_prefix) {
+    else if (c2b_globals.vcf->element->chrom[0] == c2b_vcf_header_prefix) {
         return;
     }
 
     /* 1 - POS */
     char pos_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t pos_size = vcf_field_offsets[1] - vcf_field_offsets[0] - 1;
+    if (pos_size >= C2B_MAX_FIELD_LENGTH_VALUE) {
+        fprintf(stderr, "Error: Intermediate POS string too long to store in stack variable\n");
+        exit(ENOMEM);
+    }
     memcpy(pos_str, src + vcf_field_offsets[0] + 1, pos_size);
     pos_str[pos_size] = '\0';
-    uint64_t pos_val = strtoull(pos_str, NULL, 10);
-    uint64_t start_val = pos_val - 1;
-    uint64_t end_val = pos_val; /* note that this value may change below, depending on options */
+    c2b_globals.vcf->element->pos = strtoull(pos_str, NULL, 10);
+    c2b_globals.vcf->element->start = c2b_globals.vcf->element->pos - 1;
+    c2b_globals.vcf->element->end = c2b_globals.vcf->element->pos; /* note that this value may change below, depending on options */
 
     /* 2 - ID */
-    char id_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t id_size = vcf_field_offsets[2] - vcf_field_offsets[1] - 1;
-    memcpy(id_str, src + vcf_field_offsets[1] + 1, id_size);
-    id_str[id_size] = '\0';
+    if (id_size >= c2b_globals.vcf->element->id_capacity) {
+        char *id_resized = NULL;
+        id_resized = realloc(c2b_globals.vcf->element->id, id_size + 1);
+        if (id_resized) {
+            c2b_globals.vcf->element->id = id_resized;
+            c2b_globals.vcf->element->id_capacity = id_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize ID string in VCF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.vcf->element->id, src + vcf_field_offsets[1] + 1, id_size);
+    c2b_globals.vcf->element->id[id_size] = '\0';
 
     /* 3 - REF */
-    char ref_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t ref_size = vcf_field_offsets[3] - vcf_field_offsets[2] - 1;
-    memcpy(ref_str, src + vcf_field_offsets[2] + 1, ref_size);
-    ref_str[ref_size] = '\0';
+    if (ref_size >= c2b_globals.vcf->element->ref_capacity) {
+        char *ref_resized = NULL;
+        ref_resized = realloc(c2b_globals.vcf->element->ref, ref_size + 1);
+        if (ref_resized) {
+            c2b_globals.vcf->element->ref = ref_resized;
+            c2b_globals.vcf->element->ref_capacity = ref_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize REF string in VCF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.vcf->element->ref, src + vcf_field_offsets[2] + 1, ref_size);
+    c2b_globals.vcf->element->ref[ref_size] = '\0';
 
     /* 4 - ALT */
-    char alt_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t alt_size = vcf_field_offsets[4] - vcf_field_offsets[3] - 1;
-    memcpy(alt_str, src + vcf_field_offsets[3] + 1, alt_size);
-    alt_str[alt_size] = '\0';
+    if (alt_size >= c2b_globals.vcf->element->alt_capacity) {
+        char *alt_resized = NULL;
+        alt_resized = realloc(c2b_globals.vcf->element->alt, alt_size + 1);
+        if (alt_resized) {
+            c2b_globals.vcf->element->alt = alt_resized;
+            c2b_globals.vcf->element->alt_capacity = alt_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize ALT string in VCF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.vcf->element->alt, src + vcf_field_offsets[3] + 1, alt_size);
+    c2b_globals.vcf->element->alt[alt_size] = '\0';
 
     /* 5 - QUAL */
-    char qual_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t qual_size = vcf_field_offsets[5] - vcf_field_offsets[4] - 1;
-    memcpy(qual_str, src + vcf_field_offsets[4] + 1, qual_size);
-    qual_str[qual_size] = '\0';
+    if (qual_size >= c2b_globals.vcf->element->qual_capacity) {
+        char *qual_resized = NULL;
+        qual_resized = realloc(c2b_globals.vcf->element->qual, qual_size + 1);
+        if (qual_resized) {
+            c2b_globals.vcf->element->qual = qual_resized;
+            c2b_globals.vcf->element->qual_capacity = qual_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize QUAL string in VCF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.vcf->element->qual, src + vcf_field_offsets[4] + 1, qual_size);
+    c2b_globals.vcf->element->qual[qual_size] = '\0';
 
     /* 6 - FILTER */
-    char filter_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t filter_size = vcf_field_offsets[6] - vcf_field_offsets[5] - 1;
-    memcpy(filter_str, src + vcf_field_offsets[5] + 1, filter_size);
-    filter_str[filter_size] = '\0';
+    if (filter_size >= c2b_globals.vcf->element->filter_capacity) {
+        char *filter_resized = NULL;
+        filter_resized = realloc(c2b_globals.vcf->element->filter, filter_size + 1);
+        if (filter_resized) {
+            c2b_globals.vcf->element->filter = filter_resized;
+            c2b_globals.vcf->element->filter_capacity = filter_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize FILTER string in VCF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.vcf->element->filter, src + vcf_field_offsets[5] + 1, filter_size);
+    c2b_globals.vcf->element->filter[filter_size] = '\0';
 
     /* 7 - INFO */
-    char *info_str = NULL;
-    info_str = malloc(C2B_MAX_LONGER_LINE_LENGTH_VALUE);
-    if (!info_str) {
-        fprintf(stderr, "Error: Could not allocate space for VCF INFO string\n");
-        exit(ENOMEM); /* Not enough space (POSIX.1) */        
-    }    
-    
     ssize_t info_size = vcf_field_offsets[7] - vcf_field_offsets[6] - 1;
-    memcpy(info_str, src + vcf_field_offsets[6] + 1, info_size);
-    info_str[info_size] = '\0';
-
-    char *format_str = NULL;
-    format_str = malloc(C2B_MAX_LONGER_LINE_LENGTH_VALUE);
-    if (!format_str) {
-        fprintf(stderr, "Error: Could not allocate space for VCF FORMAT string\n");
-        exit(ENOMEM); /* Not enough space (POSIX.1) */        
+    if (info_size >= c2b_globals.vcf->element->info_capacity) {
+        char *info_resized = NULL;
+        info_resized = realloc(c2b_globals.vcf->element->info, info_size + 1);
+        if (info_resized) {
+            c2b_globals.vcf->element->info = info_resized;
+            c2b_globals.vcf->element->info_capacity = info_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize INFO string in VCF element struct\n");
+            exit(ENOMEM);
+        }
     }
-    format_str[0] = '\0'; /* initialize to zero-length string */
-    
-    char *samples_str = NULL;
-    samples_str = malloc(C2B_MAX_LONGER_LINE_LENGTH_VALUE);
-    if (!samples_str) {
-        fprintf(stderr, "Error: Could not allocate space for VCF SAMPLE string\n");
-        exit(ENOMEM); /* Not enough space (POSIX.1) */        
-    }    
+    memcpy(c2b_globals.vcf->element->info, src + vcf_field_offsets[6] + 1, info_size);
+    c2b_globals.vcf->element->info[info_size] = '\0';
 
     if (vcf_field_idx >= 8) {
         /* 8 - FORMAT */
         ssize_t format_size = vcf_field_offsets[8] - vcf_field_offsets[7] - 1;
-        memcpy(format_str, src + vcf_field_offsets[7] + 1, format_size);
-        format_str[format_size] = '\0';
+        if (format_size >= c2b_globals.vcf->element->format_capacity) {
+            char *format_resized = NULL;
+            format_resized = realloc(c2b_globals.vcf->element->format, format_size + 1);
+            if (format_resized) {
+                c2b_globals.vcf->element->format = format_resized;
+                c2b_globals.vcf->element->format_capacity = format_size + 1;
+            }
+            else {
+                fprintf(stderr, "Error: Could not resize FORMAT string in VCF element struct\n");
+                exit(ENOMEM);
+            }
+        }
+        memcpy(c2b_globals.vcf->element->format, src + vcf_field_offsets[7] + 1, format_size);
+        c2b_globals.vcf->element->format[format_size] = '\0';
 
         /* 9 - Samples */
         ssize_t samples_size = vcf_field_offsets[vcf_field_idx] - vcf_field_offsets[8] - 1;
-        memcpy(samples_str, src + vcf_field_offsets[8] + 1, samples_size);
-        samples_str[samples_size] = '\0';
+        if (samples_size >= c2b_globals.vcf->element->samples_capacity) {
+            char *samples_resized = NULL;
+            samples_resized = realloc(c2b_globals.vcf->element->samples, samples_size + 1);
+            if (samples_resized) {
+                c2b_globals.vcf->element->samples = samples_resized;
+                c2b_globals.vcf->element->samples_capacity = samples_size + 1;
+            }
+            else {
+                fprintf(stderr, "Error: Could not resize SAMPLES string in VCF element struct\n");
+                exit(ENOMEM);
+            }
+        }
+        memcpy(c2b_globals.vcf->element->samples, src + vcf_field_offsets[8] + 1, samples_size);
+        c2b_globals.vcf->element->samples[samples_size] = '\0';
     }
 
-    c2b_vcf_t vcf;
-    vcf.chrom = chrom_str;
-    vcf.pos = pos_val;
-    vcf.start = start_val;
-    vcf.end = end_val;
-    vcf.id = id_str;
-    vcf.ref = ref_str;
-    vcf.alt = alt_str;
-    vcf.qual = qual_str;
-    vcf.filter = filter_str;
-    vcf.info = info_str;
-    vcf.format = format_str;
-    vcf.samples = samples_str;
-
-    if ((!c2b_globals.vcf->do_not_split) && (memchr(alt_str, c2b_vcf_alt_allele_delim, strlen(alt_str)))) {
-
+    if ((!c2b_globals.vcf->do_not_split) && (memchr(c2b_globals.vcf->element->alt, c2b_vcf_alt_allele_delim, strlen(c2b_globals.vcf->element->alt)))) {
+        
         /* loop through each allele */
 
         char *alt_alleles_copy = NULL;
-        alt_alleles_copy = malloc(strlen(alt_str) + 1);
+        alt_alleles_copy = malloc(strlen(c2b_globals.vcf->element->alt) + 1);
         if (!alt_alleles_copy) {
-            fprintf(stderr, "Error: Could not allocate space for VCF alt alleles copy\n");
+            fprintf(stderr, "Error: Could not allocate space for VCF ALT alleles copy\n");
             exit(ENOMEM); /* Not enough space (POSIX.1) */
         }
-        memcpy(alt_alleles_copy, alt_str, strlen(alt_str) + 1);
+        memcpy(alt_alleles_copy, c2b_globals.vcf->element->alt, strlen(c2b_globals.vcf->element->alt) + 1);
         const char *allele_tok;
         while ((allele_tok = c2b_strsep(&alt_alleles_copy, ",")) != NULL) {
-            vcf.alt = (char *) allele_tok; /* discard const */
+            memcpy(c2b_globals.vcf->element->alt, allele_tok, strlen(allele_tok));
+            c2b_globals.vcf->element->alt[strlen(allele_tok)] = '\0';
             if ((c2b_globals.vcf->filter_count == 1) && (!c2b_globals.vcf->only_insertions)) {
-                vcf.end = start_val + ref_size - strlen(vcf.alt) + 1;
+                c2b_globals.vcf->element->end = c2b_globals.vcf->element->start + ref_size - strlen(c2b_globals.vcf->element->alt) + 1;
             }
             if ( (c2b_globals.vcf->filter_count == 0) ||
-                 ((c2b_globals.vcf->only_snvs) && (c2b_vcf_record_is_snv(ref_str, vcf.alt))) ||
-                 ((c2b_globals.vcf->only_insertions) && (c2b_vcf_record_is_insertion(ref_str, vcf.alt))) ||
-                 ((c2b_globals.vcf->only_deletions) && (c2b_vcf_record_is_deletion(ref_str, vcf.alt))) ) 
+                 ((c2b_globals.vcf->only_snvs) && (c2b_vcf_record_is_snv(c2b_globals.vcf->element->ref, c2b_globals.vcf->element->alt))) ||
+                 ((c2b_globals.vcf->only_insertions) && (c2b_vcf_record_is_insertion(c2b_globals.vcf->element->ref, c2b_globals.vcf->element->alt))) ||
+                 ((c2b_globals.vcf->only_deletions) && (c2b_vcf_record_is_deletion(c2b_globals.vcf->element->ref, c2b_globals.vcf->element->alt))) ) 
                 {
-                    c2b_line_convert_vcf_to_bed(vcf, dest, dest_size);
+                    c2b_line_convert_vcf_ptr_to_bed(c2b_globals.vcf->element, dest, dest_size);
                 }
         }
         free(alt_alleles_copy), alt_alleles_copy = NULL;
     }
     else {
-
+        
         /* just print the one allele */
 
         if ((c2b_globals.vcf->filter_count == 1) && (!c2b_globals.vcf->only_insertions)) {
-            vcf.end = start_val + ref_size - strlen(alt_str) + 1;
+            c2b_globals.vcf->element->end = c2b_globals.vcf->element->start + ref_size - strlen(c2b_globals.vcf->element->alt) + 1;
         }
         if ( (c2b_globals.vcf->filter_count == 0) ||
-             ((c2b_globals.vcf->only_snvs) && (c2b_vcf_record_is_snv(ref_str, alt_str))) ||
-             ((c2b_globals.vcf->only_insertions) && (c2b_vcf_record_is_insertion(ref_str, alt_str))) ||
-             ((c2b_globals.vcf->only_deletions) && (c2b_vcf_record_is_deletion(ref_str, alt_str))) ) 
+             ((c2b_globals.vcf->only_snvs) && (c2b_vcf_record_is_snv(c2b_globals.vcf->element->ref, c2b_globals.vcf->element->alt))) ||
+             ((c2b_globals.vcf->only_insertions) && (c2b_vcf_record_is_insertion(c2b_globals.vcf->element->ref, c2b_globals.vcf->element->alt))) ||
+             ((c2b_globals.vcf->only_deletions) && (c2b_vcf_record_is_deletion(c2b_globals.vcf->element->ref, c2b_globals.vcf->element->alt))) ) 
             {
-                c2b_line_convert_vcf_to_bed(vcf, dest, dest_size);
+                c2b_line_convert_vcf_ptr_to_bed(c2b_globals.vcf->element, dest, dest_size);
             }
     }
-
-    free(info_str), info_str = NULL;
-    free(format_str), format_str = NULL;
-    free(samples_str), samples_str = NULL;
 }
 
 static inline boolean
@@ -3680,8 +3720,110 @@ c2b_vcf_record_is_deletion(char *ref, char *alt)
     return ((!c2b_vcf_allele_is_id(alt)) && (((int) strlen(ref) - (int) strlen(alt)) > 0)) ? kTrue : kFalse;
 }
 
+static void
+c2b_vcf_init_element(c2b_vcf_t **e)
+{
+    *e = malloc(sizeof(c2b_vcf_t));
+    if (!*e) {
+        fprintf(stderr, "Error: Could not allocate space for VCF element pointer\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    
+    (*e)->chrom = NULL, (*e)->chrom = malloc(C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->chrom)));
+    if (!(*e)->chrom) { 
+        fprintf(stderr, "Error: Could not allocate space for VCF element chrom malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->chrom_capacity = C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->pos = 0;
+    (*e)->start = 0;
+    (*e)->end = 0;
+
+    (*e)->id = NULL, (*e)->id = malloc(C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->id)));
+    if (!(*e)->id) { 
+        fprintf(stderr, "Error: Could not allocate space for VCF element id malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->id_capacity = C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->ref = NULL, (*e)->ref = malloc(C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->ref)));
+    if (!(*e)->ref) { 
+        fprintf(stderr, "Error: Could not allocate space for VCF element ref malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->ref_capacity = C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->alt = NULL, (*e)->alt = malloc(C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->alt)));
+    if (!(*e)->alt) { 
+        fprintf(stderr, "Error: Could not allocate space for VCF element alt malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->alt_capacity = C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->qual = NULL, (*e)->qual = malloc(C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->qual)));
+    if (!(*e)->qual) { 
+        fprintf(stderr, "Error: Could not allocate space for VCF element qual malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->qual_capacity = C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->filter = NULL, (*e)->filter = malloc(C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->filter)));
+    if (!(*e)->filter) { 
+        fprintf(stderr, "Error: Could not allocate space for VCF element filter malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->filter_capacity = C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->info = NULL, (*e)->info = malloc(C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->info)));
+    if (!(*e)->info) { 
+        fprintf(stderr, "Error: Could not allocate space for VCF element info malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->info_capacity = C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->format = NULL, (*e)->format = malloc(C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->format)));
+    if (!(*e)->format) { 
+        fprintf(stderr, "Error: Could not allocate space for VCF element format malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->format_capacity = C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->samples = NULL, (*e)->samples = malloc(C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->samples)));
+    if (!(*e)->samples) { 
+        fprintf(stderr, "Error: Could not allocate space for VCF element samples malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->samples_capacity = C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+}
+
+static void
+c2b_vcf_delete_element(c2b_vcf_t *e)
+{
+    if (e->chrom)           { free(e->chrom),           e->chrom = NULL;           }
+    if (e->id)              { free(e->id),              e->id = NULL;              }
+    if (e->ref)             { free(e->ref),             e->ref = NULL;             }
+    if (e->alt)             { free(e->alt),             e->alt = NULL;             }
+    if (e->qual)            { free(e->qual),            e->qual = NULL;            }
+    if (e->filter)          { free(e->filter),          e->filter = NULL;          }
+    if (e->info)            { free(e->info),            e->info = NULL;            }
+    if (e->format)          { free(e->format),          e->format = NULL;          }
+    if (e->samples)         { free(e->samples),         e->samples = NULL;         }
+    if (e)                  { free(e),                  e = NULL;                  }
+}
+
 static inline void
-c2b_line_convert_vcf_to_bed(c2b_vcf_t v, char *dest_line, ssize_t *dest_size) 
+c2b_line_convert_vcf_ptr_to_bed(c2b_vcf_t *v, char *dest_line, ssize_t *dest_size) 
 {
     /* 
        For VCF v4.2-formatted data, we use the mapping provided by BEDOPS convention described at:
@@ -3718,7 +3860,7 @@ c2b_line_convert_vcf_to_bed(c2b_vcf_t v, char *dest_line, ssize_t *dest_size)
        ...
     */
 
-    if (strlen(v.format) > 0) {
+    if (strlen(v->format) > 0) {
         *dest_size += sprintf(dest_line + *dest_size,
                               "%s\t"            \
                               "%" PRIu64 "\t"   \
@@ -3731,17 +3873,17 @@ c2b_line_convert_vcf_to_bed(c2b_vcf_t v, char *dest_line, ssize_t *dest_size)
                               "%s\t"            \
                               "%s\t"            \
                               "%s\n",
-                              v.chrom,
-                              v.start,
-                              v.end,
-                              v.id,
-                              v.qual,
-                              v.ref,
-                              v.alt,
-                              v.filter,
-                              v.info,
-                              v.format,
-                              v.samples);
+                              v->chrom,
+                              v->start,
+                              v->end,
+                              v->id,
+                              v->qual,
+                              v->ref,
+                              v->alt,
+                              v->filter,
+                              v->info,
+                              v->format,
+                              v->samples);
     }
     else {
         *dest_size += sprintf(dest_line + *dest_size,
@@ -3754,15 +3896,15 @@ c2b_line_convert_vcf_to_bed(c2b_vcf_t v, char *dest_line, ssize_t *dest_size)
                               "%s\t"            \
                               "%s\t"            \
                               "%s\n",
-                              v.chrom,
-                              v.start,
-                              v.end,
-                              v.id,
-                              v.qual,
-                              v.ref,
-                              v.alt,
-                              v.filter,
-                              v.info);
+                              v->chrom,
+                              v->start,
+                              v->end,
+                              v->id,
+                              v->qual,
+                              v->ref,
+                              v->alt,
+                              v->filter,
+                              v->info);
     }
 }
 
@@ -5296,6 +5438,7 @@ c2b_init_global_vcf_state()
     c2b_globals.vcf->only_insertions = kFalse;
     c2b_globals.vcf->only_deletions = kFalse;    
     c2b_globals.vcf->filter_count = 0U;
+    c2b_globals.vcf->element = NULL, c2b_vcf_init_element(&(c2b_globals.vcf->element));
 
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_init_global_vcf_state() - exit  ---\n");
@@ -5308,6 +5451,11 @@ c2b_delete_global_vcf_state()
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_delete_global_vcf_state() - enter ---\n");
 #endif
+
+    if (c2b_globals.vcf->element) {
+        c2b_vcf_delete_element(c2b_globals.vcf->element);
+        c2b_globals.vcf->element = NULL;
+    }
 
     free(c2b_globals.vcf), c2b_globals.vcf = NULL;
 
