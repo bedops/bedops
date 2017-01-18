@@ -896,6 +896,107 @@ c2b_cmd_starch_bed(char *cmd)
 }
 
 static void
+c2b_gtf_init_element(c2b_gtf_t **e)
+{
+    *e = malloc(sizeof(c2b_gtf_t));
+    if (!*e) {
+        fprintf(stderr, "Error: Could not allocate space for GTF element pointer\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+
+    (*e)->seqname = NULL, (*e)->seqname = malloc(C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->seqname)));
+    if (!(*e)->seqname) { 
+        fprintf(stderr, "Error: Could not allocate space for GTF element seqname malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->seqname_capacity = C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->source = NULL, (*e)->source = malloc(C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->source)));
+    if (!(*e)->source) { 
+        fprintf(stderr, "Error: Could not allocate space for GTF element source malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->source_capacity = C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->feature = NULL, (*e)->feature = malloc(C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->feature)));
+    if (!(*e)->feature) { 
+        fprintf(stderr, "Error: Could not allocate space for GTF element feature malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->feature_capacity = C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->start = 0;
+    (*e)->end = 0;
+
+    (*e)->score = NULL, (*e)->score = malloc(C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->score)));
+    if (!(*e)->score) { 
+        fprintf(stderr, "Error: Could not allocate space for GTF element score malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->score_capacity = C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->strand = NULL, (*e)->strand = malloc(C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->strand)));
+    if (!(*e)->strand) { 
+        fprintf(stderr, "Error: Could not allocate space for GTF element strand malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->strand_capacity = C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->frame = NULL, (*e)->frame = malloc(C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->frame)));
+    if (!(*e)->frame) { 
+        fprintf(stderr, "Error: Could not allocate space for GTF element frame malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->frame_capacity = C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->attributes = NULL, (*e)->attributes = malloc(C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->attributes)));
+    if (!(*e)->attributes) { 
+        fprintf(stderr, "Error: Could not allocate space for GTF element attributes malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->attributes_capacity = C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->id = NULL, (*e)->id = malloc(C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->id)));
+    if (!(*e)->id) { 
+        fprintf(stderr, "Error: Could not allocate space for GTF element id malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->id_capacity = C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->comments = NULL, (*e)->comments = malloc(C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->comments)));
+    if (!(*e)->comments) { 
+        fprintf(stderr, "Error: Could not allocate space for GTF element comments malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->comments_capacity = C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+}
+
+static void
+c2b_gtf_delete_element(c2b_gtf_t *e)
+{
+    if (e->seqname)         { free(e->seqname),         e->seqname = NULL;         }
+    if (e->source)          { free(e->source),          e->source = NULL;          }
+    if (e->feature)         { free(e->feature),         e->feature = NULL;         }
+    if (e->score)           { free(e->score),           e->score = NULL;           }
+    if (e->strand)          { free(e->strand),          e->strand = NULL;          }
+    if (e->frame)           { free(e->frame),           e->frame = NULL;           }
+    if (e->attributes)      { free(e->attributes),      e->attributes = NULL;      }
+    if (e->id)              { free(e->id),              e->id = NULL;              }
+    if (e->comments)        { free(e->comments),        e->comments = NULL;        }
+    if (e)                  { free(e),                  e = NULL;                  }
+}
+
+static void
 c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
 {
     ssize_t gtf_field_offsets[C2B_MAX_FIELD_COUNT_VALUE];
@@ -950,95 +1051,171 @@ c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     }
 
     /* 0 - seqname */
-    char seqname_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t seqname_size = gtf_field_offsets[0];
-    memcpy(seqname_str, src, seqname_size);
-    seqname_str[seqname_size] = '\0';
+    if (seqname_size >= c2b_globals.gtf->element->seqname_capacity) {
+        char *seqname_resized = NULL;
+        seqname_resized = realloc(c2b_globals.gtf->element->seqname, seqname_size + 1);
+        if (seqname_resized) {
+            c2b_globals.gtf->element->seqname = seqname_resized;
+            c2b_globals.gtf->element->seqname_capacity = seqname_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize SEQNAME string in GTF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gtf->element->seqname, src, seqname_size);
+    c2b_globals.gtf->element->seqname[seqname_size] = '\0';
 
     /* 1 - source */
-    char source_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t source_size = gtf_field_offsets[1] - gtf_field_offsets[0] - 1;
-    memcpy(source_str, src + gtf_field_offsets[0] + 1, source_size);
-    source_str[source_size] = '\0';
+    if (source_size >= c2b_globals.gtf->element->source_capacity) {
+        char *source_resized = NULL;
+        source_resized = realloc(c2b_globals.gtf->element->source, source_size + 1);
+        if (source_resized) {
+            c2b_globals.gtf->element->source = source_resized;
+            c2b_globals.gtf->element->source_capacity = source_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize SOURCE string in GTF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gtf->element->source, src + gtf_field_offsets[0] + 1, source_size);
+    c2b_globals.gtf->element->source[source_size] = '\0';
 
     /* 2 - feature */
-    char feature_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t feature_size = gtf_field_offsets[2] - gtf_field_offsets[1] - 1;
-    memcpy(feature_str, src + gtf_field_offsets[1] + 1, feature_size);
-    feature_str[feature_size] = '\0';
+    if (feature_size >= c2b_globals.gtf->element->feature_capacity) {
+        char *feature_resized = NULL;
+        feature_resized = realloc(c2b_globals.gtf->element->feature, feature_size + 1);
+        if (feature_resized) {
+            c2b_globals.gtf->element->feature = feature_resized;
+            c2b_globals.gtf->element->feature_capacity = feature_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize FEATURE string in GTF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gtf->element->feature, src + gtf_field_offsets[1] + 1, feature_size);
+    c2b_globals.gtf->element->feature[feature_size] = '\0';
 
     /* 3 - start */
     char start_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t start_size = gtf_field_offsets[3] - gtf_field_offsets[2] - 1;
     memcpy(start_str, src + gtf_field_offsets[2] + 1, start_size);
     start_str[start_size] = '\0';
-    uint64_t start_val = strtoull(start_str, NULL, 10);
+    c2b_globals.gtf->element->start = strtoull(start_str, NULL, 10);
 
     /* 4 - end */
     char end_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t end_size = gtf_field_offsets[4] - gtf_field_offsets[3] - 1;
     memcpy(end_str, src + gtf_field_offsets[3] + 1, end_size);
     end_str[end_size] = '\0';
-    uint64_t end_val = strtoull(end_str, NULL, 10);
+    c2b_globals.gtf->element->end = strtoull(end_str, NULL, 10);
 
     /* 5 - score */
-    char score_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t score_size = gtf_field_offsets[5] - gtf_field_offsets[4] - 1;
-    memcpy(score_str, src + gtf_field_offsets[4] + 1, score_size);
-    score_str[score_size] = '\0';
+    if (score_size >= c2b_globals.gtf->element->score_capacity) {
+        char *score_resized = NULL;
+        score_resized = realloc(c2b_globals.gtf->element->score, score_size + 1);
+        if (score_resized) {
+            c2b_globals.gtf->element->score = score_resized;
+            c2b_globals.gtf->element->score_capacity = score_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize SCORE string in GTF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gtf->element->score, src + gtf_field_offsets[4] + 1, score_size);
+    c2b_globals.gtf->element->score[score_size] = '\0';
 
     /* 6 - strand */
-    char strand_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t strand_size = gtf_field_offsets[6] - gtf_field_offsets[5] - 1;
-    memcpy(strand_str, src + gtf_field_offsets[5] + 1, strand_size);
-    strand_str[strand_size] = '\0';
+    if (strand_size >= c2b_globals.gtf->element->strand_capacity) {
+        char *strand_resized = NULL;
+        strand_resized = realloc(c2b_globals.gtf->element->strand, strand_size + 1);
+        if (strand_resized) {
+            c2b_globals.gtf->element->strand = strand_resized;
+            c2b_globals.gtf->element->strand_capacity = strand_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize STRAND string in GTF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gtf->element->strand, src + gtf_field_offsets[5] + 1, strand_size);
+    c2b_globals.gtf->element->strand[strand_size] = '\0';
 
     /* 7 - frame */
-    char frame_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t frame_size = gtf_field_offsets[7] - gtf_field_offsets[6] - 1;
-    memcpy(frame_str, src + gtf_field_offsets[6] + 1, frame_size);
-    frame_str[frame_size] = '\0';
+    if (frame_size >= c2b_globals.gtf->element->frame_capacity) {
+        char *frame_resized = NULL;
+        frame_resized = realloc(c2b_globals.gtf->element->frame, frame_size + 1);
+        if (frame_resized) {
+            c2b_globals.gtf->element->frame = frame_resized;
+            c2b_globals.gtf->element->frame_capacity = frame_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize FRAME string in GTF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gtf->element->frame, src + gtf_field_offsets[6] + 1, frame_size);
+    c2b_globals.gtf->element->frame[frame_size] = '\0';
 
     /* 8 - attributes */
-    char attributes_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t attributes_size = gtf_field_offsets[8] - gtf_field_offsets[7] - 1;
-    memcpy(attributes_str, src + gtf_field_offsets[7] + 1, attributes_size);
-    attributes_str[attributes_size] = '\0';
+    if (attributes_size >= c2b_globals.gtf->element->attributes_capacity) {
+        char *attributes_resized = NULL;
+        attributes_resized = realloc(c2b_globals.gtf->element->attributes, attributes_size + 1);
+        if (attributes_resized) {
+            c2b_globals.gtf->element->attributes = attributes_resized;
+            c2b_globals.gtf->element->attributes_capacity = attributes_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize ATTRIBUTES string in GTF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gtf->element->attributes, src + gtf_field_offsets[7] + 1, attributes_size);
+    c2b_globals.gtf->element->attributes[attributes_size] = '\0';
 
     /* 9 - comments */
-    char comments_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t comments_size = 0;
     if (gtf_field_idx == 9) {
         comments_size = gtf_field_offsets[9] - gtf_field_offsets[8] - 1;
-        memcpy(comments_str, src + gtf_field_offsets[8] + 1, comments_size);
-        comments_str[comments_size] = '\0';
+        if (comments_size >= c2b_globals.gtf->element->comments_capacity) {
+            char *comments_resized = NULL;
+            comments_resized = realloc(c2b_globals.gtf->element->comments, comments_size + 1);
+            if (comments_resized) {
+                c2b_globals.gtf->element->comments = comments_resized;
+                c2b_globals.gtf->element->comments_capacity = comments_size + 1;
+            }
+            else {
+                fprintf(stderr, "Error: Could not resize COMMENTS string in GTF element struct\n");
+                exit(ENOMEM);
+            }
+        }
+        memcpy(c2b_globals.gtf->element->comments, src + gtf_field_offsets[8] + 1, comments_size);
+        c2b_globals.gtf->element->comments[comments_size] = '\0';
     }
-
-    c2b_gtf_t gtf;
-    gtf.seqname = seqname_str;
-    gtf.source = source_str;
-    gtf.feature = feature_str;
-    gtf.start = start_val;
-    gtf.end = end_val;
-    gtf.score = score_str;
-    gtf.strand = strand_str;
-    gtf.frame = frame_str;
-    gtf.attributes = attributes_str;
-    gtf.comments = comments_str;
 
     /* 
        Fix coordinate indexing, and (if needed) add attribute for zero-length record
     */
 
-    if (gtf.start == gtf.end) {
-        gtf.start -= 1;
-        ssize_t trailing_semicolon_fudge = (attributes_str[strlen(attributes_str) - 1] == ';') ? 1 : 0;
-        memcpy(attributes_str + strlen(attributes_str) - trailing_semicolon_fudge, 
+    if (c2b_globals.gtf->element->start == c2b_globals.gtf->element->end) {
+        c2b_globals.gtf->element->start -= 1;
+        ssize_t trailing_semicolon_fudge = (c2b_globals.gtf->element->attributes[strlen(c2b_globals.gtf->element->attributes) - 1] == ';') ? 1 : 0;
+        memcpy(c2b_globals.gtf->element->attributes + strlen(c2b_globals.gtf->element->attributes) - trailing_semicolon_fudge, 
                c2b_gtf_zero_length_insertion_attribute, 
                strlen(c2b_gtf_zero_length_insertion_attribute) + 1);
     }
     else {
-        gtf.start -= 1;
+        c2b_globals.gtf->element->start -= 1;
     }
 
     /* 
@@ -1046,12 +1223,12 @@ c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     */
 
     char *attributes_copy = NULL;
-    attributes_copy = malloc(strlen(attributes_str) + 1);
+    attributes_copy = malloc(strlen(c2b_globals.gtf->element->attributes) + 1);
     if (!attributes_copy) {
         fprintf(stderr, "Error: Could not allocate space for GTF attributes copy\n");
         exit(ENOMEM); /* Not enough space (POSIX.1) */
     }
-    memcpy(attributes_copy, attributes_str, strlen(attributes_str) + 1);
+    memcpy(attributes_copy, c2b_globals.gtf->element->attributes, strlen(c2b_globals.gtf->element->attributes) + 1);
     const char *kv_tok;
     char *gene_id_str = NULL;
     char *transcript_id_str = NULL;
@@ -1078,14 +1255,27 @@ c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                 exit(ENODATA); /* No data available (POSIX.1) */
             }
             if ((gtf_id_start && gtf_id_end) && (gtf_id_start != gtf_id_end)) {
-                memcpy(c2b_globals.gtf->id, gtf_id_start + 1, gtf_id_end - gtf_id_start - 1);
-                c2b_globals.gtf->id[gtf_id_end - gtf_id_start - 1] = '\0';
+                ssize_t id_size = gtf_id_end - gtf_id_start - 1;
+                if (id_size >= c2b_globals.gtf->element->id_capacity) {
+                    char *id_resized = NULL;
+                    id_resized = realloc(c2b_globals.gtf->element->id, id_size + 1);
+                    if (id_resized) {
+                        c2b_globals.gtf->element->id = id_resized;
+                        c2b_globals.gtf->element->id_capacity = id_size + 1;
+                    }
+                    else {
+                        fprintf(stderr, "Error: Could not resize ID string in GTF element struct\n");
+                        exit(ENOMEM);
+                    }
+                }
+                memcpy(c2b_globals.gtf->element->id, gtf_id_start + 1, id_size);
+                c2b_globals.gtf->element->id[id_size] = '\0';
             }
             else {
-                c2b_globals.gtf->id[0] = '\0';
+                c2b_globals.gtf->element->id[0] = '\0';
             }
-            if (strlen(c2b_globals.gtf->id) == 0) {
-                strcpy(c2b_globals.gtf->id, c2b_gtf_field_placeholder);
+            if (strlen(c2b_globals.gtf->element->id) == 0) {
+                strcpy(c2b_globals.gtf->element->id, c2b_gtf_field_placeholder);
             }
             gene_id_value_defined = kTrue;
         }
@@ -1099,18 +1289,17 @@ c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
         exit(ENODATA); /* No data available (POSIX.1) */        
     }
     free(attributes_copy), attributes_copy = NULL;
-    gtf.id = c2b_globals.gtf->id;
 
     /* 
        Convert GTF struct to BED string and copy it to destination
     */
 
-    c2b_line_convert_gtf_to_bed(gtf, dest, dest_size);
+    c2b_line_convert_gtf_ptr_to_bed(c2b_globals.gtf->element, dest, dest_size);
     c2b_globals.gtf->line_count++;
 }
 
 static inline void
-c2b_line_convert_gtf_to_bed(c2b_gtf_t g, char *dest_line, ssize_t *dest_size)
+c2b_line_convert_gtf_ptr_to_bed(c2b_gtf_t *g, char *dest_line, ssize_t *dest_size)
 {
     /* 
        For GTF-formatted data, we use the mapping provided by BEDOPS convention described at:
@@ -1142,7 +1331,7 @@ c2b_line_convert_gtf_to_bed(c2b_gtf_t g, char *dest_line, ssize_t *dest_size)
        comments                  11                     -
     */
 
-    if (strlen(g.comments) == 0) {
+    if (strlen(g->comments) == 0) {
         *dest_size += sprintf(dest_line + *dest_size,
                               "%s\t"            \
                               "%" PRIu64 "\t"   \
@@ -1154,16 +1343,16 @@ c2b_line_convert_gtf_to_bed(c2b_gtf_t g, char *dest_line, ssize_t *dest_size)
                               "%s\t"            \
                               "%s\t"            \
                               "%s\n",
-                              g.seqname,
-                              g.start,
-                              g.end,
-                              g.id,
-                              g.score,
-                              g.strand,
-                              g.source,
-                              g.feature,
-                              g.frame,
-                              g.attributes);
+                              g->seqname,
+                              g->start,
+                              g->end,
+                              g->id,
+                              g->score,
+                              g->strand,
+                              g->source,
+                              g->feature,
+                              g->frame,
+                              g->attributes);
     }
     else {
         *dest_size += sprintf(dest_line + *dest_size,
@@ -1178,17 +1367,17 @@ c2b_line_convert_gtf_to_bed(c2b_gtf_t g, char *dest_line, ssize_t *dest_size)
                               "%s\t"            \
                               "%s\t"            \
                               "%s\n",
-                              g.seqname,
-                              g.start,
-                              g.end,
-                              g.id,
-                              g.score,
-                              g.strand,
-                              g.source,
-                              g.feature,
-                              g.frame,
-                              g.attributes,
-                              g.comments);
+                              g->seqname,
+                              g->start,
+                              g->end,
+                              g->id,
+                              g->score,
+                              g->strand,
+                              g->source,
+                              g->feature,
+                              g->frame,
+                              g->attributes,
+                              g->comments);
     }
 }
 
@@ -5411,12 +5600,7 @@ c2b_init_global_gtf_state()
         exit(ENOMEM); /* Not enough space (POSIX.1) */
     }
 
-    c2b_globals.gtf->id = malloc(C2B_MAX_FIELD_LENGTH_VALUE);
-    if (!c2b_globals.gtf->id) {
-        fprintf(stderr, "Error: Could not allocate space for GTF ID global\n");
-        exit(ENOMEM); /* Not enough space (POSIX.1) */
-    }
-    memset(c2b_globals.gtf->id, 0, C2B_MAX_FIELD_LENGTH_VALUE);
+    c2b_globals.gtf->element = NULL, c2b_gtf_init_element(&(c2b_globals.gtf->element));
 
     c2b_globals.gtf->line_count = 0;
 
@@ -5432,8 +5616,10 @@ c2b_delete_global_gtf_state()
     fprintf(stderr, "--- c2b_delete_global_gtf_state() - enter ---\n");
 #endif
 
-    if (c2b_globals.gtf->id)
-        free(c2b_globals.gtf->id), c2b_globals.gtf->id = NULL;
+    if (c2b_globals.gtf->element) {
+        c2b_gtf_delete_element(c2b_globals.gtf->element);
+        c2b_globals.gtf->element = NULL;
+    }
 
     free(c2b_globals.gtf), c2b_globals.gtf = NULL;
 

@@ -79,6 +79,8 @@ const boolean kFalse = 0;
 #define C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION 32
 #define C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
 #define C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION 32
+#define C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
+#define C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION 32
 #define C2B_THREAD_IO_BUFFER_SIZE 5000000
 
 extern const char *c2b_samtools;
@@ -355,16 +357,25 @@ typedef struct gff {
 
 typedef struct gtf {
     char *seqname;
+    ssize_t seqname_capacity;
     char *source;
+    ssize_t source_capacity;
     char *feature;
+    ssize_t feature_capacity;
     uint64_t start;
     uint64_t end;
     char *score;
+    ssize_t score_capacity;
     char *strand;
+    ssize_t strand_capacity;
     char *frame;
+    ssize_t frame_capacity;
     char *attributes;
+    ssize_t attributes_capacity;
     char *id;
+    ssize_t id_capacity;
     char *comments;
+    ssize_t comments_capacity;
 } c2b_gtf_t;
 
 /* 
@@ -1252,7 +1263,7 @@ typedef struct gff_state {
 } c2b_gff_state_t;
 
 typedef struct gtf_state {
-    char *id;
+    c2b_gtf_t *element;
     uint64_t line_count;
 } c2b_gtf_state_t;
 
@@ -1394,8 +1405,10 @@ extern "C" {
     static inline void       c2b_cmd_bam_to_sam(char *cmd);
     static inline void       c2b_cmd_sort_bed(char *cmd);
     static inline void       c2b_cmd_starch_bed(char *cmd);
+    static void              c2b_gtf_init_element(c2b_gtf_t **e);
+    static void              c2b_gtf_delete_element(c2b_gtf_t *e);
     static void              c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
-    static inline void       c2b_line_convert_gtf_to_bed(c2b_gtf_t g, char *dest_line, ssize_t *dest_size);
+    static inline void       c2b_line_convert_gtf_ptr_to_bed(c2b_gtf_t *g, char *dest_line, ssize_t *dest_size);
     static void              c2b_gff_init_element(c2b_gff_t **e);
     static void              c2b_gff_delete_element(c2b_gff_t *e);
     static void              c2b_line_convert_gff_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
