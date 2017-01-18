@@ -111,6 +111,8 @@ Released: **TBD**
 
   * Improvements in support for VCF inputs, to allow aribtrary-sized fields (up to system memory and inter-thread buffer allocations), which should reduce or eliminate segmentation faults from buffer overruns on fields larger than former stack defaults.
 
+  * Improvements in support for GFF inputs, to allow aribtrary-sized fields (up to system memory and inter-thread buffer allocations), which should reduce or eliminate segmentation faults from buffer overruns on fields larger than former stack defaults.
+
 =================
 Previous versions
 =================

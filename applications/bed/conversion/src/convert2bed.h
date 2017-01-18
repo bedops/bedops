@@ -77,6 +77,8 @@ const boolean kFalse = 0;
 #define C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION 32
 #define C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
 #define C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION 32
+#define C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
+#define C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION 32
 #define C2B_THREAD_IO_BUFFER_SIZE 5000000
 
 extern const char *c2b_samtools;
@@ -311,15 +313,23 @@ typedef struct sam {
 
 typedef struct gff {
     char *seqid;
+    ssize_t seqid_capacity;
     char *source;
+    ssize_t source_capacity;
     char *type;
+    ssize_t type_capacity;
     uint64_t start;
     uint64_t end;
     char *score;
+    ssize_t score_capacity;
     char *strand;
+    ssize_t strand_capacity;
     char *phase;
+    ssize_t phase_capacity;
     char *attributes;
+    ssize_t attributes_capacity;
     char *id;
+    ssize_t id_capacity;
 } c2b_gff_t;
 
 /* 
@@ -1238,7 +1248,7 @@ static const char *format_undefined_usage =                             \
     "  --help[-bam|-gff|-gtf|-gvf|-psl|-rmsk|-sam|-vcf|-wig] (-h <fmt>)\n";
 
 typedef struct gff_state {
-    char *id;
+    c2b_gff_t *element;
 } c2b_gff_state_t;
 
 typedef struct gtf_state {
@@ -1384,10 +1394,12 @@ extern "C" {
     static inline void       c2b_cmd_bam_to_sam(char *cmd);
     static inline void       c2b_cmd_sort_bed(char *cmd);
     static inline void       c2b_cmd_starch_bed(char *cmd);
-    static void              c2b_line_convert_gff_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
-    static inline void       c2b_line_convert_gff_to_bed(c2b_gff_t g, char *dest_line, ssize_t *dest_size);
     static void              c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
     static inline void       c2b_line_convert_gtf_to_bed(c2b_gtf_t g, char *dest_line, ssize_t *dest_size);
+    static void              c2b_gff_init_element(c2b_gff_t **e);
+    static void              c2b_gff_delete_element(c2b_gff_t *e);
+    static void              c2b_line_convert_gff_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
+    static inline void       c2b_line_convert_gff_ptr_to_bed(c2b_gff_t *g, char *dest_line, ssize_t *dest_size);
     static void              c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
     static inline void       c2b_psl_blockSizes_to_ptr(char *s, uint64_t bc);
     static inline void       c2b_psl_tStarts_to_ptr(char *s, uint64_t bc);
