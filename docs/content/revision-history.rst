@@ -115,6 +115,10 @@ Released: **TBD**
 
   * Improvements in support for GTF inputs, to allow aribtrary-sized fields (up to system memory and inter-thread buffer allocations), which should reduce or eliminate segmentation faults from buffer overruns on fields larger than former stack defaults.
 
+* Testing
+
+  * Our use of Travis CI to automate testing of builds now includes Clang on `their OS X environment <https://docs.travis-ci.com/user/osx-ci-environment/>`_.
+
 =================
 Previous versions
 =================
