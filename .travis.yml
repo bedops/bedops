@@ -1,8 +1,10 @@
 language: cpp
 os:
   - linux
+  - osx
 compiler:
   - gcc
+  - clang
 before_install:
   - if [[ "$CC" == "gcc" ]]; then if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi; fi
   - if [[ "$CXX" == "g++" ]]; then if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi; fi
@@ -12,4 +14,6 @@ install:
   - if [[ "$CC" == "gcc" ]]; then if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50; fi; fi
   - if [[ "$CXX" == "g++" ]]; then if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -qq g++-4.8; fi; fi
   - if [[ "$CXX" == "g++" ]]; then if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50; fi; fi
-script: make -j4
+script: 
+  - if [[ "$CC" == "gcc" ]]; then if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then make -j4; fi; fi
+  - if [[ "$CC" == "clang" ]]; then if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then make -j4; fi; fi
