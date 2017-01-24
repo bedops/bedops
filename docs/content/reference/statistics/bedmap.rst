@@ -270,6 +270,7 @@ The variety of score operators include common statistical measures:
 
 * `mean <http://en.wikipedia.org/wiki/Expected_value>`_ (``--mean``)
 * `trimmed mean <http://en.wikipedia.org/wiki/Truncated_mean>`_ (``--tmean``)
+* `weighted mean <http://en.wikipedia.org/wiki/Weighted_arithmetic_mean>`_ (``--wmean``)
 * `standard deviation <http://en.wikipedia.org/wiki/Standard_deviation>`_ (``--stdev``)
 * `variance <http://en.wikipedia.org/wiki/Variance>`_ (``--variance``)
 * `coefficient of variance <http://en.wikipedia.org/wiki/Coefficient_of_variation>`_ (``--cv``)

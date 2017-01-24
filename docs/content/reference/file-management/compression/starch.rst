@@ -35,7 +35,7 @@ This utility outputs a :ref:`Starch v2-formatted <starch_specification>` archive
 Requirements
 ============
 
-The :ref:`starch` tool requires data in a relaxed variation of the BED format as described by `UCSC’s browser documentation <http://genome.ucsc.edu/FAQ/FAQformat.html#format1>`_. BED data should be sorted before compression, *e.g.* with BEDOPS :ref:`sort-bed`. 
+The :ref:`starch` tool requires data in a relaxed variation of the BED format as described by `UCSC’s browser documentation <http://genome.ucsc.edu/FAQ/FAQformat.html#format1>`_. BED data should be sorted before compression, *i.e.* with BEDOPS :ref:`sort-bed`. 
 
 At a minimum, three columns are required to specify the chromosome name and start and stop positions. Additional columns may be specified, containing up to 128 kB of data per row (including tab delimiters).
 
