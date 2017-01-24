@@ -1,5 +1,5 @@
 // Author
-//  Shane Neph : University of Washington
+//  Shane Neph : 2006
 
 import org.w3c.dom.*;
 import javax.xml.parsers.*;

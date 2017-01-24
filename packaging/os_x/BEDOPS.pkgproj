@@ -497,6 +497,22 @@
 													<key>GID</key>
 													<integer>0</integer>
 													<key>PATH</key>
+													<string>resources/bin/bam2bed_slurm</string>
+													<key>PATH_TYPE</key>
+													<integer>1</integer>
+													<key>PERMISSIONS</key>
+													<integer>493</integer>
+													<key>TYPE</key>
+													<integer>3</integer>
+													<key>UID</key>
+													<integer>0</integer>
+												</dict>
+												<dict>
+													<key>CHILDREN</key>
+													<array/>
+													<key>GID</key>
+													<integer>0</integer>
+													<key>PATH</key>
 													<string>resources/bin/bam2starch</string>
 													<key>PATH_TYPE</key>
 													<integer>1</integer>
@@ -530,6 +546,22 @@
 													<integer>0</integer>
 													<key>PATH</key>
 													<string>resources/bin/bam2starch_sge</string>
+													<key>PATH_TYPE</key>
+													<integer>1</integer>
+													<key>PERMISSIONS</key>
+													<integer>493</integer>
+													<key>TYPE</key>
+													<integer>3</integer>
+													<key>UID</key>
+													<integer>0</integer>
+												</dict>
+												<dict>
+													<key>CHILDREN</key>
+													<array/>
+													<key>GID</key>
+													<integer>0</integer>
+													<key>PATH</key>
+													<string>resources/bin/bam2starch_slurm</string>
 													<key>PATH_TYPE</key>
 													<integer>1</integer>
 													<key>PERMISSIONS</key>
@@ -4674,6 +4706,22 @@
 													<key>UID</key>
 													<integer>0</integer>
 												</dict>
+												<dict>
+													<key>CHILDREN</key>
+													<array/>
+													<key>GID</key>
+													<integer>0</integer>
+													<key>PATH</key>
+													<string>resources/bin/starchcluster_slurm</string>
+													<key>PATH_TYPE</key>
+													<integer>1</integer>
+													<key>PERMISSIONS</key>
+													<integer>493</integer>
+													<key>TYPE</key>
+													<integer>3</integer>
+													<key>UID</key>
+													<integer>0</integer>
+												</dict>
 											</array>
 											<key>GID</key>
 											<integer>0</integer>
@@ -5231,7 +5279,7 @@
 						<key>LANGUAGE</key>
 						<string>English</string>
 						<key>VALUE</key>
-						<string>BEDOPS 2.4.20</string>
+						<string>BEDOPS 2.4.21</string>
 					</dict>
 				</array>
 			</dict>
@@ -5324,13 +5372,6 @@
 				<string>build</string>
 				<key>PATH_TYPE</key>
 				<integer>1</integer>
-			</dict>
-			<key>CERTIFICATE</key>
-			<dict>
-				<key>NAME</key>
-				<string>Developer ID Installer: Alex Reynolds (DLZRG65Q5B)</string>
-				<key>PATH</key>
-				<string>/Users/alexpreynolds/Library/Keychains/login.keychain</string>
 			</dict>
 			<key>EXCLUDED_FILES</key>
 			<array>
@@ -5501,7 +5542,7 @@
 				</dict>
 			</array>
 			<key>NAME</key>
-			<string>BEDOPS 2.4.20</string>
+			<string>BEDOPS 2.4.21</string>
 		</dict>
 	</dict>
 	<key>TYPE</key>

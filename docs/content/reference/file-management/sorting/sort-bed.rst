@@ -5,7 +5,7 @@
 
 The ``sort-bed`` utility sorts BED files of any size, even larger than system memory. BED files that are in lexicographic-chromosome order allow BEDOPS utilities to work efficiently with data from any species without software modifications. Further, sorted files can be traversed very quickly.
 
-Sorted BED order is defined first by lexicographic chromosome order, then ascending integer start coordinate order, and finally by ascending integer end coordinate order.
+Sorted BED order is defined first by lexicographic chromosome order, then ascending integer start coordinate order, and finally by ascending integer end coordinate order. To make the sort order unambiguous, a lexicographical sort is applied on fourth and subsequent columns, where present in the input BED dataset.
 
 Other utilities in the BEDOPS suite require data in sorted order as described. You only need to sort once: BEDOPS utilities all read and write data in sorted order.
 
@@ -23,7 +23,7 @@ The :ref:`sort-bed` utility requires one or more three-column BED file(s). Suppo
 Output
 ------
 
-The :ref:`sort-bed` utility sends lexicographically-sorted BED data to standard output, which can be redirected to a file or piped to other utilities, including core BEDOPS utilities like :ref:`bedops` and :ref:`bedmap`.
+The :ref:`sort-bed` utility sends sorted BED data to standard output, which can be redirected to a file or piped to other utilities, including core BEDOPS utilities like :ref:`bedops` and :ref:`bedmap`. Sort order is defined by a lexicographical sort on chromosome name, a numerical sort on start coordinates, a numerical sort on stop coordinates where there are start matches, and finally a lexicographical sort on the remainder of the BED element (if additional columns are present).
 
 =====
 Usage
@@ -35,7 +35,7 @@ The ``--help`` option is fairly basic, but describes the usage:
 
   sort-bed
     citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-    version:  2.4.20
+    version:  2.4.21
     authors:  Scott Kuehn
 
   USAGE: sort-bed [--help] [--version] [--check-sort] [--max-mem <val>] [--tmpdir <path>] <file1.bed> <file2.bed> <...>

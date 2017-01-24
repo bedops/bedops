@@ -1,9 +1,9 @@
 /* 
    convert2bed.h
    -----------------------------------------------------------------------
-   Copyright (C) 2014-2016 Alex Reynolds
+   Copyright (C) 2014-2017 Alex Reynolds
 
-   wig2bed components, (C) 2011-2016 Scott Kuehn and Shane Neph
+   wig2bed components, (C) 2011-2017 Scott Kuehn and Shane Neph
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@
 #include <sys/param.h>
 #include <sys/wait.h>
 
-#define C2B_VERSION "2.4.20"
+#define C2B_VERSION "2.4.21"
 
 typedef int boolean;
 extern const boolean kTrue;
@@ -66,12 +66,22 @@ const boolean kFalse = 0;
 #define C2B_MAX_LINE_LENGTH_VALUE 131072
 #define C2B_MAX_LONGER_LINE_LENGTH_VALUE 1048576
 #define C2B_MAX_LINES_VALUE 32
-#define C2B_MAX_OPERATIONS_VALUE 1024
 #define C2B_MAX_CHROMOSOME_LENGTH 32
 #define C2B_MAX_PSL_BLOCKS 1024
 #define C2B_MAX_PSL_BLOCK_SIZES_STRING_LENGTH 20
 #define C2B_MAX_PSL_T_STARTS_STRING_LENGTH 20
 #define C2B_MAX_VCF_FIELD_COUNT_VALUE 24576
+#define C2B_SAM_CIGAR_OPS_VALUE_INITIAL 1
+#define C2B_SAM_CIGAR_OPS_VALUE_INCREMENT 1000
+#define C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
+#define C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION 32
+#define C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
+#define C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION 32
+#define C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
+#define C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION 32
+#define C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
+#define C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION 32
+#define C2B_THREAD_IO_BUFFER_SIZE 5000000
 
 extern const char *c2b_samtools;
 extern const char *c2b_sort_bed;
@@ -254,19 +264,33 @@ const char default_cigar_op_operation = '-';
 
 typedef struct sam {
     char *qname;
+    ssize_t qname_capacity;
+    char *modified_qname;
+    ssize_t modified_qname_capacity;
     int flag;
     char *strand;
+    ssize_t strand_capacity;
     char *rname;
+    ssize_t rname_capacity;
     uint64_t start;
     uint64_t stop;
     char *mapq;
+    ssize_t mapq_capacity;
     char *cigar;
+    ssize_t cigar_capacity;
     char *rnext;
+    ssize_t rnext_capacity;
     char *pnext;
+    ssize_t pnext_capacity;
     char *tlen;
+    ssize_t tlen_capacity;
     char *seq;
+    ssize_t seq_capacity;
     char *qual;
+    ssize_t qual_capacity;
     char *opt;
+    ssize_t opt_length;
+    ssize_t opt_capacity;
 } c2b_sam_t;
 
 /* 
@@ -291,15 +315,23 @@ typedef struct sam {
 
 typedef struct gff {
     char *seqid;
+    ssize_t seqid_capacity;
     char *source;
+    ssize_t source_capacity;
     char *type;
+    ssize_t type_capacity;
     uint64_t start;
     uint64_t end;
     char *score;
+    ssize_t score_capacity;
     char *strand;
+    ssize_t strand_capacity;
     char *phase;
+    ssize_t phase_capacity;
     char *attributes;
+    ssize_t attributes_capacity;
     char *id;
+    ssize_t id_capacity;
 } c2b_gff_t;
 
 /* 
@@ -325,16 +357,25 @@ typedef struct gff {
 
 typedef struct gtf {
     char *seqname;
+    ssize_t seqname_capacity;
     char *source;
+    ssize_t source_capacity;
     char *feature;
+    ssize_t feature_capacity;
     uint64_t start;
     uint64_t end;
     char *score;
+    ssize_t score_capacity;
     char *strand;
+    ssize_t strand_capacity;
     char *frame;
+    ssize_t frame_capacity;
     char *attributes;
+    ssize_t attributes_capacity;
     char *id;
+    ssize_t id_capacity;
     char *comments;
+    ssize_t comments_capacity;
 } c2b_gtf_t;
 
 /* 
@@ -482,17 +523,26 @@ typedef struct rmsk {
 
 typedef struct vcf {
     char *chrom;
+    ssize_t chrom_capacity;
     uint64_t pos;
     uint64_t start;
     uint64_t end;
     char *id;
+    ssize_t id_capacity;
     char *ref;
+    ssize_t ref_capacity;
     char *alt;
+    ssize_t alt_capacity;
     char *qual;
+    ssize_t qual_capacity;
     char *filter;
+    ssize_t filter_capacity;
     char *info;
+    ssize_t info_capacity;
     char *format;
+    ssize_t format_capacity;
     char *samples;
+    ssize_t samples_capacity;
 } c2b_vcf_t;
 
 /* 
@@ -552,6 +602,7 @@ typedef struct pipeline_stage {
     int status;
     char *description;
     pid_t pid;
+    ssize_t buffer_size;
 } c2b_pipeline_stage_t;
 
 #define PIPE4_FLAG_NONE       (0U)
@@ -1208,11 +1259,11 @@ static const char *format_undefined_usage =                             \
     "  --help[-bam|-gff|-gtf|-gvf|-psl|-rmsk|-sam|-vcf|-wig] (-h <fmt>)\n";
 
 typedef struct gff_state {
-    char *id;
+    c2b_gff_t *element;
 } c2b_gff_state_t;
 
 typedef struct gtf_state {
-    char *id;
+    c2b_gtf_t *element;
     uint64_t line_count;
 } c2b_gtf_state_t;
 
@@ -1230,6 +1281,7 @@ typedef struct rmsk_state {
 typedef struct sam_state {
     char *samtools_path;
     c2b_cigar_t *cigar;
+    c2b_sam_t *element;
 } c2b_sam_state_t;
 
 typedef struct vcf_state {
@@ -1238,6 +1290,7 @@ typedef struct vcf_state {
     boolean only_insertions;
     boolean only_deletions;
     unsigned int filter_count;
+    c2b_vcf_t *element;
 } c2b_vcf_state_t;
 
 typedef struct wig_state {
@@ -1352,10 +1405,14 @@ extern "C" {
     static inline void       c2b_cmd_bam_to_sam(char *cmd);
     static inline void       c2b_cmd_sort_bed(char *cmd);
     static inline void       c2b_cmd_starch_bed(char *cmd);
-    static void              c2b_line_convert_gff_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
-    static inline void       c2b_line_convert_gff_to_bed(c2b_gff_t g, char *dest_line, ssize_t *dest_size);
+    static void              c2b_gtf_init_element(c2b_gtf_t **e);
+    static void              c2b_gtf_delete_element(c2b_gtf_t *e);
     static void              c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
-    static inline void       c2b_line_convert_gtf_to_bed(c2b_gtf_t g, char *dest_line, ssize_t *dest_size);
+    static inline void       c2b_line_convert_gtf_ptr_to_bed(c2b_gtf_t *g, char *dest_line, ssize_t *dest_size);
+    static void              c2b_gff_init_element(c2b_gff_t **e);
+    static void              c2b_gff_delete_element(c2b_gff_t *e);
+    static void              c2b_line_convert_gff_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
+    static inline void       c2b_line_convert_gff_ptr_to_bed(c2b_gff_t *g, char *dest_line, ssize_t *dest_size);
     static void              c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
     static inline void       c2b_psl_blockSizes_to_ptr(char *s, uint64_t bc);
     static inline void       c2b_psl_tStarts_to_ptr(char *s, uint64_t bc);
@@ -1365,16 +1422,21 @@ extern "C" {
     static void              c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
     static void              c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *dest_size, char *src, ssize_t src_size); 
     static inline void       c2b_sam_cigar_str_to_ops(char *s);
+    static void              c2b_sam_init_element(c2b_sam_t **e);
+    static void              c2b_sam_delete_element(c2b_sam_t *e);
     static void              c2b_sam_init_cigar_ops(c2b_cigar_t **c, const ssize_t size);
+    static void              c2b_sam_resize_cigar_ops(c2b_cigar_t **new_c, c2b_cigar_t *old_c);
     static void              c2b_sam_debug_cigar_ops(c2b_cigar_t *c);
     static void              c2b_sam_delete_cigar_ops(c2b_cigar_t *c);
-    static inline void       c2b_line_convert_sam_to_bed(c2b_sam_t s, char *dest_line, ssize_t *dest_size);
+    static inline void       c2b_line_convert_sam_ptr_to_bed(c2b_sam_t *s, char *dest_line, ssize_t *dest_size, boolean print_modified_qname);
     static void              c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
     static inline boolean    c2b_vcf_allele_is_id(char *s);
     static inline boolean    c2b_vcf_record_is_snv(char *ref, char *alt);
     static inline boolean    c2b_vcf_record_is_insertion(char *ref, char *alt);
     static inline boolean    c2b_vcf_record_is_deletion(char *ref, char *alt);
-    static inline void       c2b_line_convert_vcf_to_bed(c2b_vcf_t v, char *dest_line, ssize_t *dest_size);
+    static void              c2b_vcf_init_element(c2b_vcf_t **e);
+    static void              c2b_vcf_delete_element(c2b_vcf_t *e);
+    static inline void       c2b_line_convert_vcf_ptr_to_bed(c2b_vcf_t *v, char *dest_line, ssize_t *dest_size);
     static void              c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
     static void *            c2b_read_bytes_from_stdin(void *arg);
     static void *            c2b_process_intermediate_bytes_by_lines(void *arg);

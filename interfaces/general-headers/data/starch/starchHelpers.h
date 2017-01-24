@@ -6,7 +6,7 @@
 
 //
 //    BEDOPS
-//    Copyright (C) 2011-2016 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2017 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -116,19 +116,25 @@ int     STARCH2_transformInput(unsigned char **header,
                        const CompressionType compressionType, 
                                   const char *tag,
                                   const char *note,
-                               const Boolean headerFlag);
+                               const Boolean headerFlag,
+                               const Boolean reportProgressFlag,
+                         const LineCountType reportProgressN);
 
 int     STARCH2_transformHeaderedBEDInput(const FILE *inFp, 
                                             Metadata **md, 
                                const CompressionType compressionType, 
                                           const char *tag, 
-                                          const char *note);
+                                          const char *note,
+                                       const Boolean reportProgressFlag,
+                                 const LineCountType reportProgressN);
 
 int     STARCH2_transformHeaderlessBEDInput(const FILE *inFp, 
                                               Metadata **md,
                                  const CompressionType compressionType,
                                             const char *tag,
-                                            const char *note);
+                                            const char *note,
+                                         const Boolean reportProgressFlag,
+                                   const LineCountType reportProgressN);        
 
 int     STARCH2_writeStarchHeaderToOutputFp(const unsigned char *header, 
                                                      const FILE *fp);

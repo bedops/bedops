@@ -6,7 +6,7 @@
 
 //
 //    BEDOPS
-//    Copyright (C) 2011-2016 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2017 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@
 #include <getopt.h>
 #include <bzlib.h>
 #include <zlib.h>
+#include <errno.h>
 
 #include "data/starch/unstarchHelpers.h"
 #include "data/starch/starchMetadataHelpers.h"
@@ -111,6 +112,8 @@ typedef struct transformState {
     uint64_t                 r_totalUniqueBases;
     Boolean                  r_duplicateElementExists;
     Boolean                  r_nestedElementExists;
+    char *                   r_signature;
+    LineLengthType           r_lineMaxStringLength;
     size_t                   r_nRetransBuf;
 } TransformState;
 
@@ -135,39 +138,49 @@ typedef struct chromosomeSummaries {
 static const char *name = "starchcat";
 static const char *authors = "Alex Reynolds and Shane Neph";
 static const char *usage = "\n" \
-    "USAGE: starchcat [ --note=\"...\" ] [ --bzip2 | --gzip ] <starch-file-1> [<starch-file-2> ...]\n" \
+    "USAGE: starchcat [ --note=\"...\" ]\n" \
+    "                 [ --bzip2 | --gzip ]\n" \
+    "                 [ --report-progress=N ] <starch-file-1> [<starch-file-2> ...]\n" \
     "\n" \
-    "    * At least one lexicographically-sorted, headerless starch archive is required.\n" \
-    "      While two or more inputs make sense for a multiset union operation, you can starchcat \n" \
-    "      one file in order to update its metadata, recompress it with a different backend method,\n" \
-    "      or add a note annotation.\n" \
+    "    * At least one lexicographically-sorted, headerless starch archive is\n" \
+    "      required.\n\n" \
+    "    * While two or more inputs make sense for a multiset union operation, you\n" \
+    "      can starchcat one file in order to update its metadata, recompress it\n" \
+    "      with a different backend method, or add a note annotation.\n" \
     "\n" \
-    "    * Compressed data are sent to standard output. Use the '>' operator to redirect\n" \
-    "      to a file.\n" \
+    "    * Compressed data are sent to standard output. Use the '>' operator to\n" \
+    "      redirect to a file.\n" \
     "\n" \
-    "    Process Flags:\n\n" \
-    "    --note=\"foo bar...\"   Append note to output archive metadata (optional)\n" \
-    "    --bzip2 | --gzip      Specify backend compression type (optional, default is bzip2)\n" \
-    "    --version             Show binary version\n" \
-    "    --help                Show this usage message\n";
+    "    Process Flags\n" \
+    "    --------------------------------------------------------------------------\n" \
+    "    --note=\"foo bar...\"   Append note to output archive metadata (optional).\n\n" \
+    "    --bzip2 | --gzip      Specify backend compression type (optional, default\n" \
+    "                          is bzip2).\n\n" \
+    "    --report-progress=N   Report compression progress every N elements per\n" \
+    "                          chromosome to standard error stream (optional)\n\n" \
+    "    --version             Show binary version.\n\n" \
+    "    --help                Show this usage message.\n";
 
 static struct starchcat_client_global_args_t {
     CompressionType compressionType;
     char *note;
     char **inputFiles;
     size_t numberInputFiles;
+    Boolean reportProgressFlag;
+    LineCountType reportProgressN;
 } starchcat_client_global_args;
 
 static struct option starchcat_client_long_options[] = {    
-    {"note",    required_argument, NULL, 'n'},
-    {"bzip2",   no_argument,       NULL, 'b'},
-    {"gzip",    no_argument,       NULL, 'g'},
-    {"version", no_argument,       NULL, 'v'},
-    {"help",    no_argument,       NULL, 'h'},
-    {NULL,      no_argument,       NULL, 0}
+    {"note",            required_argument, NULL, 'n'},
+    {"bzip2",           no_argument,       NULL, 'b'},
+    {"gzip",            no_argument,       NULL, 'g'},
+    {"report-progress", required_argument, NULL, 'r'},
+    {"version",         no_argument,       NULL, 'v'},
+    {"help",            no_argument,       NULL, 'h'},
+    {NULL,              no_argument,       NULL,  0 }
 };
 
-static const char *starchcat_client_opt_string = "n:bgvh?";
+static const char *starchcat_client_opt_string = "n:bgrvh?";
 
 void     STARCHCAT_initializeGlobals();
 
@@ -179,7 +192,8 @@ int      STARCHCAT2_copyInputRecordToOutput (Metadata **outMd,
                                 const CompressionType outType,
                                            const char *inChr,
                                  const MetadataRecord *inRec,
-                                               size_t *cumulativeOutputSize);
+                                               size_t *cumulativeOutputSize,
+                                        const Boolean reportProgressFlag);
 
 int      STARCHCAT_copyInputRecordToOutput (Metadata **outMd,
                                           const char *outTag,
@@ -192,7 +206,9 @@ int      STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd,
                                    const CompressionType outType, 
                                               const char *inChr, 
                                     const MetadataRecord *inRec,
-                                                  size_t *cumulativeOutputSize);
+                                                  size_t *cumulativeOutputSize,
+                                           const Boolean reportProgressFlag,
+                                     const LineCountType reportProgressN);
 
 int      STARCHCAT_rewriteInputRecordToOutput (Metadata **outMd,
                                              const char *outTag,
@@ -210,6 +226,13 @@ int      STARCHCAT2_identifyLowestBedElement(const Boolean *eobFlags,
                                      const SignedCoordType *stops, 
                                               const size_t numRecords, 
                                                     size_t *lowestIdx);
+
+int      STARCHCAT2_identifyLowestBedElementV2p2(const Boolean *eobFlags,
+                                         const SignedCoordType *starts, 
+                                         const SignedCoordType *stops, 
+                                                    const char **remainders,
+                                                  const size_t numRecords, 
+                                                        size_t *lowestIdx);
 
 int      STARCHCAT2_pullNextBedElement (const size_t recIdx,
                                           const char **inLinesBuf,
@@ -229,7 +252,9 @@ int      STARCHCAT_mergeChromosomeStreams (const ChromosomeSummaries *chrSums,
 int      STARCHCAT2_mergeChromosomeStreams (const ChromosomeSummaries *chrSums,
                                                 const CompressionType outputType,
                                                            const char *note,
-                                                               size_t *cumulativeOutputSize);
+                                                               size_t *cumulativeOutputSize,
+                                                        const Boolean reportProgressFlag,
+                                                  const LineCountType reportProgressN);
 
 int      STARCHCAT_freeChromosomeNames (char ***chrs, 
                                 unsigned int numChromosomes);
@@ -325,6 +350,7 @@ int      STARCHCAT2_fillExtractionBufferFromBzip2Stream (Boolean *eofFlag, char 
 int      STARCHCAT2_fillExtractionBufferFromGzipStream (Boolean *eofFlag, FILE **inputFp, char *recordChromosome, char *extractionBuffer, size_t *nExtractionBuffer, z_stream *zStream, size_t *nZRead, char **zRemainderBuf, size_t *nZRemainderBuf, TransformState *t_state);
 int      STARCHCAT2_extractBedLine (Boolean *eobFlag, char *extractionBuffer, int *extractionBufferOffset, char **extractedElement);
 int      STARCHCAT2_parseCoordinatesFromBedLineV2 (Boolean *eobFlag, const char *extractedElement, SignedCoordType *start, SignedCoordType *stop);
+int      STARCHCAT2_parseCoordinatesFromBedLineV2p2 (Boolean *eobFlag, const char *extractedElement, SignedCoordType *start, SignedCoordType *stop, char **remainder);
 int      STARCHCAT2_addLowestBedElementToCompressionBuffer (char *compressionBuffer, const char *extractedElement, LineCountType *compressionLineCount);
 int      STARCHCAT2_transformCompressionBuffer (const char *compressionBuffer, char *retransformedOutputBuffer, TransformState *retransState);
 int      STARCHCAT2_squeezeRetransformedOutputBufferToBzip2Stream (BZFILE **bzStream, char *transformedBuffer);
@@ -339,7 +365,9 @@ int      STARCHCAT2_finalizeMetadata (Metadata **outMd,
                                       uint64_t finalTotalNonUniqueBases, 
                                       uint64_t finalTotalUniqueBases,
                                        Boolean finalDuplicateElementExists,
-                                       Boolean finalNestedElementExists);
+                                       Boolean finalNestedElementExists,
+                                          char *finalSignature,
+                                LineLengthType finalLineMaxStringLength);
 
 #ifdef __cplusplus
 } // namespace starch

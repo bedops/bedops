@@ -5,7 +5,7 @@
 
 //
 //    BEDOPS
-//    Copyright (C) 2011-2016 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2017 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@
 #include "algorithm/visitors/OtherVisitors.hpp"
 #include "algorithm/visitors/helpers/ProcessBedVisitorRow.hpp"
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
+#include "data/bed/BedCompare.hpp"
 #include "utility/OrderCompare.hpp"
 
 // Names returned via VisitorName<...>::Name() must be unique
@@ -102,8 +103,8 @@ namespace Visitors {
         { return "mad"; }
     };
 
-    template <typename A, typename B, typename C>
-    struct VisitorName< Visitors::Extreme< A,B,Ordering::CompValueThenAddressGreater<C,C> > > {
+    template <typename A, typename B, typename C, typename D>
+    struct VisitorName< Visitors::Extreme< A,B,Ordering::CompValueThenAddressGreater<C,C>,D > > {
       static std::string Name()
         { return "max"; }
     };
@@ -120,8 +121,8 @@ namespace Visitors {
         { return "median"; }
     };
 
-    template <typename A, typename B, typename C>
-    struct VisitorName< Visitors::Extreme< A,B,Ordering::CompValueThenAddressLesser<C, C> > > {
+    template <typename A, typename B, typename C, typename D>
+    struct VisitorName< Visitors::Extreme< A,B,Ordering::CompValueThenAddressLesser<C, C>,D > > {
       static std::string Name()
         { return "min"; }
     };
@@ -176,18 +177,6 @@ namespace Visitors {
         { return "bases-uniq-f"; }
     };
 
-    template <typename B, typename C>
-    struct VisitorName< Visitors::Extreme< Visitors::BedHelpers::PrintAllScorePrecision,B,Ordering::CompValueThenAddressGreater<C,C> > > {
-      static std::string Name()
-        { return "max-element"; }
-    };
-
-    template <typename B, typename C>
-    struct VisitorName< Visitors::Extreme< Visitors::BedHelpers::PrintAllScorePrecision,B,Ordering::CompValueThenAddressLesser<C, C> > > {
-      static std::string Name()
-        { return "min-element"; }
-    };
-
     template <template<class X> class A, class B>
     struct VisitorName< Visitors::BedSpecific::EchoMapBed<A<Visitors::BedHelpers::Print>,B> > {
       static std::string Name()
@@ -206,6 +195,18 @@ namespace Visitors {
         { return "echo-map-id-uniq"; }
     };
 
+    template <class B>
+    struct VisitorName< Visitors::BedSpecific::EchoMapBed< Visitors::BedHelpers::PrintGenomicRange<Visitors::BedHelpers::PrintBED3>, B> > {
+      static std::string Name()
+        { return "echo-map-range"; }
+    };
+
+    template <template<class X> class A, class B>
+    struct VisitorName< Visitors::BedSpecific::EchoMapBed< A<Visitors::BedHelpers::PrintScorePrecision>, B> > {
+      static std::string Name()
+        { return "echo-map-score"; }
+    };
+
     template <template<class X> class A, class B>
     struct VisitorName< Visitors::BedSpecific::EchoMapBed<A<Visitors::BedHelpers::PrintLength>,B> > {
       static std::string Name()
@@ -218,16 +219,34 @@ namespace Visitors {
         { return "echo-overlap-size"; }
     };
 
-    template <class B>
-    struct VisitorName< Visitors::BedSpecific::EchoMapBed< Visitors::BedHelpers::PrintGenomicRange<Visitors::BedHelpers::PrintBED3>, B> > {
+    template <typename B, typename C, typename D>
+    struct VisitorName< Visitors::Extreme< Visitors::BedHelpers::PrintAllScorePrecision,B,Bed::ScoreThenGenomicCompareGreater<C,C>, D > > {
       static std::string Name()
-        { return "echo-map-range"; }
+        { return "max-element"; }
     };
 
-    template <template<class X> class A, class B>
-    struct VisitorName< Visitors::BedSpecific::EchoMapBed< A<Visitors::BedHelpers::PrintScorePrecision>, B> > {
+    template <typename B, typename C, typename D>
+    struct VisitorName< Visitors::Extreme< Visitors::BedHelpers::PrintAllScorePrecision,B,Ordering::CompValueThenAddressGreater<C,C>, D > > {
       static std::string Name()
-        { return "echo-map-score"; }
+        { return "max-element-rand"; }
+    };
+
+    template <typename B, typename C, typename D>
+    struct VisitorName< Visitors::Extreme< Visitors::BedHelpers::PrintAllScorePrecision,B,Bed::ScoreThenGenomicCompareLesser<C,C>, D > > {
+      static std::string Name()
+        { return "min-element"; }
+    };
+
+    template <typename B, typename C, typename D>
+    struct VisitorName< Visitors::Extreme< Visitors::BedHelpers::PrintAllScorePrecision,B,Ordering::CompValueThenAddressLesser<C, C>, D > > {
+      static std::string Name()
+        { return "min-element-rand"; }
+    };
+
+    template <typename A, typename B>
+    struct VisitorName< Visitors::WeightedAverage<A,B> > {
+      static std::string Name()
+        { return "wmean"; }
     };
 
   } // namespace Helpers

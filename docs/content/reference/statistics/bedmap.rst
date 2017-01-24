@@ -48,7 +48,7 @@ The ``--help`` option describes the various mapping and analytical operations an
 
   bedmap
     citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-    version:  2.4.20
+    version:  2.4.21
     authors:  Shane Neph & Scott Kuehn
 
    USAGE: bedmap [process-flags] [overlap-option] <operation(s)...> <ref-file> [map-file]
@@ -106,17 +106,21 @@ The ``--help`` option describes the various mapping and analytical operations an
         --mad <mult=1>      The median absolute deviation of overlapping elements in <map-file>.
                               Multiply mad score by <mult>.  0 < mult, and mult is 1 by default.
         --max               The highest score from overlapping elements in <map-file>.
-        --max-element       An element with the highest score from overlapping elements in <map-file>.
+        --max-element       A (non-random) highest-scoring and overlapping element in <map-file>.
+        --max-element-rand  A random highest-scoring and overlapping element in <map-file>.
         --mean              The average score from overlapping elements in <map-file>.
         --median            The median score from overlapping elements in <map-file>.
         --min               The lowest score from overlapping elements in <map-file>.
-        --min-element       An element with the lowest score from overlapping elements in <map-file>.
+        --min-element       A (non-random) lowest-scoring and overlapping element in <map-file>.
+        --min-element-rand  A random lowest-scoring and overlapping element in <map-file>.
         --stdev             The square root of the result of --variance.
         --sum               Accumulated scores from overlapping elements in <map-file>.
         --tmean <low> <hi>  The mean score from overlapping elements in <map-file>, after
                               ignoring the bottom <low> and top <hi> fractions of those scores.
                               0 <= low <= 1.  0 <= hi <= 1.  low+hi <= 1.
         --variance          The variance of scores from overlapping elements in <map-file>.
+        --wmean             Weighted mean, scaled in proportion to the coverage of the <ref-file>
+                              element by each overlapping <map-file> element.
 
        ----------
         NON-SCORE:
@@ -266,6 +270,7 @@ The variety of score operators include common statistical measures:
 
 * `mean <http://en.wikipedia.org/wiki/Expected_value>`_ (``--mean``)
 * `trimmed mean <http://en.wikipedia.org/wiki/Truncated_mean>`_ (``--tmean``)
+* `weighted mean <http://en.wikipedia.org/wiki/Weighted_arithmetic_mean>`_ (``--wmean``)
 * `standard deviation <http://en.wikipedia.org/wiki/Standard_deviation>`_ (``--stdev``)
 * `variance <http://en.wikipedia.org/wiki/Variance>`_ (``--variance``)
 * `coefficient of variance <http://en.wikipedia.org/wiki/Coefficient_of_variation>`_ (``--cv``)
@@ -371,7 +376,9 @@ Likewise, we can repeat this operation, but look for the lowest scoring elements
   chr21   33031400        33031800        ref-2|chr21     33031525        33031545        map-19  13
   chr21   33031900        33032000        ref-3|chr21     33031985        33032005        map-42  138
 
-.. note:: Where there are ties in score values, there is no guarantee about which tied element will be chosen. In this case, the ``--echo-map`` operator can be used to manually examine the full list of elements and apply different logic.
+.. note:: Where there are ties in score values, using ``--max-element`` or ``--min-element`` now selects the lexicographically smallest element amongst the set of tied elements. This generally means that the first element in the lexicographic ordering of the ID fields (fourth column) will determine the selection. 
+
+   A random selection process was used for ``--max-element`` and ``--min-element`` in versions 2.4.20 and previous. If you wish to randomly sample a maximum- or minimum-scoring element from amongst tied elements (say, to reproduce the procedure of prior analyses), you may use the ``--max-element-rand`` or ``--min-element-rand`` options, respectively.
 
 We can also perform multiple score operations, which are summarized on one line, *e.g.*, to show the mean, standard deviation, and minimum and maximum signal over each ``Reference`` element, we simply add the requisite options in series:
 
@@ -413,9 +420,9 @@ As an example of using the ``--echo-map-id`` operator in a biological context, w
 ::
 
   chr1    4534161 4534177 -V_GRE_C        4.20586e-06     -       CGTACACACAGTTCTT
-  chr1    4534192.4.204205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
+  chr1    4534192.4.214205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
   chr1    4534209 4534223 +V_HNF4_Q6_01   6.93604e-06     +       GGACCAGAGTCCAC
-  chr1    4962522.4.202540 -V_GCNF_01      9.4497e-06      -       CCCAAGGTCAAGATAAAG
+  chr1    4962522.4.212540 -V_GCNF_01      9.4497e-06      -       CCCAAGGTCAAGATAAAG
   chr1    4962529 4962539 +V_NUR77_Q5     8.43564e-06     +       TTGACCTTGG
   ...
 
@@ -667,9 +674,9 @@ To demonstrate their use, we revisit the ``Motifs`` dataset, which includes *p*-
 ::
 
   chr1    4534161 4534177 -V_GRE_C        4.20586e-06     -       CGTACACACAGTTCTT
-  chr1    4534192.4.204205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
+  chr1    4534192.4.214205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
   chr1    4534209 4534223 +V_HNF4_Q6_01   6.93604e-06     +       GGACCAGAGTCCAC
-  chr1    4962522.4.202540 -V_GCNF_01      9.4497e-06      -       CCCAAGGTCAAGATAAAG
+  chr1    4962522.4.212540 -V_GCNF_01      9.4497e-06      -       CCCAAGGTCAAGATAAAG
   chr1    4962529 4962539 +V_NUR77_Q5     8.43564e-06     +       TTGACCTTGG
   ...
 

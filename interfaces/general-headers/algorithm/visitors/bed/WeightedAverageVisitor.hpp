@@ -1,6 +1,6 @@
 /*
-  Author: Scott Kuehn, Shane Neph
-  Date:   Wed Oct  3 09:25:51 PDT 2007
+  Author: Shane Neph
+  Date:   Jan.2017
 */
 //
 //    BEDOPS
@@ -21,10 +21,10 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#ifndef STDEVVISITOR_HPP
-#define STDEVVISITOR_HPP
+#ifndef CLASS_WINDOW_WEIGHTED_AVERAGE_VISITOR_H
+#define CLASS_WINDOW_WEIGHTED_AVERAGE_VISITOR_H
 
-#include <cmath>
+#include <set>
 
 #include "data/measurement/NaN.hpp"
 
@@ -34,50 +34,58 @@ namespace Visitors {
             typename Process,
             typename BaseVisitor
            >
-  struct StdDev : BaseVisitor {
+  struct WeightedAverage : BaseVisitor {
 
     typedef BaseVisitor BaseClass;
     typedef Process ProcessType;
     typedef typename BaseClass::RefType RefType;
     typedef typename BaseClass::MapType MapType;
 
-    explicit StdDev(const ProcessType& pt = ProcessType())
-        : pt_(pt), sum_(0), squareSum_(0), count_(0)
+    explicit WeightedAverage(const ProcessType& pt = ProcessType())
+        : pt_(pt)
       { /* */ }
 
     inline void Add(MapType* bt) {
-      sum_ += *bt; 
-      squareSum_ += (*bt * *bt);
-      count_++;
+      m_.insert(bt);
     }
 
     inline void Delete(MapType* bt) {
-      sum_ -= *bt; 
-      squareSum_ -= (*bt * *bt);
-      count_--;
+      m_.erase(bt);
     }
 
     inline void DoneReference() {
       static const Signal::NaN nan = Signal::NaN();
-      if ( count_ <= 1 )
+      if ( !m_.empty() ) {
+        double value = 0;
+        double weightSum = 0;
+        for ( auto ptr : m_ ) {
+          auto v = r_->overlap(*ptr)/static_cast<double>(r_->length());
+          value +=  v * (*ptr);
+          weightSum += v;
+        } // for
+        value /= weightSum;
+        pt_.operator()(value);
+      } else {
         pt_.operator()(nan);
-      else {
-        double numer = (count_ * squareSum_) - (sum_ * sum_);
-        double denom = (count_ * (count_ - 1));
-        double val = std::sqrt(numer / denom);
-        pt_.operator()(val);
       }
     }
 
-    virtual ~StdDev() { /* */ }
+    inline void End() {
+      m_.clear();
+      r_ = nullptr;
+    }
+
+    inline void SetReference(RefType* r) { r_ = r; }
+
+    virtual ~WeightedAverage()
+      { /* */ }
 
   protected:
     ProcessType pt_;
-    double sum_;
-    double squareSum_;
-    double count_;
+    RefType* r_;
+    std::set<MapType*> m_;
   };
 
 } // namespace Visitors
 
-#endif // STDEVVISITOR_HPP
+#endif // CLASS_WINDOW_WEIGHTED_AVERAGE_VISITOR_H

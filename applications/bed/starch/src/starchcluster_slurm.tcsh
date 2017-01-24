@@ -1,8 +1,8 @@
 #!/bin/tcsh -ef
 
 # author  : sjn and apr
-# date    : Feb 2012
-# version : v2.5.0
+# date    : 13 Sep 2016
+# version : v2.4.21
 
 #
 #    BEDOPS
@@ -23,12 +23,19 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
+####################################################
+# cluster variables:
+#  change to match your environment
+####################################################
+
+set slurm_opts = "-D $PWD -o /dev/null -e /dev/null"
+
 ############################
 # some input error checking
 ############################
 
-set help = "\nUsage: starchcluster_gnuParallel [--help] [--clean] <input-bed-file> [output-starch-file]\n\n"
-set help = "$help  Pass in the name of a BED file to create a Starch archive using GNU Parallel.\n\n"
+set help = "\nUsage: starchcluster_slurm [--help] [--clean] <input-bed-file> [output-starch-file]\n\n"
+set help = "$help  Pass in the name of a BED file to create a starch archive using the cluster.\n\n"
 set help = "$help  (stdin isn't supported through this wrapper script, but starch supports it natively.)\n\n"
 set help = "$help  Add --clean to remove <input-bed-file> after starching it up.\n\n"
 set help = "$help  You can pass in the name of the output starch archive to be created.\n"
@@ -81,7 +88,7 @@ endif
 # new working directory to keep file pileups local to this job
 ###############################################################
 
-set nm = scg.`uname -a | cut -f2 -d' '`.$$
+set nm = scs.`uname -a | cut -f2 -d' '`.$$
 if ( -d $nm ) then
   rm -rf $nm
 endif
@@ -90,7 +97,7 @@ mkdir -p $nm
 set here = `pwd`
 cd $nm
 if ( -s ../$originput ) then
-  set input = $here/$originput
+  set input = ../$originput
 else
   # $originput includes absolute path
   set input = $originput
@@ -110,13 +117,19 @@ endif
 # extract information by chromosome and starch it up
 #####################################################
 
-@ chrom_count = `bedextract --list-chr $input | awk 'END { print NR }'`
+set files = ()
+set jids = ()
+@ cntr = 0
+foreach chrom (`bedextract --list-chr $input`)
+  set res = `sbatch $slurm_opts -J "$nm.$cntr" --wrap="module add bedops; bedextract $chrom $input | starch - > $nm/$cntr"`
+  set slurm_jid = `echo $res | sed 's|^Submitted batch job ||'`
+  set jids = ($jids $slurm_jid)
+  set files = ($files $nm/$cntr)
+  @ cntr++
+end
 
-bedextract --list-chr $input | parallel "bedextract {} $input | starch - > $here/$nm/{}.starch"
-
-@ extracted_file_count = `find $here/$nm -name '*.starch' | wc -l`
-if ( $chrom_count != $extracted_file_count ) then
-  printf "Error: Only some or no files were submitted to GNU Parallel successfully\n"
+if ( $cntr == 0 ) then
+  printf "Program problem: no files were submitted to the cluster?\n"
   exit -1
 endif
 
@@ -124,11 +137,7 @@ endif
 # create final starch archive and clean things up
 ##################################################
 
-starchcat $here/$nm/*.starch > $output
-cd $here
-rm -rf $nm
-if ( $clean > 0 ) then
-  rm -f $originput
-endif
+set dependencies = `echo $jids | tr ' ' ':'`
+sbatch $slurm_opts -J $nm.union --dependency=afterok:$dependencies --wrap="module add bedops; starchcat $files > $output; cd $here; rm -rf $nm; if [ $clean != 0 ]; then rm -f $originput; fi;"
 
 exit 0

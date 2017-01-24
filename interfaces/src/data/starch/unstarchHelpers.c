@@ -6,7 +6,7 @@
 
 //
 //    BEDOPS
-//    Copyright (C) 2011-2016 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2017 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -41,6 +41,8 @@
 
 #include <zlib.h>
 
+#include "data/starch/starchSha1Digest.h"
+#include "data/starch/starchBase64Coding.h"
 #include "data/starch/starchFileHelpers.h"
 #include "data/starch/starchHelpers.h"
 #include "data/starch/unstarchHelpers.h"
@@ -298,7 +300,7 @@ UNSTARCH_extractDataWithBzip2(FILE **inFp, FILE *outFp, const char *whichChr, co
 #else
         if (STARCH_fseeko(*inFp, (off_t) (cumulativeSize + mdOffset), SEEK_SET) != 0) {
 #endif
-            fprintf(stderr, "ERROR: Could not seek data in archve\n");
+            fprintf(stderr, "ERROR: Could not seek data in archive\n");
             return UNSTARCH_FATAL_ERROR;
         }
         cumulativeSize += size;
@@ -1699,6 +1701,55 @@ UNSTARCH_printLineCountForAllChromosomes(const Metadata *md)
     fprintf(stdout, "%" PRIu64 "\n", totalLineCount);
 }
 
+LineLengthType
+UNSTARCH_lineMaxStringLengthForChromosome(const Metadata *md, const char *chr)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_lineMaxStringLengthForChromosome() ---\n");
+#endif
+    const Metadata *iter;
+
+    for (iter = md; iter != NULL; iter = iter->next) {
+        if (strcmp(chr, iter->chromosome) == 0) {
+            return iter->lineMaxStringLength;
+        }
+    }
+
+#ifdef __cplusplus
+    return static_cast<LineLengthType>( STARCH_DEFAULT_LINE_STRING_LENGTH );
+#else
+    return (LineLengthType) STARCH_DEFAULT_LINE_STRING_LENGTH;
+#endif
+}
+
+void
+UNSTARCH_printLineMaxStringLengthForChromosome(const Metadata *md, const char *chr)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_printLineMaxStringLengthForChromosome() ---\n");
+#endif
+
+    if (strcmp(chr, "all") == 0)
+        UNSTARCH_printLineMaxStringLengthForAllChromosomes(md);
+    else
+        fprintf(stdout, "%d\n", UNSTARCH_lineMaxStringLengthForChromosome(md, chr));
+}
+
+void
+UNSTARCH_printLineMaxStringLengthForAllChromosomes(const Metadata *md)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_printLineMaxStringLengthForAllChromosomes() ---\n");
+#endif
+    const Metadata *iter;
+    LineLengthType lineMaxStringLength = STARCH_DEFAULT_LINE_STRING_LENGTH;
+
+    for (iter = md; iter != NULL; iter = iter->next)
+        lineMaxStringLength = (lineMaxStringLength >= iter->lineMaxStringLength) ? lineMaxStringLength : iter->lineMaxStringLength;
+
+    fprintf(stdout, "%d\n", lineMaxStringLength);
+}
+
 BaseCountType
 UNSTARCH_nonUniqueBaseCountForChromosome(const Metadata *md, const char *chr)
 {
@@ -1987,6 +2038,381 @@ UNSTARCH_printNestedElementExistsIntegersForAllChromosomes(const Metadata *md)
 #else
     fprintf(stdout, "%d\n", (int) kStarchFalse);
 #endif
+}
+
+void
+UNSTARCH_printSignature(const Metadata *md, const char *chr, const unsigned char *mdSha1Buffer) 
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_printSignature() ---\n");
+#endif
+    char *signature = NULL;
+
+    if (strcmp(chr, "all") == 0) {
+        UNSTARCH_printAllSignatures(md, mdSha1Buffer);
+    }
+    else {
+        signature = UNSTARCH_signatureForChromosome(md, chr);
+        if (signature)
+            fprintf(stdout, "%s\n", signature);
+    }
+}
+
+char *
+UNSTARCH_signatureForChromosome(const Metadata *md, const char *chr)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_signatureForChromosome() ---\n");
+#endif
+    const Metadata *iter;
+    
+    for (iter = md; iter != NULL; iter = iter->next) {
+        if (strcmp(chr, iter->chromosome) == 0)
+            return iter->signature;
+    }
+
+    return NULL;
+}
+
+void
+UNSTARCH_printAllSignatures(const Metadata *md, const unsigned char *mdSha1Buffer)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_printAllSignatures() ---\n");
+#endif
+    UNSTARCH_printMetadataSignature(mdSha1Buffer);
+    UNSTARCH_printAllChromosomeSignatures(md);
+}
+
+void
+UNSTARCH_printMetadataSignature(const unsigned char *mdSha1Buffer)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_printMetadataSignature() ---\n");
+#endif
+    size_t mdSha1BufferLength = STARCH2_MD_FOOTER_SHA1_LENGTH;
+    char *jsonBase64String = NULL;
+
+#ifdef __cplusplus
+    STARCH_encodeBase64(&jsonBase64String, 
+            static_cast<const size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
+            const_cast<const unsigned char *>( mdSha1Buffer ), 
+            static_cast<const size_t>( mdSha1BufferLength ));
+#else
+    STARCH_encodeBase64(&jsonBase64String, 
+            (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
+            (const unsigned char *) mdSha1Buffer, 
+            (const size_t) mdSha1BufferLength);
+#endif
+
+    if (!jsonBase64String) {
+        fprintf(stderr, "ERROR: Could not allocate space for Base64-encoded metadata string representation\n");
+        exit(-1);
+    }
+    fprintf(stdout, "metadata\t%s\n", jsonBase64String);
+    free(jsonBase64String), jsonBase64String = NULL;
+}
+
+void
+UNSTARCH_printAllChromosomeSignatures(const Metadata *md)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_printAllChromosomeSignatures() ---\n");
+#endif
+    const Metadata *iter;
+    
+    for (iter = md; iter != NULL; iter = iter->next) {
+        fprintf(stdout, "%s\t%s\n", iter->chromosome, iter->signature);
+    }
+}
+
+Boolean
+UNSTARCH_verifySignature(FILE **inFp, const Metadata *md, const uint64_t mdOffset, const char *chr, CompressionType compType)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_verifySignature() ---\n");
+#endif
+    char *expectedSignature = NULL;
+    char *observedSignature = NULL;
+    Boolean signaturesVerifiedFlag = kStarchFalse;
+
+    if (strcmp(chr, "all") == 0) {
+        signaturesVerifiedFlag = UNSTARCH_verifyAllSignatures(inFp, md, mdOffset, compType);
+    }
+    else {
+        expectedSignature = UNSTARCH_signatureForChromosome(md, chr);
+        if (!expectedSignature) {
+            fprintf(stderr, "ERROR: Could not locate signature in metadata for specified chromosome name [%s]\n", chr);
+            signaturesVerifiedFlag = kStarchFalse;
+        }
+        observedSignature = UNSTARCH_observedSignatureForChromosome(inFp, md, mdOffset, chr, compType);
+        if (!observedSignature) {
+            signaturesVerifiedFlag = kStarchFalse;
+        }
+        else if (strcmp(observedSignature, expectedSignature) != 0) {
+            fprintf(stderr, "ERROR: Specified chromosome record may be corrupt -- observed and expected signatures do not match for chromosome [%s]\n", chr);
+            signaturesVerifiedFlag = kStarchFalse;
+        }
+        else {
+            fprintf(stderr, "Expected and observed data integrity signatures match for chromosome [%s]\n", chr);
+            signaturesVerifiedFlag = kStarchTrue;
+        }
+    }
+    if (observedSignature) { free(observedSignature), observedSignature = NULL; }
+    return signaturesVerifiedFlag;
+}
+
+char *
+UNSTARCH_observedSignatureForChromosome(FILE **inFp, const Metadata *md, const uint64_t mdOffset, const char *chr, CompressionType compType) 
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_observedSignatureForChromosome() ---\n");
+#endif
+
+    /*
+        1) Open file pointer to specified offset
+        2) Extract transformed data from compressed chromosome stream
+        3) Run block SHA-1 function on byte stream until end-of-stream
+        4) Return Base64 encoding of SHA-1 signature
+    */
+
+    const Metadata *iter = NULL;
+    char *currentChromosome = NULL;
+    uint64_t size = 0;  
+    uint64_t cumulativeSize = 0;
+
+    unsigned char sha1Digest[STARCH2_MD_FOOTER_SHA1_LENGTH] = {0};
+    char *base64EncodedSha1Digest = NULL;
+    struct sha1_ctx perChromosomeHashCtx;
+
+    for (iter = md; iter != NULL; iter = iter->next) {
+        currentChromosome = iter->chromosome; 
+        size = iter->size;
+#ifdef __cplusplus
+        if (STARCH_fseeko(*inFp, static_cast<off_t>( cumulativeSize + mdOffset ), SEEK_SET) != 0) {
+            fprintf(stderr, "ERROR: Could not seek data in archive\n");
+            return NULL;
+        }            
+#else
+        if (STARCH_fseeko(*inFp, (off_t) (cumulativeSize + mdOffset), SEEK_SET) != 0) {
+            fprintf(stderr, "ERROR: Could not seek data in archive\n");
+            return NULL;
+        }            
+#endif
+        cumulativeSize += size;
+        if (strcmp(chr, currentChromosome) == 0) {
+
+            // depending on archive compression type (bzip2 or gzip) we set up 
+            // the machinery to extract a stream of transformed data out of the 
+            // compressed bytes. we run our sha1_process_bytes() call on the
+            // transformed data
+
+            // initialize hash context
+            sha1_init_ctx (&perChromosomeHashCtx);
+
+            switch (compType) {
+                case kBzip2: {
+                    BZFILE *bzFp = NULL;
+                    int bzError = 0;
+                    unsigned char *bzOutput = NULL;
+                    size_t bzOutputLength = UNSTARCH_COMPRESSED_BUFFER_MAX_LENGTH;
+                    bzFp = BZ2_bzReadOpen( &bzError, *inFp, 0, 0, NULL, 0 ); /* http://www.bzip.org/1.0.5/bzip2-manual-1.0.5.html#bzcompress-init */
+                    if (bzError != BZ_OK) {
+                        BZ2_bzReadClose( &bzError, bzFp );
+                        fprintf(stderr, "ERROR: Bzip2 data stream could not be opened\n");
+                        return NULL;
+                    }
+#ifdef __cplusplus
+                    bzOutput = static_cast<unsigned char *>( malloc(bzOutputLength) );
+#else
+                    bzOutput = malloc(bzOutputLength);
+#endif
+                    do {
+                        UNSTARCH_bzReadLine(bzFp, &bzOutput); 
+                        if (bzOutput) {
+                            /*
+                                The output of UNSTARCH_bzReadLine strips the newline character, because 
+                                the transformation tokens do not need a newline when being turned back 
+                                into raw BED. 
+
+                                When the raw BED was originally turned into tranform tokens, the so-called
+                                "transformation" buffer contained these newline characters. So we put them
+                                back in the bzOutput buffer and add one byte to the string length. 
+
+                                This modified buffer is what goes into sha1_process_bytes().
+                            */
+#ifdef __cplusplus
+                            size_t len = strlen(reinterpret_cast<const char *>( bzOutput ));
+#else
+                            size_t len = strlen((const char *)bzOutput);
+#endif
+                            bzOutput[len] = '\n';
+                            bzOutput[++len] = '\0';
+                            sha1_process_bytes( bzOutput, len, &perChromosomeHashCtx );
+                        }
+                    } while (bzOutput != NULL);
+                    /* cleanup */
+                    if (bzOutput)
+                        free(bzOutput);
+                    BZ2_bzReadClose(&bzError, bzFp);
+                    break;
+                }
+                case kGzip: {
+                    z_stream zStream;
+                    unsigned int zHave, zOutBufIdx;
+                    size_t zBufIdx, zBufOffset;
+                    int zError;
+                    unsigned char *zRemainderBuf = NULL;
+                    unsigned char zInBuf[STARCH_Z_CHUNK];
+                    unsigned char zOutBuf[STARCH_Z_CHUNK];
+                    unsigned char zLineBuf[STARCH_Z_CHUNK];
+
+                    zStream.zalloc = Z_NULL;
+                    zStream.zfree = Z_NULL;
+                    zStream.opaque = Z_NULL;
+                    zStream.avail_in = 0;
+                    zStream.next_in = Z_NULL;
+
+                    zError = inflateInit2(&zStream, (15+32)); /* cf. http://www.zlib.net/manual.html */
+                    if (zError != Z_OK) {
+                        fprintf(stderr, "ERROR: Could not initialize z-stream\n");
+                        return NULL;
+                    }
+
+#ifdef __cplusplus
+                    zRemainderBuf = static_cast<unsigned char *>( malloc(1) );
+#else
+                    zRemainderBuf = (unsigned char *) malloc(1);
+#endif
+                    *zRemainderBuf = '\0';
+
+                    do {
+#ifdef __cplusplus
+                        zStream.avail_in = static_cast<unsigned int>( fread(zInBuf, 1, STARCH_Z_CHUNK, *inFp) );
+#else
+                        zStream.avail_in = (unsigned int) fread(zInBuf, 1, STARCH_Z_CHUNK, *inFp);
+#endif
+                        if (zStream.avail_in == 0)
+                            break;
+                        zStream.next_in = zInBuf;
+                        do {
+                            zStream.avail_out = STARCH_Z_CHUNK;
+                            zStream.next_out = zOutBuf;
+                            zError = inflate(&zStream, Z_NO_FLUSH);
+                            switch (zError) {
+                                case Z_NEED_DICT:  { fprintf(stderr, "ERROR: Z-stream needs dictionary\n");      return NULL; }
+                                case Z_DATA_ERROR: { fprintf(stderr, "ERROR: Z-stream suffered data error\n");   return NULL; }
+                                case Z_MEM_ERROR:  { fprintf(stderr, "ERROR: Z-stream suffered memory error\n"); return NULL; }
+                            };
+                            zHave = STARCH_Z_CHUNK - zStream.avail_out;
+                            zOutBuf[zHave] = '\0';
+                            /* copy remainder buffer onto line buffer, if not NULL */
+#ifdef __cplusplus
+                            if (zRemainderBuf) {
+                                strncpy(reinterpret_cast<char *>( zLineBuf ), reinterpret_cast<const char *>( zRemainderBuf ), strlen(reinterpret_cast<const char *>( zRemainderBuf )));
+                                zBufOffset = strlen(reinterpret_cast<const char *>( zRemainderBuf ));
+                            }
+#else
+                            if (zRemainderBuf) {    
+                                strncpy((char *) zLineBuf, (const char *) zRemainderBuf, strlen((const char *) zRemainderBuf));
+                                zBufOffset = strlen((const char *) zRemainderBuf);
+                            }
+#endif                                
+                            else {
+                                zBufOffset = 0;
+                            }
+                            /* read through zOutBuf for newlines */                    
+                            for (zBufIdx = zBufOffset, zOutBufIdx = 0; zOutBufIdx < zHave; zBufIdx++, zOutBufIdx++) {
+                                zLineBuf[zBufIdx] = zOutBuf[zOutBufIdx];
+                                if (zLineBuf[zBufIdx] == '\n') {
+                                    zLineBuf[zBufIdx + 1] = '\0';
+                                    sha1_process_bytes( zLineBuf, zBufIdx + 1, &perChromosomeHashCtx );
+#ifdef __cplusplus
+                                    zBufIdx = static_cast<size_t>( -1 );
+#else
+                                    zBufIdx = (size_t) -1;
+#endif                                    
+                                }
+                            }
+#ifdef __cplusplus
+                            if (strlen(reinterpret_cast<const char *>( zLineBuf )) > 0) {
+                                if (strlen(reinterpret_cast<const char *>( zLineBuf )) > strlen(reinterpret_cast<const char *>( zRemainderBuf ))) {
+                                    free(zRemainderBuf);
+                                    zRemainderBuf = reinterpret_cast<unsigned char *>( malloc(strlen(reinterpret_cast<const char *>( zLineBuf )) * 2) );
+                                }
+                                strncpy(reinterpret_cast<char *>( zRemainderBuf ), reinterpret_cast<const char *>( zLineBuf ), zBufIdx);
+                                zRemainderBuf[zBufIdx] = '\0';
+                            }
+#else
+                            if (strlen((const char *) zLineBuf) > 0) {
+                                if (strlen((const char *) zLineBuf) > strlen((const char *) zRemainderBuf)) {
+                                    free(zRemainderBuf);
+                                    zRemainderBuf = (unsigned char *) malloc(strlen((const char *) zLineBuf) * 2);
+                                }
+                                strncpy((char *) zRemainderBuf, (const char *) zLineBuf, zBufIdx);
+                                zRemainderBuf[zBufIdx] = '\0';
+                            }
+#endif
+                        } while (zStream.avail_out == 0);
+                    } while (zError != Z_STREAM_END);
+
+                    /* cleanup */
+                    if (zRemainderBuf) {
+                        free(zRemainderBuf);
+                        zRemainderBuf = NULL;
+                    }
+                    /* close gzip stream */
+                    zError = inflateEnd(&zStream);
+                    if (zError != Z_OK) {
+                        fprintf(stderr, "ERROR: Could not close z-stream (%d)\n", zError);
+                        return NULL;
+                    }
+                    break;
+                }
+                case kUndefined: {
+                    fprintf(stderr, "ERROR: Archive compression type is undefined\n");
+                    return NULL;
+                }
+            }
+            
+            sha1_finish_ctx (&perChromosomeHashCtx, sha1Digest);
+#ifdef __cplusplus
+            STARCH_encodeBase64(&base64EncodedSha1Digest, 
+                                static_cast<const size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
+                                const_cast<const unsigned char *>( sha1Digest ), 
+                                static_cast<const size_t>( STARCH2_MD_FOOTER_SHA1_LENGTH ));
+#else
+            STARCH_encodeBase64(&base64EncodedSha1Digest, 
+                                (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
+                                (const unsigned char *) sha1Digest, 
+                                (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
+#endif
+            return base64EncodedSha1Digest;
+        }
+    }
+    fprintf(stderr, "ERROR: Leaving UNSTARCH_observedSignatureForChromosome() without having processed chromosome [%s]\n", chr);
+    return NULL;
+}
+
+Boolean
+UNSTARCH_verifyAllSignatures(FILE **inFp, const Metadata *md, const uint64_t mdOffset, CompressionType compType)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_verifyAllSignatures() ---\n");
+#endif
+
+    const Metadata *iter = NULL;
+    Boolean perChromosomeSignatureVerifiedFlag = kStarchFalse;
+    Boolean allSignaturesVerifiedFlag = kStarchTrue;
+
+    for (iter = md; iter != NULL; iter = iter->next) {
+        perChromosomeSignatureVerifiedFlag = UNSTARCH_verifySignature(inFp, md, mdOffset, iter->chromosome, compType);
+        if (!perChromosomeSignatureVerifiedFlag) {
+            allSignaturesVerifiedFlag = kStarchFalse;
+        }
+    }
+
+    return allSignaturesVerifiedFlag;
 }
 
 const char *

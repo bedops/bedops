@@ -1,12 +1,8 @@
 #!/bin/tcsh -ef
 
-# author  : sjn and apr
-# date    : Feb 2012
-# version : v2.5.0
-
-#
-#    BEDOPS
-#    Copyright (C) 2011-2017 Shane Neph, Scott Kuehn and Alex Reynolds
+#    bam2bed_slurm
+#    -----------------------------------------------------------------------
+#    Copyright (C) 2011-2016 Shane Neph and Alex Reynolds
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -21,19 +17,25 @@
 #    You should have received a copy of the GNU General Public License along
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-#
+
+####################################################
+# cluster variables:
+#  change to match your environment
+####################################################
+
+set slurm_opts = "-D $PWD -o /dev/null -e /dev/null"
 
 ############################
 # some input error checking
 ############################
 
-set help = "\nUsage: starchcluster_gnuParallel [--help] [--clean] <input-bed-file> [output-starch-file]\n\n"
-set help = "$help  Pass in the name of a BED file to create a Starch archive using GNU Parallel.\n\n"
-set help = "$help  (stdin isn't supported through this wrapper script, but starch supports it natively.)\n\n"
-set help = "$help  Add --clean to remove <input-bed-file> after starching it up.\n\n"
-set help = "$help  You can pass in the name of the output starch archive to be created.\n"
+set help = "\nUsage: bam2bed_slurm [--help] [--clean] <input-indexed-bam-file> [output-bed-file]\n\n"
+set help = "$help  Pass in the name of an indexed BAM file to create a sorted BED file using the cluster.\n\n"
+set help = "$help  (stdin isn't supported through this wrapper script.)\n\n"
+set help = "$help  Add --clean to remove <input-indexed-bam-file> after turning it into BED.\n\n"
+set help = "$help  You can pass in the name of the output bed archive to be created.\n"
 set help = "$help  Otherwise, the output will have the same name as the input file, with an additional\n"
-set help = "$help   '.starch' ending.  If the input file ends with '.bed', that will be stripped off.\n"
+set help = "$help   '.bed' ending.  If the input file ends with '.bam', that will be stripped off.\n"
 
 if ( $#argv == 0 ) then
   printf "$help"
@@ -53,7 +55,7 @@ foreach argc (`seq 1 $#argv`)
       set output = "$argv[$argc]"
     else
       set originput = "$argv[$argc]"
-      set output = $originput:t.starch
+      set output = $originput:t.bed
     endif
     @ inputset = 1
   else if ( $inputset > 0 ) then
@@ -62,7 +64,7 @@ foreach argc (`seq 1 $#argv`)
     exit -1
   else
     set originput = "$argv[$argc]"
-    set output = $originput:t.starch
+    set output = $originput:t.bed
     @ inputset = 1
   endif
 end
@@ -71,17 +73,23 @@ if ( $inputset == 0 ) then
   printf "No input file specified\n"
   exit -1
 else if ( ! -s $originput ) then
-  printf "Unable to find file: %s\n" $originput
+  printf "Unable to find BAM file: %s\n" $originput
   exit -1
-else if ( "$output" == "$originput:t.starch" && "$originput:e" == "bed" ) then
-  set output = "$originput:t:r.starch"
+else if ( "$output" == "$originput:t.bed" && "$originput:e" == "bam" ) then
+  set output = "$originput:t:r.bed"
+endif
+
+set origininputindex = "$originput.bai"
+if ( ! -s $origininputindex ) then
+  printf "Unable to find associated BAI file (is the BAM file indexed?): %s\n" $origininputindex
+  exit -1
 endif
 
 ###############################################################
 # new working directory to keep file pileups local to this job
 ###############################################################
 
-set nm = scg.`uname -a | cut -f2 -d' '`.$$
+set nm = b2scs.`uname -a | cut -f2 -d' '`.$$
 if ( -d $nm ) then
   rm -rf $nm
 endif
@@ -90,7 +98,7 @@ mkdir -p $nm
 set here = `pwd`
 cd $nm
 if ( -s ../$originput ) then
-  set input = $here/$originput
+  set input = ../$originput
 else
   # $originput includes absolute path
   set input = $originput
@@ -107,28 +115,31 @@ else
 endif
 
 #####################################################
-# extract information by chromosome and starch it up
+# extract information by chromosome and bam2bed it
 #####################################################
 
-@ chrom_count = `bedextract --list-chr $input | awk 'END { print NR }'`
+set files = ()
+set jids = ()
+@ cntr = 0
+foreach chrom (`samtools idxstats $input | awk '$1!~"^*"'`)
+  set res = `sbatch $slurm_opts -J "$nm.$cntr" --wrap="module add samtools; module add bedops; samtools view -b $input $chrom | bam2bed - > $here/$nm/$cntr"`
+  set slurm_jid = `echo $res | sed 's|^Submitted batch job ||'`
+  set jids = ($jids $slurm_jid)
+  set files = ($files $here/$nm/$cntr)
+  @ cntr++
+end
 
-bedextract --list-chr $input | parallel "bedextract {} $input | starch - > $here/$nm/{}.starch"
-
-@ extracted_file_count = `find $here/$nm -name '*.starch' | wc -l`
-if ( $chrom_count != $extracted_file_count ) then
-  printf "Error: Only some or no files were submitted to GNU Parallel successfully\n"
+if ( $cntr == 0 ) then
+  printf "Program problem: no files were submitted to the cluster? If samtools is not found, please use 'module add samtools' or similar.\n"
+  rm -rf $nm
   exit -1
 endif
 
 ##################################################
-# create final starch archive and clean things up
+# create final bed archive and clean things up
 ##################################################
 
-starchcat $here/$nm/*.starch > $output
-cd $here
-rm -rf $nm
-if ( $clean > 0 ) then
-  rm -f $originput
-endif
+set dependencies = `echo $jids | tr ' ' ':'`
+sbatch $slurm_opts -J $nm.union --dependency=afterok:$dependencies --wrap="module add bedops; bedops --everything $files > $output; cd $here; rm -rf $nm; if [ $clean != 0 ]; then rm -f $originput; fi;"
 
 exit 0

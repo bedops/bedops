@@ -4,7 +4,7 @@
 */
 //
 //    BEDOPS
-//    Copyright (C) 2011-2016 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2017 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@
 #include <numeric>
 #include <queue>
 #include <string>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -749,7 +750,12 @@ void doSymmetricDifference(BedFiles& bedFiles) {
 // doUnionAll()
 //==============
 template <typename BedFiles>
-typename GetType<BedFiles>::BedType* nextUnionAllLine(BedFiles&);
+typename std::enable_if<GetType<BedFiles>::BedType::UseRest, typename GetType<BedFiles>::BedType>::type*
+nextUnionAllLine(BedFiles&); /* requires BedType::UseRest to be true */
+
+template <typename BedFiles>
+typename std::enable_if<!GetType<BedFiles>::BedType::UseRest, typename GetType<BedFiles>::BedType>::type*
+nextUnionAllLine(BedFiles&); /* unimplemented on purpose */
 
 template <typename BedFiles>
 void doUnionAll(BedFiles& bedFiles) {
@@ -1464,7 +1470,8 @@ std::pair<bool, typename GetType<BedFiles>::BedType*>
 // nextUnionAllLine()
 //====================
 template <typename BedFiles>
-typename GetType<BedFiles>::BedType* nextUnionAllLine(BedFiles& bedFiles) {
+typename std::enable_if<GetType<BedFiles>::BedType::UseRest, typename GetType<BedFiles>::BedType>::type*
+nextUnionAllLine(BedFiles& bedFiles) {
   // Find next minimum entry between all files
   typedef typename GetType<BedFiles>::BedType BedType;
   static BedType* const zero = static_cast<BedType*>(0);
@@ -1490,9 +1497,16 @@ typename GetType<BedFiles>::BedType* nextUnionAllLine(BedFiles& bedFiles) {
         if ( next->start() < first->start() ) {
           first = next;
           marker = i;
-        } else if ( next->start() == first->start() && next->end() < first->end() ) {
-          first = next;
-          marker = i;
+        } else if ( next->start() == first->start() ) {
+          if ( next->end() < first->end() ) {
+            first = next;
+            marker = i;
+          } else if ( next->end() == first->end() ) {
+            if ( strcmp(next->rest(), first->rest()) < 0 ) {
+              first = next;
+              marker = i;
+            }
+          }
         }
       }
     }
@@ -1514,6 +1528,7 @@ void selectWork(const Input& input, BedFiles& bedFiles) {
   switch ( modeType ) {
     case CHOP:
       doChop(bedFiles, input.ChopChunkSize(), input.ChopStaggerSize(), input.ChopExcludeShort());
+      break;
     case COMPLEMENT:
       doComplement(bedFiles, input.ComplementFullLeft());
       break;
@@ -1533,7 +1548,8 @@ void selectWork(const Input& input, BedFiles& bedFiles) {
       doSymmetricDifference(bedFiles);
       break;
     case UNIONALL:
-      doUnionAll(bedFiles);
+      if ( GetType<BedFiles>::BedType::UseRest )
+        doUnionAll(bedFiles);
       break;
     default:
       throw(Ext::ProgramError("Unsupported mode"));

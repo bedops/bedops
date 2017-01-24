@@ -6,7 +6,7 @@
 
 //
 //    BEDOPS
-//    Copyright (C) 2011-2016 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2017 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -37,19 +37,13 @@
 
 #include "jansson.h"
 
-/* current "stable" binary version:  2.4.2 */
-/* current "dev" binary version:     2.5.0 */
-
-/* current "stable" archive version: 2.0.0 */
-/* current "dev" archive version:    2.1.0 */
-
 #ifdef __cplusplus
   namespace starch {
   using namespace Bed;
 #endif
 
 #define STARCH_MAJOR_VERSION 2
-#define STARCH_MINOR_VERSION 1
+#define STARCH_MINOR_VERSION 2
 #define STARCH_REVISION_VERSION 0
 
 #define STARCH_DEFAULT_COMPRESSION_TYPE kBzip2
@@ -68,6 +62,7 @@
 #define STARCH_STREAM_METADATA_FILENAME_MAX_LENGTH 1024
 #define STARCH_STREAM_METADATA_MAX_LENGTH 1048576
 #define STARCH_DEFAULT_LINE_COUNT 0
+#define STARCH_DEFAULT_LINE_STRING_LENGTH 0
 #define STARCH_DEFAULT_NON_UNIQUE_BASE_COUNT 0
 #define STARCH_DEFAULT_UNIQUE_BASE_COUNT 0
 #ifdef __cplusplus
@@ -85,8 +80,10 @@
 #define STARCH_METADATA_STREAM_LIST_KEY "streams"
 #define STARCH_METADATA_STREAM_CHROMOSOME_KEY "chromosome"
 #define STARCH_METADATA_STREAM_FILENAME_KEY "filename"
+#define STARCH_METADATA_STREAM_SIGNATURE_KEY "signature"
 #define STARCH_METADATA_STREAM_SIZE_KEY "size"
 #define STARCH_METADATA_STREAM_LINECOUNT_KEY "uncompressedLineCount"
+#define STARCH_METADATA_STREAM_LINEMAXSTRINGLENGTH_KEY "uncompressedLineMaxStringLength"
 #define STARCH_METADATA_STREAM_TOTALNONUNIQUEBASES_KEY "nonUniqueBaseCount"
 #define STARCH_METADATA_STREAM_TOTALUNIQUEBASES_KEY "uniqueBaseCount"
 #define STARCH_METADATA_STREAM_DUPLICATEELEMENTEXISTS_KEY "duplicateElementExists"
@@ -156,10 +153,12 @@ typedef struct metadata {
     char *filename;
     uint64_t size;
     LineCountType lineCount;
+    LineLengthType lineMaxStringLength;
     BaseCountType totalNonUniqueBases;
     BaseCountType totalUniqueBases;
     Boolean duplicateElementExists;
     Boolean nestedElementExists;
+    char *signature;
     struct metadata *next;
 } Metadata;
 
@@ -188,16 +187,6 @@ typedef enum {
 typedef 
 unsigned int HeaderFlag;
 
-/* 
-   On Darwin, file I/O is 64-bit by default (OS X 10.5 at least) so we use standard 
-   types and calls 
-*/
-
-#ifdef __APPLE__
-#define off64_t off_t
-#define fopen64 fopen
-#endif
-
 Metadata *       STARCH_createMetadata(char const *chr, 
                                        char const *fn, 
                                          uint64_t size,
@@ -205,7 +194,9 @@ Metadata *       STARCH_createMetadata(char const *chr,
                                     BaseCountType totalNonUniqueBases,
                                     BaseCountType totalUniqueBases,
                                           Boolean duplicateElementExists, 
-                                          Boolean nestedElementExists);
+                                          Boolean nestedElementExists,
+                                       char const *signature,
+                                   LineLengthType lineMaxStringLength);
 
 Metadata *       STARCH_addMetadata(Metadata *md, 
                                         char *chr, 
@@ -215,7 +206,9 @@ Metadata *       STARCH_addMetadata(Metadata *md,
                                BaseCountType totalNonUniqueBases,
                                BaseCountType totalUniqueBases,
                                      Boolean duplicateElementExists, 
-                                     Boolean nestedElementExists);
+                                     Boolean nestedElementExists,
+                                        char *signature,
+                              LineLengthType lineMaxStringLength);
 
 Metadata *       STARCH_copyMetadata(const Metadata *md);
 
@@ -227,7 +220,9 @@ int              STARCH_updateMetadataForChromosome(Metadata **md,
                                                BaseCountType totalNonUniqueBases,
                                                BaseCountType totalUniqueBases,
                                                      Boolean duplicateElementExists, 
-                                                     Boolean nestedElementExists);
+                                                     Boolean nestedElementExists,
+                                                        char *signature,
+                                              LineLengthType lineMaxStringLength);
 
 int              STARCH_listMetadata(const Metadata *md,
                                          const char *chr);
@@ -298,6 +293,9 @@ ArchiveVersion * STARCH_copyArchiveVersion(const ArchiveVersion *oav);
 
 int              STARCH_chromosomeInMetadataRecords(const Metadata *md, 
                                                         const char *chr);
+
+int              STARCH_chromosomePositionedBeforeExistingMetadataRecord(const Metadata *md, 
+                                                                             const char *chr);
 
 #ifdef __cplusplus
 } // namespace starch

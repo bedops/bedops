@@ -5,7 +5,7 @@
 */
 //
 //    BEDOPS
-//    Copyright (C) 2011-2016 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2017 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
+#include <algorithm>
 #include <cinttypes>
 #include <cerrno>
 #include <cstdio>
@@ -390,9 +391,10 @@ mergeSort(FILE* output, FILE **tmpFiles, unsigned int numFiles)
     /* error checking in processData() has already been performed, headers and empty rows removed, etc. */
     unsigned int i = 0U;
     int done = 0, currMin = 0, val = 0;
+    char* currRest = NULL;
     char **chroms = static_cast<char**>( malloc(sizeof(char*) * static_cast<size_t>(numFiles)) );
-
-    if(chroms == NULL)
+ 
+   if(chroms == NULL)
         return -1;
 
     Bed::SignedCoordType *starts = static_cast<Bed::SignedCoordType*>( malloc(sizeof(Bed::SignedCoordType) * static_cast<size_t>(numFiles)) );
@@ -419,6 +421,7 @@ mergeSort(FILE* output, FILE **tmpFiles, unsigned int numFiles)
         rests[i] = static_cast<char*>( malloc(sizeof(char) * (BED_LINE_LEN+1)) );
         if(rests[i] == NULL)
             return -1;
+        rests[i][0] = '\0';
     } /* for */
 
     for(i=0; i < numFiles; ++i)
@@ -437,18 +440,32 @@ mergeSort(FILE* output, FILE **tmpFiles, unsigned int numFiles)
     while(!done)
         {
             currMin = -1;
+            currRest = NULL;
             for(i=0; i < numFiles; ++i)
                 {
                     if(starts[i]>=0)
                         {
                             if(currMin<0 || (val = strcmp(chroms[i], chroms[currMin]))<0)
-                                currMin = static_cast<int>(i);
+                                currMin = static_cast<int>(i), currRest = rests[i];
                             else if(0 == val)
                                 {
                                     if(starts[i] < starts[currMin])
                                         currMin = static_cast<int>(i);
                                     else if(starts[i] == starts[currMin] && ends[i] < ends[currMin])
                                         currMin = static_cast<int>(i);
+                                    else if(starts[i] == starts[currMin] && ends[i] == ends[currMin])
+                                        {
+                                            if (currRest == NULL)
+                                                {
+                                                    currMin = static_cast<int>(i);
+                                                    currRest = rests[i];
+                                                }
+                                            else if (strcmp(rests[i], currRest) < 0)
+                                                {
+                                                    currMin = static_cast<int>(i);
+                                                    currRest = rests[i];
+                                                }
+                                        }
                                 }
                         }
                 } /* for */
@@ -462,6 +479,7 @@ mergeSort(FILE* output, FILE **tmpFiles, unsigned int numFiles)
                 fprintf(output, "%s\t%" PRId64 "\t%" PRId64 "%s\n", chroms[currMin],
                         starts[currMin], ends[currMin], rests[currMin]);
 
+            rests[currMin][0] = '\0';
             fields[currMin] = fscanf(tmpFiles[currMin], "%s\t%" SCNd64 "\t%" SCNd64 "%[^\n]s\n",
                                      chroms[currMin], &starts[currMin],
                                      &ends[currMin], rests[currMin]);
@@ -1108,7 +1126,7 @@ printBed(FILE *out, BedData *beds)
     if(beds == NULL) 
         return;
 
-    for(i = 0; i < beds->numChroms; i++) 
+    for(i = 0; i < beds->numChroms; i++)
         for(j = 0; j < beds->chroms[i]->numCoords; j++) 
             {
                 fprintf(out, "%s\t%" PRId64 "\t%" PRId64, beds->chroms[i]->chromName, beds->chroms[i]->coords[j].startCoord, 
@@ -1171,9 +1189,9 @@ lexSortBedData(BedData *beds)
         }
 
     /* sort coords */
-    for(i = 0; i < beds->numChroms; ++i) 
-        {            
-	        qsort(beds->chroms[i]->coords, static_cast<size_t>(beds->chroms[i]->numCoords), sizeof(BedCoordData), numCompareBedData);
+    for(i = 0; i < beds->numChroms; ++i)
+        {
+            std::sort(beds->chroms[i]->coords, (beds->chroms[i]->coords+static_cast<size_t>(beds->chroms[i]->numCoords)));
         }
 
     /* sort chroms */
@@ -1181,22 +1199,10 @@ lexSortBedData(BedData *beds)
     return;
 }
 
-int
-numCompareBedData(const void *pos1, const void *pos2) 
-{
-    Bed::SignedCoordType diff = (static_cast<const BedCoordData *>(pos1))->startCoord - (static_cast<const BedCoordData *>(pos2))->startCoord;
-    if(diff)
-        {
-            return (diff > 0) ? 1 : -1;
-        }
-    diff = (static_cast<const BedCoordData *>(pos1))->endCoord - (static_cast<const BedCoordData *>(pos2))->endCoord;
-    return (diff > 0) ? 1 : ((diff < 0) ? -1 : 0);
-}
-
 int 
 lexCompareBedData(const void *chrPos1, const void *chrPos2) 
 {
-    ChromBedData **chrPos1Cbd = static_cast<ChromBedData **>(const_cast<void *>(chrPos1));
-    ChromBedData **chrPos2Cbd = static_cast<ChromBedData **>(const_cast<void *>(chrPos2));
+    ChromBedData* const* chrPos1Cbd = static_cast<ChromBedData* const*>(chrPos1);
+    ChromBedData* const* chrPos2Cbd = static_cast<ChromBedData* const*>(chrPos2);
     return strcmp((*chrPos1Cbd)->chromName, (*chrPos2Cbd)->chromName);
 }

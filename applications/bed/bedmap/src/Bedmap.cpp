@@ -4,7 +4,7 @@
 */
 //
 //    BEDOPS
-//    Copyright (C) 2011-2016 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2017 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -383,11 +383,15 @@ namespace BedMap {
         typedef typename PT::PType PType;
         rtn = new typename VTypes::EchoMapAll(PT(PType(), multivalColSep));
       }
-      else if ( nm == visName<typename VTypes::EchoMapLength>() )
-        rtn = new typename VTypes::EchoMapLength;
-      else if ( nm == visName<typename VTypes::EchoMapIntersectLength>() )
-        rtn = new typename VTypes::EchoMapIntersectLength;
-      else if ( nm == visName<typename VTypes::EchoMapRange>() )
+      else if ( nm == visName<typename VTypes::EchoMapLength>() ) {
+        typedef typename VTypes::EchoMapLength::ProcessType PT;
+        typedef typename PT::PType PType;
+        rtn = new typename VTypes::EchoMapLength(PT(PType(), multivalColSep));
+      } else if ( nm == visName<typename VTypes::EchoMapIntersectLength>() ) {
+        typedef typename VTypes::EchoMapIntersectLength::ProcessType PT;
+        typedef typename PT::PType PType;
+        rtn = new typename VTypes::EchoMapIntersectLength(PT(PType(), multivalColSep));
+      } else if ( nm == visName<typename VTypes::EchoMapRange>() )
         rtn = new typename VTypes::EchoMapRange;
       else if ( nm == visName<typename VTypes::EchoRefAll>() )
         rtn = new typename VTypes::EchoRefAll;
@@ -497,9 +501,13 @@ namespace BedMap {
       }
       else if ( nm == visName<typename VTypes::Max>() )
         rtn = new typename VTypes::Max(pt);
-      else if ( nm == visName<typename VTypes::MaxElement>() ) {
-        typedef typename VTypes::MaxElement::ProcessType MPT;
-        rtn = new typename VTypes::MaxElement(MPT(precision, useScientific));
+      else if ( nm == visName<typename VTypes::MaxElementStable>() ) {
+        typedef typename VTypes::MaxElementStable::ProcessType MPT;
+        rtn = new typename VTypes::MaxElementStable(MPT(precision, useScientific));
+      }
+      else if ( nm == visName<typename VTypes::MaxElementRand>() ) {
+        typedef typename VTypes::MaxElementRand::ProcessType MPT;
+        rtn = new typename VTypes::MaxElementRand(MPT(precision, useScientific));
       }
       else if ( nm == visName<typename VTypes::Median>() )
         rtn = new typename VTypes::Median(pt);
@@ -516,9 +524,13 @@ namespace BedMap {
       }
       else if ( nm == visName<typename VTypes::Min>() )
         rtn = new typename VTypes::Min(pt);
-      else if ( nm == visName<typename VTypes::MinElement>() ) {
-        typedef typename VTypes::MinElement::ProcessType MPT;
-        rtn = new typename VTypes::MinElement(MPT(precision, useScientific));
+      else if ( nm == visName<typename VTypes::MinElementRand>() ) {
+        typedef typename VTypes::MinElementRand::ProcessType MPT;
+        rtn = new typename VTypes::MinElementRand(MPT(precision, useScientific));
+      }
+      else if ( nm == visName<typename VTypes::MinElementStable>() ) {
+        typedef typename VTypes::MinElementStable::ProcessType MPT;
+        rtn = new typename VTypes::MinElementStable(MPT(precision, useScientific));
       }
       else if ( nm == visName<typename VTypes::StdDev>() )
         rtn = new typename VTypes::StdDev(pt);
@@ -534,6 +546,8 @@ namespace BedMap {
       }
       else if ( nm == visName<typename VTypes::Variance>() )
         rtn = new typename VTypes::Variance(pt);
+      else if ( nm == visName<typename VTypes::WMean>() )
+        rtn = new typename VTypes::WMean(pt);
 
       return(rtn);
     }

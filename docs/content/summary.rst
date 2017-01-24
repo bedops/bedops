@@ -114,8 +114,13 @@ Set operation and statistical utilities
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--max``                     | Reports the highest score from overlapping elements in ``map-file``. | 1                | 2                | 5                |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--max-element``             | An element with the highest score from overlapping elements in       | 1                | 2                | 5                |
-|                               | ``map-file``. If no overlapping element exists, ``NAN`` is reported. |                  |                  |                  |
+| ``--max-element``             | The lexicographically "smallest" element with the highest score from | 1                | 2                | 5                |
+|                               | overlapping elements in ``map-file``. If no overlapping element      |                  |                  |                  |
+|                               | exists, ``NAN`` is reported (unless ``--skip-unmapped`` is used).    |                  |                  |                  |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--max-element-rand``        | A randomly-chosed element with the highest score from overlapping    | 1                | 2                | 5                |
+|                               | elements in ``map-file``. If no overlapping element exists, ``NAN``  |                  |                  |                  |
+|                               | is reported (unless ``--skip-unmapped`` is used).                    |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--mean``                    | Reports the average score from overlapping elements in ``map-file``. | 1                | 2                | 5                |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
@@ -123,8 +128,13 @@ Set operation and statistical utilities
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--min``                     | Reports the lowest score from overlapping elements in ``map-file``.  | 1                | 2                | 5                |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--min-element``             | An element with the lowest score from overlapping elements in        | 1                | 2                | 5                |
-|                               | ``map-file``. If no overlapping element exists, ``NAN`` is reported. |                  |                  |                  |
+| ``--min-element``             | The lexicographically "smallest" element with the lowest score from  | 1                | 2                | 5                |
+|                               | overlapping elements in ``map-file``. If no overlapping element      |                  |                  |                  |
+|                               | exists, ``NAN`` is reported (unless ``--skip-unmapped`` is used).    |                  |                  |                  |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--min-element-rand``        | A randomly-chosed element with the lowest score from overlapping     | 1                | 2                | 5                |
+|                               | elements in ``map-file``. If no overlapping element exists, ``NAN``  |                  |                  |                  |
+|                               | is reported (unless ``--skip-unmapped`` is used).                    |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--skip-unmapped``           | Omits printing reference elements which do not associate with any    | 1                | 2                | 3                |
 |                               | mapped elements.                                                     |                  |                  |                  |
@@ -272,6 +282,8 @@ Compression and extraction
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--note="foo bar..."``       | Append note to output archive metadata (optional).                   | 1                | 1                | 3                |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--report-progress=N``       | Write progress to standard error stream for every N input elements.  | 1                | 1                | 3                |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 
 ------------
 ``unstarch``
@@ -280,49 +292,57 @@ Compression and extraction
 * Extraction of a ``starch`` archive or attributes.
 * BEDOPS :ref:`unstarch` documentation.
 
-+-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| option                        | description                                                          | min. file inputs | max. file inputs | min. BED columns |
-+===============================+======================================================================+==================+==================+==================+
-| (no option)                   | NA                                                                   | 1                | 1                | NA               |
-+-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--archive-type``            | Show archive's compression type (either ``bzip2`` or ``gzip``).      | 1                | 1                | NA               |
-+-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--archive-version``         | Show archive version (at this time, either 1.x or 2.x).              | 1                | 1                | NA               |
-+-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--archive-timestamp``       | Show archive creation timestamp (ISO 8601 format).                   | 1                | 1                | NA               |
-+-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--bases <chromosome>``      | Show total, non-unique base counts for optional ``<chromosome>``     | 1                | 1                | NA               |
-|                               | (omitting ``<chromosome>`` shows total non-unique base count).       |                  |                  |                  |
-+-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--bases-uniq <chromosome>`` | Show unique base counts for optional ``<chromosome>`` (omitting      | 1                | 1                | NA               |
-|                               | ``<chromosome>`` shows total, unique base count).                    |                  |                  |                  |
-+-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``<chromosome>``              | Decompress information for a single ``<chromosome>`` only.           | 1                | 1                | NA               |
-+-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--duplicatesExist`` or      | Report if optional ``<chromosome>`` or chromosomes contain duplicate | 1                | 1                | NA               |
-| ``--duplicatesExistAsString`` | elements as 0/1 numbers or false/true strings                        |                  |                  |                  |
-| with ``<chromosome>``         |                                                                      |                  |                  |                  |
-+-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--elements <chromosome>``   | Show element count for optional ``<chromosome>`` (omitting           | 1                | 1                | NA               |
-|                               | ``<chromosome>`` shows total element count).                         |                  |                  |                  |
-+-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--is-starch``               | Test if the <starch-file> is a valid starch archive, returning 0/1   | 1                | 1                | NA               |
-|                               | for a false/true result                                              |                  |                  |                  | 
-+-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--list`` or ``--list-json`` | Print the metadata for a ``starch`` file, either in tabular form or  | 1                | 1                | NA               |
-|                               | with JSON formatting.                                                |                  |                  |                  |
-+-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--list-chr`` or             | List all chromosomes in ``starch`` archive (similar to               | 1                | 1                | NA               |
-| ``--list-chromosomes``        | ``bedextract --list-chr``).                                          |                  |                  |                  |
-+-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--nestedsExist`` or         | Report if optional ``<chromosome>`` or chromosomes contain nested    | 1                | 1                | NA               |
-| ``--nestedsExistAsString``    | elements as 0/1 numbers or false/true strings                        |                  |                  |                  |
-| with ``<chromosome>``         |                                                                      |                  |                  |                  |
-+-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--note``                    | Show descriptive note (if originally added to archive).              | 1                | 1                | NA               |
-+-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
-| ``--sha1-signature``          | Show SHA1 signature of JSON-formatted metadata (Base64-encoded).     | 1                | 1                | NA               |
-+-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
++------------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| option                             | description                                                          | min. file inputs | max. file inputs | min. BED columns |
++====================================+======================================================================+==================+==================+==================+
+| (no option)                        | NA                                                                   | 1                | 1                | NA               |
++------------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--archive-type``                 | Show archive's compression type (either ``bzip2`` or ``gzip``).      | 1                | 1                | NA               |
++------------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--archive-version``              | Show archive version (at this time, either 1.x or 2.x).              | 1                | 1                | NA               |
++------------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--archive-timestamp``            | Show archive creation timestamp (ISO 8601 format).                   | 1                | 1                | NA               |
++------------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--bases <chromosome>``           | Show total, non-unique base counts for optional ``<chromosome>``     | 1                | 1                | NA               |
+|                                    | (omitting ``<chromosome>`` shows total non-unique base count).       |                  |                  |                  |
++------------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--bases-uniq <chromosome>``      | Show unique base counts for optional ``<chromosome>`` (omitting      | 1                | 1                | NA               |
+|                                    | ``<chromosome>`` shows total, unique base count).                    |                  |                  |                  |
++------------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``<chromosome>``                   | Decompress information for a single ``<chromosome>`` only.           | 1                | 1                | NA               |
++------------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--duplicatesExist`` or           | Report if optional ``<chromosome>`` or chromosomes contain duplicate | 1                | 1                | NA               |
+| ``--duplicatesExistAsString``      | elements as 0/1 numbers or false/true strings                        |                  |                  |                  |
+| with ``<chromosome>``              |                                                                      |                  |                  |                  |
++------------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--elements <chromosome>``        | Show element count for optional ``<chromosome>`` (omitting           | 1                | 1                | NA               |
+|                                    | ``<chromosome>`` shows total element count).                         |                  |                  |                  |
++------------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--elements-max-string-length``   | Show element maximum string length for optional ``<chromosome>``     | 1                | 1                | NA               |
+|                                    | (omitting ``<chromosome>`` shows maximum string length over all      |                  |                  |                  |
+|                                    | chromosomes).                                                        |                  |                  |                  |
++------------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--is-starch``                    | Test if the <starch-file> is a valid starch archive, returning 0/1   | 1                | 1                | NA               |
+|                                    | for a false/true result                                              |                  |                  |                  | 
++------------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--list`` or ``--list-json``      | Print the metadata for a ``starch`` file, either in tabular form or  | 1                | 1                | NA               |
+|                                    | with JSON formatting.                                                |                  |                  |                  |
++------------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--list-chr`` or                  | List all chromosomes in ``starch`` archive (similar to               | 1                | 1                | NA               |
+| ``--list-chromosomes``             | ``bedextract --list-chr``).                                          |                  |                  |                  |
++------------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--nestedsExist`` or              | Report if optional ``<chromosome>`` or chromosomes contain nested    | 1                | 1                | NA               |
+| ``--nestedsExistAsString``         | elements as 0/1 numbers or false/true strings                        |                  |                  |                  |
+| with ``<chromosome>``              |                                                                      |                  |                  |                  |
++------------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--note``                         | Show descriptive note (if originally added to archive).              | 1                | 1                | NA               |
++------------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--signature`` with               | Show SHA-1 signature of specified chromosome (Base64-encoded)        | 1                | 1                | NA               |
+| ``<chromosome>``                   | or all signatures if chromosome is not specified.                    |                  |                  |                  |
++------------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--verify-signature`` with        | Compare SHA-1 signature of specified chromosome with signature that  | 1                | 1                | NA               |
+| ``<chromosome>``                   | is stored in the archive metadata, reporting error is mismatched.    |                  |                  |                  |
++------------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 
 -------------
 ``starchcat``
@@ -341,6 +361,8 @@ Compression and extraction
 |                               | extraction time performance.                                         |                  |                  |                  |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 | ``--note="foo bar..."``       | Append note to output archive metadata (optional).                   | 1                | No imposed limit | NA               |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--report-progress=N``       | Write progress to standard error stream for every N input elements.  | 1                | No imposed limit | NA               |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 
 .. |--| unicode:: U+2013   .. en dash

@@ -58,7 +58,7 @@ build_gprof: $(BINDIR)/gprof.starch $(BINDIR)/gprof.unstarch $(BINDIR)/gprof.sta
 starch: $(BINDIR)/starch
 unstarch: $(BINDIR)/unstarch
 starchcat: $(BINDIR)/starchcat
-starchcluster: $(BINDIR)/starchcluster_gnuParallel $(BINDIR)/starchcluster_sge
+starchcluster: $(BINDIR)/starchcluster_gnuParallel $(BINDIR)/starchcluster_sge $(BINDIR)/starchcluster_slurm
 
 $(BINDIR)/% : %.c $(LOCALSTARCHLIB) $(LIBRARIES)
 	mkdir -p $(BINDIR)

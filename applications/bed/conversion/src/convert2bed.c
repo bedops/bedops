@@ -1,9 +1,9 @@
 /* 
    convert2bed.c
    -----------------------------------------------------------------------
-   Copyright (C) 2014-2016 Alex Reynolds
+   Copyright (C) 2014-2017 Alex Reynolds
    
-   wig2bed components, (C) 2011-2016 Scott Kuehn and Shane Neph
+   wig2bed components, (C) 2011-2017 Scott Kuehn and Shane Neph
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -187,6 +187,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
     char bed_unsorted2bed_sorted_cmd[C2B_MAX_LINE_LENGTH_VALUE];
     char bed_sorted2starch_cmd[C2B_MAX_LINE_LENGTH_VALUE];
     void (*generic2bed_unsorted_line_functor)(char *, ssize_t *, char *, ssize_t) = to_bed_line_functor;
+    ssize_t buffer_size = C2B_THREAD_IO_BUFFER_SIZE;
     int errsv = 0;
 
     if ((!c2b_globals.sort->is_enabled) && (c2b_globals.output_format_idx == BED_FORMAT)) {
@@ -197,6 +198,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         cat2generic_stage.description = "Generic data from stdin";
         cat2generic_stage.pid = 0;
         cat2generic_stage.status = 0;
+        cat2generic_stage.buffer_size = buffer_size;
         
         generic2bed_unsorted_stage.pipeset = p;
         generic2bed_unsorted_stage.line_functor = generic2bed_unsorted_line_functor;
@@ -205,6 +207,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         generic2bed_unsorted_stage.description = "Generic data to unsorted BED";
         generic2bed_unsorted_stage.pid = 0;
         generic2bed_unsorted_stage.status = 0;
+        generic2bed_unsorted_stage.buffer_size = buffer_size;
 
         bed_unsorted2stdout_stage.pipeset = p;
         bed_unsorted2stdout_stage.line_functor = NULL;
@@ -213,6 +216,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         bed_unsorted2stdout_stage.description = "Unsorted BED to stdout";
         bed_unsorted2stdout_stage.pid = 0;
         bed_unsorted2stdout_stage.status = 0;
+        bed_unsorted2stdout_stage.buffer_size = buffer_size;
     }
     else if (c2b_globals.output_format_idx == BED_FORMAT) {
         cat2generic_stage.pipeset = p;
@@ -222,6 +226,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         cat2generic_stage.description = "Generic data from stdin"; 
         cat2generic_stage.pid = 0;
         cat2generic_stage.status = 0;
+        cat2generic_stage.buffer_size = buffer_size;
         
         generic2bed_unsorted_stage.pipeset = p;
         generic2bed_unsorted_stage.line_functor = generic2bed_unsorted_line_functor;
@@ -230,6 +235,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         generic2bed_unsorted_stage.description = "Generic data to unsorted BED";
         generic2bed_unsorted_stage.pid = 0;
         generic2bed_unsorted_stage.status = 0;
+        generic2bed_unsorted_stage.buffer_size = buffer_size;
         
         bed_unsorted2bed_sorted_stage.pipeset = p;
         bed_unsorted2bed_sorted_stage.line_functor = NULL;
@@ -238,6 +244,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         bed_unsorted2bed_sorted_stage.description = "Unsorted BED to sorted BED";
         bed_unsorted2bed_sorted_stage.pid = 0;
         bed_unsorted2bed_sorted_stage.status = 0;
+        bed_unsorted2bed_sorted_stage.buffer_size = buffer_size;
 
         bed_sorted2stdout_stage.pipeset = p;
         bed_sorted2stdout_stage.line_functor = NULL;
@@ -246,6 +253,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         bed_sorted2stdout_stage.description = "Sorted BED to stdout";
         bed_sorted2stdout_stage.pid = 0;
         bed_sorted2stdout_stage.status = 0;
+        bed_sorted2stdout_stage.buffer_size = buffer_size;
     }
     else if (c2b_globals.output_format_idx == STARCH_FORMAT) {
         cat2generic_stage.pipeset = p;
@@ -255,6 +263,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         cat2generic_stage.description = "Generic data from stdin";
         cat2generic_stage.pid = 0;
         cat2generic_stage.status = 0;
+        cat2generic_stage.buffer_size = buffer_size;
         
         generic2bed_unsorted_stage.pipeset = p;
         generic2bed_unsorted_stage.line_functor = generic2bed_unsorted_line_functor;
@@ -263,6 +272,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         generic2bed_unsorted_stage.description = "Generic data to unsorted BED";
         generic2bed_unsorted_stage.pid = 0;
         generic2bed_unsorted_stage.status = 0;
+        generic2bed_unsorted_stage.buffer_size = buffer_size;
 
         bed_unsorted2bed_sorted_stage.pipeset = p;
         bed_unsorted2bed_sorted_stage.line_functor = NULL;
@@ -271,6 +281,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         bed_unsorted2bed_sorted_stage.description = "Unsorted BED to sorted BED";
         bed_unsorted2bed_sorted_stage.pid = 0;
         bed_unsorted2bed_sorted_stage.status = 0;
+        bed_unsorted2bed_sorted_stage.buffer_size = buffer_size;
 
         bed_sorted2starch_stage.pipeset = p;
         bed_sorted2starch_stage.line_functor = NULL;
@@ -279,6 +290,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         bed_sorted2stdout_stage.description = "Sorted BED to Starch";
         bed_sorted2starch_stage.pid = 0;
         bed_sorted2starch_stage.status = 0;
+        bed_sorted2starch_stage.buffer_size = buffer_size;
 
         starch2stdout_stage.pipeset = p;
         starch2stdout_stage.line_functor = NULL;
@@ -287,6 +299,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
         starch2stdout_stage.description = "Starch to stdout";
         starch2stdout_stage.pid = 0;
         starch2stdout_stage.status = 0;
+        starch2stdout_stage.buffer_size = buffer_size;
     }
     else {
         fprintf(stderr, "Error: Unknown conversion parameter combination\n");
@@ -472,6 +485,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
     char bed_unsorted2bed_sorted_cmd[C2B_MAX_LINE_LENGTH_VALUE];
     char bed_sorted2starch_cmd[C2B_MAX_LINE_LENGTH_VALUE];
     void (*sam2bed_unsorted_line_functor)(char *, ssize_t *, char *, ssize_t) = NULL;
+    ssize_t buffer_size = C2B_THREAD_IO_BUFFER_SIZE;
     int errsv = errno;
 
     sam2bed_unsorted_line_functor = (!c2b_globals.split_flag ?
@@ -486,6 +500,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         bam2sam_stage.description = "BAM data from stdin to SAM";
         bam2sam_stage.pid = 0;
         bam2sam_stage.status = 0;
+        bam2sam_stage.buffer_size = buffer_size;
         
         sam2bed_unsorted_stage.pipeset = p;
         sam2bed_unsorted_stage.line_functor = sam2bed_unsorted_line_functor;
@@ -494,6 +509,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         sam2bed_unsorted_stage.description = "SAM to unsorted BED";
         sam2bed_unsorted_stage.pid = 0;
         sam2bed_unsorted_stage.status = 0;
+        sam2bed_unsorted_stage.buffer_size = buffer_size;
 
         bed_unsorted2stdout_stage.pipeset = p;
         bed_unsorted2stdout_stage.line_functor = NULL;
@@ -502,6 +518,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         bed_unsorted2stdout_stage.description = "Unsorted BED to stdout";
         bed_unsorted2stdout_stage.pid = 0;
         bed_unsorted2stdout_stage.status = 0;
+        bed_unsorted2stdout_stage.buffer_size = buffer_size;
     }
     else if (c2b_globals.output_format_idx == BED_FORMAT) {
         bam2sam_stage.pipeset = p;
@@ -511,6 +528,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         bam2sam_stage.description = "BAM data from stdin to SAM";
         bam2sam_stage.pid = 0;
         bam2sam_stage.status = 0;
+        bam2sam_stage.buffer_size = buffer_size;
         
         sam2bed_unsorted_stage.pipeset = p;
         sam2bed_unsorted_stage.line_functor = sam2bed_unsorted_line_functor;
@@ -519,6 +537,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         sam2bed_unsorted_stage.description = "SAM to unsorted BED";
         sam2bed_unsorted_stage.pid = 0;
         sam2bed_unsorted_stage.status = 0;
+        sam2bed_unsorted_stage.buffer_size = buffer_size;
         
         bed_unsorted2bed_sorted_stage.pipeset = p;
         bed_unsorted2bed_sorted_stage.line_functor = NULL;
@@ -527,6 +546,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         bed_unsorted2bed_sorted_stage.description = "Unsorted BED to sorted BED";
         bed_unsorted2bed_sorted_stage.pid = 0;
         bed_unsorted2bed_sorted_stage.status = 0;
+        bed_unsorted2bed_sorted_stage.buffer_size = buffer_size;
 
         bed_sorted2stdout_stage.pipeset = p;
         bed_sorted2stdout_stage.line_functor = NULL;
@@ -535,6 +555,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         bed_sorted2stdout_stage.description = "Sorted BED to stdout";
         bed_sorted2stdout_stage.pid = 0;
         bed_sorted2stdout_stage.status = 0;
+        bed_sorted2stdout_stage.buffer_size = buffer_size;
     }
     else if (c2b_globals.output_format_idx == STARCH_FORMAT) {
         bam2sam_stage.pipeset = p;
@@ -544,7 +565,8 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         bam2sam_stage.description = "BAM data from stdin to SAM";
         bam2sam_stage.pid = 0;
         bam2sam_stage.status = 0;
-        
+        bam2sam_stage.buffer_size = buffer_size;
+
         sam2bed_unsorted_stage.pipeset = p;
         sam2bed_unsorted_stage.line_functor = sam2bed_unsorted_line_functor;
         sam2bed_unsorted_stage.src = 0;
@@ -552,6 +574,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         sam2bed_unsorted_stage.description = "SAM to unsorted BED";
         sam2bed_unsorted_stage.pid = 0;
         sam2bed_unsorted_stage.status = 0;
+        sam2bed_unsorted_stage.buffer_size = buffer_size;
 
         bed_unsorted2bed_sorted_stage.pipeset = p;
         bed_unsorted2bed_sorted_stage.line_functor = NULL;
@@ -560,6 +583,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         bed_unsorted2bed_sorted_stage.description = "Unsorted BED to sorted BED";
         bed_unsorted2bed_sorted_stage.pid = 0;
         bed_unsorted2bed_sorted_stage.status = 0;
+        bed_unsorted2bed_sorted_stage.buffer_size = buffer_size;
 
         bed_sorted2starch_stage.pipeset = p;
         bed_sorted2starch_stage.line_functor = NULL;
@@ -568,6 +592,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         bed_sorted2starch_stage.description = "Sorted BED to Starch";
         bed_sorted2starch_stage.pid = 0;
         bed_sorted2starch_stage.status = 0;
+        bed_sorted2starch_stage.buffer_size = buffer_size;
 
         starch2stdout_stage.pipeset = p;
         starch2stdout_stage.line_functor = NULL;
@@ -576,6 +601,7 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
         starch2stdout_stage.description = "Starch to stdout";
         starch2stdout_stage.pid = 0;
         starch2stdout_stage.status = 0;
+        starch2stdout_stage.buffer_size = buffer_size;
     }
     else {
         fprintf(stderr, "Error: Unknown BAM conversion parameter combination\n");
@@ -834,9 +860,9 @@ c2b_cmd_starch_bed(char *cmd)
 
 #ifdef DEBUG
     fprintf(stderr, "Debug: c2b_globals.starch->bzip2: [%d]\n", c2b_globals.starch->bzip2);
-    fprintf(stderr, "Debug: c2b_globals.starch->gzip: [%d]\n", c2b_globals.starch->gzip);
-    fprintf(stderr, "Debug: c2b_globals.starch->note: [%s]\n", c2b_globals.starch->note);
-    fprintf(stderr, "Debug: starch_args: [%s]\n", starch_args);
+    fprintf(stderr, "Debug: c2b_globals.starch->gzip:  [%d]\n", c2b_globals.starch->gzip);
+    fprintf(stderr, "Debug: c2b_globals.starch->note:  [%s]\n", c2b_globals.starch->note);
+    fprintf(stderr, "Debug: starch_args:               [%s]\n", starch_args);
 #endif
 
     if (c2b_globals.starch->note) {
@@ -867,6 +893,107 @@ c2b_cmd_starch_bed(char *cmd)
            starch_args, 
            strlen(starch_args) + 1);
     cmd[strlen(c2b_globals.starch->path) + strlen(starch_args)] = '\0';
+}
+
+static void
+c2b_gtf_init_element(c2b_gtf_t **e)
+{
+    *e = malloc(sizeof(c2b_gtf_t));
+    if (!*e) {
+        fprintf(stderr, "Error: Could not allocate space for GTF element pointer\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+
+    (*e)->seqname = NULL, (*e)->seqname = malloc(C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->seqname)));
+    if (!(*e)->seqname) { 
+        fprintf(stderr, "Error: Could not allocate space for GTF element seqname malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->seqname_capacity = C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->source = NULL, (*e)->source = malloc(C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->source)));
+    if (!(*e)->source) { 
+        fprintf(stderr, "Error: Could not allocate space for GTF element source malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->source_capacity = C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->feature = NULL, (*e)->feature = malloc(C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->feature)));
+    if (!(*e)->feature) { 
+        fprintf(stderr, "Error: Could not allocate space for GTF element feature malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->feature_capacity = C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->start = 0;
+    (*e)->end = 0;
+
+    (*e)->score = NULL, (*e)->score = malloc(C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->score)));
+    if (!(*e)->score) { 
+        fprintf(stderr, "Error: Could not allocate space for GTF element score malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->score_capacity = C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->strand = NULL, (*e)->strand = malloc(C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->strand)));
+    if (!(*e)->strand) { 
+        fprintf(stderr, "Error: Could not allocate space for GTF element strand malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->strand_capacity = C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->frame = NULL, (*e)->frame = malloc(C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->frame)));
+    if (!(*e)->frame) { 
+        fprintf(stderr, "Error: Could not allocate space for GTF element frame malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->frame_capacity = C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->attributes = NULL, (*e)->attributes = malloc(C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->attributes)));
+    if (!(*e)->attributes) { 
+        fprintf(stderr, "Error: Could not allocate space for GTF element attributes malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->attributes_capacity = C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->id = NULL, (*e)->id = malloc(C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->id)));
+    if (!(*e)->id) { 
+        fprintf(stderr, "Error: Could not allocate space for GTF element id malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->id_capacity = C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->comments = NULL, (*e)->comments = malloc(C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->comments)));
+    if (!(*e)->comments) { 
+        fprintf(stderr, "Error: Could not allocate space for GTF element comments malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->comments_capacity = C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+}
+
+static void
+c2b_gtf_delete_element(c2b_gtf_t *e)
+{
+    if (e->seqname)         { free(e->seqname),         e->seqname = NULL;         }
+    if (e->source)          { free(e->source),          e->source = NULL;          }
+    if (e->feature)         { free(e->feature),         e->feature = NULL;         }
+    if (e->score)           { free(e->score),           e->score = NULL;           }
+    if (e->strand)          { free(e->strand),          e->strand = NULL;          }
+    if (e->frame)           { free(e->frame),           e->frame = NULL;           }
+    if (e->attributes)      { free(e->attributes),      e->attributes = NULL;      }
+    if (e->id)              { free(e->id),              e->id = NULL;              }
+    if (e->comments)        { free(e->comments),        e->comments = NULL;        }
+    if (e)                  { free(e),                  e = NULL;                  }
 }
 
 static void
@@ -924,95 +1051,171 @@ c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     }
 
     /* 0 - seqname */
-    char seqname_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t seqname_size = gtf_field_offsets[0];
-    memcpy(seqname_str, src, seqname_size);
-    seqname_str[seqname_size] = '\0';
+    if (seqname_size >= c2b_globals.gtf->element->seqname_capacity) {
+        char *seqname_resized = NULL;
+        seqname_resized = realloc(c2b_globals.gtf->element->seqname, seqname_size + 1);
+        if (seqname_resized) {
+            c2b_globals.gtf->element->seqname = seqname_resized;
+            c2b_globals.gtf->element->seqname_capacity = seqname_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize SEQNAME string in GTF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gtf->element->seqname, src, seqname_size);
+    c2b_globals.gtf->element->seqname[seqname_size] = '\0';
 
     /* 1 - source */
-    char source_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t source_size = gtf_field_offsets[1] - gtf_field_offsets[0] - 1;
-    memcpy(source_str, src + gtf_field_offsets[0] + 1, source_size);
-    source_str[source_size] = '\0';
+    if (source_size >= c2b_globals.gtf->element->source_capacity) {
+        char *source_resized = NULL;
+        source_resized = realloc(c2b_globals.gtf->element->source, source_size + 1);
+        if (source_resized) {
+            c2b_globals.gtf->element->source = source_resized;
+            c2b_globals.gtf->element->source_capacity = source_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize SOURCE string in GTF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gtf->element->source, src + gtf_field_offsets[0] + 1, source_size);
+    c2b_globals.gtf->element->source[source_size] = '\0';
 
     /* 2 - feature */
-    char feature_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t feature_size = gtf_field_offsets[2] - gtf_field_offsets[1] - 1;
-    memcpy(feature_str, src + gtf_field_offsets[1] + 1, feature_size);
-    feature_str[feature_size] = '\0';
+    if (feature_size >= c2b_globals.gtf->element->feature_capacity) {
+        char *feature_resized = NULL;
+        feature_resized = realloc(c2b_globals.gtf->element->feature, feature_size + 1);
+        if (feature_resized) {
+            c2b_globals.gtf->element->feature = feature_resized;
+            c2b_globals.gtf->element->feature_capacity = feature_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize FEATURE string in GTF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gtf->element->feature, src + gtf_field_offsets[1] + 1, feature_size);
+    c2b_globals.gtf->element->feature[feature_size] = '\0';
 
     /* 3 - start */
     char start_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t start_size = gtf_field_offsets[3] - gtf_field_offsets[2] - 1;
     memcpy(start_str, src + gtf_field_offsets[2] + 1, start_size);
     start_str[start_size] = '\0';
-    uint64_t start_val = strtoull(start_str, NULL, 10);
+    c2b_globals.gtf->element->start = strtoull(start_str, NULL, 10);
 
     /* 4 - end */
     char end_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t end_size = gtf_field_offsets[4] - gtf_field_offsets[3] - 1;
     memcpy(end_str, src + gtf_field_offsets[3] + 1, end_size);
     end_str[end_size] = '\0';
-    uint64_t end_val = strtoull(end_str, NULL, 10);
+    c2b_globals.gtf->element->end = strtoull(end_str, NULL, 10);
 
     /* 5 - score */
-    char score_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t score_size = gtf_field_offsets[5] - gtf_field_offsets[4] - 1;
-    memcpy(score_str, src + gtf_field_offsets[4] + 1, score_size);
-    score_str[score_size] = '\0';
+    if (score_size >= c2b_globals.gtf->element->score_capacity) {
+        char *score_resized = NULL;
+        score_resized = realloc(c2b_globals.gtf->element->score, score_size + 1);
+        if (score_resized) {
+            c2b_globals.gtf->element->score = score_resized;
+            c2b_globals.gtf->element->score_capacity = score_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize SCORE string in GTF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gtf->element->score, src + gtf_field_offsets[4] + 1, score_size);
+    c2b_globals.gtf->element->score[score_size] = '\0';
 
     /* 6 - strand */
-    char strand_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t strand_size = gtf_field_offsets[6] - gtf_field_offsets[5] - 1;
-    memcpy(strand_str, src + gtf_field_offsets[5] + 1, strand_size);
-    strand_str[strand_size] = '\0';
+    if (strand_size >= c2b_globals.gtf->element->strand_capacity) {
+        char *strand_resized = NULL;
+        strand_resized = realloc(c2b_globals.gtf->element->strand, strand_size + 1);
+        if (strand_resized) {
+            c2b_globals.gtf->element->strand = strand_resized;
+            c2b_globals.gtf->element->strand_capacity = strand_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize STRAND string in GTF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gtf->element->strand, src + gtf_field_offsets[5] + 1, strand_size);
+    c2b_globals.gtf->element->strand[strand_size] = '\0';
 
     /* 7 - frame */
-    char frame_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t frame_size = gtf_field_offsets[7] - gtf_field_offsets[6] - 1;
-    memcpy(frame_str, src + gtf_field_offsets[6] + 1, frame_size);
-    frame_str[frame_size] = '\0';
+    if (frame_size >= c2b_globals.gtf->element->frame_capacity) {
+        char *frame_resized = NULL;
+        frame_resized = realloc(c2b_globals.gtf->element->frame, frame_size + 1);
+        if (frame_resized) {
+            c2b_globals.gtf->element->frame = frame_resized;
+            c2b_globals.gtf->element->frame_capacity = frame_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize FRAME string in GTF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gtf->element->frame, src + gtf_field_offsets[6] + 1, frame_size);
+    c2b_globals.gtf->element->frame[frame_size] = '\0';
 
     /* 8 - attributes */
-    char attributes_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t attributes_size = gtf_field_offsets[8] - gtf_field_offsets[7] - 1;
-    memcpy(attributes_str, src + gtf_field_offsets[7] + 1, attributes_size);
-    attributes_str[attributes_size] = '\0';
+    if (attributes_size >= c2b_globals.gtf->element->attributes_capacity) {
+        char *attributes_resized = NULL;
+        attributes_resized = realloc(c2b_globals.gtf->element->attributes, attributes_size + 1);
+        if (attributes_resized) {
+            c2b_globals.gtf->element->attributes = attributes_resized;
+            c2b_globals.gtf->element->attributes_capacity = attributes_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize ATTRIBUTES string in GTF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gtf->element->attributes, src + gtf_field_offsets[7] + 1, attributes_size);
+    c2b_globals.gtf->element->attributes[attributes_size] = '\0';
 
     /* 9 - comments */
-    char comments_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t comments_size = 0;
     if (gtf_field_idx == 9) {
         comments_size = gtf_field_offsets[9] - gtf_field_offsets[8] - 1;
-        memcpy(comments_str, src + gtf_field_offsets[8] + 1, comments_size);
-        comments_str[comments_size] = '\0';
+        if (comments_size >= c2b_globals.gtf->element->comments_capacity) {
+            char *comments_resized = NULL;
+            comments_resized = realloc(c2b_globals.gtf->element->comments, comments_size + 1);
+            if (comments_resized) {
+                c2b_globals.gtf->element->comments = comments_resized;
+                c2b_globals.gtf->element->comments_capacity = comments_size + 1;
+            }
+            else {
+                fprintf(stderr, "Error: Could not resize COMMENTS string in GTF element struct\n");
+                exit(ENOMEM);
+            }
+        }
+        memcpy(c2b_globals.gtf->element->comments, src + gtf_field_offsets[8] + 1, comments_size);
+        c2b_globals.gtf->element->comments[comments_size] = '\0';
     }
-
-    c2b_gtf_t gtf;
-    gtf.seqname = seqname_str;
-    gtf.source = source_str;
-    gtf.feature = feature_str;
-    gtf.start = start_val;
-    gtf.end = end_val;
-    gtf.score = score_str;
-    gtf.strand = strand_str;
-    gtf.frame = frame_str;
-    gtf.attributes = attributes_str;
-    gtf.comments = comments_str;
 
     /* 
        Fix coordinate indexing, and (if needed) add attribute for zero-length record
     */
 
-    if (gtf.start == gtf.end) {
-        gtf.start -= 1;
-        ssize_t trailing_semicolon_fudge = (attributes_str[strlen(attributes_str) - 1] == ';') ? 1 : 0;
-        memcpy(attributes_str + strlen(attributes_str) - trailing_semicolon_fudge, 
+    if (c2b_globals.gtf->element->start == c2b_globals.gtf->element->end) {
+        c2b_globals.gtf->element->start -= 1;
+        ssize_t trailing_semicolon_fudge = (c2b_globals.gtf->element->attributes[strlen(c2b_globals.gtf->element->attributes) - 1] == ';') ? 1 : 0;
+        memcpy(c2b_globals.gtf->element->attributes + strlen(c2b_globals.gtf->element->attributes) - trailing_semicolon_fudge, 
                c2b_gtf_zero_length_insertion_attribute, 
                strlen(c2b_gtf_zero_length_insertion_attribute) + 1);
     }
     else {
-        gtf.start -= 1;
+        c2b_globals.gtf->element->start -= 1;
     }
 
     /* 
@@ -1020,12 +1223,12 @@ c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     */
 
     char *attributes_copy = NULL;
-    attributes_copy = malloc(strlen(attributes_str) + 1);
+    attributes_copy = malloc(strlen(c2b_globals.gtf->element->attributes) + 1);
     if (!attributes_copy) {
         fprintf(stderr, "Error: Could not allocate space for GTF attributes copy\n");
         exit(ENOMEM); /* Not enough space (POSIX.1) */
     }
-    memcpy(attributes_copy, attributes_str, strlen(attributes_str) + 1);
+    memcpy(attributes_copy, c2b_globals.gtf->element->attributes, strlen(c2b_globals.gtf->element->attributes) + 1);
     const char *kv_tok;
     char *gene_id_str = NULL;
     char *transcript_id_str = NULL;
@@ -1052,14 +1255,27 @@ c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                 exit(ENODATA); /* No data available (POSIX.1) */
             }
             if ((gtf_id_start && gtf_id_end) && (gtf_id_start != gtf_id_end)) {
-                memcpy(c2b_globals.gtf->id, gtf_id_start + 1, gtf_id_end - gtf_id_start - 1);
-                c2b_globals.gtf->id[gtf_id_end - gtf_id_start - 1] = '\0';
+                ssize_t id_size = gtf_id_end - gtf_id_start - 1;
+                if (id_size >= c2b_globals.gtf->element->id_capacity) {
+                    char *id_resized = NULL;
+                    id_resized = realloc(c2b_globals.gtf->element->id, id_size + 1);
+                    if (id_resized) {
+                        c2b_globals.gtf->element->id = id_resized;
+                        c2b_globals.gtf->element->id_capacity = id_size + 1;
+                    }
+                    else {
+                        fprintf(stderr, "Error: Could not resize ID string in GTF element struct\n");
+                        exit(ENOMEM);
+                    }
+                }
+                memcpy(c2b_globals.gtf->element->id, gtf_id_start + 1, id_size);
+                c2b_globals.gtf->element->id[id_size] = '\0';
             }
             else {
-                c2b_globals.gtf->id[0] = '\0';
+                c2b_globals.gtf->element->id[0] = '\0';
             }
-            if (strlen(c2b_globals.gtf->id) == 0) {
-                strcpy(c2b_globals.gtf->id, c2b_gtf_field_placeholder);
+            if (strlen(c2b_globals.gtf->element->id) == 0) {
+                strcpy(c2b_globals.gtf->element->id, c2b_gtf_field_placeholder);
             }
             gene_id_value_defined = kTrue;
         }
@@ -1073,23 +1289,22 @@ c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
         exit(ENODATA); /* No data available (POSIX.1) */        
     }
     free(attributes_copy), attributes_copy = NULL;
-    gtf.id = c2b_globals.gtf->id;
 
     /* 
        Convert GTF struct to BED string and copy it to destination
     */
 
-    c2b_line_convert_gtf_to_bed(gtf, dest, dest_size);
+    c2b_line_convert_gtf_ptr_to_bed(c2b_globals.gtf->element, dest, dest_size);
     c2b_globals.gtf->line_count++;
 }
 
 static inline void
-c2b_line_convert_gtf_to_bed(c2b_gtf_t g, char *dest_line, ssize_t *dest_size)
+c2b_line_convert_gtf_ptr_to_bed(c2b_gtf_t *g, char *dest_line, ssize_t *dest_size)
 {
     /* 
        For GTF-formatted data, we use the mapping provided by BEDOPS convention described at:
 
-       http://bedops.readthedocs.org/en/latest/content/reference/file-management/conversion/gtf2bed.html
+       http://bedops.readthedocs.io/en/latest/content/reference/file-management/conversion/gtf2bed.html
 
        GTF field                 BED column index       BED field
        -------------------------------------------------------------------------
@@ -1116,7 +1331,7 @@ c2b_line_convert_gtf_to_bed(c2b_gtf_t g, char *dest_line, ssize_t *dest_size)
        comments                  11                     -
     */
 
-    if (strlen(g.comments) == 0) {
+    if (strlen(g->comments) == 0) {
         *dest_size += sprintf(dest_line + *dest_size,
                               "%s\t"            \
                               "%" PRIu64 "\t"   \
@@ -1128,16 +1343,16 @@ c2b_line_convert_gtf_to_bed(c2b_gtf_t g, char *dest_line, ssize_t *dest_size)
                               "%s\t"            \
                               "%s\t"            \
                               "%s\n",
-                              g.seqname,
-                              g.start,
-                              g.end,
-                              g.id,
-                              g.score,
-                              g.strand,
-                              g.source,
-                              g.feature,
-                              g.frame,
-                              g.attributes);
+                              g->seqname,
+                              g->start,
+                              g->end,
+                              g->id,
+                              g->score,
+                              g->strand,
+                              g->source,
+                              g->feature,
+                              g->frame,
+                              g->attributes);
     }
     else {
         *dest_size += sprintf(dest_line + *dest_size,
@@ -1152,18 +1367,110 @@ c2b_line_convert_gtf_to_bed(c2b_gtf_t g, char *dest_line, ssize_t *dest_size)
                               "%s\t"            \
                               "%s\t"            \
                               "%s\n",
-                              g.seqname,
-                              g.start,
-                              g.end,
-                              g.id,
-                              g.score,
-                              g.strand,
-                              g.source,
-                              g.feature,
-                              g.frame,
-                              g.attributes,
-                              g.comments);
+                              g->seqname,
+                              g->start,
+                              g->end,
+                              g->id,
+                              g->score,
+                              g->strand,
+                              g->source,
+                              g->feature,
+                              g->frame,
+                              g->attributes,
+                              g->comments);
     }
+}
+
+static void
+c2b_gff_init_element(c2b_gff_t **e)
+{
+    *e = malloc(sizeof(c2b_gff_t));
+    if (!*e) {
+        fprintf(stderr, "Error: Could not allocate space for GFF element pointer\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    
+    (*e)->seqid = NULL, (*e)->seqid = malloc(C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->seqid)));
+    if (!(*e)->seqid) { 
+        fprintf(stderr, "Error: Could not allocate space for GFF element seqid malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->seqid_capacity = C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->source = NULL, (*e)->source = malloc(C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->source)));
+    if (!(*e)->source) { 
+        fprintf(stderr, "Error: Could not allocate space for GFF element source malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->source_capacity = C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->type = NULL, (*e)->type = malloc(C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->type)));
+    if (!(*e)->type) { 
+        fprintf(stderr, "Error: Could not allocate space for GFF element type malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->type_capacity = C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->start = 0;
+    (*e)->end = 0;
+
+    (*e)->score = NULL, (*e)->score = malloc(C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->score)));
+    if (!(*e)->score) { 
+        fprintf(stderr, "Error: Could not allocate space for GFF element score malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->score_capacity = C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->strand = NULL, (*e)->strand = malloc(C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->strand)));
+    if (!(*e)->strand) { 
+        fprintf(stderr, "Error: Could not allocate space for GFF element strand malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->strand_capacity = C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->phase = NULL, (*e)->phase = malloc(C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->phase)));
+    if (!(*e)->phase) { 
+        fprintf(stderr, "Error: Could not allocate space for GFF element phase malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->phase_capacity = C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->attributes = NULL, (*e)->attributes = malloc(C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->attributes)));
+    if (!(*e)->attributes) { 
+        fprintf(stderr, "Error: Could not allocate space for GFF element attributes malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->attributes_capacity = C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->id = NULL, (*e)->id = malloc(C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->id)));
+    if (!(*e)->id) { 
+        fprintf(stderr, "Error: Could not allocate space for GFF element id malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->id_capacity = C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+}
+
+static void
+c2b_gff_delete_element(c2b_gff_t *e)
+{
+    if (e->seqid)           { free(e->seqid),           e->seqid = NULL;           }
+    if (e->source)          { free(e->source),          e->source = NULL;          }
+    if (e->type)            { free(e->type),            e->type = NULL;            }
+    if (e->score)           { free(e->score),           e->score = NULL;           }
+    if (e->strand)          { free(e->strand),          e->strand = NULL;          }
+    if (e->phase)           { free(e->phase),           e->phase = NULL;           }
+    if (e->attributes)      { free(e->attributes),      e->attributes = NULL;      }
+    if (e->id)              { free(e->id),              e->id = NULL;              }
+    if (e)                  { free(e),                  e = NULL;                  }
 }
 
 static void
@@ -1233,85 +1540,151 @@ c2b_line_convert_gff_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     }
 
     /* 0 - seqid */
-    char seqid_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t seqid_size = gff_field_offsets[0];
-    memcpy(seqid_str, src, seqid_size);
-    seqid_str[seqid_size] = '\0';
+    if (seqid_size >= c2b_globals.gff->element->seqid_capacity) {
+        char *seqid_resized = NULL;
+        seqid_resized = realloc(c2b_globals.gff->element->seqid, seqid_size + 1);
+        if (seqid_resized) {
+            c2b_globals.gff->element->seqid = seqid_resized;
+            c2b_globals.gff->element->seqid_capacity = seqid_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize SEQID string in GFF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gff->element->seqid, src, seqid_size);
+    c2b_globals.gff->element->seqid[seqid_size] = '\0';
 
     /* 1 - source */
-    char source_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t source_size = gff_field_offsets[1] - gff_field_offsets[0] - 1;
-    memcpy(source_str, src + gff_field_offsets[0] + 1, source_size);
-    source_str[source_size] = '\0';
+    if (source_size >= c2b_globals.gff->element->source_capacity) {
+        char *source_resized = NULL;
+        source_resized = realloc(c2b_globals.gff->element->source, source_size + 1);
+        if (source_resized) {
+            c2b_globals.gff->element->source = source_resized;
+            c2b_globals.gff->element->source_capacity = source_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize SOURCE string in GFF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gff->element->source, src + gff_field_offsets[0] + 1, source_size);
+    c2b_globals.gff->element->source[source_size] = '\0';
 
     /* 2 - type */
-    char type_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t type_size = gff_field_offsets[2] - gff_field_offsets[1] - 1;
-    memcpy(type_str, src + gff_field_offsets[1] + 1, type_size);
-    type_str[type_size] = '\0';
+    if (type_size >= c2b_globals.gff->element->type_capacity) {
+        char *type_resized = NULL;
+        type_resized = realloc(c2b_globals.gff->element->type, type_size + 1);
+        if (type_resized) {
+            c2b_globals.gff->element->type = type_resized;
+            c2b_globals.gff->element->type_capacity = type_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize TYPE string in GFF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gff->element->type, src + gff_field_offsets[1] + 1, type_size);
+    c2b_globals.gff->element->type[type_size] = '\0';
 
     /* 3 - start */
     char start_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t start_size = gff_field_offsets[3] - gff_field_offsets[2] - 1;
     memcpy(start_str, src + gff_field_offsets[2] + 1, start_size);
     start_str[start_size] = '\0';
-    uint64_t start_val = strtoull(start_str, NULL, 10);
+    c2b_globals.gff->element->start = strtoull(start_str, NULL, 10);
 
     /* 4 - end */
     char end_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t end_size = gff_field_offsets[4] - gff_field_offsets[3] - 1;
     memcpy(end_str, src + gff_field_offsets[3] + 1, end_size);
     end_str[end_size] = '\0';
-    uint64_t end_val = strtoull(end_str, NULL, 10);
+    c2b_globals.gff->element->end = strtoull(end_str, NULL, 10);
 
     /* 5 - score */
-    char score_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t score_size = gff_field_offsets[5] - gff_field_offsets[4] - 1;
-    memcpy(score_str, src + gff_field_offsets[4] + 1, score_size);
-    score_str[score_size] = '\0';
+    if (score_size >= c2b_globals.gff->element->score_capacity) {
+        char *score_resized = NULL;
+        score_resized = realloc(c2b_globals.gff->element->score, score_size + 1);
+        if (score_resized) {
+            c2b_globals.gff->element->score = score_resized;
+            c2b_globals.gff->element->score_capacity = score_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize SCORE string in GFF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gff->element->score, src + gff_field_offsets[4] + 1, score_size);
+    c2b_globals.gff->element->score[score_size] = '\0';
 
     /* 6 - strand */
-    char strand_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t strand_size = gff_field_offsets[6] - gff_field_offsets[5] - 1;
-    memcpy(strand_str, src + gff_field_offsets[5] + 1, strand_size);
-    strand_str[strand_size] = '\0';
+    if (strand_size >= c2b_globals.gff->element->strand_capacity) {
+        char *strand_resized = NULL;
+        strand_resized = realloc(c2b_globals.gff->element->strand, strand_size + 1);
+        if (strand_resized) {
+            c2b_globals.gff->element->strand = strand_resized;
+            c2b_globals.gff->element->strand_capacity = strand_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize STRAND string in GFF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gff->element->strand, src + gff_field_offsets[5] + 1, strand_size);
+    c2b_globals.gff->element->strand[strand_size] = '\0';
 
     /* 7 - phase */
-    char phase_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t phase_size = gff_field_offsets[7] - gff_field_offsets[6] - 1;
-    memcpy(phase_str, src + gff_field_offsets[6] + 1, phase_size);
-    phase_str[phase_size] = '\0';
+    if (phase_size >= c2b_globals.gff->element->phase_capacity) {
+        char *phase_resized = NULL;
+        phase_resized = realloc(c2b_globals.gff->element->phase, phase_size + 1);
+        if (phase_resized) {
+            c2b_globals.gff->element->phase = phase_resized;
+            c2b_globals.gff->element->phase_capacity = phase_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize PHASE string in GFF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gff->element->phase, src + gff_field_offsets[6] + 1, phase_size);
+    c2b_globals.gff->element->phase[phase_size] = '\0';
 
     /* 8 - attributes */
-    char attributes_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t attributes_size = gff_field_offsets[8] - gff_field_offsets[7] - 1;
-    memcpy(attributes_str, src + gff_field_offsets[7] + 1, attributes_size);
-    attributes_str[attributes_size] = '\0';
-
-    c2b_gff_t gff;
-    gff.seqid = seqid_str;
-    gff.source = source_str;
-    gff.type = type_str;
-    gff.start = start_val;
-    gff.end = end_val;
-    gff.score = score_str;
-    gff.strand = strand_str;
-    gff.phase = phase_str;
-    gff.attributes = attributes_str;
+    if (attributes_size >= c2b_globals.gff->element->attributes_capacity) {
+        char *attributes_resized = NULL;
+        attributes_resized = realloc(c2b_globals.gff->element->attributes, attributes_size + 1);
+        if (attributes_resized) {
+            c2b_globals.gff->element->attributes = attributes_resized;
+            c2b_globals.gff->element->attributes_capacity = attributes_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize ATTRIBUTES string in GFF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.gff->element->attributes, src + gff_field_offsets[7] + 1, attributes_size);
+    c2b_globals.gff->element->attributes[attributes_size] = '\0';
 
     /* 
        Fix coordinate indexing, and (if needed) add attribute for zero-length record
     */
 
-    if (gff.start == gff.end) {
-        gff.start -= 1;
-        ssize_t trailing_semicolon_fudge = (attributes_str[strlen(attributes_str) - 1] == ';') ? 1 : 0;
-        memcpy(attributes_str + strlen(attributes_str) - trailing_semicolon_fudge,
+    if (c2b_globals.gff->element->start == c2b_globals.gff->element->end) {
+        c2b_globals.gff->element->start -= 1;
+        ssize_t trailing_semicolon_fudge = (c2b_globals.gff->element->attributes[strlen(c2b_globals.gff->element->attributes) - 1] == ';') ? 1 : 0;
+        memcpy(c2b_globals.gff->element->attributes + strlen(c2b_globals.gff->element->attributes) - trailing_semicolon_fudge,
                c2b_gff_zero_length_insertion_attribute, 
                strlen(c2b_gff_zero_length_insertion_attribute) + 1);
     }
     else {
-        gff.start -= 1;
+        c2b_globals.gff->element->start -= 1;
     }
 
     /* 
@@ -1319,41 +1692,54 @@ c2b_line_convert_gff_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     */
 
     char *attributes_copy = NULL;
-    attributes_copy = malloc(strlen(attributes_str) + 1);
+    attributes_copy = malloc(strlen(c2b_globals.gff->element->attributes) + 1);
     if (!attributes_copy) {
         fprintf(stderr, "Error: Could not allocate space for GFF attributes copy\n");
         exit(ENOMEM); /* Not enough space (POSIX.1) */
     }
-    memcpy(attributes_copy, attributes_str, strlen(attributes_str) + 1);
+    memcpy(attributes_copy, c2b_globals.gff->element->attributes, strlen(c2b_globals.gff->element->attributes) + 1);
     const char *kv_tok;
     const char *gff_id_prefix = "ID=";
     const char *gff_null_id = ".";
     char *id_str = NULL;
-    memcpy(c2b_globals.gff->id, gff_null_id, strlen(gff_null_id) + 1);
+    memcpy(c2b_globals.gff->element->id, gff_null_id, strlen(gff_null_id) + 1);
+    c2b_globals.gff->element->id[strlen(gff_null_id)] = '\0';
     while ((kv_tok = c2b_strsep(&attributes_copy, ";")) != NULL) {
         id_str = strstr(kv_tok, gff_id_prefix);
         if (id_str) {
-            memcpy(c2b_globals.gff->id, kv_tok + strlen(gff_id_prefix), strlen(kv_tok + strlen(gff_id_prefix)) + 1);
-            c2b_globals.gff->id[strlen(kv_tok + strlen(gff_id_prefix)) + 1] = '\0';
+            ssize_t id_size = strlen(id_str);
+            if (id_size >= c2b_globals.gff->element->id_capacity) {
+                char *id_resized = NULL;
+                id_resized = realloc(c2b_globals.gff->element->id, id_size + 1);
+                if (id_resized) {
+                    c2b_globals.gff->element->id = id_resized;
+                    c2b_globals.gff->element->id_capacity = id_size + 1;
+                }
+                else {
+                    fprintf(stderr, "Error: Could not resize ID string in GFF element struct\n");
+                    exit(ENOMEM);
+                }
+            }
+            memcpy(c2b_globals.gff->element->id, kv_tok + strlen(gff_id_prefix), strlen(kv_tok + strlen(gff_id_prefix)) + 1);
+            c2b_globals.gff->element->id[strlen(kv_tok + strlen(gff_id_prefix)) + 1] = '\0';
         }
     }
     free(attributes_copy), attributes_copy = NULL;
-    gff.id = c2b_globals.gff->id;
 
     /* 
        Convert GFF struct to BED string and copy it to destination
     */
 
-    c2b_line_convert_gff_to_bed(gff, dest, dest_size);
+    c2b_line_convert_gff_ptr_to_bed(c2b_globals.gff->element, dest, dest_size);
 }
 
 static inline void
-c2b_line_convert_gff_to_bed(c2b_gff_t g, char *dest_line, ssize_t *dest_size)
+c2b_line_convert_gff_ptr_to_bed(c2b_gff_t *g, char *dest_line, ssize_t *dest_size)
 {
     /* 
        For GFF- and GVF-formatted data, we use the mapping provided by BEDOPS convention described at:
 
-       http://bedops.readthedocs.org/en/latest/content/reference/file-management/conversion/gff2bed.html
+       http://bedops.readthedocs.io/en/latest/content/reference/file-management/conversion/gff2bed.html
 
        GFF field                 BED column index       BED field
        -------------------------------------------------------------------------
@@ -1385,16 +1771,16 @@ c2b_line_convert_gff_to_bed(c2b_gff_t g, char *dest_line, ssize_t *dest_size)
                           "%s\t"                \
                           "%s\t"                \
                           "%s\n",
-                          g.seqid,
-                          g.start,
-                          g.end,
-                          g.id,
-                          g.score,
-                          g.strand,
-                          g.source,
-                          g.type,
-                          g.phase,
-                          g.attributes);
+                          g->seqid,
+                          g->start,
+                          g->end,
+                          g->id,
+                          g->score,
+                          g->strand,
+                          g->source,
+                          g->type,
+                          g->phase,
+                          g->attributes);
 }
 
 static void
@@ -1825,7 +2211,7 @@ c2b_line_convert_psl_to_bed(c2b_psl_t p, char *dest_line, ssize_t *dest_size)
     /* 
        For PSL-formatted data, we use the mapping provided by BEDOPS convention described at:
 
-       http://bedops.readthedocs.org/en/latest/content/reference/file-management/conversion/psl2bed.html
+       http://bedops.readthedocs.io/en/latest/content/reference/file-management/conversion/psl2bed.html
 
        PSL field                 BED column index       BED field
        -------------------------------------------------------------------------
@@ -2227,7 +2613,7 @@ c2b_line_convert_rmsk_to_bed(c2b_rmsk_t r, char *dest_line, ssize_t *dest_size)
        For RepeatMasker annotation-formatted data, we use the mapping provided by BEDOPS
        convention described at:
 
-       http://bedops.readthedocs.org/en/latest/content/reference/file-management/conversion/rmsk2bed.html
+       http://bedops.readthedocs.io/en/latest/content/reference/file-management/conversion/rmsk2bed.html
 
        RepeatMasker field        BED column index       BED field
        -------------------------------------------------------------------------
@@ -2347,8 +2733,8 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
         }
         else {
             /* copy header line to destination stream buffer */
-            char src_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
-            char dest_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
+            char src_header_line_str[C2B_MAX_LINE_LENGTH_VALUE] = {0};
+            char dest_header_line_str[C2B_MAX_LINE_LENGTH_VALUE] = {0};
             memcpy(src_header_line_str, src, src_size);
             src_header_line_str[src_size] = '\0';
             sprintf(dest_header_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), src_header_line_str);
@@ -2387,10 +2773,21 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
     */
 
     ssize_t cigar_size = sam_field_offsets[5] - sam_field_offsets[4];
-    char cigar_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    memcpy(cigar_str, src + sam_field_offsets[4] + 1, cigar_size - 1);
-    cigar_str[cigar_size - 1] = '\0';
-    c2b_sam_cigar_str_to_ops(cigar_str);
+    if (cigar_size >= c2b_globals.sam->element->cigar_capacity) {
+        char *cigar_resized = NULL;
+        cigar_resized = realloc(c2b_globals.sam->element->cigar, cigar_size + 1);
+        if (cigar_resized) {
+            c2b_globals.sam->element->cigar = cigar_resized;
+            c2b_globals.sam->element->cigar_capacity = cigar_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize CIGAR string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->cigar, src + sam_field_offsets[4] + 1, cigar_size - 1);
+    c2b_globals.sam->element->cigar[cigar_size - 1] = '\0';
+    c2b_sam_cigar_str_to_ops(c2b_globals.sam->element->cigar);
 #ifdef DEBUG
     c2b_sam_debug_cigar_ops(c2b_globals.sam->cigar);
 #endif
@@ -2405,11 +2802,11 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
     */
 
     ssize_t flag_size = sam_field_offsets[1] - sam_field_offsets[0];
-    char flag_src_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char flag_src_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     memcpy(flag_src_str, src + sam_field_offsets[0] + 1, flag_size);
     flag_src_str[flag_size] = '\0';
-    int flag_val = (int) strtol(flag_src_str, NULL, 10);
-    boolean is_mapped = (boolean) !(4 & flag_val);
+    c2b_globals.sam->element->flag = (int) strtol(flag_src_str, NULL, 10);
+    boolean is_mapped = (boolean) !(4 & c2b_globals.sam->element->flag);
     if ((!is_mapped) && (!c2b_globals.all_reads_flag)) 
         return;    
 
@@ -2418,106 +2815,218 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
     */
 
     /* RNAME */
-    char rname_str[C2B_MAX_FIELD_LENGTH_VALUE];
     if (is_mapped) {
         ssize_t rname_size = sam_field_offsets[2] - sam_field_offsets[1] - 1;
-        memcpy(rname_str, src + sam_field_offsets[1] + 1, rname_size);
-        rname_str[rname_size] = '\0';
+        if (rname_size >= c2b_globals.sam->element->rname_capacity) {
+            char *rname_resized = NULL;
+            rname_resized = realloc(c2b_globals.sam->element->rname, rname_size + 1);
+            if (rname_resized) {
+                c2b_globals.sam->element->rname = rname_resized;
+                c2b_globals.sam->element->rname_capacity = rname_size + 1;
+            }
+            else {
+                fprintf(stderr, "Error: Could not resize RNAME string in SAM element struct\n");
+                exit(ENOMEM);
+            }
+        }
+        memcpy(c2b_globals.sam->element->rname, src + sam_field_offsets[1] + 1, rname_size);
+        c2b_globals.sam->element->rname[rname_size] = '\0';
     }
     else {
-        char unmapped_read_chr_str[C2B_MAX_FIELD_LENGTH_VALUE];
-        memcpy(unmapped_read_chr_str, c2b_unmapped_read_chr_name, strlen(c2b_unmapped_read_chr_name));
-        unmapped_read_chr_str[strlen(c2b_unmapped_read_chr_name)] = '\t';
-        unmapped_read_chr_str[strlen(c2b_unmapped_read_chr_name) + 1] = '\0';
-        memcpy(rname_str, unmapped_read_chr_str, strlen(unmapped_read_chr_str));
-        rname_str[strlen(unmapped_read_chr_str)] = '\0';
+        ssize_t c2b_unmapped_read_chr_name_size = strlen(c2b_unmapped_read_chr_name);
+        if (c2b_unmapped_read_chr_name_size >= c2b_globals.sam->element->rname_capacity) {
+            char *rname_resized = NULL;
+            rname_resized = realloc(c2b_globals.sam->element->rname, c2b_unmapped_read_chr_name_size + 2);
+            if (rname_resized) {
+                c2b_globals.sam->element->rname = rname_resized;
+                c2b_globals.sam->element->rname_capacity = c2b_unmapped_read_chr_name_size + 2;
+            }
+            else {
+                fprintf(stderr, "Error: Could not resize RNAME string in SAM element struct\n");
+                exit(ENOMEM);
+            }
+        }
+        memcpy(c2b_globals.sam->element->rname, c2b_unmapped_read_chr_name, c2b_unmapped_read_chr_name_size);
+        c2b_globals.sam->element->rname[c2b_unmapped_read_chr_name_size] = '\t';
+        c2b_globals.sam->element->rname[c2b_unmapped_read_chr_name_size + 1] = '\0';
     }
 
     /* POS */
     ssize_t pos_size = sam_field_offsets[3] - sam_field_offsets[2];
-    char pos_src_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char pos_src_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     memcpy(pos_src_str, src + sam_field_offsets[2] + 1, pos_size - 1);
     pos_src_str[pos_size - 1] = '\0';
     uint64_t pos_val = strtoull(pos_src_str, NULL, 10);
     uint64_t start_val = pos_val - 1; /* remember, start = POS - 1 */
+    c2b_globals.sam->element->start = start_val;
+    c2b_globals.sam->element->stop = start_val; /* this will be adjusted after CIGAR string is parsed */
 
     /* QNAME */
-    char qname_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t qname_size = sam_field_offsets[0];
-    memcpy(qname_str, src, qname_size);
-    qname_str[qname_size] = '\0';
+    if (qname_size >= c2b_globals.sam->element->qname_capacity) {
+        char *qname_resized = NULL;
+        qname_resized = realloc(c2b_globals.sam->element->qname, qname_size + 1);
+        if (qname_resized) {
+            c2b_globals.sam->element->qname = qname_resized;
+            c2b_globals.sam->element->qname_capacity = qname_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize QNAME string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->qname, src, qname_size);
+    c2b_globals.sam->element->qname[qname_size] = '\0';
 
     /* 16 & FLAG */
-    int strand_val = 0x10 & flag_val;
-    char strand_str[C2B_MAX_STRAND_LENGTH_VALUE];
+    int strand_val = 0x10 & c2b_globals.sam->element->flag;
+    char strand_str[C2B_MAX_STRAND_LENGTH_VALUE] = {0};
     sprintf(strand_str, "%c", (strand_val == 0x10) ? '-' : '+');
-    
+    ssize_t strand_size = strlen(strand_str);
+    if (strand_size >= c2b_globals.sam->element->strand_capacity) {
+        char *strand_resized = NULL;
+        strand_resized = realloc(c2b_globals.sam->element->strand, strand_size + 1);
+        if (strand_resized) {
+            c2b_globals.sam->element->strand = strand_resized;
+            c2b_globals.sam->element->strand_capacity = strand_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize STRAND string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->strand, strand_str, strand_size);
+    c2b_globals.sam->element->strand[strand_size] = '\0';
+
     /* MAPQ */
-    char mapq_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t mapq_size = sam_field_offsets[4] - sam_field_offsets[3] - 1;
-    memcpy(mapq_str, src + sam_field_offsets[3] + 1, mapq_size);
-    mapq_str[mapq_size] = '\0';
-    
+    if (mapq_size >= c2b_globals.sam->element->mapq_capacity) {
+        char *mapq_resized = NULL;
+        mapq_resized = realloc(c2b_globals.sam->element->mapq, mapq_size + 1);
+        if (mapq_resized) {
+            c2b_globals.sam->element->mapq = mapq_resized;
+            c2b_globals.sam->element->mapq_capacity = mapq_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize MAPQ string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->mapq, src + sam_field_offsets[3] + 1, mapq_size);
+    c2b_globals.sam->element->mapq[mapq_size] = '\0';
+
     /* RNEXT */
-    char rnext_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t rnext_size = sam_field_offsets[6] - sam_field_offsets[5] - 1;
-    memcpy(rnext_str, src + sam_field_offsets[5] + 1, rnext_size);
-    rnext_str[rnext_size] = '\0';
+    if (rnext_size >= c2b_globals.sam->element->rnext_capacity) {
+        char *rnext_resized = NULL;
+        rnext_resized = realloc(c2b_globals.sam->element->rnext, rnext_size + 1);
+        if (rnext_resized) {
+            c2b_globals.sam->element->rnext = rnext_resized;
+            c2b_globals.sam->element->rnext_capacity = rnext_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize RNEXT string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->rnext, src + sam_field_offsets[5] + 1, rnext_size);
+    c2b_globals.sam->element->rnext[rnext_size] = '\0';
 
     /* PNEXT */
-    char pnext_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t pnext_size = sam_field_offsets[7] - sam_field_offsets[6] - 1;
-    memcpy(pnext_str, src + sam_field_offsets[6] + 1, pnext_size);
-    pnext_str[pnext_size] = '\0';
+    if (pnext_size >= c2b_globals.sam->element->pnext_capacity) {
+        char *pnext_resized = NULL;
+        pnext_resized = realloc(c2b_globals.sam->element->pnext, pnext_size + 1);
+        if (pnext_resized) {
+            c2b_globals.sam->element->pnext = pnext_resized;
+            c2b_globals.sam->element->pnext_capacity = pnext_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize PNEXT string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->pnext, src + sam_field_offsets[6] + 1, pnext_size);
+    c2b_globals.sam->element->pnext[pnext_size] = '\0';
 
     /* TLEN */
-    char tlen_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t tlen_size = sam_field_offsets[8] - sam_field_offsets[7] - 1;
-    memcpy(tlen_str, src + sam_field_offsets[7] + 1, tlen_size);
-    tlen_str[tlen_size] = '\0';
+    if (tlen_size >= c2b_globals.sam->element->tlen_capacity) {
+        char *tlen_resized = NULL;
+        tlen_resized = realloc(c2b_globals.sam->element->tlen, tlen_size + 1);
+        if (tlen_resized) {
+            c2b_globals.sam->element->tlen = tlen_resized;
+            c2b_globals.sam->element->tlen_capacity = tlen_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize TLEN string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->tlen, src + sam_field_offsets[7] + 1, tlen_size);
+    c2b_globals.sam->element->tlen[tlen_size] = '\0';
 
     /* SEQ */
-    char seq_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t seq_size = sam_field_offsets[9] - sam_field_offsets[8] - 1;
-    memcpy(seq_str, src + sam_field_offsets[8] + 1, seq_size);
-    seq_str[seq_size] = '\0';
+    if (seq_size >= c2b_globals.sam->element->seq_capacity) {
+        char *seq_resized = NULL;
+        seq_resized = realloc(c2b_globals.sam->element->seq, seq_size + 1);
+        if (seq_resized) {
+            c2b_globals.sam->element->seq = seq_resized;
+            c2b_globals.sam->element->seq_capacity = seq_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize SEQ string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->seq, src + sam_field_offsets[8] + 1, seq_size);
+    c2b_globals.sam->element->seq[seq_size] = '\0';
 
     /* QUAL */
-    char qual_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t qual_size = sam_field_offsets[10] - sam_field_offsets[9] - 1;
-    memcpy(qual_str, src + sam_field_offsets[9] + 1, qual_size);
-    qual_str[qual_size] = '\0';
+    if (qual_size >= c2b_globals.sam->element->qual_capacity) {
+        char *qual_resized = NULL;
+        qual_resized = realloc(c2b_globals.sam->element->qual, qual_size + 1);
+        if (qual_resized) {
+            c2b_globals.sam->element->qual = qual_resized;
+            c2b_globals.sam->element->qual_capacity = qual_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize QUAL string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->qual, src + sam_field_offsets[9] + 1, qual_size);
+    c2b_globals.sam->element->qual[qual_size] = '\0';
 
     /* Optional fields */
-    char opt_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    c2b_globals.sam->element->opt[0] = '\0';
+    c2b_globals.sam->element->opt_length = 0;
     if (sam_field_offsets[11] != -1) {
-        opt_str[0] = '\0';
         for (int field_idx = 11; field_idx <= sam_field_idx; field_idx++) {
             ssize_t opt_size = sam_field_offsets[field_idx] - sam_field_offsets[field_idx - 1] - (field_idx == sam_field_idx ? 1 : 0);
-            memcpy(opt_str + strlen(opt_str), src + sam_field_offsets[field_idx - 1] + 1, opt_size);
-            opt_str[strlen(opt_str) + opt_size] = '\0';
+            if ((c2b_globals.sam->element->opt_length + opt_size) >= c2b_globals.sam->element->opt_capacity) {
+                char *opt_resized = NULL;
+                opt_resized = realloc(c2b_globals.sam->element->opt, c2b_globals.sam->element->opt_length + opt_size + 1);
+                if (opt_resized) {
+                    c2b_globals.sam->element->opt = opt_resized;
+                    c2b_globals.sam->element->opt_capacity = c2b_globals.sam->element->opt_length + opt_size + 1;
+                }
+                else {
+                    fprintf(stderr, "Error: Could not resize OPT string in SAM element struct\n");
+                    exit(ENOMEM);
+                }
+            }
+            memcpy(c2b_globals.sam->element->opt + c2b_globals.sam->element->opt_length, src + sam_field_offsets[field_idx - 1] + 1, opt_size);
+            c2b_globals.sam->element->opt[c2b_globals.sam->element->opt_length + opt_size] = '\0';
+            c2b_globals.sam->element->opt_length += opt_size;
         }
     }
 
     /* 
        Loop through operations and process a line of input based on each operation and its associated value
     */
-
-    c2b_sam_t sam;
-    sam.rname = rname_str;
-    sam.start = start_val;
-    sam.stop = start_val;
-    sam.qname = qname_str;
-    sam.flag = flag_val;
-    sam.strand = strand_str;
-    sam.mapq = mapq_str;
-    sam.cigar = cigar_str;
-    sam.rnext = rnext_str;
-    sam.pnext = pnext_str;
-    sam.tlen = tlen_str;
-    sam.seq = seq_str;
-    sam.qual = qual_str;
-    sam.opt = opt_str;
 
     for (op_idx = 0; op_idx < c2b_globals.sam->cigar->length; ++op_idx) {
         char current_op = c2b_globals.sam->cigar->ops[op_idx].operation;
@@ -2529,7 +3038,7 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
             case 'D':
             case '=':
             case 'X':
-                sam.stop += bases;
+                c2b_globals.sam->element->stop += bases;
             case 'H':
             case 'I':
             case 'P':
@@ -2540,7 +3049,7 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
             }
     }
 
-    c2b_line_convert_sam_to_bed(sam, dest, dest_size);
+    c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, kFalse);
 }
 
 static void
@@ -2566,10 +3075,10 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
         }
         else {
             /* copy header line to destination stream buffer */
-            char src_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
-            char dest_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
+            char src_header_line_str[C2B_MAX_LINE_LENGTH_VALUE] = {0};
+            char dest_header_line_str[C2B_MAX_LINE_LENGTH_VALUE] = {0};
             memcpy(src_header_line_str, src, src_size);
-            src_header_line_str[src_size] = '\0';
+            //src_header_line_str[src_size] = '\0';
             sprintf(dest_header_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), src_header_line_str);
             memcpy(dest + *dest_size, dest_header_line_str, strlen(dest_header_line_str));
             *dest_size += strlen(dest_header_line_str);
@@ -2606,10 +3115,21 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
     */
 
     ssize_t cigar_size = sam_field_offsets[5] - sam_field_offsets[4];
-    char cigar_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    memcpy(cigar_str, src + sam_field_offsets[4] + 1, cigar_size - 1);
-    cigar_str[cigar_size - 1] = '\0';
-    c2b_sam_cigar_str_to_ops(cigar_str);
+    if (cigar_size >= c2b_globals.sam->element->cigar_capacity) {
+        char *cigar_resized = NULL;
+        cigar_resized = realloc(c2b_globals.sam->element->cigar, cigar_size + 1);
+        if (cigar_resized) {
+            c2b_globals.sam->element->cigar = cigar_resized;
+            c2b_globals.sam->element->cigar_capacity = cigar_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize CIGAR string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->cigar, src + sam_field_offsets[4] + 1, cigar_size - 1);
+    c2b_globals.sam->element->cigar[cigar_size - 1] = '\0';
+    c2b_sam_cigar_str_to_ops(c2b_globals.sam->element->cigar);
 #ifdef DEBUG
     c2b_sam_debug_cigar_ops(c2b_globals.sam->cigar);
 #endif
@@ -2624,97 +3144,224 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
     */
 
     ssize_t flag_size = sam_field_offsets[1] - sam_field_offsets[0];
-    char flag_src_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char flag_src_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     memcpy(flag_src_str, src + sam_field_offsets[0] + 1, flag_size);
     flag_src_str[flag_size] = '\0';
-    int flag_val = (int) strtol(flag_src_str, NULL, 10);
-    boolean is_mapped = (boolean) !(4 & flag_val);
+    c2b_globals.sam->element->flag = (int) strtol(flag_src_str, NULL, 10);
+    boolean is_mapped = (boolean) !(4 & c2b_globals.sam->element->flag);
     if ((!is_mapped) && (!c2b_globals.all_reads_flag)) 
-        return;    
+        return;   
 
     /* 
        Secondly, we need to retrieve RNAME, POS, QNAME parameters
     */
 
     /* RNAME */
-    char rname_str[C2B_MAX_FIELD_LENGTH_VALUE];
     if (is_mapped) {
         ssize_t rname_size = sam_field_offsets[2] - sam_field_offsets[1] - 1;
-        memcpy(rname_str, src + sam_field_offsets[1] + 1, rname_size);
-        rname_str[rname_size] = '\0';
+        if (rname_size >= c2b_globals.sam->element->rname_capacity) {
+            char *rname_resized = NULL;
+            rname_resized = realloc(c2b_globals.sam->element->rname, rname_size + 1);
+            if (rname_resized) {
+                c2b_globals.sam->element->rname = rname_resized;
+                c2b_globals.sam->element->rname_capacity = rname_size + 1;
+            }
+            else {
+                fprintf(stderr, "Error: Could not resize RNAME string in SAM element struct\n");
+                exit(ENOMEM);
+            }
+        }
+        memcpy(c2b_globals.sam->element->rname, src + sam_field_offsets[1] + 1, rname_size);
+        c2b_globals.sam->element->rname[rname_size] = '\0';
     }
     else {
-        char unmapped_read_chr_str[C2B_MAX_FIELD_LENGTH_VALUE];
-        memcpy(unmapped_read_chr_str, c2b_unmapped_read_chr_name, strlen(c2b_unmapped_read_chr_name));
-        unmapped_read_chr_str[strlen(c2b_unmapped_read_chr_name)] = '\t';
-        unmapped_read_chr_str[strlen(c2b_unmapped_read_chr_name) + 1] = '\0';
-        memcpy(rname_str, unmapped_read_chr_str, strlen(unmapped_read_chr_str));
-        rname_str[strlen(unmapped_read_chr_str)] = '\0';
+        ssize_t c2b_unmapped_read_chr_name_size = strlen(c2b_unmapped_read_chr_name);
+        if (c2b_unmapped_read_chr_name_size >= c2b_globals.sam->element->rname_capacity) {
+            char *rname_resized = NULL;
+            rname_resized = realloc(c2b_globals.sam->element->rname, c2b_unmapped_read_chr_name_size + 2);
+            if (rname_resized) {
+                c2b_globals.sam->element->rname = rname_resized;
+                c2b_globals.sam->element->rname_capacity = c2b_unmapped_read_chr_name_size + 2;
+            }
+            else {
+                fprintf(stderr, "Error: Could not resize RNAME string in SAM element struct\n");
+                exit(ENOMEM);
+            }
+        }
+        memcpy(c2b_globals.sam->element->rname, c2b_unmapped_read_chr_name, c2b_unmapped_read_chr_name_size);
+        c2b_globals.sam->element->rname[c2b_unmapped_read_chr_name_size] = '\t';
+        c2b_globals.sam->element->rname[c2b_unmapped_read_chr_name_size + 1] = '\0';
     }
 
     /* POS */
     ssize_t pos_size = sam_field_offsets[3] - sam_field_offsets[2];
-    char pos_src_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    char pos_src_str[C2B_MAX_FIELD_LENGTH_VALUE] = {0};
     memcpy(pos_src_str, src + sam_field_offsets[2] + 1, pos_size - 1);
     pos_src_str[pos_size - 1] = '\0';
     uint64_t pos_val = strtoull(pos_src_str, NULL, 10);
     uint64_t start_val = pos_val - 1; /* remember, start = POS - 1 */
-    uint64_t stop_val = start_val + cigar_length;
+    c2b_globals.sam->element->start = start_val;
+    c2b_globals.sam->element->stop = start_val; /* this will be adjusted after CIGAR string is parsed */
 
     /* QNAME */
-    char qname_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t qname_size = sam_field_offsets[0];
-    memcpy(qname_str, src, qname_size);
-    qname_str[qname_size] = '\0';
+    if (qname_size >= c2b_globals.sam->element->qname_capacity) {
+        char *qname_resized = NULL;
+        qname_resized = realloc(c2b_globals.sam->element->qname, qname_size + 1);
+        if (qname_resized) {
+            c2b_globals.sam->element->qname = qname_resized;
+            c2b_globals.sam->element->qname_capacity = qname_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize QNAME string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->qname, src, qname_size);
+    c2b_globals.sam->element->qname[qname_size] = '\0';
 
     /* 16 & FLAG */
-    int strand_val = 0x10 & flag_val;
-    char strand_str[C2B_MAX_STRAND_LENGTH_VALUE];
+    int strand_val = 0x10 & c2b_globals.sam->element->flag;
+    char strand_str[C2B_MAX_STRAND_LENGTH_VALUE] = {0};
     sprintf(strand_str, "%c", (strand_val == 0x10) ? '-' : '+');
+    ssize_t strand_size = strlen(strand_str);
+    if (strand_size >= c2b_globals.sam->element->strand_capacity) {
+        char *strand_resized = NULL;
+        strand_resized = realloc(c2b_globals.sam->element->strand, strand_size + 1);
+        if (strand_resized) {
+            c2b_globals.sam->element->strand = strand_resized;
+            c2b_globals.sam->element->strand_capacity = strand_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize STRAND string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->strand, strand_str, strand_size);
+    c2b_globals.sam->element->strand[strand_size] = '\0';
     
     /* MAPQ */
-    char mapq_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t mapq_size = sam_field_offsets[4] - sam_field_offsets[3] - 1;
-    memcpy(mapq_str, src + sam_field_offsets[3] + 1, mapq_size);
-    mapq_str[mapq_size] = '\0';
+    if (mapq_size >= c2b_globals.sam->element->mapq_capacity) {
+        char *mapq_resized = NULL;
+        mapq_resized = realloc(c2b_globals.sam->element->mapq, mapq_size + 1);
+        if (mapq_resized) {
+            c2b_globals.sam->element->mapq = mapq_resized;
+            c2b_globals.sam->element->mapq_capacity = mapq_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize MAPQ string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->mapq, src + sam_field_offsets[3] + 1, mapq_size);
+    c2b_globals.sam->element->mapq[mapq_size] = '\0';
     
     /* RNEXT */
-    char rnext_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t rnext_size = sam_field_offsets[6] - sam_field_offsets[5] - 1;
-    memcpy(rnext_str, src + sam_field_offsets[5] + 1, rnext_size);
-    rnext_str[rnext_size] = '\0';
+    if (rnext_size >= c2b_globals.sam->element->rnext_capacity) {
+        char *rnext_resized = NULL;
+        rnext_resized = realloc(c2b_globals.sam->element->rnext, rnext_size + 1);
+        if (rnext_resized) {
+            c2b_globals.sam->element->rnext = rnext_resized;
+            c2b_globals.sam->element->rnext_capacity = rnext_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize RNEXT string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->rnext, src + sam_field_offsets[5] + 1, rnext_size);
+    c2b_globals.sam->element->rnext[rnext_size] = '\0';
 
     /* PNEXT */
-    char pnext_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t pnext_size = sam_field_offsets[7] - sam_field_offsets[6] - 1;
-    memcpy(pnext_str, src + sam_field_offsets[6] + 1, pnext_size);
-    pnext_str[pnext_size] = '\0';
+    if (pnext_size >= c2b_globals.sam->element->pnext_capacity) {
+        char *pnext_resized = NULL;
+        pnext_resized = realloc(c2b_globals.sam->element->pnext, pnext_size + 1);
+        if (pnext_resized) {
+            c2b_globals.sam->element->pnext = pnext_resized;
+            c2b_globals.sam->element->pnext_capacity = pnext_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize PNEXT string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->pnext, src + sam_field_offsets[6] + 1, pnext_size);
+    c2b_globals.sam->element->pnext[pnext_size] = '\0';
 
     /* TLEN */
-    char tlen_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t tlen_size = sam_field_offsets[8] - sam_field_offsets[7] - 1;
-    memcpy(tlen_str, src + sam_field_offsets[7] + 1, tlen_size);
-    tlen_str[tlen_size] = '\0';
+    if (tlen_size >= c2b_globals.sam->element->tlen_capacity) {
+        char *tlen_resized = NULL;
+        tlen_resized = realloc(c2b_globals.sam->element->tlen, tlen_size + 1);
+        if (tlen_resized) {
+            c2b_globals.sam->element->tlen = tlen_resized;
+            c2b_globals.sam->element->tlen_capacity = tlen_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize TLEN string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->tlen, src + sam_field_offsets[7] + 1, tlen_size);
+    c2b_globals.sam->element->tlen[tlen_size] = '\0';
 
     /* SEQ */
-    char seq_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t seq_size = sam_field_offsets[9] - sam_field_offsets[8] - 1;
-    memcpy(seq_str, src + sam_field_offsets[8] + 1, seq_size);
-    seq_str[seq_size] = '\0';
+    if (seq_size >= c2b_globals.sam->element->seq_capacity) {
+        char *seq_resized = NULL;
+        seq_resized = realloc(c2b_globals.sam->element->seq, seq_size + 1);
+        if (seq_resized) {
+            c2b_globals.sam->element->seq = seq_resized;
+            c2b_globals.sam->element->seq_capacity = seq_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize SEQ string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->seq, src + sam_field_offsets[8] + 1, seq_size);
+    c2b_globals.sam->element->seq[seq_size] = '\0';
 
     /* QUAL */
-    char qual_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t qual_size = sam_field_offsets[10] - sam_field_offsets[9] - 1;
-    memcpy(qual_str, src + sam_field_offsets[9] + 1, qual_size);
-    qual_str[qual_size] = '\0';
+    if (qual_size >= c2b_globals.sam->element->qual_capacity) {
+        char *qual_resized = NULL;
+        qual_resized = realloc(c2b_globals.sam->element->qual, qual_size + 1);
+        if (qual_resized) {
+            c2b_globals.sam->element->qual = qual_resized;
+            c2b_globals.sam->element->qual_capacity = qual_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize QUAL string in SAM element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.sam->element->qual, src + sam_field_offsets[9] + 1, qual_size);
+    c2b_globals.sam->element->qual[qual_size] = '\0';
 
-    /* Optional fields */
-    char opt_str[C2B_MAX_FIELD_LENGTH_VALUE];
+    c2b_globals.sam->element->opt[0] = '\0';
+    c2b_globals.sam->element->opt_length = 0;
     if (sam_field_offsets[11] != -1) {
         for (int field_idx = 11; field_idx <= sam_field_idx; field_idx++) {
             ssize_t opt_size = sam_field_offsets[field_idx] - sam_field_offsets[field_idx - 1] - (field_idx == sam_field_idx ? 1 : 0);
-            memcpy(opt_str + strlen(opt_str), src + sam_field_offsets[field_idx - 1] + 1, opt_size);
-	    opt_str[strlen(opt_str) + opt_size] = '\0';
+            if ((c2b_globals.sam->element->opt_length + opt_size) >= c2b_globals.sam->element->opt_capacity) {
+                char *opt_resized = NULL;
+                opt_resized = realloc(c2b_globals.sam->element->opt, c2b_globals.sam->element->opt_length + opt_size + 1);
+                if (opt_resized) {
+                    c2b_globals.sam->element->opt = opt_resized;
+                    c2b_globals.sam->element->opt_capacity = c2b_globals.sam->element->opt_length + opt_size + 1;
+                }
+                else {
+                    fprintf(stderr, "Error: Could not resize OPT string in SAM element struct\n");
+                    exit(ENOMEM);
+                }
+            }
+            memcpy(c2b_globals.sam->element->opt + c2b_globals.sam->element->opt_length, src + sam_field_offsets[field_idx - 1] + 1, opt_size);
+            c2b_globals.sam->element->opt[c2b_globals.sam->element->opt_length + opt_size] = '\0';
+            c2b_globals.sam->element->opt_length += opt_size;
         }
     }
 
@@ -2724,23 +3371,6 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
 
     ssize_t block_idx;
     char previous_op = default_cigar_op_operation;
-    char modified_qname_str[C2B_MAX_FIELD_LENGTH_VALUE];
-
-    c2b_sam_t sam;
-    sam.rname = rname_str;
-    sam.start = start_val;
-    sam.stop = start_val;
-    sam.qname = qname_str;
-    sam.flag = flag_val;
-    sam.strand = strand_str;
-    sam.mapq = mapq_str;
-    sam.cigar = cigar_str;
-    sam.rnext = rnext_str;
-    sam.pnext = pnext_str;
-    sam.tlen = tlen_str;
-    sam.seq = seq_str;
-    sam.qual = qual_str;
-    sam.opt = opt_str;
 
     for (op_idx = 0, block_idx = 1; op_idx < c2b_globals.sam->cigar->length; ++op_idx) {
         char current_op = c2b_globals.sam->cigar->ops[op_idx].operation;
@@ -2748,18 +3378,32 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
         switch (current_op) 
             {
             case 'M':
-                sam.stop += bases;
+                c2b_globals.sam->element->stop += bases;
                 if ((previous_op == default_cigar_op_operation) || (previous_op == 'D') || (previous_op == 'N')) {
-                    sprintf(modified_qname_str, "%s/%zu", qname_str, block_idx++);
-                    sam.qname = modified_qname_str;
-                    c2b_line_convert_sam_to_bed(sam, dest, dest_size);
-                    sam.start = stop_val;
+                    ssize_t desired_modified_qname_capacity = c2b_globals.sam->element->qname_capacity + C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION;
+                    if (c2b_globals.sam->element->modified_qname_capacity <= desired_modified_qname_capacity) {
+                        // resize modified qname capacity to fit
+                        char *modified_qname_resized = NULL;
+                        modified_qname_resized = realloc(c2b_globals.sam->element->modified_qname, desired_modified_qname_capacity + 1);
+                        if (modified_qname_resized) {
+                            c2b_globals.sam->element->modified_qname = modified_qname_resized;
+                            c2b_globals.sam->element->modified_qname_capacity = desired_modified_qname_capacity + 1;
+                        }
+                        else {
+                            fprintf(stderr, "Error: Could not resize modified QNAME string in SAM element struct\n");
+                            exit(ENOMEM);
+                        }
+                    }
+                    // block_idx string can be up to (C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION-1) characters long
+                    sprintf(c2b_globals.sam->element->modified_qname, "%s/%zu", c2b_globals.sam->element->qname, block_idx++);
+                    c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, kTrue);
+                    c2b_globals.sam->element->start = c2b_globals.sam->element->stop;
                 }
                 break;
             case 'N':
             case 'D':
-                sam.stop += bases;
-                sam.start = sam.stop;
+                c2b_globals.sam->element->stop += bases;
+                c2b_globals.sam->element->start = c2b_globals.sam->element->stop;
             case 'H':
             case 'I':
             case 'P':
@@ -2778,7 +3422,7 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
     */
 
     if (block_idx == 1) {
-        c2b_line_convert_sam_to_bed(sam, dest, dest_size);
+        c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, kFalse);
     }
 }
 
@@ -2803,6 +3447,13 @@ c2b_sam_cigar_str_to_ops(char *s)
                 op_idx++;
                 operation_flag = kFalse;
                 bases_flag = kTrue;
+                /* if op_idx >= size property of CIGAR entity, we need to resize this entity */
+                if (op_idx >= c2b_globals.sam->cigar->size) {
+                    c2b_cigar_t *resized_cigar = NULL;
+                    c2b_sam_resize_cigar_ops(&resized_cigar, c2b_globals.sam->cigar);
+                    c2b_sam_delete_cigar_ops(c2b_globals.sam->cigar);
+                    c2b_globals.sam->cigar = resized_cigar;
+                }
             }
             curr_bases_field[bases_idx++] = curr_char;
             curr_bases_field[bases_idx] = '\0';
@@ -2826,25 +3477,185 @@ c2b_sam_cigar_str_to_ops(char *s)
 }
 
 static void
+c2b_sam_init_element(c2b_sam_t **e)
+{
+    *e = malloc(sizeof(c2b_sam_t));
+    if (!*e) {
+        fprintf(stderr, "Error: Could not allocate space for SAM element pointer\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    
+    (*e)->qname = NULL, (*e)->qname = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->qname)));
+    if (!(*e)->qname) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element qname malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->qname_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->modified_qname = NULL, (*e)->modified_qname = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->modified_qname)));
+    if (!(*e)->modified_qname) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element modified qname malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->modified_qname_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->strand = NULL, (*e)->strand = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->strand)));
+    if (!(*e)->strand) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element strand malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->strand_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->rname = NULL, (*e)->rname = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->rname)));
+    if (!(*e)->rname) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element rname malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->rname_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->mapq = NULL, (*e)->mapq = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->mapq)));
+    if (!(*e)->mapq) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element mapq malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->mapq_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->cigar = NULL, (*e)->cigar = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->cigar)));
+    if (!(*e)->cigar) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element cigar malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->cigar_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->rnext = NULL, (*e)->rnext = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->rnext)));
+    if (!(*e)->rnext) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element rnext malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->rnext_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->pnext = NULL, (*e)->pnext = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->pnext)));
+    if (!(*e)->pnext) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element pnext malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->pnext_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->tlen = NULL, (*e)->tlen = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->tlen)));
+    if (!(*e)->tlen) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element tlen malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->tlen_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->seq = NULL, (*e)->seq = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->seq)));
+    if (!(*e)->seq) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element seq malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->seq_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->qual = NULL, (*e)->qual = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->qual)));
+    if (!(*e)->qual) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element qual malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->qual_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->opt = NULL, (*e)->opt = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->opt)));
+    if (!(*e)->opt) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element opt malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->opt_length = 0;
+    (*e)->opt_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->flag = 0;
+    (*e)->start = 0;
+    (*e)->stop = 0;
+}
+
+static void
+c2b_sam_delete_element(c2b_sam_t *e) 
+{
+    if (e->qname)           { free(e->qname),           e->qname = NULL;           }
+    if (e->modified_qname)  { free(e->modified_qname),  e->modified_qname = NULL;  }
+    if (e->strand)          { free(e->strand),          e->strand = NULL;          }
+    if (e->rname)           { free(e->rname),           e->rname = NULL;           }
+    if (e->mapq)            { free(e->mapq),            e->mapq = NULL;            }
+    if (e->cigar)           { free(e->cigar),           e->cigar = NULL;           }
+    if (e->rnext)           { free(e->rnext),           e->rnext = NULL;           }
+    if (e->pnext)           { free(e->pnext),           e->pnext = NULL;           }
+    if (e->tlen)            { free(e->tlen),            e->tlen = NULL;            }
+    if (e->seq)             { free(e->seq),             e->seq = NULL;             }
+    if (e->qual)            { free(e->qual),            e->qual = NULL;            }
+    if (e->opt)             { free(e->opt),             e->opt = NULL;             }
+    if (e)                  { free(e),                  e = NULL;                  }
+}
+
+static void
 c2b_sam_init_cigar_ops(c2b_cigar_t **c, const ssize_t size)
 {
     *c = malloc(sizeof(c2b_cigar_t));
     if (!*c) {
-        fprintf(stderr, "Error: Could not allocate space for CIGAR struct pointer\n");
-        c2b_print_usage(stderr);
-        exit(ENOMEM); /* Not enough space (POSIX.1) */
-    }
-    (*c)->ops = malloc(size * sizeof(c2b_cigar_op_t));
-    if (!(*c)->ops) {
-        fprintf(stderr, "Error: Could not allocate space for CIGAR struct operation pointer\n");
+        fprintf(stderr, "Error: Could not allocate space for SAM CIGAR struct pointer\n");
         c2b_print_usage(stderr);
         exit(ENOMEM); /* Not enough space (POSIX.1) */
     }
     (*c)->size = size;
+    (*c)->ops = malloc((*c)->size * sizeof(c2b_cigar_op_t));
+    if (!(*c)->ops) {
+        fprintf(stderr, "Error: Could not allocate space for SAM CIGAR struct malloc operation pointer\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
     (*c)->length = 0;
     for (ssize_t idx = 0; idx < size; idx++) {
         (*c)->ops[idx].bases = default_cigar_op_bases;
         (*c)->ops[idx].operation = default_cigar_op_operation;
+    }
+}
+
+static void
+c2b_sam_resize_cigar_ops(c2b_cigar_t **new_c, c2b_cigar_t *old_c)
+{
+    *new_c = malloc(sizeof(c2b_cigar_t));
+    if (!*new_c) {
+        fprintf(stderr, "Error: Could not allocate space for larger SAM CIGAR struct pointer\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    /* we increment the size of the input CIGAR entity by C2B_SAM_CIGAR_OPS_VALUE_INCREMENT */
+    (*new_c)->size = old_c->size + C2B_SAM_CIGAR_OPS_VALUE_INCREMENT;
+    (*new_c)->ops = malloc((*new_c)->size * sizeof(c2b_cigar_op_t));
+    if (!(*new_c)->ops) {
+        fprintf(stderr, "Error: Could not allocate space for larger SAM CIGAR struct malloc operation pointer\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*new_c)->length = old_c->length;
+    /* copy operations from input CIGAR entity to new entity */
+    for (ssize_t idx = 0; idx < old_c->size; idx++) {
+        (*new_c)->ops[idx].bases = old_c->ops[idx].bases;
+        (*new_c)->ops[idx].operation = old_c->ops[idx].operation;
+    }
+    /* set default base and operation values for new entity */
+    for (ssize_t idx = old_c->size; idx < (*new_c)->size; idx++) {
+        (*new_c)->ops[idx].bases = default_cigar_op_bases;
+        (*new_c)->ops[idx].operation = default_cigar_op_operation;
     }
 }
 
@@ -2875,18 +3686,19 @@ c2b_sam_delete_cigar_ops(c2b_cigar_t *c)
         if (c->ops) {
             free(c->ops), c->ops = NULL; 
         }
-        c->length = 0, c->size = 0;
+        c->length = 0;
+        c->size = 0;
         free(c), c = NULL;
     }
 }
 
 static inline void
-c2b_line_convert_sam_to_bed(c2b_sam_t s, char *dest_line, ssize_t *dest_size)
+c2b_line_convert_sam_ptr_to_bed(c2b_sam_t *s, char *dest_line, ssize_t *dest_size, boolean print_modified_qname)
 {
     /*
        For SAM-formatted data, we use the mapping provided by BEDOPS convention described at: 
 
-       http://bedops.readthedocs.org/en/latest/content/reference/file-management/conversion/sam2bed.html
+       http://bedops.readthedocs.io/en/latest/content/reference/file-management/conversion/sam2bed.html
 
        SAM field                 BED column index       BED field
        -------------------------------------------------------------------------
@@ -2918,7 +3730,7 @@ c2b_line_convert_sam_to_bed(c2b_sam_t s, char *dest_line, ssize_t *dest_size)
        Alignment fields          14+                    -
     */
 
-    if (strlen(s.opt)) {
+    if (s->opt_length > 0) {
         *dest_size += sprintf(dest_line + *dest_size,
                               "%s\t"            \
                               "%" PRIu64 "\t"   \
@@ -2934,21 +3746,20 @@ c2b_line_convert_sam_to_bed(c2b_sam_t s, char *dest_line, ssize_t *dest_size)
                               "%s\t"            \
                               "%s\t"            \
                               "%s\n",
-                              s.rname,
-                              s.start,
-                              s.stop,
-                              s.qname,
-                              s.mapq,
-                              s.strand,
-                              s.flag,
-                              s.cigar,
-                              s.rnext,
-                              s.pnext,
-                              s.tlen,
-                              s.seq,
-                              s.qual,
-                              s.opt);
-        memset(s.opt, 0, strlen(s.opt));
+                              s->rname,
+                              s->start,
+                              s->stop,
+                              (print_modified_qname ? s->modified_qname : s->qname),
+                              s->mapq,
+                              s->strand,
+                              s->flag,
+                              s->cigar,
+                              s->rnext,
+                              s->pnext,
+                              s->tlen,
+                              s->seq,
+                              s->qual,
+                              s->opt);
     } 
     else {
         *dest_size += sprintf(dest_line + *dest_size,
@@ -2965,19 +3776,19 @@ c2b_line_convert_sam_to_bed(c2b_sam_t s, char *dest_line, ssize_t *dest_size)
                               "%s\t"            \
                               "%s\t"            \
                               "%s\n",
-                              s.rname,
-                              s.start,
-                              s.stop,
-                              s.qname,
-                              s.mapq,
-                              s.strand,
-                              s.flag,
-                              s.cigar,
-                              s.rnext,
-                              s.pnext,
-                              s.tlen,
-                              s.seq,
-                              s.qual);
+                              s->rname,
+                              s->start,
+                              s->stop,
+                              (print_modified_qname ? s->modified_qname : s->qname),
+                              s->mapq,
+                              s->strand,
+                              s->flag,
+                              s->cigar,
+                              s->rnext,
+                              s->pnext,
+                              s->tlen,
+                              s->seq,
+                              s->qual);
     }
 }
 
@@ -3019,40 +3830,24 @@ c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
         exit(ENOMEM); /* Not enough space (POSIX.1) */        
     }
 
-    if ((vcf_field_idx + 1) < c2b_vcf_field_min) {
-        /* Legal header cases: line starts with "##" or "#" */
-        if ((vcf_field_idx == 0) && (src[0] == c2b_vcf_header_prefix)) { 
-            if (c2b_globals.keep_header_flag) { 
-                /* copy header line to destination stream buffer */
-                memcpy(src_header_line_str, src, src_size);
-                src_header_line_str[src_size] = '\0';
-                sprintf(dest_header_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), src_header_line_str);
-                fprintf(stderr, "%s", dest_header_line_str);
-                memcpy(dest + *dest_size, dest_header_line_str, strlen(dest_header_line_str));
-                *dest_size += strlen(dest_header_line_str);
-                c2b_globals.header_line_idx++;
-                free(src_header_line_str), src_header_line_str = NULL;
-                free(dest_header_line_str), dest_header_line_str = NULL;
-                return;
-            }
-            else {
-                return;
-            }
+    /* 0 - CHROM */
+    ssize_t chrom_size = vcf_field_offsets[0];
+    if (chrom_size >= c2b_globals.vcf->element->chrom_capacity) {
+        char *chrom_resized = NULL;
+        chrom_resized = realloc(c2b_globals.vcf->element->chrom, chrom_size + 1);
+        if (chrom_resized) {
+            c2b_globals.vcf->element->chrom = chrom_resized;
+            c2b_globals.vcf->element->chrom_capacity = chrom_size + 1;
         }
-        else if (vcf_field_idx == 0) {
-            fprintf(stderr, "Error: Invalid field count (%d) -- input file may not match input format\n", vcf_field_idx);
-            c2b_print_usage(stderr);
-            exit(EINVAL); /* Invalid argument (POSIX.1) */
+        else {
+            fprintf(stderr, "Error: Could not resize CHROM string in VCF element struct\n");
+            exit(ENOMEM);
         }
     }
+    memcpy(c2b_globals.vcf->element->chrom, src, chrom_size);
+    c2b_globals.vcf->element->chrom[chrom_size] = '\0';
 
-    /* 0 - CHROM */
-    char chrom_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    ssize_t chrom_size = vcf_field_offsets[0];
-    memcpy(chrom_str, src, chrom_size);
-    chrom_str[chrom_size] = '\0';
-
-    if ((chrom_str[0] == c2b_vcf_header_prefix) && (c2b_globals.keep_header_flag)) {
+    if ((c2b_globals.vcf->element->chrom[0] == c2b_vcf_header_prefix) && (c2b_globals.keep_header_flag)) {
         memcpy(src_header_line_str, src, src_size);
         src_header_line_str[src_size] = '\0';
         sprintf(dest_header_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), src_header_line_str);
@@ -3061,148 +3856,204 @@ c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
         c2b_globals.header_line_idx++;
         return;
     }
-    else if (chrom_str[0] == c2b_vcf_header_prefix) {
+    else if (c2b_globals.vcf->element->chrom[0] == c2b_vcf_header_prefix) {
         return;
     }
 
     /* 1 - POS */
     char pos_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t pos_size = vcf_field_offsets[1] - vcf_field_offsets[0] - 1;
+    if (pos_size >= C2B_MAX_FIELD_LENGTH_VALUE) {
+        fprintf(stderr, "Error: Intermediate POS string too long to store in stack variable\n");
+        exit(ENOMEM);
+    }
     memcpy(pos_str, src + vcf_field_offsets[0] + 1, pos_size);
     pos_str[pos_size] = '\0';
-    uint64_t pos_val = strtoull(pos_str, NULL, 10);
-    uint64_t start_val = pos_val - 1;
-    uint64_t end_val = pos_val; /* note that this value may change below, depending on options */
+    c2b_globals.vcf->element->pos = strtoull(pos_str, NULL, 10);
+    c2b_globals.vcf->element->start = c2b_globals.vcf->element->pos - 1;
+    c2b_globals.vcf->element->end = c2b_globals.vcf->element->pos; /* note that this value may change below, depending on options */
 
     /* 2 - ID */
-    char id_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t id_size = vcf_field_offsets[2] - vcf_field_offsets[1] - 1;
-    memcpy(id_str, src + vcf_field_offsets[1] + 1, id_size);
-    id_str[id_size] = '\0';
+    if (id_size >= c2b_globals.vcf->element->id_capacity) {
+        char *id_resized = NULL;
+        id_resized = realloc(c2b_globals.vcf->element->id, id_size + 1);
+        if (id_resized) {
+            c2b_globals.vcf->element->id = id_resized;
+            c2b_globals.vcf->element->id_capacity = id_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize ID string in VCF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.vcf->element->id, src + vcf_field_offsets[1] + 1, id_size);
+    c2b_globals.vcf->element->id[id_size] = '\0';
 
     /* 3 - REF */
-    char ref_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t ref_size = vcf_field_offsets[3] - vcf_field_offsets[2] - 1;
-    memcpy(ref_str, src + vcf_field_offsets[2] + 1, ref_size);
-    ref_str[ref_size] = '\0';
+    if (ref_size >= c2b_globals.vcf->element->ref_capacity) {
+        char *ref_resized = NULL;
+        ref_resized = realloc(c2b_globals.vcf->element->ref, ref_size + 1);
+        if (ref_resized) {
+            c2b_globals.vcf->element->ref = ref_resized;
+            c2b_globals.vcf->element->ref_capacity = ref_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize REF string in VCF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.vcf->element->ref, src + vcf_field_offsets[2] + 1, ref_size);
+    c2b_globals.vcf->element->ref[ref_size] = '\0';
 
     /* 4 - ALT */
-    char alt_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t alt_size = vcf_field_offsets[4] - vcf_field_offsets[3] - 1;
-    memcpy(alt_str, src + vcf_field_offsets[3] + 1, alt_size);
-    alt_str[alt_size] = '\0';
+    if (alt_size >= c2b_globals.vcf->element->alt_capacity) {
+        char *alt_resized = NULL;
+        alt_resized = realloc(c2b_globals.vcf->element->alt, alt_size + 1);
+        if (alt_resized) {
+            c2b_globals.vcf->element->alt = alt_resized;
+            c2b_globals.vcf->element->alt_capacity = alt_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize ALT string in VCF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.vcf->element->alt, src + vcf_field_offsets[3] + 1, alt_size);
+    c2b_globals.vcf->element->alt[alt_size] = '\0';
 
     /* 5 - QUAL */
-    char qual_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t qual_size = vcf_field_offsets[5] - vcf_field_offsets[4] - 1;
-    memcpy(qual_str, src + vcf_field_offsets[4] + 1, qual_size);
-    qual_str[qual_size] = '\0';
+    if (qual_size >= c2b_globals.vcf->element->qual_capacity) {
+        char *qual_resized = NULL;
+        qual_resized = realloc(c2b_globals.vcf->element->qual, qual_size + 1);
+        if (qual_resized) {
+            c2b_globals.vcf->element->qual = qual_resized;
+            c2b_globals.vcf->element->qual_capacity = qual_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize QUAL string in VCF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.vcf->element->qual, src + vcf_field_offsets[4] + 1, qual_size);
+    c2b_globals.vcf->element->qual[qual_size] = '\0';
 
     /* 6 - FILTER */
-    char filter_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t filter_size = vcf_field_offsets[6] - vcf_field_offsets[5] - 1;
-    memcpy(filter_str, src + vcf_field_offsets[5] + 1, filter_size);
-    filter_str[filter_size] = '\0';
+    if (filter_size >= c2b_globals.vcf->element->filter_capacity) {
+        char *filter_resized = NULL;
+        filter_resized = realloc(c2b_globals.vcf->element->filter, filter_size + 1);
+        if (filter_resized) {
+            c2b_globals.vcf->element->filter = filter_resized;
+            c2b_globals.vcf->element->filter_capacity = filter_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize FILTER string in VCF element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.vcf->element->filter, src + vcf_field_offsets[5] + 1, filter_size);
+    c2b_globals.vcf->element->filter[filter_size] = '\0';
 
     /* 7 - INFO */
-    char *info_str = NULL;
-    info_str = malloc(C2B_MAX_LONGER_LINE_LENGTH_VALUE);
-    if (!info_str) {
-        fprintf(stderr, "Error: Could not allocate space for VCF INFO string\n");
-        exit(ENOMEM); /* Not enough space (POSIX.1) */        
-    }    
-    
     ssize_t info_size = vcf_field_offsets[7] - vcf_field_offsets[6] - 1;
-    memcpy(info_str, src + vcf_field_offsets[6] + 1, info_size);
-    info_str[info_size] = '\0';
-
-    char *format_str = NULL;
-    format_str = malloc(C2B_MAX_LONGER_LINE_LENGTH_VALUE);
-    if (!format_str) {
-        fprintf(stderr, "Error: Could not allocate space for VCF FORMAT string\n");
-        exit(ENOMEM); /* Not enough space (POSIX.1) */        
+    if (info_size >= c2b_globals.vcf->element->info_capacity) {
+        char *info_resized = NULL;
+        info_resized = realloc(c2b_globals.vcf->element->info, info_size + 1);
+        if (info_resized) {
+            c2b_globals.vcf->element->info = info_resized;
+            c2b_globals.vcf->element->info_capacity = info_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize INFO string in VCF element struct\n");
+            exit(ENOMEM);
+        }
     }
-    format_str[0] = '\0'; /* initialize to zero-length string */
-    
-    char *samples_str = NULL;
-    samples_str = malloc(C2B_MAX_LONGER_LINE_LENGTH_VALUE);
-    if (!samples_str) {
-        fprintf(stderr, "Error: Could not allocate space for VCF SAMPLE string\n");
-        exit(ENOMEM); /* Not enough space (POSIX.1) */        
-    }    
+    memcpy(c2b_globals.vcf->element->info, src + vcf_field_offsets[6] + 1, info_size);
+    c2b_globals.vcf->element->info[info_size] = '\0';
 
     if (vcf_field_idx >= 8) {
         /* 8 - FORMAT */
         ssize_t format_size = vcf_field_offsets[8] - vcf_field_offsets[7] - 1;
-        memcpy(format_str, src + vcf_field_offsets[7] + 1, format_size);
-        format_str[format_size] = '\0';
+        if (format_size >= c2b_globals.vcf->element->format_capacity) {
+            char *format_resized = NULL;
+            format_resized = realloc(c2b_globals.vcf->element->format, format_size + 1);
+            if (format_resized) {
+                c2b_globals.vcf->element->format = format_resized;
+                c2b_globals.vcf->element->format_capacity = format_size + 1;
+            }
+            else {
+                fprintf(stderr, "Error: Could not resize FORMAT string in VCF element struct\n");
+                exit(ENOMEM);
+            }
+        }
+        memcpy(c2b_globals.vcf->element->format, src + vcf_field_offsets[7] + 1, format_size);
+        c2b_globals.vcf->element->format[format_size] = '\0';
 
         /* 9 - Samples */
         ssize_t samples_size = vcf_field_offsets[vcf_field_idx] - vcf_field_offsets[8] - 1;
-        memcpy(samples_str, src + vcf_field_offsets[8] + 1, samples_size);
-        samples_str[samples_size] = '\0';
+        if (samples_size >= c2b_globals.vcf->element->samples_capacity) {
+            char *samples_resized = NULL;
+            samples_resized = realloc(c2b_globals.vcf->element->samples, samples_size + 1);
+            if (samples_resized) {
+                c2b_globals.vcf->element->samples = samples_resized;
+                c2b_globals.vcf->element->samples_capacity = samples_size + 1;
+            }
+            else {
+                fprintf(stderr, "Error: Could not resize SAMPLES string in VCF element struct\n");
+                exit(ENOMEM);
+            }
+        }
+        memcpy(c2b_globals.vcf->element->samples, src + vcf_field_offsets[8] + 1, samples_size);
+        c2b_globals.vcf->element->samples[samples_size] = '\0';
     }
 
-    c2b_vcf_t vcf;
-    vcf.chrom = chrom_str;
-    vcf.pos = pos_val;
-    vcf.start = start_val;
-    vcf.end = end_val;
-    vcf.id = id_str;
-    vcf.ref = ref_str;
-    vcf.alt = alt_str;
-    vcf.qual = qual_str;
-    vcf.filter = filter_str;
-    vcf.info = info_str;
-    vcf.format = format_str;
-    vcf.samples = samples_str;
-
-    if ((!c2b_globals.vcf->do_not_split) && (memchr(alt_str, c2b_vcf_alt_allele_delim, strlen(alt_str)))) {
-
+    if ((!c2b_globals.vcf->do_not_split) && (memchr(c2b_globals.vcf->element->alt, c2b_vcf_alt_allele_delim, strlen(c2b_globals.vcf->element->alt)))) {
+        
         /* loop through each allele */
 
         char *alt_alleles_copy = NULL;
-        alt_alleles_copy = malloc(strlen(alt_str) + 1);
+        alt_alleles_copy = malloc(strlen(c2b_globals.vcf->element->alt) + 1);
         if (!alt_alleles_copy) {
-            fprintf(stderr, "Error: Could not allocate space for VCF alt alleles copy\n");
+            fprintf(stderr, "Error: Could not allocate space for VCF ALT alleles copy\n");
             exit(ENOMEM); /* Not enough space (POSIX.1) */
         }
-        memcpy(alt_alleles_copy, alt_str, strlen(alt_str) + 1);
+        memcpy(alt_alleles_copy, c2b_globals.vcf->element->alt, strlen(c2b_globals.vcf->element->alt) + 1);
         const char *allele_tok;
         while ((allele_tok = c2b_strsep(&alt_alleles_copy, ",")) != NULL) {
-            vcf.alt = (char *) allele_tok; /* discard const */
+            memcpy(c2b_globals.vcf->element->alt, allele_tok, strlen(allele_tok));
+            c2b_globals.vcf->element->alt[strlen(allele_tok)] = '\0';
             if ((c2b_globals.vcf->filter_count == 1) && (!c2b_globals.vcf->only_insertions)) {
-                vcf.end = start_val + ref_size - strlen(vcf.alt) + 1;
+                c2b_globals.vcf->element->end = c2b_globals.vcf->element->start + ref_size - strlen(c2b_globals.vcf->element->alt) + 1;
             }
             if ( (c2b_globals.vcf->filter_count == 0) ||
-                 ((c2b_globals.vcf->only_snvs) && (c2b_vcf_record_is_snv(ref_str, vcf.alt))) ||
-                 ((c2b_globals.vcf->only_insertions) && (c2b_vcf_record_is_insertion(ref_str, vcf.alt))) ||
-                 ((c2b_globals.vcf->only_deletions) && (c2b_vcf_record_is_deletion(ref_str, vcf.alt))) ) 
+                 ((c2b_globals.vcf->only_snvs) && (c2b_vcf_record_is_snv(c2b_globals.vcf->element->ref, c2b_globals.vcf->element->alt))) ||
+                 ((c2b_globals.vcf->only_insertions) && (c2b_vcf_record_is_insertion(c2b_globals.vcf->element->ref, c2b_globals.vcf->element->alt))) ||
+                 ((c2b_globals.vcf->only_deletions) && (c2b_vcf_record_is_deletion(c2b_globals.vcf->element->ref, c2b_globals.vcf->element->alt))) ) 
                 {
-                    c2b_line_convert_vcf_to_bed(vcf, dest, dest_size);
+                    c2b_line_convert_vcf_ptr_to_bed(c2b_globals.vcf->element, dest, dest_size);
                 }
         }
         free(alt_alleles_copy), alt_alleles_copy = NULL;
     }
     else {
-
+        
         /* just print the one allele */
 
         if ((c2b_globals.vcf->filter_count == 1) && (!c2b_globals.vcf->only_insertions)) {
-            vcf.end = start_val + ref_size - strlen(alt_str) + 1;
+            c2b_globals.vcf->element->end = c2b_globals.vcf->element->start + ref_size - strlen(c2b_globals.vcf->element->alt) + 1;
         }
         if ( (c2b_globals.vcf->filter_count == 0) ||
-             ((c2b_globals.vcf->only_snvs) && (c2b_vcf_record_is_snv(ref_str, alt_str))) ||
-             ((c2b_globals.vcf->only_insertions) && (c2b_vcf_record_is_insertion(ref_str, alt_str))) ||
-             ((c2b_globals.vcf->only_deletions) && (c2b_vcf_record_is_deletion(ref_str, alt_str))) ) 
+             ((c2b_globals.vcf->only_snvs) && (c2b_vcf_record_is_snv(c2b_globals.vcf->element->ref, c2b_globals.vcf->element->alt))) ||
+             ((c2b_globals.vcf->only_insertions) && (c2b_vcf_record_is_insertion(c2b_globals.vcf->element->ref, c2b_globals.vcf->element->alt))) ||
+             ((c2b_globals.vcf->only_deletions) && (c2b_vcf_record_is_deletion(c2b_globals.vcf->element->ref, c2b_globals.vcf->element->alt))) ) 
             {
-                c2b_line_convert_vcf_to_bed(vcf, dest, dest_size);
+                c2b_line_convert_vcf_ptr_to_bed(c2b_globals.vcf->element, dest, dest_size);
             }
     }
-
-    free(info_str), info_str = NULL;
-    free(format_str), format_str = NULL;
-    free(samples_str), samples_str = NULL;
 }
 
 static inline boolean
@@ -3229,13 +4080,115 @@ c2b_vcf_record_is_deletion(char *ref, char *alt)
     return ((!c2b_vcf_allele_is_id(alt)) && (((int) strlen(ref) - (int) strlen(alt)) > 0)) ? kTrue : kFalse;
 }
 
+static void
+c2b_vcf_init_element(c2b_vcf_t **e)
+{
+    *e = malloc(sizeof(c2b_vcf_t));
+    if (!*e) {
+        fprintf(stderr, "Error: Could not allocate space for VCF element pointer\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    
+    (*e)->chrom = NULL, (*e)->chrom = malloc(C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->chrom)));
+    if (!(*e)->chrom) { 
+        fprintf(stderr, "Error: Could not allocate space for VCF element chrom malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->chrom_capacity = C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->pos = 0;
+    (*e)->start = 0;
+    (*e)->end = 0;
+
+    (*e)->id = NULL, (*e)->id = malloc(C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->id)));
+    if (!(*e)->id) { 
+        fprintf(stderr, "Error: Could not allocate space for VCF element id malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->id_capacity = C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->ref = NULL, (*e)->ref = malloc(C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->ref)));
+    if (!(*e)->ref) { 
+        fprintf(stderr, "Error: Could not allocate space for VCF element ref malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->ref_capacity = C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->alt = NULL, (*e)->alt = malloc(C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->alt)));
+    if (!(*e)->alt) { 
+        fprintf(stderr, "Error: Could not allocate space for VCF element alt malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->alt_capacity = C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->qual = NULL, (*e)->qual = malloc(C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->qual)));
+    if (!(*e)->qual) { 
+        fprintf(stderr, "Error: Could not allocate space for VCF element qual malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->qual_capacity = C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->filter = NULL, (*e)->filter = malloc(C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->filter)));
+    if (!(*e)->filter) { 
+        fprintf(stderr, "Error: Could not allocate space for VCF element filter malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->filter_capacity = C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->info = NULL, (*e)->info = malloc(C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->info)));
+    if (!(*e)->info) { 
+        fprintf(stderr, "Error: Could not allocate space for VCF element info malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->info_capacity = C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->format = NULL, (*e)->format = malloc(C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->format)));
+    if (!(*e)->format) { 
+        fprintf(stderr, "Error: Could not allocate space for VCF element format malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->format_capacity = C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->samples = NULL, (*e)->samples = malloc(C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->samples)));
+    if (!(*e)->samples) { 
+        fprintf(stderr, "Error: Could not allocate space for VCF element samples malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->samples_capacity = C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+}
+
+static void
+c2b_vcf_delete_element(c2b_vcf_t *e)
+{
+    if (e->chrom)           { free(e->chrom),           e->chrom = NULL;           }
+    if (e->id)              { free(e->id),              e->id = NULL;              }
+    if (e->ref)             { free(e->ref),             e->ref = NULL;             }
+    if (e->alt)             { free(e->alt),             e->alt = NULL;             }
+    if (e->qual)            { free(e->qual),            e->qual = NULL;            }
+    if (e->filter)          { free(e->filter),          e->filter = NULL;          }
+    if (e->info)            { free(e->info),            e->info = NULL;            }
+    if (e->format)          { free(e->format),          e->format = NULL;          }
+    if (e->samples)         { free(e->samples),         e->samples = NULL;         }
+    if (e)                  { free(e),                  e = NULL;                  }
+}
+
 static inline void
-c2b_line_convert_vcf_to_bed(c2b_vcf_t v, char *dest_line, ssize_t *dest_size) 
+c2b_line_convert_vcf_ptr_to_bed(c2b_vcf_t *v, char *dest_line, ssize_t *dest_size) 
 {
     /* 
        For VCF v4.2-formatted data, we use the mapping provided by BEDOPS convention described at:
 
-       http://bedops.readthedocs.org/en/latest/content/reference/file-management/conversion/vcf2bed.html
+       http://bedops.readthedocs.io/en/latest/content/reference/file-management/conversion/vcf2bed.html
 
        VCF field                 BED column index       BED field
        -------------------------------------------------------------------------
@@ -3267,7 +4220,7 @@ c2b_line_convert_vcf_to_bed(c2b_vcf_t v, char *dest_line, ssize_t *dest_size)
        ...
     */
 
-    if (strlen(v.format) > 0) {
+    if (strlen(v->format) > 0) {
         *dest_size += sprintf(dest_line + *dest_size,
                               "%s\t"            \
                               "%" PRIu64 "\t"   \
@@ -3280,17 +4233,17 @@ c2b_line_convert_vcf_to_bed(c2b_vcf_t v, char *dest_line, ssize_t *dest_size)
                               "%s\t"            \
                               "%s\t"            \
                               "%s\n",
-                              v.chrom,
-                              v.start,
-                              v.end,
-                              v.id,
-                              v.qual,
-                              v.ref,
-                              v.alt,
-                              v.filter,
-                              v.info,
-                              v.format,
-                              v.samples);
+                              v->chrom,
+                              v->start,
+                              v->end,
+                              v->id,
+                              v->qual,
+                              v->ref,
+                              v->alt,
+                              v->filter,
+                              v->info,
+                              v->format,
+                              v->samples);
     }
     else {
         *dest_size += sprintf(dest_line + *dest_size,
@@ -3303,15 +4256,15 @@ c2b_line_convert_vcf_to_bed(c2b_vcf_t v, char *dest_line, ssize_t *dest_size)
                               "%s\t"            \
                               "%s\t"            \
                               "%s\n",
-                              v.chrom,
-                              v.start,
-                              v.end,
-                              v.id,
-                              v.qual,
-                              v.ref,
-                              v.alt,
-                              v.filter,
-                              v.info);
+                              v->chrom,
+                              v->start,
+                              v->end,
+                              v->id,
+                              v->qual,
+                              v->ref,
+                              v->alt,
+                              v->filter,
+                              v->info);
     }
 }
 
@@ -3662,7 +4615,8 @@ c2b_read_bytes_from_stdin(void *arg)
 {
     c2b_pipeline_stage_t *stage = (c2b_pipeline_stage_t *) arg;
     c2b_pipeset_t *pipes = stage->pipeset;
-    char buffer[C2B_MAX_LINE_LENGTH_VALUE];
+    char *buffer = NULL;
+    ssize_t buffer_size = stage->buffer_size;
     ssize_t bytes_read;
     int exit_status = 0;
 
@@ -3670,13 +4624,21 @@ c2b_read_bytes_from_stdin(void *arg)
     fprintf(stderr, "\t-> c2b_read_bytes_from_stdin | reading from fd     (%02d) | writing to fd     (%02d)\n", STDIN_FILENO, pipes->in[stage->dest][PIPE_WRITE]);
 #endif
 
+    buffer = (char *) malloc(buffer_size);
+    if (!buffer) {
+        fprintf(stderr, "Error: Could not allocate space to c2b_read_bytes_from_stdin() buffer\n");
+        exit(ENOMEM);
+    }
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result"
-    while ((bytes_read = read(STDIN_FILENO, buffer, C2B_MAX_LINE_LENGTH_VALUE)) > 0) {
+    while ((bytes_read = read(STDIN_FILENO, buffer, buffer_size)) > 0) {
         write(pipes->in[stage->dest][PIPE_WRITE], buffer, bytes_read);
     }
 #pragma GCC diagnostic pop
     close(pipes->in[stage->dest][PIPE_WRITE]);
+
+    free(buffer), buffer = NULL;
 
     if (WIFEXITED(stage->status) || WIFSIGNALED(stage->status)) {
         waitpid(stage->pid, &stage->status, WUNTRACED);
@@ -3688,7 +4650,6 @@ c2b_read_bytes_from_stdin(void *arg)
                     stage->status, 
                     exit_status);
     }
-
 
     pthread_exit(NULL);
 }
@@ -3860,19 +4821,28 @@ c2b_write_in_bytes_to_in_process(void *arg)
 {
     c2b_pipeline_stage_t *stage = (c2b_pipeline_stage_t *) arg;
     c2b_pipeset_t *pipes = stage->pipeset;
-    char buffer[C2B_MAX_LINE_LENGTH_VALUE];
+    char *buffer = NULL;
+    ssize_t buffer_size = stage->buffer_size;
     ssize_t bytes_read;
     int exit_status = 0;
+
+    buffer = (char *) malloc(buffer_size);
+    if (!buffer) {
+        fprintf(stderr, "Error: Could not allocate space to c2b_write_in_bytes_to_in_process() buffer\n");
+        exit(ENOMEM);
+    }
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result"
     /* read buffer from p->in[1] and write buffer to p->in[2] */
-    while ((bytes_read = read(pipes->in[stage->src][PIPE_READ], buffer, C2B_MAX_LINE_LENGTH_VALUE)) > 0) { 
+    while ((bytes_read = read(pipes->in[stage->src][PIPE_READ], buffer, buffer_size)) > 0) { 
         write(pipes->in[stage->dest][PIPE_WRITE], buffer, bytes_read);
     }
 #pragma GCC diagnostic pop
 
     close(pipes->in[stage->dest][PIPE_WRITE]);
+
+    free(buffer), buffer = NULL;
 
     if (WIFEXITED(stage->status) || WIFSIGNALED(stage->status)) {
         waitpid(stage->pid, &stage->status, WUNTRACED);
@@ -3893,19 +4863,28 @@ c2b_write_out_bytes_to_in_process(void *arg)
 {
     c2b_pipeline_stage_t *stage = (c2b_pipeline_stage_t *) arg;
     c2b_pipeset_t *pipes = stage->pipeset;
-    char buffer[C2B_MAX_LINE_LENGTH_VALUE];
+    char *buffer = NULL;
+    ssize_t buffer_size = stage->buffer_size;
     ssize_t bytes_read;
     int exit_status = 0;
+
+    buffer = (char *) malloc(buffer_size);
+    if (!buffer) {
+        fprintf(stderr, "Error: Could not allocate space to c2b_write_out_bytes_to_in_process() buffer\n");
+        exit(ENOMEM);
+    }
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result"
     /* read buffer from p->out[1] and write buffer to p->in[2] */
-    while ((bytes_read = read(pipes->out[stage->src][PIPE_READ], buffer, C2B_MAX_LINE_LENGTH_VALUE)) > 0) { 
+    while ((bytes_read = read(pipes->out[stage->src][PIPE_READ], buffer, buffer_size)) > 0) { 
         write(pipes->in[stage->dest][PIPE_WRITE], buffer, bytes_read);
     }
 #pragma GCC diagnostic pop
 
     close(pipes->in[stage->dest][PIPE_WRITE]);
+
+    free(buffer), buffer = NULL;
 
     if (WIFEXITED(stage->status) || WIFSIGNALED(stage->status)) {
         waitpid(stage->pid, &stage->status, WUNTRACED);
@@ -3926,16 +4905,25 @@ c2b_write_in_bytes_to_stdout(void *arg)
 {
     c2b_pipeline_stage_t *stage = (c2b_pipeline_stage_t *) arg;
     c2b_pipeset_t *pipes = stage->pipeset;
-    char buffer[C2B_MAX_LINE_LENGTH_VALUE];
+    char *buffer = NULL;
+    ssize_t buffer_size = stage->buffer_size;
     ssize_t bytes_read;
     int exit_status = 0;
 
+    buffer = (char *) malloc(buffer_size);
+    if (!buffer) {
+        fprintf(stderr, "Error: Could not allocate space to c2b_write_in_bytes_to_stdout() buffer\n");
+        exit(ENOMEM);
+    }
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result"
-    while ((bytes_read = read(pipes->in[stage->src][PIPE_READ], buffer, C2B_MAX_LINE_LENGTH_VALUE)) > 0) {
+    while ((bytes_read = read(pipes->in[stage->src][PIPE_READ], buffer, buffer_size)) > 0) {
         write(STDOUT_FILENO, buffer, bytes_read);
     }
 #pragma GCC diagnostic pop
+
+    free(buffer), buffer = NULL;
 
     if (WIFEXITED(stage->status) || WIFSIGNALED(stage->status)) {
         waitpid(stage->pid, &stage->status, WUNTRACED);
@@ -3956,16 +4944,25 @@ c2b_write_out_bytes_to_stdout(void *arg)
 {
     c2b_pipeline_stage_t *stage = (c2b_pipeline_stage_t *) arg;
     c2b_pipeset_t *pipes = stage->pipeset;
-    char buffer[C2B_MAX_LINE_LENGTH_VALUE];
+    char *buffer = NULL;
+    ssize_t buffer_size = stage->buffer_size;
     ssize_t bytes_read;
     int exit_status = 0;
 
+    buffer = (char *) malloc(buffer_size);
+    if (!buffer) {
+        fprintf(stderr, "Error: Could not allocate space to c2b_write_out_bytes_to_stdout() buffer\n");
+        exit(ENOMEM);
+    }
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result"
-    while ((bytes_read = read(pipes->out[stage->src][PIPE_READ], buffer, C2B_MAX_LINE_LENGTH_VALUE)) > 0) {
+    while ((bytes_read = read(pipes->out[stage->src][PIPE_READ], buffer, buffer_size)) > 0) {
         write(STDOUT_FILENO, buffer, bytes_read);
     }
 #pragma GCC diagnostic pop
+
+    free(buffer), buffer = NULL;
 
     if (WIFEXITED(stage->status) || WIFSIGNALED(stage->status)) {
         waitpid(stage->pid, &stage->status, WUNTRACED);
@@ -4564,12 +5561,7 @@ c2b_init_global_gff_state()
         exit(ENOMEM); /* Not enough space (POSIX.1) */
     }
 
-    c2b_globals.gff->id = malloc(C2B_MAX_FIELD_LENGTH_VALUE);
-    if (!c2b_globals.gff->id) {
-        fprintf(stderr, "Error: Could not allocate space for GFF ID global\n");
-        exit(ENOMEM); /* Not enough space (POSIX.1) */
-    }
-    memset(c2b_globals.gff->id, 0, C2B_MAX_FIELD_LENGTH_VALUE);
+    c2b_globals.gff->element = NULL, c2b_gff_init_element(&(c2b_globals.gff->element));
 
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_init_global_gff_state() - exit  ---\n");
@@ -4583,8 +5575,10 @@ c2b_delete_global_gff_state()
     fprintf(stderr, "--- c2b_delete_global_gff_state() - enter ---\n");
 #endif
 
-    if (c2b_globals.gff->id)
-        free(c2b_globals.gff->id), c2b_globals.gff->id = NULL;
+    if (c2b_globals.gff->element) {
+        c2b_gff_delete_element(c2b_globals.gff->element);
+        c2b_globals.gff->element = NULL;
+    }
 
     free(c2b_globals.gff), c2b_globals.gff = NULL;
 
@@ -4606,12 +5600,7 @@ c2b_init_global_gtf_state()
         exit(ENOMEM); /* Not enough space (POSIX.1) */
     }
 
-    c2b_globals.gtf->id = malloc(C2B_MAX_FIELD_LENGTH_VALUE);
-    if (!c2b_globals.gtf->id) {
-        fprintf(stderr, "Error: Could not allocate space for GTF ID global\n");
-        exit(ENOMEM); /* Not enough space (POSIX.1) */
-    }
-    memset(c2b_globals.gtf->id, 0, C2B_MAX_FIELD_LENGTH_VALUE);
+    c2b_globals.gtf->element = NULL, c2b_gtf_init_element(&(c2b_globals.gtf->element));
 
     c2b_globals.gtf->line_count = 0;
 
@@ -4627,8 +5616,10 @@ c2b_delete_global_gtf_state()
     fprintf(stderr, "--- c2b_delete_global_gtf_state() - enter ---\n");
 #endif
 
-    if (c2b_globals.gtf->id)
-        free(c2b_globals.gtf->id), c2b_globals.gtf->id = NULL;
+    if (c2b_globals.gtf->element) {
+        c2b_gtf_delete_element(c2b_globals.gtf->element);
+        c2b_globals.gtf->element = NULL;
+    }
 
     free(c2b_globals.gtf), c2b_globals.gtf = NULL;
 
@@ -4751,7 +5742,9 @@ c2b_init_global_sam_state()
 
     c2b_globals.sam->samtools_path = NULL;
 
-    c2b_globals.sam->cigar = NULL, c2b_sam_init_cigar_ops(&(c2b_globals.sam->cigar), C2B_MAX_OPERATIONS_VALUE);
+    c2b_globals.sam->cigar = NULL, c2b_sam_init_cigar_ops(&(c2b_globals.sam->cigar), C2B_SAM_CIGAR_OPS_VALUE_INITIAL);
+
+    c2b_globals.sam->element = NULL, c2b_sam_init_element(&(c2b_globals.sam->element));
 
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_init_global_sam_state() - exit  ---\n");
@@ -4770,6 +5763,9 @@ c2b_delete_global_sam_state()
     
     if (c2b_globals.sam->cigar)
         c2b_sam_delete_cigar_ops(c2b_globals.sam->cigar);
+
+    if (c2b_globals.sam->element)
+        c2b_sam_delete_element(c2b_globals.sam->element);
     
     free(c2b_globals.sam), c2b_globals.sam = NULL;
 
@@ -4796,6 +5792,7 @@ c2b_init_global_vcf_state()
     c2b_globals.vcf->only_insertions = kFalse;
     c2b_globals.vcf->only_deletions = kFalse;    
     c2b_globals.vcf->filter_count = 0U;
+    c2b_globals.vcf->element = NULL, c2b_vcf_init_element(&(c2b_globals.vcf->element));
 
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_init_global_vcf_state() - exit  ---\n");
@@ -4808,6 +5805,11 @@ c2b_delete_global_vcf_state()
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_delete_global_vcf_state() - enter ---\n");
 #endif
+
+    if (c2b_globals.vcf->element) {
+        c2b_vcf_delete_element(c2b_globals.vcf->element);
+        c2b_globals.vcf->element = NULL;
+    }
 
     free(c2b_globals.vcf), c2b_globals.vcf = NULL;
 

@@ -4,7 +4,7 @@
 */
 //
 //    BEDOPS
-//    Copyright (C) 2011-2016 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2017 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -71,8 +71,8 @@ namespace WindowSweep {
     sweep() Assumptions:
     1) in terms of RangeComp(a, b):
          return 0 if a and b are 'within range' of each other
-         return less than 0 if a is 'greater than' b
-         return greater than 0 if a is 'less than' b
+         return less than 0 if a is 'less than' b
+         return greater than 0 if a is 'greater than' b
 
     2) in terms of RangeComp(c, c):
          return 0 : object must always be in range of itself

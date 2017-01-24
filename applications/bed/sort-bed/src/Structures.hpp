@@ -5,7 +5,7 @@
 */
 //
 //    BEDOPS
-//    Copyright (C) 2011-2016 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2017 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -39,16 +39,55 @@ static const unsigned long NUM_CHROM_EST          = 32;
 #define GT(A,B) ((A) > (B) ? 1 : 0)
 
 /* Data Structures */
-typedef struct {
+struct BedCoordData;
+int bcd_cmp(BedCoordData const& b1, BedCoordData const& b2);
+
+struct BedCoordData {
     Bed::SignedCoordType startCoord;
     Bed::SignedCoordType endCoord;
     char *data;
-} BedCoordData;
+
+    inline friend
+    int bcd_cmp(BedCoordData const& b1, BedCoordData const& b2)
+        {
+            Bed::SignedCoordType diff = (b1.startCoord - b2.startCoord);
+            if(diff)
+                {
+                    return (diff > 0) ? 1 : -1;
+                }
+            diff = (b1.endCoord - b2.endCoord);
+            if(diff)
+                {
+                    return (diff > 0) ? 1 : -1;
+                }
+
+            // so far equivalent, check data member for differences
+            if(b1.data != NULL)
+                {
+                    if(b2.data != NULL)
+                        {
+                            return strcmp(b1.data, b2.data);
+                        }
+                    else
+                        {
+                            return 1;
+                        }
+                }
+            else if(b2.data != NULL)
+                {
+                    return -1;
+                }
+            return 0;
+        }
+
+    inline friend bool operator<(BedCoordData const& b1, BedCoordData const& b2) { return bcd_cmp(b1,b2) < 0; }
+    inline friend bool operator>(BedCoordData const& b1, BedCoordData const& b2) { return bcd_cmp(b1,b2) > 0; }
+    inline friend bool operator==(BedCoordData const& b1, BedCoordData const& b2) { return bcd_cmp(b1,b2) == 0; }
+};
 
 typedef struct {
     char chromName[CHROM_NAME_LEN + 1];
     Bed::LineCountType numCoords;
-    //BedCoordData coords[MAX_BED_ITEMS];
     BedCoordData *coords;
 } ChromBedData;
 
@@ -100,7 +139,5 @@ numCompareBedData(const void *pos1, const void *pos2);
 
 int
 lexCompareBedData(const void *pos1, const void *pos2);
-
-
 
 #endif /* BED_STRUCTURES_H */

@@ -4,7 +4,7 @@
 */
 //
 //    BEDOPS
-//    Copyright (C) 2011-2016 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2017 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -80,6 +80,7 @@ namespace Bed {
           throw(ErrorType("Error: stat() failed on: " + fp.Name()));
         is_namedpipe = (S_ISFIFO(st.st_mode) != 0);
       }
+      is_starch_ = (is_starch_ && !is_namedpipe);
 
       if ( (fp_ == stdin || is_namedpipe) && !all_ ) { // BED, chrom-specific, using stdin
         // stream through until we find what we want
@@ -223,7 +224,7 @@ namespace Bed {
     bool _M_ok;
     char chr_[Bed::MAXCHROMSIZE+1];
     BedType* _M_value;
-    const bool is_starch_;
+    bool is_starch_;
     const bool all_;
     starch::Starch* archive_;
   };

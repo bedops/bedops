@@ -5,7 +5,7 @@
 
 //
 //    BEDOPS
-//    Copyright (C) 2011-2016 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2017 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -25,9 +25,12 @@
 #ifndef CLASS_WINDOW_EXTREME_VISITOR_H
 #define CLASS_WINDOW_EXTREME_VISITOR_H
 
-#include <iostream>
+#include <algorithm>
+#include <cstdlib>
+#include <ctime>
 #include <set>
 #include <string>
+#include <type_traits>
 
 #include "data/measurement/NaN.hpp"
 #include "utility/OrderCompare.hpp"
@@ -39,13 +42,44 @@ namespace Visitors {
      not a std::multiset<>.  Use a version of the templated
      CompValueThenAddress<> or a similar idea.
   */
+  struct DoNothing {};
+  struct RandTie {
+    RandTie() {
+      std::srand(std::time(NULL));
+    }
+
+    template <typename T, typename C>
+    T* breakTie(const std::set<T*, C>& s) {
+      // s is not empty if Extreme is calling
+      std::vector<T*> toRand;
+      bool first = true;
+      double best = 0;
+      for ( auto iter = s.begin(); iter != s.end(); ++iter ) {
+        if ( first ) {
+          best = **iter;
+          toRand.push_back(*iter);
+          first = false;
+        } else if ( **iter == best ) {
+          toRand.push_back(*iter);
+        } else {
+          break;
+        }
+      } // for
+      if ( toRand.size() == 1 )
+        return toRand.back();
+      std::random_shuffle(toRand.begin(), toRand.end());
+      return toRand.back();
+    }
+  };
+
   template <
             typename Process,
             typename BaseVisitor,
             typename CompType = Ordering::CompValueThenAddressLesser<
                                                                      typename BaseVisitor::mapping_type,
                                                                      typename BaseVisitor::mapping_type
-                                                                    >
+                                                                    >,
+            typename OnTies = DoNothing
            >
   struct Extreme : BaseVisitor {
 
@@ -64,16 +98,35 @@ namespace Visitors {
       m_.erase(bt);
     }
 
-    inline void DoneReference() {
-      static const Signal::NaN nan = Signal::NaN();
-      if ( !m_.empty() ) {
-        pt_.operator()(*m_.begin());
-      }
-      else
-        pt_.operator()(nan);
+    void DoneReference() {
+      doneReference();
     }
 
     virtual ~Extreme() { /* */ }
+
+  private:
+
+    template <typename OT=OnTies>
+    inline typename std::enable_if<!std::is_same<OT, DoNothing>::value>::type
+    doneReference() {
+      static const Signal::NaN nan = Signal::NaN();
+      static OnTies onTies;
+      if ( !m_.empty() )
+        pt_.operator()(onTies.breakTie(m_));
+      else
+        pt_.operator()(nan);      
+    }
+
+
+    template <typename OT=OnTies>
+    inline typename std::enable_if<std::is_same<OT, DoNothing>::value>::type
+    doneReference() {
+      static const Signal::NaN nan = Signal::NaN();
+      if ( !m_.empty() )
+        pt_.operator()(*m_.begin());
+      else
+        pt_.operator()(nan);
+    }
 
   protected:
     ProcessType pt_;

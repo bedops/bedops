@@ -67,6 +67,7 @@ install_gprof: prep_c install_conversion_scripts install_starchcluster_scripts
 install_starchcluster_scripts: prep_c
 	-cp ${APPDIR}/starch/bin/starchcluster_sge ${BINDIR}/
 	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/starchcluster_slurm ${BINDIR}/
 
 install_conversion_scripts: prep_c
 	-cp ${APPDIR}/conversion/src/wrappers/bam2bed ${BINDIR}/bam2bed
@@ -88,8 +89,10 @@ install_conversion_scripts: prep_c
 	-cp ${APPDIR}/conversion/src/wrappers/vcf2starch ${BINDIR}/vcf2starch
 	-cp ${APPDIR}/conversion/src/wrappers/wig2starch ${BINDIR}/wig2starch
 	-cp ${APPDIR}/conversion/src/wrappers/bam2bed_sge ${BINDIR}/bam2bed_sge
+	-cp ${APPDIR}/conversion/src/wrappers/bam2bed_slurm ${BINDIR}/bam2bed_slurm
 	-cp ${APPDIR}/conversion/src/wrappers/bam2bed_gnuParallel ${BINDIR}/bam2bed_gnuParallel
 	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_sge ${BINDIR}/bam2starch_sge
+	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_slurm ${BINDIR}/bam2starch_slurm
 	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_gnuParallel ${BINDIR}/bam2starch_gnuParallel
 
 install_osx_packaging_bins: prep_c
@@ -104,6 +107,7 @@ install_osx_packaging_bins: prep_c
 	-cp ${APPDIR}/starch/bin/starchcat ${OSXPKGDIR}/
 	-cp ${APPDIR}/starch/bin/starchcluster_sge ${OSXPKGDIR}/starchcluster_sge
 	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel ${OSXPKGDIR}/starchcluster_gnuParallel
+	-cp ${APPDIR}/starch/bin/starchcluster_slurm ${OSXPKGDIR}/starchcluster_slurm
 	-cp ${APPDIR}/conversion/bin/convert2bed ${OSXPKGDIR}/
 	-cp ${APPDIR}/conversion/src/wrappers/bam2bed ${OSXPKGDIR}/bam2bed
 	-cp ${APPDIR}/conversion/src/wrappers/gff2bed ${OSXPKGDIR}/gff2bed
@@ -124,8 +128,10 @@ install_osx_packaging_bins: prep_c
 	-cp ${APPDIR}/conversion/src/wrappers/vcf2starch ${OSXPKGDIR}/vcf2starch
 	-cp ${APPDIR}/conversion/src/wrappers/wig2starch ${OSXPKGDIR}/wig2starch
 	-cp ${APPDIR}/conversion/src/wrappers/bam2bed_sge ${OSXPKGDIR}/bam2bed_sge
+	-cp ${APPDIR}/conversion/src/wrappers/bam2bed_slurm ${OSXPKGDIR}/bam2bed_slurm
 	-cp ${APPDIR}/conversion/src/wrappers/bam2bed_gnuParallel ${OSXPKGDIR}/bam2bed_gnuParallel
 	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_sge ${OSXPKGDIR}/bam2starch_sge
+	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_slurm ${OSXPKGDIR}/bam2starch_slurm
 	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_gnuParallel ${OSXPKGDIR}/bam2starch_gnuParallel
 	mkdir -p ${OSXLIBDIR}
 

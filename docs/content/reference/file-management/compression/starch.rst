@@ -35,7 +35,7 @@ This utility outputs a :ref:`Starch v2-formatted <starch_specification>` archive
 Requirements
 ============
 
-The :ref:`starch` tool requires data in a relaxed variation of the BED format as described by `UCSC’s browser documentation <http://genome.ucsc.edu/FAQ/FAQformat.html#format1>`_. BED data should be sorted before compression, *e.g.* with BEDOPS :ref:`sort-bed`. 
+The :ref:`starch` tool requires data in a relaxed variation of the BED format as described by `UCSC’s browser documentation <http://genome.ucsc.edu/FAQ/FAQformat.html#format1>`_. BED data should be sorted before compression, *i.e.* with BEDOPS :ref:`sort-bed`. 
 
 At a minimum, three columns are required to specify the chromosome name and start and stop positions. Additional columns may be specified, containing up to 128 kB of data per row (including tab delimiters).
 
@@ -49,24 +49,39 @@ Use the ``--help`` option to list all options:
 
   starch
    citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-   binary version: 2.4.20 (creates archive version: 2.1.0)
+   binary version: 2.4.21 (creates archive version: 2.2.0)
    authors:  Alex Reynolds and Shane Neph
 
-  USAGE: starch [--note="foo bar..."] [--bzip2 | --gzip] [--header] [<unique-tag>] <bed-file>
+  USAGE: starch [ --note="foo bar..." ]
+                [ --bzip2 | --gzip ]
+                [ --report-progress=N ]
+                [ --header ] [ <unique-tag> ] <bed-file>
     
       * BED input must be sorted lexicographically (e.g., using BEDOPS sort-bed).
       * Please use '-' to indicate reading BED data from standard input.
       * Output must be directed to a regular file.
-      * The bzip2 compression type makes smaller archives, while gzip extracts faster.
+      * The bzip2 compression type makes smaller archives, while gzip extracts
+        faster.
     
-      Process Flags:
+      Process Flags
+      --------------------------------------------------------------------------
+      --note="foo bar..."   Append note to output archive metadata (optional).
 
-      --note="foo bar..."   Append note to output archive metadata (optional)
-      --bzip2 | --gzip      Specify backend compression type (optional, default is bzip2)
-      --header              Support BED input with custom UCSC track, SAM or VCF headers, or generic comments (optional)
-      <unique-tag>          Specify unique identifier for transformed data (optional)
-      --help                Show this usage message
-      --version             Show binary version
+      --bzip2 | --gzip      Specify backend compression type (optional, default
+                            is bzip2).
+
+      --report-progress=N   Report compression progress every N elements per
+                            chromosome to standard error stream (optional)
+
+      --header              Support BED input with custom UCSC track, SAM or VCF
+                            headers, or generic comments (optional).
+
+      <unique-tag>          Optional. Specify unique identifier for transformed
+                            data.
+
+      --version             Show binary version.
+
+      --help                Show this usage message.
 
 =======
 Options
@@ -87,6 +102,14 @@ Use the ``--note="xyz..."`` option to add a custom string that describes the arc
 .. tip:: Examples of usage might include a description of the experiment associated with the data, a URL to a UCSC Genome Browser session, or a bar code or other unique identifier for internal lab or LIMS use.
 
 .. note:: The only limitation on the length of a note is the command-line shell's maximum argument length parameter (as found on most UNIX systems with the command ``getconf ARG_MAX``) minus the length of the non- ``--note="..."`` command components. On most desktop systems, this value will be approximately 256 kB.
+
+--------------------
+Compression progress
+--------------------
+
+To optionally track the progress of compression, use the ``--report-progress=N`` option, specifying a positive integer ``N`` to report the compression of the *N* -th element for the current chromosome. The report is printed to the standard error stream.
+
+.. note:: For instance, specifying a value of ``1`` reports the compression of every input element of all chromosomes, while a value of ``1000`` would report the compression of every 1000th element of the current chromosome.
 
 -------
 Headers
