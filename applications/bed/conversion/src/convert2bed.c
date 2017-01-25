@@ -1679,19 +1679,19 @@ c2b_line_convert_gff_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     if (c2b_globals.gff->element->start == c2b_globals.gff->element->end) {
         c2b_globals.gff->element->start -= 1;
         ssize_t trailing_semicolon_fudge = (c2b_globals.gff->element->attributes[strlen(c2b_globals.gff->element->attributes) - 1] == ';') ? 1 : 0;
-	ssize_t new_attributes_size_with_zlia = strlen(c2b_globals.gff->element->attributes) + strlen(c2b_gff_zero_length_insertion_attribute);
-	if (new_attributes_size_with_zlia >= c2b_globals.gff->element->attributes_capacity) {
-	    char *attributes_resized_for_zlia = NULL;
-	    attributes_resized_for_zlia = realloc(c2b_globals.gff->element->attributes, new_attributes_size_with_zlia + 1);
-	    if (attributes_resized_for_zlia) {
-  	        c2b_globals.gff->element->attributes = attributes_resized_for_zlia;
-		c2b_globals.gff->element->attributes_capacity = new_attributes_size_with_zlia + 1;
-	    }
-	    else {
-	        fprintf(stderr, "Error: Could not resize ATTRIBUTES string (for ZLIA) in GFF element struct\n");
+        ssize_t new_attributes_size_with_zlia = strlen(c2b_globals.gff->element->attributes) + strlen(c2b_gff_zero_length_insertion_attribute);
+        if (new_attributes_size_with_zlia >= c2b_globals.gff->element->attributes_capacity) {
+            char *attributes_resized_for_zlia = NULL;
+            attributes_resized_for_zlia = realloc(c2b_globals.gff->element->attributes, new_attributes_size_with_zlia + 1);
+            if (attributes_resized_for_zlia) {
+                c2b_globals.gff->element->attributes = attributes_resized_for_zlia;
+                c2b_globals.gff->element->attributes_capacity = new_attributes_size_with_zlia + 1;
+            }
+            else {
+                fprintf(stderr, "Error: Could not resize ATTRIBUTES string (for ZLIA) in GFF element struct\n");
                 exit(ENOMEM);
-	    }
-	}
+            }
+        }
         memcpy(c2b_globals.gff->element->attributes + strlen(c2b_globals.gff->element->attributes) - trailing_semicolon_fudge,
                c2b_gff_zero_length_insertion_attribute, 
                strlen(c2b_gff_zero_length_insertion_attribute) + 1);
@@ -1724,7 +1724,6 @@ c2b_line_convert_gff_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
             ssize_t id_size = strlen(id_str);
             if (id_size >= c2b_globals.gff->element->id_capacity) {
                 char *id_resized = NULL;
-		fprintf(stderr, "Debug: resizing id\n");
                 id_resized = realloc(c2b_globals.gff->element->id, id_size + 1);
                 if (id_resized) {
                     c2b_globals.gff->element->id = id_resized;
