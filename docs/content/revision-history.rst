@@ -12,6 +12,20 @@ Current version
 ===============
 
 -------
+v2.4.22
+-------
+
+Released: **January 25, 2017**
+
+* :ref:`convert2bed <convert2bed>`
+
+  * Fixed heap corruption in GFF conversion. Thanks to J. Miguel Mendez (ObjectiveTruth) for the bug report.
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.21
 -------
 
@@ -118,10 +132,6 @@ Released: **January 23, 2017**
 * Testing
 
   * Our use of Travis CI to automate testing of builds now includes Clang on `their OS X environment <https://docs.travis-ci.com/user/osx-ci-environment/>`_.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.20
