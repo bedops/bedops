@@ -12,6 +12,24 @@ Current version
 ===============
 
 -------
+v2.4.23
+-------
+
+Released: **TBD**
+
+* :ref:`unstarch <unstarch>`
+
+  * Fixed bug where missing signature from pre-v2.2 Starch archives would cause fatal metadata error. Thanks to Shane Neph and Eric Rynes for the bug report.
+
+* :ref:`starch <starch>`
+    
+  * Added `--no-signature` option to compress without creating a per-chromosome data integrity signature. This can reduce compression time, but will eliminate the benefits of the data integrity signature.
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.22
 -------
 
@@ -20,11 +38,7 @@ Released: **January 25, 2017**
 * :ref:`convert2bed <convert2bed>`
 
   * Fixed heap corruption in GFF conversion. Thanks to J. Miguel Mendez (ObjectiveTruth) for the bug report.
-
-=================
-Previous versions
-=================
-
+    
 -------
 v2.4.21
 -------

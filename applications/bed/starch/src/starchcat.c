@@ -390,7 +390,9 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
                 outFileUniqueBases = iter->totalUniqueBases;
                 outDuplicateElementExists = iter->duplicateElementExists;
                 outNestedElementExists = iter->nestedElementExists;
-                outSignature = STARCH_strndup(iter->signature, strlen(iter->signature) + 1);
+                if (iter->signature) {
+                    outSignature = STARCH_strndup(iter->signature, strlen(iter->signature) + 1);
+                }
             }
             else if ((av->major == 1) && (av->minor >= 3))
                 outFileLineCount = iter->lineCount;

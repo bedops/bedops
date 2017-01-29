@@ -1601,10 +1601,11 @@ STARCH_readJSONMetadata(json_t **metadataJSON,
                         fprintf(stderr, "ERROR: Could not retrieve stream signature object with compliant version (%d.%d.%d)\n", (*version)->major, (*version)->minor, (*version)->revision);
                     return STARCH_EXIT_FAILURE;
                 }
-                if (suppressErrorMsgs == kStarchFalse)
-                    fprintf(stderr, "ERROR: Could not retrieve stream signature object\n");
-                return STARCH_EXIT_FAILURE;
             }
+            else {
+                strncpy(streamSig, json_string_value(streamSignature), strlen(json_string_value(streamSignature)) + 1);
+            }
+            
             /* maximum string length */
             streamLineMaxStringLength = json_object_get(stream, STARCH_METADATA_STREAM_LINEMAXSTRINGLENGTH_KEY);
 #ifdef __cplusplus
@@ -1615,7 +1616,6 @@ STARCH_readJSONMetadata(json_t **metadataJSON,
             
             strncpy(streamChr, json_string_value(streamChromosome), strlen(json_string_value(streamChromosome)) + 1);
             strncpy(streamFn, json_string_value(streamFilename), strlen(json_string_value(streamFilename)) + 1);
-            strncpy(streamSig, json_string_value(streamSignature), strlen(json_string_value(streamSignature)) + 1);
 
             if (streamIdx == 0) {
                 *rec = STARCH_createMetadata(streamChr, 
