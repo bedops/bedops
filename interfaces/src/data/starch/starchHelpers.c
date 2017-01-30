@@ -1602,7 +1602,7 @@ STARCH_strndup(const char *s, size_t n)
 }
 
 int 
-STARCH2_transformInput(unsigned char **header, Metadata **md, const FILE *inFp, const CompressionType compressionType, const char *tag, const char *note, const Boolean headerFlag, const Boolean reportProgressFlag, const LineCountType reportProgressN)
+STARCH2_transformInput(unsigned char **header, Metadata **md, const FILE *inFp, const CompressionType compressionType, const char *tag, const char *note, const Boolean generatePerChrSignatureFlag, const Boolean headerFlag, const Boolean reportProgressFlag, const LineCountType reportProgressN)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH2_transformInput() ---\n");
@@ -1653,13 +1653,13 @@ STARCH2_transformInput(unsigned char **header, Metadata **md, const FILE *inFp, 
     }
 
     if (headerFlag == kStarchFalse) {
-        if (STARCH2_transformHeaderlessBEDInput(inFp, md, compressionType, tag, note, reportProgressFlag, reportProgressN) != STARCH_EXIT_SUCCESS) {
+        if (STARCH2_transformHeaderlessBEDInput(inFp, md, compressionType, tag, note, generatePerChrSignatureFlag, reportProgressFlag, reportProgressN) != STARCH_EXIT_SUCCESS) {
             fprintf(stderr, "ERROR: Could not write transformed/compressed data to output file pointer.\n");
             return STARCH_EXIT_FAILURE;
         }
     }
     else {
-        if (STARCH2_transformHeaderedBEDInput(inFp, md, compressionType, tag, note, reportProgressFlag, reportProgressN) != STARCH_EXIT_SUCCESS) {
+        if (STARCH2_transformHeaderedBEDInput(inFp, md, compressionType, tag, note, generatePerChrSignatureFlag, reportProgressFlag, reportProgressN) != STARCH_EXIT_SUCCESS) {
             fprintf(stderr, "ERROR: Could not write transformed/compressed data to output file pointer.\n");
             return STARCH_EXIT_FAILURE;
         }
@@ -1687,7 +1687,7 @@ STARCH2_transformInput(unsigned char **header, Metadata **md, const FILE *inFp, 
 }
 
 int
-STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const CompressionType compressionType, const char *tag, const char *note, const Boolean reportProgressFlag, const LineCountType reportProgressN)
+STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const CompressionType compressionType, const char *tag, const char *note, const Boolean generatePerChrSignatureFlag, const Boolean reportProgressFlag, const LineCountType reportProgressN)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH2_transformHeaderedBEDInput() ---\n");
@@ -1724,7 +1724,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     Metadata *firstRecord = NULL;
     char *json = NULL;
     CompressionType type = compressionType;
-    unsigned char sha1Digest[STARCH2_MD_FOOTER_SHA1_LENGTH];
+    unsigned char sha1Digest[STARCH2_MD_FOOTER_SHA1_LENGTH] = {0};
     char *base64EncodedSha1Digest = NULL;
     int zError = -1;
     char zBuffer[STARCH_Z_BUFFER_MAX_LENGTH] = {0};
@@ -1827,8 +1827,10 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
         }
     }
 
-    /* set up per-chromosome hash context */
-    sha1_init_ctx (&perChromosomeHashCtx);
+    if (generatePerChrSignatureFlag) {
+        /* set up per-chromosome hash context */
+        sha1_init_ctx(&perChromosomeHashCtx);
+    }
 
     /* fill up a "transformation" buffer with data and then compress it */
 #ifdef __cplusplus
@@ -1883,24 +1885,27 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 #ifdef DEBUG                        
                         fprintf(stderr, "\t(final-between-chromosome) transformedBuffer:\n%s\n\t\tintermediateBuffer:\n%s\n", transformedBuffer, intermediateBuffer);
 #endif
-                        /* hash the transformed buffer */
-                        sha1_process_bytes (transformedBuffer, currentTransformedBufferLength, &perChromosomeHashCtx);
-                        sha1_finish_ctx (&perChromosomeHashCtx, sha1Digest);
+                        if (generatePerChrSignatureFlag) {
+                            /* hash the transformed buffer */
+                            sha1_process_bytes(transformedBuffer, currentTransformedBufferLength, &perChromosomeHashCtx);
+                            sha1_finish_ctx(&perChromosomeHashCtx, sha1Digest);
 #ifdef __cplusplus
-                        STARCH_encodeBase64(&base64EncodedSha1Digest, 
-                                            static_cast<size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
-                                            reinterpret_cast<const unsigned char *>( sha1Digest ), 
-                                            static_cast<size_t>( STARCH2_MD_FOOTER_SHA1_LENGTH ) );
+                            STARCH_encodeBase64(&base64EncodedSha1Digest, 
+                                                static_cast<size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
+                                                reinterpret_cast<const unsigned char *>( sha1Digest ), 
+                                                static_cast<size_t>( STARCH2_MD_FOOTER_SHA1_LENGTH ) );
 #else
-                        STARCH_encodeBase64(&base64EncodedSha1Digest, 
-                                            (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
-                                            (const unsigned char *) sha1Digest, 
-                                            (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
+                            STARCH_encodeBase64(&base64EncodedSha1Digest, 
+                                                (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
+                                                (const unsigned char *) sha1Digest, 
+                                                (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
 #endif
 #ifdef DEBUG
-                        fprintf(stderr, "\nPROGRESS: SHA-1 digest for chr [%s] is [%s]\n", prevChromosome, base64EncodedSha1Digest);
+                            fprintf(stderr, "\nPROGRESS: SHA-1 digest for chr [%s] is [%s]\n", prevChromosome, base64EncodedSha1Digest);
 #endif
-                        sha1_init_ctx (&perChromosomeHashCtx);
+                        
+                            sha1_init_ctx(&perChromosomeHashCtx);
+                        }
 
                         if (compressionType == kBzip2) {
 #ifdef DEBUG
@@ -2550,23 +2555,25 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     fprintf(stderr, "\t(last-pass) transformedBuffer:\n%s\n\t\tintermediateBuffer:\n%s\n", transformedBuffer, intermediateBuffer);
 #endif
 
-    /* hash the transformed buffer */
-    sha1_process_bytes (transformedBuffer, currentTransformedBufferLength, &perChromosomeHashCtx);
-    sha1_finish_ctx (&perChromosomeHashCtx, sha1Digest);
+    if (generatePerChrSignatureFlag) {
+        /* hash the transformed buffer */
+        sha1_process_bytes(transformedBuffer, currentTransformedBufferLength, &perChromosomeHashCtx);
+        sha1_finish_ctx(&perChromosomeHashCtx, sha1Digest);
 #ifdef __cplusplus
-    STARCH_encodeBase64(&base64EncodedSha1Digest, 
-                        static_cast<size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
-                        reinterpret_cast<const unsigned char *>( sha1Digest ), 
-                        static_cast<size_t>( STARCH2_MD_FOOTER_SHA1_LENGTH ) );
+        STARCH_encodeBase64(&base64EncodedSha1Digest, 
+                            static_cast<size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
+                            reinterpret_cast<const unsigned char *>( sha1Digest ), 
+                            static_cast<size_t>( STARCH2_MD_FOOTER_SHA1_LENGTH ) );
 #else
-    STARCH_encodeBase64(&base64EncodedSha1Digest, 
-                        (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
-                        (const unsigned char *) sha1Digest, 
-                        (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
+        STARCH_encodeBase64(&base64EncodedSha1Digest, 
+                            (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
+                            (const unsigned char *) sha1Digest, 
+                            (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
 #endif
 #ifdef DEBUG
-    fprintf(stderr, "\nPROGRESS: SHA-1 digest for chr [%s] is [%s]\n", prevChromosome, base64EncodedSha1Digest);
+        fprintf(stderr, "\nPROGRESS: SHA-1 digest for chr [%s] is [%s]\n", prevChromosome, base64EncodedSha1Digest);
 #endif
+    }
 
     /* last-pass, bzip2 */
     if (compressionType == kBzip2) {
@@ -2754,9 +2761,15 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     fprintf(stderr, "\tencoding md signature...\n");
 #endif
 #ifdef __cplusplus
-    STARCH_encodeBase64(&base64EncodedSha1Digest, static_cast<size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), reinterpret_cast<const unsigned char *>( sha1Digest ), static_cast<size_t>( STARCH2_MD_FOOTER_SHA1_LENGTH ));
+    STARCH_encodeBase64(&base64EncodedSha1Digest, 
+                        static_cast<size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
+                        reinterpret_cast<const unsigned char *>( sha1Digest ), 
+                        static_cast<size_t>( STARCH2_MD_FOOTER_SHA1_LENGTH ));
 #else
-    STARCH_encodeBase64(&base64EncodedSha1Digest, (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, (const unsigned char *) sha1Digest, (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
+    STARCH_encodeBase64(&base64EncodedSha1Digest, 
+                        (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
+                        (const unsigned char *) sha1Digest, 
+                        (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
 #endif
 
     /* build footer */
@@ -2805,7 +2818,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 }
 
 int
-STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const CompressionType compressionType, const char *tag, const char *note, const Boolean reportProgressFlag, const LineCountType reportProgressN)
+STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const CompressionType compressionType, const char *tag, const char *note, const Boolean generatePerChrSignatureFlag, const Boolean reportProgressFlag, const LineCountType reportProgressN)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH2_transformHeaderlessBEDInput() ---\n");
@@ -2843,7 +2856,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     char *json = NULL;
     char *jsonCopy = NULL;
     CompressionType type = compressionType;
-    unsigned char sha1Digest[STARCH2_MD_FOOTER_SHA1_LENGTH];
+    unsigned char sha1Digest[STARCH2_MD_FOOTER_SHA1_LENGTH] = {0};
     char *base64EncodedSha1Digest = NULL;
     int zError = -1;
     char zBuffer[STARCH_Z_BUFFER_MAX_LENGTH] = {0};
@@ -2943,8 +2956,10 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
         }
     }
 
-    /* set up per-chromosome hash context */
-    sha1_init_ctx (&perChromosomeHashCtx);
+    if (generatePerChrSignatureFlag) {
+        /* set up per-chromosome hash context */
+        sha1_init_ctx(&perChromosomeHashCtx);
+    }
 
     /* fill up a "transformation" buffer with data and then compress it */
 #ifdef __cplusplus
@@ -2999,24 +3014,26 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #ifdef DEBUG                        
                         fprintf(stderr, "\t(final-between-chromosome) transformedBuffer before hash:\n[%s]\n", transformedBuffer);
 #endif
-                        /* hash the transformed buffer */
-                        sha1_process_bytes (transformedBuffer, currentTransformedBufferLength, &perChromosomeHashCtx);
-                        sha1_finish_ctx (&perChromosomeHashCtx, sha1Digest);
+                        if (generatePerChrSignatureFlag) {
+                            /* hash the transformed buffer */
+                            sha1_process_bytes(transformedBuffer, currentTransformedBufferLength, &perChromosomeHashCtx);
+                            sha1_finish_ctx(&perChromosomeHashCtx, sha1Digest);
 #ifdef __cplusplus
-                        STARCH_encodeBase64(&base64EncodedSha1Digest, 
-                                            static_cast<size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
-                                            reinterpret_cast<const unsigned char *>( sha1Digest ), 
-                                            static_cast<size_t>( STARCH2_MD_FOOTER_SHA1_LENGTH ) );
+                            STARCH_encodeBase64(&base64EncodedSha1Digest, 
+                                                static_cast<size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
+                                                reinterpret_cast<const unsigned char *>( sha1Digest ), 
+                                                static_cast<size_t>( STARCH2_MD_FOOTER_SHA1_LENGTH ) );
 #else
-                        STARCH_encodeBase64(&base64EncodedSha1Digest, 
-                                            (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
-                                            (const unsigned char *) sha1Digest, 
-                                            (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
+                            STARCH_encodeBase64(&base64EncodedSha1Digest, 
+                                                (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
+                                                (const unsigned char *) sha1Digest, 
+                                                (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
 #endif
 #ifdef DEBUG
-                        fprintf(stderr, "\nPROGRESS: SHA-1 digest for chr [%s] is [%s]\n", prevChromosome, base64EncodedSha1Digest);
+                            fprintf(stderr, "\nPROGRESS: SHA-1 digest for chr [%s] is [%s]\n", prevChromosome, base64EncodedSha1Digest);
 #endif
-                        sha1_init_ctx (&perChromosomeHashCtx);
+                            sha1_init_ctx(&perChromosomeHashCtx);
+                        }
 
                         if (compressionType == kBzip2) {
 #ifdef DEBUG
@@ -3454,8 +3471,10 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #ifdef DEBUG                        
                     fprintf(stderr, "\t(intermediate) transformedBuffer before hash:\n[%s]\n", transformedBuffer);
 #endif
-                    /* hash the transformed buffer */
-                    sha1_process_bytes (transformedBuffer, currentTransformedBufferLength, &perChromosomeHashCtx);
+                    if (generatePerChrSignatureFlag) {
+                        /* hash the transformed buffer */
+                        sha1_process_bytes(transformedBuffer, currentTransformedBufferLength, &perChromosomeHashCtx);
+                    }
 
                     /* copy transformed buffer to intermediate buffer */
                     memcpy(transformedBuffer, intermediateBuffer, strlen(intermediateBuffer) + 1);
@@ -3681,23 +3700,25 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     fprintf(stderr, "\t(last-pass) transformedBuffer before hash:\n[%s]\n", transformedBuffer);
 #endif
 
-    /* hash the transformed buffer */
-    sha1_process_bytes (transformedBuffer, currentTransformedBufferLength, &perChromosomeHashCtx);
-    sha1_finish_ctx (&perChromosomeHashCtx, sha1Digest);
+    if (generatePerChrSignatureFlag) {
+        /* hash the transformed buffer */
+        sha1_process_bytes(transformedBuffer, currentTransformedBufferLength, &perChromosomeHashCtx);
+        sha1_finish_ctx(&perChromosomeHashCtx, sha1Digest);
 #ifdef __cplusplus
-    STARCH_encodeBase64(&base64EncodedSha1Digest, 
-                        static_cast<size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
-                        reinterpret_cast<const unsigned char *>( sha1Digest ), 
-                        static_cast<size_t>( STARCH2_MD_FOOTER_SHA1_LENGTH ) );
+        STARCH_encodeBase64(&base64EncodedSha1Digest, 
+                            static_cast<size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
+                            reinterpret_cast<const unsigned char *>( sha1Digest ), 
+                            static_cast<size_t>( STARCH2_MD_FOOTER_SHA1_LENGTH ) );
 #else
-    STARCH_encodeBase64(&base64EncodedSha1Digest, 
-                        (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
-                        (const unsigned char *) sha1Digest, 
-                        (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
+        STARCH_encodeBase64(&base64EncodedSha1Digest, 
+                            (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
+                            (const unsigned char *) sha1Digest, 
+                            (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
 #endif
 #ifdef DEBUG
-    fprintf(stderr, "\nPROGRESS: SHA-1 digest for chr [%s] is [%s]\n", prevChromosome, base64EncodedSha1Digest);
+        fprintf(stderr, "\nPROGRESS: SHA-1 digest for chr [%s] is [%s]\n", prevChromosome, base64EncodedSha1Digest);
 #endif
+    }
 
     /* last-pass, bzip2 */
     if (compressionType == kBzip2) {

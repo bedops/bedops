@@ -53,6 +53,7 @@ main (int argc, char **argv)
     char *bedFn = NULL;
     FILE *bedFnPtr = NULL;
     Metadata *metadata = NULL;
+    Boolean bedGeneratePerChrSignatureFlag = kStarchFalse;
     Boolean bedReportProgressFlag = kStarchFalse;
     LineCountType bedReportProgressN = 0;
     Boolean bedHeaderFlag = kStarchFalse;
@@ -79,6 +80,7 @@ main (int argc, char **argv)
     bedFn = starch_client_global_args.inputFile;
     type = starch_client_global_args.compressionType;
     tag = starch_client_global_args.uniqueTag;
+    bedGeneratePerChrSignatureFlag = starch_client_global_args.generatePerChromosomeSignatureFlag;
     bedReportProgressFlag = starch_client_global_args.reportProgressFlag;
     bedReportProgressN = starch_client_global_args.reportProgressN;
     bedHeaderFlag = starch_client_global_args.headerFlag;
@@ -180,6 +182,7 @@ main (int argc, char **argv)
                                    static_cast<const CompressionType>( type ), 
                                    reinterpret_cast<const char *>( tag ), 
                                    reinterpret_cast<const char *>( note ), 
+                                   static_cast<const Boolean>( bedGeneratePerChrSignatureFlag ),
                                    static_cast<const Boolean>( bedHeaderFlag ),
                                    static_cast<const Boolean>( bedReportProgressFlag ),
                                    static_cast<const LineCountType>( bedReportProgressN )) != STARCH_EXIT_SUCCESS) 
@@ -193,6 +196,7 @@ main (int argc, char **argv)
                                    (const CompressionType) type, 
                                    (const char *) tag, 
                                    (const char *) note, 
+                                   (const Boolean) bedGeneratePerChrSignatureFlag,
                                    (const Boolean) bedHeaderFlag,
                                    (const Boolean) bedReportProgressFlag,
                                    (const LineCountType) bedReportProgressN) != STARCH_EXIT_SUCCESS) 
@@ -236,6 +240,7 @@ STARCH_initializeGlobals ()
 #endif
     starch_client_global_args.note = NULL;
     starch_client_global_args.compressionType = STARCH_DEFAULT_COMPRESSION_TYPE;
+    starch_client_global_args.generatePerChromosomeSignatureFlag = kStarchTrue;
     starch_client_global_args.reportProgressFlag = kStarchFalse;
     starch_client_global_args.reportProgressN = 0;
     starch_client_global_args.headerFlag = kStarchFalse;
@@ -260,7 +265,8 @@ STARCH_parseCommandLineOptions (int argc, char **argv)
         return STARCH_FATAL_ERROR;
     }
 
-    opterr = 0;            /* disable error reporting by GNU getopt -- we handle this */
+    /* disable error reporting by GNU getopt -- we handle this */
+    opterr = 0;
     STARCH_initializeGlobals ();
 
     while (starch_client_opt != -1) {
@@ -275,6 +281,9 @@ STARCH_parseCommandLineOptions (int argc, char **argv)
             break;
         case 'g':
             starch_client_global_args.compressionType = kGzip;
+            break;
+        case 'o':
+            starch_client_global_args.generatePerChromosomeSignatureFlag = kStarchFalse;
             break;
         case 'r':
             starch_client_global_args.reportProgressFlag = kStarchTrue;

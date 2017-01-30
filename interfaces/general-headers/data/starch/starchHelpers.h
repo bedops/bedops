@@ -116,6 +116,7 @@ int     STARCH2_transformInput(unsigned char **header,
                        const CompressionType compressionType, 
                                   const char *tag,
                                   const char *note,
+                               const Boolean generatePerChrSignatureFlag,
                                const Boolean headerFlag,
                                const Boolean reportProgressFlag,
                          const LineCountType reportProgressN);
@@ -125,6 +126,7 @@ int     STARCH2_transformHeaderedBEDInput(const FILE *inFp,
                                const CompressionType compressionType, 
                                           const char *tag, 
                                           const char *note,
+                                       const Boolean generatePerChrSignatureFlag,
                                        const Boolean reportProgressFlag,
                                  const LineCountType reportProgressN);
 
@@ -133,6 +135,7 @@ int     STARCH2_transformHeaderlessBEDInput(const FILE *inFp,
                                  const CompressionType compressionType,
                                             const char *tag,
                                             const char *note,
+                                         const Boolean generatePerChrSignatureFlag,   
                                          const Boolean reportProgressFlag,
                                    const LineCountType reportProgressN);        
 

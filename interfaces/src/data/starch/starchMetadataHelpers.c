@@ -719,11 +719,13 @@ STARCH_generateJSONMetadata(const Metadata *md,
 
         /* 2.2+ archive */
         if ((json_integer_value(streamArchiveVersionMajor) > 2) || ((json_integer_value(streamArchiveVersionMajor) == 2) && (json_integer_value(streamArchiveVersionMinor) >= 2))) {
-            /* data integrity signature */
-            recordSignature = STARCH_strndup(iter->signature, strlen(iter->signature) + 1);
-            streamSignature = json_string(recordSignature);
-            json_object_set_new(stream, STARCH_METADATA_STREAM_SIGNATURE_KEY, streamSignature);
-            free(recordSignature);
+            if ((iter->signature) && (strlen(iter->signature) > 0)) {
+                /* data integrity signature */
+                recordSignature = STARCH_strndup(iter->signature, strlen(iter->signature) + 1);
+                streamSignature = json_string(recordSignature);
+                json_object_set_new(stream, STARCH_METADATA_STREAM_SIGNATURE_KEY, streamSignature);
+                free(recordSignature);
+            }
             /* maximum string length */
             filenameLineMaxStringLength = iter->lineMaxStringLength;
 #ifdef __cplusplus
@@ -1593,27 +1595,22 @@ STARCH_readJSONMetadata(json_t **metadataJSON,
             }
 
             /* v2.2+ */
-            /* data integrity signature */
-            streamSignature = json_object_get(stream, STARCH_METADATA_STREAM_SIGNATURE_KEY);
-            if (!streamSignature) {
-                if (((*version)->major > 2) || (((*version)->major == 2) && ((*version)->minor >= 2))) {
-                    if (suppressErrorMsgs == kStarchFalse)
-                        fprintf(stderr, "ERROR: Could not retrieve stream signature object with compliant version (%d.%d.%d)\n", (*version)->major, (*version)->minor, (*version)->revision);
-                    return STARCH_EXIT_FAILURE;
+            if (((*version)->major > 2) || (((*version)->major == 2) && ((*version)->minor >= 2))) {
+                /* data integrity signature */
+                streamSignature = json_object_get(stream, STARCH_METADATA_STREAM_SIGNATURE_KEY);
+                if (streamSignature) {
+                    strncpy(streamSig, json_string_value(streamSignature), strlen(json_string_value(streamSignature)) + 1);
                 }
-            }
-            else {
-                strncpy(streamSig, json_string_value(streamSignature), strlen(json_string_value(streamSignature)) + 1);
-            }
             
-            /* maximum string length */
-            streamLineMaxStringLength = json_object_get(stream, STARCH_METADATA_STREAM_LINEMAXSTRINGLENGTH_KEY);
+                /* maximum string length */
+                streamLineMaxStringLength = json_object_get(stream, STARCH_METADATA_STREAM_LINEMAXSTRINGLENGTH_KEY);
 #ifdef __cplusplus
-            streamLineMaxStringLengthValue = static_cast<LineLengthType>( json_integer_value(streamLineMaxStringLength) );
+                streamLineMaxStringLengthValue = static_cast<LineLengthType>( json_integer_value(streamLineMaxStringLength) );
 #else
-            streamLineMaxStringLengthValue = (LineLengthType) json_integer_value(streamLineMaxStringLength);
+                streamLineMaxStringLengthValue = (LineLengthType) json_integer_value(streamLineMaxStringLength);
 #endif
-            
+            }
+
             strncpy(streamChr, json_string_value(streamChromosome), strlen(json_string_value(streamChromosome)) + 1);
             strncpy(streamFn, json_string_value(streamFilename), strlen(json_string_value(streamFilename)) + 1);
 

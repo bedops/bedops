@@ -140,6 +140,7 @@ static const char *authors = "Alex Reynolds and Shane Neph";
 static const char *usage = "\n" \
     "USAGE: starchcat [ --note=\"...\" ]\n" \
     "                 [ --bzip2 | --gzip ]\n" \
+    "                 [ --omit-signature ]\n" \
     "                 [ --report-progress=N ] <starch-file-1> [<starch-file-2> ...]\n" \
     "\n" \
     "    * At least one lexicographically-sorted, headerless starch archive is\n" \
@@ -156,6 +157,8 @@ static const char *usage = "\n" \
     "    --note=\"foo bar...\"   Append note to output archive metadata (optional).\n\n" \
     "    --bzip2 | --gzip      Specify backend compression type (optional, default\n" \
     "                          is bzip2).\n\n" \
+    "    --omit-signature      Skip generating per-chromosome data integrity signature\n" \
+    "                          (optional, default is to generate signature).\n\n" \
     "    --report-progress=N   Report compression progress every N elements per\n" \
     "                          chromosome to standard error stream (optional)\n\n" \
     "    --version             Show binary version.\n\n" \
@@ -166,6 +169,7 @@ static struct starchcat_client_global_args_t {
     char *note;
     char **inputFiles;
     size_t numberInputFiles;
+    Boolean generatePerChromosomeSignatureFlag;
     Boolean reportProgressFlag;
     LineCountType reportProgressN;
 } starchcat_client_global_args;
@@ -174,13 +178,14 @@ static struct option starchcat_client_long_options[] = {
     {"note",            required_argument, NULL, 'n'},
     {"bzip2",           no_argument,       NULL, 'b'},
     {"gzip",            no_argument,       NULL, 'g'},
+    {"omit-signature",  no_argument,       NULL, 'o'},
     {"report-progress", required_argument, NULL, 'r'},
     {"version",         no_argument,       NULL, 'v'},
     {"help",            no_argument,       NULL, 'h'},
     {NULL,              no_argument,       NULL,  0 }
 };
 
-static const char *starchcat_client_opt_string = "n:bgrvh?";
+static const char *starchcat_client_opt_string = "n:bgorvh?";
 
 void     STARCHCAT_initializeGlobals();
 
@@ -207,6 +212,7 @@ int      STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd,
                                               const char *inChr, 
                                     const MetadataRecord *inRec,
                                                   size_t *cumulativeOutputSize,
+                                           const Boolean generatePerChrSignatureFlag,
                                            const Boolean reportProgressFlag,
                                      const LineCountType reportProgressN);
 
@@ -253,6 +259,7 @@ int      STARCHCAT2_mergeChromosomeStreams (const ChromosomeSummaries *chrSums,
                                                 const CompressionType outputType,
                                                            const char *note,
                                                                size_t *cumulativeOutputSize,
+                                                        const Boolean generatePerChrSignatureFlag,
                                                         const Boolean reportProgressFlag,
                                                   const LineCountType reportProgressN);
 

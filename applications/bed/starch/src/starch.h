@@ -43,6 +43,7 @@ static const char *authors = "Alex Reynolds and Shane Neph";
 static const char *usage = "\n" \
     "USAGE: starch [ --note=\"foo bar...\" ]\n" \
     "              [ --bzip2 | --gzip ]\n" \
+    "              [ --omit-signature ]\n" \
     "              [ --report-progress=N ]\n" \
     "              [ --header ] [ <unique-tag> ] <bed-file>\n" \
     "    \n" \
@@ -57,6 +58,8 @@ static const char *usage = "\n" \
     "    --note=\"foo bar...\"   Append note to output archive metadata (optional).\n\n" \
     "    --bzip2 | --gzip      Specify backend compression type (optional, default\n" \
     "                          is bzip2).\n\n" \
+    "    --omit-signature      Skip generating per-chromosome data integrity signature\n" \
+    "                          (optional, default is to generate signature).\n\n" \
     "    --report-progress=N   Report compression progress every N elements per\n" \
     "                          chromosome to standard error stream (optional)\n\n" \
     "    --header              Support BED input with custom UCSC track, SAM or VCF\n" \
@@ -69,6 +72,7 @@ static const char *usage = "\n" \
 static struct starch_client_global_args_t {
     char *note;
     CompressionType compressionType;
+    Boolean generatePerChromosomeSignatureFlag;
     Boolean reportProgressFlag;
     LineCountType reportProgressN;
     Boolean headerFlag;
@@ -83,6 +87,7 @@ static struct option starch_client_long_options[] = {
     {"note",            required_argument, NULL, 'n'},
     {"bzip2",           no_argument,       NULL, 'b'},
     {"gzip",            no_argument,       NULL, 'g'},
+    {"omit-signature",  no_argument,       NULL, 'o'},
     {"report-progress", required_argument, NULL, 'r'},
     {"header",          no_argument,       NULL, 'e'},
     {"version",         no_argument,       NULL, 'v'},
@@ -90,7 +95,7 @@ static struct option starch_client_long_options[] = {
     {NULL,              no_argument,       NULL,  0 }
 };
 
-static const char *starch_client_opt_string = "n:bgrevh?";
+static const char *starch_client_opt_string = "n:bgorevh?";
 
 #ifdef __cplusplus
 namespace starch {

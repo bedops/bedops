@@ -82,6 +82,7 @@ main (int argc, char **argv)
     json_t **metadataJSONs = NULL;
     size_t cumulativeRecSize = 0U;
     unsigned char *header = NULL;
+    Boolean bedGeneratePerChrSignatureFlag = kStarchFalse;
     Boolean bedReportProgressFlag = kStarchFalse;
     LineCountType bedReportProgressN = 0;
 
@@ -94,6 +95,7 @@ main (int argc, char **argv)
     parseResult = STARCHCAT_parseCommandLineOptions(argc, argv);
     note = starchcat_client_global_args.note;
     outputType = starchcat_client_global_args.compressionType;
+    bedGeneratePerChrSignatureFlag = starchcat_client_global_args.generatePerChromosomeSignatureFlag;
     bedReportProgressFlag = starchcat_client_global_args.reportProgressFlag;
     bedReportProgressN = starchcat_client_global_args.reportProgressN;
 #ifdef __cplusplus
@@ -166,6 +168,7 @@ main (int argc, char **argv)
                                                             static_cast<const CompressionType>( outputType ), 
                                                             reinterpret_cast<const char *>( note ),
                                                             &cumulativeRecSize,
+                                                            bedGeneratePerChrSignatureFlag,
                                                             bedReportProgressFlag,
                                                             bedReportProgressN ) );
 #else
@@ -173,6 +176,7 @@ main (int argc, char **argv)
                                                             (const CompressionType) outputType, 
                                                             (const char *) note,
                                                             &cumulativeRecSize,
+                                                            bedGeneratePerChrSignatureFlag,
                                                             bedReportProgressFlag,
                                                             bedReportProgressN ) );
 #endif
@@ -243,6 +247,7 @@ STARCHCAT_initializeGlobals()
     starchcat_client_global_args.compressionType = STARCH_DEFAULT_COMPRESSION_TYPE;
     starchcat_client_global_args.numberInputFiles = 0;
     starchcat_client_global_args.inputFiles = NULL;
+    starchcat_client_global_args.generatePerChromosomeSignatureFlag = kStarchTrue;
 }
 
 int
@@ -269,6 +274,9 @@ STARCHCAT_parseCommandLineOptions(int argc, char **argv)
                 break;
             case 'g':
                 starchcat_client_global_args.compressionType = kGzip;
+                break;
+            case 'o':
+                starchcat_client_global_args.generatePerChromosomeSignatureFlag = kStarchFalse;
                 break;
             case 'r':
                 starchcat_client_global_args.reportProgressFlag = kStarchTrue;
@@ -741,7 +749,7 @@ STARCHCAT_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const C
 }
 
 int 
-STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, const CompressionType outType, const char *inChr, const MetadataRecord *inRec, size_t *cumulativeOutputSize, const Boolean reportProgressFlag, const LineCountType reportProgressN)
+STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, const CompressionType outType, const char *inChr, const MetadataRecord *inRec, size_t *cumulativeOutputSize, const Boolean generatePerChrSignatureFlag, const Boolean reportProgressFlag, const LineCountType reportProgressN)
 {
     /*
         This function extracts a single record (chromosome) of data
@@ -829,7 +837,7 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
 
     /* hash variables */
     struct sha1_ctx t_perChromosomeHashCtx;
-    unsigned char t_sha1Digest[STARCH2_MD_FOOTER_SHA1_LENGTH];
+    unsigned char t_sha1Digest[STARCH2_MD_FOOTER_SHA1_LENGTH] = {0};
     char *t_base64EncodedSha1Digest = NULL;
 
     static const char tab = '\t';
@@ -893,8 +901,10 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
     fseeko(inFp, (off_t) startOffset, SEEK_SET);
 #endif
 
-    /* set up per-chromosome hash context */
-    sha1_init_ctx (&t_perChromosomeHashCtx);
+    if (generatePerChrSignatureFlag) {
+        /* set up per-chromosome hash context */
+        sha1_init_ctx(&t_perChromosomeHashCtx);
+    }
 
     /*
         Set up I/O streams 
@@ -1200,12 +1210,14 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                                         retransformBuf, and set nRetransformBuf.
                                     */
 
-                                    /* hash the transformed buffer */
+                                    if (generatePerChrSignatureFlag) {
+                                        /* hash the transformed buffer */
 #ifdef __cplusplus
-                                    sha1_process_bytes (retransformBuf, static_cast<size_t>( nRetransformBuf ), &t_perChromosomeHashCtx);
+                                        sha1_process_bytes(retransformBuf, static_cast<size_t>( nRetransformBuf ), &t_perChromosomeHashCtx);
 #else
-                                    sha1_process_bytes (retransformBuf, (size_t) nRetransformBuf, &t_perChromosomeHashCtx);
+                                        sha1_process_bytes(retransformBuf, (size_t) nRetransformBuf, &t_perChromosomeHashCtx);
 #endif
+                                    }
 
                                     switch (outType) {
                                         /* compress with bzip2 */
@@ -1352,12 +1364,14 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                 }
             }
 
-            /* hash the transformed buffer */
+            if (generatePerChrSignatureFlag) {
+                /* hash the transformed buffer */
 #ifdef __cplusplus
-            sha1_process_bytes (retransformBuf, static_cast<size_t>( nRetransformBuf ), &t_perChromosomeHashCtx);
+                sha1_process_bytes(retransformBuf, static_cast<size_t>( nRetransformBuf ), &t_perChromosomeHashCtx);
 #else
-            sha1_process_bytes (retransformBuf, (size_t) nRetransformBuf, &t_perChromosomeHashCtx);
+                sha1_process_bytes(retransformBuf, (size_t) nRetransformBuf, &t_perChromosomeHashCtx);
 #endif
+            }
 
             /* compress whatever is left in the retransform buffer */
             switch (outType) {
@@ -1664,12 +1678,15 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                                 }
                                 else {
 
-                                    /* hash the transformed buffer */
+                                    if (generatePerChrSignatureFlag) {
+                                        /* hash the transformed buffer */
 #ifdef __cplusplus
-                                    sha1_process_bytes (retransformBuf, static_cast<size_t>( nRetransformBuf ), &t_perChromosomeHashCtx);
+                                        sha1_process_bytes(retransformBuf, static_cast<size_t>( nRetransformBuf ), &t_perChromosomeHashCtx);
 #else
-                                    sha1_process_bytes (retransformBuf, (size_t) nRetransformBuf, &t_perChromosomeHashCtx);
+                                        sha1_process_bytes(retransformBuf, (size_t) nRetransformBuf, &t_perChromosomeHashCtx);
 #endif
+                                    }
+
                                     /* 
                                         Compress whatever is already in retransformBuf given the specified
                                         outbound compression type, add retransformLineBuf to the start of 
@@ -1790,12 +1807,14 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                 } while (zInStream.avail_out == 0);
             } while (zInError != Z_STREAM_END);
 
-            /* hash the transformed buffer */
+            if (generatePerChrSignatureFlag) {
+                /* hash the transformed buffer */
 #ifdef __cplusplus
-            sha1_process_bytes (retransformBuf, static_cast<size_t>( nRetransformBuf ), &t_perChromosomeHashCtx);
+                sha1_process_bytes(retransformBuf, static_cast<size_t>( nRetransformBuf ), &t_perChromosomeHashCtx);
 #else
-            sha1_process_bytes (retransformBuf, (size_t) nRetransformBuf, &t_perChromosomeHashCtx);
+                sha1_process_bytes(retransformBuf, (size_t) nRetransformBuf, &t_perChromosomeHashCtx);
 #endif
+            }
   
             /* process any remainder */
             switch (outType) {
@@ -1880,21 +1899,23 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
         }
     }
 
-    sha1_finish_ctx (&t_perChromosomeHashCtx, t_sha1Digest);
+    if (generatePerChrSignatureFlag) {
+        sha1_finish_ctx(&t_perChromosomeHashCtx, t_sha1Digest);
 #ifdef __cplusplus
-    STARCH_encodeBase64(&t_base64EncodedSha1Digest, 
-                        static_cast<size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
-                        reinterpret_cast<const unsigned char *>( t_sha1Digest ), 
-                        static_cast<size_t>( STARCH2_MD_FOOTER_SHA1_LENGTH ) );
+        STARCH_encodeBase64(&t_base64EncodedSha1Digest, 
+                            static_cast<size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
+                            reinterpret_cast<const unsigned char *>( t_sha1Digest ), 
+                            static_cast<size_t>( STARCH2_MD_FOOTER_SHA1_LENGTH ) );
 #else
-    STARCH_encodeBase64(&t_base64EncodedSha1Digest, 
-                        (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
-                        (const unsigned char *) t_sha1Digest, 
-                        (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
+        STARCH_encodeBase64(&t_base64EncodedSha1Digest, 
+                            (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
+                            (const unsigned char *) t_sha1Digest, 
+                            (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
 #endif
 #ifdef DEBUG
-    fprintf(stderr, "\nPROGRESS: SHA-1 digest for chr [%s] is [%s]\n", inChr, t_base64EncodedSha1Digest);
+       fprintf(stderr, "\nPROGRESS: SHA-1 digest for chr [%s] is [%s]\n", inChr, t_base64EncodedSha1Digest);
 #endif
+    }
 
     /* clean up outbound compression stream */
     switch (outType) {
@@ -4839,7 +4860,7 @@ STARCHCAT_checkMetadataJSONVersions (json_t ***mdJSONs, const unsigned int numRe
 }
 
 int
-STARCHCAT2_mergeChromosomeStreams (const ChromosomeSummaries *chrSums, const CompressionType outputType, const char *note, size_t *cumulativeOutputSize, const Boolean reportProgressFlag, const LineCountType reportProgressN) 
+STARCHCAT2_mergeChromosomeStreams (const ChromosomeSummaries *chrSums, const CompressionType outputType, const char *note, size_t *cumulativeOutputSize, const Boolean generatePerChrSignatureFlag, const Boolean reportProgressFlag, const LineCountType reportProgressN) 
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCHCAT2_mergeChromosomeStreams() ---\n");
@@ -4856,7 +4877,7 @@ STARCHCAT2_mergeChromosomeStreams (const ChromosomeSummaries *chrSums, const Com
     Boolean hFlag = kStarchFalse; /* starchcat does not currently support headers */
     char *dynamicMdBuffer = NULL;
     char *dynamicMdBufferCopy = NULL;
-    unsigned char sha1Digest[STARCH2_MD_FOOTER_SHA1_LENGTH];
+    unsigned char sha1Digest[STARCH2_MD_FOOTER_SHA1_LENGTH] = {0};
     char *base64EncodedSha1Digest = NULL;
     char footerCumulativeRecordSizeBuffer[STARCH2_MD_FOOTER_CUMULATIVE_RECORD_SIZE_LENGTH + 1] = {0};
     char footerRemainderBuffer[STARCH2_MD_FOOTER_REMAINDER_LENGTH + 1] = {0};
@@ -4982,6 +5003,7 @@ STARCHCAT2_mergeChromosomeStreams (const ChromosomeSummaries *chrSums, const Com
                                                                reinterpret_cast<const char *>( inputChr ), 
                                                                reinterpret_cast<const MetadataRecord *>( inputRecord ), 
                                                                cumulativeOutputSize,
+                                                               generatePerChrSignatureFlag,
                                                                reportProgressFlag,
                                                                reportProgressN) );
 #else
@@ -4991,6 +5013,7 @@ STARCHCAT2_mergeChromosomeStreams (const ChromosomeSummaries *chrSums, const Com
                                                                (const char *) inputChr, 
                                                                (const MetadataRecord *) inputRecord, 
                                                                cumulativeOutputSize,
+                                                               generatePerChrSignatureFlag,
                                                                reportProgressFlag,
                                                                reportProgressN) );
 #endif

@@ -2067,7 +2067,7 @@ UNSTARCH_signatureForChromosome(const Metadata *md, const char *chr)
     const Metadata *iter;
     
     for (iter = md; iter != NULL; iter = iter->next) {
-        if (strcmp(chr, iter->chromosome) == 0)
+        if ((strcmp(chr, iter->chromosome) == 0) && (iter->signature) && (strlen(iter->signature) > 0))
             return iter->signature;
     }
 
@@ -2122,7 +2122,7 @@ UNSTARCH_printAllChromosomeSignatures(const Metadata *md)
     const Metadata *iter;
     
     for (iter = md; iter != NULL; iter = iter->next) {
-        fprintf(stdout, "%s\t%s\n", iter->chromosome, iter->signature);
+        fprintf(stdout, "%s\t%s\n", iter->chromosome, strlen(iter->signature) > 0 ? iter->signature : "NA");
     }
 }
 
@@ -2142,20 +2142,24 @@ UNSTARCH_verifySignature(FILE **inFp, const Metadata *md, const uint64_t mdOffse
     else {
         expectedSignature = UNSTARCH_signatureForChromosome(md, chr);
         if (!expectedSignature) {
-            fprintf(stderr, "ERROR: Could not locate signature in metadata for specified chromosome name [%s]\n", chr);
-            signaturesVerifiedFlag = kStarchFalse;
-        }
-        observedSignature = UNSTARCH_observedSignatureForChromosome(inFp, md, mdOffset, chr, compType);
-        if (!observedSignature) {
-            signaturesVerifiedFlag = kStarchFalse;
-        }
-        else if (strcmp(observedSignature, expectedSignature) != 0) {
-            fprintf(stderr, "ERROR: Specified chromosome record may be corrupt -- observed and expected signatures do not match for chromosome [%s]\n", chr);
+            fprintf(stderr, "ERROR: Could not locate signature in metadata for specified chromosome name for purposes of verification [%s]\n", chr);
             signaturesVerifiedFlag = kStarchFalse;
         }
         else {
-            fprintf(stderr, "Expected and observed data integrity signatures match for chromosome [%s]\n", chr);
-            signaturesVerifiedFlag = kStarchTrue;
+            observedSignature = UNSTARCH_observedSignatureForChromosome(inFp, md, mdOffset, chr, compType);
+            if (!observedSignature) {
+                signaturesVerifiedFlag = kStarchFalse;
+            }
+        }
+        if ((expectedSignature) && (observedSignature)) {
+            if (strcmp(observedSignature, expectedSignature) != 0) {
+                fprintf(stderr, "ERROR: Specified chromosome record may be corrupt -- observed and expected signatures do not match for chromosome [%s]\n", chr);
+                signaturesVerifiedFlag = kStarchFalse;
+            }
+            else {
+                fprintf(stderr, "Expected and observed data integrity signatures match for chromosome [%s]\n", chr);
+                signaturesVerifiedFlag = kStarchTrue;
+            }
         }
     }
     if (observedSignature) { free(observedSignature), observedSignature = NULL; }

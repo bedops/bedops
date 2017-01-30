@@ -15,15 +15,19 @@ Current version
 v2.4.23
 -------
 
-Released: **TBD**
+Released: **January 29, 2017**
 
 * :ref:`unstarch <unstarch>`
 
-  * Fixed bug where missing signature from pre-v2.2 Starch archives would cause fatal metadata error. Thanks to Shane Neph and Eric Rynes for the bug report.
+  * Fixed bug where missing signature from older, pre-v2.2 Starch archives would cause a fatal metadata error. Thanks to Shane Neph and Eric Rynes for the bug report.
 
 * :ref:`starch <starch>`
     
-  * Added `--no-signature` option to compress without creating a per-chromosome data integrity signature. This can reduce compression time, but will eliminate the benefits of the data integrity signature.
+  * Added `--omit-signature` option to compress without creating a per-chromosome data integrity signature. This can reduce compression time, but will eliminate the benefits of the data integrity signature.
+
+  * :ref:`starchcat <starchcat>`
+    
+  * Added `--omit-signature` option to compress without creating a per-chromosome data integrity signature. This can reduce compression time, but will eliminate the benefits of the data integrity signature.
 
 =================
 Previous versions
