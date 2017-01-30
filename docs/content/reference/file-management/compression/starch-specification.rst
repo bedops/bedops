@@ -145,7 +145,7 @@ The ``duplicateElementExists`` key specifies if there is a duplicate BED element
 
 The ``nestedElementExists`` key specifies if there is a nested BED element somewhere within the compressed chromosome stream. Refer to BEDOPS documentation to see how :ref:`nested elements <nested_elements>` are defined. 
 
-The ``signature`` key, available in v2.2 archives, specifies the Base64-encoded SHA-1 data integrity signature generated from the transformed chromosome stream (not the raw BED data, but the reduced or transformed form that is compressed). This can be used to compare the transformed bytes for chromosomes from different archives, or to validate the genomic data in a Starch archive by chromosome, or in entirety.
+The ``signature`` key, available in v2.2 archives, specifies the Base64-encoded SHA-1 data integrity signature generated from the transformed chromosome stream (not the raw BED data, but the reduced or transformed form that is compressed). This can be used to compare the transformed bytes for chromosomes from different archives, or to validate the genomic data in a Starch archive by chromosome, or in entirety. (Note that, if ``--omit-signature`` was used to create a v2.2 archive, this key will not be present in the stream object.)
 
 The ``uncompressedLineMaxStringLength`` key, available in v2.2 archives, specifies the maximum string length over all records in the chromosome stream.
 

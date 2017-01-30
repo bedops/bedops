@@ -54,21 +54,25 @@ Use the ``--help`` option to list all options:
 
   USAGE: starch [ --note="foo bar..." ]
                 [ --bzip2 | --gzip ]
+                [ --omit-signature ]
                 [ --report-progress=N ]
                 [ --header ] [ <unique-tag> ] <bed-file>
-    
+      
       * BED input must be sorted lexicographically (e.g., using BEDOPS sort-bed).
       * Please use '-' to indicate reading BED data from standard input.
       * Output must be directed to a regular file.
       * The bzip2 compression type makes smaller archives, while gzip extracts
         faster.
-    
+      
       Process Flags
       --------------------------------------------------------------------------
       --note="foo bar..."   Append note to output archive metadata (optional).
 
       --bzip2 | --gzip      Specify backend compression type (optional, default
                             is bzip2).
+
+      --omit-signature      Skip generating per-chromosome data integrity signature
+                            (optional, default is to generate signature).
 
       --report-progress=N   Report compression progress every N elements per
                             chromosome to standard error stream (optional)
@@ -102,6 +106,14 @@ Use the ``--note="xyz..."`` option to add a custom string that describes the arc
 .. tip:: Examples of usage might include a description of the experiment associated with the data, a URL to a UCSC Genome Browser session, or a bar code or other unique identifier for internal lab or LIMS use.
 
 .. note:: The only limitation on the length of a note is the command-line shell's maximum argument length parameter (as found on most UNIX systems with the command ``getconf ARG_MAX``) minus the length of the non- ``--note="..."`` command components. On most desktop systems, this value will be approximately 256 kB.
+
+---------------------------------------
+Per-chromosome data integrity signature
+---------------------------------------
+
+By default, a data integrity signature is generated for each chromosome. This can be used to verify if chromosome streams from two or more Starch archives are identical, or used to test the integrity of a chromosome, to identify potential data corruption. 
+
+Generating this signature adds to the computational cost of compression, or an integrity signature may not be useful for all archives. Add the ``--omit-signature`` option, if the compression time is too high or the data integrity signature is not needed.
 
 --------------------
 Compression progress

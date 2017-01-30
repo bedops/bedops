@@ -62,6 +62,7 @@ Use the ``--help`` option to list all options:
 
   USAGE: starchcat [ --note="..." ]
                    [ --bzip2 | --gzip ]
+                   [ --omit-signature ]
                    [ --report-progress=N ] <starch-file-1> [<starch-file-2> ...]
 
       * At least one lexicographically-sorted, headerless starch archive is
@@ -81,12 +82,23 @@ Use the ``--help`` option to list all options:
       --bzip2 | --gzip      Specify backend compression type (optional, default
                             is bzip2).
 
+      --omit-signature      Skip generating per-chromosome data integrity signature
+                            (optional, default is to generate signature).
+
       --report-progress=N   Report compression progress every N elements per
                             chromosome to standard error stream (optional)
 
       --version             Show binary version.
 
       --help                Show this usage message.
+
+---------------------------------------
+Per-chromosome data integrity signature
+---------------------------------------
+
+By default, a data integrity signature is generated for each chromosome. This can be used to verify if chromosome streams from two or more Starch archives are identical, or used to test the integrity of a chromosome, to identify potential data corruption. 
+
+Generating this signature adds to the computational cost of compression, or an integrity signature may not be useful for all archives. Add the ``--omit-signature`` option, if the compression time is too high or the data integrity signature is not needed.
 
 -------
 Example
