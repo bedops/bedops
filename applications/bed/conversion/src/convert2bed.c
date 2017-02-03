@@ -3829,20 +3829,6 @@ c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     /* 
        If number of fields in not in bounds, we may need to exit early
     */
-    
-    char *src_header_line_str = NULL; 
-    src_header_line_str = malloc(C2B_MAX_LONGER_LINE_LENGTH_VALUE);
-    if (!src_header_line_str) {
-        fprintf(stderr, "Error: Could not allocate space for VCF source header line string\n");
-        exit(ENOMEM); /* Not enough space (POSIX.1) */        
-    }
-
-    char *dest_header_line_str = NULL;
-    dest_header_line_str = malloc(C2B_MAX_LONGER_LINE_LENGTH_VALUE);
-    if (!dest_header_line_str) {
-        fprintf(stderr, "Error: Could not allocate space for VCF destination header line string\n");
-        exit(ENOMEM); /* Not enough space (POSIX.1) */        
-    }
 
     /* 0 - CHROM */
     ssize_t chrom_size = vcf_field_offsets[0];
@@ -3862,12 +3848,27 @@ c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     c2b_globals.vcf->element->chrom[chrom_size] = '\0';
 
     if ((c2b_globals.vcf->element->chrom[0] == c2b_vcf_header_prefix) && (c2b_globals.keep_header_flag)) {
+        char *src_header_line_str = NULL; 
+        src_header_line_str = malloc(C2B_MAX_LONGER_LINE_LENGTH_VALUE);
+        if (!src_header_line_str) {
+            fprintf(stderr, "Error: Could not allocate space for VCF source header line string\n");
+            exit(ENOMEM); /* Not enough space (POSIX.1) */        
+        }
+
+        char *dest_header_line_str = NULL;
+        dest_header_line_str = malloc(C2B_MAX_LONGER_LINE_LENGTH_VALUE);
+        if (!dest_header_line_str) {
+            fprintf(stderr, "Error: Could not allocate space for VCF destination header line string\n");
+            exit(ENOMEM); /* Not enough space (POSIX.1) */        
+        }
         memcpy(src_header_line_str, src, src_size);
         src_header_line_str[src_size] = '\0';
         sprintf(dest_header_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), src_header_line_str);
         memcpy(dest + *dest_size, dest_header_line_str, strlen(dest_header_line_str));
         *dest_size += strlen(dest_header_line_str);
         c2b_globals.header_line_idx++;
+        free(src_header_line_str);
+        free(dest_header_line_str);
         return;
     }
     else if (c2b_globals.vcf->element->chrom[0] == c2b_vcf_header_prefix) {

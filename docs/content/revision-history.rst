@@ -12,6 +12,20 @@ Current version
 ===============
 
 -------
+v2.4.24
+-------
+
+Released: **February 4, 2017**
+
+* :ref:`convert2bed <convert2bed>`
+
+  * Patched a memory leak in VCF conversion. Thanks to ehsueh for the bug report.
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.23
 -------
 
@@ -26,10 +40,6 @@ Released: **January 30, 2017**
 * :ref:`starch <starch>` and :ref:`starchcat <starchcat>`
   
   * Added :code:`--omit-signature` option to compress without creating a per-chromosome data integrity signature. While this reduces compression time, this eliminates the verification benefits of the data integrity signature.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.22
