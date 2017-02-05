@@ -26,6 +26,7 @@ import os
 import argparse
 import errno
 import subprocess
+import json
 
 name = "starch-diff"
 citation = "  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract"
@@ -75,6 +76,26 @@ def main():
     if selected_chromosome == default_chromosome:
         all_chromosomes = {}
         for archive_path in archive_paths:
+            get_archive_version_cmd_components = [
+                'unstarch',
+                '--list-json',
+                archive_path
+            ]
+            try:
+                get_archive_version_cmd_result = subprocess.check_output(get_archive_version_cmd_components)
+            except subprocess.CalledProcessError as err:
+                get_archive_version_cmd_result = "ERROR: Command '{}' returned with error (code {}): {}".format(err.cmd, err.returncode, err.output)
+                raise
+            archive_metadata = json.loads(get_archive_version_cmd_result)
+            try:
+                archive_version = archive_metadata['archive']['version']
+            except KeyError as err:
+                sys.stderr.write("ERROR: Could not read archive metadata\n")
+                raise
+            if archive_version['major'] < 2 or (archive_version['major'] == 2 and archive_version['minor'] < 2):
+                sys.stderr.write("ERROR: Input [%s] must be a v2.2+ Starch archive -- use 'starchcat' to update archive\n" % (archive_path))
+                sys.exit(errno.EINVAL)
+                
             list_chromosome_cmd_components = [
                 'unstarch',
                 '--list-chr',
@@ -92,6 +113,10 @@ def main():
                 all_chromosomes[chromosome] += 1
 
         common_chromosomes = [k for k, v in all_chromosomes.iteritems() if v == num_files]
+
+        if not common_chromosomes:
+            sys.stderr.write("ERROR: Inputs share no records with a common chromosome name\n")
+            sys.exit(errno.EINVAL)
     else:
         common_chromosomes = [selected_chromosome]
 
