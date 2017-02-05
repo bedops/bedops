@@ -33,7 +33,12 @@ name = "update-sort-bed-slurm"
 citation = "  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract"
 authors = "  authors:  Alex Reynolds and Shane Neph"
 version = "  version:  2.4.24"
-usage = "  $ update-sort-bed-slurm [ --slurm-memory <MB> ] [ --slurm-partition <partition> ] --input <old-bed-file> --output <new-bed-file>"
+usage = """  $ update-sort-bed-slurm [ --slurm-memory <MB> ] 
+                        [ --slurm-partition <partition> ] 
+                        [ --slurm-workdir <working directory> ]
+                        [ --slurm-output <SLURM output directory> ]
+                        [ --slurm-error <SLURM error directory> ]
+                        --input <old-bed-file> --output <new-bed-file>"""
 help = """
   The 'update-sort-bed-slurm' utility applies an updated sort order on BED files
   sorted per pre-v2.4.20 sort-bed, using a SLURM job scheduler to coordinate
@@ -46,15 +51,20 @@ help = """
   files with a sort order from pre-v2.4.20 sort-bed.
 """
 
-slurm_memory = "4000"
-slurm_partition = "queue0"
-slurm_options = "--parsable --workdir=" + os.getcwd() + " --output=/dev/null --error=/dev/null"
-
 def main():
+    slurm_memory = "4000"
+    slurm_partition = "queue0"
+    slurm_workdir = "/"
+    slurm_output = "/dev/null"
+    slurm_error = "/dev/null"
+    
     parser = argparse.ArgumentParser(prog=name, usage=usage, add_help=False)
     parser.add_argument('--help', '-h', action='store_true', dest='help')
-    parser.add_argument('--slurm-memory', '-m', type=str, action="store", dest=slurm_memory)
-    parser.add_argument('--slurm-partition', '-p', type=str, action="store", dest=slurm_partition)
+    parser.add_argument('--slurm-memory', '-m', type=str, action="store", dest='slurm_memory')
+    parser.add_argument('--slurm-partition', '-p', type=str, action="store", dest='slurm_partition')
+    parser.add_argument('--slurm-workdir', '-w', type=str, action="store", dest='slurm_workdir')
+    parser.add_argument('--slurm-output', '-u', type=str, action="store", dest='slurm_output')
+    parser.add_argument('--slurm-error', '-e', type=str, action="store", dest='slurm_error')    
     parser.add_argument('--input', '-i', type=str, action="store", dest='input_fn')
     parser.add_argument('--output', '-o', type=str, action="store", dest='output_fn')
     args = parser.parse_args()
@@ -83,6 +93,21 @@ def main():
         sys.stderr.write("ERROR: This script must be run on a system with SLURM and BEDOPS binaries available\n")
         sys.exit(errno.EEXIST)
 
+    if args.slurm_memory:
+        slurm_memory = args.slurm_memory
+
+    if args.slurm_partition:
+        slurm_partition = args.slurm_partition
+
+    if args.slurm_workdir:
+        slurm_workdir = args.slurm_workdir
+
+    if args.slurm_output:
+        slurm_output = args.slurm_output
+
+    if args.slurm_error:
+        slurm_error = args.slurm_error
+
     # get list of chromosomes
     list_chromosome_cmd_components = [
         'bedextract',
@@ -100,44 +125,59 @@ def main():
     job_prefix = ''.join(random.choice(string.lowercase) for x in range(8))
     job_ids = []
     job_fns = []
+    local_environment = os.environ.copy()
     for chromosome in chromosome_list:
         temp_dest = os.path.join(os.getcwd(), '_'.join([job_prefix, chromosome]))
         per_chromosome_sort_cmd_components = [
             'sbatch',
-            slurm_options,
+            '--parsable',
+            '--workdir',
+            slurm_workdir,
+            '--output',
+            slurm_output,
+            '--error',
+            slurm_error,
             '--mem',
             slurm_memory,
             '--partition',
             slurm_partition,
-            '--wrap="module add bedops; bedextract ' + chromosome + ' ' + args.input_fn + ' | starch - > ' + temp_dest + '"'
+            '--wrap="module add bedops; bedextract ' + chromosome + ' ' + args.input_fn + ' | sort-bed - > ' + temp_dest + '"'
         ]
         try:
-            per_chromosome_sort_cmd_result = subprocess.check_output(per_chromosome_sort_cmd_components)
-            job_ids.append(per_chromosome_sort_cmd_result)
+            print(' '.join(per_chromosome_sort_cmd_components)
+            per_chromosome_sort_cmd_result = subprocess.check_output(per_chromosome_sort_cmd_components, env=local_environment, shell=True)
+            job_ids.append(per_chromosome_sort_cmd_result.rstrip('\n'))
             job_fns.append(temp_dest)
         except subprocess.CalledProcessError as err:
             sys.stderr.write("ERROR: Command [%s] returned with error (code %d)\n" % (' '.join(err.cmd), err.returncode))
             sys.exit(errno.EINVAL)
-    
+
     # union result
-    dependencies = ':'.join(job_ids)
+    dependencies = 'afterok:' + ':'.join(job_ids)
     union_cmd_components = [
         'sbatch',
-        slurm_options,
+        '--parsable',
+        '--workdir',
+        slurm_workdir,
+        '--output',
+        slurm_output,
+        '--error',
+        slurm_error,        
         '--mem',
         slurm_memory,
         '--partition',
         slurm_partition,
-        '--dependency=afterok:' + dependencies,
+        '--dependency',
+        dependencies,
         '--wrap="module add bedops; bedops -u ' + ' '.join(job_fns) + ' > ' + args.output_fn + '; rm -f ' + ' '.join(job_fns) + '"'
     ]
     try:
         union_cmd_result = subprocess.check_output(union_cmd_components)
     except subprocess.CalledProcessError as err:
-        union_cmd_result = "ERROR: Command '{}' returned with error (code {}): {}".format(err.cmd, err.returncode, err.output)
-        raise
+        sys.stderr.write("ERROR: Command [%s] returned with error (code %d)\n" % (' '.join(err.cmd), err.returncode))
+        sys.exit(errno.EINVAL)        
 
-    sys.stderr.write("Note: Run `$ sacct -j %s` to track job status of final union\n" % (union_cmd_result))
+    sys.stderr.write("Note: Run `$ sacct -j %s` to track job status of final union\n" % (union_cmd_result.rstrip('\n')))
 
 def cmd_exists(cmd):
     return subprocess.call("type " + cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0

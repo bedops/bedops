@@ -78,3 +78,4 @@ clean:
 	rm -rf ${OBJDIR}
 	rm -f $(BINDIR)/$(PROG)
 	rm -f $(BINDIR)/*.$(PROG)
+	rm -f $(BINDIR)/update-sort-bed-slurm
