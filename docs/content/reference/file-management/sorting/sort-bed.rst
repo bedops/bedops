@@ -9,6 +9,8 @@ Sorted BED order is defined first by lexicographic chromosome order, then ascend
 
 Other utilities in the BEDOPS suite require data in sorted order as described. You only need to sort once: BEDOPS utilities all read and write data in sorted order.
 
+A convenience utility called ``update-sort-bed-slurm`` is provided that updates the sort order of BED files sorted with pre-v2.4.20 ``sort-bed`` via a SLURM-based cluster. See ``update-sort-bed-slurm --help`` for more details.
+
 ==================
 Inputs and outputs
 ==================
@@ -17,13 +19,13 @@ Inputs and outputs
 Input
 -----
 
-The :ref:`sort-bed` utility requires one or more three-column BED file(s). Support for common headers (such as `UCSC BED track headers <http://genome.ucsc.edu/FAQ/FAQformat.html#format1>`_) is included, although headers will be stripped from the output.
+The ``sort-bed`` utility requires one or more three-column BED file(s). Support for common headers (such as `UCSC BED track headers <http://genome.ucsc.edu/FAQ/FAQformat.html#format1>`_) is included, although headers will be stripped from the output.
 
 ------
 Output
 ------
 
-The :ref:`sort-bed` utility sends sorted BED data to standard output, which can be redirected to a file or piped to other utilities, including core BEDOPS utilities like :ref:`bedops` and :ref:`bedmap`. Sort order is defined by a lexicographical sort on chromosome name, a numerical sort on start coordinates, a numerical sort on stop coordinates where there are start matches, and finally a lexicographical sort on the remainder of the BED element (if additional columns are present).
+The ``sort-bed`` utility sends sorted BED data to standard output, which can be redirected to a file or piped to other utilities, including core BEDOPS utilities like :ref:`bedops` and :ref:`bedmap`. Sort order is defined by a lexicographical sort on chromosome name, a numerical sort on start coordinates, a numerical sort on stop coordinates where there are start matches, and finally a lexicographical sort on the remainder of the BED element (if additional columns are present).
 
 =====
 Usage
@@ -46,19 +48,19 @@ The ``--help`` option is fairly basic, but describes the usage:
           <val> for --max-mem may be 8G, 8000M, or 8000000000 to specify 8 GB of memory.
           --tmpdir is useful only with --max-mem.
 
-A simple example of using :ref:`sort-bed` would be:
+A simple example of using ``sort-bed`` would be:
 
 ::
 
   $ sort-bed unsortedData.bed > sortedData.bed
 
-The :ref:`sort-bed` program efficiently sorts BED inputs. By default, all input records are read into system memory and sorted. If your BED dataset is larger than available system memory, use the ``--max-mem`` option to limit the amount of memory :ref:`sort-bed` uses to do its work:
+The ``sort-bed`` program efficiently sorts BED inputs. By default, all input records are read into system memory and sorted. If your BED dataset is larger than available system memory, use the ``--max-mem`` option to limit the amount of memory ``sort-bed`` uses to do its work:
 
 ::
 
   $ sort-bed --max-mem 2G reallyHugeUnsortedData.bed > reallyHugeSortedData.bed
 
-This option allows :ref:`sort-bed` to scale to input of any size.
+This option allows ``sort-bed`` to scale to input of any size.
 
 The ``--tmpdir`` option allows specification of an alternative temporary directory, when used in conjunction with ``--max-mem`` option. This is useful if the host operating system’s standard temporary directory (*e.g.*, ``/tmp`` on Linux or OS X) does not have sufficient space to hold intermediate results.
 

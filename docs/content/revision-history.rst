@@ -21,6 +21,10 @@ Released: **February 5, 2017**
 
   * The :code:`starch-diff` utility compares signatures of two or more v2.2+ Starch archives. This tool tests all chromosomes or one specified chromosome. It returns a zero exit code, if the signature(s) are identical, or a non-zero error exit code, if one or more signature(s) are dissimilar.
 
+* :ref:`update-sort-bed-slurm <sort-bed>`
+
+  * The :code:`update-sort-bed-slurm` utility provides a parallelized update of the sort order on BED files sorted with pre-v2.4.20 sort-bed, for users with a SLURM job scheduler and associated cluster.
+
 * :ref:`convert2bed <convert2bed>`
 
   * Patched a memory leak in VCF conversion. Thanks to ehsueh for the bug report.

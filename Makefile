@@ -24,6 +24,7 @@ gprof: default
 
 install: prep_c install_conversion_scripts install_starch_scripts
 	-cp ${APPDIR}/sort-bed/bin/sort-bed ${BINDIR}/
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm ${BINDIR}/
 	-cp ${APPDIR}/bedops/bin/bedops ${BINDIR}/
 	-cp ${APPDIR}/closestfeats/bin/closest-features ${BINDIR}/
 	-cp ${APPDIR}/bedmap/bin/bedmap ${BINDIR}/
@@ -44,6 +45,7 @@ prep_c:
 
 install_debug: prep_c install_conversion_scripts install_starch_scripts
 	-cp ${APPDIR}/sort-bed/bin/debug.sort-bed ${BINDIR}/
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm ${BINDIR}/
 	-cp ${APPDIR}/bedops/bin/debug.bedops ${BINDIR}/
 	-cp ${APPDIR}/closestfeats/bin/debug.closest-features ${BINDIR}/
 	-cp ${APPDIR}/bedmap/bin/debug.bedmap ${BINDIR}/
@@ -55,6 +57,7 @@ install_debug: prep_c install_conversion_scripts install_starch_scripts
 
 install_gprof: prep_c install_conversion_scripts install_starch_scripts
 	-cp ${APPDIR}/sort-bed/bin/gprof.sort-bed ${BINDIR}/
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm ${BINDIR}/
 	-cp ${APPDIR}/bedops/bin/gprof.bedops ${BINDIR}/
 	-cp ${APPDIR}/closestfeats/bin/gprof.closest-features ${BINDIR}/
 	-cp ${APPDIR}/bedmap/bin/gprof.bedmap ${BINDIR}/
@@ -99,6 +102,7 @@ install_conversion_scripts: prep_c
 install_osx_packaging_bins: prep_c
 	mkdir -p ${OSXPKGDIR}
 	-cp ${APPDIR}/sort-bed/bin/sort-bed ${OSXPKGDIR}/
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm ${OSXPKGDIR}/
 	-cp ${APPDIR}/bedops/bin/bedops ${OSXPKGDIR}/
 	-cp ${APPDIR}/closestfeats/bin/closest-features ${OSXPKGDIR}/
 	-cp ${APPDIR}/bedmap/bin/bedmap ${OSXPKGDIR}/
@@ -159,6 +163,7 @@ ifeq ($(KERNEL), Darwin)
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_sge.tcsh
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_slurm.tcsh
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starch-diff.py
+	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/sort-bed/src/update-sort-bed-slurm.py
 	find docs/content -type f -exec sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" {} +
 else
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" README.md
@@ -175,6 +180,7 @@ else
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_sge.tcsh
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_slurm.tcsh
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starch-diff.py
+	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/sort-bed/src/update-sort-bed-slurm.py
 	find docs/content -type f -exec sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" {} +
 endif
 

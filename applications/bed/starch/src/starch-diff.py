@@ -90,7 +90,7 @@ def main():
             try:
                 archive_version = archive_metadata['archive']['version']
             except KeyError as err:
-                sys.stderr.write("ERROR: Could not read archive metadata\n")
+                sys.stderr.write("ERROR: Could not read archive version from Starch metadata\n")
                 raise
             if archive_version['major'] < 2 or (archive_version['major'] == 2 and archive_version['minor'] < 2):
                 sys.stderr.write("ERROR: Input [%s] must be a v2.2+ Starch archive -- use 'starchcat' to update archive\n" % (archive_path))
@@ -132,7 +132,6 @@ def main():
                 '--signature',
                 archive_path
             ]
-
             try:
                 get_chromosome_signature_cmd_result = subprocess.check_output(get_chromosome_signature_cmd_components)
             except subprocess.CalledProcessError as err:

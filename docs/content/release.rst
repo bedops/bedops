@@ -94,7 +94,7 @@ Release
 
      ### Mac OS X
      **BEDOPS.X.Y.Z.pkg.zip**
-     This package of BEDOPS vX.Y.Z binaries is a digitally-signed installer for OS X (10.7 - 10.11) running on Intel-based Macs.
+     This package of BEDOPS vX.Y.Z binaries is a digitally-signed installer for OS X (10.7 - 10.12) running on Intel-based Macs.
 
      For installation instructions, please read [§2.1.2. Mac OS X] (http://bedops.readthedocs.io/en/latest/content/installation.html#mac-os-x) of the BEDOPS Installation document.
 

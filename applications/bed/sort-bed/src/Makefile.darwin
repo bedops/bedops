@@ -35,7 +35,10 @@ BLDFLAGS             = ${WARNINGS} ${OPTIMIZE}
 INCLUDES             = -iquote$(HEAD) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 STARCHOBJS           = $(OBJ_DIR)/starchConstants.o $(OBJ_DIR)/starchFileHelpers.o $(OBJ_DIR)/starchHelpers.o $(OBJ_DIR)/starchMetadataHelpers.o $(OBJ_DIR)/unstarchHelpers.o $(OBJ_DIR)/starchSha1Digest.o $(OBJ_DIR)/starchBase64Coding.o
 
-build: sort
+build: sort update-sort-bed-slurm
+
+update-sort-bed-slurm:
+	cp update-sort-bed-slurm.py ${DIST_DIR}/update-sort-bed-slurm
 
 sort: sortbuild
 	${CXX} -o ${DIST_DIR}/${PROG}_${ARCH} ${BLDFLAGS} ${LIBLOCATION} ${INCLUDES} -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -lc++ ${STARCHOBJS} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o ${OBJ_DIR}/CheckSort.o ${LIBRARIES}

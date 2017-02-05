@@ -45,13 +45,16 @@ else
 	WARNINGS += -U__STRICT_ANSI__
 endif
 
-build: $(BINDIR)/$(PROG) $(dependencies)
+build: $(BINDIR)/$(PROG) $(dependencies) update-sort-bed-slurm
 
 build_gprof: $(BINDIR)/gprof.$(PROG)
 
 build_debug: $(BINDIR)/debug.$(PROG)
 
 dependencies: $(dependencies)
+
+update-sort-bed-slurm:
+	cp update-sort-bed-slurm.py $(BIN_DIR)/update-sort-bed-slurm
 
 $(BINDIR)/$(PROG) : $(dependencies)
 	mkdir -p $(BINDIR) && $(CXX) -o $@ $(FLAGS) $^ ${LIBRARIES}
