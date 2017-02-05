@@ -45,9 +45,9 @@ CXXGFLAGS                 = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_L
 STARCH_NAMES              = starchConstants unstarchHelpers starchHelpers starchMetadataHelpers starchFileHelpers starchSha1Digest starchBase64Coding
 STARCH_OBJECTS            = $(addprefix $(LOCALOBJDIR)/, $(addsuffix .o, $(STARCH_NAMES)))
 
-.PHONY: starchcluster starch unstarch starchcat build build_debug build_gprof
+.PHONY: starch-diff starchcluster starch unstarch starchcat build build_debug build_gprof
 
-build: starch unstarch starchcat starchcluster
+build: starch unstarch starchcat starchcluster starch-diff
 build_debug: $(BINDIR)/debug.starch $(BINDIR)/debug.unstarch $(BINDIR)/debug.starchcat
 build_gprof: $(BINDIR)/gprof.starch $(BINDIR)/gprof.unstarch $(BINDIR)/gprof.starchcat
 
@@ -59,6 +59,7 @@ starch: $(BINDIR)/starch
 unstarch: $(BINDIR)/unstarch
 starchcat: $(BINDIR)/starchcat
 starchcluster: $(BINDIR)/starchcluster_gnuParallel $(BINDIR)/starchcluster_sge $(BINDIR)/starchcluster_slurm
+starch-diff: $(BINDIR)/starch-diff
 
 $(BINDIR)/% : %.c $(LOCALSTARCHLIB) $(LIBRARIES)
 	mkdir -p $(BINDIR)

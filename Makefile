@@ -22,7 +22,7 @@ debug: default
 
 gprof: default
 
-install: prep_c install_conversion_scripts install_starchcluster_scripts
+install: prep_c install_conversion_scripts install_starch_scripts
 	-cp ${APPDIR}/sort-bed/bin/sort-bed ${BINDIR}/
 	-cp ${APPDIR}/bedops/bin/bedops ${BINDIR}/
 	-cp ${APPDIR}/closestfeats/bin/closest-features ${BINDIR}/
@@ -42,7 +42,7 @@ install: prep_c install_conversion_scripts install_starchcluster_scripts
 prep_c:
 	mkdir -p ${BINDIR}
 
-install_debug: prep_c install_conversion_scripts install_starchcluster_scripts
+install_debug: prep_c install_conversion_scripts install_starch_scripts
 	-cp ${APPDIR}/sort-bed/bin/debug.sort-bed ${BINDIR}/
 	-cp ${APPDIR}/bedops/bin/debug.bedops ${BINDIR}/
 	-cp ${APPDIR}/closestfeats/bin/debug.closest-features ${BINDIR}/
@@ -53,7 +53,7 @@ install_debug: prep_c install_conversion_scripts install_starchcluster_scripts
 	-cp ${APPDIR}/starch/bin/debug.starchcat ${BINDIR}/
 	-cp ${APPDIR}/conversion/bin/debug.convert2bed ${BINDIR}/
 
-install_gprof: prep_c install_conversion_scripts install_starchcluster_scripts
+install_gprof: prep_c install_conversion_scripts install_starch_scripts
 	-cp ${APPDIR}/sort-bed/bin/gprof.sort-bed ${BINDIR}/
 	-cp ${APPDIR}/bedops/bin/gprof.bedops ${BINDIR}/
 	-cp ${APPDIR}/closestfeats/bin/gprof.closest-features ${BINDIR}/
@@ -64,10 +64,11 @@ install_gprof: prep_c install_conversion_scripts install_starchcluster_scripts
 	-cp ${APPDIR}/starch/bin/gprof.starchcat ${BINDIR}/
 	-cp ${APPDIR}/conversion/bin/gprof.convert2bed ${BINDIR}/
 
-install_starchcluster_scripts: prep_c
+install_starch_scripts: prep_c
 	-cp ${APPDIR}/starch/bin/starchcluster_sge ${BINDIR}/
 	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel ${BINDIR}/
 	-cp ${APPDIR}/starch/bin/starchcluster_slurm ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/starch-diff ${BINDIR}/
 
 install_conversion_scripts: prep_c
 	-cp ${APPDIR}/conversion/src/wrappers/bam2bed ${BINDIR}/bam2bed
@@ -108,6 +109,7 @@ install_osx_packaging_bins: prep_c
 	-cp ${APPDIR}/starch/bin/starchcluster_sge ${OSXPKGDIR}/starchcluster_sge
 	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel ${OSXPKGDIR}/starchcluster_gnuParallel
 	-cp ${APPDIR}/starch/bin/starchcluster_slurm ${OSXPKGDIR}/starchcluster_slurm
+	-cp ${APPDIR}/starch/bin/starch-diff ${OSXPKGDIR}/starch-diff
 	-cp ${APPDIR}/conversion/bin/convert2bed ${OSXPKGDIR}/
 	-cp ${APPDIR}/conversion/src/wrappers/bam2bed ${OSXPKGDIR}/bam2bed
 	-cp ${APPDIR}/conversion/src/wrappers/gff2bed ${OSXPKGDIR}/gff2bed
@@ -153,6 +155,10 @@ ifeq ($(KERNEL), Darwin)
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" docs/index.rst
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" docs/conf.py
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/conversion/src/convert2bed.h
+	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_gnuParallel.tcsh
+	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_sge.tcsh
+	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_slurm.tcsh
+	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starch-diff.py
 	find docs/content -type f -exec sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" {} +
 else
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" README.md
@@ -165,6 +171,10 @@ else
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" docs/index.rst
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" docs/conf.py
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/conversion/src/convert2bed.h
+	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_gnuParallel.tcsh
+	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_sge.tcsh
+	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_slurm.tcsh
+	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starch-diff.py
 	find docs/content -type f -exec sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" {} +
 endif
 

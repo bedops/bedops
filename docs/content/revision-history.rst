@@ -15,7 +15,11 @@ Current version
 v2.4.24
 -------
 
-Released: **February 4, 2017**
+Released: **February 5, 2017**
+
+* :ref:`starch-diff <starch_diff>`
+
+  * The :code:`starch-diff` utility compares signatures of two or more v2.2+ Starch archives. This tool tests all chromosomes or one specified chromosome. It returns a zero exit code, if the signature(s) are identical, or a non-zero error exit code, if one or more signature(s) are dissimilar.
 
 * :ref:`convert2bed <convert2bed>`
 

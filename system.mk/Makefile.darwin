@@ -76,6 +76,7 @@ clean: clean_debug clean_gprof all
 	rm -f ${BINDIR}/unstarch
 	rm -f ${BINDIR}/starchcat
 	rm -f ${BINDIR}/starchcluster*
+	rm -f ${BINDIR}/starch-diff
 	rm -f ${BINDIR}/bam2bed
 	rm -f ${BINDIR}/bam2bed*
 	rm -f ${BINDIR}/gff2bed
@@ -121,6 +122,7 @@ clean_debug:
 	rm -f ${BINDIR}/debug.unstarch
 	rm -f ${BINDIR}/debug.starchcat
 	rm -f ${BINDIR}/starchcluster*
+	rm -f ${BINDIR}/starch-diff
 	rm -f ${BINDIR}/bam2bed
 	rm -f ${BINDIR}/bam2bed*
 	rm -f ${BINDIR}/gff2bed
@@ -154,6 +156,7 @@ clean_gprof:
 	rm -f ${BINDIR}/gprof.unstarch
 	rm -f ${BINDIR}/gprof.starchcat
 	rm -f ${BINDIR}/starchcluster*
+	rm -f ${BINDIR}/starch-diff
 	rm -f ${BINDIR}/bam2bed
 	rm -f ${BINDIR}/bam2bed*
 	rm -f ${BINDIR}/gff2bed
@@ -256,6 +259,7 @@ starch_c_intel_fat:
 	cp ${APPDIR}/starch/src/starchcluster_sge.tcsh ${APPDIR}/starch/bin/starchcluster_sge
 	cp ${APPDIR}/starch/src/starchcluster_gnuParallel.tcsh ${APPDIR}/starch/bin/starchcluster_gnuParallel
 	cp ${APPDIR}/starch/src/starchcluster_slurm.tcsh ${APPDIR}/starch/bin/starchcluster_slurm
+	cp ${APPDIR}/starch/src/starch-diff.py ${APPDIR}/starch/bin/starch-diff
 	-test -e ${APPDIR}/starch/bin_i386/starch && test -e ${APPDIR}/starch/bin_x86_64/starch && { lipo -create ${APPDIR}/starch/bin_i386/starch ${APPDIR}/starch/bin_x86_64/starch -output ${APPDIR}/starch/bin/starch; }
 	-test -e ${APPDIR}/starch/bin_i386/unstarch && test -e ${APPDIR}/starch/bin_x86_64/unstarch && { lipo -create ${APPDIR}/starch/bin_i386/unstarch ${APPDIR}/starch/bin_x86_64/unstarch -output ${APPDIR}/starch/bin/unstarch; }
 	-test -e ${APPDIR}/starch/bin_i386/starchcat && test -e ${APPDIR}/starch/bin_x86_64/starchcat && { lipo -create ${APPDIR}/starch/bin_i386/starchcat ${APPDIR}/starch/bin_x86_64/starchcat -output ${APPDIR}/starch/bin/starchcat; }
@@ -287,6 +291,7 @@ dbg_starch_c_intel_fat:
 	cp ${APPDIR}/starch/src/starchcluster_sge.tcsh ${APPDIR}/starch/bin/starchcluster_sge
 	cp ${APPDIR}/starch/src/starchcluster_gnuParallel.tcsh ${APPDIR}/starch/bin/starchcluster_gnuParallel
 	cp ${APPDIR}/starch/src/starchcluster_slurm.tcsh ${APPDIR}/starch/bin/starchcluster_slurm
+	cp ${APPDIR}/starch/src/starch-diff.py ${APPDIR}/starch/bin/starch-diff
 	-test -e ${APPDIR}/starch/bin_i386/debug.starch && test -e ${APPDIR}/starch/bin_x86_64/debug.starch && { lipo -create ${APPDIR}/starch/bin_i386/debug.starch ${APPDIR}/starch/bin_x86_64/debug.starch -output ${APPDIR}/starch/bin/debug.starch; }
 	-test -e ${APPDIR}/starch/bin_i386/debug.unstarch && test -e ${APPDIR}/starch/bin_x86_64/debug.unstarch && { lipo -create ${APPDIR}/starch/bin_i386/debug.unstarch ${APPDIR}/starch/bin_x86_64/debug.unstarch -output ${APPDIR}/starch/bin/debug.unstarch; }
 	-test -e ${APPDIR}/starch/bin_i386/debug.starchcat && test -e ${APPDIR}/starch/bin_x86_64/debug.starchcat && { lipo -create ${APPDIR}/starch/bin_i386/debug.starchcat ${APPDIR}/starch/bin_x86_64/debug.starchcat -output ${APPDIR}/starch/bin/debug.starchcat; }

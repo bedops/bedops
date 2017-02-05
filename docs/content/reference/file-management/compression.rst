@@ -7,3 +7,4 @@ Compression
    compression/unstarch
    compression/starchcat
    compression/starch-specification
+   compression/starch-diff

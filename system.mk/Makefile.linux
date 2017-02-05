@@ -48,6 +48,7 @@ clean: clean_debug clean_gprof $(SUBDIRS)
 	rm -f ${BINDIR}/unstarch
 	rm -f ${BINDIR}/starchcat
 	rm -f ${BINDIR}/starchcluster*
+	rm -f ${BINDIR}/starch-diff
 	rm -f ${BINDIR}/bam2bed
 	rm -f ${BINDIR}/bam2bed*
 	rm -f ${BINDIR}/gff2bed
@@ -90,6 +91,7 @@ clean_debug:
 	rm -f ${BINDIR}/debug.unstarch
 	rm -f ${BINDIR}/debug.starchcat
 	rm -f ${BINDIR}/starchcluster*
+	rm -f ${BINDIR}/starch-diff
 	rm -f ${BINDIR}/bam2bed
 	rm -f ${BINDIR}/bam2bed*
 	rm -f ${BINDIR}/gff2bed
@@ -123,6 +125,7 @@ clean_gprof:
 	rm -f ${BINDIR}/gprof.unstarch
 	rm -f ${BINDIR}/gprof.starchcat
 	rm -f ${BINDIR}/starchcluster*
+	rm -f ${BINDIR}/starch-diff
 	rm -f ${BINDIR}/bam2bed
 	rm -f ${BINDIR}/bam2bed*
 	rm -f ${BINDIR}/gff2bed
