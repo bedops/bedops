@@ -54,7 +54,7 @@ build_debug: $(BINDIR)/debug.$(PROG)
 dependencies: $(dependencies)
 
 update-sort-bed-slurm:
-	cp update-sort-bed-slurm.py $(BIN_DIR)/update-sort-bed-slurm
+	cp update-sort-bed-slurm.py $(BINDIR)/update-sort-bed-slurm
 
 $(BINDIR)/$(PROG) : $(dependencies)
 	mkdir -p $(BINDIR) && $(CXX) -o $@ $(FLAGS) $^ ${LIBRARIES}
