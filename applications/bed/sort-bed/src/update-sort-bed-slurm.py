@@ -34,29 +34,42 @@ citation = "  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1
 authors = "  authors:  Alex Reynolds and Shane Neph"
 version = "  version:  2.4.24"
 usage = """  $ update-sort-bed-slurm [ --slurm-memory <MB> ] 
-                        [ --slurm-partition <partition> ] 
-                        [ --slurm-workdir <working directory> ]
-                        [ --slurm-output <SLURM output directory> ]
-                        [ --slurm-error <SLURM error directory> ]
-                        --input <old-bed-file> --output <new-bed-file>"""
+                          [ --slurm-partition <SLURM partition> ] 
+                          [ --slurm-workdir <working directory> ]
+                          [ --slurm-output <SLURM output directory> ]
+                          [ --slurm-error <SLURM error directory> ]
+                          --input <old-bed-file> --output <new-bed-file>"""
 help = """
   The 'update-sort-bed-slurm' utility applies an updated sort order on BED files
   sorted per pre-v2.4.20 sort-bed, using a SLURM job scheduler to coordinate
-  per-chromosome resorting tasks.
+  resorting each chromosome in --input per post-v2.4.20 sort-bed, and writing
+  the result to --output.
 
   Each sort job is given 4GB of memory and is assigned to the 'queue0' 
   partition, unless the --slurm-memory and --slurm-partition options are used.
 
-  Note that this will not work on entirely unsorted BED files, but only on
-  files with a sort order from pre-v2.4.20 sort-bed.
+  Because this launches all work on the specified cluster partition, the paths
+  specified by --input and --output must be accessible to all computational
+  nodes. For example, using /tmp may fail, as the /tmp path is almost certainly
+  unique to a node; it is necesssary to use a path shared among all nodes.
+
+  Note that this utility will not work on entirely unsorted BED files, but only 
+  on files with a sort order from pre-v2.4.20 sort-bed, where there are ties on 
+  the first three columns. 
+
+  In fact, until further refinements are made, this convenience utility could 
+  fail silently on inputs which are not BED, or which are not sorted per pre-
+  v2.4.20 order, or which do not follow exact specification, all of which can 
+  lead a per-chromosome resort task to fail.
 """
 
 def main():
     slurm_memory = "4000"
     slurm_partition = "queue0"
-    slurm_workdir = "/"
-    slurm_output = "/dev/null"
-    slurm_error = "/dev/null"
+    slurm_workdir = os.getcwd()
+    slurm_output = None
+    slurm_error = None
+    slurm_concatenation_memory = "500" # concatenation step does not require much memory
     
     parser = argparse.ArgumentParser(prog=name, usage=usage, add_help=False)
     parser.add_argument('--help', '-h', action='store_true', dest='help')
@@ -93,6 +106,7 @@ def main():
         sys.stderr.write("ERROR: This script must be run on a system with SLURM and BEDOPS binaries available\n")
         sys.exit(errno.EEXIST)
 
+    # parse args
     if args.slurm_memory:
         slurm_memory = args.slurm_memory
 
@@ -108,7 +122,13 @@ def main():
     if args.slurm_error:
         slurm_error = args.slurm_error
 
-    # get list of chromosomes
+    if not slurm_output:
+        slurm_output = slurm_workdir
+
+    if not slurm_error:
+        slurm_error = slurm_workdir
+
+    # build a list of chromosomes upon which to do work
     list_chromosome_cmd_components = [
         'bedextract',
         '--list-chr',
@@ -121,11 +141,12 @@ def main():
         raise
     chromosome_list = list_chromosome_cmd_result.rstrip('\n').split('\n')
 
-    # fire up per-chromosome sorts
+    # fire up the mid-range saloons^H^H^H per-chromosome sort tasks
     job_prefix = ''.join(random.choice(string.lowercase) for x in range(8))
     job_ids = []
     job_fns = []
     local_environment = os.environ.copy()
+
     for chromosome in chromosome_list:
         temp_dest = os.path.join(os.getcwd(), '_'.join([job_prefix, chromosome]))
         per_chromosome_sort_cmd_components = [
@@ -134,50 +155,65 @@ def main():
             '--workdir',
             slurm_workdir,
             '--output',
-            slurm_output,
+            os.path.join(slurm_output, '_'.join([job_prefix, 'out', chromosome])),
             '--error',
-            slurm_error,
+            os.path.join(slurm_error, '_'.join([job_prefix, 'err', chromosome])),
             '--mem',
             slurm_memory,
             '--partition',
             slurm_partition,
-            '--wrap="module add bedops; bedextract ' + chromosome + ' ' + args.input_fn + ' | sort-bed - > ' + temp_dest + '"'
+            '--wrap',
+            '"module add bedops; srun bedextract ' + chromosome + ' ' + args.input_fn + ' | sort-bed - > ' + temp_dest + '"'
         ]
         try:
-            print(' '.join(per_chromosome_sort_cmd_components)
-            per_chromosome_sort_cmd_result = subprocess.check_output(per_chromosome_sort_cmd_components, env=local_environment, shell=True)
-            job_ids.append(per_chromosome_sort_cmd_result.rstrip('\n'))
+            per_chromosome_process = subprocess.Popen(' '.join(per_chromosome_sort_cmd_components),
+                                                      shell=True,
+                                                      stdin=subprocess.PIPE,
+                                                      stdout=subprocess.PIPE,
+                                                      stderr=subprocess.STDOUT,
+                                                      close_fds=True)
+            (per_chromosome_stdout, per_chromosome_stderr) = per_chromosome_process.communicate()
+            job_ids.append(per_chromosome_stdout.rstrip('\n'))
             job_fns.append(temp_dest)
         except subprocess.CalledProcessError as err:
             sys.stderr.write("ERROR: Command [%s] returned with error (code %d)\n" % (' '.join(err.cmd), err.returncode))
             sys.exit(errno.EINVAL)
 
-    # union result
+    # concatenate the resorted chromosomes into the output product and perform cleanup
     dependencies = 'afterok:' + ':'.join(job_ids)
-    union_cmd_components = [
+    concatenation_cmd_components = [
         'sbatch',
         '--parsable',
         '--workdir',
         slurm_workdir,
         '--output',
-        slurm_output,
+        os.path.join(slurm_output, '_'.join([job_prefix, 'out', 'concatenation'])),
         '--error',
-        slurm_error,        
+        os.path.join(slurm_error, '_'.join([job_prefix, 'err', 'concatenation'])),
         '--mem',
-        slurm_memory,
+        slurm_concatenation_memory,
         '--partition',
         slurm_partition,
         '--dependency',
         dependencies,
-        '--wrap="module add bedops; bedops -u ' + ' '.join(job_fns) + ' > ' + args.output_fn + '; rm -f ' + ' '.join(job_fns) + '"'
+        '--wrap',
+        '"srun cat ' + ' '.join(job_fns) + ' > ' + args.output_fn + ' && srun rm -f ' + os.path.join(slurm_workdir, job_prefix) + '_* ' + os.path.join(slurm_output, job_prefix) + '_* ' + os.path.join(slurm_error, job_prefix) + '_*"'
     ]
     try:
-        union_cmd_result = subprocess.check_output(union_cmd_components)
+        concatenation_process = subprocess.Popen(' '.join(concatenation_cmd_components),
+                                                 shell=True,
+                                                 stdin=subprocess.PIPE,
+                                                 stdout=subprocess.PIPE,
+                                                 stderr=subprocess.STDOUT,
+                                                 close_fds=True)
+        (concatenation_stdout, concatenation_stderr) = concatenation_process.communicate()
+        
     except subprocess.CalledProcessError as err:
         sys.stderr.write("ERROR: Command [%s] returned with error (code %d)\n" % (' '.join(err.cmd), err.returncode))
-        sys.exit(errno.EINVAL)        
+        sys.exit(errno.EINVAL)
 
-    sys.stderr.write("Note: Run `$ sacct -j %s` to track job status of final union\n" % (union_cmd_result.rstrip('\n')))
+    # issue notice to stderr stream
+    sys.stderr.write("Note: Run `$ sacct -j %s` to track job status of concatenation step\n" % (concatenation_stdout.rstrip('\n')))
 
 def cmd_exists(cmd):
     return subprocess.call("type " + cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0

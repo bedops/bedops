@@ -15,7 +15,7 @@ Current version
 v2.4.24
 -------
 
-Released: **February 5, 2017**
+Released: **February 6, 2017**
 
 * :ref:`starch-diff <starch_diff>`
 
@@ -23,7 +23,7 @@ Released: **February 5, 2017**
 
 * :ref:`update-sort-bed-slurm <sort-bed>`
 
-  * The :code:`update-sort-bed-slurm` utility provides a parallelized update of the sort order on BED files sorted with pre-v2.4.20 sort-bed, for users with a SLURM job scheduler and associated cluster.
+  * The :code:`update-sort-bed-slurm` convenience utility provides a parallelized update of the sort order on BED files sorted with pre-v2.4.20 sort-bed, for users with a SLURM job scheduler and associated cluster. See :code:`update-sort-bed-slurm --help` for more details.
 
 * :ref:`convert2bed <convert2bed>`
 
