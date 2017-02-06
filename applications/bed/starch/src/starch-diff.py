@@ -32,7 +32,7 @@ name = "starch-diff"
 citation = "  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract"
 authors = "  authors:  Alex Reynolds and Shane Neph"
 version = "  version:  2.4.24"
-usage = "  $ starch-diff [ --chr <chr> ] starch-file-1 starch-file-2 [ starch-file-3 ]"
+usage = "  $ starch-diff [ --chr <chr> ] starch-file-1 starch-file-2 [ starch-file-3 ... ]"
 help = """
   The 'starch-diff' utility compares the signatures of two or more specified 
   Starch v2.2+ archives for all chromosomes, or for a specified chromosome.
@@ -47,31 +47,30 @@ def main():
     parser.add_argument('file', type=argparse.FileType('r'), nargs='*')
     args = parser.parse_args()
 
-    if (args.help):
+    if args.help or len(args.file) < 2:
         sys.stdout.write(name + '\n')
         sys.stdout.write(citation + '\n')
         sys.stdout.write(version + '\n')
         sys.stdout.write(authors + '\n\n')
         sys.stdout.write(usage + '\n')
         sys.stdout.write(help)
-        sys.exit(os.EX_OK)
+        if args.help:
+            sys.exit(os.EX_OK)
+        else:
+            sys.stdout.write("\nERROR: Please specify two or more Starch archives as input\n")
+            sys.exit(errno.EINVAL)
 
     selected_chromosome = unicode(args.chr)
 
-    if len(args.file) < 2:
-        sys.stdout.write("ERROR: Please specify two or more Starch archives as input\n")
-        sys.stdout.write("%s\n" % (usage))
-        sys.exit(errno.EINVAL)
-    else:
-        archive_paths = list()
-        for i in range(0, len(args.file)):
-            archive_handle = args.file[i]
-            if not os.path.exists(archive_handle.name) or not os.path.isfile(archive_handle.name):
-                sys.stdout.write("ERROR: Input [%s] is not a file or does not exist\n" % (archive_handle.name))
-                sys.stdout.write("%s\n" % (usage))
-                sys.exit(errno.ENOENT)
-            archive_paths.append(archive_handle.name)
-        num_files = len(args.file)
+    archive_paths = list()
+    for i in range(0, len(args.file)):
+        archive_handle = args.file[i]
+        if not os.path.exists(archive_handle.name) or not os.path.isfile(archive_handle.name):
+            sys.stdout.write("ERROR: Input [%s] is not a file or does not exist\n" % (archive_handle.name))
+            sys.stdout.write("%s\n" % (usage))
+            sys.exit(errno.ENOENT)
+        archive_paths.append(archive_handle.name)
+    num_files = len(args.file)
 
     if selected_chromosome == default_chromosome:
         all_chromosomes = {}
