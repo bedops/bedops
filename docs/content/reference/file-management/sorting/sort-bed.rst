@@ -9,7 +9,13 @@ Sorted BED order is defined first by lexicographic chromosome order, then ascend
 
 Other utilities in the BEDOPS suite require data in sorted order as described. You only need to sort once: BEDOPS utilities all read and write data in sorted order.
 
-A convenience utility called ``update-sort-bed-slurm`` is provided that updates the sort order of BED files sorted with pre-v2.4.20 ``sort-bed`` via a SLURM-based cluster. See ``update-sort-bed-slurm --help`` for more details.
+====================================
+Migrating older BED and Starch files
+====================================
+
+The utility ``update-sort-bed-migrate-candidates`` recursively locates BED and pre-v2.4.20 Starch files in the specified parent directory, tests if they require re-sorting to conform to the updated, post-v2.4.20 'sort-bed' order, and offers actions to log candidate files, or immediately apply a resort action that is performed locally or via a SLURM-managed cluster.
+
+The convenience utilities ``update-sort-bed-slurm`` and ``update-sort-bed-starch-slurm`` update the sort order of BED or Starch files sorted with pre-v2.4.20 ``sort-bed`` via a SLURM-based cluster. See ``update-sort-bed-slurm --help`` or ``update-sort-bed-starch-slurm --help`` for more details. These utilities can be used standalone or in conjunction with the ``update-sort-bed-migrate-candidates`` utility.
 
 ==================
 Inputs and outputs

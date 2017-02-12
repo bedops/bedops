@@ -17,6 +17,14 @@ v2.4.25
 
 Released: **TBD**
 
+* :ref:`update-sort-bed-migrate-candidates <sort-bed>`
+
+  The :code:`update-sort-bed-migrate-candidates` utility recursively searches into the specified directory for BED and Starch files which fail a :code:`sort-bed --check-sort` test. Those files which fail this test can have their paths written to a text file for further downstream processing, or the end user can decide to apply an immediate resort on those files, either locally or via a SLURM-managed cluster.
+
+* :ref:`update-sort-bed-starch-slurm <sort-bed>`
+
+  This is an adjunct to the :code:`update-sort-bed-slurm` utility, which resorts the provided Starch file and writes a new file. (The :code:`update-sort-bed-slurm` utility only takes in BED files as input and writes BED as output.)
+
 =================
 Previous versions
 =================

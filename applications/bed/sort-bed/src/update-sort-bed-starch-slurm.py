@@ -29,21 +29,21 @@ import subprocess
 import random
 import string
 
-name = "update-sort-bed-slurm"
+name = "update-sort-bed-starch-slurm"
 citation = "  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract"
 authors = "  authors:  Alex Reynolds and Shane Neph"
 version = "  version:  2.4.25"
-usage = """  $ update-sort-bed-slurm [ --slurm-memory <MB> ] 
-                          [ --slurm-partition <SLURM partition> ] 
-                          [ --slurm-workdir <working directory> ]
-                          [ --slurm-output <SLURM output directory> ]
-                          [ --slurm-error <SLURM error directory> ]
-                          --input <old-bed-file> --output <new-bed-file>"""
+usage = """  $ update-sort-bed-starch-slurm [ --slurm-memory <MB> ] 
+                                 [ --slurm-partition <SLURM partition> ] 
+                                 [ --slurm-workdir <working directory> ]
+                                 [ --slurm-output <SLURM output directory> ]
+                                 [ --slurm-error <SLURM error directory> ]
+                                 --input <old-starch-file> --output <new-starch-file>"""
 help = """
-  The 'update-sort-bed-slurm' utility applies an updated sort order on BED files
-  sorted per pre-v2.4.20 sort-bed, using a SLURM job scheduler to coordinate
-  resorting each chromosome in --input per post-v2.4.20 sort-bed, and writing
-  the result to --output.
+  The 'update-sort-bed-starch-slurm' utility applies an updated sort order on 
+  Starch files sorted per pre-v2.4.20 sort-bed, using a SLURM job scheduler to 
+  coordinate resorting each chromosome in --input per post-v2.4.20 sort-bed, 
+  and writing the result to --output.
 
   Each sort job is given 4GB of memory and is assigned to the 'queue0' 
   partition, unless the --slurm-memory and --slurm-partition options are used.
@@ -52,15 +52,6 @@ help = """
   specified by --input and --output must be accessible to all computational
   nodes. For example, using /tmp may fail, as the /tmp path is almost certainly
   unique to a node; it is necesssary to use a path shared among all nodes.
-
-  Note that this utility will not work on entirely unsorted BED files, but only 
-  on files with a sort order from pre-v2.4.20 sort-bed, where there are ties on 
-  the first three columns. 
-
-  In fact, until further refinements are made, this convenience utility could 
-  fail silently on inputs which are not BED, or which are not sorted per pre-
-  v2.4.20 order, or which do not follow exact specification, all of which can 
-  lead a per-chromosome resort task to fail.
 """
 
 def main():
@@ -102,7 +93,7 @@ def main():
         sys.stderr.write("ERROR: Output file [%s] exists\n" % (args.output_fn))
         sys.exit(errno.EEXIST)
 
-    if not cmd_exists('sbatch') or not cmd_exists('bedextract'):
+    if not cmd_exists('sbatch') or not cmd_exists('unstarch'):
         sys.stderr.write("ERROR: This script must be run on a system with SLURM and BEDOPS binaries available\n")
         sys.exit(errno.EEXIST)
 
@@ -130,7 +121,7 @@ def main():
 
     # build a list of chromosomes upon which to do work
     list_chromosome_cmd_components = [
-        'bedextract',
+        'unstarch',
         '--list-chr',
         args.input_fn
     ]
@@ -162,7 +153,7 @@ def main():
             '--partition',
             slurm_partition,
             '--wrap',
-            '"module add bedops; srun bedextract ' + chromosome + ' ' + args.input_fn + ' | sort-bed - > ' + temp_dest + '"'
+            '"module add bedops; srun unstarch ' + chromosome + ' ' + args.input_fn + ' | sort-bed - | starch - > ' + temp_dest + '"'
         ]
         try:
             per_chromosome_process = subprocess.Popen(' '.join(per_chromosome_sort_cmd_components),
@@ -196,7 +187,7 @@ def main():
         '--dependency',
         dependencies,
         '--wrap',
-        '"srun cat ' + ' '.join(job_fns) + ' > ' + args.output_fn + ' && srun rm -f ' + os.path.join(slurm_workdir, job_prefix) + '_* ' + os.path.join(slurm_output, job_prefix) + '_* ' + os.path.join(slurm_error, job_prefix) + '_*"'
+        '"module add bedops; srun starchcat ' + ' '.join(job_fns) + ' > ' + args.output_fn + ' && srun rm -f ' + os.path.join(slurm_workdir, job_prefix) + '_* ' + os.path.join(slurm_output, job_prefix) + '_* ' + os.path.join(slurm_error, job_prefix) + '_*"'
     ]
     try:
         concatenation_process = subprocess.Popen(' '.join(concatenation_cmd_components),

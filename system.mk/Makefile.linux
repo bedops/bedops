@@ -41,6 +41,8 @@ build_gprof: $(SUBDIRS)
 clean: clean_debug clean_gprof $(SUBDIRS)
 	rm -f ${BINDIR}/sort-bed
 	rm -f ${BINDIR}/update-sort-bed-slurm
+	rm -f ${BINDIR}/update-sort-bed-starch-slurm
+	rm -f ${BINDIR}/update-sort-bed-migrate-candidates
 	rm -f ${BINDIR}/bedops
 	rm -f ${BINDIR}/closest-features
 	rm -f ${BINDIR}/bedmap
@@ -85,6 +87,8 @@ clean: clean_debug clean_gprof $(SUBDIRS)
 clean_debug:
 	rm -f ${BINDIR}/debug.sort-bed
 	rm -f ${BINDIR}/update-sort-bed-slurm
+	rm -f ${BINDIR}/update-sort-bed-starch-slurm
+	rm -f ${BINDIR}/update-sort-bed-migrate-candidates
 	rm -f ${BINDIR}/debug.bedops
 	rm -f ${BINDIR}/debug.closest-features
 	rm -f ${BINDIR}/debug.bedmap
@@ -120,6 +124,8 @@ clean_debug:
 clean_gprof:
 	rm -f ${BINDIR}/gprof.sort-bed
 	rm -f ${BINDIR}/update-sort-bed-slurm
+	rm -f ${BINDIR}/update-sort-bed-starch-slurm
+	rm -f ${BINDIR}/update-sort-bed-migrate-candidates
 	rm -f ${BINDIR}/gprof.bedops
 	rm -f ${BINDIR}/gprof.closest-features
 	rm -f ${BINDIR}/gprof.bedmap

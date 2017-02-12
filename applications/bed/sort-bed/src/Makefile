@@ -45,7 +45,7 @@ else
 	WARNINGS += -U__STRICT_ANSI__
 endif
 
-build: $(BINDIR)/$(PROG) $(dependencies) update-sort-bed-slurm
+build: $(BINDIR)/$(PROG) $(dependencies) update-sort-bed-slurm update-sort-bed-starch-slurm update-sort-bed-migrate-candidates
 
 build_gprof: $(BINDIR)/gprof.$(PROG)
 
@@ -55,6 +55,12 @@ dependencies: $(dependencies)
 
 update-sort-bed-slurm:
 	mkdir -p $(BINDIR) && cp update-sort-bed-slurm.py $(BINDIR)/update-sort-bed-slurm
+
+update-sort-bed-starch-slurm:
+	mkdir -p $(BINDIR) && cp update-sort-bed-starch-slurm.py $(BINDIR)/update-sort-bed-starch-slurm
+
+update-sort-bed-migrate-candidates:
+	mkdir -p $(BINDIR) && cp update-sort-bed-migrate-candidates.py $(BINDIR)/update-sort-bed-migrate-candidates
 
 $(BINDIR)/$(PROG) : $(dependencies)
 	mkdir -p $(BINDIR) && $(CXX) -o $@ $(FLAGS) $^ ${LIBRARIES}
@@ -79,3 +85,5 @@ clean:
 	rm -f $(BINDIR)/$(PROG)
 	rm -f $(BINDIR)/*.$(PROG)
 	rm -f $(BINDIR)/update-sort-bed-slurm
+	rm -f $(BINDIR)/update-sort-bed-starch-slurm
+	rm -f $(BINDIR)/update-sort-bed-migrate-candidates
