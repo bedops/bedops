@@ -12,6 +12,16 @@ Current version
 ===============
 
 -------
+v2.4.25
+-------
+
+Released: **TBD**
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.24
 -------
 
@@ -28,10 +38,6 @@ Released: **February 6, 2017**
 * :ref:`convert2bed <convert2bed>`
 
   * Patched a memory leak in VCF conversion. Thanks to ehsueh for the bug report.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.23

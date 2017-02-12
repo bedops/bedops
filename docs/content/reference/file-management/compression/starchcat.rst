@@ -57,7 +57,7 @@ Use the ``--help`` option to list all options:
 
   starchcat
    citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-   version:  2.4.24
+   version:  2.4.25
    authors:  Alex Reynolds and Shane Neph
 
   USAGE: starchcat [ --note="..." ]
