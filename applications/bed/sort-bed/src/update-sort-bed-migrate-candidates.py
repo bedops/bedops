@@ -34,8 +34,8 @@ authors = "  authors:  Alex Reynolds and Shane Neph"
 version = "  version:  2.4.25"
 usage = """  $ update-sort-bed-migrate-candidates [ --dry-run ]
                                        [ --write-list ]
-                                       [ --resort-immediately <output-suffix> ]
-                                       [ --resort-in-parallel-via-slurm <output-suffix> ]
+                                       [ --resort-immediately ]
+                                       [ --resort-in-parallel-via-slurm ]
                                        --parent-dir <parent directory>"""
 help = """
   The 'update-sort-bed-migrate-candidates' utility recursively locates BED and 
@@ -67,8 +67,8 @@ def main():
     parser = argparse.ArgumentParser(prog=name, usage=usage, add_help=False)
     parser.add_argument('--help', '-h', action='store_true', dest='help')
     parser.add_argument('--write-list', '-w', action="store_true", dest='write_list')
-    parser.add_argument('--resort-immediately', '-i', type=str, action="store", dest='resort_immediately')
-    parser.add_argument('--resort-in-parallel-via-slurm', '-s', type=str, action="store", dest='resort_in_parallel_via_slurm')
+    parser.add_argument('--resort-immediately', '-i', action="store_true", dest='resort_immediately')
+    parser.add_argument('--resort-in-parallel-via-slurm', '-s', action="store_true", dest='resort_in_parallel_via_slurm')
     parser.add_argument('--dry-run', '-d', action="store_true", dest='dry_run')
     parser.add_argument('--parent-dir', '-p', type=str, action="store", dest='parent_dir')
     args = parser.parse_args()
@@ -169,27 +169,33 @@ def main():
                     filtered_starch_candidates.append(candidate)
 
 
-    merged_candidates = merge(filtered_bed_candidates, filtered_starch_candidates)
+    all_candidates = merge(filtered_bed_candidates, filtered_starch_candidates)
 
     if args.write_list:
-        for candidate in merged_candidates:
+        for candidate in all_candidates:
             sys.stdout.write("%s\n" % (candidate))
 
     if args.resort_immediately:
-        for candidate in merged_candidates:
-            in_fn = candidate
+        for candidate in all_candidates:
+            src_fn = candidate
+            src_backup_fn = src_fn + '.backup'
+            dest_fn = src_fn
+
             # BED
             if candidate.lower().endswith(('.bed', '.bedgraph')):
-                out_bn = os.path.splitext(in_fn)[0].strip('.')
-                out_ext = os.path.splitext(in_fn)[1].strip('.')
-                out_fn = '.'.join([out_bn, args.resort_immediately, out_ext])
-                sys.stderr.write("Debug: Planning to resort [%s] to [%s]\n" % (in_fn, out_fn))
+                sys.stderr.write("Debug: Planning to rename [%s] to [%s]\n" % (src_fn, src_backup_fn))
+                sys.stderr.write("Debug: Planning to resort [%s] to [%s]\n" % (src_backup_fn, dest_fn))
                 if not args.dry_run:
+                    try:
+                        os.rename(src_fn, src_backup_fn)
+                    except OSError as err:
+                        sys.stderr.write("Error: Could not rename [%s] to [%s]\n" % (src_fn, src_backup_fn))
+                        raise
                     bed_resort_cmd_components = [
                         'sort-bed',
-                        in_fn,
+                        src_backup_fn,
                         '>',
-                        out_fn
+                        dest_fn
                     ]
                     bed_resort_process = subprocess.Popen(' '.join(bed_resort_cmd_components),
                                                           shell=True,
@@ -200,17 +206,21 @@ def main():
                     (bed_resort_stdout, bed_resort_stderr) = bed_resort_process.communicate()
                     if bed_resort_process.returncode != 0:
                         raise
-                    sys.stderr.write("Debug: Resorted [%s] to [%s]\n" % (in_fn, out_fn))
+                    sys.stderr.write("Debug: Resorted [%s] to [%s]\n" % (src_backup_fn, dest_fn))
+
             # Starch
             if candidate.lower().endswith(('.starch', 'bstarch', 'gstarch')):
-                out_bn = os.path.splitext(in_fn)[0].strip('.')
-                out_ext = os.path.splitext(in_fn)[1].strip('.')
-                out_fn = '.'.join([out_bn, args.resort_immediately, out_ext])
-                sys.stderr.write("Debug: Planning to resort [%s] to [%s]\n" % (in_fn, out_fn))
+                sys.stderr.write("Debug: Planning to rename [%s] to [%s]\n" % (src_fn, src_backup_fn))
+                sys.stderr.write("Debug: Planning to resort [%s] to [%s]\n" % (src_backup_fn, dest_fn))
                 if not args.dry_run:
+                    try:
+                        os.rename(src_fn, src_backup_fn)
+                    except OSError as err:
+                        sys.stderr.write("Error: Could not rename [%s] to [%s]\n" % (src_fn, src_backup_fn))
+                        raise
                     starch_resort_cmd_components = [
                         'unstarch',
-                        in_fn,
+                        src_backup_fn,
                         '|'
                         'sort-bed',
                         '-',
@@ -218,7 +228,7 @@ def main():
                         'starch',
                         '-',
                         '>',
-                        out_fn
+                        dest_fn
                     ]
                     starch_resort_process = subprocess.Popen(' '.join(starch_resort_cmd_components),
                                                              shell=True,
@@ -229,24 +239,30 @@ def main():
                     (starch_resort_stdout, starch_resort_stderr) = starch_resort_process.communicate()
                     if starch_resort_process.returncode != 0:
                         raise
-                    sys.stderr.write("Debug: Resorted [%s] to [%s]\n" % (in_fn, out_fn))
+                    sys.stderr.write("Debug: Resorted [%s] to [%s]\n" % (src_backup_fn, dest_fn))
 
     if args.resort_in_parallel_via_slurm:
-        for candidate in merged_candidates:
-            in_fn = candidate
+        for candidate in all_candidates:
+            src_fn = candidate
+            src_backup_fn = src_fn + '.backup'
+            dest_fn = src_fn
+
             # BED
             if candidate.lower().endswith(('.bed', '.bedgraph')):
-                out_bn = os.path.splitext(in_fn)[0].strip('.')
-                out_ext = os.path.splitext(in_fn)[1].strip('.')
-                out_fn = '.'.join([out_bn, args.resort_immediately, out_ext])
-                sys.stderr.write("Debug: Planning to submit task to resort [%s] to [%s]\n" % (in_fn, out_fn))
+                sys.stderr.write("Debug: Planning to rename [%s] to [%s]\n" % (src_fn, src_backup_fn))
+                sys.stderr.write("Debug: Planning to resort [%s] to [%s]\n" % (src_backup_fn, dest_fn))
                 if not args.dry_run:
+                    try:
+                        os.rename(src_fn, src_backup_fn)
+                    except OSError as err:
+                        sys.stderr.write("Error: Could not rename [%s] to [%s]\n" % (src_fn, src_backup_fn))
+                        raise
                     bed_slurm_resort_cmd_components = [
                         'update-sort-bed-slurm',
                         '--input',
-                        in_fn,
+                        src_backup_fn,
                         '--output',
-                        out_fn
+                        dest_fn
                     ]
                     bed_slurm_resort_process = subprocess.Popen(' '.join(bed_slurm_resort_cmd_components),
                                                                 shell=True,
@@ -257,20 +273,24 @@ def main():
                     (bed_slurm_resort_stdout, bed_slurm_resort_stderr) = bed_slurm_resort_process.communicate()
                     if bed_slurm_resort_process.returncode != 0:
                         raise
-                    sys.stderr.write("Debug: Task submitted to resort [%s] to [%s]\n" % (in_fn, out_fn))
+                    sys.stderr.write("Debug: Task submitted to resort [%s] to [%s]\n" % (src_backup_fn, dest_fn))
+
             # Starch
             if candidate.lower().endswith(('.starch', 'bstarch', 'gstarch')):
-                out_bn = os.path.splitext(in_fn)[0].strip('.')
-                out_ext = os.path.splitext(in_fn)[1].strip('.')
-                out_fn = '.'.join([out_bn, args.resort_immediately, out_ext])
-                sys.stderr.write("Debug: Planning to submit task to resort [%s] to [%s]\n" % (in_fn, out_fn))
+                sys.stderr.write("Debug: Planning to rename [%s] to [%s]\n" % (src_fn, src_backup_fn))
+                sys.stderr.write("Debug: Planning to resort [%s] to [%s]\n" % (src_backup_fn, dest_fn))
                 if not args.dry_run:
+                    try:
+                        os.rename(src_fn, src_backup_fn)
+                    except OSError as err:
+                        sys.stderr.write("Error: Could not rename [%s] to [%s]\n" % (src_fn, src_backup_fn))
+                        raise
                     starch_slurm_resort_cmd_components = [
                         'update-sort-bed-starch-slurm',
                         '--input',
-                        in_fn,
+                        src_backup_fn,
                         '--output',
-                        out_fn
+                        dest_fn
                     ]
                     starch_slurm_resort_process = subprocess.Popen(' '.join(starch_slurm_resort_cmd_components),
                                                                    shell=True,
@@ -281,7 +301,7 @@ def main():
                     (starch_slurm_resort_stdout, starch_slurm_resort_stderr) = starch_slurm_resort_process.communicate()
                     if starch_slurm_resort_process.returncode != 0:
                         raise
-                    sys.stderr.write("Debug: Task submitted to resort [%s] to [%s]\n" % (in_fn, out_fn))
+                    sys.stderr.write("Debug: Task submitted to resort [%s] to [%s]\n" % (src_backup_fn, dest_fn))
 
 def merge(l, m):
     result = []
