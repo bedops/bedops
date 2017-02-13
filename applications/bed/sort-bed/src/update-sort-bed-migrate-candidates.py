@@ -140,7 +140,7 @@ def main():
             except subprocess.CalledProcessError as err:
                 get_archive_version_cmd_result = "ERROR: Command '{}' returned with error (code {}): {}".format(err.cmd, err.returncode, err.output)
                 raise
-            archive_metadata = json.loads(get_archive_version_cmd_result)
+            archive_metadata = json.loads(get_archive_version_cmd_result.decode('utf-8'))
             try:
                 archive_version = archive_metadata['archive']['version']
             except KeyError as err:
