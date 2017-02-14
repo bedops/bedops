@@ -38,20 +38,34 @@ usage = """  $ update-sort-bed-slurm [ --slurm-memory <MB> ]
                           [ --slurm-workdir <working directory> ]
                           [ --slurm-output <SLURM output directory> ]
                           [ --slurm-error <SLURM error directory> ]
-                          --input <old-bed-file> --output <new-bed-file>"""
+                          [ --bedextract-path <path to bedextract> ]
+                          [ --sort-bed-path <path to sort-bed> ]
+                          --input-original <old-bed-file> 
+                          --input-backup <renamed-old-bed-file>
+                          --output-temp <intermediate-new-bed-file>
+                          --output-final <new-bed-file>"""
 help = """
-  The 'update-sort-bed-slurm' utility applies an updated sort order on BED files
-  sorted per pre-v2.4.20 sort-bed, using a SLURM job scheduler to coordinate
-  resorting each chromosome in --input per post-v2.4.20 sort-bed, and writing
-  the result to --output.
+  The "update-sort-bed-slurm" utility applies an updated sort order on BED 
+  files sorted per pre-v2.4.20 sort-bed, using a SLURM job scheduler to 
+  coordinate resorting each chromosome in "--input-original" per post-v2.4.20 
+  sort-bed and writing the result to "--output-final". 
 
-  Each sort job is given 4GB of memory and is assigned to the 'queue0' 
-  partition, unless the --slurm-memory and --slurm-partition options are used.
+  When migration is finished, "--input-backup" specifies the new name of the 
+  original input.
+
+  As migration progresses, intermediate results are written to "--output-temp"
+  and then written to "--output-final" upon completion.
+
+  Each sort task is given 8 GB of memory and is assigned to the "queue0" 
+  partition, unless the "--slurm-memory" and "--slurm-partition" options are 
+  set. If your input is larger than 8 GB, you will need to allocate more 
+  memory.
 
   Because this launches all work on the specified cluster partition, the paths
-  specified by --input and --output must be accessible to all computational
-  nodes. For example, using /tmp may fail, as the /tmp path is almost certainly
-  unique to a node; it is necesssary to use a path shared among all nodes.
+  specified by "--input-original", "--input-backup", "--output-final", and 
+  "--output-temp" must be accessible to all computational nodes. For example, 
+  using /tmp may fail, as the /tmp path is almost certainly unique to a node; 
+  it is necesssary to use a path shared among all nodes.
 
   Note that this utility will not work on entirely unsorted BED files, but only 
   on files with a sort order from pre-v2.4.20 sort-bed, where there are ties on 
@@ -64,25 +78,34 @@ help = """
 """
 
 def main():
-    slurm_memory = "4000"
+    slurm_memory = "8000"
     slurm_partition = "queue0"
     slurm_workdir = os.getcwd()
     slurm_output = None
     slurm_error = None
-    slurm_concatenation_memory = "500" # concatenation step does not require much memory
+
+    # concatenation and other minor steps do not require much memory
+    slurm_backup_input_memory = "500"
+    slurm_concatenation_memory = "500"
+    slurm_cleanup_memory = "500"
+    slurm_output_move_memory = "500"
     
     parser = argparse.ArgumentParser(prog=name, usage=usage, add_help=False)
-    parser.add_argument('--help', '-h', action='store_true', dest='help')
-    parser.add_argument('--slurm-memory', '-m', type=str, action="store", dest='slurm_memory')
+    parser.add_argument('--help',            '-h', action='store_true', dest='help')
+    parser.add_argument('--slurm-memory',    '-m', type=str, action="store", dest='slurm_memory')
     parser.add_argument('--slurm-partition', '-p', type=str, action="store", dest='slurm_partition')
-    parser.add_argument('--slurm-workdir', '-w', type=str, action="store", dest='slurm_workdir')
-    parser.add_argument('--slurm-output', '-u', type=str, action="store", dest='slurm_output')
-    parser.add_argument('--slurm-error', '-e', type=str, action="store", dest='slurm_error')    
-    parser.add_argument('--input', '-i', type=str, action="store", dest='input_fn')
-    parser.add_argument('--output', '-o', type=str, action="store", dest='output_fn')
+    parser.add_argument('--slurm-workdir',   '-w', type=str, action="store", dest='slurm_workdir')
+    parser.add_argument('--slurm-output',    '-u', type=str, action="store", dest='slurm_output')
+    parser.add_argument('--slurm-error',     '-e', type=str, action="store", dest='slurm_error')    
+    parser.add_argument('--input-original',  '-i', type=str, action="store", dest='input_original_fn')
+    parser.add_argument('--input-backup',    '-b', type=str, action="store", dest='input_backup_fn')
+    parser.add_argument('--output-temp',     '-t', type=str, action="store", dest='output_temp_fn')
+    parser.add_argument('--output-final',    '-o', type=str, action="store", dest='output_final_fn')
+    parser.add_argument('--bedextract-path', '-x', type=str, action="store", dest='bedextract_path')
+    parser.add_argument('--sort-bed-path',   '-s', type=str, action="store", dest='sort_bed_path')
     args = parser.parse_args()
 
-    if args.help or (not args.input_fn or not args.output_fn):
+    if args.help or (not args.input_original_fn or not args.input_backup_fn or not args.output_temp_fn or not args.output_final_fn):
         sys.stdout.write(name + '\n')
         sys.stdout.write(citation + '\n')
         sys.stdout.write(version + '\n')
@@ -94,17 +117,25 @@ def main():
         else:
             sys.exit(errno.EINVAL)
 
-    if not os.path.exists(args.input_fn): 
-        sys.stderr.write("ERROR: Input file [%s] does not exist\n" % (args.input_fn))
+    if not os.path.exists(args.input_original_fn): 
+        sys.stderr.write("ERROR: Input file [%s] does not exist\n" % (args.input_original_fn))
         sys.exit(errno.EINVAL)
 
-    if os.path.exists(args.output_fn):
-        sys.stderr.write("ERROR: Output file [%s] exists\n" % (args.output_fn))
+    if os.path.exists(args.output_final_fn):
+        sys.stderr.write("ERROR: Output file [%s] exists\n" % (args.output_final_fn))
         sys.exit(errno.EEXIST)
 
-    if not cmd_exists('sbatch') or not cmd_exists('bedextract'):
-        sys.stderr.write("ERROR: This script must be run on a system with SLURM and BEDOPS binaries available\n")
+    if not cmd_exists('sbatch'):
+        sys.stderr.write("ERROR: This script must be run on a system with SLURM binaries available\n")
         sys.exit(errno.EEXIST)
+
+    if args.input_original_fn == args.input_backup_fn:
+        sys.stderr.write("ERROR: Input filename [%s] cannot be the same as the input backup filename [%s]\n" % (args.input_original_fn, args.input_backup_fn))
+        sys.exit(errno.EINVAL)
+
+    if args.output_temp_fn == args.output_final_fn:
+        sys.stderr.write("ERROR: Output filename [%s] cannot be the same as the output temporary filename [%s]\n" % (args.output_final_fn, args.output_temp_fn))
+        sys.exit(errno.EINVAL)
 
     # parse args
     if args.slurm_memory:
@@ -128,23 +159,43 @@ def main():
     if not slurm_error:
         slurm_error = slurm_workdir
 
+    bedextract_path = None
+    if not args.bedextract_path:
+        bedextract_path = find_binary('bedextract')
+        if not bedextract_path:
+            sys.stderr.write("ERROR: This script must be run on a system with BEDOPS bedextract\n")
+            sys.exit(errno.EEXIST)
+    elif not cmd_exists('bedextract'):
+        sys.stderr.write("ERROR: This script must be run on a system with BEDOPS bedextract\n")
+        sys.exit(errno.EEXIST)
+
+    sort_bed_path = None
+    if not args.sort_bed_path:
+        sort_bed_path = find_binary('sort-bed')
+        if not sort_bed_path:
+            sys.stderr.write("ERROR: This script must be run on a system with BEDOPS sort-bed\n")
+            sys.exit(errno.EEXIST)
+    elif not cmd_exists('sort-bed'):
+        sys.stderr.write("ERROR: This script must be run on a system with BEDOPS sort-bed\n")
+        sys.exit(errno.EEXIST)
+
     # build a list of chromosomes upon which to do work
     list_chromosome_cmd_components = [
-        'bedextract',
+        bedextract_path,
         '--list-chr',
-        args.input_fn
+        args.input_original_fn
     ]
     try:
         list_chromosome_cmd_result = subprocess.check_output(list_chromosome_cmd_components)
     except subprocess.CalledProcessError as err:
         list_chromosome_cmd_result = "ERROR: Command '{}' returned with error (code {}): {}".format(err.cmd, err.returncode, err.output)
         raise
-    chromosome_list = list_chromosome_cmd_result.rstrip('\n').split('\n')
+    chromosome_list = list_chromosome_cmd_result.decode('utf-8').rstrip('\n').split('\n')
 
     # fire up the mid-range saloons^H^H^H per-chromosome sort tasks
     job_prefix = ''.join(random.choice(string.lowercase) for x in range(8))
-    job_ids = []
-    job_fns = []
+    per_chr_job_ids = []
+    per_chr_job_fns = []
 
     for chromosome in chromosome_list:
         temp_dest = os.path.join(os.getcwd(), '_'.join([job_prefix, chromosome]))
@@ -162,7 +213,7 @@ def main():
             '--partition',
             slurm_partition,
             '--wrap',
-            '"module add bedops; srun bedextract ' + chromosome + ' ' + args.input_fn + ' | sort-bed - > ' + temp_dest + '"'
+            '"srun ' + bedextract_path + ' ' + chromosome + ' ' + args.input_original_fn + ' | ' + sort_bed_path + ' - > ' + temp_dest + '"'
         ]
         try:
             per_chromosome_process = subprocess.Popen(' '.join(per_chromosome_sort_cmd_components),
@@ -172,14 +223,13 @@ def main():
                                                       stderr=subprocess.STDOUT,
                                                       close_fds=True)
             (per_chromosome_stdout, per_chromosome_stderr) = per_chromosome_process.communicate()
-            job_ids.append(per_chromosome_stdout.rstrip('\n'))
-            job_fns.append(temp_dest)
+            per_chr_job_ids.append(per_chromosome_stdout.decode('utf-8').rstrip('\n'))
+            per_chr_job_fns.append(temp_dest)
         except subprocess.CalledProcessError as err:
-            sys.stderr.write("ERROR: Command [%s] returned with error (code %d)\n" % (' '.join(err.cmd), err.returncode))
+            sys.stderr.write("ERROR: Per-chromosome sort task submission [%s] returned with error (code %d)\n" % (' '.join(err.cmd), err.returncode))
             sys.exit(errno.EINVAL)
 
-    # concatenate the resorted chromosomes into the output product and perform cleanup
-    dependencies = 'afterok:' + ':'.join(job_ids)
+    # concatenate per-chromosome resorted files to output temp file
     concatenation_cmd_components = [
         'sbatch',
         '--parsable',
@@ -194,9 +244,9 @@ def main():
         '--partition',
         slurm_partition,
         '--dependency',
-        dependencies,
+        per_chr_dependencies,
         '--wrap',
-        '"srun cat ' + ' '.join(job_fns) + ' > ' + args.output_fn + ' && srun rm -f ' + os.path.join(slurm_workdir, job_prefix) + '_* ' + os.path.join(slurm_output, job_prefix) + '_* ' + os.path.join(slurm_error, job_prefix) + '_*"'
+        '"srun cat ' + ' '.join(per_chr_job_fns) + ' > ' + args.output_temp_fn + '"'
     ]
     try:
         concatenation_process = subprocess.Popen(' '.join(concatenation_cmd_components),
@@ -206,13 +256,118 @@ def main():
                                                  stderr=subprocess.STDOUT,
                                                  close_fds=True)
         (concatenation_stdout, concatenation_stderr) = concatenation_process.communicate()
-        
+        concatenation_job_id = concatenation_stdout.decode('utf-8').rstrip('\n')
+        concatenation_job_dependency_string = 'afterok:' + concatenation_job_id
     except subprocess.CalledProcessError as err:
-        sys.stderr.write("ERROR: Command [%s] returned with error (code %d)\n" % (' '.join(err.cmd), err.returncode))
+        sys.stderr.write("ERROR: Concatenation task submission [%s] returned with error (code %d)\n" % (' '.join(err.cmd), err.returncode))
         sys.exit(errno.EINVAL)
 
-    # issue notice to stderr stream
-    sys.stderr.write("Note: Run `$ sacct -j %s` to track job status of concatenation step\n" % (concatenation_stdout.rstrip('\n')))
+    # move original input file to backup file
+    per_chr_dependencies = 'afterok:' + ':'.join(per_chr_job_ids)
+    backup_input_cmd_components = [
+        'sbatch',
+        '--parsable',
+        '--workdir',
+        slurm_workdir,
+        '--output',
+        os.path.join(slurm_output, '_'.join([job_prefix, 'out', 'backup_input'])),
+        '--error',
+        os.path.join(slurm_error, '_'.join([job_prefix, 'err', 'backup_input'])),
+        '--mem',
+        slurm_backup_input_memory,
+        '--partition',
+        slurm_partition,
+        '--dependency',
+        concatenation_job_dependency_string,
+        '--wrap',
+        '"srun mv ' + args.input_original_fn + ' ' + args.input_backup_fn + '"'
+    ]
+    try:
+        backup_input_process = subprocess.Popen(' '.join(backup_input_cmd_components),
+                                                shell=True,  
+                                                stdin=subprocess.PIPE,
+                                                stdout=subprocess.PIPE,
+                                                stderr=subprocess.STDOUT,
+                                                close_fds=True)
+        (backup_input_stdout, backup_input_stderr) = backup_input_process.communicate()
+        backup_input_job_id = backup_input_stdout.decode('utf-8').rstrip('\n')
+        backup_input_job_dependency_string = 'afterok:' + backup_input_job_id
+    except subprocess.CalledProcessError as err:
+        sys.stderr.write("ERROR: Backup input task submission [%s] returned with error (code %d)\n" % (' '.join(err.cmd), err.returncode))
+        sys.exit(errno.EINVAL)
+
+    # move output temp file to output final file
+    output_move_cmd_components = [
+        'sbatch',
+        '--parsable',
+        '--workdir',
+        slurm_workdir,
+        '--output',
+        os.path.join(slurm_output, '_'.join([job_prefix, 'out', 'concatenation'])),
+        '--error',
+        os.path.join(slurm_error, '_'.join([job_prefix, 'err', 'concatenation'])),
+        '--mem',
+        slurm_output_move_memory,
+        '--partition',
+        slurm_partition,
+        '--dependency',
+        backup_input_job_dependency_string,
+        '--wrap',
+        '"srun mv ' + args.output_temp_fn + ' ' + args.output_final_fn + '"'
+    ]
+    try:
+        output_move_process = subprocess.Popen(' '.join(output_move_cmd_components),
+                                               shell=True,
+                                               stdin=subprocess.PIPE,
+                                               stdout=subprocess.PIPE,
+                                               stderr=subprocess.STDOUT,
+                                               close_fds=True)
+        (output_move_stdout, output_move_stderr) = output_move_process.communicate()
+        output_move_job_id = output_move_stdout.decode('utf-8').rstrip('\n')
+        output_move_job_dependency_string = 'afterok:' + output_move_job_id
+    except subprocess.CalledProcessError as err:
+        sys.stderr.write("ERROR: Output move task submission [%s] returned with error (code %d)\n" % (' '.join(err.cmd), err.returncode))
+        sys.exit(errno.EINVAL)
+
+    # perform cleanup
+    cleanup_cmd_components = [
+        'sbatch',
+        '--parsable',
+        '--workdir',
+        slurm_workdir,
+        '--output',
+        os.path.join(slurm_output, '_'.join([job_prefix, 'out', 'concatenation'])),
+        '--error',
+        os.path.join(slurm_error, '_'.join([job_prefix, 'err', 'concatenation'])),
+        '--mem',
+        slurm_cleanup_memory,
+        '--partition',
+        slurm_partition,
+        '--dependency',
+        output_move_job_dependency_string,
+        '--wrap',
+        '"srun rm -f ' + os.path.join(slurm_workdir, job_prefix) + '_* ' + os.path.join(slurm_output, job_prefix) + '_*"'
+    ]
+    try:
+        cleanup_move_process = subprocess.Popen(' '.join(output_move_cmd_components),
+                                                shell=True,
+                                                stdin=subprocess.PIPE,
+                                                stdout=subprocess.PIPE,
+                                                stderr=subprocess.STDOUT,
+                                                close_fds=True)
+        (output_move_stdout, output_move_stderr) = output_move_process.communicate()
+        cleanup_job_id = cleanup_stdout.decode('utf-8').rstrip('\n')
+    except subprocess.CalledProcessError as err:
+        sys.stderr.write("ERROR: Cleanup task submission [%s] returned with error (code %d)\n" % (' '.join(err.cmd), err.returncode))
+        sys.exit(errno.EINVAL)
+
+def find_binary(binary_to_find):
+    for p in os.environ['PATH'].split(':'):
+        for r, d, f in os.walk(p):
+            for filename in f:
+                if filename == binary_to_find:
+                    return os.path.join(r, filename)
+    return None
 
 def cmd_exists(cmd):
     return subprocess.call("type " + cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0
