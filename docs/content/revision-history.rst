@@ -15,7 +15,7 @@ Current version
 v2.4.25
 -------
 
-Released: **TBD**
+Released: **February 15, 2017**
 
 * :ref:`convert2bed <convert2bed>`
 
