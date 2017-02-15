@@ -17,9 +17,13 @@ v2.4.25
 
 Released: **TBD**
 
+* :ref:`convert2bed <convert2bed>`
+
+  * Patch for RepeatMasker inputs with blank lines that have no spaces. This follows up on `Issue 173 <https://github.com/bedops/bedops/issues/173>`_. Thanks to saketkc for the bug report.
+
 * :ref:`update-sort-bed-migrate-candidates <sort-bed>`
 
-  The :code:`update-sort-bed-migrate-candidates` utility recursively searches into the specified directory for BED and Starch files which fail a :code:`sort-bed --check-sort` test. Those files which fail this test can have their paths written to a text file for further downstream processing, or the end user can decide to apply an immediate resort on those files, either locally or via a SLURM-managed cluster. 
+  The :code:`update-sort-bed-migrate-candidates` utility recursively searches into the specified directory for BED and Starch files which fail a :code:`sort-bed --check-sort` test. Those files which fail this test can have their paths written to a text file for further downstream processing, or the end user can decide to apply an immediate resort on those files, either locally or via a SLURM-managed cluster. Grateful thanks to Matt Maurano for input and testing.
 
   See :code:`update-sort-bed-migrate-candidates --help` for more information, or review the :ref:`sort-bed <sort-bed>` documentation.
 

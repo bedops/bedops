@@ -76,11 +76,9 @@ const boolean kFalse = 0;
 #define C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
 #define C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION 32
 #define C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
-#define C2B_VCF_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION 32
 #define C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
-#define C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION 32
 #define C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
-#define C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION 32
+#define C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
 #define C2B_THREAD_IO_BUFFER_SIZE 5000000
 
 extern const char *c2b_samtools;
@@ -474,21 +472,35 @@ typedef struct block {
 
 typedef struct rmsk {
     char *sw_score;
+    ssize_t sw_score_capacity;
     char *perc_div;
+    ssize_t perc_div_capacity;
     char *perc_deleted;
+    ssize_t perc_deleted_capacity;
     char *perc_inserted;
+    ssize_t perc_inserted_capacity;
     char *query_seq;
+    ssize_t query_seq_capacity;
     uint64_t query_start;
     uint64_t query_end;
     char *bases_past_match;
+    ssize_t bases_past_match_capacity;
     char *strand;
+    ssize_t strand_capacity;
     char *repeat_name;
+    ssize_t repeat_name_capacity;
     char *repeat_class;
+    ssize_t repeat_class_capacity;
     char *bases_before_match_comp;
+    ssize_t bases_before_match_comp_capacity;
     char *match_start;
+    ssize_t match_start_capacity;
     char *match_end;
+    ssize_t match_end_capacity;
     char *unique_id;
+    ssize_t unique_id_capacity;
     char *higher_score_match;
+    ssize_t higher_score_match_capacity;
 } c2b_rmsk_t;
 
 /* 
@@ -1273,6 +1285,7 @@ typedef struct psl_state {
 } c2b_psl_state_t;
 
 typedef struct rmsk_state {
+    c2b_rmsk_t *element;
     uint64_t line;
     boolean is_start_of_line;
     boolean is_start_of_gap;
@@ -1417,8 +1430,10 @@ extern "C" {
     static inline void       c2b_psl_blockSizes_to_ptr(char *s, uint64_t bc);
     static inline void       c2b_psl_tStarts_to_ptr(char *s, uint64_t bc);
     static inline void       c2b_line_convert_psl_to_bed(c2b_psl_t p, char *dest_line, ssize_t *dest_size);
+    static void              c2b_rmsk_init_element(c2b_rmsk_t **e);
+    static void              c2b_rmsk_delete_element(c2b_rmsk_t *e);
     static void              c2b_line_convert_rmsk_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
-    static inline void       c2b_line_convert_rmsk_to_bed(c2b_rmsk_t r, char *dest_line, ssize_t *dest_size);
+    static inline void       c2b_line_convert_rmsk_ptr_to_bed(c2b_rmsk_t *r, char *dest_line, ssize_t *dest_size);
     static void              c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
     static void              c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *dest_size, char *src, ssize_t src_size); 
     static inline void       c2b_sam_cigar_str_to_ops(char *s);

@@ -2303,6 +2303,149 @@ c2b_line_convert_psl_to_bed(c2b_psl_t p, char *dest_line, ssize_t *dest_size)
 }
 
 static void
+c2b_rmsk_init_element(c2b_rmsk_t **e)
+{
+    *e = malloc(sizeof(c2b_rmsk_t));
+    if (!*e) {
+        fprintf(stderr, "Error: Could not allocate space for RMSK element pointer\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+
+    (*e)->sw_score = NULL, (*e)->sw_score = malloc(C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->sw_score)));
+    if (!(*e)->sw_score) { 
+        fprintf(stderr, "Error: Could not allocate space for RMSK element sw_score malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->sw_score_capacity = C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->perc_div = NULL, (*e)->perc_div = malloc(C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->perc_div)));
+    if (!(*e)->perc_div) { 
+        fprintf(stderr, "Error: Could not allocate space for RMSK element perc_div malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->perc_div_capacity = C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->perc_deleted = NULL, (*e)->perc_deleted = malloc(C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->perc_deleted)));
+    if (!(*e)->perc_deleted) { 
+        fprintf(stderr, "Error: Could not allocate space for RMSK element perc_deleted malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->perc_deleted_capacity = C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->perc_inserted = NULL, (*e)->perc_inserted = malloc(C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->perc_inserted)));
+    if (!(*e)->perc_inserted) { 
+        fprintf(stderr, "Error: Could not allocate space for RMSK element perc_inserted malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->perc_inserted_capacity = C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->query_seq = NULL, (*e)->query_seq = malloc(C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->query_seq)));
+    if (!(*e)->query_seq) { 
+        fprintf(stderr, "Error: Could not allocate space for RMSK element query_seq malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->query_seq_capacity = C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->bases_past_match = NULL, (*e)->bases_past_match = malloc(C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->bases_past_match)));
+    if (!(*e)->bases_past_match) { 
+        fprintf(stderr, "Error: Could not allocate space for RMSK element bases_past_match malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->bases_past_match_capacity = C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->strand = NULL, (*e)->strand = malloc(C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->strand)));
+    if (!(*e)->strand) { 
+        fprintf(stderr, "Error: Could not allocate space for RMSK element strand malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->strand_capacity = C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->repeat_name = NULL, (*e)->repeat_name = malloc(C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->repeat_name)));
+    if (!(*e)->repeat_name) { 
+        fprintf(stderr, "Error: Could not allocate space for RMSK element repeat_name malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->repeat_name_capacity = C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->repeat_class = NULL, (*e)->repeat_class = malloc(C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->repeat_class)));
+    if (!(*e)->repeat_class) { 
+        fprintf(stderr, "Error: Could not allocate space for RMSK element repeat_class malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->repeat_class_capacity = C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->bases_before_match_comp = NULL, (*e)->bases_before_match_comp = malloc(C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->bases_before_match_comp)));
+    if (!(*e)->bases_before_match_comp) { 
+        fprintf(stderr, "Error: Could not allocate space for RMSK element bases_before_match_comp malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->bases_before_match_comp_capacity = C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->match_start = NULL, (*e)->match_start = malloc(C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->match_start)));
+    if (!(*e)->match_start) { 
+        fprintf(stderr, "Error: Could not allocate space for RMSK element match_start malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->match_start_capacity = C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->match_end = NULL, (*e)->match_end = malloc(C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->match_end)));
+    if (!(*e)->match_end) { 
+        fprintf(stderr, "Error: Could not allocate space for RMSK element match_end malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->match_end_capacity = C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->unique_id = NULL, (*e)->unique_id = malloc(C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->unique_id)));
+    if (!(*e)->unique_id) { 
+        fprintf(stderr, "Error: Could not allocate space for RMSK element unique_id malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->unique_id_capacity = C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->higher_score_match = NULL, (*e)->higher_score_match = malloc(C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->higher_score_match)));
+    if (!(*e)->higher_score_match) { 
+        fprintf(stderr, "Error: Could not allocate space for RMSK element higher_score_match malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->higher_score_match_capacity = C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+}
+
+static void
+c2b_rmsk_delete_element(c2b_rmsk_t *e)
+{
+    if (e->sw_score)                     { free(e->sw_score),                     e->sw_score = NULL;                     }
+    if (e->perc_div)                     { free(e->perc_div),                     e->perc_div = NULL;                     }
+    if (e->perc_deleted)                 { free(e->perc_deleted),                 e->perc_deleted = NULL;                 }
+    if (e->perc_inserted)                { free(e->perc_inserted),                e->perc_inserted = NULL;                }
+    if (e->query_seq)                    { free(e->query_seq),                    e->query_seq = NULL;                    }
+    if (e->bases_past_match)             { free(e->bases_past_match),             e->bases_past_match = NULL;             }
+    if (e->strand)                       { free(e->strand),                       e->strand = NULL;                       }
+    if (e->repeat_name)                  { free(e->repeat_name),                  e->repeat_name = NULL;                  }
+    if (e->repeat_class)                 { free(e->repeat_class),                 e->repeat_class = NULL;                 }
+    if (e->bases_before_match_comp)      { free(e->bases_before_match_comp),      e->bases_before_match_comp = NULL;      }
+    if (e->match_start)                  { free(e->match_start),                  e->match_start = NULL;                  }
+    if (e->match_end)                    { free(e->match_end),                    e->match_end = NULL;                    }
+    if (e->unique_id)                    { free(e->unique_id),                    e->unique_id = NULL;                    }
+    if (e->higher_score_match)           { free(e->higher_score_match),           e->higher_score_match = NULL;           }
+    if (e)                               { free(e),                               e = NULL;                               }
+}
+
+static void
 c2b_line_convert_rmsk_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
 {
     /* 
@@ -2315,6 +2458,12 @@ c2b_line_convert_rmsk_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src,
     int rmsk_field_start_idx = 0;
     int rmsk_field_end_idx = 0;
     ssize_t current_src_posn = 0;
+
+    /* skip blank lines */
+    if (src_size == 0) {
+        c2b_globals.rmsk->line++;
+        return;
+    }
 
     while (current_src_posn < src_size) {
         /* within bounds */
@@ -2399,63 +2548,123 @@ c2b_line_convert_rmsk_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src,
     }
     
     /*  0 - Smith-Waterman score of the match */
-    char sw_score_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t sw_score_start = rmsk_field_start_offsets[0];
     ssize_t sw_score_end = rmsk_field_end_offsets[0];
     ssize_t sw_score_size = sw_score_end - sw_score_start;
-    memcpy(sw_score_str, src + sw_score_start, sw_score_size);
-    sw_score_str[sw_score_size] = '\0';
+    if (sw_score_size >= c2b_globals.rmsk->element->sw_score_capacity) {
+        char *sw_score_resized = NULL;
+        sw_score_resized = realloc(c2b_globals.rmsk->element->sw_score, sw_score_size + 1);
+        if (sw_score_resized) {
+            c2b_globals.rmsk->element->sw_score = sw_score_resized;
+            c2b_globals.rmsk->element->sw_score_capacity = sw_score_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize SW_SCORE string in RMSK element struct\n");
+            exit(ENOMEM);
+        }
+
+    }
+    memcpy(c2b_globals.rmsk->element->sw_score, src + sw_score_start, sw_score_size);
+    c2b_globals.rmsk->element->sw_score[sw_score_size] = '\0';
 
 #ifdef DEBUG
-    fprintf(stderr, "sw_score_str [%s]\n", sw_score_str);
+    fprintf(stderr, "sw_score [%s]\n", c2b_globals.rmsk->element->sw_score);
 #endif
 
     /*  1 - Percent, divergence = mismatches / (matches + mismatches) */
-    char perc_div_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t perc_div_start = rmsk_field_start_offsets[1];
     ssize_t perc_div_end = rmsk_field_end_offsets[1];
     ssize_t perc_div_size = perc_div_end - perc_div_start;
-    memcpy(perc_div_str, src + perc_div_start, perc_div_size);
-    perc_div_str[perc_div_size] = '\0';
+    if (perc_div_size >= c2b_globals.rmsk->element->perc_div_capacity) {
+        char *perc_div_resized = NULL;
+        perc_div_resized = realloc(c2b_globals.rmsk->element->perc_div, perc_div_size + 1);
+        if (perc_div_resized) {
+            c2b_globals.rmsk->element->perc_div = perc_div_resized;
+            c2b_globals.rmsk->element->perc_div_capacity = perc_div_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize PERC_DIV string in RMSK element struct\n");
+            exit(ENOMEM);
+        }
+
+    }
+    memcpy(c2b_globals.rmsk->element->perc_div, src + perc_div_start, perc_div_size);
+    c2b_globals.rmsk->element->perc_div[perc_div_size] = '\0';
 
 #ifdef DEBUG
-    fprintf(stderr, "perc_div_str [%s]\n", perc_div_str);
+    fprintf(stderr, "perc_div [%s]\n", c2b_globals.rmsk->element->perc_div);
 #endif
 
     /*  2 - Percent, bases opposite a gap in the query sequence = deleted bp */
-    char perc_deleted_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t perc_deleted_start = rmsk_field_start_offsets[2];
     ssize_t perc_deleted_end = rmsk_field_end_offsets[2];
     ssize_t perc_deleted_size = perc_deleted_end - perc_deleted_start;
-    memcpy(perc_deleted_str, src + perc_deleted_start, perc_deleted_size);
-    perc_deleted_str[perc_deleted_size] = '\0';
+    if (perc_deleted_size >= c2b_globals.rmsk->element->perc_deleted_capacity) {
+        char *perc_deleted_resized = NULL;
+        perc_deleted_resized = realloc(c2b_globals.rmsk->element->perc_deleted, perc_deleted_size + 1);
+        if (perc_deleted_resized) {
+            c2b_globals.rmsk->element->perc_deleted = perc_deleted_resized;
+            c2b_globals.rmsk->element->perc_deleted_capacity = perc_deleted_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize PERC_DELETED string in RMSK element struct\n");
+            exit(ENOMEM);
+        }
+
+    }
+    memcpy(c2b_globals.rmsk->element->perc_deleted, src + perc_deleted_start, perc_deleted_size);
+    c2b_globals.rmsk->element->perc_deleted[perc_deleted_size] = '\0';
 
 #ifdef DEBUG
-    fprintf(stderr, "perc_deleted_str [%s]\n", perc_deleted_str);
+    fprintf(stderr, "perc_deleted [%s]\n", c2b_globals.rmsk->element->perc_deleted);
 #endif
 
     /*  3 - Percent, bases opposite a gap in the repeat consensus = inserted bp */
-    char perc_inserted_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t perc_inserted_start = rmsk_field_start_offsets[3];
     ssize_t perc_inserted_end = rmsk_field_end_offsets[3];
     ssize_t perc_inserted_size = perc_inserted_end - perc_inserted_start;
-    memcpy(perc_inserted_str, src + perc_inserted_start, perc_inserted_size);
-    perc_inserted_str[perc_inserted_size] = '\0';
+    if (perc_inserted_size >= c2b_globals.rmsk->element->perc_inserted_capacity) {
+        char *perc_inserted_resized = NULL;
+        perc_inserted_resized = realloc(c2b_globals.rmsk->element->perc_inserted, perc_inserted_size + 1);
+        if (perc_inserted_resized) {
+            c2b_globals.rmsk->element->perc_inserted = perc_inserted_resized;
+            c2b_globals.rmsk->element->perc_inserted_capacity = perc_inserted_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize PERC_INSERTED string in RMSK element struct\n");
+            exit(ENOMEM);
+        }
+
+    }
+    memcpy(c2b_globals.rmsk->element->perc_inserted, src + perc_inserted_start, perc_inserted_size);
+    c2b_globals.rmsk->element->perc_inserted[perc_inserted_size] = '\0';
 
 #ifdef DEBUG
-    fprintf(stderr, "perc_inserted_str [%s]\n", perc_inserted_str);
+    fprintf(stderr, "perc_inserted [%s]\n", c2b_globals.rmsk->element->perc_inserted);
 #endif
 
     /*  4 - Query sequence */
-    char query_seq_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t query_seq_start = rmsk_field_start_offsets[4];
     ssize_t query_seq_end = rmsk_field_end_offsets[4];
     ssize_t query_seq_size = query_seq_end - query_seq_start;
-    memcpy(query_seq_str, src + query_seq_start, query_seq_size);
-    query_seq_str[query_seq_size] = '\0';
+    if (query_seq_size >= c2b_globals.rmsk->element->query_seq_capacity) {
+        char *query_seq_resized = NULL;
+        query_seq_resized = realloc(c2b_globals.rmsk->element->query_seq, query_seq_size + 1);
+        if (query_seq_resized) {
+            c2b_globals.rmsk->element->query_seq = query_seq_resized;
+            c2b_globals.rmsk->element->query_seq_capacity = query_seq_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize QUERY_SEQ string in RMSK element struct\n");
+            exit(ENOMEM);
+        }
+
+    }
+    memcpy(c2b_globals.rmsk->element->query_seq, src + query_seq_start, query_seq_size);
+    c2b_globals.rmsk->element->query_seq[query_seq_size] = '\0';
 
 #ifdef DEBUG
-    fprintf(stderr, "query_seq_str [%s]\n", query_seq_str);
+    fprintf(stderr, "query_seq [%s]\n", c2b_globals.rmsk->element->query_seq);
 #endif
 
     /*  5 - Query start (1-indexed) */
@@ -2465,7 +2674,14 @@ c2b_line_convert_rmsk_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src,
     ssize_t query_start_size = query_start_end - query_start_start;
     memcpy(query_start_str, src + query_start_start, query_start_size);
     query_start_str[query_start_size] = '\0';
-    uint64_t query_start_val = strtoull(query_start_str, NULL, 10);
+    c2b_globals.rmsk->element->query_start = strtoull(query_start_str, NULL, 10); 
+    if (errno == ERANGE) {
+        fprintf(stderr, "Error: Could not convert QUERY_START string [%s] to integer (check input)\n", query_start_str);
+        exit(ERANGE);
+    }
+
+    /* subtract to make 0-indexed */
+    c2b_globals.rmsk->element->query_start--;
 
 #ifdef DEBUG
     fprintf(stderr, "query_start_str [%s]\n", query_start_str);
@@ -2478,150 +2694,244 @@ c2b_line_convert_rmsk_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src,
     ssize_t query_end_size = query_end_end - query_end_start;
     memcpy(query_end_str, src + query_end_start, query_end_size);
     query_end_str[query_end_size] = '\0';
-    uint64_t query_end_val = strtoull(query_end_str, NULL, 10);
+    c2b_globals.rmsk->element->query_end = strtoull(query_end_str, NULL, 10);
+    if (errno == ERANGE) {
+        fprintf(stderr, "Error: Could not convert QUERY_END string [%s] to integer (check input)\n", query_end_str);
+        exit(ERANGE);
+    }
 
 #ifdef DEBUG
     fprintf(stderr, "query_end_str [%s]\n", query_end_str);
 #endif
 
     /*  7 - Bases in query sequence past the ending position of match */
-    char bases_past_match_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t bases_past_match_start = rmsk_field_start_offsets[7];
     ssize_t bases_past_match_end = rmsk_field_end_offsets[7];
     ssize_t bases_past_match_size = bases_past_match_end - bases_past_match_start;
-    memcpy(bases_past_match_str, src + bases_past_match_start, bases_past_match_size);
-    bases_past_match_str[bases_past_match_size] = '\0';
+    if (bases_past_match_size >= c2b_globals.rmsk->element->bases_past_match_capacity) {
+        char *bases_past_match_resized = NULL;
+        bases_past_match_resized = realloc(c2b_globals.rmsk->element->bases_past_match, bases_past_match_size + 1);
+        if (bases_past_match_resized) {
+            c2b_globals.rmsk->element->bases_past_match = bases_past_match_resized;
+            c2b_globals.rmsk->element->bases_past_match_capacity = bases_past_match_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize BASES_PAST_MATCH string in RMSK element struct\n");
+            exit(ENOMEM);
+        }
+
+    }
+    memcpy(c2b_globals.rmsk->element->bases_past_match, src + bases_past_match_start, bases_past_match_size);
+    c2b_globals.rmsk->element->bases_past_match[bases_past_match_size] = '\0';
 
 #ifdef DEBUG
-    fprintf(stderr, "bases_past_match_str [%s]\n", bases_past_match_str);
+    fprintf(stderr, "bases_past_match [%s]\n", c2b_globals.rmsk->element->bases_past_match);
 #endif
 
     /*  8 - Strand match with repeat consensus sequence (+ = forward, C = complement) */
-    char strand_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t strand_start = rmsk_field_start_offsets[8];
     ssize_t strand_end = rmsk_field_end_offsets[8];
     ssize_t strand_size = strand_end - strand_start;
-    memcpy(strand_str, src + strand_start, strand_size);
-    strand_str[strand_size] = '\0';
-    if (strcmp(strand_str, c2b_rmsk_strand_complement) == 0) {
-        memcpy(strand_str, c2b_rmsk_strand_complement_replacement, strlen(c2b_rmsk_strand_complement_replacement) + 1);
+    if (strand_size >= c2b_globals.rmsk->element->strand_capacity) {
+        char *strand_resized = NULL;
+        strand_resized = realloc(c2b_globals.rmsk->element->strand, strand_size + 1);
+        if (strand_resized) {
+            c2b_globals.rmsk->element->strand = strand_resized;
+            c2b_globals.rmsk->element->strand_capacity = strand_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize STRAND string in RMSK element struct\n");
+            exit(ENOMEM);
+        }
+
+    }
+    memcpy(c2b_globals.rmsk->element->strand, src + strand_start, strand_size);
+    c2b_globals.rmsk->element->strand[strand_size] = '\0';
+    if (strcmp(c2b_globals.rmsk->element->strand, c2b_rmsk_strand_complement) == 0) {
+        memcpy(c2b_globals.rmsk->element->strand, c2b_rmsk_strand_complement_replacement, strlen(c2b_rmsk_strand_complement_replacement) + 1);
     }
 
 #ifdef DEBUG
-    fprintf(stderr, "strand_str [%s]\n", strand_str);
+    fprintf(stderr, "strand [%s]\n", c2b_globals.rmsk->element->strand);
 #endif
 
     /*  9 - Matching interspersed repeat name */
-    char repeat_name_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t repeat_name_start = rmsk_field_start_offsets[9];
     ssize_t repeat_name_end = rmsk_field_end_offsets[9];
     ssize_t repeat_name_size = repeat_name_end - repeat_name_start;
-    memcpy(repeat_name_str, src + repeat_name_start, repeat_name_size);
-    repeat_name_str[repeat_name_size] = '\0';
+    if (repeat_name_size >= c2b_globals.rmsk->element->repeat_name_capacity) {
+        char *repeat_name_resized = NULL;
+        repeat_name_resized = realloc(c2b_globals.rmsk->element->repeat_name, repeat_name_size + 1);
+        if (repeat_name_resized) {
+            c2b_globals.rmsk->element->repeat_name = repeat_name_resized;
+            c2b_globals.rmsk->element->repeat_name_capacity = repeat_name_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize REPEAT_NAME string in RMSK element struct\n");
+            exit(ENOMEM);
+        }
+
+    }
+    memcpy(c2b_globals.rmsk->element->repeat_name, src + repeat_name_start, repeat_name_size);
+    c2b_globals.rmsk->element->repeat_name[repeat_name_size] = '\0';
 
 #ifdef DEBUG
-    fprintf(stderr, "repeat_name_str [%s]\n", repeat_name_str);
+    fprintf(stderr, "repeat_name [%s]\n", c2b_globals.rmsk->element->repeat_name);
 #endif
 
     /* 10 - Repeat class */
-    char repeat_class_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t repeat_class_start = rmsk_field_start_offsets[10];
     ssize_t repeat_class_end = rmsk_field_end_offsets[10];
     ssize_t repeat_class_size = repeat_class_end - repeat_class_start;
-    memcpy(repeat_class_str, src + repeat_class_start, repeat_class_size);
-    repeat_class_str[repeat_class_size] = '\0';
+    if (repeat_class_size >= c2b_globals.rmsk->element->repeat_class_capacity) {
+        char *repeat_class_resized = NULL;
+        repeat_class_resized = realloc(c2b_globals.rmsk->element->repeat_class, repeat_class_size + 1);
+        if (repeat_class_resized) {
+            c2b_globals.rmsk->element->repeat_class = repeat_class_resized;
+            c2b_globals.rmsk->element->repeat_class_capacity = repeat_class_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize REPEAT_CLASS string in RMSK element struct\n");
+            exit(ENOMEM);
+        }
+
+    }
+    memcpy(c2b_globals.rmsk->element->repeat_class, src + repeat_class_start, repeat_class_size);
+    c2b_globals.rmsk->element->repeat_class[repeat_class_size] = '\0';
 
 #ifdef DEBUG
-    fprintf(stderr, "repeat_class_str [%s]\n", repeat_class_str);
+    fprintf(stderr, "repeat_class [%s]\n", c2b_globals.rmsk->element->repeat_class);
 #endif
 
     /* 11 - Bases in (complement of) the repeat consensus sequence, prior to beginning of the match */
-    char bases_before_match_comp_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t bases_before_match_comp_start = rmsk_field_start_offsets[11];
     ssize_t bases_before_match_comp_end = rmsk_field_end_offsets[11];
     ssize_t bases_before_match_comp_size = bases_before_match_comp_end - bases_before_match_comp_start;
-    memcpy(bases_before_match_comp_str, src + bases_before_match_comp_start, bases_before_match_comp_size);
-    bases_before_match_comp_str[bases_before_match_comp_size] = '\0';
+    if (bases_before_match_comp_size >= c2b_globals.rmsk->element->bases_before_match_comp_capacity) {
+        char *bases_before_match_comp_resized = NULL;
+        bases_before_match_comp_resized = realloc(c2b_globals.rmsk->element->bases_before_match_comp, bases_before_match_comp_size + 1);
+        if (bases_before_match_comp_resized) {
+            c2b_globals.rmsk->element->bases_before_match_comp = bases_before_match_comp_resized;
+            c2b_globals.rmsk->element->bases_before_match_comp_capacity = bases_before_match_comp_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize BASES_BEFORE_MATCH_COMP string in RMSK element struct\n");
+            exit(ENOMEM);
+        }
+
+    }
+    memcpy(c2b_globals.rmsk->element->bases_before_match_comp, src + bases_before_match_comp_start, bases_before_match_comp_size);
+    c2b_globals.rmsk->element->bases_before_match_comp[bases_before_match_comp_size] = '\0';
 
 #ifdef DEBUG
-    fprintf(stderr, "bases_before_match_comp_str [%s]\n", bases_before_match_comp_str);
+    fprintf(stderr, "bases_before_match_comp [%s]\n", c2b_globals.rmsk->element->bases_before_match_comp);
 #endif
 
     /* 12 - Match start (in repeat consensus sequence) */
-    char match_start_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t match_start_start = rmsk_field_start_offsets[12];
     ssize_t match_start_end = rmsk_field_end_offsets[12];
     ssize_t match_start_size = match_start_end - match_start_start;
-    memcpy(match_start_str, src + match_start_start, match_start_size);
-    match_start_str[match_start_size] = '\0';
+    if (match_start_size >= c2b_globals.rmsk->element->match_start_capacity) {
+        char *match_start_resized = NULL;
+        match_start_resized = realloc(c2b_globals.rmsk->element->match_start, match_start_size + 1);
+        if (match_start_resized) {
+            c2b_globals.rmsk->element->match_start = match_start_resized;
+            c2b_globals.rmsk->element->match_start_capacity = match_start_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize MATCH_START string in RMSK element struct\n");
+            exit(ENOMEM);
+        }
+
+    }
+    memcpy(c2b_globals.rmsk->element->match_start, src + match_start_start, match_start_size);
+    c2b_globals.rmsk->element->match_start[match_start_size] = '\0';
 
 #ifdef DEBUG
-    fprintf(stderr, "match_start_str [%s]\n", match_start_str);
+    fprintf(stderr, "match_start [%s]\n", c2b_globals.rmsk->element->match_start);
 #endif
 
     /* 13 - Match end (in repeat consensus sequence) */
-    char match_end_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t match_end_start = rmsk_field_start_offsets[13];
     ssize_t match_end_end = rmsk_field_end_offsets[13];
     ssize_t match_end_size = match_end_end - match_end_start;
-    memcpy(match_end_str, src + match_end_start, match_end_size);
-    match_end_str[match_end_size] = '\0';
+    if (match_end_size >= c2b_globals.rmsk->element->match_end_capacity) {
+        char *match_end_resized = NULL;
+        match_end_resized = realloc(c2b_globals.rmsk->element->match_end, match_end_size + 1);
+        if (match_end_resized) {
+            c2b_globals.rmsk->element->match_end = match_end_resized;
+            c2b_globals.rmsk->element->match_end_capacity = match_end_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize MATCH_END string in RMSK element struct\n");
+            exit(ENOMEM);
+        }
+
+    }
+    memcpy(c2b_globals.rmsk->element->match_end, src + match_end_start, match_end_size);
+    c2b_globals.rmsk->element->match_end[match_end_size] = '\0';
 
 #ifdef DEBUG
-    fprintf(stderr, "match_end_str [%s]\n", match_end_str);
+    fprintf(stderr, "match_end [%s]\n", c2b_globals.rmsk->element->match_end);
 #endif
 
     /* 14 - Identifier for individual insertions */
-    char unique_id_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t unique_id_start = rmsk_field_start_offsets[14];
     ssize_t unique_id_end = rmsk_field_end_offsets[14];
     ssize_t unique_id_size = unique_id_end - unique_id_start;
-    memcpy(unique_id_str, src + unique_id_start, unique_id_size);
-    unique_id_str[unique_id_size] = '\0';
+    if (unique_id_size >= c2b_globals.rmsk->element->unique_id_capacity) {
+        char *unique_id_resized = NULL;
+        unique_id_resized = realloc(c2b_globals.rmsk->element->unique_id, unique_id_size + 1);
+        if (unique_id_resized) {
+            c2b_globals.rmsk->element->unique_id = unique_id_resized;
+            c2b_globals.rmsk->element->unique_id_capacity = unique_id_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize UNIQUE_ID string in RMSK element struct\n");
+            exit(ENOMEM);
+        }
+
+    }
+    memcpy(c2b_globals.rmsk->element->unique_id, src + unique_id_start, unique_id_size);
+    c2b_globals.rmsk->element->unique_id[unique_id_size] = '\0';
 
 #ifdef DEBUG
-    fprintf(stderr, "unique_id_str [%s]\n", unique_id_str);
+    fprintf(stderr, "unique_id [%s]\n", c2b_globals.rmsk->element->unique_id);
 #endif
 
     /* 15 - Higher-scoring match present (optional) */
-    char higher_score_match_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    higher_score_match_str[0] = '\0';
-
     if ((rmsk_field_start_idx == c2b_rmsk_field_max) && (rmsk_field_end_idx == c2b_rmsk_field_max)) {
         ssize_t higher_score_match_start = rmsk_field_start_offsets[15];
         ssize_t higher_score_match_end = rmsk_field_end_offsets[15];
         ssize_t higher_score_match_size = higher_score_match_end - higher_score_match_start;
-        memcpy(higher_score_match_str, src + higher_score_match_start, higher_score_match_size);
-        higher_score_match_str[higher_score_match_size] = '\0';
+        if (higher_score_match_size >= c2b_globals.rmsk->element->higher_score_match_capacity) {
+            char *higher_score_match_resized = NULL;
+            higher_score_match_resized = realloc(c2b_globals.rmsk->element->higher_score_match, higher_score_match_size + 1);
+            if (higher_score_match_resized) {
+                c2b_globals.rmsk->element->higher_score_match = higher_score_match_resized;
+                c2b_globals.rmsk->element->higher_score_match_capacity = higher_score_match_size + 1;
+            }
+            else {
+                fprintf(stderr, "Error: Could not resize HIGHER SCORE MATCH string in RMSK element struct\n");
+                exit(ENOMEM);
+            }
+
+        }
+        memcpy(c2b_globals.rmsk->element->higher_score_match, src + higher_score_match_start, higher_score_match_size);
+        c2b_globals.rmsk->element->higher_score_match[higher_score_match_size] = '\0';
+#ifdef DEBUG
+        fprintf(stderr, "higher_score_match [%s]\n", c2b_globals.rmsk->element->higher_score_match);
+#endif
     }
 
-#ifdef DEBUG
-    fprintf(stderr, "higher_score_match_str [%s]\n", higher_score_match_str);
-#endif
+    c2b_line_convert_rmsk_ptr_to_bed(c2b_globals.rmsk->element, dest, dest_size);
 
-    c2b_rmsk_t rmsk;
-    rmsk.sw_score = sw_score_str;
-    rmsk.perc_div = perc_div_str;
-    rmsk.perc_deleted = perc_deleted_str;
-    rmsk.perc_inserted = perc_inserted_str;
-    rmsk.query_seq = query_seq_str;
-    rmsk.query_start = query_start_val - 1;
-    rmsk.query_end = query_end_val;
-    rmsk.bases_past_match = bases_past_match_str;
-    rmsk.strand = strand_str;
-    rmsk.repeat_name = repeat_name_str;
-    rmsk.repeat_class = repeat_class_str;
-    rmsk.bases_before_match_comp = bases_before_match_comp_str;
-    rmsk.match_start = match_start_str;
-    rmsk.match_end = match_end_str;
-    rmsk.unique_id = unique_id_str;
-    rmsk.higher_score_match = higher_score_match_str;
-
-    c2b_line_convert_rmsk_to_bed(rmsk, dest, dest_size);
+    /* after writing a line, reset length of element higher_score_match string */
+    c2b_globals.rmsk->element->higher_score_match[0] = '\0';
 }
 
 static inline void
-c2b_line_convert_rmsk_to_bed(c2b_rmsk_t r, char *dest_line, ssize_t *dest_size)
+c2b_line_convert_rmsk_ptr_to_bed(c2b_rmsk_t *r, char *dest_line, ssize_t *dest_size)
 {
     /* 
        For RepeatMasker annotation-formatted data, we use the mapping provided by BEDOPS
@@ -2654,7 +2964,7 @@ c2b_line_convert_rmsk_to_bed(c2b_rmsk_t r, char *dest_line, ssize_t *dest_size)
        higher_score_match        16                     -       
     */
 
-    if (strlen(r.higher_score_match) == 0) {
+    if (strlen(r->higher_score_match) == 0) {
         *dest_size += sprintf(dest_line + *dest_size,
                               "%s\t"            \
                               "%" PRIu64 "\t"   \
@@ -2671,21 +2981,21 @@ c2b_line_convert_rmsk_to_bed(c2b_rmsk_t r, char *dest_line, ssize_t *dest_size)
                               "%s\t"            \
                               "%s\t"            \
                               "%s\n",
-                              r.query_seq,
-                              r.query_start,
-                              r.query_end,
-                              r.repeat_name,
-                              r.sw_score,
-                              r.strand,
-                              r.perc_div,
-                              r.perc_deleted,
-                              r.perc_inserted,
-                              r.bases_past_match,
-                              r.repeat_class,
-                              r.bases_before_match_comp,
-                              r.match_start,
-                              r.match_end,
-                              r.unique_id);
+                              r->query_seq,
+                              r->query_start,
+                              r->query_end,
+                              r->repeat_name,
+                              r->sw_score,
+                              r->strand,
+                              r->perc_div,
+                              r->perc_deleted,
+                              r->perc_inserted,
+                              r->bases_past_match,
+                              r->repeat_class,
+                              r->bases_before_match_comp,
+                              r->match_start,
+                              r->match_end,
+                              r->unique_id);
     }
     else {
         *dest_size += sprintf(dest_line + *dest_size,
@@ -2705,22 +3015,22 @@ c2b_line_convert_rmsk_to_bed(c2b_rmsk_t r, char *dest_line, ssize_t *dest_size)
                               "%s\t"            \
                               "%s\t"            \
                               "%s\n",
-                              r.query_seq,
-                              r.query_start,
-                              r.query_end,
-                              r.repeat_name,
-                              r.sw_score,
-                              r.strand,
-                              r.perc_div,
-                              r.perc_deleted,
-                              r.perc_inserted,
-                              r.bases_past_match,
-                              r.repeat_class,
-                              r.bases_before_match_comp,
-                              r.match_start,
-                              r.match_end,
-                              r.unique_id,
-                              r.higher_score_match);
+                              r->query_seq,
+                              r->query_start,
+                              r->query_end,
+                              r->repeat_name,
+                              r->sw_score,
+                              r->strand,
+                              r->perc_div,
+                              r->perc_deleted,
+                              r->perc_inserted,
+                              r->bases_past_match,
+                              r->repeat_class,
+                              r->bases_before_match_comp,
+                              r->match_start,
+                              r->match_end,
+                              r->unique_id,
+                              r->higher_score_match);
     }
 }
 
@@ -5719,6 +6029,7 @@ c2b_init_global_rmsk_state()
         exit(ENOMEM); /* Not enough space (POSIX.1) */
     }
 
+    c2b_globals.rmsk->element = NULL, c2b_rmsk_init_element(&(c2b_globals.rmsk->element));
     c2b_globals.rmsk->line = 0U;
     c2b_globals.rmsk->is_start_of_line = kTrue;
     c2b_globals.rmsk->is_start_of_gap = kFalse;
@@ -5735,6 +6046,7 @@ c2b_delete_global_rmsk_state()
     fprintf(stderr, "--- c2b_delete_global_rmsk_state() - enter ---\n");
 #endif
 
+    c2b_rmsk_delete_element(c2b_globals.rmsk->element);
     free(c2b_globals.rmsk), c2b_globals.rmsk = NULL;
 
 #ifdef DEBUG
