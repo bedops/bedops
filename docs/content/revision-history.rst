@@ -12,6 +12,20 @@ Current version
 ===============
 
 -------
+v2.4.26
+-------
+
+Released: **TBD**
+
+* :ref:`starchstrip <starchstrip>`
+
+  * New utility to efficiently filter a Starch archive, including or excluding records by specified chromosome names, without doing expensive extraction and recompression. This follows up on `internal discussion <https://stamlab.slack.com/archives/bedops/p1487878245000103>`_ on the Altius Slack channel.
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.25
 -------
 
@@ -30,10 +44,6 @@ Released: **February 15, 2017**
 * :ref:`update-sort-bed-starch-slurm <sort-bed>`
 
   This is an adjunct to the :code:`update-sort-bed-slurm` utility, which resorts the provided Starch file and writes a new file. (The :code:`update-sort-bed-slurm` utility only takes in BED files as input and writes BED as output.)
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.24

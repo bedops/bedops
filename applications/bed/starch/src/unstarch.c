@@ -233,21 +233,21 @@ main(int argc, char **argv)
         (resultValue == UNSTARCH_ELEMENT_MAX_STRING_LENGTH_ALL_ERROR))
     {
         if (STARCH_readJSONMetadata( &metadataJSON, 
-				     &inFilePtr, 
+                     &inFilePtr, 
 #ifdef __cplusplus
-				     reinterpret_cast<const char *>( inFile ), 
+                     reinterpret_cast<const char *>( inFile ), 
 #else
-				     (const char *) inFile, 
+                     (const char *) inFile, 
 #endif
-				     &records, 
-				     &type, 
-				     &archiveVersion, 
-				     &archiveTimestamp, 
-				     &note, 
-				     &metadataOffset, 
-				     &headerFlag, 
-				     suppressErrorMsgs, 
-				     preserveJSONRef) != STARCH_EXIT_SUCCESS) {
+                     &records, 
+                     &type, 
+                     &archiveVersion, 
+                     &archiveTimestamp, 
+                     &note, 
+                     &metadataOffset, 
+                     &headerFlag, 
+                     suppressErrorMsgs, 
+                     preserveJSONRef) != STARCH_EXIT_SUCCESS) {
             fprintf(stderr, "ERROR: Could not read metadata\n");
             resultValue = EXIT_FAILURE;
         }
@@ -256,21 +256,21 @@ main(int argc, char **argv)
     {
         /* we suppress warnings from STARCH_readJSONMetadata() */
         if (STARCH_readJSONMetadata( &metadataJSON, 
-				     &inFilePtr, 
+                     &inFilePtr, 
 #ifdef __cplusplus
-				     reinterpret_cast<const char *>( inFile ), 
+                     reinterpret_cast<const char *>( inFile ), 
 #else
-				     (const char *) inFile, 
+                     (const char *) inFile, 
 #endif
-				     &records, 
-				     &type, 
-				     &archiveVersion, 
-				     &archiveTimestamp, 
-				     &note, 
-				     &metadataOffset, 
-				     &headerFlag, 
-				     kStarchTrue, 
-				     kStarchTrue) != STARCH_EXIT_SUCCESS) {
+                     &records, 
+                     &type, 
+                     &archiveVersion, 
+                     &archiveTimestamp, 
+                     &note, 
+                     &metadataOffset, 
+                     &headerFlag, 
+                     kStarchTrue, 
+                     kStarchTrue) != STARCH_EXIT_SUCCESS) {
             fprintf(stdout, "0\n"); /* false -- no valid metadata, therefore not a starch archive */
             return EXIT_FAILURE;
         }
@@ -282,21 +282,21 @@ main(int argc, char **argv)
     else if ( (resultValue == UNSTARCH_METADATA_SHA1_SIGNATURE_ERROR) || (resultValue == UNSTARCH_SIGNATURE_ERROR) || (resultValue == UNSTARCH_SIGNATURE_VERIFY_ERROR) )
     {
         if (STARCH_readJSONMetadata( &metadataJSON, 
-				     &inFilePtr, 
+                     &inFilePtr, 
 #ifdef __cplusplus
-				     reinterpret_cast<const char *>( inFile ), 
+                     reinterpret_cast<const char *>( inFile ), 
 #else
-				     (const char *) inFile, 
+                     (const char *) inFile, 
 #endif
-				     &records, 
-				     &type, 
-				     &archiveVersion, 
-				     &archiveTimestamp, 
-				     &note, 
-				     &metadataOffset, 
-				     &headerFlag, 
-				     suppressErrorMsgs, 
-				     kStarchTrue) != STARCH_EXIT_SUCCESS) {
+                     &records, 
+                     &type, 
+                     &archiveVersion, 
+                     &archiveTimestamp, 
+                     &note, 
+                     &metadataOffset, 
+                     &headerFlag, 
+                     suppressErrorMsgs, 
+                     kStarchTrue) != STARCH_EXIT_SUCCESS) {
             fprintf(stderr, "ERROR: Could not read metadata\n");
             resultValue = EXIT_FAILURE;
         }
@@ -313,12 +313,12 @@ main(int argc, char **argv)
         if (jsonString) {
 #ifdef __cplusplus
             STARCH_SHA1_All(reinterpret_cast<const unsigned char *>( reinterpret_cast<unsigned char *>( jsonString ) ), 
-			    strlen(jsonString), 
-			    mdHashBuffer);        
+                strlen(jsonString), 
+                mdHashBuffer);        
 #else
             STARCH_SHA1_All((const unsigned char *) jsonString, 
-			    strlen(jsonString),
-			    mdHashBuffer);        
+                strlen(jsonString),
+                mdHashBuffer);        
 #endif
             free(jsonString), jsonString = NULL;
             json_decref(metadataJSON), metadataJSON = NULL;
@@ -1171,13 +1171,13 @@ UNSTARCH_printUsage(int errorType)
                 case UNSTARCH_HELP_ERROR:
                 default:
                     fprintf(stderr, 
-			    "%s\n citation: %s\n binary version: %s (extracts archive version: %s or older)\n authors: %s\n%s\n", 
-			    name, 
-			    BEDOPS::citation(), 
-			    BEDOPS::revision(), 
-			    avStr, 
-			    authors, 
-			    usage);
+                "%s\n citation: %s\n binary version: %s (extracts archive version: %s or older)\n authors: %s\n%s\n", 
+                name, 
+                BEDOPS::citation(), 
+                BEDOPS::revision(), 
+                avStr, 
+                authors, 
+                usage);
                     break;
             }
         }
@@ -1201,10 +1201,10 @@ UNSTARCH_printRevision()
         int result = sprintf(avStr, "%d.%d.%d", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION);
         if (result != -1)
             fprintf(stdout, 
-		    "%s\n binary version: %s (extracts archive version: %s or older)\n", 
-		    name, 
-		    BEDOPS::revision(), 
-		    avStr);
+            "%s\n binary version: %s (extracts archive version: %s or older)\n", 
+            name, 
+            BEDOPS::revision(), 
+            avStr);
         free(avStr);
     }
 }
@@ -1217,11 +1217,11 @@ UNSTARCH_printArchiveVersion(const ArchiveVersion *av)
 #endif
     if (av)
         fprintf(stdout, 
-		"%s\n archive version: %d.%d.%d\n", 
-		name, 
-		av->major, 
-		av->minor, 
-		av->revision);
+        "%s\n archive version: %d.%d.%d\n", 
+        name, 
+        av->major, 
+        av->minor, 
+        av->revision);
 }
 
 void
@@ -1232,8 +1232,8 @@ UNSTARCH_printArchiveTimestamp(const char *at)
 #endif
     if (at)
         fprintf(stdout, 
-		"%s\n", 
-		at);
+        "%s\n", 
+        at);
 }
 
 void
@@ -1244,8 +1244,8 @@ UNSTARCH_printNote(const char *note)
 #endif
     if (note)
         fprintf(stdout, 
-		"%s\n", 
-		note);
+        "%s\n", 
+        note);
 }
 
 void
@@ -1283,14 +1283,14 @@ UNSTARCH_printMetadataSha1Signature(unsigned char *sha1Buffer)
 
 #ifdef __cplusplus
     STARCH_encodeBase64(&jsonBase64String, 
-			static_cast<const size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
-			const_cast<const unsigned char *>( sha1Buffer ), 
-			static_cast<const size_t>( sha1BufferLength ));
+            static_cast<const size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
+            const_cast<const unsigned char *>( sha1Buffer ), 
+            static_cast<const size_t>( sha1BufferLength ));
 #else
     STARCH_encodeBase64(&jsonBase64String, 
-			(const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
-			(const unsigned char *) sha1Buffer, 
-			(const size_t) sha1BufferLength);
+            (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
+            (const unsigned char *) sha1Buffer, 
+            (const size_t) sha1BufferLength);
 #endif
 
     if (!jsonBase64String) {

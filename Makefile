@@ -34,6 +34,7 @@ install: prep_c install_conversion_scripts install_starch_scripts
 	-cp ${APPDIR}/starch/bin/starch ${BINDIR}/
 	-cp ${APPDIR}/starch/bin/unstarch ${BINDIR}/
 	-cp ${APPDIR}/starch/bin/starchcat ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/starchstrip ${BINDIR}/
 	-cp ${APPDIR}/conversion/bin/convert2bed ${BINDIR}/
 
 
@@ -57,6 +58,7 @@ install_debug: prep_c install_conversion_scripts install_starch_scripts
 	-cp ${APPDIR}/starch/bin/debug.starch ${BINDIR}/
 	-cp ${APPDIR}/starch/bin/debug.unstarch ${BINDIR}/
 	-cp ${APPDIR}/starch/bin/debug.starchcat ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/debug.starchstrip ${BINDIR}/
 	-cp ${APPDIR}/conversion/bin/debug.convert2bed ${BINDIR}/
 
 install_gprof: prep_c install_conversion_scripts install_starch_scripts
@@ -71,6 +73,7 @@ install_gprof: prep_c install_conversion_scripts install_starch_scripts
 	-cp ${APPDIR}/starch/bin/gprof.starch ${BINDIR}/
 	-cp ${APPDIR}/starch/bin/gprof.unstarch ${BINDIR}/
 	-cp ${APPDIR}/starch/bin/gprof.starchcat ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/gprof.starchstrip ${BINDIR}/
 	-cp ${APPDIR}/conversion/bin/gprof.convert2bed ${BINDIR}/
 
 install_starch_scripts: prep_c
@@ -118,6 +121,7 @@ install_osx_packaging_bins: prep_c
 	-cp ${APPDIR}/starch/bin/starch ${OSXPKGDIR}/
 	-cp ${APPDIR}/starch/bin/unstarch ${OSXPKGDIR}/
 	-cp ${APPDIR}/starch/bin/starchcat ${OSXPKGDIR}/
+	-cp ${APPDIR}/starch/bin/starchstrip ${OSXPKGDIR}/
 	-cp ${APPDIR}/starch/bin/starchcluster_sge ${OSXPKGDIR}/starchcluster_sge
 	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel ${OSXPKGDIR}/starchcluster_gnuParallel
 	-cp ${APPDIR}/starch/bin/starchcluster_slurm ${OSXPKGDIR}/starchcluster_slurm
@@ -171,6 +175,7 @@ ifeq ($(KERNEL), Darwin)
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_sge.tcsh
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_slurm.tcsh
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starch-diff.py
+	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/Makefile.darwin
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/sort-bed/src/update-sort-bed-slurm.py
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/sort-bed/src/update-sort-bed-starch-slurm.py
 	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/sort-bed/src/update-sort-bed-migrate-candidates.py
@@ -190,6 +195,7 @@ else
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_sge.tcsh
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_slurm.tcsh
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starch-diff.py
+	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/Makefile.darwin
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/sort-bed/src/update-sort-bed-slurm.py
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/sort-bed/src/update-sort-bed-starch-slurm.py
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/sort-bed/src/update-sort-bed-migrate-candidates.py

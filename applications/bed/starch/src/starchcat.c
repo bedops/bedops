@@ -347,7 +347,7 @@ STARCHCAT2_copyInputRecordToOutput (Metadata **outMd, const char *outTag, const 
 #ifdef __cplusplus
             outFn = static_cast<char *>( malloc(strlen(inChr) + strlen(outTag) + 6) ); /* X.Y.bz2\0 */
 #else
-        outFn = malloc(strlen(inChr) + strlen(outTag) + 6); /* X.Y.bz2\0 */
+            outFn = malloc(strlen(inChr) + strlen(outTag) + 6); /* X.Y.bz2\0 */
 #endif
             if (!outFn) {
                 fprintf(stderr, "ERROR: Could not allocate space for output filename in input copy routine.\n");

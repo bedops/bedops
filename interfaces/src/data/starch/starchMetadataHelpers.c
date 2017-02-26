@@ -347,7 +347,7 @@ STARCH_listMetadata(const Metadata *md,
 
     if (chrFound == kStarchTrue) {
         fprintf(stdout, 
-                "%-25s|%-65s|%-15s|%-25s|%-25s|%-20s|%-20s|%-25s|%-25s|%-25s\n", 
+                "%-25s|%-65s|%-15s|%-25s|%-30s|%-20s|%-20s|%-25s|%-25s|%-25s\n", 
                 "chr", 
                 "filename", 
                 "compressedSize", 
@@ -365,7 +365,7 @@ STARCH_listMetadata(const Metadata *md,
             if ( (strcmp((const char *)iter->chromosome, chr) == 0) || (strcmp("all", chr) == 0) )
 #endif
                 fprintf(stdout, 
-                        "%-25s|%-65s|%-15" PRIu64 "|%-25" PRIu64 "|%-25d|%-20" PRIu64 "|%-20" PRIu64 "|%-25s|%-25s|%-25s\n", 
+                        "%-25s|%-65s|%-15" PRIu64 "|%-25" PRIu64 "|%-30d|%-20" PRIu64 "|%-20" PRIu64 "|%-25s|%-25s|%-25s\n", 
                         iter->chromosome, 
                         iter->filename, 
                         iter->size, 
@@ -375,7 +375,7 @@ STARCH_listMetadata(const Metadata *md,
                         iter->totalUniqueBases, 
                         (iter->duplicateElementExists == kStarchTrue ? t : f), 
                         (iter->nestedElementExists == kStarchTrue ? t : f), 
-                        iter->signature);
+                        (iter->signature) ? iter->signature : "NA");
         }
     }
 
@@ -726,14 +726,16 @@ STARCH_generateJSONMetadata(const Metadata *md,
                 json_object_set_new(stream, STARCH_METADATA_STREAM_SIGNATURE_KEY, streamSignature);
                 free(recordSignature);
             }
-            /* maximum string length */
-            filenameLineMaxStringLength = iter->lineMaxStringLength;
+            if (iter->lineMaxStringLength > 0) {
+                /* maximum string length */
+                filenameLineMaxStringLength = iter->lineMaxStringLength;
 #ifdef __cplusplus
-            streamLineMaxStringLength = json_integer(static_cast<json_int_t>(filenameLineMaxStringLength));
+                streamLineMaxStringLength = json_integer(static_cast<json_int_t>(filenameLineMaxStringLength));
 #else
-            streamLineMaxStringLength = json_integer((json_int_t)filenameLineMaxStringLength);
+                streamLineMaxStringLength = json_integer((json_int_t)filenameLineMaxStringLength);
 #endif
-            json_object_set_new(stream, STARCH_METADATA_STREAM_LINEMAXSTRINGLENGTH_KEY, streamLineMaxStringLength);
+                json_object_set_new(stream, STARCH_METADATA_STREAM_LINEMAXSTRINGLENGTH_KEY, streamLineMaxStringLength);
+            }
         }
 
         json_array_append_new(streams, stream);

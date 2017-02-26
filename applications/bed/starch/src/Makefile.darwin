@@ -33,7 +33,7 @@ LIBRARIES                 = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 BINDIR                    = ../bin_${ARCH}
 WARNINGS                  = -Weverything -Wno-c++98-compat-pedantic -Wno-padded
 ARCH_VERSION              = v2.2
-BIN_VERSION               = v2.4.21
+BIN_VERSION               = v2.4.26
 TEST                      = ../test
 TEST_OSX_BINDIR           = ${TEST}/binaries/osx/${ARCH_VERSION}/bin
 
@@ -43,7 +43,7 @@ CDFLAGS                   = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_L
 CXXDFLAGS                 = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g ${WARNINGS} -std=c++11 -stdlib=libc++ -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH}
 
 
-build: dependencies starchLibrary starch unstarch starchcat starchcluster starch-diff
+build: dependencies starchLibrary starch unstarch starchcat starchcluster starch-diff starchstrip
 	rm -f *~
 
 # dependencies-related recipes all have mkdirs prereqs
@@ -58,7 +58,7 @@ dependencies: mkdirs
 	${CC} ${CFLAGS} -c ${OBJDIR}/starchSha1Digest.c -o  ${LOCALOBJDIR}/starchSha1Digest.o ${INCLUDES}
 	${CC} ${CFLAGS} -c ${OBJDIR}/starchBase64Coding.c -o  ${LOCALOBJDIR}/starchBase64Coding.o ${INCLUDES}
 
-build_debug: dependencies_debug starchLibrary_debug starch_debug unstarch_debug starchcat_debug
+build_debug: dependencies_debug starchLibrary_debug starch_debug unstarch_debug starchcat_debug starchsplit_debug
 	rm -f *~
 
 dependencies_debug: mkdirs
@@ -107,6 +107,14 @@ starchcat: starchLibrary
 starchcat_debug: starchLibrary_debug
 	${CC} ${CDFLAGS} -c starchcat.c -o $(LOCALOBJDIR)/starchcat.o ${INCLUDES}
 	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/starchcat.o -o ${BINDIR}/debug.starchcat ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
+
+starchstrip: starchLibrary
+	${CC} ${CFLAGS} -c starchstrip.c -o $(LOCALOBJDIR)/starchstrip.o ${INCLUDES}
+	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/starchstrip.o -o ${BINDIR}/starchstrip ${LOCALSTARCHLIB} ${LIBRARIES}
+
+starchstrip_debug: starchLibrary_debug
+	${CC} ${CDFLAGS} -c starchstrip.c -o $(LOCALOBJDIR)/debug.starchstrip.o ${INCLUDES}
+	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.starchstrip.o -o ${BINDIR}/debug.starchstrip ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
 
 test: starch unstarch starchcat
 	cp ${BINDIR}/starch ${TEST_OSX_BINDIR}/starch
