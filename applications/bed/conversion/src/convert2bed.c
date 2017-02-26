@@ -1170,10 +1170,10 @@ c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     ssize_t attributes_size = gtf_field_offsets[8] - gtf_field_offsets[7] - 1;
     if (attributes_size >= c2b_globals.gtf->element->attributes_capacity) {
         char *attributes_resized = NULL;
-        attributes_resized = realloc(c2b_globals.gtf->element->attributes, attributes_size + 1);
+        attributes_resized = realloc(c2b_globals.gtf->element->attributes, attributes_size * 2);
         if (attributes_resized) {
             c2b_globals.gtf->element->attributes = attributes_resized;
-            c2b_globals.gtf->element->attributes_capacity = attributes_size + 1;
+            c2b_globals.gtf->element->attributes_capacity = attributes_size * 2;
         }
         else {
             fprintf(stderr, "Error: Could not resize ATTRIBUTES string in GTF element struct\n");
@@ -5827,16 +5827,26 @@ c2b_init_globals()
     c2b_globals.split_flag = kFalse;
     c2b_globals.zero_indexed_flag = kFalse;
     c2b_globals.header_line_idx = 0U;
-    c2b_globals.gff = NULL, c2b_init_global_gff_state();
-    c2b_globals.gtf = NULL, c2b_init_global_gtf_state();
-    c2b_globals.psl = NULL, c2b_init_global_psl_state();
-    c2b_globals.rmsk = NULL, c2b_init_global_rmsk_state();
-    c2b_globals.sam = NULL, c2b_init_global_sam_state();
-    c2b_globals.vcf = NULL, c2b_init_global_vcf_state(); 
-    c2b_globals.wig = NULL, c2b_init_global_wig_state();
-    c2b_globals.cat = NULL, c2b_init_global_cat_params();
-    c2b_globals.sort = NULL, c2b_init_global_sort_params();
-    c2b_globals.starch = NULL, c2b_init_global_starch_params();
+    c2b_globals.gff = NULL;
+    c2b_init_global_gff_state();
+    c2b_globals.gtf = NULL;
+    c2b_init_global_gtf_state();
+    c2b_globals.psl = NULL;
+    c2b_init_global_psl_state();
+    c2b_globals.rmsk = NULL; 
+    c2b_init_global_rmsk_state();
+    c2b_globals.sam = NULL;
+    c2b_init_global_sam_state();
+    c2b_globals.vcf = NULL;
+    c2b_init_global_vcf_state(); 
+    c2b_globals.wig = NULL;
+    c2b_init_global_wig_state();
+    c2b_globals.cat = NULL;
+    c2b_init_global_cat_params();
+    c2b_globals.sort = NULL;
+    c2b_init_global_sort_params();
+    c2b_globals.starch = NULL;
+    c2b_init_global_starch_params();
 
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_init_globals() - exit  ---\n");
