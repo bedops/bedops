@@ -5,7 +5,7 @@
 
 The ``starchstrip`` utility efficiently pulls out per-chromosome records contained within a BEDOPS :ref:`Starch-formatted <starch_specification>` archive and writes the filtered result to a new Starch archive. This utility allows either exclusion or inclusion of one or more specified chromosome names.
 
-Previously, it would be necessary to extract records with :ref:`unstarch <unstarch>`, select the desired set of records, and recompress with :ref:`starch <starch>`. In contrast, ``starchstrip`` identifies the subsets of data within an archive and writes them to a new archive, with an updated metadata payload, avoiding the need for costly and wasteful extraction and re-compression. 
+Previously, it would be necessary to extract records with :ref:`unstarch <unstarch>`, use `awk` or similar to filter down to the desired set of records, and recompress with :ref:`starch <starch>`. In contrast, ``starchstrip`` identifies just the pieces of data of interest within an archive and writes them to a new archive, with an updated metadata payload, avoiding the need for costly and wasteful extraction and re-compression. 
 
 ==================
 Inputs and outputs
@@ -89,9 +89,9 @@ Let's say we have an archive containing 23 chromosomes, one for each of the huma
 
   $ starchsplit --include chr4,chr8,chr17 humanGenome.starch > humanGenome.chrs4_8_and_17.starch
 
-The :ref:`starchsplit` utility parses the metadata from the input ``humanGenome.starch`` and uses its details to decided how to write out the subset of chromosomes, along with a metadata payload specific to the three chromosomes. No extraction or recompression is performed; this is as fast as copying just the parts of the file we are interested in.
+The :ref:`starchsplit` utility parses the metadata from the input ``humanGenome.starch`` and uses its details to decide how to write out the subset of chromosomes, along with a metadata payload specific to the three chromosomes. No extraction or recompression is performed; this is as fast as copying just the parts of the file we are interested in.
 
-As a second example, we can instead use the ``--exclude`` operand to copy over all chromosomes *except* those we chose. To continue the example above, we can get the "inverse" of  ``humanGenome.chrs4_8_and_17.starch`` with the following:
+As a second example, we can instead use the ``--exclude`` operand to copy over all chromosomes *except* those we choose. To continue the example above, we can get the "inverse" of  ``humanGenome.chrs4_8_and_17.starch`` with the following:
 
 ::
 
