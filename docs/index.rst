@@ -154,6 +154,7 @@ Contents
             <li><a href="content/reference/file-management/sorting/sort-bed.html"><tt>sort-bed</tt></a> - apply lexicographical sort to BED data</li>
             <li><a href="content/reference/file-management/compression/starch.html"><tt>starch</tt></a> and <a href="content/reference/file-management/compression/unstarch.html"><tt>unstarch</tt></a> - compress and extract BED data</li>
             <li><a href="content/reference/file-management/compression/starchcat.html"><tt>starchcat</tt></a> - merge compressed archives</li>
+            <li><a href="content/reference/file-management/compression/starchstrip.html"><tt>starchstrip</tt></a> - filter archive by chromosomes</li>
             <li><a href="content/reference/file-management/conversion.html">Conversion tools</a> - convert common genomic formats to BED</li>
          </ul>
       </div>
@@ -238,7 +239,7 @@ Contents
    <li><a href="content/reference/file-management/sorting/sort-bed.html"><tt>sort-bed</tt></a> - apply lexicographical sort to BED data</li>
    <li><a href="content/reference/file-management/compression/starch.html"><tt>starch</tt></a> and <a href="content/reference/file-management/compression/unstarch.html"><tt>unstarch</tt></a> - compress and extract BED data</li>
    <li><a href="content/reference/file-management/compression/starchcat.html"><tt>starchcat</tt></a> - merge compressed archives</li>
-   <li><a href="content/reference/file-management/compression/starchsplit.html"><tt>starchsplit</tt></a> - filter archives by chromosome names</li>
+   <li><a href="content/reference/file-management/compression/starchstrip.html"><tt>starchstrip</tt></a> - filter archives by chromosome names</li>
    <li><a href="content/reference/file-management/conversion.html">Conversion tools</a> - convert common genomic formats to BED</li>
    </ul>
 

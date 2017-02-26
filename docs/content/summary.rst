@@ -365,6 +365,23 @@ Compression and extraction
 | ``--report-progress=N``       | Write progress to standard error stream for every N input elements.  | 1                | No imposed limit | NA               |
 +-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
 
+---------------
+``starchstrip``
+---------------
+
+* Extract or filter a ``starch`` archive by one or more specified chromosome names.
+* BEDOPS :ref:`starchstrip <starchstrip>` documentation.
+
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| option                        | description                                                          | min. file inputs | max. file inputs | min. BED columns |
++===============================+======================================================================+==================+==================+==================+
+| (no option)                   | NA                                                                   | 1                | No imposed limit | NA               |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+| ``--include`` or ``--exclude``| Writes output with inclusion or exclusion of specified chromosome    | NA               | No imposed limit | NA               |
+| with <chromosomes>            | name records (comma-delimited string).                               |                  |                  |                  |
++-------------------------------+----------------------------------------------------------------------+------------------+------------------+------------------+
+
+
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
    :trim:
