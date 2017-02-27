@@ -88,7 +88,6 @@ STARCHSTRIP_write_updated_metadata(FILE* os)
     unsigned char sha1_digest[STARCH2_MD_FOOTER_SHA1_LENGTH] = {0};
     char *base64_encoded_sha1_digest = NULL;
     char footer_cumulative_record_size_buffer[STARCH2_MD_FOOTER_CUMULATIVE_RECORD_SIZE_LENGTH + 1] = {0};
-    int footer_cumulative_record_size_buffer_chars_copied = -1;
     char footer_remainder_buffer[STARCH2_MD_FOOTER_REMAINDER_LENGTH + 1] = {0};
     char footer_buffer[STARCH2_MD_FOOTER_LENGTH + 1] = {0};
 
@@ -117,14 +116,14 @@ STARCHSTRIP_write_updated_metadata(FILE* os)
             static_cast<const size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
             reinterpret_cast<const unsigned char *>( sha1_digest ), 
             static_cast<const size_t>( STARCH2_MD_FOOTER_SHA1_LENGTH ));
-    footer_cumulative_record_size_buffer_chars_copied = sprintf(footer_cumulative_record_size_buffer, "%020llu", static_cast<unsigned long long>( starchstrip_globals.cumulative_output_size )); 
+    sprintf(footer_cumulative_record_size_buffer, "%020llu", static_cast<unsigned long long>( starchstrip_globals.cumulative_output_size )); 
 #else
     STARCH_SHA1_All((const unsigned char *) md_json_buffer, strlen(md_json_buffer), sha1_digest);
     STARCH_encodeBase64(&base64_encoded_sha1_digest, 
             (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
             (const unsigned char *) sha1_digest, 
             (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
-    footer_cumulative_record_size_buffer_chars_copied = sprintf(footer_cumulative_record_size_buffer, "%020llu", (unsigned long long) starchstrip_globals.cumulative_output_size); 
+    sprintf(footer_cumulative_record_size_buffer, "%020llu", (unsigned long long) starchstrip_globals.cumulative_output_size); 
 #endif
 
     memcpy(footer_buffer, footer_cumulative_record_size_buffer, strlen(footer_cumulative_record_size_buffer));
@@ -161,7 +160,6 @@ STARCHSTRIP_write_chromosome_streams(FILE* os)
     Metadata* output_records_tail = NULL;
     size_t chr_to_process_idx = 0;
     uint64_t start_offset = 0;
-    uint64_t end_offset = 0;
     uint64_t bytes_to_copy = 0;
     size_t bytes_read = 0;
     char byte_buffer[starchstrip_copy_buffer_size];
@@ -170,7 +168,6 @@ STARCHSTRIP_write_chromosome_streams(FILE* os)
     if (starchstrip_globals.archive_version->major == 2) {
         start_offset += STARCH2_MD_HEADER_BYTE_LENGTH;
         for (iter = starchstrip_globals.archive_records; iter != NULL; iter = iter->next) {
-            end_offset = start_offset + iter->size;
             if ((starchstrip_globals.exclusion_flag) && (strcmp(iter->chromosome, starchstrip_globals.chromosomes_to_process[chr_to_process_idx]) == 0)) {
                 continue;
             }

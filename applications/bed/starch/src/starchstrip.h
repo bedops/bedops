@@ -56,8 +56,8 @@ static const char *usage = "\n" \
     "    * The output is written to the standard output stream -- use the output redirection\n" \
     "      operator to write the result to a regular file, e.g.:\n\n" \
     "        $ starchstrip --exclude chrN in.starch > out.starch\n\n" \
-    "    * If the specified chromosome is not in the input Starch archive, it will be ignored\n" \
-    "      although a warning message will be printed to the standard error stream.\n\n" \
+    "    * If a specified chromosome is not in the input Starch archive, it will be ignored\n" \
+    "      during processing.\n\n" \
     "    * Filtering simply copies over raw bytes from the input Starch archive and\n" \
     "      no extraction or recompression is performed. Use 'starchcat' to update the\n" \
     "      metadata, if new attributes are required.\n\n" \
