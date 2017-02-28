@@ -62,9 +62,6 @@ Use the ``--help`` option to list all options:
 
           $ starchstrip --exclude chrN in.starch > out.starch
 
-      * If the specified chromosome is not in the input Starch archive, it will be ignored
-        although a warning message will be printed to the standard error stream.
-
       * Filtering simply copies over raw bytes from the input Starch archive and
         no extraction or recompression is performed. Use 'starchcat' to update the
         metadata, if new attributes are required.
@@ -83,19 +80,19 @@ Use the ``--help`` option to list all options:
 Example
 -------
 
-Let's say we have an archive containing 23 chromosomes, one for each of the human genome: ``chr1``, ``chr2``, and so on, to ``chrY``. (To simplify this example, we leave out mitochondrial, random, pseudo- and other chromosomes.) As an example, say we want a new Starch archive that contains chromosomes ``chr4``, ``chr8``, and ``chr17``. We can use ``starchsplit`` to efficiently write out a new archive with just those three chromosomes:
+Let's say we have an archive containing 23 chromosomes, one for each of the human genome: ``chr1``, ``chr2``, and so on, to ``chrY``. (To simplify this example, we leave out mitochondrial, random, pseudo- and other chromosomes.) As an example, say we want a new Starch archive that contains chromosomes ``chr4``, ``chr8``, and ``chr17``. We can use ``starchstrip`` to efficiently write out a new archive with just those three chromosomes:
 
 ::
 
-  $ starchsplit --include chr4,chr8,chr17 humanGenome.starch > humanGenome.chrs4_8_and_17.starch
+  $ starchstrip --include chr4,chr8,chr17 humanGenome.starch > humanGenome.chrs4_8_and_17.starch
 
-The :ref:`starchsplit` utility parses the metadata from the input ``humanGenome.starch`` and uses its details to decide how to write out the subset of chromosomes, along with a metadata payload specific to the three chromosomes. No extraction or recompression is performed; this is as fast as copying just the parts of the file we are interested in.
+The :ref:`starchstrip` utility parses the metadata from the input ``humanGenome.starch`` and uses its details to decide how to write out the subset of chromosomes, along with a metadata payload specific to the three chromosomes. No extraction or recompression is performed; this is as fast as copying just the parts of the file we are interested in.
 
 As a second example, we can instead use the ``--exclude`` operand to copy over all chromosomes *except* those we choose. To continue the example above, we can get the "inverse" of  ``humanGenome.chrs4_8_and_17.starch`` with the following:
 
 ::
 
-  $ starchsplit --exclude chr4,chr8,chr17 humanGenome.starch > humanGenome.all_chrs_except_chrs4_8_and_17.starch
+  $ starchstrip --exclude chr4,chr8,chr17 humanGenome.starch > humanGenome.all_chrs_except_chrs4_8_and_17.starch
 
 
 

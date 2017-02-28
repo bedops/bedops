@@ -1632,6 +1632,14 @@ namespace starch
 #endif
                     //if (zError != Z_STREAM_END) {
                     //if (zHave > 0) {
+
+                    if (needToReadZChunk && (zError != Z_STREAM_END)) {
+#ifdef DEBUG
+                        std::fprintf(stderr, "--> needed to read a new chunk because we're in the middle of an incomplete line\n");
+#endif
+                        zReadLine();
+                    }
+
                     if (zHave >= zOutBufIdx && !postBreakdownZValuesIdentical) {
 #ifdef DEBUG
                         std::fprintf(stderr, "--> PRE - zOutBufIdx [ %d ] zHave [ %d ] postBreakdownZValuesIdentical [ %d ]\n", zOutBufIdx, zHave, postBreakdownZValuesIdentical);
@@ -1869,16 +1877,21 @@ namespace starch
             }
             zHave = (STARCH_Z_CHUNK * STARCH_Z_CHUNK_MULTIPLIER) - static_cast<int>( zStream.avail_out );
             zOutBuf[zHave] = '\0';
+            zOutBufIdx = 0;
             /* copy remainder buffer onto line buffer, if not NULL */
             if (zRemainderBuf) {
-                strncpy(reinterpret_cast<char *>( zLineBuf ), reinterpret_cast<const char *>( zRemainderBuf ), strlen(reinterpret_cast<const char *>( zRemainderBuf )));
+                strncpy(reinterpret_cast<char *>( zLineBuf ), reinterpret_cast<const char *>( zRemainderBuf ), strlen(reinterpret_cast<const char *>( zRemainderBuf )) + 1);
                 zBufOffset = strlen(reinterpret_cast<const char *>( zRemainderBuf ));
             }
             else {
                 zBufOffset = 0;
             }
 #ifdef DEBUG
-            std::fprintf(stderr, "--> zOutBuf [ %s ]\n", zOutBuf);
+            std::fprintf(stderr, "--> zOutBuf    [ %s ]\n", zOutBuf);
+            std::fprintf(stderr, "--> zLineBuf   [ %s ]\n", zLineBuf);
+            std::fprintf(stderr, "--> zOutBufIdx [ %d ]\n", zOutBufIdx);
+            std::fprintf(stderr, "--> zBufOffset [ %d ]\n", zBufOffset);
+            std::fprintf(stderr, "--> zBufIdx    [ %d ]\n", zBufIdx);
 #endif
             needToInflateZChunk = false;
         }
@@ -1893,9 +1906,18 @@ namespace starch
 #endif                
                 return EXIT_SUCCESS;
             }
-            else
+            else {
                 zLineBuf[zBufIdx] = zOutBuf[zOutBufIdx - 1];
+                zLineBuf[zBufIdx + 1] = '\0';
+#ifdef DEBUG
+                std::fprintf(stderr, "--> incomplete [ %s ]\n", zLineBuf);
+#endif
+            }
         }
+        zLineBuf[zBufIdx] = '\0';
+#ifdef DEBUG
+        std::fprintf(stderr, "--> zLineBuf (POST) [ %s ]\n", zLineBuf);
+#endif
 
         if (strlen(reinterpret_cast<const char *>( zLineBuf )) > 0) {
             if (strlen(reinterpret_cast<const char *>( zLineBuf )) > strlen(reinterpret_cast<const char *>( zRemainderBuf ))) {
@@ -1913,6 +1935,9 @@ namespace starch
             strncpy(reinterpret_cast<char *>( zRemainderBuf ), reinterpret_cast<const char *>( zLineBuf ), zBufIdx);
             zRemainderBuf[zBufIdx] = '\0';
 
+#ifdef DEBUG
+            fprintf(stderr, "--> remainder set to: [ %s ]\n", zRemainderBuf);
+#endif
             /* we should only at most have to do this every STARCH_Z_CHUNK chars, and once  */
             /* at the tail end of a chromosome's worth of a z-stream                        */
         }              

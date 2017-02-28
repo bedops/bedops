@@ -1659,10 +1659,10 @@ c2b_line_convert_gff_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     ssize_t attributes_size = gff_field_offsets[8] - gff_field_offsets[7] - 1;
     if (attributes_size >= c2b_globals.gff->element->attributes_capacity) {
         char *attributes_resized = NULL;
-        attributes_resized = realloc(c2b_globals.gff->element->attributes, attributes_size + 1);
+        attributes_resized = realloc(c2b_globals.gff->element->attributes, attributes_size * 2);
         if (attributes_resized) {
             c2b_globals.gff->element->attributes = attributes_resized;
-            c2b_globals.gff->element->attributes_capacity = attributes_size + 1;
+            c2b_globals.gff->element->attributes_capacity = attributes_size * 2;
         }
         else {
             fprintf(stderr, "Error: Could not resize ATTRIBUTES string in GFF element struct\n");
