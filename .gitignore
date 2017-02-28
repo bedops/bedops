@@ -56,4 +56,8 @@ tramp
 *.app
 *.i*86
 *.x86_64
-*.hex.DS_Store
+*.hex
+
+# OS X stuff
+.DS_Store
+__MACOSX
