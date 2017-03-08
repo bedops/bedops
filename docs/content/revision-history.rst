@@ -21,6 +21,14 @@ Released: **TBD**
 
   * New utility to efficiently filter a Starch archive, including or excluding records by specified chromosome names, without doing expensive extraction and recompression. This follows up on `internal discussion <https://stamlab.slack.com/archives/bedops/p1487878245000103>`_ on the Altius Slack channel.
 
+* :ref:`starch-diff <starch-diff>`
+
+  * Fixed testing logic in :code:`starch-diff` for certain archives. 
+
+* :ref:`starchcat <starchcat>`
+
+  * Fixed possible condition where too many variables on the stack can cause a stack overload on some platforms, leading to a fatal segmentation fault. Improved logic for updating v2.1 to v2.2 Starch archives.
+
 =================
 Previous versions
 =================

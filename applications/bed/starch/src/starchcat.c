@@ -758,7 +758,6 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
         stream compression type. The records metadata are updated at the end 
         with the statistics for the new record.
     */
-
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCHCAT2_rewriteInputRecordToOutput() ---\n");
 #endif
@@ -770,42 +769,98 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
     Metadata *iter, *inMd = inRec->metadata;
     ArchiveVersion *av = inRec->av;
 
-    /* intermediate buffer variaables */
-    unsigned char retransformLineBuf[TOKENS_MAX_LENGTH] = {0};
+    /* intermediate buffer variables */
+    unsigned char *retransformLineBuf = NULL;
     int64_t nRetransformLineBuf = 0;
     int64_t nRetransformLineBufPos = 0;
-    unsigned char retransformBuf[STARCH_BUFFER_MAX_LENGTH] = {0};
+    unsigned char *retransformBuf = NULL;
     int64_t nRetransformBuf = 0;
+
+    /* allocate memory for intermediate buffer variables */
+    retransformLineBuf = (unsigned char *) calloc(TOKENS_MAX_LENGTH, sizeof(unsigned char));
+    if (!retransformLineBuf) {
+        fprintf(stderr, "ERROR: Insufficient memory for intermediate buffer variable [retransformLineBuf].\n");
+        exit(ENOMEM);
+    }
+    retransformBuf = (unsigned char *) calloc(STARCH_BUFFER_MAX_LENGTH, sizeof(unsigned char));
+    if (!retransformBuf) {
+        fprintf(stderr, "ERROR: Insufficient memory for intermediate buffer variable [retransformBuf].\n");
+        exit(ENOMEM);
+    }
     
     /* bzip2 variables */
     BZFILE *bzInFp = NULL;
     BZFILE *bzOutFp = NULL;
     int bzInError = BZ_OK;
     int bzOutError = BZ_OK;
-    unsigned char bzReadBuf[STARCH_BZ_BUFFER_MAX_LENGTH] = {0};
+    unsigned char *bzReadBuf = NULL;
     size_t nBzReadBuf = STARCH_BZ_BUFFER_MAX_LENGTH;
-    unsigned char bzRemainderBuf[STARCH_BZ_BUFFER_MAX_LENGTH] = {0};
+    unsigned char *bzRemainderBuf = NULL;
     size_t nBzRemainderBuf = 0;
     size_t nBzRead = 0;
     size_t bzBufIndex = 0;
-    unsigned char bzLineBuf[STARCH_BZ_BUFFER_MAX_LENGTH] = {0};
+    unsigned char *bzLineBuf = NULL;
     unsigned int bzOutBytesConsumed = 0U;
     unsigned int bzOutBytesWritten = 0U;
+
+    /* allocate memory for bzip2 variables */
+    bzReadBuf = (unsigned char *) calloc(STARCH_BZ_BUFFER_MAX_LENGTH, sizeof(unsigned char));
+    if (!bzReadBuf) {
+        fprintf(stderr, "ERROR: Insufficient memory for bzip2 variable [bzReadBuf].\n");
+        exit(ENOMEM);
+    }
+    bzRemainderBuf = (unsigned char *) calloc(STARCH_BZ_BUFFER_MAX_LENGTH, sizeof(unsigned char));
+    if (!bzRemainderBuf) {
+        fprintf(stderr, "ERROR: Insufficient memory for bzip2 variable [bzRemainderBuf].\n");
+        exit(ENOMEM);
+    }
+    bzLineBuf = (unsigned char *) calloc(STARCH_BZ_BUFFER_MAX_LENGTH, sizeof(unsigned char));
+    if (!bzLineBuf) {
+        fprintf(stderr, "ERROR: Insufficient memory for bzip2 variable [bzLineBuf].\n");
+        exit(ENOMEM);
+    }
 
     /* gzip variables */
     z_stream zInStream;
     z_stream zOutStream;
     int zInError = -1;
     int zOutError = -1;
-    unsigned char zOutBuffer[STARCH_Z_BUFFER_MAX_LENGTH] = {0};
-    unsigned char zReadBuf[STARCH_Z_CHUNK/1024];
-    unsigned char zOutBuf[STARCH_Z_CHUNK];
+    unsigned char *zOutBuffer = NULL;
+    unsigned char *zReadBuf = NULL;
+    unsigned char *zOutBuf = NULL;
     size_t zInHave = 0;
     size_t zOutHave = 0;
     size_t zBufIndex = 0;
-    unsigned char zRemainderBuf[STARCH_Z_BUFFER_MAX_LENGTH] = {0};
+    unsigned char *zRemainderBuf = NULL;
     size_t nZRemainderBuf = 0;
-    unsigned char zLineBuf[STARCH_Z_BUFFER_MAX_LENGTH] = {0};
+    unsigned char *zLineBuf = NULL;
+
+    /* allocate memory for gzip variables */
+    zOutBuffer = (unsigned char *) calloc(STARCH_Z_BUFFER_MAX_LENGTH, sizeof(unsigned char));
+    if (!zOutBuffer) {
+        fprintf(stderr, "ERROR: Insufficient memory for gzip variable [zOutBuffer].\n");
+        exit(ENOMEM);
+    }
+    zReadBuf = (unsigned char *) calloc(STARCH_Z_CHUNK/1024, sizeof(unsigned char));
+    if (!zReadBuf) {
+        fprintf(stderr, "ERROR: Insufficient memory for gzip variable [zReadBuf].\n");
+        exit(ENOMEM);
+    }
+    zOutBuf = (unsigned char *) calloc(STARCH_Z_CHUNK, sizeof(unsigned char));
+    if (!zOutBuf) {
+        fprintf(stderr, "ERROR: Insufficient memory for gzip variable [zOutBuf].\n");
+        exit(ENOMEM);
+    }
+    zRemainderBuf = (unsigned char *) calloc(STARCH_Z_BUFFER_MAX_LENGTH, sizeof(unsigned char));
+    if (!zRemainderBuf) {
+        fprintf(stderr, "ERROR: Insufficient memory for gzip variable [zRemainderBuf].\n");
+        exit(ENOMEM);
+    }
+    zLineBuf = (unsigned char *) calloc(STARCH_Z_BUFFER_MAX_LENGTH, sizeof(unsigned char));
+    if (!zLineBuf) {
+        fprintf(stderr, "ERROR: Insufficient memory for gzip variable [zLineBuf].\n");
+        exit(ENOMEM);
+    }
 
     /* transformation variables */
     size_t lastNewlineOffset = 0U;
@@ -814,8 +869,8 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
     SignedCoordType t_start = 0;
     SignedCoordType t_pLength = 0;
     SignedCoordType t_lastEnd = 0;
-    char t_firstInputToken[UNSTARCH_FIRST_TOKEN_MAX_LENGTH] = {0};
-    char t_secondInputToken[UNSTARCH_SECOND_TOKEN_MAX_LENGTH] = {0};
+    char *t_firstInputToken = NULL;
+    char *t_secondInputToken = NULL;
     char *t_currChr = NULL;
     size_t t_currChrLen = 0U;
     SignedCoordType t_currStart = 0;
@@ -834,6 +889,18 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
     Boolean t_nestedElementExists = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
     size_t t_fileSize = 0U;
     LineLengthType t_lineMaxStringLength = STARCH_DEFAULT_LINE_STRING_LENGTH;
+
+    /* allocate memory for transformation variables */
+    t_firstInputToken = (char *) calloc(UNSTARCH_FIRST_TOKEN_MAX_LENGTH, sizeof(char));
+    if (!t_firstInputToken) {
+        fprintf(stderr, "ERROR: Insufficient memory for transformation variable [t_firstInputToken].\n");
+        exit(ENOMEM);
+    }
+    t_secondInputToken = (char *) calloc(UNSTARCH_SECOND_TOKEN_MAX_LENGTH, sizeof(char));
+    if (!t_secondInputToken) {
+        fprintf(stderr, "ERROR: Insufficient memory for transformation variable [t_secondInputToken].\n");
+        exit(ENOMEM);
+    }
 
     /* hash variables */
     struct sha1_ctx t_perChromosomeHashCtx;
@@ -1972,24 +2039,6 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
         }
     }
 
-#ifdef DEBUG
-    if ((t_currStart > 5238450) && (t_currStart < 5238520)) {                                            
-        fprintf(stderr, "\n---\nmetadata\n---\n");
-        fprintf(stderr, "\tinChr -> %s\n", inChr);
-        fprintf(stderr, "\toutTagFn -> %s\n", outTagFn);
-        fprintf(stderr, "\tt_fileSize -> %zu\n", t_fileSize);
-#ifdef __cplusplus
-        fprintf(stderr, "\tt_lineIdx -> %" PRIu64 "\n", static_cast<uint64_t>( t_lineIdx ));
-        fprintf(stderr, "\tt_totalNonUniqueBases -> %" PRIu64 "\n", static_cast<uint64_t>( t_totalNonUniqueBases ));
-        fprintf(stderr, "\tt_totalUniqueBases -> %" PRIu64 "\n", static_cast<uint64_t>( t_totalUniqueBases ));
-#else
-        fprintf(stderr, "\tt_lineIdx -> %" PRIu64 "\n", (uint64_t) t_lineIdx);
-        fprintf(stderr, "\tt_totalNonUniqueBases -> %" PRIu64 "\n", (uint64_t) t_totalNonUniqueBases);
-        fprintf(stderr, "\tt_totalUniqueBases -> %" PRIu64 "\n", (uint64_t) t_totalUniqueBases);
-#endif
-    }
-#endif
-
     /* update the metadata */
     if (!*outMd)
 #ifdef __cplusplus
@@ -2024,10 +2073,20 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                                      t_lineMaxStringLength );
 
     /* cleanup */
-    if (outTagFn)
-        free(outTagFn), outTagFn = NULL;
-    if (t_base64EncodedSha1Digest)
-        free(t_base64EncodedSha1Digest), t_base64EncodedSha1Digest = NULL;
+    free(outTagFn), outTagFn = NULL;
+    free(t_base64EncodedSha1Digest), t_base64EncodedSha1Digest = NULL;
+    free(retransformLineBuf), retransformLineBuf = NULL;
+    free(retransformBuf), retransformBuf = NULL;
+    free(bzReadBuf), bzReadBuf = NULL;
+    free(bzRemainderBuf), bzRemainderBuf = NULL;
+    free(bzLineBuf), bzLineBuf = NULL;
+    free(zOutBuffer), zOutBuffer = NULL;
+    free(zReadBuf), zReadBuf = NULL;
+    free(zOutBuf), zOutBuf = NULL;
+    free(zRemainderBuf), zRemainderBuf = NULL;
+    free(zLineBuf), zLineBuf = NULL;
+    free(t_firstInputToken), t_firstInputToken = NULL;
+    free(t_secondInputToken), t_secondInputToken = NULL;
 
     return STARCHCAT_EXIT_SUCCESS;
 }
@@ -4724,6 +4783,23 @@ STARCHCAT_isArchiveConcurrentOrOlder (const ArchiveVersion *av)
 }
 
 Boolean
+STARCHCAT_isArchiveOlder (const ArchiveVersion *av) 
+{
+#ifdef DEBUG
+    fprintf (stderr, "\n--- STARCHCAT_isArchiveOlder() ---\n");
+#endif
+
+    if ( ( (av->major < STARCH_MAJOR_VERSION) ) ||
+         ( (av->major == STARCH_MAJOR_VERSION)  && 
+           (av->minor < STARCH_MINOR_VERSION)  && 
+           (av->revision <= STARCH_REVISION_VERSION) )
+       )
+        return kStarchTrue;
+    
+    return kStarchFalse;
+}
+
+Boolean
 STARCHCAT_isArchiveNewer (const ArchiveVersion *av) 
 {
 #ifdef DEBUG
@@ -4967,14 +5043,22 @@ STARCHCAT2_mergeChromosomeStreams (const ChromosomeSummaries *chrSums, const Com
                 return STARCHCAT_EXIT_FAILURE;
             }
 
+#ifdef DEBUG
+            fprintf(stderr, "kStarchTrue                               [%d]\n", (int) kStarchTrue);
+            fprintf(stderr, "STARCHCAT_isArchiveOlder                  [%d]\n", (int) STARCHCAT_isArchiveOlder((const ArchiveVersion *) inputRecord->av));
+            fprintf(stderr, "STARCHCAT_isArchiveConcurrent             [%d]\n", (int) STARCHCAT_isArchiveConcurrent((const ArchiveVersion *) inputRecord->av));
+            fprintf(stderr, "STARCHCAT_isArchiveConcurrentOrOlder      [%d]\n", (int) STARCHCAT_isArchiveConcurrentOrOlder((const ArchiveVersion *) inputRecord->av));
+            fprintf(stderr, "STARCHCAT_isArchiveNewerThan              [%d]\n", (int) STARCHCAT_isArchiveNewerThan((const ArchiveVersion *) inputRecord->av, av120));
+            fprintf(stderr, "inputType                                 [%d]\n", (int) inputType);
+            fprintf(stderr, "outputType                                [%d]\n", (int) outputType);
+#endif
+
 #ifdef __cplusplus
             if ( (inputType == outputType) && 
-                 (STARCHCAT_isArchiveConcurrentOrOlder(reinterpret_cast<const ArchiveVersion *>( inputRecord->av )) == kStarchTrue) && 
-                 (STARCHCAT_isArchiveNewerThan(reinterpret_cast<const ArchiveVersion *>( inputRecord->av ), av120)) ) {
+                 (STARCHCAT_isArchiveConcurrent(reinterpret_cast<const ArchiveVersion *>( inputRecord->av )) == kStarchTrue) ) {
 #else
             if ( (inputType == outputType) && 
-                 (STARCHCAT_isArchiveConcurrentOrOlder((const ArchiveVersion *) inputRecord->av) == kStarchTrue) && 
-                 (STARCHCAT_isArchiveNewerThan((const ArchiveVersion *) inputRecord->av, av120)) ) {
+                 (STARCHCAT_isArchiveConcurrent((const ArchiveVersion *) inputRecord->av) == kStarchTrue) ) {
 #endif
 
 #ifdef __cplusplus
@@ -4993,6 +5077,37 @@ STARCHCAT2_mergeChromosomeStreams (const ChromosomeSummaries *chrSums, const Com
                                                             (const MetadataRecord *) inputRecord, 
                                                             cumulativeOutputSize,
                                                             reportProgressFlag) );
+#endif
+            }
+#ifdef __cplusplus
+            else if ( (inputType == outputType) && 
+                 (STARCHCAT_isArchiveOlder(reinterpret_cast<const ArchiveVersion *>( inputRecord->av )) ) && 
+                 (STARCHCAT_isArchiveNewerThan(reinterpret_cast<const ArchiveVersion *>( inputRecord->av ), av120)) ) {
+#else
+            else if ( (inputType == outputType) && 
+                 (STARCHCAT_isArchiveOlder((const ArchiveVersion *) inputRecord->av)) && 
+                 (STARCHCAT_isArchiveNewerThan((const ArchiveVersion *) inputRecord->av, av120)) ) {
+#endif
+#ifdef __cplusplus
+                assert( STARCHCAT2_rewriteInputRecordToOutput( &outputMd, 
+                                                               reinterpret_cast<const char *>( outputTag ), 
+                                                               static_cast<const CompressionType>( outputType ), 
+                                                               reinterpret_cast<const char *>( inputChr ), 
+                                                               reinterpret_cast<const MetadataRecord *>( inputRecord ), 
+                                                               cumulativeOutputSize,
+                                                               generatePerChrSignatureFlag,
+                                                               reportProgressFlag,
+                                                               reportProgressN) );
+#else
+                assert( STARCHCAT2_rewriteInputRecordToOutput( &outputMd, 
+                                                               (const char *) outputTag, 
+                                                               (const CompressionType) outputType, 
+                                                               (const char *) inputChr, 
+                                                               (const MetadataRecord *) inputRecord, 
+                                                               cumulativeOutputSize,
+                                                               generatePerChrSignatureFlag,
+                                                               reportProgressFlag,
+                                                               reportProgressN) );
 #endif
             }
             else {

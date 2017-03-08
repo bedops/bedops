@@ -42,7 +42,7 @@ Use the ``--help`` option to list all options:
       version:  2.4.26
       authors:  Alex Reynolds and Shane Neph
 
-      $ starch-diff [ --chr <chr> ] starch-file-1 starch-file-2 [ starch-file-3 ]
+      $ starch-diff [ --chr <chr> ] starch-file-1 starch-file-2 [ starch-file-3 ... ]
 
       The 'starch-diff' utility compares the signatures of two or more specified 
       Starch v2.2+ archives for all chromosomes, or for a specified chromosome.

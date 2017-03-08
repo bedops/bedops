@@ -27,6 +27,7 @@ import argparse
 import errno
 import subprocess
 import json
+import logging
 
 name = "starch-diff"
 citation = "  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract"
@@ -44,8 +45,13 @@ def main():
     parser = argparse.ArgumentParser(prog=name, usage=usage, add_help=False)
     parser.add_argument('--help', '-h', action='store_true', dest='help')
     parser.add_argument('--chr', '-c', type=str, action="store", default=default_chromosome)
+    parser.add_argument('--debug', '-d', action='store_true', dest='debug')
     parser.add_argument('file', type=argparse.FileType('r'), nargs='*')
     args = parser.parse_args()
+
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
+        logger = logging.getLogger(__name__)
 
     if args.help or len(args.file) < 2:
         sys.stdout.write(name + '\n')
@@ -60,7 +66,10 @@ def main():
             sys.stdout.write("\nERROR: Please specify two or more Starch archives as input\n")
             sys.exit(errno.EINVAL)
 
+    all_tests_pass = True
+
     selected_chromosome = unicode(args.chr)
+    if args.debug: logger.info('Selected chromosome [%s]' % (selected_chromosome))
 
     archive_paths = list()
     for i in range(0, len(args.file)):
@@ -70,9 +79,12 @@ def main():
             sys.stdout.write("%s\n" % (usage))
             sys.exit(errno.ENOENT)
         archive_paths.append(archive_handle.name)
+        if args.debug: logger.info('Appended input file to list [%s]' % (archive_handle.name))        
     num_files = len(args.file)
-
+    if args.debug: logger.info('Number of input files [%d]' % (num_files))
+    
     if selected_chromosome == default_chromosome:
+        if args.debug: logger.info('Examining all chromosomes from all inputs...')
         all_chromosomes = {}
         for archive_path in archive_paths:
             get_archive_version_cmd_components = [
@@ -92,7 +104,7 @@ def main():
                 sys.stderr.write("ERROR: Could not read archive version from Starch metadata\n")
                 raise
             if archive_version['major'] < 2 or (archive_version['major'] == 2 and archive_version['minor'] < 2):
-                sys.stderr.write("ERROR: Input [%s] must be a v2.2+ Starch archive -- use 'starchcat' to update archive\n" % (archive_path))
+                sys.stderr.write("ERROR: Input [%s] must be a v2.2+ Starch archive -- use 'starchcat' or extract/recompress to update archive\n" % (archive_path))
                 sys.exit(errno.EINVAL)
                 
             list_chromosome_cmd_components = [
@@ -112,6 +124,12 @@ def main():
                 all_chromosomes[chromosome] += 1
 
         common_chromosomes = [k for k, v in all_chromosomes.iteritems() if v == num_files]
+        common_chromosomes.sort()
+        if args.debug: logger.info('Common chromosomes [%s]' % (','.join(common_chromosomes)))
+
+        uncommon_chromosomes = [k for k, v in all_chromosomes.iteritems() if v != num_files]
+        uncommon_chromosomes.sort()
+        if args.debug: logger.info('Uncommon chromosomes [%s]' % (','.join(uncommon_chromosomes)))        
 
         if not common_chromosomes:
             sys.stderr.write("ERROR: Inputs share no records with a common chromosome name\n")
@@ -145,32 +163,41 @@ def main():
             result['archive'] = archive_path
             result['signature'] = chromosome_signature
             tests_to_run[common_chromosome].append(result)
+            if args.debug: logger.info('Test to run: [%s] [%s]' % (common_chromosome, str(result)))
 
     # for a given chromosome, we have a set of objects to test for equality
-    all_tests_pass = True
     for test_chromosome in sorted(tests_to_run.keys()):
         per_chromosome_tests_pass = True
         previous_signature = None
         current_signature = None
+        previous_archive = None
+        current_archive = None
         none_signature_found = False
         test_list = tests_to_run[test_chromosome]
         for test_item in test_list:
             test_signature = test_item['signature']
+            test_archive = test_item['archive']
+            if args.debug: logger.info('Examining archive [%s]' % (test_archive))
+            if args.debug: logger.info('Setting current signature [%s] to [%s]' % (current_signature, test_signature))
             current_signature = test_signature
-            if test_signature == None:
+            current_archive = test_archive
+            if not test_signature:
                 none_signature_found = True
                 per_chromosome_tests_pass = False
                 break
-            else:
+            elif not previous_signature:
+                if args.debug: logger.info('Setting previous signature [%s] to [%s]' % (previous_signature, test_signature))
                 previous_signature = test_signature
-        if current_signature != previous_signature:
-            per_chromosome_tests_pass = False
-        if not per_chromosome_tests_pass:
-            all_tests_pass = False
-            if none_signature_found:
-                sys.stderr.write('WARNING: One or more signatures are not available for chromosome [%s]\n' % (test_chromosome))
-            else:
-                sys.stderr.write('WARNING: Signatures do not match for chromosome [%s]\n' % (test_chromosome))
+                previous_archive = test_archive
+            if args.debug: logger.info('Comparing chr [%s] previous signature [%s] current signature [%s]' % (test_chromosome, previous_signature, current_signature))
+            if current_signature != previous_signature:
+                per_chromosome_tests_pass = False
+            if not per_chromosome_tests_pass:
+                all_tests_pass = False
+                if none_signature_found:
+                    sys.stderr.write('WARNING: One or more signatures are not available for chromosome [%s] in archive [%s]\n' % (test_chromosome, current_archive))
+                else:
+                    sys.stderr.write('WARNING: Signatures do not match for chromosome [%s] between archives [%s] and [%s]\n' % (test_chromosome, previous_archive, current_archive))
 
     if not all_tests_pass:
         sys.exit(errno.EINVAL)

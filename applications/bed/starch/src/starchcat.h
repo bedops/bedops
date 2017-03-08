@@ -322,6 +322,8 @@ Boolean  STARCHCAT_isArchiveConcurrent (const ArchiveVersion *av);
 
 Boolean  STARCHCAT_isArchiveConcurrentOrOlder (const ArchiveVersion *av);
 
+Boolean  STARCHCAT_isArchiveOlder (const ArchiveVersion *av);
+
 Boolean  STARCHCAT_isArchiveNewer (const ArchiveVersion *av);
 
 Boolean  STARCHCAT_isArchiveNewerThan (const ArchiveVersion *av,
