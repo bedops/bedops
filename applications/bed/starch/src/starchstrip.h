@@ -55,7 +55,7 @@ static const char *usage = "\n" \
     "      metadata payload is appended to the output Starch archive.\n\n" \
     "    * The output is written to the standard output stream -- use the output redirection\n" \
     "      operator to write the result to a regular file, e.g.:\n\n" \
-    "        $ starchstrip --exclude chrN in.starch > out.starch\n\n" \
+    "        $ starchstrip --exclude chrA,chrB,chrC in.starch > out.starch\n\n" \
     "    * If a specified chromosome is not in the input Starch archive, it will be ignored\n" \
     "      during processing.\n\n" \
     "    * Filtering simply copies over raw bytes from the input Starch archive and\n" \
