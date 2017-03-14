@@ -159,10 +159,10 @@ Manual compilation
    ::
 
      $ clang -v
-     Apple LLVM version 6.0 (clang-600.0.56) (based on LLVM 3.5svn)
+     Apple LLVM version 8.0.0 (clang-800.0.42.1)
      ...
 
-   For Mac OS X users, we recommend installing `Apple Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option within Xcode. At the time of this writing, Xcode 6.1.1 includes the necessary command-line tools to compile BEDOPS.
+   For Mac OS X users, we recommend installing `Apple Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option within Xcode. At the time of this writing, Xcode 8.2.1 (8C1002) includes the necessary command-line tools to compile BEDOPS.
 
 2. Install a ``git`` client of your choice, if you do not already have one installed. Github offers an `installation guide <https://help.github.com/articles/set-up-git#platform-all>`_.
 
@@ -206,10 +206,10 @@ Homebrew is a popular package management toolkit for Mac OS X. It facilitates ea
    ::
 
      $ clang -v
-     Apple LLVM version 6.0 (clang-600.0.56) (based on LLVM 3.5svn)
+     Apple LLVM version 8.0.0 (clang-800.0.42.1)
      ...
 
-   For Mac OS X users, we recommend installing `Apple Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option within Xcode. At the time of this writing, Xcode 6.1.1 includes the necessary command-line tools to compile BEDOPS.
+   For Mac OS X users, we recommend installing `Apple Xcode <https://developer.apple.com/xcode/>`_ and its Command Line Tools, via the ``Preferences > Downloads`` option within Xcode. At the time of this writing, Xcode 8.2.1 (8C1002) includes the necessary command-line tools to compile BEDOPS.
 
 2. Follow the instructions listed on the `Homebrew site <http://brew.sh>`_ to install the basic package manager components.
 
@@ -370,7 +370,7 @@ Building an OS X installer package for redistribution
 
      $ productsign --timestamp --sign "Developer ID Installer: Foo B. Baz" /tmp/BEDOPS.X.Y.Z.unsigned.pkg /tmp/BEDOPS.X.Y.Z.signed.pkg
 
-9. Compress the signed ``pkg`` file and publish via GitHub releases (see :ref:`release preparation <release>` for information about publishing the installer).
+9. Compress the signed ``pkg`` file (via OS X zip, for instance) and publish via GitHub releases (see :ref:`release preparation <release>` for information about publishing the installer).
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
