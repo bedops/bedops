@@ -47,7 +47,7 @@ Released: **March 14, 2017**
 
 * :ref:`gtf2bed <gtf2bed>`
 
-  * Resolved segmentation fault with certain inputs. This follows up on `this report in the BEDOPS Forum <http://bedops.uwencode.org/forum/index.php?topic=136.0>`. Thanks to zebasilio for the report and feedback.
+  * Resolved segmentation fault with certain inputs, in follow-up to `this BEDOPS Forum post <http://bedops.uwencode.org/forum/index.php?topic=136.0>`_. Thanks to zebasilio for the report and feedback.
 
 =================
 Previous versions
