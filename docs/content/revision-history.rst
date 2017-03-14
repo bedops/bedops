@@ -15,19 +15,39 @@ Current version
 v2.4.26
 -------
 
-Released: **TBD**
+Released: **March 14, 2017**
 
 * :ref:`starchstrip <starchstrip>`
 
   * New utility to efficiently filter a Starch archive, including or excluding records by specified chromosome names, without doing expensive extraction and recompression. This follows up on `internal discussion <https://stamlab.slack.com/archives/bedops/p1487878245000103>`_ on the Altius Slack channel.
 
-* :ref:`starch-diff <starch-diff>`
+* :ref:`starch-diff <starch_diff>`
 
-  * Fixed testing logic in :code:`starch-diff` for certain archives. 
+  * Fixed testing logic in :code:`starch-diff` for certain archives. Thanks to Shane Neph for the report.
 
 * :ref:`starchcat <starchcat>`
 
   * Fixed possible condition where too many variables on the stack can cause a stack overload on some platforms, leading to a fatal segmentation fault. Improved logic for updating v2.1 to v2.2 Starch archives.
+
+* Starch C++ API
+
+  * Patched gzip-backed Starch archive extraction issue. Thanks to Matt Maurano for the bug report.
+
+* :ref:`update-sort-bed-migrate-candidates <sort-bed>`
+
+  * Added detailed logging via :code:`--debug` option.
+
+  * Added :code:`--bedops-root-dir` option to allow specifying where all BEDOPS binaries are stored. This setting can be overruled on a per-binary basis by adding :code:`--bedextract-path`, :code:`--sort-bed-path`, etc.
+
+  * Added :code:`--non-recursive-search` option to restrict search for BED and Starch candidates to the top-level of the specified parent directory :code:`--parent-dir` option.
+    
+  * Further simplification and customization of parameters sent to :code:`update-sort-bed-slurm` and :code:`update-sort-bed-starch-slurm` cluster scripts, as well as logging and variable name improvements to those two scripts.
+
+  * Thanks again to Matt Maurano for ongoing feedback and suggestions on functionality and fixes.
+
+* :ref:`gtf2bed <gtf2bed>`
+
+  * Resolved segmentation fault with certain inputs. This follows up on `this report in the BEDOPS Forum <http://bedops.uwencode.org/forum/index.php?topic=136.0>`. Thanks to zebasilio for the report and feedback.
 
 =================
 Previous versions

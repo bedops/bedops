@@ -13,13 +13,13 @@ Inputs and outputs
 Input
 -----
 
-The :ref:`starch-diff` utility takes in two or more Starch v2.2+ archives as input. The end user may also add `--chr <chr>` to compare one chromosome directly; otherwise, all chromosomes in specified archives are compared.
+The `starch-diff` utility takes in two or more Starch v2.2+ archives as input. The end user may also add `--chr <chr>` to compare one chromosome directly; otherwise, all chromosomes in specified archives are compared.
 
 ------
 Output
 ------
 
-The typical output of :ref:`starch-diff` is a message indicating the archives' chromosome(s) are identical or dissimilar. 
+The typical output of `starch-diff` is a message indicating the archives' chromosome(s) are identical or dissimilar. 
 
 In addition, if the chromosomes are identical, `starch-diff` exits with a zero status code. Likewise, if any chromosomes are dissimilar, `starch-diff` exits with a non-zero status code.
 

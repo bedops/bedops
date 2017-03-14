@@ -51,7 +51,8 @@ usage = """  $ update-sort-bed-migrate-candidates [ --dry-run ] [ --debug ]
                                        [ --starchcat-path <path> ]
                                        [ --update-sort-bed-slurm-path <path> ]
                                        [ --update-sort-bed-starch-slurm-path <path> ]
-                                       --parent-dir <parent directory>"""
+                                       --parent-dir <parent directory>
+                                       [ --non-recursive-search ]"""
 help = """
   The "update-sort-bed-migrate-candidates" utility recursively locates BED and 
   Starch files in the specified parent directory and tests if they require 
@@ -59,6 +60,9 @@ help = """
 
   Files with the extensions starch, bstarch, gstarch, bed, or bed[g|G]raph in 
   the parent directory are tested. Files without these extensions are ignored.
+
+  If the "--non-recursive-search" option is added, this utility will only search
+  within the specified parent directory, and go no deeper.
 
   This utility offers one of three (exclusive) actions for migration:
 
@@ -132,6 +136,7 @@ def main():
     parser.add_argument('--dry-run',                           '-n', action="store_true", dest='dry_run')
     parser.add_argument('--debug',                             '-d', action="store_true", dest='debug')
     parser.add_argument('--parent-dir',                        '-a', type=str, action="store", dest='parent_dir')
+    parser.add_argument('--non-recursive-search',              '-v', action="store_true", dest='non_recursive_search')
     args = parser.parse_args()
 
     action_counter = 0
@@ -157,11 +162,11 @@ def main():
     logger = None
     if args.debug:
         logging.basicConfig(level=logging.DEBUG)
-        logger = logging.getLogger(__name__)        
+        logger = logging.getLogger(__name__)
 
     bedextract_path = None
     if logger: logger.info('Locating \"bedextract\" binary')
-    if not args.bedextract_path or not args.bedops_root_dir:
+    if not args.bedextract_path and not args.bedops_root_dir:
         bedextract_path = find_binary('bedextract')
         if not bedextract_path:
             if logger: logger.info('Could not locate \"bedextract\" binary')
@@ -179,7 +184,7 @@ def main():
 
     sort_bed_path = None
     if logger: logger.info('Locating \"sort-bed\" binary')    
-    if not args.sort_bed_path or not args.bedops_root_dir:
+    if not args.sort_bed_path and not args.bedops_root_dir:
         sort_bed_path = find_binary('sort-bed')
         if not sort_bed_path:
             if logger: logger.info('Could not locate \"sort-bed\" binary')
@@ -197,7 +202,7 @@ def main():
 
     unstarch_path = None
     if logger: logger.info('Locating \"unstarch\" binary')
-    if not args.unstarch_path or not args.bedops_root_dir:
+    if not args.unstarch_path and not args.bedops_root_dir:
         unstarch_path = find_binary('unstarch')
         if not unstarch_path:
             if logger: logger.info('Could not locate \"unstarch\" binary')
@@ -215,7 +220,7 @@ def main():
 
     starch_path = None
     if logger: logger.info('Locating \"starch\" binary')
-    if not args.starch_path or not args.bedops_root_dir:
+    if not args.starch_path and not args.bedops_root_dir:
         starch_path = find_binary('starch')
         if not starch_path:
             if logger: logger.info('Could not locate \"starch\" binary')
@@ -233,7 +238,7 @@ def main():
 
     starchcat_path = None
     if logger: logger.info('Locating \"starchcat\" binary')
-    if not args.starchcat_path or not args.bedops_root_dir:
+    if not args.starchcat_path and not args.bedops_root_dir:
         starchcat_path = find_binary('starchcat')
         if not starchcat_path:
             if logger: logger.info('Could not locate \"starchcat\" binary')
@@ -251,7 +256,7 @@ def main():
 
     update_sort_bed_slurm_path = None
     if logger: logger.info('Locating \"update-sort-bed-slurm\" script')
-    if not args.update_sort_bed_slurm_path or not args.bedops_root_dir:
+    if not args.update_sort_bed_slurm_path and not args.bedops_root_dir:
         update_sort_bed_slurm_path = find_binary('update-sort-bed-slurm')
         if not update_sort_bed_slurm_path:
             if logger: logger.info('Could not locate \"update-sort-bed-slurm\" binary')
@@ -262,10 +267,10 @@ def main():
     elif args.update_sort_bed_slurm_path:
         update_sort_bed_slurm_path = args.update_sort_bed_slurm_path
     elif not cmd_exists('update-sort-bed-slurm'):
-        if logger: logger.info('Could not locate \"update-sort-bed-slurm\" binary')
+        if logger: logger.info('Could not locate \"update-sort-bed-slurm\" binary')        
         sys.stderr.write("ERROR: This script must be run on a system with BEDOPS update-sort-bed-slurm\n")
         sys.exit(errno.EEXIST)
-    if logger: logger.info('Location of \"update-sort-bed-slurm\" is set to [%s]' % (update_sort_bed_slurm_path))    
+    if logger: logger.info('Location of \"update-sort-bed-slurm\" is set to [%s]' % (update_sort_bed_slurm_path))
 
     update_sort_bed_starch_slurm_path = None
     if logger: logger.info('Locating \"update-sort-bed-starch-slurm\" script')
@@ -296,6 +301,7 @@ def main():
                 starch_candidates.append(candidate)
             if candidate.lower().endswith(('.bed', '.bedgraph', '.bedGraph')):
                 bed_candidates.append(candidate)
+        if args.non_recursive_search: break
     if logger: logger.info('Unfiltered BED candidates are [%s]' % (str(bed_candidates)))
     if logger: logger.info('Unfiltered Starch candidates are [%s]' % (str(starch_candidates)))
                 
@@ -390,15 +396,15 @@ def main():
             # BED
             #
             if candidate.lower().endswith(('.bed', '.bedgraph', '.bedGraph')):
-                if logger: logger.info('Planning to resort BED candidate [%s] to [%s]' % (src_original_fn, dest_final_fn))
+                if logger: logger.info('Planning to resort BED candidate [%s]' % (src_original_fn))
+                bed_resort_cmd_components = [
+                    sort_bed_path,
+                    src_original_fn,
+                    '>',
+                    dest_new_fn
+                ]
+                if logger: logger.info('Planning to resort BED candidate via [%s]' % (' '.join(bed_resort_cmd_components)))
                 if not args.dry_run:
-                    bed_resort_cmd_components = [
-                        sort_bed_path,
-                        src_original_fn,
-                        '>',
-                        dest_new_fn
-                    ]
-                    if logger: logger.info('Planning to resort BED candidate via [%s]' % (' '.join(bed_resort_cmd_components)))
                     bed_resort_process = subprocess.Popen(' '.join(bed_resort_cmd_components),
                                                           shell=True,
                                                           stdin=subprocess.PIPE,
@@ -428,21 +434,21 @@ def main():
             # Starch
             #
             if candidate.lower().endswith(('.starch', 'bstarch', 'gstarch')):
-                if logger: logger.info('Planning to resort Starch candidate [%s] to [%s]' % (src_original_fn, dest_final_fn))
+                if logger: logger.info('Planning to resort Starch candidate [%s]' % (src_original_fn))
+                starch_resort_cmd_components = [
+                    unstarch_path,
+                    src_original_fn,
+                    '|',
+                    sort_bed_path,
+                    '-',
+                    '|',
+                    starch_path,
+                    '-',
+                    '>',
+                    dest_new_fn
+                ]
+                if logger: logger.info('Planning to resort Starch candidate via [%s]' % (' '.join(starch_resort_cmd_components)))
                 if not args.dry_run:
-                    starch_resort_cmd_components = [
-                        unstarch_path,
-                        src_original_fn,
-                        '|',
-                        sort_bed_path,
-                        '-',
-                        '|',
-                        starch_path,
-                        '-',
-                        '>',
-                        dest_new_fn
-                    ]
-                    if logger: logger.info('Planning to resort Starch candidate via [%s]' % (' '.join(starch_resort_cmd_components)))
                     starch_resort_process = subprocess.Popen(' '.join(starch_resort_cmd_components),
                                                              shell=True,
                                                              stdin=subprocess.PIPE,
@@ -483,27 +489,29 @@ def main():
             # BED
             #
             if candidate.lower().endswith(('.bed', '.bedgraph', '.bedGraph')):
-                if logger: logger.info('Planning to resort BED candidate [%s] to [%s]' % (src_original_fn, dest_final_fn))
+                if logger: logger.info('Planning to resort BED candidate [%s]' % (src_original_fn))
+                bed_slurm_resort_cmd_components = [
+                    update_sort_bed_slurm_path,
+                    '--input-original',
+                    src_original_fn,
+                    '--input-backup',
+                    src_backup_fn,
+                    '--output-temp',
+                    dest_temp_fn,
+                    '--output-final',
+                    dest_final_fn,
+                    '--bedextract-path',
+                    bedextract_path,
+                    '--sort-bed-path',
+                    sort_bed_path
+                ]
+                slurm_options = customize_slurm_options(args)
+                if slurm_options:
+                    bed_slurm_resort_cmd_components.append(slurm_options)
+                if args.debug:
+                    bed_slurm_resort_cmd_components.append('--debug')
+                if logger: logger.info('Planning to resort BED candidate via [%s]' % (' '.join(bed_slurm_resort_cmd_components)))
                 if not args.dry_run:
-                    bed_slurm_resort_cmd_components = [
-                        update_sort_bed_slurm_path,
-                        '--input-original',
-                        src_original_fn,
-                        '--input-backup',
-                        src_backup_fn,
-                        '--output-temp',
-                        dest_temp_fn,
-                        '--output-final',
-                        dest_final_fn,
-                        '--bedextract-path',
-                        bedextract_path,
-                        '--sort-bed-path',
-                        sort_bed_path
-                    ]
-                    slurm_options = customize_slurm_options(args)
-                    if slurm_options:
-                        bed_slurm_resort_cmd_components.append(slurm_options)
-                    if logger: logger.info('Planning to resort BED candidate via [%s]' % (' '.join(bed_slurm_resort_cmd_components)))
                     bed_slurm_resort_process = subprocess.Popen(' '.join(bed_slurm_resort_cmd_components),
                                                                 shell=True,
                                                                 stdin=subprocess.PIPE,
@@ -517,33 +525,35 @@ def main():
 
             # Starch
             if candidate.lower().endswith(('.starch', 'bstarch', 'gstarch')):
-                if logger: logger.info('Planning to resort Starch candidate [%s] to [%s]' % (src_original_fn, dest_final_fn))
+                if logger: logger.info('Planning to resort Starch candidate [%s]' % (src_original_fn))
+                starch_slurm_resort_cmd_components = [
+                    update_sort_bed_starch_slurm_path,
+                    '--input-original',
+                    src_original_fn,
+                    '--input-backup',
+                    src_backup_fn,
+                    '--output-temp',
+                    dest_temp_fn,
+                    '--output-final',
+                    dest_final_fn,
+                    '--bedextract-path',
+                    bedextract_path,
+                    '--sort-bed-path',
+                    sort_bed_path,
+                    '--unstarch-path',
+                    unstarch_path,
+                    '--starch-path',
+                    starch_path,
+                    '--starchcat-path',
+                    starchcat_path
+                ]
+                slurm_options = customize_slurm_options(args)
+                if slurm_options:
+                    starch_slurm_resort_cmd_components.append(slurm_options)
+                if args.debug:
+                    starch_slurm_resort_cmd_components.append('--debug')                
+                if logger: logger.info('Planning to resort Starch candidate via [%s]' % (' '.join(starch_slurm_resort_cmd_components)))
                 if not args.dry_run:
-                    starch_slurm_resort_cmd_components = [
-                        update_sort_bed_starch_slurm_path,
-                        '--input-original',
-                        src_original_fn,
-                        '--input-backup',
-                        src_backup_fn,
-                        '--output-temp',
-                        dest_temp_fn,
-                        '--output-final',
-                        dest_final_fn,
-                        '--bedextract-path',
-                        bedextract_path,
-                        '--sort-bed-path',
-                        sort_bed_path,
-                        '--unstarch-path',
-                        unstarch_path,
-                        '--starch-path',
-                        starch_path,
-                        '--starchcat-path',
-                        starchcat_path
-                    ]
-                    slurm_options = customize_slurm_options(args)
-                    if slurm_options:
-                        starch_slurm_resort_cmd_components.append(slurm_options)
-                    if logger: logger.info('Planning to resort Starch candidate via [%s]' % (' '.join(starch_resort_cmd_components)))
                     starch_slurm_resort_process = subprocess.Popen(' '.join(starch_slurm_resort_cmd_components),
                                                                    shell=True,
                                                                    stdin=subprocess.PIPE,
@@ -553,7 +563,6 @@ def main():
                     (starch_slurm_resort_stdout, starch_slurm_resort_stderr) = starch_slurm_resort_process.communicate()
                     if starch_slurm_resort_process.returncode != 0:
                         raise
-                    
                     if logger: logger.info('SLURM task submitted to resort [%s]' % (src_fn))
 
 def find_binary(binary_to_find):
