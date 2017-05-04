@@ -4985,7 +4985,7 @@ c2b_process_intermediate_bytes_by_lines(void *arg)
     c2b_pipeline_stage_t *stage = (c2b_pipeline_stage_t *) arg;
     c2b_pipeset_t *pipes = stage->pipeset;
     char *src_buffer = NULL;
-    ssize_t src_buffer_size = C2B_MAX_LONGER_LINE_LENGTH_VALUE;
+    ssize_t src_buffer_size = C2B_THREAD_IO_BUFFER_SIZE;
     ssize_t src_bytes_read = 0;
     ssize_t remainder_length = 0;
     ssize_t remainder_offset = 0;
@@ -4994,7 +4994,7 @@ c2b_process_intermediate_bytes_by_lines(void *arg)
     ssize_t start_offset = 0;
     ssize_t end_offset = 0;
     char *dest_buffer = NULL;
-    ssize_t dest_buffer_size = C2B_MAX_LONGER_LINE_LENGTH_VALUE * C2B_MAX_LINES_VALUE;
+    ssize_t dest_buffer_size = C2B_THREAD_IO_BUFFER_SIZE * C2B_MAX_LINES_VALUE;
     ssize_t dest_bytes_written = 0;
     void (*line_functor)(char *, ssize_t *, char *, ssize_t) = stage->line_functor;
     int exit_status = 0;
@@ -5078,7 +5078,7 @@ c2b_process_intermediate_bytes_by_lines(void *arg)
 
         if (remainder_offset == -1) {
             if (src_bytes_read + remainder_length == src_buffer_size) {
-                fprintf(stderr, "Error: Could not find newline in intermediate buffer; check input\n");
+                fprintf(stderr, "Error: Could not find newline in intermediate buffer; check input [%zu | %zu | %zu]\n", (unsigned long) src_bytes_read, (unsigned long) remainder_length, (unsigned long) src_buffer_size);
                 c2b_print_usage(stderr);
                 exit(EINVAL); /* Invalid argument (POSIX.1) */
             }

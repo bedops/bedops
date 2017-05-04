@@ -26,12 +26,24 @@
 #ifndef CONSTANTS_BEDOPS_H
 #define CONSTANTS_BEDOPS_H
 
-
+//
 // Don't use these directly; they just synchronize C and C++'s uses below
 //   - just want to utilize C++'s type system explicitly
+//
+// The minimum of running 'ulimit -s' on CentOS 7.2 and Mac OS X 10.12.4 shows
+// a stack size limit of 8192 kB (8388608 bytes) and we adjust the TOKENS_MAX_LENGTH
+// to this minimum value -- minus 4 MB, to leave some stack space for other parts of
+// a running binary.
+//
+// This change is specifically so that sort-bed can sort very-long reads obtained from
+// converting BAM to BED via convert2bed (e.g., Nanopore or PacBio sequencing reads), which
+// easily blow up line sizes past what we've generally been used to with short-read sequencers.
+// If read lengths get longer, we may need to explore some changes to sort-bed memory usage.
+//
+
 #define INT_TOKEN_CHR_MAX_LENGTH 127
 #define INT_TOKEN_ID_MAX_LENGTH 16383
-#define INT_TOKEN_REST_MAX_LENGTH 8*131072
+#define INT_TOKEN_REST_MAX_LENGTH 8372074 - 4*(1024*1024)
 #define INT_MAX_DEC_INTEGERS 12
 #define INT_MAX_COORD_VALUE 999999999999 /* MAX_DEC_INTEGERS decimal integers; we assume >= 64-bit systems */
 #define INT_TOKENS_MAX_LENGTH (TOKEN_CHR_MAX_LENGTH + TOKEN_ID_MAX_LENGTH + TOKEN_REST_MAX_LENGTH + 2*MAX_DEC_INTEGERS)
