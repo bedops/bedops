@@ -360,7 +360,7 @@ STARCH_printUsage (int errorType)
                 case STARCH_FATAL_ERROR:
                 case STARCH_HELP_ERROR:
                 default: {
-                    fprintf(stderr, "%s\n citation: %s\n binary version: %s (creates archive version: %s)\n authors:  %s\n%s\n\n", name, BEDOPS::citation(), BEDOPS::revision(), avStr, authors, usage);
+                    fprintf(stderr, "%s\n  citation: %s\n  binary version: %s (creates archive version: %s)\n  authors:  %s\n%s\n\n", name, BEDOPS::citation(), BEDOPS::revision(), avStr, authors, usage);
                     break;
                 }
             }
@@ -384,7 +384,7 @@ STARCH_printRevision ()
     if (avStr != NULL) {
         int result = sprintf (avStr, "%d.%d.%d", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION);
         if (result != -1)
-            fprintf (stderr, "%s\n binary version: %s (creates archive version: %s)\n", name, BEDOPS::revision(), avStr);
+            fprintf (stderr, "%s\n  binary version: %s (creates archive version: %s)\n", name, BEDOPS::revision(), avStr);
         free (avStr);
     }
 }

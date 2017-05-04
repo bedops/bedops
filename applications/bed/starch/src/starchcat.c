@@ -4693,12 +4693,12 @@ STARCHCAT_printUsage (int errorType)
         if (result != -1) {
             switch (errorType) {
                 case STARCHCAT_VERSION_ERROR:
-                    fprintf(stdout, "%s\n binary version: %s (creates archive version: %s)\n", name, BEDOPS::revision(), avStr);
+                    fprintf(stdout, "%s\n  binary version: %s (creates archive version: %s)\n", name, BEDOPS::revision(), avStr);
                     break;
                 case STARCHCAT_FATAL_ERROR:
                 case STARCHCAT_HELP_ERROR:
                 default:
-                    fprintf(stderr, "%s\n citation: %s\n version:  %s\n authors:  %s\n%s\n", name, BEDOPS::citation(), BEDOPS::revision(), authors, usage);
+                    fprintf(stderr, "%s\n  citation: %s\n  version:  %s\n  authors:  %s\n%s\n", name, BEDOPS::citation(), BEDOPS::revision(), authors, usage);
                     break;
             }
         }
@@ -4723,7 +4723,7 @@ STARCHCAT_printRevision ()
     if (avStr != NULL) {
         int result = sprintf (avStr, "%d.%d.%d", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION);
         if (result != -1) {            
-            fprintf(stderr, "%s\n binary version: %s (creates archive version: %s)\n", name, BEDOPS::revision(), avStr);
+            fprintf(stderr, "%s\n  binary version: %s (creates archive version: %s)\n", name, BEDOPS::revision(), avStr);
             free(avStr);
         }
     }

@@ -1171,7 +1171,7 @@ UNSTARCH_printUsage(int errorType)
                 case UNSTARCH_HELP_ERROR:
                 default:
                     fprintf(stderr, 
-                "%s\n citation: %s\n binary version: %s (extracts archive version: %s or older)\n authors: %s\n%s\n", 
+                "%s\n  citation: %s\n  binary version: %s (extracts archive version: %s or older)\n  authors: %s\n%s\n", 
                 name, 
                 BEDOPS::citation(), 
                 BEDOPS::revision(), 
@@ -1201,7 +1201,7 @@ UNSTARCH_printRevision()
         int result = sprintf(avStr, "%d.%d.%d", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION);
         if (result != -1)
             fprintf(stdout, 
-            "%s\n binary version: %s (extracts archive version: %s or older)\n", 
+            "%s\n  binary version: %s (extracts archive version: %s or older)\n", 
             name, 
             BEDOPS::revision(), 
             avStr);
@@ -1217,7 +1217,7 @@ UNSTARCH_printArchiveVersion(const ArchiveVersion *av)
 #endif
     if (av)
         fprintf(stdout, 
-        "%s\n archive version: %d.%d.%d\n", 
+        "%s\n  archive version: %d.%d.%d\n", 
         name, 
         av->major, 
         av->minor, 
@@ -1256,10 +1256,10 @@ UNSTARCH_printCompressionType(const CompressionType t)
 #endif
     switch (t) {
         case kBzip2:
-            fprintf(stdout, "%s\n archive compression type: bzip2\n", name);
+            fprintf(stdout, "%s\n  archive compression type: bzip2\n", name);
             break;
         case kGzip:
-            fprintf(stdout, "%s\n archive compression type: gzip\n", name);
+            fprintf(stdout, "%s\n  archive compression type: gzip\n", name);
             break;
         case kUndefined:
             fprintf(stdout, "ERROR: compression type is undefined\n");
