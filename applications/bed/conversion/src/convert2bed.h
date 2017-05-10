@@ -740,7 +740,9 @@ static const char *bam_options =                                        \
     "      elements\n"                                                  \
     "  --split-with-deletions (-S)\n"                                   \
     "      Split reads with 'N' and 'D' CIGAR operations into\n"        \
-    "      separate elements\n";
+    "      separate elements\n"                                         \
+    "  --reduced (-R)\n"                                                \
+    "      Only print first six columns of output\n";
 
 static const char *bam_usage =                                          \
     "  Converts 0-based, half-open [a-1,b) headered or headerless BAM input\n" \
@@ -1153,7 +1155,9 @@ static const char *sam_options =                                        \
     "      elements\n"                                                  \
     "  --split-with-deletions (-S)\n"                                   \
     "      Split reads with 'N' and 'D' CIGAR operations into\n"        \
-    "      separate elements\n";
+    "      separate elements\n"                                         \
+    "  --reduced (-R)\n"                                                \
+    "      Only print first six columns of output\n";
 
 static const char *vcf_name = "convert2bed -i vcf";
 
@@ -1359,6 +1363,7 @@ static struct globals {
     boolean keep_header_flag;
     boolean split_flag;
     boolean split_with_deletions_flag;
+    boolean reduced_flag;
     boolean zero_indexed_flag;
     c2b_gff_state_t *gff;
     c2b_gtf_state_t *gtf;
@@ -1381,6 +1386,7 @@ static struct option c2b_client_long_options[] = {
     { "split",                         no_argument,         NULL,    's' },
     { "split-with-deletions",          no_argument,         NULL,    'S' },
     { "do-not-split",                  no_argument,         NULL,    'p' },
+    { "reduced",                       no_argument,         NULL,    'R' },
     { "snvs",                          no_argument,         NULL,    'v' },
     { "insertions",                    no_argument,         NULL,    't' },
     { "deletions",                     no_argument,         NULL,    'n' },
@@ -1405,7 +1411,7 @@ static struct option c2b_client_long_options[] = {
     { NULL,                            no_argument,         NULL,     0  }
 };
 
-static const char *c2b_client_opt_string = "i:o:daksSpvtnzge:m:r:b:xhw12345678?";
+static const char *c2b_client_opt_string = "i:o:daksSpRvtnzge:m:r:b:xhw12345678?";
 
 #ifdef __cplusplus
 extern "C" {
