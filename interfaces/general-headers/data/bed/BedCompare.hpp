@@ -140,6 +140,17 @@ namespace Bed {
   };
 
   template <typename BedType1, typename BedType2 = BedType1>
+  struct GenomicRestCompare : CoordRestCompare<BedType1, BedType2> {
+    typedef CoordRestCompare<BedType1, BedType2> BaseT;
+    inline bool operator()(BedType1 const* ptr1, BedType2 const* ptr2) const {
+      static int v = 0;
+      if ( (v = std::strcmp(ptr1->chrom(), ptr2->chrom())) != 0 )
+        return v < 0;
+      return BaseT::operator()(pt1, ptr2);
+    }
+  };
+
+  template <typename BedType1, typename BedType2 = BedType1>
   struct CoordRestAddressCompare // not caring about chrom here
     : public std::binary_function<BedType1 const*, BedType2 const*, bool> {
 
