@@ -2073,20 +2073,34 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
                                      t_lineMaxStringLength );
 
     /* cleanup */
-    free(outTagFn), outTagFn = NULL;
-    free(t_base64EncodedSha1Digest), t_base64EncodedSha1Digest = NULL;
-    free(retransformLineBuf), retransformLineBuf = NULL;
-    free(retransformBuf), retransformBuf = NULL;
-    free(bzReadBuf), bzReadBuf = NULL;
-    free(bzRemainderBuf), bzRemainderBuf = NULL;
-    free(bzLineBuf), bzLineBuf = NULL;
-    free(zOutBuffer), zOutBuffer = NULL;
-    free(zReadBuf), zReadBuf = NULL;
-    free(zOutBuf), zOutBuf = NULL;
-    free(zRemainderBuf), zRemainderBuf = NULL;
-    free(zLineBuf), zLineBuf = NULL;
-    free(t_firstInputToken), t_firstInputToken = NULL;
-    free(t_secondInputToken), t_secondInputToken = NULL;
+    free(outTagFn);
+    outTagFn = NULL;
+    free(t_base64EncodedSha1Digest);
+    t_base64EncodedSha1Digest = NULL;
+    free(retransformLineBuf);
+    retransformLineBuf = NULL;
+    free(retransformBuf);
+    retransformBuf = NULL;
+    free(bzReadBuf);
+    bzReadBuf = NULL;
+    free(bzRemainderBuf);
+    bzRemainderBuf = NULL;
+    free(bzLineBuf);
+    bzLineBuf = NULL;
+    free(zOutBuffer);
+    zOutBuffer = NULL;
+    free(zReadBuf);
+    zReadBuf = NULL;
+    free(zOutBuf);
+    zOutBuf = NULL;
+    free(zRemainderBuf);
+    zRemainderBuf = NULL;
+    free(zLineBuf);
+    zLineBuf = NULL;
+    free(t_firstInputToken);
+    t_firstInputToken = NULL;
+    free(t_secondInputToken);
+    t_secondInputToken = NULL;
 
     return STARCHCAT_EXIT_SUCCESS;
 }
@@ -3173,14 +3187,22 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
     /* breakdown */
     for (inRecIdx = 0U; inRecIdx < summary->numRecords; inRecIdx++) {
         if (STARCHCAT2_testSummaryForChromosomeExistence(inChr, summary, inRecIdx) == STARCHCAT_EXIT_SUCCESS) { 
-            if (extractionBuffers[inRecIdx])
-                free(extractionBuffers[inRecIdx]), extractionBuffers[inRecIdx] = NULL;
-            if (extractedElements[inRecIdx])
-                free(extractedElements[inRecIdx]), extractedElements[inRecIdx] = NULL;
-            if (extractionRemainderBufs[inRecIdx])
-                free(extractionRemainderBufs[inRecIdx]), extractionRemainderBufs[inRecIdx] = NULL;
-            if (remainders[inRecIdx])
-                free(remainders[inRecIdx]), remainders[inRecIdx] = NULL;
+            if (extractionBuffers[inRecIdx]) {
+                free(extractionBuffers[inRecIdx]);
+                extractionBuffers[inRecIdx] = NULL;
+            }
+            if (extractedElements[inRecIdx]) {
+                free(extractedElements[inRecIdx]);
+                extractedElements[inRecIdx] = NULL;
+            }
+            if (extractionRemainderBufs[inRecIdx]) {
+                free(extractionRemainderBufs[inRecIdx]);
+                extractionRemainderBufs[inRecIdx] = NULL;
+            }
+            if (remainders[inRecIdx]) {
+                free(remainders[inRecIdx]);
+                remainders[inRecIdx] = NULL;
+            }
             inRecord = *(summary->records) + inRecIdx;
             inType = inRecord->type; /* get record type of input stream */
             switch (inType) {
@@ -3205,52 +3227,98 @@ STARCHCAT2_mergeInputRecordsToOutput (const char *inChr, Metadata **outMd, const
             }
         } 
     }
-    if (extractionBuffers)
-        free(extractionBuffers), extractionBuffers = NULL;
-    if (nExtractionBuffers)
-        free(nExtractionBuffers), nExtractionBuffers = NULL;
-    if (extractionBufferOffsets)
-        free(extractionBufferOffsets), extractionBufferOffsets = NULL;
-    if (compressionBuffer)
-        free(compressionBuffer), compressionBuffer = NULL;
-    if (zInFps)
-        free(zInFps), zInFps = NULL;
-    if (extractedLineCounts)
-        free(extractedLineCounts), extractedLineCounts = NULL;
-    if (extractedElements)
-        free(extractedElements), extractedElements = NULL;
-    if (eobFlags)
-        free(eobFlags), eobFlags = NULL;
-    if (eofFlags)
-        free(eofFlags), eofFlags = NULL;
-    if (starts)
-        free(starts), starts = NULL;
-    if (stops)
-        free(stops), stops = NULL;
-    if (remainders)
-        free(remainders), remainders = NULL;
-    if (transformStates)
-        free(transformStates), transformStates = NULL;
-    if (extractionRemainderBufs)
-        free(extractionRemainderBufs), extractionRemainderBufs = NULL;
-    if (nExtractionRemainderBufs)
-        free(nExtractionRemainderBufs), nExtractionRemainderBufs = NULL;
-    if (bzInFps)
-        free(bzInFps), bzInFps = NULL;
-    if (nBzReads)
-        free(nBzReads), nBzReads = NULL;
-    if (zInStreams)
-        free(zInStreams), zInStreams = NULL;
-    if (nZReads)
-        free(nZReads), nZReads = NULL;
-    if (retransformedOutputBuffer)
-        free(retransformedOutputBuffer), retransformedOutputBuffer = NULL;
-    if (outputRetransformState)
-        free(outputRetransformState), outputRetransformState = NULL;
-    if (finalOutTagFn)
-        free(finalOutTagFn), finalOutTagFn = NULL;
-    if (r_base64EncodedSha1Digest)
-        free(r_base64EncodedSha1Digest), r_base64EncodedSha1Digest = NULL;
+    if (extractionBuffers) {
+        free(extractionBuffers);
+        extractionBuffers = NULL;
+    }
+    if (nExtractionBuffers) {
+        free(nExtractionBuffers);
+        nExtractionBuffers = NULL;
+    }
+    if (extractionBufferOffsets) {
+        free(extractionBufferOffsets);
+        extractionBufferOffsets = NULL;
+    }
+    if (compressionBuffer) {
+        free(compressionBuffer);
+        compressionBuffer = NULL;
+    }
+    if (zInFps) {
+        free(zInFps);
+        zInFps = NULL;
+    }
+    if (extractedLineCounts) {
+        free(extractedLineCounts);
+        extractedLineCounts = NULL;
+    }
+    if (extractedElements) {
+        free(extractedElements);
+        extractedElements = NULL;
+    }
+    if (eobFlags) {
+        free(eobFlags);
+        eobFlags = NULL;
+    }
+    if (eofFlags) {
+        free(eofFlags);
+        eofFlags = NULL;
+    }
+    if (starts) {
+        free(starts);
+        starts = NULL;
+    }
+    if (stops) {
+        free(stops);
+        stops = NULL;
+    }
+    if (remainders) {
+        free(remainders);
+        remainders = NULL;
+    }
+    if (transformStates) {
+        free(transformStates);
+        transformStates = NULL;
+    }
+    if (extractionRemainderBufs) {
+        free(extractionRemainderBufs);
+        extractionRemainderBufs = NULL;
+    }
+    if (nExtractionRemainderBufs) {
+        free(nExtractionRemainderBufs);
+        nExtractionRemainderBufs = NULL;
+    }
+    if (bzInFps) {
+        free(bzInFps);
+        bzInFps = NULL;
+    }
+    if (nBzReads) {
+        free(nBzReads);
+        nBzReads = NULL;
+    }
+    if (zInStreams) {
+        free(zInStreams);
+        zInStreams = NULL;
+    }
+    if (nZReads) {
+        free(nZReads);
+        nZReads = NULL;
+    }
+    if (retransformedOutputBuffer) {
+        free(retransformedOutputBuffer);
+        retransformedOutputBuffer = NULL;
+    }
+    if (outputRetransformState) {
+        free(outputRetransformState);
+        outputRetransformState = NULL;
+    }
+    if (finalOutTagFn) {
+        free(finalOutTagFn);
+        finalOutTagFn = NULL;
+    }
+    if (r_base64EncodedSha1Digest) {
+        free(r_base64EncodedSha1Digest);
+        r_base64EncodedSha1Digest = NULL;
+    }
     
     return STARCHCAT_EXIT_SUCCESS;
 }
@@ -4421,8 +4489,9 @@ STARCHCAT_freeMetadataRecords (MetadataRecord **mdRecords, const unsigned int nu
     unsigned int recIdx = 0U;
     MetadataRecord *instance = NULL;
 
-    if (! *mdRecords) 
+    if (! *mdRecords) {
         return STARCHCAT_EXIT_SUCCESS;
+    }
 
     for (recIdx = 0U; recIdx < numRecords; recIdx++) {
 #ifdef DEBUG
@@ -4430,16 +4499,26 @@ STARCHCAT_freeMetadataRecords (MetadataRecord **mdRecords, const unsigned int nu
 #endif
         if (mdRecords[recIdx]) {
             instance = *mdRecords + recIdx;            
-            if (instance->filename)
-                free(instance->filename), instance->filename = NULL;            
-            if (instance->metadata)
-                STARCH_freeMetadata( &(instance->metadata) ), instance->metadata = NULL;            
-            if (instance->fp)
-                fclose(instance->fp), instance->fp = NULL;            
-            if (instance->av)
-                free(instance->av), instance->av = NULL;
-            if (instance->cTime)
-                free(instance->cTime), instance->cTime = NULL;
+            if (instance->filename) {
+                free(instance->filename);
+                instance->filename = NULL;            
+            }
+            if (instance->metadata) {
+                STARCH_freeMetadata( &(instance->metadata) );
+                instance->metadata = NULL;            
+            }
+            if (instance->fp) {
+                fclose(instance->fp);
+                instance->fp = NULL;            
+            }
+            if (instance->av) {
+                free(instance->av);
+                instance->av = NULL;
+            }
+            if (instance->cTime) {
+                free(instance->cTime);
+                instance->cTime = NULL;
+            }
         }
     }
 
@@ -4976,7 +5055,9 @@ STARCHCAT2_mergeChromosomeStreams (const ChromosomeSummaries *chrSums, const Com
         fprintf(stderr, "ERROR: Could not allocate space to archive version test struct.\n");
         return STARCHCAT_EXIT_FAILURE;
     }
-    av120->major = 1, av120->minor = 2, av120->revision = 0;
+    av120->major = 1;
+    av120->minor = 2;
+    av120->revision = 0;
 
     /*
         When we initially built the chromosome list, we applied a 
@@ -5251,12 +5332,18 @@ STARCHCAT2_mergeChromosomeStreams (const ChromosomeSummaries *chrSums, const Com
     fflush(stdout);
 
     /* cleanup */
-    if (dynamicMdBuffer)
-        free(dynamicMdBuffer), dynamicMdBuffer = NULL;
-    if (base64EncodedSha1Digest)
-        free(base64EncodedSha1Digest), base64EncodedSha1Digest = NULL;
-    if (av120)
-        free(av120), av120 = NULL;
+    if (dynamicMdBuffer) {
+        free(dynamicMdBuffer);
+        dynamicMdBuffer = NULL;
+    }
+    if (base64EncodedSha1Digest) {
+        free(base64EncodedSha1Digest);
+        base64EncodedSha1Digest = NULL;
+    }
+    if (av120) {
+        free(av120);
+        av120 = NULL;
+    }
 
     return STARCHCAT_EXIT_SUCCESS;
 }
@@ -5866,14 +5953,20 @@ STARCHCAT2_fillExtractionBufferFromBzip2Stream (Boolean *eofFlag, char *recordCh
     *nBzRemainderBuf = bzCharIndex;
 
     /* cleanup */
-    if (bzReadBuf)
-        free(bzReadBuf), bzReadBuf = NULL;
+    if (bzReadBuf) {
+        free(bzReadBuf); 
+        bzReadBuf = NULL;
+    }
     
-    if (bzLineBuf)
-        free(bzLineBuf), bzLineBuf = NULL;
+    if (bzLineBuf) {
+        free(bzLineBuf); 
+        bzLineBuf = NULL;
+    }
     
-    if (retransformedLineBuffer)
-        free(retransformedLineBuffer), retransformedLineBuffer = NULL;
+    if (retransformedLineBuffer) {
+        free(retransformedLineBuffer); 
+        retransformedLineBuffer = NULL;
+    }
 
     return STARCHCAT_EXIT_SUCCESS;
 }
@@ -5994,8 +6087,10 @@ STARCHCAT2_fillExtractionBufferFromGzipStream (Boolean *eofFlag, FILE **inputFp,
 #endif
 
     if (zStream->avail_in == 0) {
-        free(zInBuf), zInBuf = NULL;
-        free(zReadBuf), zReadBuf = NULL;
+        free(zInBuf);
+        zInBuf = NULL;
+        free(zReadBuf);
+        zReadBuf = NULL;
         *eofFlag = kStarchTrue;
         return STARCHCAT_EXIT_SUCCESS;
     }
@@ -6176,14 +6271,20 @@ STARCHCAT2_fillExtractionBufferFromGzipStream (Boolean *eofFlag, FILE **inputFp,
 #endif
 
     /* cleanup */
-    if (zInBuf)
-        free(zInBuf), zInBuf = NULL;
+    if (zInBuf) {
+        free(zInBuf);
+        zInBuf = NULL;
+    }
 
-    if (zReadBuf)
-        free(zReadBuf), zReadBuf = NULL;
+    if (zReadBuf) {
+        free(zReadBuf); 
+        zReadBuf = NULL;
+    }
 
-    if (retransformedLineBuffer)
-        free(retransformedLineBuffer), retransformedLineBuffer = NULL;
+    if (retransformedLineBuffer) {
+        free(retransformedLineBuffer);
+        retransformedLineBuffer = NULL;
+    }
 
     return STARCHCAT_EXIT_SUCCESS;
 }
@@ -6251,7 +6352,8 @@ STARCHCAT2_parseCoordinatesFromBedLineV2 (Boolean *eobFlag, const char *extracte
     while (extractedElement[charIdx] != '\0') {
         if (extractedElement[charIdx] == tab) {
             withinFieldIdx = 0;
-            fieldIdx++, charIdx++;
+            fieldIdx++;
+            charIdx++;
             continue;
         }
         switch (fieldIdx) {
@@ -6575,10 +6677,14 @@ STARCHCAT2_transformCompressionBuffer (const char *compBuf, char *retransBuf, Tr
         }
     }
 
-    if (retransChromosome) 
-        free(retransChromosome), retransChromosome = NULL;
-    if (retransRemainder)
-        free(retransRemainder), retransRemainder = NULL;
+    if (retransChromosome) {
+        free(retransChromosome); 
+        retransChromosome = NULL;
+    }
+    if (retransRemainder) {
+        free(retransRemainder);
+        retransRemainder = NULL;
+    }
 
     return STARCH_EXIT_SUCCESS;
 }

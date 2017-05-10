@@ -737,7 +737,10 @@ static const char *bam_options =                                        \
     "      Preserve header section as pseudo-BED elements\n"            \
     "  --split (-s)\n"                                                  \
     "      Split reads with 'N' CIGAR operations into separate BED\n"   \
-    "      elements\n";
+    "      elements\n"                                                  \
+    "  --split-with-deletions (-S)\n"                                   \
+    "      Split reads with 'N' and 'D' CIGAR operations into\n"        \
+    "      separate elements\n";
 
 static const char *bam_usage =                                          \
     "  Converts 0-based, half-open [a-1,b) headered or headerless BAM input\n" \
@@ -1147,7 +1150,10 @@ static const char *sam_options =                                        \
     "      Preserve header section as pseudo-BED elements\n"            \
     "  --split (-s)\n"                                                  \
     "      Split reads with 'N' CIGAR operations into separate BED\n"   \
-    "      elements\n";
+    "      elements\n"                                                  \
+    "  --split-with-deletions (-S)\n"                                   \
+    "      Split reads with 'N' and 'D' CIGAR operations into\n"        \
+    "      separate elements\n";
 
 static const char *vcf_name = "convert2bed -i vcf";
 
@@ -1352,6 +1358,7 @@ static struct globals {
     boolean all_reads_flag;
     boolean keep_header_flag;
     boolean split_flag;
+    boolean split_with_deletions_flag;
     boolean zero_indexed_flag;
     c2b_gff_state_t *gff;
     c2b_gtf_state_t *gtf;
@@ -1366,38 +1373,39 @@ static struct globals {
 } c2b_globals;
 
 static struct option c2b_client_long_options[] = {
-    { "input",          required_argument,   NULL,    'i' },
-    { "output",         required_argument,   NULL,    'o' },
-    { "do-not-sort",    no_argument,         NULL,    'd' },
-    { "all-reads",      no_argument,         NULL,    'a' },
-    { "keep-header",    no_argument,         NULL,    'k' },
-    { "split",          no_argument,         NULL,    's' },
-    { "do-not-split",   no_argument,         NULL,    'p' },
-    { "snvs",           no_argument,         NULL,    'v' },
-    { "insertions",     no_argument,         NULL,    't' },
-    { "deletions",      no_argument,         NULL,    'n' },
-    { "starch-bzip2",   no_argument,         NULL,    'z' },
-    { "starch-gzip",    no_argument,         NULL,    'g' },
-    { "starch-note",    required_argument,   NULL,    'e' },
-    { "max-mem",        required_argument,   NULL,    'm' },
-    { "sort-tmpdir",    required_argument,   NULL,    'r' },
-    { "multisplit",     required_argument,   NULL,    'b' },
-    { "zero-indexed",   no_argument,         NULL,    'x' },
-    { "help",           no_argument,         NULL,    'h' },
-    { "version",        no_argument,         NULL,    'w' },
-    { "help-bam",       no_argument,         NULL,    '1' },
-    { "help-gff",       no_argument,         NULL,    '2' },
-    { "help-gtf",       no_argument,         NULL,    '3' },
-    { "help-gvf",       no_argument,         NULL,    '4' },
-    { "help-psl",       no_argument,         NULL,    '5' },
-    { "help-rmsk",      no_argument,         NULL,    '6' },
-    { "help-sam",       no_argument,         NULL,    '7' },
-    { "help-vcf",       no_argument,         NULL,    '8' },
-    { "help-wig",       no_argument,         NULL,    '9' },
-    { NULL,             no_argument,         NULL,     0  }
+    { "input",                         required_argument,   NULL,    'i' },
+    { "output",                        required_argument,   NULL,    'o' },
+    { "do-not-sort",                   no_argument,         NULL,    'd' },
+    { "all-reads",                     no_argument,         NULL,    'a' },
+    { "keep-header",                   no_argument,         NULL,    'k' },
+    { "split",                         no_argument,         NULL,    's' },
+    { "split-with-deletions",          no_argument,         NULL,    'S' },
+    { "do-not-split",                  no_argument,         NULL,    'p' },
+    { "snvs",                          no_argument,         NULL,    'v' },
+    { "insertions",                    no_argument,         NULL,    't' },
+    { "deletions",                     no_argument,         NULL,    'n' },
+    { "starch-bzip2",                  no_argument,         NULL,    'z' },
+    { "starch-gzip",                   no_argument,         NULL,    'g' },
+    { "starch-note",                   required_argument,   NULL,    'e' },
+    { "max-mem",                       required_argument,   NULL,    'm' },
+    { "sort-tmpdir",                   required_argument,   NULL,    'r' },
+    { "multisplit",                    required_argument,   NULL,    'b' },
+    { "zero-indexed",                  no_argument,         NULL,    'x' },
+    { "help",                          no_argument,         NULL,    'h' },
+    { "version",                       no_argument,         NULL,    'w' },
+    { "help-bam",                      no_argument,         NULL,    '1' },
+    { "help-gff",                      no_argument,         NULL,    '2' },
+    { "help-gtf",                      no_argument,         NULL,    '3' },
+    { "help-gvf",                      no_argument,         NULL,    '4' },
+    { "help-psl",                      no_argument,         NULL,    '5' },
+    { "help-rmsk",                     no_argument,         NULL,    '6' },
+    { "help-sam",                      no_argument,         NULL,    '7' },
+    { "help-vcf",                      no_argument,         NULL,    '8' },
+    { "help-wig",                      no_argument,         NULL,    '9' },
+    { NULL,                            no_argument,         NULL,     0  }
 };
 
-static const char *c2b_client_opt_string = "i:o:dakspvtnzge:m:r:b:xhw12345678?";
+static const char *c2b_client_opt_string = "i:o:daksSpvtnzge:m:r:b:xhw12345678?";
 
 #ifdef __cplusplus
 extern "C" {

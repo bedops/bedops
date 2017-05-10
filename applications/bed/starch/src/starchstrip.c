@@ -141,8 +141,10 @@ STARCHSTRIP_write_updated_metadata(FILE* os)
     fflush(os);
 
     /* cleanup */
-    free(md_json_buffer), md_json_buffer = NULL;
-    free(base64_encoded_sha1_digest), base64_encoded_sha1_digest = NULL;
+    free(md_json_buffer);
+    md_json_buffer = NULL;
+    free(base64_encoded_sha1_digest);
+    base64_encoded_sha1_digest = NULL;
 
 #ifdef DEBUG
     fprintf(stderr, "--- STARCHSTRIP_write_updated_metadata() - exit  ---\n");
@@ -300,7 +302,8 @@ STARCHSTRIP_write_header(FILE* os)
             fprintf(stderr, "Error: Could not write archive header to output file stream\n");
             exit(EIO); /* Input/output error (POSIX.1) */
         }
-        free(archive_header), archive_header = NULL;
+        free(archive_header);
+        archive_header = NULL;
         starchstrip_globals.cumulative_output_size += STARCH2_MD_HEADER_BYTE_LENGTH;
     }
     else {
@@ -701,26 +704,50 @@ STARCHSTRIP_delete_globals()
 #endif
 
     for (size_t idx = 0; idx < starchstrip_globals.chromosomes_num; ++idx) {
-        free(starchstrip_globals.chromosomes[idx]), starchstrip_globals.chromosomes[idx] = NULL;
+        free(starchstrip_globals.chromosomes[idx]);
+        starchstrip_globals.chromosomes[idx] = NULL;
     }
-    free(starchstrip_globals.chromosomes), starchstrip_globals.chromosomes = NULL;
+    free(starchstrip_globals.chromosomes);
+    starchstrip_globals.chromosomes = NULL;
     starchstrip_globals.chromosomes_num = 0;
     
-    free(starchstrip_globals.chromosomes_str), starchstrip_globals.chromosomes_str = NULL;
+    free(starchstrip_globals.chromosomes_str);
+    starchstrip_globals.chromosomes_str = NULL;
 
     for (size_t idx = 0; idx < starchstrip_globals.chromosomes_to_process_num; ++idx) {
-        free(starchstrip_globals.chromosomes_to_process[idx]), starchstrip_globals.chromosomes_to_process[idx] = NULL;
+        free(starchstrip_globals.chromosomes_to_process[idx]);
+        starchstrip_globals.chromosomes_to_process[idx] = NULL;
     }
-    free(starchstrip_globals.chromosomes_to_process), starchstrip_globals.chromosomes_to_process = NULL;
+    free(starchstrip_globals.chromosomes_to_process);
+    starchstrip_globals.chromosomes_to_process = NULL;
     starchstrip_globals.chromosomes_to_process_num = 0;
 
-    free(starchstrip_globals.archive_fn), starchstrip_globals.archive_fn = NULL;
-    if (starchstrip_globals.archive_metadata_json) { json_decref(starchstrip_globals.archive_metadata_json), starchstrip_globals.archive_metadata_json = NULL; }
-    if (starchstrip_globals.archive_fp) { fclose(starchstrip_globals.archive_fp), starchstrip_globals.archive_fp = NULL; }
-    if (starchstrip_globals.archive_records) { STARCH_freeMetadata(&starchstrip_globals.archive_records), starchstrip_globals.archive_records = NULL; }
-    if (starchstrip_globals.archive_version) { free(starchstrip_globals.archive_version), starchstrip_globals.archive_version = NULL; }
-    if (starchstrip_globals.archive_timestamp) { free(starchstrip_globals.archive_timestamp), starchstrip_globals.archive_timestamp = NULL; } 
-    if (starchstrip_globals.archive_note) { free(starchstrip_globals.archive_note), starchstrip_globals.archive_note = NULL; }
+    free(starchstrip_globals.archive_fn);
+    starchstrip_globals.archive_fn = NULL;
+    if (starchstrip_globals.archive_metadata_json) { 
+        json_decref(starchstrip_globals.archive_metadata_json);
+        starchstrip_globals.archive_metadata_json = NULL; 
+    }
+    if (starchstrip_globals.archive_fp) {
+        fclose(starchstrip_globals.archive_fp);
+        starchstrip_globals.archive_fp = NULL; 
+    }
+    if (starchstrip_globals.archive_records) {
+        STARCH_freeMetadata(&starchstrip_globals.archive_records);
+        starchstrip_globals.archive_records = NULL; 
+    }
+    if (starchstrip_globals.archive_version) { 
+        free(starchstrip_globals.archive_version);
+        starchstrip_globals.archive_version = NULL; 
+    }
+    if (starchstrip_globals.archive_timestamp) {
+        free(starchstrip_globals.archive_timestamp);
+        starchstrip_globals.archive_timestamp = NULL;
+    } 
+    if (starchstrip_globals.archive_note) {
+        free(starchstrip_globals.archive_note); 
+        starchstrip_globals.archive_note = NULL; 
+    }
 
     STARCH_freeMetadata(&starchstrip_globals.output_records);
 

@@ -3699,43 +3699,84 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
     for (op_idx = 0, block_idx = 1; op_idx < c2b_globals.sam->cigar->length; ++op_idx) {
         char current_op = c2b_globals.sam->cigar->ops[op_idx].operation;
         unsigned int bases = c2b_globals.sam->cigar->ops[op_idx].bases;
-        switch (current_op) 
-            {
-            case 'M':
-                c2b_globals.sam->element->stop += bases;
-                if ((previous_op == default_cigar_op_operation) || (previous_op == 'D') || (previous_op == 'N')) {
-                    ssize_t desired_modified_qname_capacity = c2b_globals.sam->element->qname_capacity + C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION;
-                    if (c2b_globals.sam->element->modified_qname_capacity <= desired_modified_qname_capacity) {
-                        // resize modified qname capacity to fit
-                        char *modified_qname_resized = NULL;
-                        modified_qname_resized = realloc(c2b_globals.sam->element->modified_qname, desired_modified_qname_capacity + 1);
-                        if (modified_qname_resized) {
-                            c2b_globals.sam->element->modified_qname = modified_qname_resized;
-                            c2b_globals.sam->element->modified_qname_capacity = desired_modified_qname_capacity + 1;
+        if (c2b_globals.split_with_deletions_flag) {
+            switch (current_op) 
+                {
+                case 'M':
+                    c2b_globals.sam->element->stop += bases;
+                    if ((previous_op == default_cigar_op_operation) || (previous_op == 'D') || (previous_op == 'N')) {
+                        ssize_t desired_modified_qname_capacity = c2b_globals.sam->element->qname_capacity + C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION;
+                        if (c2b_globals.sam->element->modified_qname_capacity <= desired_modified_qname_capacity) {
+                            // resize modified qname capacity to fit
+                            char *modified_qname_resized = NULL;
+                            modified_qname_resized = realloc(c2b_globals.sam->element->modified_qname, desired_modified_qname_capacity + 1);
+                            if (modified_qname_resized) {
+                                c2b_globals.sam->element->modified_qname = modified_qname_resized;
+                                c2b_globals.sam->element->modified_qname_capacity = desired_modified_qname_capacity + 1;
+                            }
+                            else {
+                                fprintf(stderr, "Error: Could not resize modified QNAME string in SAM element struct\n");
+                                exit(ENOMEM);
+                            }
                         }
-                        else {
-                            fprintf(stderr, "Error: Could not resize modified QNAME string in SAM element struct\n");
-                            exit(ENOMEM);
-                        }
+                        // block_idx string can be up to (C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION-1) characters long
+                        sprintf(c2b_globals.sam->element->modified_qname, "%s/%zu", c2b_globals.sam->element->qname, block_idx++);
+                        c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, kTrue);
+                        c2b_globals.sam->element->start = c2b_globals.sam->element->stop;
                     }
-                    // block_idx string can be up to (C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION-1) characters long
-                    sprintf(c2b_globals.sam->element->modified_qname, "%s/%zu", c2b_globals.sam->element->qname, block_idx++);
-                    c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, kTrue);
+                    break;
+                case 'N':
+                case 'D':
+                    c2b_globals.sam->element->stop += bases;
                     c2b_globals.sam->element->start = c2b_globals.sam->element->stop;
+                case 'H':
+                case 'I':
+                case 'P':
+                case 'S':
+                    break;
+                default:
+                    break;
                 }
-                break;
-            case 'N':
-            case 'D':
-                c2b_globals.sam->element->stop += bases;
-                c2b_globals.sam->element->start = c2b_globals.sam->element->stop;
-            case 'H':
-            case 'I':
-            case 'P':
-            case 'S':
-                break;
-            default:
-                break;
-            }
+        }
+        else {
+            switch (current_op) 
+                {
+                case 'M':
+                    c2b_globals.sam->element->stop += bases;
+                    if ((previous_op == default_cigar_op_operation) || (previous_op == 'N')) {
+                        ssize_t desired_modified_qname_capacity = c2b_globals.sam->element->qname_capacity + C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION;
+                        if (c2b_globals.sam->element->modified_qname_capacity <= desired_modified_qname_capacity) {
+                            // resize modified qname capacity to fit
+                            char *modified_qname_resized = NULL;
+                            modified_qname_resized = realloc(c2b_globals.sam->element->modified_qname, desired_modified_qname_capacity + 1);
+                            if (modified_qname_resized) {
+                                c2b_globals.sam->element->modified_qname = modified_qname_resized;
+                                c2b_globals.sam->element->modified_qname_capacity = desired_modified_qname_capacity + 1;
+                            }
+                            else {
+                                fprintf(stderr, "Error: Could not resize modified QNAME string in SAM element struct\n");
+                                exit(ENOMEM);
+                            }
+                        }
+                        // block_idx string can be up to (C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION-1) characters long
+                        sprintf(c2b_globals.sam->element->modified_qname, "%s/%zu", c2b_globals.sam->element->qname, block_idx++);
+                        c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, kTrue);
+                        c2b_globals.sam->element->start = c2b_globals.sam->element->stop;
+                    }
+                    break;
+                case 'N':
+                    c2b_globals.sam->element->stop += bases;
+                    c2b_globals.sam->element->start = c2b_globals.sam->element->stop;
+                case 'D':
+                case 'H':
+                case 'I':
+                case 'P':
+                case 'S':
+                    break;
+                default:
+                    break;
+                }
+        }
         previous_op = current_op;
     }
 
@@ -5825,6 +5866,7 @@ c2b_init_globals()
     c2b_globals.all_reads_flag = kFalse;
     c2b_globals.keep_header_flag = kFalse;
     c2b_globals.split_flag = kFalse;
+    c2b_globals.split_with_deletions_flag = kFalse;
     c2b_globals.zero_indexed_flag = kFalse;
     c2b_globals.header_line_idx = 0U;
     c2b_globals.gff = NULL;
@@ -5866,6 +5908,7 @@ c2b_delete_globals()
     c2b_globals.all_reads_flag = kFalse;
     c2b_globals.keep_header_flag = kFalse;
     c2b_globals.split_flag = kFalse;
+    c2b_globals.split_with_deletions_flag = kFalse;
     c2b_globals.header_line_idx = 0U;
     if (c2b_globals.gff) c2b_delete_global_gff_state();
     if (c2b_globals.gtf) c2b_delete_global_gtf_state();
@@ -6435,6 +6478,10 @@ c2b_init_command_line_options(int argc, char **argv)
                 break;
             case 's':
                 c2b_globals.split_flag = kTrue;
+                break;
+            case 'S':
+                c2b_globals.split_flag = kTrue;
+                c2b_globals.split_with_deletions_flag = kTrue;
                 break;
             case 'p':
                 c2b_globals.vcf->do_not_split = kTrue;

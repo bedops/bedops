@@ -15,6 +15,25 @@ Current version
 v2.4.27
 -------
 
+Released: **TBD**
+
+* :ref:`bam2bed <bam2bed>` and `sam2bed <sam2bed>`
+
+  * Increased thread I/O heap buffer size to reduce likelihood of overflows while parsing reads from Nanopore and PacBio platforms.
+  * Added `--split-with-deletions` option to split spliced junctions by `N` and `D` CIGAR operations. The `--split` option now splits only on `N` operations.
+
+* :ref:`sort-bed <sort-bed>`
+
+  * Increased maximum line length to approximately 4 MB per line, to be able to sort output from converting ultra-long reads from Nanopore and PacBio platforms to BED via `convert2bed`.
+
+=================
+Previous versions
+=================
+
+-------
+v2.4.26
+-------
+
 Released: **March 14, 2017**
 
 * :ref:`starchstrip <starchstrip>`
@@ -48,10 +67,6 @@ Released: **March 14, 2017**
 * :ref:`gtf2bed <gtf2bed>`
 
   * Resolved segmentation fault with certain inputs, in follow-up to `this BEDOPS Forum post <http://bedops.uwencode.org/forum/index.php?topic=136.0>`_. Thanks to zebasilio for the report and feedback.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.25
