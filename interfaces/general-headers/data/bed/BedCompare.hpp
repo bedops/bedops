@@ -146,7 +146,7 @@ namespace Bed {
       static int v = 0;
       if ( (v = std::strcmp(ptr1->chrom(), ptr2->chrom())) != 0 )
         return v < 0;
-      return BaseT::operator()(pt1, ptr2);
+      return BaseT::operator()(ptr1, ptr2);
     }
   };
 
