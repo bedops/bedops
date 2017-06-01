@@ -29,6 +29,7 @@
 #include <type_traits>
 
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
+#include "data/bed/Bed.hpp"
 #include "data/bed/BedCompare.hpp"
 #include "data/measurement/NaN.hpp"
 #include "utility/Formats.hpp"
@@ -210,7 +211,13 @@ namespace Visitors {
     protected:
       template <typename T>
       typename std::enable_if<T::UseRest, void>::type printRest(T* t) const {
-        PrintTypes::Print(t->rest()); // already includes '\t' out front
+        // PrintTypes::Print(t->rest()); // already includes '\t' out front
+        // t->rest() now includes t->id() and t->measurement(), exclude here
+        static char buff[Bed::MAXRESTSIZE+1];
+        buff[0] = '\0';
+        std::sscanf(t->rest(), "%*s%*s%[^\n]s", buff);
+        if ( buff[0] != '\0' )
+          PrintTypes::Print(&buff[0]);
       }
 
       template <typename T>

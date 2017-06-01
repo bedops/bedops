@@ -118,8 +118,8 @@ namespace Visitors {
   template <typename BedDist, typename Ref, typename Map = Ref>
   struct BedBaseVisitor {
      typedef BedDist DistType;
-     typedef const Ref RefType;
-     typedef const Map MapType;
+     typedef Ref RefType;
+     typedef Map MapType;
 
   protected:
      // typedefs
@@ -133,8 +133,8 @@ namespace Visitors {
 
      inline void OnStart(RefType* t) {
        // Give derived class the new reference
-       SetReference(t);
        ref_ = t;
+       SetReference(t);
      }
 
      inline void OnAdd(MapType* u) {
@@ -198,7 +198,7 @@ namespace Visitors {
            ++winIter;
          }
        } // while
-  
+
        auto cacheIter = cache_.begin();
        while ( cacheIter != cache_.end() ) {
          if ( 0 == dist_.Map2Ref(*cacheIter, ref_) ) {

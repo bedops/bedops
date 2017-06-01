@@ -34,12 +34,16 @@ namespace WindowSweep {
 
   namespace Details {
 
-    // get() function overloads allow sweep() to be written only twice.
+    // get() & clean() function overloads allow sweep() to be written only twice.
     //  New iterator ideas receive just another get().  For example,
     //  the speedy allocate_iterator<T> requires something special below.
     template <typename IteratorType>
     inline typename IteratorType::value_type* get(IteratorType& i)
       { return(new typename IteratorType::value_type(*i)); }
+
+    template <typename IteratorType>
+    inline void clean(IteratorType& i, typename IteratorType::value_type* p)
+      { delete p; }
 
 
     template <typename T>
@@ -48,15 +52,28 @@ namespace WindowSweep {
       { return(*i); } /* no copy via operator new here */
 
     template <typename T>
-    inline typename Bed::allocate_iterator_starch_bed<T*>::value_type
-                                     get(Bed::allocate_iterator_starch_bed<T*>& i)
-      { return(*i); } /* no copy via operator new here */
+    inline void clean(Ext::allocate_iterator<T*>& i, T* p)
+      { delete p; }
 
 
-    template <typename T>
-    inline typename Bed::bed_check_iterator<T*>::value_type
-                                     get(Bed::bed_check_iterator<T*>& i)
+    template <typename T, std::size_t PoolSz>
+    inline typename Bed::allocate_iterator_starch_bed<T*, PoolSz>::value_type
+                                     get(Bed::allocate_iterator_starch_bed<T*, PoolSz>& i)
       { return(*i); } /* no copy via operator new here */
+
+    template <typename T, std::size_t PoolSz>
+    inline void clean(Bed::allocate_iterator_starch_bed<T*, PoolSz>& i, T* p)
+      { static auto& pool = i.get_pool(); pool.release(p); }
+
+
+    template <typename T, std::size_t PoolSz>
+    inline typename Bed::bed_check_iterator<T*, PoolSz>::value_type
+                                     get(Bed::bed_check_iterator<T*, PoolSz>& i)
+      { return(*i); } /* no copy via operator new here */
+
+    template <typename T, std::size_t PoolSz>
+    inline void clean(Bed::bed_check_iterator<T*, PoolSz>& i, T* p)
+      { static auto& pool = i.get_pool(); pool.release(p); }
 
   } // namespace Details
 
@@ -78,6 +95,7 @@ namespace WindowSweep {
 
     // Local variables
     // const bool cleanHere = !visitor.ManagesOwnMemory(); no longer useful with multivisitor
+    InputIterator orig = start;
     const TypePtr zero = static_cast<TypePtr>(0);
     TypePtr bPtr = zero;
     std::size_t index = 0;
@@ -93,14 +111,14 @@ namespace WindowSweep {
         visitor.OnStart(win[index]);
         while ( !win.empty() && inRange.Map2Ref(win[0], win[index]) < 0 ) {
           visitor.OnDelete(win[0]);
-          delete win[0];
+          Details::clean(orig, win[0]);
           win.pop_front(), --index;
         } // while
       } else { // last item in windowed buffer, reset buffer
         if ( start == end && !cache ) { // stopping condition
           visitor.OnEnd();
           while ( !win.empty() ) { // deletions belonging to NO ref
-            delete win[0];
+            Details::clean(orig, win[0]);
             win.pop_front();
           } // while
           break;
@@ -138,7 +156,7 @@ namespace WindowSweep {
 
             while ( !win.empty() ) { // deletions on behalf of new ref
               visitor.OnDelete(win[0]);
-              delete win[0];
+              Details::clean(orig, win[0]);
               win.pop_front();
             } // while
           }
@@ -157,7 +175,7 @@ namespace WindowSweep {
     } // while !done
 
     if ( cache )
-      delete cache; // never given to visitor
+      Details::clean(orig, cache); // never given to visitor
 
   } // sweep() overload1
 
@@ -190,6 +208,8 @@ namespace WindowSweep {
     WindowType win;
     double value = 0;
     bool willPurge = false;
+    InputIterator1 rorig = refStart;
+    InputIterator2 morig = mapFromStart;
 
     // Loop through inputs
     while ( refStart != refEnd ) {
@@ -206,7 +226,7 @@ namespace WindowSweep {
       // Pop off items falling out of range 'to the left'
       while ( !win.empty() && inRange.Map2Ref(win[0], rPtr) < 0 ) {
         visitor.OnDelete(win[0]);
-        delete win[0];
+        Details::clean(morig, win[0]);
         win.pop_front();
       } // while
 
@@ -230,26 +250,26 @@ namespace WindowSweep {
           break;
         }
         else
-          delete mPtr;
+          Details::clean(morig, mPtr);
       } // while
       visitor.OnDone(); // done processing current ref item
-      delete rPtr;
+      Details::clean(rorig, rPtr);
     } // while more ref data
 
     visitor.OnEnd();
     while ( !win.empty() ) { // deletions belonging to NO ref
-      delete win[0];
+      Details::clean(morig, win[0]);
       win.pop_front();
     } // while
 
     if ( cache ) // never given to visitor
-      delete cache;
+      Details::clean(morig, cache);
 
     if ( sweepMapAll ) { // read and clean remainder of map file
       while ( mapFromStart != mapFromEnd ) {
         mPtr = Details::get(mapFromStart); // don't do get(mapFromStart); in case allocate_iterator
         ++mapFromStart;
-        delete mPtr; // never given to visitor
+        Details::clean(morig, mPtr); // never given to visitor
       } // while
     }
 

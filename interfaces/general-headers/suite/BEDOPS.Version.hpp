@@ -38,7 +38,7 @@ namespace BEDOPS {
   }
 
   static const char* citation() {
-    return("http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract\n            https://doi.org/10.1093/bioinformatics/bts277");
+    return("http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract");
   }
 
 #ifdef __cplusplus

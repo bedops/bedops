@@ -28,6 +28,7 @@
 #include <map>
 #include <sstream>
 #include <string>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -55,6 +56,7 @@ namespace BedMap {
   const std::string version = BEDOPS::revision();
   const std::string authors = "Shane Neph & Scott Kuehn";
   const std::string citation = BEDOPS::citation();
+  constexpr std::size_t PoolSz = 8*8*8;
 
   //======
   // Help
@@ -155,14 +157,14 @@ int main(int argc, char **argv) {
                           input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
     }
 
-    return(EXIT_SUCCESS);
+    return EXIT_SUCCESS;
   } catch(const BedMap::Help& h) { // show usage and exit success
     std::cout << BedMap::prognm << std::endl;
     std::cout << "  citation: " << BedMap::citation << std::endl;
     std::cout << "  version:  " << BedMap::version << std::endl;
     std::cout << "  authors:  " << BedMap::authors << std::endl;
     std::cout << BedMap::Usage() << std::endl;
-    return(EXIT_SUCCESS);
+    return EXIT_SUCCESS;
   } catch(const BedMap::Version& v) { // show version and exit success
     std::cout << BedMap::prognm << std::endl;
     std::cout << "  citation: " << BedMap::citation << std::endl;
@@ -183,11 +185,21 @@ int main(int argc, char **argv) {
   } catch(...) {
     std::cerr << "Unknown Error.  Aborting" << std::endl;
   }
-  return(EXIT_FAILURE);
+  return EXIT_FAILURE;
 }
 
 
 namespace BedMap {
+
+  //=============
+  // get_pool()
+  //============
+  template <typename BedTypePtr>
+  Ext::PooledMemory<typename std::remove_pointer<BedTypePtr>::type, PoolSz>&
+  get_pool() {
+    static Ext::PooledMemory<typename std::remove_pointer<BedTypePtr>::type, PoolSz> pool;
+    return pool;
+  }
 
   //============
   // runSweep(): single-file mode
@@ -204,7 +216,7 @@ namespace BedMap {
                 bool skipUnmappedRows,
                 std::vector<BaseClass*>& visitorGroup) {
 
-    typedef typename BaseClass::RefType RefType;
+    typedef typename std::remove_const<typename BaseClass::RefType>::type RefType;
     typedef Visitors::Helpers::PrintDelim PrintType;
 
     // Set up visitors
@@ -216,7 +228,8 @@ namespace BedMap {
     if ( !errorCheck ) { // faster iterators
       // Create file handle iterators
       Ext::FPWrap<Ext::InvalidFile> refFile(refFileName);
-      Bed::allocate_iterator_starch_bed<RefType*> refFileI(refFile, chrom), refFileEnd;
+      auto& mem1 = get_pool<RefType*>();
+      Bed::allocate_iterator_starch_bed<RefType*, PoolSz> refFileI(refFile, mem1, chrom), refFileEnd;
 
       // Do work
       if ( !fastMode )
@@ -230,15 +243,17 @@ namespace BedMap {
       if ( !isStdin && !infile )
           throw(Ext::UserError("Unable to find: " + refFileName));
       if ( isStdin ) {
-        Bed::bed_check_iterator<RefType*> refFileI(std::cin, refFileName, chrom, nestCheck);
-        Bed::bed_check_iterator<RefType*> refFileEnd;
+        auto& mem1 = get_pool<RefType*>();
+        Bed::bed_check_iterator<RefType*, PoolSz> refFileI(std::cin, refFileName, mem1, chrom, nestCheck);
+        Bed::bed_check_iterator<RefType*, PoolSz> refFileEnd;
         if ( !fastMode )
           WindowSweep::sweep(refFileI, refFileEnd, st, multiv);
         else // no nested elements
           WindowSweep::sweep(refFileI, refFileEnd, dt, multiv);
       } else {
-        Bed::bed_check_iterator<RefType*> refFileI(infile, refFileName, chrom, nestCheck);
-        Bed::bed_check_iterator<RefType*> refFileEnd;
+        auto& mem1 = get_pool<RefType*>();
+        Bed::bed_check_iterator<RefType*, PoolSz> refFileI(infile, refFileName, mem1, chrom, nestCheck);
+        Bed::bed_check_iterator<RefType*, PoolSz> refFileEnd;
         if ( !fastMode )
           WindowSweep::sweep(refFileI, refFileEnd, st, multiv);
         else // no nested elements
@@ -266,8 +281,8 @@ namespace BedMap {
                 bool skipUnmappedRows,
                 std::vector<BaseClass*>& visitorGroup) {
 
-    typedef typename BaseClass::RefType RefType;
-    typedef typename BaseClass::MapType MapType;
+    typedef typename std::remove_const<typename BaseClass::RefType>::type RefType;
+    typedef typename std::remove_const<typename BaseClass::MapType>::type MapType;
     typedef Visitors::Helpers::PrintDelim PrintType;
 
     // Set up visitors
@@ -279,9 +294,11 @@ namespace BedMap {
     if ( !errorCheck ) { // faster iterators
       // Create file handle iterators
       Ext::FPWrap<Ext::InvalidFile> refFile(refFileName);
-      Bed::allocate_iterator_starch_bed<RefType*> refFileI(refFile, chrom), refFileEnd;
+      auto& mem1 = get_pool<RefType*>();
+      Bed::allocate_iterator_starch_bed<RefType*, PoolSz> refFileI(refFile, mem1, chrom), refFileEnd;
       Ext::FPWrap<Ext::InvalidFile> mapFile(mapFileName);
-      Bed::allocate_iterator_starch_bed<MapType*> mapFileI(mapFile, chrom), mapFileEnd;
+      auto& mem2 = get_pool<MapType*>();
+      Bed::allocate_iterator_starch_bed<MapType*, PoolSz> mapFileI(mapFile, mem2, chrom), mapFileEnd;
 
       // Do work
       if ( !fastMode )
@@ -302,23 +319,25 @@ namespace BedMap {
         throw(EType("Unable to find: " + mapFileName));
 
       // Do work
+      auto& mem1 = get_pool<RefType*>();
+      auto& mem2 = get_pool<MapType*>();
       if ( isStdinRef ) {
-        Bed::bed_check_iterator<RefType*> refFileI(std::cin, refFileName, chrom, nestCheck), refFileEnd;
-        Bed::bed_check_iterator<MapType*> mapFileI(mfin, mapFileName, chrom, nestCheck), mapFileEnd;
+        Bed::bed_check_iterator<RefType*, PoolSz> refFileI(std::cin, refFileName, mem1, chrom, nestCheck), refFileEnd;
+        Bed::bed_check_iterator<MapType*, PoolSz> mapFileI(mfin, mapFileName, mem2, chrom, nestCheck), mapFileEnd;
         if ( !fastMode )
           WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, sweepAll);
         else // no nested elements
           WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, sweepAll);
       } else {
-        Bed::bed_check_iterator<RefType*> refFileI(rfin, refFileName, chrom, nestCheck), refFileEnd;
+        Bed::bed_check_iterator<RefType*, PoolSz> refFileI(rfin, refFileName, mem1, chrom, nestCheck), refFileEnd;
         if ( isStdinMap ) {
-          Bed::bed_check_iterator<MapType*> mapFileI(std::cin, mapFileName, chrom, nestCheck), mapFileEnd;
+          Bed::bed_check_iterator<MapType*, PoolSz> mapFileI(std::cin, mapFileName, mem2, chrom, nestCheck), mapFileEnd;
           if ( !fastMode )
             WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, sweepAll);
           else // no nested elements
             WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, sweepAll);
         } else {
-          Bed::bed_check_iterator<MapType*> mapFileI(mfin, mapFileName, chrom, nestCheck), mapFileEnd;
+          Bed::bed_check_iterator<MapType*, PoolSz> mapFileI(mfin, mapFileName, mem2, chrom, nestCheck), mapFileEnd;
           if ( !fastMode )
             WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, sweepAll);
           else // no nested elements
@@ -338,7 +357,7 @@ namespace BedMap {
     std::string t = s;
     for ( std::size_t i = 0; i < t.size(); ++i )
       t[i] = std::toupper(t[i]);
-    return(t);
+    return t;
   }
 
 
@@ -412,8 +431,7 @@ namespace BedMap {
         PT pt(precision, useScientific);
         rtn = new typename VTypes::OvrUniqFract(pt);
       }
-
-      return(rtn);
+      return rtn;
     }
   };
 
@@ -436,7 +454,7 @@ namespace BedMap {
       typedef VisitorTypes<BaseVisitor> VTypes;
       BaseVisitor* rtn = SuperClass::generate(d, className, args, multivalColSep, precision, useScientific);
       if ( rtn )
-        return(rtn);
+        return rtn;
 
       // Create an instance associated with className
       std::string nm = upper(className);
@@ -449,7 +467,7 @@ namespace BedMap {
         rtn = new typename VTypes::EchoMapUniqueID(PT(multivalColSep));
       }
 
-      return(rtn);
+      return rtn;
     }
   };
 
@@ -472,7 +490,7 @@ namespace BedMap {
       typedef VisitorTypes<BaseVisitor> VTypes;
       BaseVisitor* rtn = SuperClass::generate(d, className, args, multivalColSep, precision, useScientific);
       if ( rtn )
-        return(rtn);
+        return rtn;
 
       // Create an instance associated with className
       std::string nm = upper(className);
@@ -546,10 +564,8 @@ namespace BedMap {
       }
       else if ( nm == visName<typename VTypes::Variance>() )
         rtn = new typename VTypes::Variance(pt);
-      else if ( nm == visName<typename VTypes::WMean>() )
-        rtn = new typename VTypes::WMean(pt);
 
-      return(rtn);
+      return rtn;
     }
   };
 
@@ -573,7 +589,7 @@ namespace BedMap {
       visitorGroup.push_back(bc);
       ++iter;
     } // while
-    return(visitorGroup);
+    return visitorGroup;
   }
 
   //==============

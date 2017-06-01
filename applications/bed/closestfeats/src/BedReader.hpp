@@ -46,7 +46,7 @@ template <typename IterType>
 struct BedReader {
   typedef typename NoPtr<typename IterType::value_type>::Type BedType;
 
-  explicit BedReader(IterType iter) : iter_(iter), cache_()
+  explicit BedReader(IterType iter) : iter_(iter), orig_(iter), cache_()
     { /* */ }
 
   BedReader(const BedReader& b); // not safe to copy due to iterators in some cases
@@ -80,8 +80,9 @@ struct BedReader {
   }
 
   void Clean() {
+    auto& mem = orig_.get_pool();
     while ( !cache_.empty() ) {
-      delete cache_.back();
+      mem.release(cache_.back());
       cache_.pop_back();
     }
   }
@@ -89,19 +90,13 @@ struct BedReader {
   void CleanAll() {
     Clean();
     BedType* tmp = static_cast<BedType*>(0);
+    auto& mem = orig_.get_pool();
     while ( (tmp = ReadLine()) )
-      delete tmp;
-  }
-
-  ~BedReader() {
-    while ( !cache_.empty() ) {
-      delete cache_.back();
-      cache_.pop_back();
-    }
+      mem.release(tmp);
   }
 
 private:
-  IterType iter_;
+  IterType iter_, orig_;
   std::vector<BedType*> cache_;
 };
 

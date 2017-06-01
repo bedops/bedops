@@ -45,15 +45,23 @@ namespace Ext {
     typedef T OriginalType;
   };
 
+  //============
+  // has_type<T> : is there a T::type typedef?
+  // stolen and modified from
+  // http://stackoverflow.com/questions/25626293/has-type-template-returns-true-for-struct-type
+  //============
+  template <typename T>
+  struct has_type {
 
-  //===========
-  // IdType<,> : differentiate multiple type T's by an ID
-  //           : this class requires T to be a user-defined type
-  //===========
-  template <typename T, int ID>
-  struct IDType : public T {
-    typedef T Type;
-    enum { value = ID };
+    template <typename C>
+    static constexpr
+    char test_for_type(...) { return '0'; }
+
+    template <typename C>
+    static constexpr
+    double test_for_type(typename C::type const*) { return 0.0; }
+
+    static const bool value = sizeof(test_for_type<T>(0)) == sizeof(double);
   };
 
 } // namespace Ext

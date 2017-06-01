@@ -38,6 +38,9 @@ namespace Bed {
 
   typedef Bed::SignedCoordType ByteOffset;
 
+  template <class BedType, std::size_t SZ>
+  class bed_check_iterator;
+
   namespace extract_details {
 
     template <typename BedType>
@@ -58,6 +61,16 @@ namespace Bed {
     typedef QueryBedType TargetBedType; // file 2 -> must be same type as QueryBedType
     typedef std::map< QueryBedType, ByteOffset, CompBed<QueryBedType> > MType;
 
+    template <typename BedType, std::size_t Sz>
+    inline
+    void remove(Bed::bed_check_iterator<BedType*, Sz>& b, BedType* p)
+      { b.get_pool().release(p); }
+
+    template <typename Iter, typename BedType>
+    inline
+    void remove(Iter, BedType* b)
+      { delete b; }
+
   } // namespace extract_details
 
 
@@ -67,6 +80,7 @@ namespace Bed {
   template <typename TargetIter, typename Op>
   std::pair<bool, ByteOffset> find_bed_range(FILE* qfile, TargetIter titer, TargetIter teof, Op op) {
 
+    TargetIter orig = titer;
     extract_details::TargetBedType reference;
     extract_details::QueryBedType last, current;
     Bed::Overlapping overlap, lessthan, greaterthan; // any overlap
@@ -85,10 +99,10 @@ namespace Bed {
     while ( titer != teof ) {
       extract_details::TargetBedType* const refelement = *titer++;
       if ( donequery ) { // read through and delete items in [titer,teof) for posterity
-        delete refelement;
+        extract_details::remove(orig, refelement);
         continue;
       } else if ( !first && (greaterthan(&last, refelement) > 0) ) { // last lower_bound is still applicable
-        delete refelement;
+        extract_details::remove(orig, refelement);
         continue;
       }
 
@@ -175,7 +189,7 @@ namespace Bed {
       }
 
       if ( refelement )
-        delete refelement;
+        extract_details::remove(orig, refelement);
 
       std::fseek(qfile, prev_pos, SEEK_SET); // because start_pos = std::ftell(qfile); on next go-around
       if ( prev_pos == at_end )

@@ -65,7 +65,7 @@ namespace Bed {
   typedef CoordType LineCountType;
   typedef CoordType BaseCountType;
   typedef int LineLengthType;
-    
+
   static_assert(sizeof(SignedCoordType) >= sizeof(INT_MAX_COORD_VALUE), "INT_MAX_COORD_VALUE is too big!"); // expected-warning {{static_assert declarations are incompatible with C++98}}
 
   constexpr LineLengthType  TOKEN_CHR_MAX_LENGTH     = INT_TOKEN_CHR_MAX_LENGTH;

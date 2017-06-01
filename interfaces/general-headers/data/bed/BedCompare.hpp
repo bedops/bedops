@@ -300,6 +300,4 @@ namespace Bed {
 
 } // namespace Bed
 
-
-
 #endif // BED_DATA_COMPARE_H

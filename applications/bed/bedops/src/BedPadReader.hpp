@@ -113,6 +113,10 @@ struct BedPadReader {
     cache_.push_back(bt);
   }
 
+  inline void Remove(BedType* bt) {
+    iter_.get_pool().release(bt);
+  }
+
   inline BedType* ReadLine() {
     static const bool done = false;
     static BedType* tmp = static_cast<BedType*>(0);
@@ -140,7 +144,7 @@ struct BedPadReader {
             return(tmp);
           }
           else // tmp vaporized by padding
-            delete tmp;
+            Remove(tmp);
         } else if ( lpad_ < 0 ) {
           if ( tmp->chrom() != lastChr_ ) { // cache_ is empty && iter_ != end
             getFirst(); // iter_ increments dealt with in getFirst()
@@ -168,7 +172,7 @@ struct BedPadReader {
 
   void Clean() {
     while ( !cache_.empty() ) {
-      delete cache_.back();
+      Remove(cache_.back());
       cache_.pop_back();
     }
   }
@@ -177,12 +181,12 @@ struct BedPadReader {
     Clean();
     BedType* tmp = static_cast<BedType*>(0);
     while ( (tmp = ReadLine()) )
-      delete tmp;
+      Remove(tmp);
   }
 
   ~BedPadReader() {
     while ( !cache_.empty() ) {
-      delete cache_.back();
+      Remove(cache_.back());
       cache_.pop_back();
     }
   }
@@ -204,7 +208,7 @@ private:
     MType mset;
     SType sset;
     TieType tmap;
-    BedType* const zero = static_cast<BedType*>(0);
+    static BedType* const zero = static_cast<BedType*>(0);
     BedType* tmp = zero;
     static const IterType end;
     const Bed::CoordType lpd = static_cast<Bed::CoordType>(std::abs(lpad_));
@@ -217,12 +221,12 @@ private:
           mset.insert(tmp);
           break; // all others meet the invariant condition: tmp->start() > lpd
         } else { // lpad_ < 0 and rpad_ < lpad_
-          delete tmp;
+          Remove(tmp);
           continue;
         }
       }
       if ( static_cast<double>(tmp->end()) + rpad_ <= 0 ) {
-        delete tmp;
+        Remove(tmp);
         continue;
       }
       tmp->start(0);
