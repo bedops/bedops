@@ -67,8 +67,8 @@ namespace Bed {
     static constexpr bool hasRest_ = BedType::UseRest;
 
     bed_check_iterator() : fp_(std::cin), _M_ok(false), _M_value(0), fn_(""), cnt_(0),
-                                lastChr_(""), lastRest_(""), lastStart_(1), lastEnd_(0), nestCheck_(false),
-                                maxEnd_(0), chr_(""), isStarch_(false), all_(true), archive_(0), pool_(0)
+                           lastChr_(""), lastRest_(""), lastStart_(1), lastEnd_(0), nestCheck_(false),
+                           maxEnd_(0), chr_(""), isStarch_(false), all_(true), archive_(0), pool_(0)
       { /* */ }
 
     bed_check_iterator(std::istream& is, const std::string& filename, Ext::PooledMemory<BedType, SZ>& p,
@@ -185,7 +185,6 @@ namespace Bed {
               Bed::extract_details::QueryBedType q(tmpf);
               std::fseek(tmpf, b, SEEK_SET);
               if ( q.chrom() == chr_ ) {
-
                 fp_.seekg(b, std::ios::beg);
                 Ext::ByLine bl;
                 if ( !(_M_ok && fp_ >> bl) )

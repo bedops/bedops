@@ -1732,7 +1732,7 @@ UNSTARCH_printLineMaxStringLengthForChromosome(const Metadata *md, const char *c
     if (strcmp(chr, "all") == 0)
         UNSTARCH_printLineMaxStringLengthForAllChromosomes(md);
     else
-        fprintf(stdout, "%d\n", UNSTARCH_lineMaxStringLengthForChromosome(md, chr));
+        fprintf(stdout, "%lu\n", UNSTARCH_lineMaxStringLengthForChromosome(md, chr));
 }
 
 void
@@ -1747,7 +1747,7 @@ UNSTARCH_printLineMaxStringLengthForAllChromosomes(const Metadata *md)
     for (iter = md; iter != NULL; iter = iter->next)
         lineMaxStringLength = (lineMaxStringLength >= iter->lineMaxStringLength) ? lineMaxStringLength : iter->lineMaxStringLength;
 
-    fprintf(stdout, "%d\n", lineMaxStringLength);
+    fprintf(stdout, "%lu\n", lineMaxStringLength);
 }
 
 BaseCountType

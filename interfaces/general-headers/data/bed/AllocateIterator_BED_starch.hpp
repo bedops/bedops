@@ -59,7 +59,7 @@ namespace Bed {
     typedef BedType*&                 reference;
 
     allocate_iterator_starch_bed() : fp_(NULL), _M_ok(false), _M_value(0), is_starch_(false),
-                                          all_(false), archive_(NULL), pool_(NULL) { chr_[0] = '\0'; }
+                                     all_(false), archive_(NULL), pool_(NULL) { chr_[0] = '\0'; }
 
     template <typename ErrorType>
     allocate_iterator_starch_bed(Ext::FPWrap<ErrorType>& fp, Ext::PooledMemory<BedType, SZ>& p,

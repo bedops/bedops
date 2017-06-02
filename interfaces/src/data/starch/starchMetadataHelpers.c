@@ -365,7 +365,7 @@ STARCH_listMetadata(const Metadata *md,
             if ( (strcmp((const char *)iter->chromosome, chr) == 0) || (strcmp("all", chr) == 0) )
 #endif
                 fprintf(stdout, 
-                        "%-25s|%-65s|%-15" PRIu64 "|%-25" PRIu64 "|%-30d|%-20" PRIu64 "|%-20" PRIu64 "|%-25s|%-25s|%-25s\n", 
+                        "%-25s|%-65s|%-15" PRIu64 "|%-25" PRIu64 "|%-30lu|%-20" PRIu64 "|%-20" PRIu64 "|%-25s|%-25s|%-25s\n", 
                         iter->chromosome, 
                         iter->filename, 
                         iter->size, 

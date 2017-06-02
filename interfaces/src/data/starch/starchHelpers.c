@@ -313,7 +313,7 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
                         fprintf(stderr, "\t--- copying chromosome field ---\n");
 #endif
                         if (strlen(buffer) > TOKEN_CHR_MAX_LENGTH) {
-                            fprintf(stderr, "ERROR: Chromosome field length is too long (must be no longer than %d characters)\n", TOKEN_CHR_MAX_LENGTH);
+                            fprintf(stderr, "ERROR: Chromosome field length is too long (must be no longer than %lu characters)\n", TOKEN_CHR_MAX_LENGTH);
                             return STARCH_FATAL_ERROR;
                         }
                         /* copy element to chromosome variable, if memory is available */
@@ -338,7 +338,7 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
                         fprintf(stderr, "\t--- copying whole line ---\n");
 #endif
                         if (strlen(s) > TOKENS_HEADER_MAX_LENGTH) {
-                            fprintf(stderr, "ERROR: Comment line length is too long (must be no longer than %d characters)\n", TOKEN_CHR_MAX_LENGTH);
+                            fprintf(stderr, "ERROR: Comment line length is too long (must be no longer than %lu characters)\n", TOKEN_CHR_MAX_LENGTH);
                             return STARCH_FATAL_ERROR;
                         }
                         /* copy whole line to chromosome variable, if memory is available */
@@ -425,14 +425,14 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
         /* test id field length */
         while ((buffer[idIdx] != delim) && (idIdx++ < TOKEN_ID_MAX_LENGTH)) {}
         if (idIdx == TOKEN_ID_MAX_LENGTH) {
-            fprintf(stderr, "ERROR: Id field is too long (must be less than %d characters long)\n", TOKEN_ID_MAX_LENGTH);
+            fprintf(stderr, "ERROR: Id field is too long (must be less than %lu characters long)\n", TOKEN_ID_MAX_LENGTH);
             return STARCH_FATAL_ERROR;
         }
         /* test remnant of buffer, if there is more to look at */
         if (charCnt > idIdx) {
             while ((buffer[idIdx++] != '\0') && (restIdx++ < TOKEN_REST_MAX_LENGTH)) {}
             if (restIdx == TOKEN_REST_MAX_LENGTH) {
-                fprintf(stderr, "ERROR: Remainder of BED input after id field is too long (must be less than %d characters long)\n", TOKEN_REST_MAX_LENGTH);
+                fprintf(stderr, "ERROR: Remainder of BED input after id field is too long (must be less than %lu characters long)\n", TOKEN_REST_MAX_LENGTH);
                 return STARCH_FATAL_ERROR;
             }
         }
@@ -489,7 +489,7 @@ STARCH_createTransformTokensForHeaderlessInput(const char *s, const char delim, 
 #endif
                     /* test if element string is longer than allowed bounds */
                     if (strlen(buffer) > TOKEN_CHR_MAX_LENGTH) {
-                        fprintf(stderr, "ERROR: Chromosome field length is too long (must be no longer than %d characters)\n", TOKEN_CHR_MAX_LENGTH);
+                        fprintf(stderr, "ERROR: Chromosome field length is too long (must be no longer than %lu characters)\n", TOKEN_CHR_MAX_LENGTH);
                         return STARCH_FATAL_ERROR;
                     }
                     /* copy element to chromosome variable, if memory is available */
@@ -596,14 +596,14 @@ STARCH_createTransformTokensForHeaderlessInput(const char *s, const char delim, 
         /* test id field length */
         while ((buffer[idIdx] != delim) && (idIdx++ < TOKEN_ID_MAX_LENGTH)) {}
         if (idIdx == TOKEN_ID_MAX_LENGTH) {
-            fprintf(stderr, "ERROR: Id field is too long (must be less than %d characters long)\n", TOKEN_ID_MAX_LENGTH);
+            fprintf(stderr, "ERROR: Id field is too long (must be less than %lu characters long)\n", TOKEN_ID_MAX_LENGTH);
             return STARCH_FATAL_ERROR;
         }
         /* test remnant ("rest") of buffer, if there is more to look at */
         if (charCnt > idIdx) {
             while ((buffer[idIdx++] != '\0') && (restIdx++ < TOKEN_REST_MAX_LENGTH)) {}
             if (restIdx == TOKEN_REST_MAX_LENGTH) {
-                fprintf(stderr, "ERROR: Remainder of BED input after id field is too long (must be less than %d characters long)\n", TOKEN_REST_MAX_LENGTH);
+                fprintf(stderr, "ERROR: Remainder of BED input after id field is too long (must be less than %lu characters long)\n", TOKEN_REST_MAX_LENGTH);
                 return STARCH_FATAL_ERROR;
             }
         }
@@ -1693,7 +1693,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     fprintf(stderr, "\n--- STARCH2_transformHeaderedBEDInput() ---\n");
 #endif
     int c;
-    int cIdx = 0;
+    unsigned int cIdx = 0;
     char untransformedBuffer[STARCH_BUFFER_MAX_LENGTH];
     char intermediateBuffer[STARCH_BUFFER_MAX_LENGTH];
     char transformedBuffer[STARCH_BUFFER_MAX_LENGTH];
@@ -2824,7 +2824,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     fprintf(stderr, "\n--- STARCH2_transformHeaderlessBEDInput() ---\n");
 #endif
     int c;
-    int cIdx = 0;
+    unsigned int cIdx = 0;
     char untransformedBuffer[STARCH_BUFFER_MAX_LENGTH + 1] = {0};
     char intermediateBuffer[STARCH_BUFFER_MAX_LENGTH + 1] = {0};
     char transformedBuffer[STARCH_BUFFER_MAX_LENGTH + 1] = {0};

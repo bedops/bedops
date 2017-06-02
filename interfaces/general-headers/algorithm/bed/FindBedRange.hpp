@@ -33,6 +33,7 @@
 #include "data/bed/BedDistances.hpp"
 #include "data/bed/BedTypes.hpp"
 #include "suite/BEDOPS.Constants.hpp"
+#include "utility/PooledMemory.hpp"
 
 namespace Bed {
 
@@ -59,7 +60,7 @@ namespace Bed {
 
     typedef Bed::B3Rest QueryBedType;   // file 1
     typedef QueryBedType TargetBedType; // file 2 -> must be same type as QueryBedType
-    typedef std::map< QueryBedType, ByteOffset, CompBed<QueryBedType> > MType;
+    typedef std::map<QueryBedType, ByteOffset, CompBed<QueryBedType>> MType;
 
     template <typename BedType, std::size_t Sz>
     inline
@@ -81,8 +82,9 @@ namespace Bed {
   std::pair<bool, ByteOffset> find_bed_range(FILE* qfile, TargetIter titer, TargetIter teof, Op op) {
 
     TargetIter orig = titer;
-    extract_details::TargetBedType reference;
-    extract_details::QueryBedType last, current;
+    auto reference = new extract_details::TargetBedType;
+    auto last = new extract_details::QueryBedType;
+    auto current = new extract_details::QueryBedType;
     Bed::Overlapping overlap, lessthan, greaterthan; // any overlap
     ByteOffset prev_pos = 0, cur_pos = 0, start_pos = 0, end_pos = 0;
     extract_details::MType bounds;
@@ -101,14 +103,14 @@ namespace Bed {
       if ( donequery ) { // read through and delete items in [titer,teof) for posterity
         extract_details::remove(orig, refelement);
         continue;
-      } else if ( !first && (greaterthan(&last, refelement) > 0) ) { // last lower_bound is still applicable
+      } else if ( !first && (greaterthan(last, refelement) > 0) ) { // last lower_bound is still applicable
         extract_details::remove(orig, refelement);
         continue;
       }
 
       // only use reference where you need to compare to starting base.  Otherwise, use refelement.
-      reference = *refelement;
-      reference.end(reference.start()+1);
+      *reference = *refelement;
+      reference->end(reference->start()+1);
 
       start_pos = std::ftell(qfile);
       while ( true ) {
@@ -151,21 +153,21 @@ namespace Bed {
 
         // read in the line; incrementing to start of next QueryBedType element.
         prev_pos = std::ftell(qfile);
-        current.readline(qfile);
+        current->readline(qfile);
         cur_pos = std::ftell(qfile);
-        bounds.insert(std::make_pair(current, prev_pos));
+        bounds.insert(std::make_pair(*current, prev_pos));
 
         // compare 'current' to starting base
-        if ( lessthan(&current, &reference) < 0 ) {
+        if ( lessthan(current, reference) < 0 ) {
           count = (end_pos - cur_pos);
 
           start_pos = cur_pos;
           if ( 0 == count ) {
             if ( end_pos != at_end ) {
               prev_pos = cur_pos;
-              current.readline(qfile);
+              current->readline(qfile);
               cur_pos = std::ftell(qfile);
-              bounds.insert(std::make_pair(current, prev_pos));
+              bounds.insert(std::make_pair(*current, prev_pos));
             } else {
               prev_pos = at_end;
             }
@@ -180,11 +182,11 @@ namespace Bed {
 
       // spit elements in range
       if ( didWork ) {
-        while ( prev_pos != at_end && extract_details::check_overlap(&current, refelement) ) {
-          op(&current);
+        while ( prev_pos != at_end && extract_details::check_overlap(current, refelement) ) {
+          op(current);
           prev_pos = std::ftell(qfile);
           if ( prev_pos != at_end )
-            current.readline(qfile);
+            current->readline(qfile);
         } // while
       }
 
@@ -194,9 +196,16 @@ namespace Bed {
       std::fseek(qfile, prev_pos, SEEK_SET); // because start_pos = std::ftell(qfile); on next go-around
       if ( prev_pos == at_end )
         donequery = true;
-      last = current;
+      *last = *current;
       first = false;
     } // while
+
+    if ( reference )
+      delete reference;
+    if ( last )
+      delete last;
+    if ( current )
+      delete current;
 
     return std::make_pair(!first, prev_pos);
   }

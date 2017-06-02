@@ -39,7 +39,7 @@
 
 #include "algorithm/bed/FindBedRange.hpp"
 #include "algorithm/visitors/helpers/ProcessBedVisitorRow.hpp"
-#include "data/bed/BedTypes.hpp"
+//#include "data/bed/BedTypes.hpp"
 #include "data/bed/BedCheckIterator.hpp"
 #include "suite/BEDOPS.Constants.hpp"
 #include "suite/BEDOPS.Version.hpp"
@@ -68,12 +68,11 @@ namespace {
   //=======
   template <typename ValueType>
   struct Cache {
-    Cache() : empty_(true), value_()
+    Cache() : empty_(true)
       { }
 
     template <typename T>
     void operator()(const T* t) {
-      value_ = static_cast<ValueType>(*t);
       empty_ = false;
     }
 
@@ -82,7 +81,6 @@ namespace {
 
   private:
     bool empty_;
-    ValueType value_;
   };
 
   using Bed::extract_details::TargetBedType;
@@ -158,8 +156,8 @@ namespace {
     }
 
     OpMode Mode() const { return m_; }
-    FILE* File1() { return f1_; }
-    FILE* File2() { return f2_; }
+    FILE* File1() const { return f1_; }
+    FILE* File2() const { return f2_; }
     std::string File2Name() const { return f2Name_; }
     std::string Chrome() const { return(chrom_); }
 
@@ -253,7 +251,7 @@ namespace {
   //==========
   // doWork()
   //==========
-  void doWork(Input& input) {
+  void doWork(const Input& input) {
     // execute the mode requested by the user
     Input::OpMode mode = input.Mode();
     FILE* f = input.File1();
@@ -303,8 +301,9 @@ namespace {
         if ( lbound.first && lbound.second != at_end ) {
           std::fseek(f, lbound.second, SEEK_SET);
           ByteOffset b = std::ftell(f);
-          QueryBedType q(f);
-          printf("%s\n", q.chrom());
+          auto q = new QueryBedType(f);
+          printf("%s\n", q->chrom());
+          delete q;
           std::fseek(f, b, SEEK_SET);
         }
         else
