@@ -672,8 +672,13 @@ namespace Bed {
                                    format, chrom_,
                                    &start_, &end_, id_,
                                    &measurement_, rest_);
-      std::strcpy(fullrest_, id_);
-      std::strcat(fullrest_, rest_);
+
+      static const char* f = (std::string("\t%s\t") + BaseClass::MFormat).c_str();
+      int numWritten = std::snprintf(fullrest_, MAXRESTSIZE+1, f, id_, &measurement_);
+      if ( rest_[0] != '\0' ) {
+        std::strcpy(fullrest_ + numWritten, "\t");
+        std::strcpy(fullrest_ + numWritten + 1, rest_);
+      }
       return numScanned;
     }
     inline int readline(FILE* inputFile) {
@@ -689,15 +694,20 @@ namespace Bed {
                                    &measurement_, rest_);
 
       std::fgetc(inputFile); // Read and discard trailing newline
-      std::strcpy(fullrest_, id_);
-      std::strcat(fullrest_, rest_);
+
+      static const char* f = (std::string("\t%s\t") + BaseClass::MFormat).c_str();
+      int numWritten = std::snprintf(fullrest_, MAXRESTSIZE+1, f, id_, &measurement_);
+      if ( rest_[0] != '\0' ) {
+        std::strcpy(fullrest_ + numWritten, "\t");
+        std::strcpy(fullrest_ + numWritten + 1, rest_);
+      }
       return numScanned;
     }
 
     // Operators
     Bed5& operator=(const Bed5& c) {
       BaseClass::operator=(c);
-      static const char* f = (std::string("%s\t") + BaseClass::MFormat).c_str();
+      static const char* f = (std::string("\t%s\t") + BaseClass::MFormat).c_str();
       sscanf(rest_, f, id_, &measurement_);
       std::strcpy(fullrest_, rest_);
       return *this;

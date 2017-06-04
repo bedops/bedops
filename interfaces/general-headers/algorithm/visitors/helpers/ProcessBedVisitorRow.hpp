@@ -213,11 +213,8 @@ namespace Visitors {
       typename std::enable_if<T::UseRest, void>::type printRest(T* t) const {
         // PrintTypes::Print(t->rest()); // already includes '\t' out front
         // t->full_rest() now includes t->id() and t->measurement(), exclude here
-        static char buff[Bed::MAXRESTSIZE+1];
-        buff[0] = '\0';
-        std::sscanf(t->full_rest(), "%*s%*s%[^\n]s", buff);
-        if ( buff[0] != '\0' )
-          PrintTypes::Print(&buff[0]);
+        if ( t->full_rest() )
+          PrintTypes::Print(t->full_rest());
       }
 
       template <typename T>
