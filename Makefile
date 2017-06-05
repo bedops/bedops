@@ -1,11 +1,14 @@
-export KERNEL   := ${shell uname -a | cut -f1 -d' '}
-APPDIR           = applications/bed
-BINDIR           = bin
-OSXPKGROOT       = packaging/os_x
-OSXBUILDDIR      = ${OSXPKGROOT}/build
-OSXPKGDIR        = ${OSXPKGROOT}/resources/bin
-OSXLIBDIR        = ${OSXPKGROOT}/resources/lib
-
+export KERNEL    := ${shell uname -a | cut -f1 -d' '}
+APPDIR            = applications/bed
+BINDIR            = bin
+OSXPKGROOT        = packaging/os_x
+OSXBUILDDIR       = ${OSXPKGROOT}/build
+OSXPKGDIR         = ${OSXPKGROOT}/resources/bin
+OSXLIBDIR         = ${OSXPKGROOT}/resources/lib
+SELF              = ${shell pwd}/Makefile
+MASSIVE_REST_EXP  = 22
+MASSIVE_ID_EXP    = 14
+MASSIVE_CHROM_EXP =  8
 
 default:
 ifeq ($(KERNEL), Darwin)
@@ -21,6 +24,9 @@ support: default
 debug: default
 
 gprof: default
+
+megarow:
+	$(MAKE) MEGAFLAGS="-DREST_EXPONENT=${MASSIVE_REST_EXP} -DID_EXPONENT=${MASSIVE_ID_EXP} -DCHROM_EXPONENT=${MASSIVE_CHROM_EXP}" -f ${SELF} 
 
 install: prep_c install_conversion_scripts install_starch_scripts
 	-cp ${APPDIR}/sort-bed/bin/sort-bed ${BINDIR}/

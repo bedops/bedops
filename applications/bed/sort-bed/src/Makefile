@@ -28,7 +28,7 @@ LIBRARIES           = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 PROG                = sort-bed
 BINDIR              = ../bin
 OBJDIR             = objects
-WARNINGS            = -Wall -Wextra -pedantic
+WARNINGS            = $(MEGAFLAGS) -Wall -Wextra -pedantic
 BLDFLAGS            = ${WARNINGS} -O3 -std=c++11
 SFLAGS              = -static
 

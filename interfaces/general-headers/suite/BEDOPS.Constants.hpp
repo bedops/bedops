@@ -41,9 +41,24 @@
 // If read lengths get longer, we may need to explore some changes to sort-bed memory usage.
 //
 
-#define INT_TOKEN_CHR_MAX_LENGTH 127
-#define INT_TOKEN_ID_MAX_LENGTH 16383
-#define INT_TOKEN_REST_MAX_LENGTH 8372074 - 4*(1024*1024)
+#include "utility/CompilerMath.hpp"
+
+#ifndef REST_EXPONENT
+#define REST_EXPONENT 15
+#endif
+
+#ifndef ID_EXPONENT
+#define ID_EXPONENT 13
+#endif
+
+#ifndef CHROM_EXPONENT
+#define CHROM_EXPONENT 7
+#endif
+
+#define BASE_VALUE 2
+#define INT_TOKEN_CHR_MAX_LENGTH Ext::Pow<BASE_VALUE, CHROM_EXPONENT>::value-1
+#define INT_TOKEN_ID_MAX_LENGTH Ext::Pow<BASE_VALUE, ID_EXPONENT>::value-1
+#define INT_TOKEN_REST_MAX_LENGTH Ext::Pow<BASE_VALUE, REST_EXPONENT>::value-1
 #define INT_MAX_DEC_INTEGERS 12
 #define INT_MAX_COORD_VALUE 999999999999 /* MAX_DEC_INTEGERS decimal integers; we assume >= 64-bit systems */
 #define INT_TOKENS_MAX_LENGTH (TOKEN_CHR_MAX_LENGTH + TOKEN_ID_MAX_LENGTH + TOKEN_REST_MAX_LENGTH + 2*MAX_DEC_INTEGERS)

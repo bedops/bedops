@@ -4,7 +4,7 @@
 */
 //
 //    BEDOPS
-//    Copyright (C) 2011-2016 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2017 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -32,32 +32,9 @@
 #include <ostream>
 #include <type_traits>
 
+#include "utility/CompilerMath.hpp"
+
 namespace Ext {
-
-  template <std::size_t Base, std::size_t L, bool b=(L<=Base)>
-  struct IntLogN {
-    static constexpr std::size_t value = 1 + IntLogN<Base, L/Base + (L%Base > 0)>::value;
-  };
-
-  template <std::size_t Base, std::size_t L>
-  struct IntLogN<Base, L, true> {
-    static constexpr std::size_t value = 1;
-  };
-
-  template <std::size_t V, std::size_t W>
-  struct Pow {
-    static constexpr std::size_t value = V*Pow<V, W-1>::value;
-  };
-
-  template <std::size_t V>
-  struct Pow<V,1> {
-    static constexpr std::size_t value = V;
-  };
-
-  template <std::size_t V>
-  struct Pow<V,0> {
-    static constexpr std::size_t value = 0;
-  };
 
   template <std::size_t Total>
   struct BSet {

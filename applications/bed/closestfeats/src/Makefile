@@ -23,7 +23,7 @@ OBJDIR              = objects
 INCLUDES            = -iquote$(HEAD) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 LIBLOCATION         = -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBDIR}
 LIBRARIES           = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
-BLDFLAGS            = -Wall -pedantic -O3 -std=c++11
+BLDFLAGS            = $(MEGAFLAGS) -Wall -pedantic -O3 -std=c++11
 SFLAGS              = -static
 
 dependency_names    = NaN starchConstants starchFileHelpers starchHelpers starchMetadataHelpers unstarchHelpers starchSha1Digest starchBase64Coding

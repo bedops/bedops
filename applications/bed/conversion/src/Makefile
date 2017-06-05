@@ -1,4 +1,4 @@
-BLDFLAGS                  = -Wall -Wextra -pedantic -std=c99
+BLDFLAGS                  = -Wall -Wextra -pedantic -std=c99 $(MEGAFLAGS)
 COMMONFLAGS               = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1
 CFLAGS                    = -O3
 CDFLAGS                   = -DDEBUG=1 -g -O0 -fno-inline
