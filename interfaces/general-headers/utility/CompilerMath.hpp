@@ -49,6 +49,6 @@ namespace Ext {
   struct Pow<V,0> {
     static constexpr std::size_t value = 0;
   };
-}
+} // namespace Ext
 
 #endif // __UTILS_COMPILERMATH__

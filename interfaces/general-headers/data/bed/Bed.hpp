@@ -349,7 +349,7 @@ namespace Bed {
       { *id_ = '\0'; if ( id != nullptr ) std::strcpy(id_, id); }
     Bed4(const Bed4& c)
       : BaseClass(c)
-      { *id_ = '\0'; if ( c.id_ != nullptr ) std::strcpy(id_, c.id_); }
+      { *id_ = '\0'; std::strcpy(id_, c.id_); }
     explicit Bed4(FILE* inF) : BaseClass()
       { this->readline(inF); }
     explicit Bed4(const std::string& inS) : BaseClass()
@@ -392,7 +392,7 @@ namespace Bed {
     // Operators
     Bed4& operator=(const Bed4& c) {
       BaseClass::operator=(c);
-      *id_ = '\0'; if ( c.id_ != nullptr ) std::strcpy(id_, c.id_);
+      *id_ = '\0'; std::strcpy(id_, c.id_);
       return *this;
     }
 
@@ -496,8 +496,8 @@ namespace Bed {
     // Operators
     Bed4& operator=(const Bed4& c) {
       BaseClass::operator=(c);
-      *rest_ = '\0'; if ( c.rest_ != nullptr ) std::strcpy(rest_, c.rest_);
-      *fullrest_ = '\0'; if ( c.fullrest_ != nullptr ) std::strcpy(fullrest_, c.fullrest_);
+      *rest_ = '\0'; std::strcpy(rest_, c.rest_);
+      *fullrest_ = '\0'; std::strcpy(fullrest_, c.fullrest_);
       return *this;
     }
 
@@ -623,8 +623,8 @@ namespace Bed {
     Bed5() : BaseClass() { *chrom_ = '\0'; *id_ = '\0'; *rest_ = '\0'; *fullrest_ = '\0'; }
     Bed5(const Bed5& c) : BaseClass(c)
       {
-        *rest_ = '\0'; if ( c.rest_ != nullptr ) std::strcpy(rest_, c.rest_);
-        *fullrest_ = '\0'; if ( c.fullrest_ != nullptr ) std::strcpy(fullrest_, c.fullrest_);
+        *rest_ = '\0'; std::strcpy(rest_, c.rest_);
+        *fullrest_ = '\0'; std::strcpy(fullrest_, c.fullrest_);
       }
     Bed5(char const* chrom, CoordType start, CoordType end,
          char const* id, MeasureType measurement, char const* rest = nullptr)
