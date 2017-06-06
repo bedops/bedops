@@ -64,14 +64,14 @@
 
 #else
 
-#define pwrtwo(x) (1 << (x))
+#define pwrtwo(x) (1UL << (x))
 #define INT_TOKEN_CHR_MAX_LENGTH pwrtwo(CHROM_EXPONENT)-1
 #define INT_TOKEN_ID_MAX_LENGTH pwrtwo(ID_EXPONENT)-1
 #define INT_TOKEN_REST_MAX_LENGTH pwrtwo(REST_EXPONENT)-1
 
 #endif
 
-#define INT_MAX_DEC_INTEGERS 12
+#define INT_MAX_DEC_INTEGERS 12L
 #define INT_MAX_COORD_VALUE 999999999999 /* MAX_DEC_INTEGERS decimal integers; we assume >= 64-bit systems */
 #define INT_TOKENS_MAX_LENGTH (TOKEN_CHR_MAX_LENGTH + TOKEN_ID_MAX_LENGTH + TOKEN_REST_MAX_LENGTH + 2*MAX_DEC_INTEGERS)
 #define INT_TOKENS_HEADER_MAX_LENGTH TOKENS_MAX_LENGTH
