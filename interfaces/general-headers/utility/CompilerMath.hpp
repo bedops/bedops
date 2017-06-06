@@ -24,11 +24,7 @@
 #ifndef __UTILS_COMPILERMATH__
 #define __UTILS_COMPILERMATH__
 
-#include <stddef.h>
-namespace std
-{
-  using ::size_t;
-}
+#include <cstddef>
 
 namespace Ext {
   template <std::size_t Base, std::size_t L, bool b=(L<=Base)>
