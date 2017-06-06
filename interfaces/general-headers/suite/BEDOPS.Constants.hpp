@@ -117,7 +117,7 @@ namespace Bed {
   typedef int64_t SignedCoordType;
   typedef CoordType LineCountType;
   typedef CoordType BaseCountType;
-  typedef int LineLengthType;
+  typedef unsigned long LineLengthType;
 
 #define TOKEN_CHR_MAX_LENGTH INT_TOKEN_CHR_MAX_LENGTH
 #define TOKEN_ID_MAX_LENGTH INT_TOKEN_ID_MAX_LENGTH
