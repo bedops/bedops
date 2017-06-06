@@ -205,6 +205,10 @@ namespace Bed {
       static char const* format = heapFormat.c_str();
       std::printf(format, chrom_, start_, end_);
     }
+    inline std::string printstr() const {
+      static const std::string tab = "\t";
+      return std::string(chrom_) + tab + std::to_string(start_) + tab + std::to_string(end_);
+    }
     inline int readline(const std::string& inputLine) {
       static const std::string lclStatic = inFormatter();
       static char const* format = lclStatic.c_str();
@@ -288,6 +292,11 @@ namespace Bed {
       static const std::string heapFormat = (outFormatter() + "\n");
       static char const* format = heapFormat.c_str();
       std::printf(format, chrom_, start_, end_, rest_);
+    }
+    inline std::string printstr() const {
+      static const std::string tab = "\t";
+      return std::string(chrom_) + tab + std::to_string(start_) + tab + std::to_string(end_) + tab
+               + std::string(rest_);
     }
     inline int readline(const std::string& inputLine) {
       static const std::string lclStatic = inFormatter();
@@ -384,6 +393,12 @@ namespace Bed {
       static char const* format = heapFormat.c_str();
       printf(format, chrom_, start_, end_, id_);
     }
+    inline std::string printstr() const {
+
+      static const std::string tab = "\t";
+      return std::string(chrom_) + tab + std::to_string(start_) + tab + std::to_string(end_) + tab
+               + std::string(id_);
+    }
 
     // Properties
     inline void id(char const* id) { *id_ = '\0'; if ( id != nullptr ) std::strcpy(id_, id); }
@@ -392,7 +407,7 @@ namespace Bed {
     // Operators
     Bed4& operator=(const Bed4& c) {
       BaseClass::operator=(c);
-      *id_ = '\0'; std::strcpy(id_, c.id_);
+      std::strcpy(id_, c.id_);
       return *this;
     }
 
@@ -462,6 +477,11 @@ namespace Bed {
       static char const* format = heapFormat.c_str();
       std::printf(format, chrom_, start_, end_, id_, rest_);
     }
+    inline std::string printstr() const {
+      static const std::string tab = "\t";
+      return std::string(chrom_) + tab + std::to_string(start_) + tab + std::to_string(end_) + tab
+               + std::string(id_) + tab + std::string(rest_);
+    }
     inline int readline(const std::string& inputLine) {
       static const std::string lclStatic = inFormatter();
       static char const* format = lclStatic.c_str();
@@ -496,8 +516,8 @@ namespace Bed {
     // Operators
     Bed4& operator=(const Bed4& c) {
       BaseClass::operator=(c);
-      *rest_ = '\0'; std::strcpy(rest_, c.rest_);
-      *fullrest_ = '\0'; std::strcpy(fullrest_, c.fullrest_);
+      std::strcpy(rest_, c.rest_);
+      std::strcpy(fullrest_, c.fullrest_);
       return *this;
     }
 
@@ -585,6 +605,11 @@ namespace Bed {
       static char const* format = heapFormat.c_str();
       std::printf(format, chrom_, start_, end_, id_, measurement_);
     }
+    inline std::string printstr() const {
+      static const std::string tab = "\t";
+      return std::string(chrom_) + tab + std::to_string(start_) + tab + std::to_string(end_) + tab
+               + std::string(id_) + tab + std::to_string(measurement_);
+    }
 
     // Operators
     Bed5& operator=(const Bed5& c) {
@@ -661,6 +686,11 @@ namespace Bed {
       static char const* format = heapFormat.c_str();
       std::printf(format, chrom_, start_, end_, id_, measurement_, rest_);
     }
+    inline std::string printstr() const {
+      static const std::string tab = "\t";
+      return std::string(chrom_) + tab + std::to_string(start_) + tab + std::to_string(end_) + tab
+               + std::string(id_) + tab + std::to_string(measurement_) + tab + std::string(rest_);
+    }
     inline int readline(const std::string& inputLine) {
       static const std::string lclStatic = inFormatter();
       static char const* format = lclStatic.c_str();
@@ -707,9 +737,8 @@ namespace Bed {
     // Operators
     Bed5& operator=(const Bed5& c) {
       BaseClass::operator=(c);
-      static const char* f = (std::string("\t%s\t") + BaseClass::MFormat).c_str();
-      sscanf(rest_, f, id_, &measurement_);
-      std::strcpy(fullrest_, rest_);
+      std::strcpy(rest_, c.rest_);
+      std::strcpy(fullrest_, c.fullrest_);
       return *this;
     }
 

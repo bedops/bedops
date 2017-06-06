@@ -353,8 +353,21 @@ namespace Visitors {
       void operator()(T* t) const {
         static char const* id = "id-";
         static unsigned long rowID = 0;
+        static unsigned long subRowID = 0;
+        static T last;
+        static Bed::GenomicRestCompare<T> grc;
+        if ( !grc(&last, t) && !grc(t, &last) ) { // equal
+          static constexpr unsigned long sz = 1000;
+          static char formatted[sz+1];
+          formatted[0] = '\0';
+          std::snprintf(formatted, sz, "%s%lu.%06lu", id, rowID, ++subRowID);
+          PrintTypes::Print(formatted);
+          return;
+        }
+        last = *t;
         PrintTypes::Print(id);
         PrintTypes::Print(++rowID);
+        subRowID = 0;
       }
     };
 

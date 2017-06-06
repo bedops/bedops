@@ -37,8 +37,8 @@ namespace PrintTypes {
     struct check {
       static const bool value = 
               std::is_arithmetic<T>::value ||
-              std::is_same<typename std::remove_cv<T>::type, char*>::value ||
-              std::is_same<typename std::remove_cv<T>::type, char const*>::value;
+              std::is_same<char const*, typename std::decay<T>::type>::value ||
+              std::is_same<char*, typename std::decay<T>::type>::value;
     };
   }
 

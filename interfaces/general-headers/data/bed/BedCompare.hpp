@@ -117,7 +117,7 @@ namespace Bed {
         return one->start() < two->start();
       if ( one->end() != two->end() )
         return one->end() < two->end();
-      return std::strlen(one->full_rest()) == 0;
+      return false; // one may be equal to two, but still one is not less than two
     }
 
     template <typename T=BedType1, typename U=BedType2>
@@ -127,15 +127,25 @@ namespace Bed {
         return one->start() < two->start();
       if ( one->end() != two->end() )
         return one->end() < two->end();
-      std::strlen(two->full_rest()) != 0;
+      return std::strlen(two->full_rest()) != 0;
     }
 
     template <typename T=BedType1, typename U=BedType2>
-    typename std::enable_if<!T::UseRest && !U::UseRest, bool>::type
+    typename std::enable_if<!T::UseRest && !U::UseRest && T::NumFields == 3 && U::NumFields == 3, bool>::type
     operator()(BedType1 const* one, BedType2 const* two) const {
       if ( one->start() != two->start() )
         return one->start() < two->start();
       return one->end() < two->end();
+    }
+
+    template <typename T=BedType1, typename U=BedType2>
+    typename std::enable_if<!T::UseRest && !U::UseRest && (T::NumFields != 3 || U::NumFields != 3), bool>::type
+    operator()(BedType1 const* one, BedType2 const* two) const {
+      if ( one->start() != two->start() )
+        return one->start() < two->start();
+      if ( one->end() != two->end() )
+        return one->end() < two->end();
+      return one->printstr() < two->printstr(); // compares chrom info too...not ideal but it's assumed by caller anyway
     }
   };
 
@@ -196,11 +206,14 @@ namespace Bed {
     template <typename T=BedType1, typename U=BedType2>
     typename std::enable_if<!T::UseRest && !U::UseRest, bool>::type
     operator()(BedType1 const* one, BedType2 const* two) const {
-      if ( one->start() != two->start() )
-        return one->start() < two->start();
-      if ( one->end() != two->end() )
-        return one->end() < two->end();
-      return one < two;
+      static CoordRestCompare<T, U> crc; // deals with ID fields and such
+      bool check = crc(one, two);
+      if ( check ) // *one < *two
+        return true;
+      check = crc(two, one);
+      if ( check ) // *two < *one
+        return false;
+      return one < two; // one == two; compare addresses
     }
   };
 
