@@ -777,12 +777,20 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
     int64_t nRetransformBuf = 0;
 
     /* allocate memory for intermediate buffer variables */
+#ifdef __cplusplus
+    retransformLineBuf = static_cast<unsigned char *>( calloc(TOKENS_MAX_LENGTH, sizeof(unsigned char)) );
+#else
     retransformLineBuf = (unsigned char *) calloc(TOKENS_MAX_LENGTH, sizeof(unsigned char));
+#endif
     if (!retransformLineBuf) {
         fprintf(stderr, "ERROR: Insufficient memory for intermediate buffer variable [retransformLineBuf].\n");
         exit(ENOMEM);
     }
+#ifdef __cplusplus
+    retransformBuf = static_cast<unsigned char *>( calloc(STARCH_BUFFER_MAX_LENGTH, sizeof(unsigned char)) );
+#else
     retransformBuf = (unsigned char *) calloc(STARCH_BUFFER_MAX_LENGTH, sizeof(unsigned char));
+#endif
     if (!retransformBuf) {
         fprintf(stderr, "ERROR: Insufficient memory for intermediate buffer variable [retransformBuf].\n");
         exit(ENOMEM);
@@ -804,17 +812,29 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
     unsigned int bzOutBytesWritten = 0U;
 
     /* allocate memory for bzip2 variables */
+#ifdef __cplusplus
+    bzReadBuf = static_cast<unsigned char *>( calloc(STARCH_BZ_BUFFER_MAX_LENGTH, sizeof(unsigned char)) );
+#else
     bzReadBuf = (unsigned char *) calloc(STARCH_BZ_BUFFER_MAX_LENGTH, sizeof(unsigned char));
+#endif
     if (!bzReadBuf) {
         fprintf(stderr, "ERROR: Insufficient memory for bzip2 variable [bzReadBuf].\n");
         exit(ENOMEM);
     }
+#ifdef __cplusplus
+    bzRemainderBuf = static_cast<unsigned char *>( calloc(STARCH_BZ_BUFFER_MAX_LENGTH, sizeof(unsigned char)) );
+#else
     bzRemainderBuf = (unsigned char *) calloc(STARCH_BZ_BUFFER_MAX_LENGTH, sizeof(unsigned char));
+#endif
     if (!bzRemainderBuf) {
         fprintf(stderr, "ERROR: Insufficient memory for bzip2 variable [bzRemainderBuf].\n");
         exit(ENOMEM);
     }
+#ifdef __cplusplus
+    bzLineBuf = static_cast<unsigned char *>( calloc(STARCH_BZ_BUFFER_MAX_LENGTH, sizeof(unsigned char)) );
+#else
     bzLineBuf = (unsigned char *) calloc(STARCH_BZ_BUFFER_MAX_LENGTH, sizeof(unsigned char));
+#endif
     if (!bzLineBuf) {
         fprintf(stderr, "ERROR: Insufficient memory for bzip2 variable [bzLineBuf].\n");
         exit(ENOMEM);
@@ -836,27 +856,47 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
     unsigned char *zLineBuf = NULL;
 
     /* allocate memory for gzip variables */
+#ifdef __cplusplus
+    zOutBuffer = static_cast<unsigned char *>( calloc(STARCH_Z_BUFFER_MAX_LENGTH, sizeof(unsigned char)) );
+#else
     zOutBuffer = (unsigned char *) calloc(STARCH_Z_BUFFER_MAX_LENGTH, sizeof(unsigned char));
+#endif
     if (!zOutBuffer) {
         fprintf(stderr, "ERROR: Insufficient memory for gzip variable [zOutBuffer].\n");
         exit(ENOMEM);
     }
+#ifdef __cplusplus
+    zReadBuf = static_cast<unsigned char *>( calloc(STARCH_Z_CHUNK/1024, sizeof(unsigned char)) );
+#else
     zReadBuf = (unsigned char *) calloc(STARCH_Z_CHUNK/1024, sizeof(unsigned char));
+#endif
     if (!zReadBuf) {
         fprintf(stderr, "ERROR: Insufficient memory for gzip variable [zReadBuf].\n");
         exit(ENOMEM);
     }
+#ifdef __cplusplus
+    zOutBuf = static_cast<unsigned char *>( calloc(STARCH_Z_CHUNK, sizeof(unsigned char)) );
+#else
     zOutBuf = (unsigned char *) calloc(STARCH_Z_CHUNK, sizeof(unsigned char));
+#endif
     if (!zOutBuf) {
         fprintf(stderr, "ERROR: Insufficient memory for gzip variable [zOutBuf].\n");
         exit(ENOMEM);
     }
+#ifdef __cplusplus
+    zRemainderBuf = static_cast<unsigned char *>( calloc(STARCH_Z_BUFFER_MAX_LENGTH, sizeof(unsigned char)) );
+#else
     zRemainderBuf = (unsigned char *) calloc(STARCH_Z_BUFFER_MAX_LENGTH, sizeof(unsigned char));
+#endif
     if (!zRemainderBuf) {
         fprintf(stderr, "ERROR: Insufficient memory for gzip variable [zRemainderBuf].\n");
         exit(ENOMEM);
     }
+#ifdef __cplusplus
+    zLineBuf = static_cast<unsigned char *>( calloc(STARCH_Z_BUFFER_MAX_LENGTH, sizeof(unsigned char)) );
+#else
     zLineBuf = (unsigned char *) calloc(STARCH_Z_BUFFER_MAX_LENGTH, sizeof(unsigned char));
+#endif
     if (!zLineBuf) {
         fprintf(stderr, "ERROR: Insufficient memory for gzip variable [zLineBuf].\n");
         exit(ENOMEM);
@@ -891,12 +931,20 @@ STARCHCAT2_rewriteInputRecordToOutput (Metadata **outMd, const char *outTag, con
     LineLengthType t_lineMaxStringLength = STARCH_DEFAULT_LINE_STRING_LENGTH;
 
     /* allocate memory for transformation variables */
+#ifdef __cplusplus
+    t_firstInputToken = static_cast<char *>( calloc(UNSTARCH_FIRST_TOKEN_MAX_LENGTH, sizeof(char)) );
+#else
     t_firstInputToken = (char *) calloc(UNSTARCH_FIRST_TOKEN_MAX_LENGTH, sizeof(char));
+#endif
     if (!t_firstInputToken) {
         fprintf(stderr, "ERROR: Insufficient memory for transformation variable [t_firstInputToken].\n");
         exit(ENOMEM);
     }
+#ifdef __cplusplus
+    t_secondInputToken = static_cast<char *>( calloc(UNSTARCH_SECOND_TOKEN_MAX_LENGTH, sizeof(char)) );
+#else
     t_secondInputToken = (char *) calloc(UNSTARCH_SECOND_TOKEN_MAX_LENGTH, sizeof(char));
+#endif
     if (!t_secondInputToken) {
         fprintf(stderr, "ERROR: Insufficient memory for transformation variable [t_secondInputToken].\n");
         exit(ENOMEM);
@@ -2489,7 +2537,8 @@ STARCHCAT2_identifyLowestBedElementV2p2 (const Boolean *eobFlags, const SignedCo
             }
         }
 
-        free(lowestStopMatches), lowestStopMatches = NULL;
+        free(lowestStopMatches);
+        lowestStopMatches = NULL;
     }
 
 #ifdef DEBUG

@@ -1351,10 +1351,14 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
                 previousStop = (stop > previousStop) ? stop : previousStop;
 
                 /* cleanup unused data */
-                if (withinChr == kStarchTrue) 
-                    free(chromosome), chromosome = NULL;
-                if (remainder) 
-                    free(remainder), remainder = NULL;
+                if (withinChr == kStarchTrue) {
+                    free(chromosome);
+                    chromosome = NULL;
+                }
+                if (remainder) {
+                    free(remainder);
+                    remainder = NULL;
+                }
                 cIdx = 0;                
             }
             else {
@@ -1852,7 +1856,8 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                         fprintf(stderr, "ERROR: Elements with same start and stop coordinates have remainders in wrong sort order.\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
                         return STARCH_FATAL_ERROR;
                     }
-                    free(pRemainder), pRemainder = NULL;
+                    free(pRemainder);
+                    pRemainder = NULL;
                 }
 
                 if ((reportProgressFlag == kStarchTrue) && (lineIdx % reportProgressN == 0)) {
@@ -2123,8 +2128,10 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                         }
 
                         /* clean up per-chromosome hash digest */
-                        if (base64EncodedSha1Digest)
-                            free(base64EncodedSha1Digest), base64EncodedSha1Digest = NULL;
+                        if (base64EncodedSha1Digest) {
+                            free(base64EncodedSha1Digest);
+                            base64EncodedSha1Digest = NULL;
+                        }
                     }
 
                     /* create placeholder records at current chromosome */
@@ -2192,7 +2199,10 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                     lastPosition = 0;
                     pStart = -1;
                     pStop = -1;
-                    if (pRemainder) { free(pRemainder), pRemainder = NULL; }
+                    if (pRemainder) { 
+                        free(pRemainder);
+                        pRemainder = NULL; 
+                    }
                     previousStop = 0;
                     lcDiff = 0;
                     lineIdx = 0UL;
@@ -2430,10 +2440,14 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                         pRemainder = STARCH_strndup(remainder, strlen(remainder));
                 }
 
-                if (withinChr == kStarchTrue) 
-                    free(chromosome), chromosome = NULL;
-                if (remainder) 
-                    free(remainder), remainder = NULL;
+                if (withinChr == kStarchTrue) {
+                    free(chromosome);
+                    chromosome = NULL;
+                }
+                if (remainder) {
+                    free(remainder);
+                    remainder = NULL;
+                }
                 cIdx = 0;
             }
             else {
@@ -2539,7 +2553,8 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                     fprintf(stderr, "ERROR: Elements with same start and stop coordinates have remainders in wrong sort order.\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
                     return STARCH_FATAL_ERROR;
                 }
-                free(pRemainder), pRemainder = NULL;
+                free(pRemainder);
+                pRemainder = NULL;
             }
         }
         else {
@@ -2731,8 +2746,10 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     }
 
     /* clean up per-chromosome hash digest */
-    if (base64EncodedSha1Digest)
-        free(base64EncodedSha1Digest), base64EncodedSha1Digest = NULL;
+    if (base64EncodedSha1Digest) {
+        free(base64EncodedSha1Digest);
+        base64EncodedSha1Digest = NULL;
+    }
 
     /* reset metadata pointer */
     *md = firstRecord;
@@ -2805,14 +2822,22 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     fprintf(stdout, "%s", footerBuffer);
     fflush(stdout);
 
-    if (json)
-        free(json), json = NULL;
-    if (compressedFn)
-        free(compressedFn), compressedFn = NULL;
-    if (prevChromosome)
-        free(prevChromosome), prevChromosome = NULL;
-    if (base64EncodedSha1Digest)
-        free(base64EncodedSha1Digest), base64EncodedSha1Digest = NULL;
+    if (json) {
+        free(json);
+        json = NULL;
+    }
+    if (compressedFn) {
+        free(compressedFn);
+        compressedFn = NULL;
+    }
+    if (prevChromosome) {
+        free(prevChromosome);
+        prevChromosome = NULL;
+    }
+    if (base64EncodedSha1Digest) {
+        free(base64EncodedSha1Digest);
+        base64EncodedSha1Digest = NULL;
+    }
 
     return STARCH_EXIT_SUCCESS;
 }
@@ -2981,7 +3006,8 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                         fprintf(stderr, "ERROR: Elements with same start and stop coordinates have remainders in wrong sort order.\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
                         return STARCH_FATAL_ERROR;
                     }
-                    free(pRemainder), pRemainder = NULL;
+                    free(pRemainder); 
+                    pRemainder = NULL;
                 }
 
                 if ((reportProgressFlag == kStarchTrue) && (lineIdx % reportProgressN == 0)) {
@@ -3251,8 +3277,10 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                         }
 
                         /* clean up per-chromosome hash digest */
-                        if (base64EncodedSha1Digest)
-                            free(base64EncodedSha1Digest), base64EncodedSha1Digest = NULL;
+                        if (base64EncodedSha1Digest) {
+                            free(base64EncodedSha1Digest);
+                            base64EncodedSha1Digest = NULL;
+                        }
                     }
 
                     /* create placeholder records at current chromosome */
@@ -3320,7 +3348,10 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                     lastPosition = 0;
                     pStart = -1;
                     pStop = -1;
-                    if (pRemainder) { free(pRemainder), pRemainder = NULL; }
+                    if (pRemainder) { 
+                        free(pRemainder);
+                        pRemainder = NULL; 
+                    }
                     previousStop = 0;
                     lcDiff = 0;
                     lineIdx = 0UL;
@@ -3545,10 +3576,14 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                 if (remainder)
                     pRemainder = STARCH_strndup(remainder, strlen(remainder));
 
-                if (withinChr == kStarchTrue) 
-                    free(chromosome), chromosome = NULL;
-                if (remainder) 
-                    free(remainder), remainder = NULL;
+                if (withinChr == kStarchTrue)  {
+                    free(chromosome);
+                    chromosome = NULL;
+                }
+                if (remainder) {
+                    free(remainder);
+                    remainder = NULL;
+                }
                 cIdx = 0;
             }
             else {
@@ -3680,7 +3715,8 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                     fprintf(stderr, "ERROR: Elements with same start and stop coordinates have remainders in wrong sort order.\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
                     return STARCH_FATAL_ERROR;
                 }
-                free(pRemainder), pRemainder = NULL;
+                free(pRemainder);
+                pRemainder = NULL;
             }
         }
         else {
@@ -3882,8 +3918,10 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     }
 
     /* clean up per-chromosome hash digest */
-    if (base64EncodedSha1Digest)
-        free(base64EncodedSha1Digest), base64EncodedSha1Digest = NULL;
+    if (base64EncodedSha1Digest) {
+        free(base64EncodedSha1Digest);
+        base64EncodedSha1Digest = NULL;
+    }
 
     /* reset metadata pointer */
     *md = firstRecord;
@@ -3958,14 +3996,22 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     fprintf(stdout, "%s", footerBuffer);
     fflush(stdout);
 
-    if (json)
-        free(json), json = NULL;
-    if (compressedFn)
-        free(compressedFn), compressedFn = NULL;
-    if (prevChromosome)
-        free(prevChromosome), prevChromosome = NULL;
-    if (base64EncodedSha1Digest)
-        free(base64EncodedSha1Digest), base64EncodedSha1Digest = NULL;
+    if (json) {
+        free(json);
+        json = NULL;
+    }
+    if (compressedFn) {
+        free(compressedFn); 
+        compressedFn = NULL;
+    }
+    if (prevChromosome) {
+        free(prevChromosome); 
+        prevChromosome = NULL;
+    }
+    if (base64EncodedSha1Digest) {
+        free(base64EncodedSha1Digest); 
+        base64EncodedSha1Digest = NULL;
+    }
 
     return STARCH_EXIT_SUCCESS;
 }

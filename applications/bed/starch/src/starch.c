@@ -212,14 +212,20 @@ main (int argc, char **argv)
     }
 
     /* cleanup */
-    if (bedFnPtr != NULL)
-        fclose (bedFnPtr), bedFnPtr = NULL;
+    if (bedFnPtr != NULL) {
+        fclose (bedFnPtr);
+        bedFnPtr = NULL;
+    }
     if (metadata != NULL)
         STARCH_freeMetadata (&metadata);
-    if (starchHeader)
-        free (starchHeader), starchHeader = NULL;
-    if (starch_client_global_args.uniqueTag)
-        free (starch_client_global_args.uniqueTag), starch_client_global_args.uniqueTag = NULL;
+    if (starchHeader) {
+        free (starchHeader);
+        starchHeader = NULL;
+    }
+    if (starch_client_global_args.uniqueTag) {
+        free (starch_client_global_args.uniqueTag);
+        starch_client_global_args.uniqueTag = NULL;
+    }
 
 #ifdef DEBUG
     fprintf (stderr, "\n--- starch main() - exit ---\n");

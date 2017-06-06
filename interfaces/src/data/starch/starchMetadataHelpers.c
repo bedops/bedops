@@ -285,7 +285,8 @@ STARCH_updateMetadataForChromosome(Metadata **md,
                 return STARCH_EXIT_FAILURE;
             }
             if (iter->signature) {
-                free(iter->signature), iter->signature = NULL;
+                free(iter->signature);
+                iter->signature = NULL;
             }
             if (signature) {
 #ifdef __cplusplus
@@ -1911,10 +1912,14 @@ STARCH_readLegacyMetadata(const char *buf,
                                               STARCH_DEFAULT_LINE_STRING_LENGTH);
 
                 /* cleanup */
-                if (recFilename)
-                    free(recFilename), recFilename = NULL;
-                if (recChromosome)
-                    free(recChromosome), recChromosome = NULL;
+                if (recFilename) {
+                    free(recFilename);
+                    recFilename = NULL;
+                }
+                if (recChromosome) {
+                    free(recChromosome);
+                    recChromosome = NULL;
+                }
             }
             else
                 break;

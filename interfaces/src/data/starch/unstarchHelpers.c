@@ -2110,7 +2110,8 @@ UNSTARCH_printMetadataSignature(const unsigned char *mdSha1Buffer)
         exit(-1);
     }
     fprintf(stdout, "metadata\t%s\n", jsonBase64String);
-    free(jsonBase64String), jsonBase64String = NULL;
+    free(jsonBase64String);
+    jsonBase64String = NULL;
 }
 
 void
@@ -2162,7 +2163,10 @@ UNSTARCH_verifySignature(FILE **inFp, const Metadata *md, const uint64_t mdOffse
             }
         }
     }
-    if (observedSignature) { free(observedSignature), observedSignature = NULL; }
+    if (observedSignature) { 
+        free(observedSignature);
+        observedSignature = NULL; 
+    }
     return signaturesVerifiedFlag;
 }
 

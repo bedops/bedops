@@ -321,7 +321,8 @@ main(int argc, char **argv)
                 mdHashBuffer);        
 #endif
             free(jsonString), jsonString = NULL;
-            json_decref(metadataJSON), metadataJSON = NULL;
+            json_decref(metadataJSON);
+            metadataJSON = NULL;
         }   
         else {
             fprintf(stderr, "ERROR: Could not encode JSON structure into string representation\n");
@@ -1298,7 +1299,8 @@ UNSTARCH_printMetadataSha1Signature(unsigned char *sha1Buffer)
         exit(-1);
     }
     fprintf(stdout, "%s\n", jsonBase64String);
-    free(jsonBase64String), jsonBase64String = NULL;
+    free(jsonBase64String);
+    jsonBase64String = NULL;
 }
 
 #ifdef __cplusplus

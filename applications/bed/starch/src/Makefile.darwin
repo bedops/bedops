@@ -37,7 +37,7 @@ BIN_VERSION               = v2.4.27
 TEST                      = ../test
 TEST_OSX_BINDIR           = ${TEST}/binaries/osx/${ARCH_VERSION}/bin
 
-CFLAGS                   = $(MEGAFLAGS) -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 ${WARNINGS} -std=c99 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH} -x c++ -v -stdlib=libc++ -std=c++11
+CCFLAGS                   = $(MEGAFLAGS) -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 ${WARNINGS} -std=c99 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH} -x c++ -v -stdlib=libc++ -std=c++11
 CXXFLAGS                  = $(MEGAFLAGS) -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 ${WARNINGS} -std=c++11 -stdlib=libc++ -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH}
 CDFLAGS                   = $(MEGAFLAGS) -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g ${WARNINGS} -std=c99 -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH} -x c++ -v -stdlib=libc++ -std=c++11
 CXXDFLAGS                 = $(MEGAFLAGS) -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g ${WARNINGS} -std=c++11 -stdlib=libc++ -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH}
@@ -108,7 +108,7 @@ starchcat_debug: starchLibrary_debug
 	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/starchcat.o -o ${BINDIR}/debug.starchcat ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
 
 starchstrip: starchLibrary
-	${CC} ${CFLAGS} -c starchstrip.c -o $(LOCALOBJDIR)/starchstrip.o ${INCLUDES}
+	${CC} ${CCFLAGS} -c starchstrip.c -o $(LOCALOBJDIR)/starchstrip.o ${INCLUDES}
 	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/starchstrip.o -o ${BINDIR}/starchstrip ${LOCALSTARCHLIB} ${LIBRARIES}
 
 starchstrip_debug: starchLibrary_debug
