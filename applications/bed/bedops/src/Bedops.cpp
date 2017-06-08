@@ -1554,7 +1554,7 @@ nextUnionAllLine(BedFiles& bedFiles) {
             first = next;
             marker = i;
           } else if ( next->end() == first->end() ) {
-            if ( strcmp(next->rest(), first->rest()) < 0 ) {
+            if ( strcmp(next->full_rest(), first->full_rest()) < 0 ) {
               first = next;
               marker = i;
             }

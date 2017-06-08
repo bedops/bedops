@@ -213,7 +213,7 @@ namespace Visitors {
       typename std::enable_if<T::UseRest, void>::type printRest(T* t) const {
         // PrintTypes::Print(t->rest()); // already includes '\t' out front
         // t->full_rest() now includes t->id() and t->measurement(), exclude here
-        if ( t->full_rest()[0] != '\t' )
+        if ( t->full_rest()[0] != '\0' )
           PrintTypes::Print(t->full_rest());
       }
 
