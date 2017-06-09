@@ -37,7 +37,9 @@
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
 #include "algorithm/WindowSweep.hpp"
 #include "data/bed/AllocateIterator_BED_starch.hpp"
+#include "data/bed/AllocateIterator_BED_starch_minmem.hpp"
 #include "data/bed/BedCheckIterator.hpp"
+#include "data/bed/BedCheckIterator_minmem.hpp"
 #include "data/bed/BedDistances.hpp"
 #include "data/bed/BedTypes.hpp"
 #include "suite/BEDOPS.Version.hpp"
@@ -57,6 +59,7 @@ namespace BedMap {
   const std::string authors = "Shane Neph & Scott Kuehn";
   const std::string citation = BEDOPS::citation();
   constexpr std::size_t PoolSz = 8*8*8;
+  bool minimumMemory = false;
 
   //======
   // Help
@@ -103,8 +106,9 @@ int main(int argc, char **argv) {
 
     std::vector<std::string> visitorNames = input.visitorNames_;
     std::vector< std::vector<std::string> > visitorArgs = input.visitorArgs_;
-    int prec = input.precision_;
-    bool sci = input.useScientific_;
+    const int prec = input.precision_;
+    const bool sci = input.useScientific_;
+    BedMap::minimumMemory = input.useMinMemory_;
  
     if ( input.isPercMap_ ) { // % overlap relative to MapType's size (signalmapish)
       Bed::PercentOverlapMapping bedDist(input.percOvr_);
@@ -127,12 +131,13 @@ int main(int argc, char **argv) {
                           input.minRefFields_, input.minMapFields_, input.errorCheck_,
                           input.outDelim_, input.multiDelim_, prec, sci, input.fastMode_,
                           input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
-    } else if ( input.isExact_ ) { // must be identical coordinates
+    } else if ( input.isExact_ ) { // must be identical coordinates; should work fine with fully-nested elements
       Bed::Exact bedDist;
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
+      const bool fastMode = true;
       BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
                           input.minRefFields_, input.minMapFields_, input.errorCheck_,
-                          input.outDelim_, input.multiDelim_, prec, sci, input.fastMode_,
+                          input.outDelim_, input.multiDelim_, prec, sci, fastMode,
                           input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
     } else if ( input.isPercEither_ ) { // % overlap relative to either MapType's or RefType's size
       Bed::PercentOverlapEither bedDist(input.percOvr_);
@@ -228,14 +233,24 @@ namespace BedMap {
     if ( !errorCheck ) { // faster iterators
       // Create file handle iterators
       Ext::FPWrap<Ext::InvalidFile> refFile(refFileName);
-      auto& mem1 = get_pool<RefType*>();
-      Bed::allocate_iterator_starch_bed<RefType*, PoolSz> refFileI(refFile, mem1, chrom), refFileEnd;
+      if ( !minimumMemory ) {
+        auto& mem1 = get_pool<RefType*>();
+        Bed::allocate_iterator_starch_bed<RefType*, PoolSz> refFileI(refFile, mem1, chrom), refFileEnd;
 
-      // Do work
-      if ( !fastMode )
-        WindowSweep::sweep(refFileI, refFileEnd, st, multiv);
-      else // no nested elements
-        WindowSweep::sweep(refFileI, refFileEnd, dt, multiv);
+        // Do work
+        if ( !fastMode )
+          WindowSweep::sweep(refFileI, refFileEnd, st, multiv);
+        else // no nested elements
+          WindowSweep::sweep(refFileI, refFileEnd, dt, multiv);
+      } else { // old school minimal memory iterator
+        Bed::allocate_iterator_starch_bed_mm<RefType*> refFileI(refFile, chrom), refFileEnd;
+
+        // Do work
+        if ( !fastMode )
+          WindowSweep::sweep(refFileI, refFileEnd, st, multiv);
+        else // no nested elements
+          WindowSweep::sweep(refFileI, refFileEnd, dt, multiv);
+      }
     } else {
       // Create file handle iterators
       bool isStdin = (refFileName == "-");
@@ -243,21 +258,39 @@ namespace BedMap {
       if ( !isStdin && !infile )
           throw(Ext::UserError("Unable to find: " + refFileName));
       if ( isStdin ) {
-        auto& mem1 = get_pool<RefType*>();
-        Bed::bed_check_iterator<RefType*, PoolSz> refFileI(std::cin, refFileName, mem1, chrom, nestCheck);
-        Bed::bed_check_iterator<RefType*, PoolSz> refFileEnd;
-        if ( !fastMode )
-          WindowSweep::sweep(refFileI, refFileEnd, st, multiv);
-        else // no nested elements
-          WindowSweep::sweep(refFileI, refFileEnd, dt, multiv);
+        if ( !minimumMemory ) {
+          auto& mem1 = get_pool<RefType*>();
+          Bed::bed_check_iterator<RefType*, PoolSz> refFileI(std::cin, refFileName, mem1, chrom, nestCheck);
+          Bed::bed_check_iterator<RefType*, PoolSz> refFileEnd;
+          if ( !fastMode )
+            WindowSweep::sweep(refFileI, refFileEnd, st, multiv);
+          else // no nested elements
+            WindowSweep::sweep(refFileI, refFileEnd, dt, multiv);
+        } else { // old school minimum memory iterator
+          Bed::bed_check_iterator_mm<RefType*> refFileI(std::cin, refFileName, chrom, nestCheck);
+          Bed::bed_check_iterator_mm<RefType*> refFileEnd;
+          if ( !fastMode )
+            WindowSweep::sweep(refFileI, refFileEnd, st, multiv);
+          else // no nested elements
+            WindowSweep::sweep(refFileI, refFileEnd, dt, multiv);
+        }
       } else {
-        auto& mem1 = get_pool<RefType*>();
-        Bed::bed_check_iterator<RefType*, PoolSz> refFileI(infile, refFileName, mem1, chrom, nestCheck);
-        Bed::bed_check_iterator<RefType*, PoolSz> refFileEnd;
-        if ( !fastMode )
-          WindowSweep::sweep(refFileI, refFileEnd, st, multiv);
-        else // no nested elements
-          WindowSweep::sweep(refFileI, refFileEnd, dt, multiv);
+        if ( !minimumMemory ) {
+          auto& mem1 = get_pool<RefType*>();
+          Bed::bed_check_iterator<RefType*, PoolSz> refFileI(infile, refFileName, mem1, chrom, nestCheck);
+          Bed::bed_check_iterator<RefType*, PoolSz> refFileEnd;
+          if ( !fastMode )
+            WindowSweep::sweep(refFileI, refFileEnd, st, multiv);
+          else // no nested elements
+            WindowSweep::sweep(refFileI, refFileEnd, dt, multiv);
+        } else { // old school minimum memory iterator
+          Bed::bed_check_iterator_mm<RefType*> refFileI(infile, refFileName, chrom, nestCheck);
+          Bed::bed_check_iterator_mm<RefType*> refFileEnd;
+          if ( !fastMode )
+            WindowSweep::sweep(refFileI, refFileEnd, st, multiv);
+          else // no nested elements
+            WindowSweep::sweep(refFileI, refFileEnd, dt, multiv);
+        }
       }
     }
 
@@ -387,7 +420,7 @@ namespace BedMap {
                           const std::vector<std::string>&,
                           const std::string& multivalColSep,
                           int precision, bool useScientific) {
-  
+
       typedef VisitorTypes<BaseVisitor> VTypes;
       BaseVisitor* rtn = 0;
   
@@ -593,6 +626,44 @@ namespace BedMap {
   }
 
   //==============
+  // SelectBED<>
+  //==============
+  template <int NFields, bool UseMemPool = true>
+  struct SelectBED;
+
+  template <>
+  struct SelectBED<3, true> {
+    typedef Bed::BTAllRest::Bed3Type BType;
+  };
+
+  template <>
+  struct SelectBED<4, true> {
+    typedef Bed::BTAllRest::Bed4Type BType;
+  };
+
+  template <>
+  struct SelectBED<5, true> {
+    typedef Bed::BTAllRest::Bed5Type BType;
+  };
+
+
+  template <>
+  struct SelectBED<3, false> {
+    typedef Bed::BTAllRestNoPool::Bed3Type BType;
+  };
+
+  template <>
+  struct SelectBED<4, false> {
+    typedef Bed::BTAllRestNoPool::Bed4Type BType;
+  };
+
+  template <>
+  struct SelectBED<5, false> {
+    typedef Bed::BTAllRestNoPool::Bed5Type BType;
+  };
+
+
+  //==============
   // SelectBase<> : General Case
   //==============
   template <bool ProcessMode, typename BedDistType, typename RefType, typename MapType = RefType>
@@ -635,38 +706,77 @@ namespace BedMap {
     Ext::Assert<Ext::ProgramError>(minRefFields <= minMapFields,
                                    "BedMap::callSweep() minimum fields program error detected");
 
+    constexpr bool UseMemPool = true;
+    constexpr bool NoUseMemPool = !UseMemPool;
     const bool nestCheck = ProcessMode;
     if ( minMapFields < 4 ) { // just need Bed3
-      typedef Bed::B3Rest RefType;
-      typedef Bed::B3Rest MapType;
-      typedef typename SelectBase<ProcessMode, BedDistType, RefType, MapType>::BaseClass BaseClass;
-      BedMap::GenerateVisitors<BaseClass, 3> gv;
-      std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
-                                                         useScientific, visitorNames, visitorArgs);
-      runSweep<BaseClass>(st, dt, refFileName, mapFileName, errorCheck, nestCheck,
-                          ProcessMode, sweepAll, colSep, chrom, skipUnmappedRows, visitorGroup);
+      if ( !BedMap::minimumMemory ) {
+        typedef typename SelectBED<3, UseMemPool>::BType RefType;
+        typedef RefType MapType;
+        typedef typename SelectBase<ProcessMode, BedDistType, RefType, MapType>::BaseClass BaseClass;
+        BedMap::GenerateVisitors<BaseClass, 3> gv;
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+                                                           useScientific, visitorNames, visitorArgs);
+        runSweep<BaseClass>(st, dt, refFileName, mapFileName, errorCheck, nestCheck,
+                            ProcessMode, sweepAll, colSep, chrom, skipUnmappedRows, visitorGroup);
+      } else { // v2p4p26 and earlier mode
+        typedef typename SelectBED<3, NoUseMemPool>::BType RefType;
+        typedef RefType MapType;
+        typedef typename SelectBase<ProcessMode, BedDistType, RefType, MapType>::BaseClass BaseClass;
+        BedMap::GenerateVisitors<BaseClass, 3> gv;
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+                                                           useScientific, visitorNames, visitorArgs);
+        runSweep<BaseClass>(st, dt, refFileName, mapFileName, errorCheck, nestCheck,
+                            ProcessMode, sweepAll, colSep, chrom, skipUnmappedRows, visitorGroup);
+      }
     } else if ( minMapFields < 5 ) { // just need Bed4 for Map and Bed3 for Ref
-      Ext::Assert<Ext::ProgramError>(minRefFields < minMapFields,
-                                     "BedMap::callSweep()-2 minimum fields program error detected");
-      typedef Bed::B3Rest RefType;
-      typedef Bed::B4Rest MapType;
-      typedef typename SelectBase<ProcessMode, BedDistType, RefType, MapType>::BaseClass BaseClass;
-      BedMap::GenerateVisitors<BaseClass, 4> gv;
-      std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
-                                                         useScientific, visitorNames, visitorArgs);
-      runSweep<BaseClass>(st, dt, refFileName, mapFileName, errorCheck, nestCheck,
-                          ProcessMode, sweepAll, colSep, chrom, skipUnmappedRows, visitorGroup);
+      if ( !BedMap::minimumMemory ) {
+        Ext::Assert<Ext::ProgramError>(minRefFields < minMapFields,
+                                       "BedMap::callSweep()-2 minimum fields program error detected");
+        typedef typename SelectBED<3, UseMemPool>::BType RefType;
+        typedef typename SelectBED<4, UseMemPool>::BType MapType;
+        typedef typename SelectBase<ProcessMode, BedDistType, RefType, MapType>::BaseClass BaseClass;
+        BedMap::GenerateVisitors<BaseClass, 4> gv;
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+                                                           useScientific, visitorNames, visitorArgs);
+        runSweep<BaseClass>(st, dt, refFileName, mapFileName, errorCheck, nestCheck,
+                            ProcessMode, sweepAll, colSep, chrom, skipUnmappedRows, visitorGroup);
+      } else { // v2p4p26 and earlier mode
+        Ext::Assert<Ext::ProgramError>(minRefFields < minMapFields,
+                                       "BedMap::callSweep()-2 minimum fields program error detected");
+        typedef typename SelectBED<3, NoUseMemPool>::BType RefType;
+        typedef typename SelectBED<4, NoUseMemPool>::BType MapType;
+        typedef typename SelectBase<ProcessMode, BedDistType, RefType, MapType>::BaseClass BaseClass;
+        BedMap::GenerateVisitors<BaseClass, 4> gv;
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+                                                           useScientific, visitorNames, visitorArgs);
+        runSweep<BaseClass>(st, dt, refFileName, mapFileName, errorCheck, nestCheck,
+                            ProcessMode, sweepAll, colSep, chrom, skipUnmappedRows, visitorGroup);
+      }
     } else { // need Bed5 for Map and Bed3 for Ref
-      Ext::Assert<Ext::ProgramError>(minRefFields == 3,
-                                     "BedMap::callSweep()-2 minimum fields program error detected");
-      typedef Bed::B3Rest RefType;
-      typedef Bed::B5Rest MapType;
-      typedef typename SelectBase<ProcessMode, BedDistType, RefType, MapType>::BaseClass BaseClass;
-      BedMap::GenerateVisitors<BaseClass, 5> gv;
-      std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
-                                                         useScientific, visitorNames, visitorArgs);
-      runSweep<BaseClass>(st, dt, refFileName, mapFileName, errorCheck, nestCheck,
-                          ProcessMode, sweepAll, colSep, chrom, skipUnmappedRows, visitorGroup);
+      if ( !BedMap::minimumMemory ) {
+        Ext::Assert<Ext::ProgramError>(minRefFields == 3,
+                                       "BedMap::callSweep()-2 minimum fields program error detected");
+        typedef typename SelectBED<3, UseMemPool>::BType RefType;
+        typedef typename SelectBED<5, UseMemPool>::BType MapType;
+        typedef typename SelectBase<ProcessMode, BedDistType, RefType, MapType>::BaseClass BaseClass;
+        BedMap::GenerateVisitors<BaseClass, 5> gv;
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+                                                           useScientific, visitorNames, visitorArgs);
+        runSweep<BaseClass>(st, dt, refFileName, mapFileName, errorCheck, nestCheck,
+                            ProcessMode, sweepAll, colSep, chrom, skipUnmappedRows, visitorGroup);
+      } else { // v2p4p26 and earlier mode
+        Ext::Assert<Ext::ProgramError>(minRefFields == 3,
+                                       "BedMap::callSweep()-2 minimum fields program error detected");
+        typedef typename SelectBED<3, NoUseMemPool>::BType RefType;
+        typedef typename SelectBED<5, NoUseMemPool>::BType MapType;
+        typedef typename SelectBase<ProcessMode, BedDistType, RefType, MapType>::BaseClass BaseClass;
+        BedMap::GenerateVisitors<BaseClass, 5> gv;
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+                                                           useScientific, visitorNames, visitorArgs);
+        runSweep<BaseClass>(st, dt, refFileName, mapFileName, errorCheck, nestCheck,
+                            ProcessMode, sweepAll, colSep, chrom, skipUnmappedRows, visitorGroup);
+      }
     }
   }
 
@@ -688,31 +798,63 @@ namespace BedMap {
                  const std::vector<std::string>& visitorNames,
                  const std::vector< std::vector<std::string> >& visitorArgs) {
 
-    const bool nestCheck = ProcessMode;
+    constexpr bool nestCheck = ProcessMode;
+    constexpr bool UseMemPool = true;
+    constexpr bool NoUseMemPool = !UseMemPool;
     if ( minRefFields < 4 ) { // just need Bed3
-      typedef Bed::B3Rest RefType;
-      typedef typename SelectBase<ProcessMode, BedDistType, RefType, RefType>::BaseClass BaseClass;
-      BedMap::GenerateVisitors<BaseClass, 3> gv;
-      std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
-                                                         useScientific, visitorNames, visitorArgs);
-      runSweep<BaseClass>(st, dt, refFileName, errorCheck, nestCheck,
-                          ProcessMode, colSep, chrom, skipUnmappedRows, visitorGroup);
+      if ( !BedMap::minimumMemory ) {
+        typedef typename SelectBED<3, UseMemPool>::BType RefType;
+        typedef typename SelectBase<ProcessMode, BedDistType, RefType, RefType>::BaseClass BaseClass;
+        BedMap::GenerateVisitors<BaseClass, 3> gv;
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+                                                           useScientific, visitorNames, visitorArgs);
+        runSweep<BaseClass>(st, dt, refFileName, errorCheck, nestCheck,
+                            ProcessMode, colSep, chrom, skipUnmappedRows, visitorGroup);
+      } else { // v2p4p26 and earlier mode
+        typedef typename SelectBED<3, NoUseMemPool>::BType RefType;
+        typedef typename SelectBase<ProcessMode, BedDistType, RefType, RefType>::BaseClass BaseClass;
+        BedMap::GenerateVisitors<BaseClass, 3> gv;
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+                                                           useScientific, visitorNames, visitorArgs);
+        runSweep<BaseClass>(st, dt, refFileName, errorCheck, nestCheck,
+                            ProcessMode, colSep, chrom, skipUnmappedRows, visitorGroup);
+      }
     } else if ( minRefFields < 5 ) { // need Bed4
-      typedef Bed::B4Rest RefType;
-      typedef typename SelectBase<ProcessMode, BedDistType, RefType, RefType>::BaseClass BaseClass;
-      BedMap::GenerateVisitors<BaseClass, 4> gv;
-      std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
-                                                         useScientific, visitorNames, visitorArgs);
-      runSweep<BaseClass>(st, dt, refFileName, errorCheck, nestCheck,
-                          ProcessMode, colSep, chrom, skipUnmappedRows, visitorGroup);
+      if ( !BedMap::minimumMemory ) {
+        typedef typename SelectBED<4, UseMemPool>::BType RefType;
+        typedef typename SelectBase<ProcessMode, BedDistType, RefType, RefType>::BaseClass BaseClass;
+        BedMap::GenerateVisitors<BaseClass, 4> gv;
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+                                                           useScientific, visitorNames, visitorArgs);
+        runSweep<BaseClass>(st, dt, refFileName, errorCheck, nestCheck,
+                            ProcessMode, colSep, chrom, skipUnmappedRows, visitorGroup);
+      } else { // v2p4p26 and earlier mode
+        typedef typename SelectBED<4, NoUseMemPool>::BType RefType;
+        typedef typename SelectBase<ProcessMode, BedDistType, RefType, RefType>::BaseClass BaseClass;
+        BedMap::GenerateVisitors<BaseClass, 4> gv;
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+                                                           useScientific, visitorNames, visitorArgs);
+        runSweep<BaseClass>(st, dt, refFileName, errorCheck, nestCheck,
+                            ProcessMode, colSep, chrom, skipUnmappedRows, visitorGroup);
+      }
     } else { // need Bed5
-      typedef Bed::B5Rest RefType;
-      typedef typename SelectBase<ProcessMode, BedDistType, RefType, RefType>::BaseClass BaseClass;
-      BedMap::GenerateVisitors<BaseClass, 5> gv;
-      std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
-                                                         useScientific, visitorNames, visitorArgs);
-      runSweep<BaseClass>(st, dt, refFileName, errorCheck, nestCheck,
-                          ProcessMode, colSep, chrom, skipUnmappedRows, visitorGroup);
+      if ( !BedMap::minimumMemory ) {
+        typedef typename SelectBED<5, UseMemPool>::BType RefType;
+        typedef typename SelectBase<ProcessMode, BedDistType, RefType, RefType>::BaseClass BaseClass;
+        BedMap::GenerateVisitors<BaseClass, 5> gv;
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+                                                           useScientific, visitorNames, visitorArgs);
+        runSweep<BaseClass>(st, dt, refFileName, errorCheck, nestCheck,
+                            ProcessMode, colSep, chrom, skipUnmappedRows, visitorGroup);
+      } else { // v2p4p26 and earlier mode
+        typedef typename SelectBED<5, NoUseMemPool>::BType RefType;
+        typedef typename SelectBase<ProcessMode, BedDistType, RefType, RefType>::BaseClass BaseClass;
+        BedMap::GenerateVisitors<BaseClass, 5> gv;
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+                                                           useScientific, visitorNames, visitorArgs);
+        runSweep<BaseClass>(st, dt, refFileName, errorCheck, nestCheck,
+                            ProcessMode, colSep, chrom, skipUnmappedRows, visitorGroup);
+      }
     }
   }
 

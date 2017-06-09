@@ -24,8 +24,10 @@
 #include <cstdlib>
 #include <deque>
 
-#include "data/bed/BedCheckIterator.hpp"
+#include "data/bed/AllocateIterator_BED_starch_minmem.hpp"
 #include "data/bed/AllocateIterator_BED_starch.hpp"
+#include "data/bed/BedCheckIterator.hpp"
+#include "data/bed/BedCheckIterator_minmem.hpp"
 #include "utility/AllocateIterator.hpp"
 
 namespace WindowSweep {
@@ -46,6 +48,7 @@ namespace WindowSweep {
       { delete p; }
 
 
+    // general fast iterator (non-BED)
     template <typename T>
     inline typename Ext::allocate_iterator<T*>::value_type
                                      get(Ext::allocate_iterator<T*>& i)
@@ -56,7 +59,19 @@ namespace WindowSweep {
       { delete p; }
 
 
-    template <typename T, std::size_t PoolSz>
+    // min memory fast iterator (v2p4p26 and older)
+    template <typename T>
+    inline typename Bed::allocate_iterator_starch_bed_mm<T*>::value_type
+                                     get(Bed::allocate_iterator_starch_bed_mm<T*>& i)
+      { return(*i); } /* no copy via operator new here */
+
+    template <typename T>
+    inline void clean(Bed::allocate_iterator_starch_bed_mm<T*>& i, T* p)
+      { delete p; }
+
+
+    // fastest iterator (v2p4p27 and newer)
+    template <typename T, std::size_t PoolSz> // pooled memory
     inline typename Bed::allocate_iterator_starch_bed<T*, PoolSz>::value_type
                                      get(Bed::allocate_iterator_starch_bed<T*, PoolSz>& i)
       { return(*i); } /* no copy via operator new here */
@@ -66,6 +81,18 @@ namespace WindowSweep {
       { static auto& pool = i.get_pool(); pool.release(p); }
 
 
+    // min memory error checking iterator(v2p4p26 and older)
+    template <typename T>
+    inline typename Bed::bed_check_iterator_mm<T*>::value_type
+                                     get(Bed::bed_check_iterator_mm<T*>& i)
+      { return(*i); } /* no copy via operator new here */
+
+    template <typename T>
+    inline void clean(Bed::bed_check_iterator_mm<T*>& i, T* p)
+      { delete p; }
+
+
+    // pooled memory error checking iterator(v2p4p27 and newer)
     template <typename T, std::size_t PoolSz>
     inline typename Bed::bed_check_iterator<T*, PoolSz>::value_type
                                      get(Bed::bed_check_iterator<T*, PoolSz>& i)

@@ -76,7 +76,7 @@ namespace BedMap {
       : refFileName_(""), mapFileName_(""), rangeBP_(0), overlapBP_(0),
         percOvr_(0.0), isPercMap_(false), isPercRef_(false), isPercEither_(false),
         isPercBoth_(false), isRangeBP_(false), isOverlapBP_(false), isExact_(false),
-        precision_(6), useScientific_(false), setPrec_(false), numFiles_(0),
+        precision_(6), useScientific_(false), useMinMemory_(false), setPrec_(false), numFiles_(0),
         minRefFields_(0), minMapFields_(0), errorCheck_(false), sweepAll_(false),
         outDelim_("|"), multiDelim_(";"), fastMode_(false), rangeAlias_(false),
         chrom_("all"), skipUnmappedRows_(false) {
@@ -130,6 +130,8 @@ namespace BedMap {
           skipUnmappedRows_ = true;
         } else if ( next == "sci" ) {
           useScientific_ = true;
+        } else if ( next == "min-memory" ) {
+          useMinMemory_ = true;
         } else if ( next == "prec" ) {
           Ext::Assert<ArgError>(argcntr < argc, "No precision value given");
           Ext::Assert<ArgError>(!setPrec_, "--prec specified multiple times.");
@@ -384,6 +386,7 @@ namespace BedMap {
     bool isExact_;
     int precision_;
     bool useScientific_;
+    bool useMinMemory_;
     bool setPrec_;
     unsigned int numFiles_;
     unsigned int minRefFields_;
@@ -471,6 +474,7 @@ namespace BedMap {
     usage << "                              --bp-ovr, --range, --fraction-both, and --exact overlap options only. \n";
     usage << "      --header              Accept headers (VCF, GFF, SAM, BED, WIG) in any input file.             \n";
     usage << "      --help                Print this message and exit successfully.                               \n";
+    usage << "      --min-memory          Minimize memory usage (slower).                                         \n";
     usage << "      --multidelim <delim>  Change delimiter of multi-value output columns from ';' to <delim>.     \n";
     usage << "      --prec <int>          Change the post-decimal precision of scores to <int>.  0 <= <int>.      \n";
     usage << "      --sci                 Use scientific notation for score outputs.                              \n";

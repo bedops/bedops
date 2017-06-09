@@ -26,13 +26,14 @@
 #define BEDTYPES_HPP
 
 #include "data/bed/Bed.hpp"
+#include "data/bed/Bed_minmem.hpp"
 
 namespace Bed {
 
   /***********************************************/
   /* Typedef helper for user applications        */
   /***********************************************/
-  template <bool UseNonStaticChrom, bool UseRest, typename MType = double>
+  template <bool UseNonStaticChrom, bool UseRest, typename MType = double, bool MemPool = true>
   struct BedTypes {
     typedef MType                                   MeasureType;
     typedef BasicCoords<UseNonStaticChrom, UseRest> Bed3Type;
@@ -40,7 +41,15 @@ namespace Bed {
     typedef Bed5<Bed4Type, MeasureType, UseRest>    Bed5Type;
   };
 
-  enum { Rest = true, NoRest = false, OneChrom = false, AllChrom = true };
+  template <bool UseNonStaticChrom, bool UseRest, typename MType>
+  struct BedTypes<UseNonStaticChrom, UseRest, MType, false> {
+    typedef MType                                           MeasureType;
+    typedef NoPool::BasicCoords<UseNonStaticChrom, UseRest> Bed3Type;
+    typedef NoPool::Bed4<Bed3Type, UseRest>                 Bed4Type;
+    typedef NoPool::Bed5<Bed4Type, MeasureType, UseRest>    Bed5Type;
+  };
+
+  enum { Rest = true, NoRest = false, OneChrom = false, AllChrom = true, NoPooling = false };
 
 
   /***********************************************/
@@ -48,7 +57,6 @@ namespace Bed {
   /***********************************************/
   typedef BedTypes<AllChrom, Rest, double>    BTAllRest;
   typedef BedTypes<AllChrom, NoRest, double>  BTAllNoRest;
-
   typedef BTAllRest::Bed3Type   B3Rest;
   typedef BTAllNoRest::Bed3Type B3NoRest;
 
@@ -57,6 +65,19 @@ namespace Bed {
 
   typedef BTAllRest::Bed5Type   B5Rest;
   typedef BTAllNoRest::Bed5Type B5NoRest;
+
+
+  typedef BedTypes<AllChrom, Rest, double, NoPooling>    BTAllRestNoPool;
+  typedef BedTypes<AllChrom, NoRest, double, NoPooling>  BTAllNoRestNoPool;
+
+  typedef BTAllRestNoPool::Bed3Type   B3RestNoPool;
+  typedef BTAllNoRestNoPool::Bed3Type B3NoRestNoPool;
+
+  typedef BTAllRestNoPool::Bed4Type   B4RestNoPool;
+  typedef BTAllNoRestNoPool::Bed4Type B4NoRestNoPool;
+
+  typedef BTAllRestNoPool::Bed5Type   B5RestNoPool;
+  typedef BTAllNoRestNoPool::Bed5Type B5NoRestNoPool;
 } // namespace Bed
 
 #endif // BEDTYPES_HPP
