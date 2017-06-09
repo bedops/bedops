@@ -35,7 +35,7 @@
 
 #include "algorithm/bed/FindBedRange.hpp"
 #include "algorithm/visitors/helpers/ProcessVisitorRow.hpp"
-#include "data/bed/Bed.hpp"
+#include "data/bed/Bed_minmem.hpp"
 #include "data/starch/starchApi.hpp"
 #include "utility/FPWrap.hpp"
 

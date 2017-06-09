@@ -52,9 +52,6 @@ namespace Bed {
 
   namespace NoPool {
 
-    // For Bed6<> items, but much easier to use if directly in Bed namespace
-    enum Strand { PLUS = '+', MINUS = '-' };
-
     const CoordType MAXCHROMSIZE = TOKEN_CHR_MAX_LENGTH;
     const CoordType MAXIDSIZE = TOKEN_ID_MAX_LENGTH;
     const CoordType MAXRESTSIZE = TOKEN_REST_MAX_LENGTH;

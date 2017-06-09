@@ -327,17 +327,29 @@ namespace BedMap {
     if ( !errorCheck ) { // faster iterators
       // Create file handle iterators
       Ext::FPWrap<Ext::InvalidFile> refFile(refFileName);
-      auto& mem1 = get_pool<RefType*>();
-      Bed::allocate_iterator_starch_bed<RefType*, PoolSz> refFileI(refFile, mem1, chrom), refFileEnd;
-      Ext::FPWrap<Ext::InvalidFile> mapFile(mapFileName);
-      auto& mem2 = get_pool<MapType*>();
-      Bed::allocate_iterator_starch_bed<MapType*, PoolSz> mapFileI(mapFile, mem2, chrom), mapFileEnd;
+      if ( !minimumMemory ) {
+        auto& mem1 = get_pool<RefType*>();
+        Bed::allocate_iterator_starch_bed<RefType*, PoolSz> refFileI(refFile, mem1, chrom), refFileEnd;
+        Ext::FPWrap<Ext::InvalidFile> mapFile(mapFileName);
+        auto& mem2 = get_pool<MapType*>();
+        Bed::allocate_iterator_starch_bed<MapType*, PoolSz> mapFileI(mapFile, mem2, chrom), mapFileEnd;
 
-      // Do work
-      if ( !fastMode )
-        WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, sweepAll);
-      else // no nested elements
-        WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, sweepAll);
+        // Do work
+        if ( !fastMode )
+          WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, sweepAll);
+        else // no nested elements
+          WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, sweepAll);
+      } else { // old school minimal memory iterator
+        Bed::allocate_iterator_starch_bed_mm<RefType*> refFileI(refFile, chrom), refFileEnd;
+        Ext::FPWrap<Ext::InvalidFile> mapFile(mapFileName);
+        Bed::allocate_iterator_starch_bed_mm<MapType*> mapFileI(mapFile, chrom), mapFileEnd;
+
+        // Do work
+        if ( !fastMode )
+          WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, sweepAll);
+        else // no nested elements
+          WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, sweepAll);
+      }
     } else {
       // Create file handle iterators
       typedef Ext::UserError EType;
@@ -352,29 +364,55 @@ namespace BedMap {
         throw(EType("Unable to find: " + mapFileName));
 
       // Do work
-      auto& mem1 = get_pool<RefType*>();
-      auto& mem2 = get_pool<MapType*>();
-      if ( isStdinRef ) {
-        Bed::bed_check_iterator<RefType*, PoolSz> refFileI(std::cin, refFileName, mem1, chrom, nestCheck), refFileEnd;
-        Bed::bed_check_iterator<MapType*, PoolSz> mapFileI(mfin, mapFileName, mem2, chrom, nestCheck), mapFileEnd;
-        if ( !fastMode )
-          WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, sweepAll);
-        else // no nested elements
-          WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, sweepAll);
-      } else {
-        Bed::bed_check_iterator<RefType*, PoolSz> refFileI(rfin, refFileName, mem1, chrom, nestCheck), refFileEnd;
-        if ( isStdinMap ) {
-          Bed::bed_check_iterator<MapType*, PoolSz> mapFileI(std::cin, mapFileName, mem2, chrom, nestCheck), mapFileEnd;
-          if ( !fastMode )
-            WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, sweepAll);
-          else // no nested elements
-            WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, sweepAll);
-        } else {
+      if ( !minimumMemory ) {
+        auto& mem1 = get_pool<RefType*>();
+        auto& mem2 = get_pool<MapType*>();
+        if ( isStdinRef ) {
+          Bed::bed_check_iterator<RefType*, PoolSz> refFileI(std::cin, refFileName, mem1, chrom, nestCheck), refFileEnd;
           Bed::bed_check_iterator<MapType*, PoolSz> mapFileI(mfin, mapFileName, mem2, chrom, nestCheck), mapFileEnd;
           if ( !fastMode )
             WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, sweepAll);
           else // no nested elements
             WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, sweepAll);
+        } else {
+          Bed::bed_check_iterator<RefType*, PoolSz> refFileI(rfin, refFileName, mem1, chrom, nestCheck), refFileEnd;
+          if ( isStdinMap ) {
+            Bed::bed_check_iterator<MapType*, PoolSz> mapFileI(std::cin, mapFileName, mem2, chrom, nestCheck), mapFileEnd;
+            if ( !fastMode )
+              WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, sweepAll);
+            else // no nested elements
+              WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, sweepAll);
+          } else {
+            Bed::bed_check_iterator<MapType*, PoolSz> mapFileI(mfin, mapFileName, mem2, chrom, nestCheck), mapFileEnd;
+            if ( !fastMode )
+              WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, sweepAll);
+            else // no nested elements
+              WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, sweepAll);
+          }
+        }
+      } else { // old school minimal memory iterator
+        if ( isStdinRef ) {
+          Bed::bed_check_iterator_mm<RefType*> refFileI(std::cin, refFileName, chrom, nestCheck), refFileEnd;
+          Bed::bed_check_iterator_mm<MapType*> mapFileI(mfin, mapFileName, chrom, nestCheck), mapFileEnd;
+          if ( !fastMode )
+            WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, sweepAll);
+          else // no nested elements
+            WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, sweepAll);
+        } else {
+          Bed::bed_check_iterator_mm<RefType*> refFileI(rfin, refFileName, chrom, nestCheck), refFileEnd;
+          if ( isStdinMap ) {
+            Bed::bed_check_iterator_mm<MapType*> mapFileI(std::cin, mapFileName, chrom, nestCheck), mapFileEnd;
+            if ( !fastMode )
+              WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, sweepAll);
+            else // no nested elements
+              WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, sweepAll);
+          } else {
+            Bed::bed_check_iterator_mm<MapType*> mapFileI(mfin, mapFileName, chrom, nestCheck), mapFileEnd;
+            if ( !fastMode )
+              WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, st, multiv, sweepAll);
+            else // no nested elements
+              WindowSweep::sweep(refFileI, refFileEnd, mapFileI, mapFileEnd, dt, multiv, sweepAll);
+          }
         }
       }
     }
