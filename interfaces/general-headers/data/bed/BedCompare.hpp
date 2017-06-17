@@ -51,7 +51,7 @@ namespace Bed {
   struct GenomicAddressCompare
      : public std::binary_function<BedType1 const*, BedType2 const*, bool> {
 
-    bool operator()(BedType1 const* ptr1, BedType2 const* ptr2) const {
+    inline bool operator()(BedType1 const* ptr1, BedType2 const* ptr2) const {
       static int v = 0;
       if ( (v = std::strcmp(ptr1->chrom(), ptr2->chrom())) != 0 )
         return v < 0;
@@ -67,7 +67,7 @@ namespace Bed {
   struct InvertGenomicAddressCompare
       : private GenomicAddressCompare<BedType1, BedType2> {
     typedef GenomicAddressCompare<BedType1, BedType2> Base;
-    bool operator()(BedType1 const* ptr1, BedType2 const* ptr2) const {
+    inline bool operator()(BedType1 const* ptr1, BedType2 const* ptr2) const {
       return Base::operator()(ptr2, ptr1);
     }
   };
@@ -76,7 +76,7 @@ namespace Bed {
   struct CoordCompare // ignoring chrom here
      : public std::binary_function<BedType1 const*, BedType2 const*, bool> {
 
-    bool operator()(BedType1 const* one, BedType2 const* two) const {
+    inline bool operator()(BedType1 const* one, BedType2 const* two) const {
       if ( one->start() != two->start() )
         return one->start() < two->start();
       return one->end() < two->end();
@@ -87,7 +87,7 @@ namespace Bed {
   struct CoordAddressCompare // not caring about chrom here
      : public std::binary_function<BedType1 const*, BedType2 const*, bool> {
 
-    bool operator()(BedType1 const* one, BedType2 const* two) const {
+    inline bool operator()(BedType1 const* one, BedType2 const* two) const {
       if ( one->start() != two->start() )
         return one->start() < two->start();
       if ( one->end() != two->end() )
@@ -101,7 +101,7 @@ namespace Bed {
     : public std::binary_function<BedType1 const*, BedType2 const*, bool> {
 
     template <typename T=BedType1, typename U=BedType2>
-    typename std::enable_if<T::UseRest && U::UseRest, bool>::type
+    inline typename std::enable_if<T::UseRest && U::UseRest, bool>::type
     operator()(BedType1 const* one, BedType2 const* two) const {
       if ( one->start() != two->start() )
         return one->start() < two->start();
@@ -111,7 +111,7 @@ namespace Bed {
     }
 
     template <typename T=BedType1, typename U=BedType2>
-    typename std::enable_if<T::UseRest && !U::UseRest, bool>::type
+    inline typename std::enable_if<T::UseRest && !U::UseRest, bool>::type
     operator()(BedType1 const* one, BedType2 const* two) const {
       if ( one->start() != two->start() )
         return one->start() < two->start();
@@ -121,7 +121,7 @@ namespace Bed {
     }
 
     template <typename T=BedType1, typename U=BedType2>
-    typename std::enable_if<!T::UseRest && U::UseRest, bool>::type
+    inline typename std::enable_if<!T::UseRest && U::UseRest, bool>::type
     operator()(BedType1 const* one, BedType2 const* two) const {
       if ( one->start() != two->start() )
         return one->start() < two->start();
@@ -131,7 +131,7 @@ namespace Bed {
     }
 
     template <typename T=BedType1, typename U=BedType2>
-    typename std::enable_if<!T::UseRest && !U::UseRest && T::NumFields == 3 && U::NumFields == 3, bool>::type
+    inline typename std::enable_if<!T::UseRest && !U::UseRest && T::NumFields == 3 && U::NumFields == 3, bool>::type
     operator()(BedType1 const* one, BedType2 const* two) const {
       if ( one->start() != two->start() )
         return one->start() < two->start();
@@ -139,7 +139,7 @@ namespace Bed {
     }
 
     template <typename T=BedType1, typename U=BedType2>
-    typename std::enable_if<!T::UseRest && !U::UseRest && (T::NumFields != 3 || U::NumFields != 3), bool>::type
+    inline typename std::enable_if<!T::UseRest && !U::UseRest && (T::NumFields != 3 || U::NumFields != 3), bool>::type
     operator()(BedType1 const* one, BedType2 const* two) const {
       if ( one->start() != two->start() )
         return one->start() < two->start();
@@ -165,7 +165,7 @@ namespace Bed {
     : public std::binary_function<BedType1 const*, BedType2 const*, bool> {
 
     template <typename T=BedType1, typename U=BedType2>
-    typename std::enable_if<T::UseRest && U::UseRest, bool>::type
+    inline typename std::enable_if<T::UseRest && U::UseRest, bool>::type
     operator()(BedType1 const* one, BedType2 const* two) const {
       if ( one->start() != two->start() )
         return one->start() < two->start();
@@ -178,7 +178,7 @@ namespace Bed {
     }
 
     template <typename T=BedType1, typename U=BedType2>
-    typename std::enable_if<T::UseRest && !U::UseRest, bool>::type
+    inline typename std::enable_if<T::UseRest && !U::UseRest, bool>::type
     operator()(BedType1 const* one, BedType2 const* two) const {
       if ( one->start() != two->start() )
         return one->start() < two->start();
@@ -191,7 +191,7 @@ namespace Bed {
     }
 
     template <typename T=BedType1, typename U=BedType2>
-    typename std::enable_if<!T::UseRest && U::UseRest, bool>::type
+    inline typename std::enable_if<!T::UseRest && U::UseRest, bool>::type
     operator()(BedType1 const* one, BedType2 const* two) const {
       if ( one->start() != two->start() )
         return one->start() < two->start();
@@ -204,7 +204,7 @@ namespace Bed {
     }
 
     template <typename T=BedType1, typename U=BedType2>
-    typename std::enable_if<!T::UseRest && !U::UseRest, bool>::type
+    inline typename std::enable_if<!T::UseRest && !U::UseRest, bool>::type
     operator()(BedType1 const* one, BedType2 const* two) const {
       static CoordRestCompare<T, U> crc; // deals with ID fields and such
       bool check = crc(one, two);
@@ -218,10 +218,29 @@ namespace Bed {
   };
 
   template <typename BedType1, typename BedType2 = BedType1>
+  struct GenomicRestAddressCompare : CoordRestAddressCompare<BedType1, BedType2> {
+    typedef CoordRestAddressCompare<BedType1, BedType2> BaseT;
+    inline bool operator()(BedType1 const* ptr1, BedType2 const* ptr2) const {
+      static int v = 0;
+      if ( (v = std::strcmp(ptr1->chrom(), ptr2->chrom())) != 0 )
+        return v < 0;
+      return BaseT::operator()(ptr1, ptr2);
+    }
+  };
+
+  template <typename BedType1, typename BedType2 = BedType1>
+  struct InvertGenomicRestAddressCompare
+      : private GenomicRestAddressCompare<BedType1, BedType2> {
+    typedef GenomicRestAddressCompare<BedType1, BedType2> Base;
+    inline bool operator()(BedType1 const* ptr1, BedType2 const* ptr2) const {
+      return Base::operator()(ptr2, ptr1);
+    }
+  };
+
+  template <typename BedType1, typename BedType2 = BedType1>
   struct RevCoordAddressCompare // not caring about chrom here
      : public std::binary_function<BedType1 const*, BedType2 const*, bool> {
-
-    bool operator()(BedType1 const* one, BedType2 const* two) const {
+    inline bool operator()(BedType1 const* one, BedType2 const* two) const {
       if ( one->end() != two->end() )
         return one->end() < two->end();
       if ( one->start() != two->start() )
@@ -233,8 +252,7 @@ namespace Bed {
   template <typename BedType1, typename BedType2 = BedType1>
   struct EndCoordAddressCompareLesser
     : public std::binary_function<BedType1 const*, BedType2 const*, bool> {
-
-    bool operator()(BedType1 const* one, BedType2 const* two) const {
+    inline bool operator()(BedType1 const* one, BedType2 const* two) const {
       if ( one->end() != two->end() )
         return one->end() < two->end();
       return one < two;
@@ -244,8 +262,7 @@ namespace Bed {
   template <typename BedType1, typename BedType2 = BedType1>
   struct EndCoordAddressCompareGreater
     : public std::binary_function<BedType1 const*, BedType2 const*, bool> {
-
-    bool operator()(BedType1 const* one, BedType2 const* two) const {
+    inline bool operator()(BedType1 const* one, BedType2 const* two) const {
       if ( one->end() != two->end() )
         return one->end() > two->end();
       return one > two;
@@ -255,8 +272,7 @@ namespace Bed {
   template <typename BedType1, typename BedType2 = BedType1>
   struct StartCoordAddressCompareLesser
     : public std::binary_function<BedType1 const*, BedType2 const*, bool> {
-
-    bool operator()(BedType1 const* one, BedType2 const* two) const {
+    inline bool operator()(BedType1 const* one, BedType2 const* two) const {
       if ( one->start() != two->start() )
         return one->start() < two->start();
       return one < two;
@@ -266,8 +282,7 @@ namespace Bed {
   template <typename BedType1, typename BedType2 = BedType1>
   struct StartCoordAddressCompareGreater
     : public std::binary_function<BedType1 const*, BedType2 const*, bool> {
-
-    bool operator()(BedType1 const* one, BedType2 const* two) const {
+    inline bool operator()(BedType1 const* one, BedType2 const* two) const {
       if ( one->start() != two->start() )
         return one->start() > two->start();
       return one > two;
@@ -277,8 +292,7 @@ namespace Bed {
   template <typename BedType1, typename BedType2 = BedType1>
   struct ScoreCompare
      : public std::binary_function<BedType1 const*, BedType2 const*, bool> {
-    
-    bool operator()(BedType1 const* one, BedType2 const* two) const {
+    inline bool operator()(BedType1 const* one, BedType2 const* two) const {
       return one->measurement() < two->measurement();
     }
   };
@@ -286,9 +300,7 @@ namespace Bed {
   template <typename BedType1, typename BedType2 = BedType1>
   struct ScoreThenGenomicCompareLesser
      : public std::binary_function<BedType1 const*, BedType2 const*, bool> {
-
-    inline
-    bool operator()(BedType1 const* one, BedType2 const* two) const {
+    inline bool operator()(BedType1 const* one, BedType2 const* two) const {
       if ( one->measurement() != two->measurement() )
         return one->measurement() < two->measurement();
 
@@ -305,8 +317,7 @@ namespace Bed {
   struct ScoreThenGenomicCompareGreater
       : private ScoreThenGenomicCompareLesser<BedType1, BedType2> {
     typedef ScoreThenGenomicCompareLesser<BedType1, BedType2> Base;
-    inline
-    bool operator()(BedType1 const* ptr1, BedType2 const* ptr2) const {
+    inline bool operator()(BedType1 const* ptr1, BedType2 const* ptr2) const {
       return Base::operator()(ptr2, ptr1);
     }
   };
