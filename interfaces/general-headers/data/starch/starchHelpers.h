@@ -135,9 +135,9 @@ int     STARCH2_transformHeaderlessBEDInput(const FILE *inFp,
                                  const CompressionType compressionType,
                                             const char *tag,
                                             const char *note,
-                                         const Boolean generatePerChrSignatureFlag,   
+                                         const Boolean generatePerChrSignatureFlag,
                                          const Boolean reportProgressFlag,
-                                   const LineCountType reportProgressN);        
+                                   const LineCountType reportProgressN);
 
 int     STARCH2_writeStarchHeaderToOutputFp(const unsigned char *header, 
                                                      const FILE *fp);

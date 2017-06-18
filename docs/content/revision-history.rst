@@ -17,6 +17,28 @@ v2.4.27
 
 Released: **TBD**
 
+This build of BEDOPS includes significant performance improvements. Tests were performed on whole-genome TRANSFAC FIMO scans, with cache purges in between runs.
+
+* :ref:`bedops <bedops>`
+
+  * Performance of `bedops` tool increased by **1.3x** (or **23%**).
+  
+  * Performance of `-u`/`--everything` with large numbers of inputs is improved by approximately **1.8x**.
+  
+  * `megarow` build target is available to compile a worst-case interval-optimized version of `bedops` that preserves speed improvements at the cost of increased memory usage.
+  
+* :ref:`bedmap <bedmap>`
+  
+  * Performance of `bedmap` tool increased by **1.2x** (or **15%**).
+  
+  * `megarow` build target is available to compile a worst-case interval-optimized version of `bedmap` that preserves speed improvements at the cost of increased memory usage.
+  
+  * New `--min-memory` option for use when the reference file has very large regions, and the map file has many small regions that fall within those larger regions. One example is when `--range 100000` is used and the map file consists of whole-genome motif scan hits.
+  
+* :ref:`closest-features <closest-features>`
+
+  * Performance of `closest-features` tool increased by **1.1x** (or **9%**).
+  
 * :ref:`bam2bed <bam2bed>` and `sam2bed <sam2bed>`
 
   * Increased thread I/O heap buffer size to reduce likelihood of overflows while parsing reads from Nanopore and PacBio platforms.
@@ -25,6 +47,10 @@ Released: **TBD**
 * :ref:`sort-bed <sort-bed>`
 
   * Increased maximum line length to approximately 4 MB per line, to be able to sort output from converting ultra-long reads from Nanopore and PacBio platforms to BED via `convert2bed`.
+  
+* :ref:`starch <starch>`
+
+  * Fixed potential segmentation fault with `--header` usage.
 
 =================
 Previous versions

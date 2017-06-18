@@ -274,7 +274,7 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
 #ifdef __cplusplus
                     else if (strncmp(reinterpret_cast<const char *>( buffer ), kStarchBedHeaderBrowser, strlen(kStarchBedHeaderBrowser)) == 0) {
 #else
-            	    else if (strncmp((const char *) buffer, kStarchBedHeaderBrowser, strlen(kStarchBedHeaderBrowser)) == 0) {
+                    else if (strncmp((const char *) buffer, kStarchBedHeaderBrowser, strlen(kStarchBedHeaderBrowser)) == 0) {
 #endif
                         *lineType = kBedLineHeaderBrowser;
                         elemCnt = 3;
@@ -282,7 +282,7 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
 #ifdef __cplusplus
                     else if (strncmp(reinterpret_cast<const char *>( buffer ), kStarchBedHeaderSAM, strlen(kStarchBedHeaderSAM)) == 0) {
 #else
-            	    else if (strncmp((const char *) buffer, kStarchBedHeaderSAM, strlen(kStarchBedHeaderSAM)) == 0) {
+                    else if (strncmp((const char *) buffer, kStarchBedHeaderSAM, strlen(kStarchBedHeaderSAM)) == 0) {
 #endif
                         *lineType = kBedLineHeaderSAM;
                         elemCnt = 3;
@@ -298,7 +298,7 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
 #ifdef __cplusplus
                     else if (strncmp(reinterpret_cast<const char *>( buffer ), kStarchBedGenericComment, strlen(kStarchBedGenericComment)) == 0) {
 #else
-            	    else if (strncmp((const char *) buffer, kStarchBedGenericComment, strlen(kStarchBedGenericComment)) == 0) {
+                    else if (strncmp((const char *) buffer, kStarchBedGenericComment, strlen(kStarchBedGenericComment)) == 0) {
 #endif
                         *lineType = kBedLineGenericComment;
                         elemCnt = 3;
@@ -306,7 +306,7 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
                     else {
                         *lineType = kBedLineCoordinates;
                     }
-                    
+
                     /* if line type is of kBedLineCoordinates type, then we test chromosome length */
                     if (*lineType == kBedLineCoordinates) {
 #ifdef DEBUG
@@ -420,8 +420,15 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
         }
     } while (s[sCnt++] != '\0');
 
+#ifdef DEBUG
+    fprintf(stderr, "\t--- s [%s] buffer [%s], charCnt [%u], strlen(buffer) [%zu], sCnt [%u], strlen(s) [%zu], idIdx [%d]\n", s, buffer, charCnt, strlen(buffer), sCnt, strlen(s), idIdx);
+    fprintf(stderr, "\t (post create-transform-tokens: chr -> %s\n\tstart -> %" PRId64 "\n\tstop -> %" PRId64 "\n\tremainder -> %s\n", *chr, *start, *stop, *remainder);
+#endif
+
     if (elemCnt > 3) {
-        buffer[(charCnt - 1)] = '\0';
+        if (charCnt > 0) {
+            buffer[(charCnt - 1)] = '\0';
+        }
         /* test id field length */
         while ((buffer[idIdx] != delim) && (idIdx++ < TOKEN_ID_MAX_LENGTH)) {}
         if (idIdx == TOKEN_ID_MAX_LENGTH) {
@@ -446,9 +453,9 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
             return STARCH_FATAL_ERROR;
         }
 #ifdef __cplusplus
-        strncpy(*remainder, reinterpret_cast<const char *>( buffer ), strlen(buffer) + 1);        
+        strncpy(*remainder, reinterpret_cast<const char *>( buffer ), strlen(buffer) + 1);
 #else
-        strncpy(*remainder, (const char *)buffer, strlen(buffer) + 1);        
+        strncpy(*remainder, (const char *)buffer, strlen(buffer) + 1);
 #endif
 #ifdef DEBUG
         fprintf(stderr, "\t--- resulting remainder [%s]\n", *remainder);
@@ -683,7 +690,7 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
     Boolean withinChr = kStarchFalse;
     unsigned long lineIdx = 0UL;
     off_t outCompressedFnSize = 0;
-    char *legacyMdBuf = NULL; 
+    char *legacyMdBuf = NULL;
     char *dynamicMdBuf = NULL;
     BedLineType lineType = kBedLineTypeUndefined;
     char nonCoordLineBuf[STARCH_BUFFER_MAX_LENGTH] = {0};
@@ -714,7 +721,7 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                 if ( (lineType == kBedLineCoordinates) && ((!prevChromosome) || (strcmp(chromosome, prevChromosome) != 0)) ) {
                     /* close old output file pointer */
                     if (outFnPtr != NULL) {
-                        fclose(outFnPtr); 
+                        fclose(outFnPtr);
                         outFnPtr = NULL;
 
                         if (type == kBzip2) {
@@ -1650,7 +1657,7 @@ STARCH2_transformInput(unsigned char **header, Metadata **md, const FILE *inFp, 
         fprintf(stderr, "ERROR: Could not initialize archive header.\n");
         return STARCH_EXIT_FAILURE;
     }
-    
+
     if (STARCH2_writeStarchHeaderToOutputFp(*header, stdout) != STARCH_EXIT_SUCCESS) {
         fprintf(stderr, "ERROR: Could not write archive header to output file pointer.\n");
         return STARCH_EXIT_FAILURE;
@@ -1750,7 +1757,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     char const *nullSig = "null";
     struct sha1_ctx perChromosomeHashCtx;
     LineLengthType maxStringLength = STARCH_DEFAULT_LINE_STRING_LENGTH;
-    
+
     /* increment total file size by header bytes */
 #ifdef DEBUG
     fprintf(stderr, "\tincrementing file size by sizeof(header)\n");
