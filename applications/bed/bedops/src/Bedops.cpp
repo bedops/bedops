@@ -198,7 +198,7 @@ struct GetType {
   typedef typename NoPtr<typename BedFiles::value_type>::Type::BedType BedType;
 
   /*
-    A c++ priority queue return the greatest element first.  This is done, by default
+    A c++ priority queue returns the greatest element first.  This is done, by default
       using std::less<>.  If you want the least element, you have to use std::greater<>.
     In our case, the analogs are Bed::GenomicAddressCompare for std::less<> (max element
       first), and Bed::InvertGenomicAddressCompare for std::greater<> (min element first).
@@ -212,6 +212,20 @@ struct GetType {
                   BedType*, std::vector<BedType*>,
                   Bed::GenomicAddressCompare<BedType, BedType>
                              > PQ;
+
+  template <typename BedType>
+  struct InvertedBedWithFileIdx : public Bed::InvertGenomicRestAddressCompare<BedType, BedType> {
+    typedef Bed::InvertGenomicRestAddressCompare<BedType, BedType> Base;
+    inline bool operator()(std::pair<BedType*, int>& p1, std::pair<BedType*, int>& p2) {
+      return Base::operator()(p1.first, p2.first);
+    }
+  };
+
+  // use when BedType has full_rest() and you need to keep track of which file it came from
+  typedef std::priority_queue<
+                  std::pair<BedType*, int>, std::vector<std::pair<BedType*, int>>,
+                  InvertedBedWithFileIdx<BedType>
+                             > IPQ_Rest;
 };
 
 //=============
@@ -796,9 +810,9 @@ void doSymmetricDifference(BedFiles& bedFiles) {
     Remove(toRecord);
 }
 
-//==============
-// doUnionAll()
-//==============
+//=================================
+// doUnionAll() and doUnionAllPQ()
+//=================================
 template <typename BedFiles>
 typename std::enable_if<GetType<BedFiles>::BedType::UseRest, typename GetType<BedFiles>::BedType>::type*
 nextUnionAllLine(BedFiles&); /* requires BedType::UseRest to be true */
@@ -832,6 +846,41 @@ void doUnionAll(BedFiles& bedFiles) {
       break;
     record(r);
     Remove(r);
+  } // while
+}
+
+template <typename BedFiles>
+void doUnionAllPQ(BedFiles& bedFiles) {
+  /* meant for cases with large numbers of input files (50+ maybe) */
+  /* If inputs have duplicate entries, output will too */
+  typedef typename GetType<BedFiles>::BedType BedType;
+  typename GetType<BedFiles>::IPQ_Rest pq; // union uses full_rest()
+  static BedType* const zero = static_cast<BedType*>(0);
+
+  BedType* r = zero;
+  if ( 1 == bedFiles.size() ) {
+    /* a simple cat command, possibly post-padded as
+         dealt with in BedPadReader. */
+    while ( bedFiles[0]->HasNext() ) {
+      r = bedFiles[0]->ReadLine();
+      record(r);
+      bedFiles[0]->Remove(r);
+    } // while
+    return;
+  }
+
+  for ( int i = 0; i < bedFiles.size(); ++i ) {
+    if ( bedFiles[i]->HasNext() )
+      pq.push(std::make_pair(bedFiles[i]->ReadLine(), i));
+  } // for
+
+  while ( !pq.empty() ) {
+    const std::pair<BedType*, int> val = pq.top();
+    pq.pop();
+    record(val.first);
+    bedFiles[val.second]->Remove(val.first);
+    if ( bedFiles[val.second]->HasNext() )
+      pq.push(std::make_pair(bedFiles[val.second]->ReadLine(), val.second));
   } // while
 }
 
@@ -1600,8 +1649,12 @@ void selectWork(const Input& input, BedFiles& bedFiles) {
       doSymmetricDifference(bedFiles);
       break;
     case UNIONALL:
-      if ( GetType<BedFiles>::BedType::UseRest )
-        doUnionAll(bedFiles);
+      if ( GetType<BedFiles>::BedType::UseRest ) {
+        if ( bedFiles.size() < 10 )
+          doUnionAll(bedFiles);
+        else
+          doUnionAllPQ(bedFiles);
+      } // else linker will fail
       break;
     default:
       throw(Ext::ProgramError("Unsupported mode"));

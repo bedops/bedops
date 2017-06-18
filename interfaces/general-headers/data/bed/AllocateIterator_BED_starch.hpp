@@ -47,10 +47,10 @@ namespace Bed {
 
   template <class BedType, std::size_t SZ=Bed::CHUNKSZ>
   class allocate_iterator_starch_bed;
-  
+
   template <class BedType, std::size_t SZ>
   class allocate_iterator_starch_bed<BedType*, SZ> {
-  
+
   public:
     typedef std::forward_iterator_tag iterator_category;
     typedef BedType*                  value_type;
