@@ -1787,6 +1787,8 @@ namespace starch
             else
                 std::sprintf(out, "%s\t%" PRId64 "\t%" PRId64, _currChr, _currStart, _currStop);
             line = out;
+            _currRemainder[0] = '\0';
+            _currRemainderLen = 0;
 
             if (archType == kGzip)
                 postBreakdownZValuesIdentical = (zOutBufIdx == zHave);
@@ -1896,14 +1898,14 @@ namespace starch
             needToInflateZChunk = false;
         }
 
-        /* read through zOutBuf for newlines */                    
+        /* read through zOutBuf for newlines */
         for (; zOutBufIdx < zHave; zBufIdx++) {
             if (zOutBuf[zOutBufIdx++] == '\n') {
                 zLineBuf[zBufIdx] = '\0';
                 zBufIdx = 0;
 #ifdef DEBUG
                 std::fprintf(stderr, "\n--> full line [ %s ]\n", zLineBuf);
-#endif                
+#endif
                 return EXIT_SUCCESS;
             }
             else {

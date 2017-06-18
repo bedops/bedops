@@ -51,6 +51,10 @@ This build of BEDOPS includes significant performance improvements. Tests were p
 * :ref:`starch <starch>`
 
   * Fixed potential segmentation fault with `--header` usage.
+  
+* :ref: Starch C++ API
+
+  * Fixed output from `bedops -u` (multiset union) on two or more Starch archives, such that the remainder string was not being cleared correctly.
 
 =================
 Previous versions
