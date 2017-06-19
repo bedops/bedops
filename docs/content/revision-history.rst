@@ -35,6 +35,8 @@ This revision of BEDOPS includes significant performance improvements for defaul
   
   * New :code:`--min-memory` option for use when the reference file has very large regions, and the map file has many small regions that fall within those larger regions. One example is when :code:`--range 100000` is used and the map file consists of whole-genome motif scan hits.
   
+  * Added :code:`--faster` automatically when :code:`--exact` is used, to make more robust to nested elements.
+  
 * :ref:`closest-features <closest-features>`
 
   * Performance of :code:`closest-features` tool increased by **1.1x** (or **9%**).
@@ -42,6 +44,7 @@ This revision of BEDOPS includes significant performance improvements for defaul
 * :ref:`bam2bed <bam2bed>` and :ref:`sam2bed <sam2bed>`
 
   * Increased thread I/O heap buffer size to reduce likelihood of overflows while parsing reads from Nanopore and PacBio platforms.
+  
   * Added :code:`--split-with-deletions` option to split spliced junctions by :code:`N` and :code:`D` CIGAR operations. The :code:`--split` option now splits only on :code:`N` operations.
 
 * :ref:`sort-bed <sort-bed>`
@@ -55,6 +58,10 @@ This revision of BEDOPS includes significant performance improvements for defaul
 * Starch C++ API
 
   * Fixed output from :code:`bedops -u` (multiset union) on two or more Starch archives, such that the remainder string was not being cleared correctly.
+  
+* :ref:`starch-diff <starch_diff>`
+  
+  * Improved usage statement to clarify output (cf. `Issue 180 <https://github.com/bedops/bedops/issues/180>`_).
 
 =================
 Previous versions

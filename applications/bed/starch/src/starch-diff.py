@@ -37,6 +37,15 @@ usage = "  $ starch-diff [ --chr <chr> ] starch-file-1 starch-file-2 [ starch-fi
 help = """
   The 'starch-diff' utility compares the signatures of two or more specified 
   Starch v2.2+ archives for all chromosomes, or for a specified chromosome.
+  
+  The typical output of 'starch-diff' is a message indicating that the 
+  archives’ chromosome(s) are identical or dissimilar, written to the standard
+  error stream.
+  
+  In addition, if all chromosomes are identical, 'starch-diff' exits with a 
+  zero status code. Likewise, if any chromosomes are dissimilar, 'starch-diff'
+  exits with a non-zero status code. This facilitates testing in a scripting
+  environment.
 """
 
 default_chromosome = "all"
