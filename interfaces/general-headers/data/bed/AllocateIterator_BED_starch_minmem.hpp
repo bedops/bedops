@@ -210,6 +210,12 @@ namespace Bed {
                 (!_M_ok || fp_ == __x.fp_)
               ); 
     }
+
+    bool has_nested() const { /* only known for Starch archives */
+      if ( is_starch_ )
+        return archive_->getAllChromosomesHaveNestedElement();
+      return true; // assumption for BED
+    }
   
   private:
     inline BedType* get_starch() {

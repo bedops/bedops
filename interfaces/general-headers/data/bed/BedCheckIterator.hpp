@@ -307,6 +307,12 @@ namespace Bed {
 
     bool operator=(const bed_check_iterator& b);
 
+    bool has_nested() const { /* only known for Starch archives */
+      if ( isStarch_ )
+        return archive_->getAllChromosomesHaveNestedElement();
+      return true; // assumption for BED
+    }
+
   protected:
     std::string lowerstr(const std::string& s) {
       std::string t(s);

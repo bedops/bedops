@@ -89,6 +89,8 @@ namespace BedMap {
                    const std::vector<std::string>& visitorNames,
                    const std::vector <std::vector<std::string> >& visitorArgs);
 
+  bool checkStarchNesting(const std::string&, const std::string&);
+
 } // namespace BedMap
 
 
@@ -109,7 +111,11 @@ int main(int argc, char **argv) {
     const int prec = input.precision_;
     const bool sci = input.useScientific_;
     BedMap::minimumMemory = input.useMinMemory_;
- 
+
+    // if all Starch inputs and no nested elements, then can use --faster if the
+    //   overlap criterion allows it.
+    const bool starchFast = !BedMap::checkStarchNesting(input.refFileName_, input.mapFileName_);
+
     if ( input.isPercMap_ ) { // % overlap relative to MapType's size (signalmapish)
       Bed::PercentOverlapMapping bedDist(input.percOvr_);
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
@@ -151,14 +157,14 @@ int main(int argc, char **argv) {
       Bed::RangedDist sweepDist(input.rangeBP_); // same as bedDist in this case
       BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
                           input.minRefFields_, input.minMapFields_, input.errorCheck_,
-                          input.outDelim_, input.multiDelim_, prec, sci, input.fastMode_,
+                          input.outDelim_, input.multiDelim_, prec, sci, (input.fastMode_ || starchFast),
                           input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
     } else { // require a certain amount of bp overlap
       Bed::Overlapping bedDist(input.overlapBP_);
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
       BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
                           input.minRefFields_, input.minMapFields_, input.errorCheck_,
-                          input.outDelim_, input.multiDelim_, prec, sci, input.fastMode_,
+                          input.outDelim_, input.multiDelim_, prec, sci, (input.fastMode_ || starchFast),
                           input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
     }
 
@@ -700,6 +706,22 @@ namespace BedMap {
     typedef Bed::BTAllRestNoPool::Bed5Type BType;
   };
 
+  //======================
+  // checkStarchNesting()
+  //======================
+  bool checkStarchNesting(const std::string& f1, const std::string& f2) {
+    constexpr bool NoUseMemPool = false;
+    typedef SelectBED<3, NoUseMemPool>::BType BedType;
+    Ext::FPWrap<Ext::InvalidFile> file1(f1);
+    Bed::allocate_iterator_starch_bed_mm<BedType*> a(file1);
+    bool rtn = a.has_nested();
+    if ( !rtn && f2 != "" ) {
+      Ext::FPWrap<Ext::InvalidFile> file2(f2);
+      Bed::allocate_iterator_starch_bed_mm<BedType*> b(file2);
+      rtn = b.has_nested();
+    }
+    return rtn;
+  }
 
   //==============
   // SelectBase<> : General Case

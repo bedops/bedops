@@ -102,7 +102,7 @@ namespace Bed {
           fp_ = NULL;
         return;
       }
-  
+
       if ( is_starch_ ) { // starch archive can deal with all or specific chromosomes
         const bool perLineUsage = true;
         archive_ = new starch::Starch(fp_, chr_, perLineUsage);
@@ -215,6 +215,12 @@ namespace Bed {
                 (_M_ok == __x._M_ok) &&
                 (!_M_ok || fp_ == __x.fp_)
               ); 
+    }
+
+    bool has_nested() const { /* only known for Starch archives */
+      if ( is_starch_ )
+        return archive_->getAllChromosomesHaveNestedElement();
+      return true; // assumption for BED
     }
 
     Ext::PooledMemory<BedType, SZ>& get_pool() { return *pool_; }

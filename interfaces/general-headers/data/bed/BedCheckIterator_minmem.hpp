@@ -229,10 +229,10 @@ namespace Bed {
         }
       }
     }
-  
+
     reference operator*() { return _M_value; }
     pointer operator->() { return &(operator*()); }
-  
+
     bed_check_iterator_mm& operator++() {
       static Ext::ByLine bl;
       if ( _M_ok ) {
@@ -262,7 +262,7 @@ namespace Bed {
       }
       return *this;
     }
-  
+
     bed_check_iterator_mm operator++(int)  {
       bed_check_iterator_mm __tmp = *this;
       static Ext::ByLine bl;
@@ -293,17 +293,23 @@ namespace Bed {
       }
       return __tmp;
     }
-  
+
     void clean() {
       if ( archive_ )
         delete archive_;
     }
-  
+
     bool _M_equal(const bed_check_iterator_mm& __x) const
       { return ( (_M_ok == __x._M_ok) && (!_M_ok || &fp_ == &__x.fp_) ); }
-  
+
     bool operator=(const bed_check_iterator_mm& b);
-  
+
+    bool has_nested() const { /* only known for Starch archives */
+      if ( isStarch_ )
+        return archive_->getAllChromosomesHaveNestedElement();
+      return true; // assumption for BED
+    }
+
   protected:
     std::string lowerstr(const std::string& s) {
       std::string t(s);
