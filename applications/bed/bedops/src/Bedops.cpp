@@ -869,7 +869,7 @@ void doUnionAllPQ(BedFiles& bedFiles) {
     return;
   }
 
-  for ( int i = 0; i < bedFiles.size(); ++i ) {
+  for ( std::size_t i = 0; i < bedFiles.size(); ++i ) {
     if ( bedFiles[i]->HasNext() )
       pq.push(std::make_pair(bedFiles[i]->ReadLine(), i));
   } // for
