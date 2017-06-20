@@ -971,13 +971,13 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
                     *currentChr = currentChrCopy;
                     *currentChrLen = strlen(chr) * 2;
                 }
-                strncpy(*currentChr, chr, strlen(chr) + 1);                
+                strncpy(*currentChr, chr, strlen(chr) + 1);
                 if (!*currentChr) {
                     fprintf(stderr, "ERROR: Current chromosome name is not set\n");
-                    return UNSTARCH_FATAL_ERROR;                
+                    return UNSTARCH_FATAL_ERROR;
                 }
                 *currentStart = *start;
-                *currentStop = *lastEnd;                
+                *currentStop = *lastEnd;
                 if (! *currentRemainder) {
 #ifdef __cplusplus
                     *currentRemainder = static_cast<char *>( malloc(strlen(elemTok2) + 1) );
@@ -1054,7 +1054,7 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
                 /* strncpy(*currentChr, chr, strlen(chr) + 1); */
                 if (! *currentChr) {
                     fprintf(stderr, "ERROR: Current chromosome name could not be copied\n");
-                    return UNSTARCH_FATAL_ERROR;                
+                    return UNSTARCH_FATAL_ERROR;
                 }
 #ifdef __cplusplus
                 *currentStart = static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
@@ -1086,7 +1086,7 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
                 strncpy(*currentRemainder, elemTok2, strlen(elemTok2) + 1);
                 if (!*currentRemainder) {
                     fprintf(stderr, "ERROR: Current remainder token could not be copied\n");
-                    return UNSTARCH_FATAL_ERROR;                
+                    return UNSTARCH_FATAL_ERROR;
                 }
             }
         }
@@ -1119,7 +1119,7 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
             strncpy(*currentChr, chr, strlen(chr) + 1);
             if (! *currentChr) {
                 fprintf(stderr, "ERROR: Current chromosome name could not be copied\n");
-                return UNSTARCH_FATAL_ERROR;                
+                return UNSTARCH_FATAL_ERROR;
             }
 
             if (elemTok1[0] == 'p') {
@@ -1142,6 +1142,11 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
 #endif
                 *currentStart = *start;
                 *currentStop = *lastEnd;
+            }
+            if (*currentRemainder) {
+                free(*currentRemainder);
+                *currentRemainder = NULL;
+                *currentRemainderLen = 0;
             }
         }
     }
@@ -1458,7 +1463,7 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
                 strncpy(*currentRemainder, elemTok2, strlen(elemTok2) + 1);
                 if (!*currentRemainder) {
                     fprintf(stderr, "ERROR: Current remainder token could not be copied\n");
-                    return UNSTARCH_FATAL_ERROR;                
+                    return UNSTARCH_FATAL_ERROR;
                 }
             }
         }
@@ -1519,7 +1524,7 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
                 strncpy(*currentChr, chr, strlen(chr) + 1);
                 if (!*currentChr) {
                     fprintf(stderr, "ERROR: Current chromosome name could not be copied\n");
-                    return UNSTARCH_FATAL_ERROR;                
+                    return UNSTARCH_FATAL_ERROR;
                 }
                 *currentStart = *start;
                 *currentStop = *lastEnd;
@@ -1534,8 +1539,8 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
     return 0;
 }
 
-int 
-UNSTARCH_createInverseTransformTokens(const unsigned char *s, const char delim, char elemTok1[], char elemTok2[]) 
+int
+UNSTARCH_createInverseTransformTokens(const unsigned char *s, const char delim, char elemTok1[], char elemTok2[])
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_createInverseTransformTokens() ---\n");
@@ -1546,18 +1551,21 @@ UNSTARCH_createInverseTransformTokens(const unsigned char *s, const char delim, 
     charCnt = 0;
     sCnt = 0;
     elemCnt = 0;
-	
+
+    elemTok1[0] = '\0';
+    elemTok2[0] = '\0';
+
     do {
         buffer[charCnt++] = s[sCnt];
         if (buffer[(charCnt - 1)] == delim) {
-            if (elemCnt == 0) { 
+            if (elemCnt == 0) {
                 buffer[(charCnt - 1)] = '\0';
 #ifdef __cplusplus
-                strncpy(elemTok1, reinterpret_cast<const char *>( buffer ), strlen(reinterpret_cast<const char *>( buffer )) + 1); 
+                strncpy(elemTok1, reinterpret_cast<const char *>( buffer ), strlen(reinterpret_cast<const char *>( buffer )) + 1);
 #else
-                strncpy(elemTok1, (const char *) buffer, strlen((const char *) buffer) + 1); 
+                strncpy(elemTok1, (const char *) buffer, strlen((const char *) buffer) + 1);
 #endif
-                elemCnt++; 
+                elemCnt++;
                 charCnt = 0;
             }
         }
@@ -1593,7 +1601,7 @@ UNSTARCH_strnstr(const char *haystack, const char *needle, size_t haystackLen)
     size_t pLen;
     size_t len = strlen(needle);
 
-    if (*needle == '\0') {    
+    if (*needle == '\0') {
 	/* everything matches empty string */
 #ifdef __cplusplus
         return const_cast<char *>( haystack );

@@ -865,8 +865,10 @@ namespace starch
             archMdIter = archMdIter->next;
             if (archMdIter)
                 setCurrentChromosome(archMdIter->chromosome);
-            else
-                free(currentChromosome), currentChromosome = NULL;
+            else {
+                free(currentChromosome); 
+                currentChromosome = NULL;
+            }
         }
         void setCurrentChromosome(char *_cC) {
             if (currentChromosome) {
@@ -880,7 +882,16 @@ namespace starch
         }
         void setCurrentStart(Bed::SignedCoordType  _cS) { currentStart = _cS; }
         void setCurrentStop(Bed::SignedCoordType _cS) { currentStop = _cS; }
-        void setCurrentRemainder(char * _remainder) { currentRemainder = _remainder; }
+        void setCurrentRemainder(char * _remainder) { 
+            if (currentRemainder) {
+                free(currentRemainder);
+                currentRemainder = NULL;
+            }
+            currentRemainder = static_cast<char *>( malloc (strlen(_remainder) + 1) );
+            if (currentRemainder) {
+                strncpy(currentRemainder, _remainder, strlen(_remainder) + 1);
+            }
+        }
         void setSelectedChromosome(const std::string& _selChr) { selectedChromosome = _selChr; }
     };
     
@@ -1462,7 +1473,7 @@ namespace starch
                     extractLine(line);
                     firstPass = false;
                 }
-                
+
                 if ((t_firstInputToken[0] == 'p') && (archMdIter)) {
 #ifdef DEBUG
                     std::fprintf(stderr, "--> prefix is 'p'\n");
@@ -1566,7 +1577,7 @@ namespace starch
                                                                                        &_currRemainder,
                                                                                        &_currRemainderLen);
 #ifdef DEBUG
-                                std::fprintf(stderr,"t_ [ %s | %s] _curr [ %s | %" PRId64 " | %" PRId64 " ]\n", t_firstInputToken, t_secondInputToken, _currChr, _currStart, _currStop);
+                                std::fprintf(stderr,"t_ [ %s | %s] _curr [ %s | %" PRId64 " | %" PRId64 " | remlen: %zu]\n", t_firstInputToken, t_secondInputToken, _currChr, _currStart, _currStop, _currRemainderLen);
 #endif
                                 if (res != 0)
                                     break;
@@ -1772,7 +1783,7 @@ namespace starch
                 case kUndefined: {
                     throw(std::string("ERROR: backend compression type is undefined"));
                 }
-            }            
+            }
         }
 
         if ((_currChr && archType == kGzip && !postBreakdownZValuesIdentical) || (_currChr && archType == kBzip2)) {
@@ -1781,14 +1792,17 @@ namespace starch
 #endif
             setCurrentStart(_currStart);
             setCurrentStop(_currStop);
-            setCurrentRemainder(_currRemainder);
-            if (_currRemainder)
+            if (_currRemainder) {
+                setCurrentRemainder(_currRemainder);
+            }
+
+            if (_currRemainder && (_currRemainderLen > 0)) {
                 std::sprintf(out, "%s\t%" PRId64 "\t%" PRId64 "\t%s", _currChr, _currStart, _currStop, _currRemainder);
-            else
+            }
+            else {
                 std::sprintf(out, "%s\t%" PRId64 "\t%" PRId64, _currChr, _currStart, _currStop);
+            }
             line = out;
-            _currRemainder[0] = '\0';
-            _currRemainderLen = 0;
 
             if (archType == kGzip)
                 postBreakdownZValuesIdentical = (zOutBufIdx == zHave);
