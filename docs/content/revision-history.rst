@@ -23,7 +23,7 @@ This revision of BEDOPS includes significant performance improvements for defaul
 
   * Performance of :code:`bedops` tool increased by **1.3x** (or **23%**).
   
-  * Performance of :code:`-u`/`--everything` with large numbers of inputs is improved by approximately **1.8x**.
+  * Performance of :code:`-u`/:code:`--everything` with large numbers of inputs is improved by approximately **1.8x**.
   
   * :code:`megarow` build target is available to compile a worst-case interval-optimized version of `bedops` that preserves speed improvements at the cost of increased memory usage.
   
