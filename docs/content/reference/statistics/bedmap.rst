@@ -72,6 +72,7 @@ The ``--help`` option describes the various mapping and analytical operations an
                                 --bp-ovr, --range, --fraction-both, and --exact overlap options only.
         --header              Accept headers (VCF, GFF, SAM, BED, WIG) in any input file.
         --help                Print this message and exit successfully.
+        --min-memory          Minimize memory usage (slower).
         --multidelim <delim>  Change delimiter of multi-value output columns from ';' to <delim>.
         --prec <int>          Change the post-decimal precision of scores to <int>.  0 <= <int>.
         --sci                 Use scientific notation for score outputs.

@@ -19,28 +19,31 @@ LOCALBZIP2INCDIR    = ${LOCALBZIP2DIR}
 LOCALZLIBDIR        = ${PARTY3}/zlib
 LOCALZLIBLIB        = ${LOCALZLIBDIR}/${LIBZLIB}
 LOCALZLIBINCDIR     = ${LOCALZLIBDIR}
-OBJDIR              = objects
+OBJDIR              = objects${POSTFIX}
 INCLUDES            = -iquote${HEAD} -I${PARTY3} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 LIBLOCATION         = -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBDIR}
 LIBRARIES           = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
-BLDFLAGS            = $(MEGAFLAGS) -Wall -pedantic -O3 -std=c++11 
+BLDFLAGS            = -Wall -pedantic -O3 -std=c++11 
 SFLAGS              = -static
 
 dependency_names    = NaN starchConstants starchFileHelpers starchHelpers starchMetadataHelpers unstarchHelpers starchSha1Digest starchBase64Coding
 dependencies        = $(addprefix $(OBJDIR)/, $(addsuffix .o, $(dependency_names)))
-FLAGS               = ${SFLAGS} -s ${BLDFLAGS} $(dependencies) ${LIBLOCATION} ${INCLUDES}
-DFLAGS              = ${SFLAGS} -g -O0 -std=c++11 -DDEBUG=1 -fno-inline -Wall -pedantic $(dependencies) ${LIBLOCATION} ${INCLUDES}
-GPROFFLAGS          = ${SFLAGS} -pg -O -std=c++11 -Wall -pedantic $(dependencies) ${LIBLOCATION} ${INCLUDES}
+FLAGS               = ${SFLAGS} ${MEGAFLAGS} -s ${BLDFLAGS} $(dependencies) ${LIBLOCATION} ${INCLUDES}
+DFLAGS              = ${SFLAGS} ${MEGAFLAGS} -g -O0 -std=c++11 -DDEBUG=1 -fno-inline -Wall -pedantic $(dependencies) ${LIBLOCATION} ${INCLUDES}
+GPROFFLAGS          = ${SFLAGS} ${MEGAFLAGS} -pg -O -std=c++11 -Wall -pedantic $(dependencies) ${LIBLOCATION} ${INCLUDES}
 
 SOURCE1             = Bedmap.cpp
 BINDIR              = ../bin
-PROG                = bedmap
+PROG                = bedmap${POSTFIX}
 
 build: $(BINDIR)/$(PROG)
+	rm -rf ${OBJDIR}
 
 build_gprof: $(BINDIR)/gprof.$(PROG)
+	rm -rf ${OBJDIR}
 
 build_debug: $(BINDIR)/debug.$(PROG)
+	rm -rf ${OBJDIR}
 
 dependencies: $(dependencies)
 

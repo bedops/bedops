@@ -6,7 +6,7 @@ LIB2                    = $(MAIN)/interfaces/src/utility
 LIB3                    = $(MAIN)/interfaces/src/data/starch
 THISDIR                 = ${shell pwd}
 PARTY3                  = ${THISDIR}/$(MAIN)/third-party
-OBJDIR                  = objects
+OBJDIR                  = objects${POSTFIX}
 LIBJANSSON              = libjansson.a
 LIBBZIP2                = libbz2.a
 LIBZLIB                 = libz.a
@@ -24,8 +24,8 @@ LOCALZLIBINCDIR         = ${LOCALZLIBDIR}
 INCLUDES                = -iquote$(HEAD) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 LIBLOCATION             = -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBDIR}
 LIBRARIES               = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
-BLDFLAGS                = $(MEGAFLAGS) -Wall -pedantic -O3 -std=c++11
-SFLAGS                  = -static
+BLDFLAGS                = -Wall -pedantic -O3 -std=c++11
+SFLAGS                  = -static ${MEGAFLAGS}
 
 dependency_names        = NaN starchConstants starchFileHelpers starchHelpers starchMetadataHelpers unstarchHelpers starchSha1Digest starchBase64Coding
 dependencies            = $(addprefix $(OBJDIR)/, $(addsuffix .o, $(dependency_names)))
@@ -35,13 +35,15 @@ GPROFFLAGS              = $(SFLAGS) -O -std=c++11 -Wall -pedantic -pg $(dependen
 
 SOURCE1                 = ExtractRows.cpp
 BINDIR                  = ../bin
-PROG                    = bedextract
+PROG                    = bedextract${POSTFIX}
 
 build: $(BINDIR)/$(PROG)
+	rm -rf ${OBJDIR}
 
 build_gprof: $(BINDIR)/gprof.$(PROG)
 
 build_debug: $(BINDIR)/debug.$(PROG)
+	rm -rf ${OBJDIR}
 
 dependencies: $(dependencies)
 

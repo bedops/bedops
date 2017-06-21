@@ -98,9 +98,6 @@ typedef struct {
 
 /* Function Prototypes */
 int
-checkfiles(const char **bedFileNames, unsigned int numFiles);
-
-int
 checkSort(char const **bedFileNames, unsigned int numFiles);
 
 int

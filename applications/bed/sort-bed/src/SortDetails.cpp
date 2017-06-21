@@ -357,7 +357,7 @@ appendChromBedEntry(ChromBedData *chrom, Bed::SignedCoordType startPos, Bed::Sig
 }
 
 int
-checkfiles(const char **bedFileNames, unsigned int numFiles)
+checkFiles(const char **bedFileNames, unsigned int numFiles)
 {
     FILE* bedFile;
     int notStdin = 0, stdinCount = 0;
@@ -574,7 +574,7 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
     chromBuf[0] = '\0';
 
     /* check input files */
-    if(0 != checkfiles(bedFileNames, numFiles))
+    if(0 != checkFiles(bedFileNames, numFiles))
         {
             return EXIT_FAILURE;
         }

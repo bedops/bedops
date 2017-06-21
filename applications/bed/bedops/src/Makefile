@@ -21,27 +21,30 @@ LOCALBZIP2INCDIR    = ${LOCALBZIP2DIR}
 LOCALZLIBDIR        = ${PARTY3}/zlib
 LOCALZLIBLIB        = ${LOCALZLIBDIR}/${LIBZLIB}
 LOCALZLIBINCDIR     = ${LOCALZLIBDIR}
-OBJDIR              = objects
+OBJDIR              = objects${POSTFIX}
 INCLUDES            = -iquote$(HEAD) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 LIBLOCATION         = -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBDIR}
 LIBRARIES           = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
-BLDFLAGS            = $(MEGAFLAGS) -Wall -pedantic -O3 -std=c++11
+BLDFLAGS            = -Wall -pedantic -O3 -std=c++11
 SFLAGS              = -static
 
 dependency_names    = NaN starchConstants starchFileHelpers starchHelpers starchMetadataHelpers unstarchHelpers starchSha1Digest starchBase64Coding
 dependencies        = $(addprefix $(OBJDIR)/, $(addsuffix .o, $(dependency_names)))
-FLAGS               = $(SFLAGS) -s $(BLDFLAGS) $(dependencies) ${LIBLOCATION} ${INCLUDES}
-DFLAGS              = $(SFLAGS) -g -O0 -DDEBUG_VERBOSE=1 -std=c++11 -Wall -fno-inline -pedantic -DDEBUG=1 $(dependencies) ${LIBLOCATION} ${INCLUDES}
-GPROFFLAGS          = $(SFLAGS) -O -std=c++11 -Wall -pedantic -pg $(dependencies) ${LIBLOCATION} ${INCLUDES}
+FLAGS               = $(SFLAGS) ${MEGAFLAGS} -s $(BLDFLAGS) $(dependencies) ${LIBLOCATION} ${INCLUDES}
+DFLAGS              = $(SFLAGS) ${MEGAFLAGS} -g -O0 -DDEBUG_VERBOSE=1 -std=c++11 -Wall -fno-inline -pedantic -DDEBUG=1 $(dependencies) ${LIBLOCATION} ${INCLUDES}
+GPROFFLAGS          = $(SFLAGS) ${MEGAFLAGS} -O -std=c++11 -Wall -pedantic -pg $(dependencies) ${LIBLOCATION} ${INCLUDES}
 SOURCE1             = Bedops.cpp
 BINDIR              = ../bin
-PROG                = bedops
+PROG                = bedops${POSTFIX}
 
 build: $(BINDIR)/$(PROG)
+	rm -rf $(OBJDIR)
 
 build_gprof: $(BINDIR)/gprof.$(PROG)
+	rm -rf $(OBJDIR)
 
 build_debug: $(BINDIR)/debug.$(PROG)
+	rm -rf $(OBJDIR)
 
 dependencies: $(dependencies)
 

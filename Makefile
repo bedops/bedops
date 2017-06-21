@@ -1,21 +1,33 @@
-export KERNEL    := ${shell uname -a | cut -f1 -d' '}
-APPDIR            = applications/bed
-BINDIR            = bin
-OSXPKGROOT        = packaging/os_x
-OSXBUILDDIR       = ${OSXPKGROOT}/build
-OSXPKGDIR         = ${OSXPKGROOT}/resources/bin
-OSXLIBDIR         = ${OSXPKGROOT}/resources/lib
-SELF              = ${shell pwd}/Makefile
-MASSIVE_REST_EXP  = 22
-MASSIVE_ID_EXP    = 14
-MASSIVE_CHROM_EXP =  8
+export KERNEL     := ${shell uname -a | cut -f1 -d' '}
+APPDIR             = applications/bed
+BINDIR             = bin
+MEGABINDIR         = bin/megarow
+OSXPKGROOT         = packaging/os_x
+OSXBUILDDIR        = ${OSXPKGROOT}/build
+OSXPKGDIR          = ${OSXPKGROOT}/resources/bin
+OSXLIBDIR          = ${OSXPKGROOT}/resources/lib
+SELF               = ${shell pwd}/Makefile
+MASSIVE_REST_EXP   = 22
+MASSIVE_ID_EXP     = 14
+MASSIVE_CHROM_EXP  =  8
+JPARALLEL          =  8
+MEGA               = -mega
+TYPICAL            = -typical
+WRAPPERS           = $(wildcard ${APPDIR}/conversion/src/wrappers/*)
 
 default:
 ifeq ($(KERNEL), Darwin)
-	$(MAKE) $(MAKECMDGOALS) -f system.mk/Makefile.darwin
+	$(MAKE) $(MAKECMDGOALS) -j $(JPARALLEL) -f system.mk/Makefile.darwin
 else
-	$(MAKE) $(MAKECMDGOALS) -f system.mk/Makefile.linux
+	$(MAKE) $(MAKECMDGOALS) -j $(JPARALLEL) -f system.mk/Makefile.linux
 endif
+
+#default_mega:
+#ifeq ($(KERNEL), Darwin)
+#	$(MAKE) POSTFIX=$(MEGA) $(MAKECMDGOALS) -j $(JPARALLEL) -f system.mk/Makefile.darwin
+#else
+#	$(MAKE) POSTFIX=$(MEGA) $(MAKECMDGOALS) -j $(JPARALLEL) -f system.mk/Makefile.linux
+#endif
 
 clean: default
 
@@ -25,11 +37,55 @@ debug: default
 
 gprof: default
 
+all:
+	$(MAKE) support -f ${SELF}
+	$(MAKE) typical -f ${SELF}
+	$(MAKE) megarow -f ${SELF}
+	$(MAKE) install_all -f ${SELF}
+
 megarow:
-	$(MAKE) MEGAFLAGS="-DREST_EXPONENT=${MASSIVE_REST_EXP} -DID_EXPONENT=${MASSIVE_ID_EXP} -DCHROM_EXPONENT=${MASSIVE_CHROM_EXP}" -f ${SELF} 
+	$(MAKE) POSTFIX=$(MEGA) MEGAFLAGS="-DREST_EXPONENT=${MASSIVE_REST_EXP} -DID_EXPONENT=${MASSIVE_ID_EXP} -DCHROM_EXPONENT=${MASSIVE_CHROM_EXP}" -f ${SELF}
+
+typical:
+	$(MAKE) POSTFIX=$(TYPICAL) -f ${SELF}
+
+symlink_typical:
+	$(eval variablename=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name *$(TYPICAL)`)
+	$(eval newname=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name *$(TYPICAL) | sed 's/$(TYPICAL)//'`)
+	@echo ${variablename}
+	@echo ${newname}
+	for i in $(variablename); do \
+		$(eval foo=$$i) \
+#		echo $${foo}; \
+		echo $${i}; \
+	done
+
+#		echo $$(foo); \
+#		ln -sf -t $(BINDIR)/ $$i $$(echo $$(basename $$i)|sed s/$(TYPICAL)//); \
+#	done
+
+#	ln -sf -t $(BINDIR)
+#	$(echo ${variablename})
+#	$(eval foo=$(foreach var,$(variablename),$newname))
+#	@echo ${variablename}
+#	cd $(BINDIR)
+#	for i in `find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name *$(TYPICAL)`; do echo $$((basename $$i)|sed s/$(TYPICAL)//); done
+#	for i in `find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name *$(TYPICAL)`; do echo $$(basename $$i); done
+#	for i in `find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name *$(TYPICAL)`; do ln -sf $$i $$(basename $$(echo $$i|sed s/$(TYPICAL)//)); done
+#	for i in `find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name *$(TYPICAL)`; do \
+#		echo $$((basename $$i)|sed s/$(TYPICAL)//); \
+#		ln -sf -t $(BINDIR)/ $$i $$(echo $$(basename $$i)|sed s/$(TYPICAL)//); \
+#	done
+#	echo $$(patsubst %$(TYPICAL),%, $(notdir $(wildcard %$(TYPICAL))))
+#	for i in $(patsubst %$(TYPICAL),%, $(notdir $(wildcard %$(TYPICAL)))); do
+#		echo $$i;
+#	done
+#	$(foreach v, $(patsubst %$(TYPICAL),%, $(notdir $(wildcard %$(TYPICAL)))), $(ln -sf $(v)${\n}))
+
+symlink_megarow:
 
 install: prep_c install_conversion_scripts install_starch_scripts
-	-cp ${APPDIR}/sort-bed/bin/sort-bed ${BINDIR}/
+	-cp ${APPDIR}/sort-bed/bin/sort-bed ${BINDIR}
 	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm ${BINDIR}/
 	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm ${BINDIR}/
 	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates ${BINDIR}/
@@ -43,7 +99,33 @@ install: prep_c install_conversion_scripts install_starch_scripts
 	-cp ${APPDIR}/starch/bin/starchstrip ${BINDIR}/
 	-cp ${APPDIR}/conversion/bin/convert2bed ${BINDIR}/
 
-
+install_all: install_conversion_scripts_with_suffix
+	-cp ${APPDIR}/sort-bed/bin/sort-bed$(MEGA) ${BINDIR}/
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm$(MEGA) ${BINDIR}/
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm$(MEGA) ${BINDIR}/
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates$(MEGA) ${BINDIR}/
+	-cp ${APPDIR}/bedops/bin/bedops$(MEGA) ${BINDIR}/
+	-cp ${APPDIR}/closestfeats/bin/closest-features$(MEGA) ${BINDIR}/
+	-cp ${APPDIR}/bedmap/bin/bedmap$(MEGA) ${BINDIR}/
+	-cp ${APPDIR}/bedextract/bin/bedextract$(MEGA) ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/starch$(MEGA) ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/unstarch$(MEGA) ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/starchcat$(MEGA) ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/starchstrip$(MEGA) ${BINDIR}/
+	-cp ${APPDIR}/conversion/bin/convert2bed$(MEGA) ${BINDIR}/
+	-cp ${APPDIR}/sort-bed/bin/sort-bed$(TYPICAL) ${BINDIR}/
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm$(TYPICAL) ${BINDIR}/
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm$(TYPICAL) ${BINDIR}/
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates$(TYPICAL) ${BINDIR}/
+	-cp ${APPDIR}/bedops/bin/bedops$(TYPICAL) ${BINDIR}/
+	-cp ${APPDIR}/closestfeats/bin/closest-features$(TYPICAL) ${BINDIR}/
+	-cp ${APPDIR}/bedmap/bin/bedmap$(TYPICAL) ${BINDIR}/
+	-cp ${APPDIR}/bedextract/bin/bedextract$(TYPICAL) ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/starch$(TYPICAL) ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/unstarch$(TYPICAL) ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/starchcat$(TYPICAL) ${BINDIR}/
+	-cp ${APPDIR}/starch/bin/starchstrip$(TYPICAL) ${BINDIR}/
+	-cp ${APPDIR}/conversion/bin/convert2bed$(TYPICAL) ${BINDIR}/
 
 
 #######################
@@ -113,6 +195,14 @@ install_conversion_scripts: prep_c
 	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_sge ${BINDIR}/bam2starch_sge
 	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_slurm ${BINDIR}/bam2starch_slurm
 	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_gnuParallel ${BINDIR}/bam2starch_gnuParallel
+
+.PHONY: $(WRAPPERS)
+
+install_conversion_scripts_with_suffix: $(WRAPPERS)
+
+$(WRAPPERS): prep_c
+	cp $@ $(patsubst %,$(BINDIR)/%$(TYPICAL), $(notdir $@))
+	cp $@ $(patsubst %,$(BINDIR)/%$(MEGA), $(notdir $@))
 
 install_osx_packaging_bins: prep_c
 	mkdir -p ${OSXPKGDIR}

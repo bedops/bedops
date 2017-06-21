@@ -21,25 +21,27 @@ This revision of BEDOPS includes significant performance improvements for defaul
 
 * :ref:`bedops <bedops>`
 
-  * Performance of :code:`bedops` tool increased by **1.3x** (or **23%**).
+  * Performance of :code:`bedops` tool improved, doing typical work in **76.5%** of the time of all previous versions.
   
-  * Performance of :code:`-u`/:code:`--everything` with large numbers of inputs is improved by approximately **1.8x**.
+  * Performance of :code:`-u`/:code:`--everything` has improved, doing the same work in only **55.6%** of the time of previous versions when given a large number of input files.
   
-  * :code:`megarow` build target is available to compile a worst-case interval-optimized version of `bedops` that preserves speed improvements at the cost of increased memory usage.
+  * :code:`megarow` build target is available to compile a version of the program that can handle input files with very long rows (4M+ characters).  This requires more runtime memory than the default build.  The pertinent variables can be modified through the make system without changing source.
   
 * :ref:`bedmap <bedmap>`
   
-  * Performance of :code:`bedmap` tool increased by **1.2x** (or **15%**).
+  * Performance of :code:`bedmap` tool improved, doing the same work in **86.7%** of the time of all previous versions.
+
+  * :code:`megarow` build target is available to compile a version of the program that can handle input files with very long rows (4M+ characters).  This requires more runtime memory than the default build.  The pertinent variables can be modified through the make system without changing source.
   
-  * :code:`megarow` build target is available to compile a worst-case interval-optimized version of :code:`bedmap` that preserves speed improvements at the cost of increased memory usage.
+  * New :code:`--min-memory` option for use when the reference file has very large regions, and the map file has many small regions that fall within those larger regions. One example is when :code:`--range 100000` is used and the map file consists of whole-genome motif scan hits.  Memory overhead can be reduced to that used by all versions up to and including v2.4.26.
   
-  * New :code:`--min-memory` option for use when the reference file has very large regions, and the map file has many small regions that fall within those larger regions. One example is when :code:`--range 100000` is used and the map file consists of whole-genome motif scan hits.
-  
-  * Added :code:`--faster` automatically when :code:`--exact` is used, to make more robust to nested elements.
+  * Added :code:`--faster` automatically when :code:`--exact` is used, which is robust even when nested elements exist in inputs.  Similarly, :code:`--faster` is used automatically when inputs are Starch-formatted archives, none of which have nested elements (see :code:`unstarch --has-nested`) when the overlap criterion allows for :code:`--faster`.
   
 * :ref:`closest-features <closest-features>`
 
-  * Performance of :code:`closest-features` tool increased by **1.1x** (or **9%**).
+  * Performance of :code:`closest-features` tool improved, doing the same work in **87.7%** of the time of all previous versions.
+
+  * :code:`megarow` build target is available to compile a version of the program that can handle input files with very long rows (4M+ characters).  This requires more runtime memory than the default build.  The pertinent variables can be modified through the make system without changing source.
   
 * :ref:`bam2bed <bam2bed>` and :ref:`sam2bed <sam2bed>`
 
@@ -49,7 +51,7 @@ This revision of BEDOPS includes significant performance improvements for defaul
 
 * :ref:`sort-bed <sort-bed>`
 
-  * Increased maximum line length to approximately 4 MB per line, to be able to sort output from converting ultra-long reads from Nanopore and PacBio platforms to BED via :code:`convert2bed`.
+  * :code:`megarow` build target is available to compile a version of the program that can handle input files with very long rows (4M+ characters).  This requires more runtime memory than the default build.  The pertinent variables can be modified through the make system without changing source.  This is useful for converting ultra-long reads from Nanopore and PacBio platforms to BED via :code:`convert2bed`.
   
 * :ref:`starch <starch>`
 
