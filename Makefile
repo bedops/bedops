@@ -22,13 +22,6 @@ else
 	$(MAKE) $(MAKECMDGOALS) -j $(JPARALLEL) -f system.mk/Makefile.linux
 endif
 
-#default_mega:
-#ifeq ($(KERNEL), Darwin)
-#	$(MAKE) POSTFIX=$(MEGA) $(MAKECMDGOALS) -j $(JPARALLEL) -f system.mk/Makefile.darwin
-#else
-#	$(MAKE) POSTFIX=$(MEGA) $(MAKECMDGOALS) -j $(JPARALLEL) -f system.mk/Makefile.linux
-#endif
-
 clean: default
 
 support: default
