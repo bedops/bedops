@@ -35,6 +35,7 @@ all:
 	$(MAKE) typical -f ${SELF}
 	$(MAKE) megarow -f ${SELF}
 	$(MAKE) install_all -f ${SELF}
+	$(MAKE) symlink_typical -f ${SELF}
 
 megarow:
 	$(MAKE) POSTFIX=$(MEGA) MEGAFLAGS="-DREST_EXPONENT=${MASSIVE_REST_EXP} -DID_EXPONENT=${MASSIVE_ID_EXP} -DCHROM_EXPONENT=${MASSIVE_CHROM_EXP}" -f ${SELF}
@@ -43,39 +44,20 @@ typical:
 	$(MAKE) POSTFIX=$(TYPICAL) -f ${SELF}
 
 symlink_typical:
-	$(eval variablename=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name *$(TYPICAL)`)
-	$(eval newname=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name *$(TYPICAL) | sed 's/$(TYPICAL)//'`)
-	@echo ${variablename}
-	@echo ${newname}
-	for i in $(variablename); do \
-		$(eval foo=$$i) \
-#		echo $${foo}; \
-		echo $${i}; \
+	$(eval variablename=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name *$(TYPICAL) -printf "%f\n"`)
+	for i in ${variablename}; do \
+		fooname=`echo $$i | sed 's/$(TYPICAL)//'`; \
+		echo $${fooname}; \
+		ln -sf $$i $(BINDIR)/$${fooname}; \
 	done
 
-#		echo $$(foo); \
-#		ln -sf -t $(BINDIR)/ $$i $$(echo $$(basename $$i)|sed s/$(TYPICAL)//); \
-#	done
-
-#	ln -sf -t $(BINDIR)
-#	$(echo ${variablename})
-#	$(eval foo=$(foreach var,$(variablename),$newname))
-#	@echo ${variablename}
-#	cd $(BINDIR)
-#	for i in `find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name *$(TYPICAL)`; do echo $$((basename $$i)|sed s/$(TYPICAL)//); done
-#	for i in `find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name *$(TYPICAL)`; do echo $$(basename $$i); done
-#	for i in `find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name *$(TYPICAL)`; do ln -sf $$i $$(basename $$(echo $$i|sed s/$(TYPICAL)//)); done
-#	for i in `find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name *$(TYPICAL)`; do \
-#		echo $$((basename $$i)|sed s/$(TYPICAL)//); \
-#		ln -sf -t $(BINDIR)/ $$i $$(echo $$(basename $$i)|sed s/$(TYPICAL)//); \
-#	done
-#	echo $$(patsubst %$(TYPICAL),%, $(notdir $(wildcard %$(TYPICAL))))
-#	for i in $(patsubst %$(TYPICAL),%, $(notdir $(wildcard %$(TYPICAL)))); do
-#		echo $$i;
-#	done
-#	$(foreach v, $(patsubst %$(TYPICAL),%, $(notdir $(wildcard %$(TYPICAL)))), $(ln -sf $(v)${\n}))
-
 symlink_megarow:
+	$(eval variablename=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name *$(MEGA) -printf "%f\n"`)
+	for i in ${variablename}; do \
+		fooname=`echo $$i | sed 's/$(MEGA)//'`; \
+		echo $${fooname}; \
+		ln -sf $$i $(BINDIR)/$${fooname}; \
+	done
 
 install: prep_c install_conversion_scripts install_starch_scripts
 	-cp ${APPDIR}/sort-bed/bin/sort-bed ${BINDIR}
