@@ -28,7 +28,9 @@ This revision of BEDOPS includes significant performance improvements for defaul
   * :code:`megarow` build target is available to compile a version of the program that can handle input files with very long rows (4M+ characters).  This requires more runtime memory than the default build.  The pertinent variables can be modified through the make system without changing source.
   
 * :ref:`bedmap <bedmap>`
-  
+
+  * Automatically use --faster option when --exact is used as the overlap criterion, or if the input files are formatted as Starch, no fully-nested elements exist, and the overlap criterion supports --faster (--bp-ovr, --exact, --range).
+
   * Performance of :code:`bedmap` tool improved, doing the same work in **86.7%** of the time of all previous versions.
 
   * :code:`megarow` build target is available to compile a version of the program that can handle input files with very long rows (4M+ characters).  This requires more runtime memory than the default build.  The pertinent variables can be modified through the make system without changing source.
