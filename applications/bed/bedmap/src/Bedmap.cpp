@@ -712,6 +712,8 @@ namespace BedMap {
   bool checkStarchNesting(const std::string& f1, const std::string& f2) {
     constexpr bool NoUseMemPool = false;
     typedef SelectBED<3, NoUseMemPool>::BType BedType;
+    if ( f1 == "-" || f2 == "-" )
+      return true; // not applicable
     Ext::FPWrap<Ext::InvalidFile> file1(f1);
     Bed::allocate_iterator_starch_bed_mm<BedType*> a(file1);
     bool rtn = a.has_nested();
