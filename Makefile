@@ -44,7 +44,7 @@ typical:
 	$(MAKE) POSTFIX=$(TYPICAL) -f ${SELF}
 
 symlink_typical:
-	$(eval variablename=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name *$(TYPICAL) -printf "%f\n"`)
+	$(eval variablename=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name *$(TYPICAL) -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`)
 	for i in ${variablename}; do \
 		fooname=`echo $$i | sed 's/$(TYPICAL)//'`; \
 		echo $${fooname}; \
@@ -52,7 +52,7 @@ symlink_typical:
 	done
 
 symlink_megarow:
-	$(eval variablename=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name *$(MEGA) -printf "%f\n"`)
+	$(eval variablename=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name *$(MEGA) -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`)
 	for i in ${variablename}; do \
 		fooname=`echo $$i | sed 's/$(MEGA)//'`; \
 		echo $${fooname}; \
