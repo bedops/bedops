@@ -21,8 +21,8 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#ifndef __UTILS_BITMONITOR__
-#define __UTILS_BITMONITOR__
+#ifndef UTILS_BITMONITOR__
+#define UTILS_BITMONITOR__
 
 #include <algorithm>
 #include <array>
@@ -536,4 +536,4 @@ namespace Ext {
 
 } // namespace Ext
 
-#endif // __UTILS_BITMONITOR__
+#endif // UTILS_BITMONITOR__

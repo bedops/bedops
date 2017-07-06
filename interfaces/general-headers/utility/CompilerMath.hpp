@@ -21,8 +21,8 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#ifndef __UTILS_COMPILERMATH__
-#define __UTILS_COMPILERMATH__
+#ifndef UTILS_COMPILERMATH__
+#define UTILS_COMPILERMATH__
 
 #include <cstddef>
 
@@ -53,4 +53,4 @@ namespace Ext {
   };
 } // namespace Ext
 
-#endif // __UTILS_COMPILERMATH__
+#endif // UTILS_COMPILERMATH__
