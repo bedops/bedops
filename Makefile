@@ -1,5 +1,6 @@
 export KERNEL     := ${shell uname -a | cut -f1 -d' '}
 APPDIR             = applications/bed
+OTHERDIR           = applications/other
 BINDIR             = bin
 MEGABINDIR         = bin/megarow
 OSXPKGROOT         = packaging/os_x
@@ -73,6 +74,7 @@ install: prep_c install_conversion_scripts install_starch_scripts
 	-cp ${APPDIR}/starch/bin/starchcat ${BINDIR}/
 	-cp ${APPDIR}/starch/bin/starchstrip ${BINDIR}/
 	-cp ${APPDIR}/conversion/bin/convert2bed ${BINDIR}/
+	-cp ${OTHERDIR}/set-symlinks-BOPS ${BINDIR}/
 
 install_all: install_conversion_scripts_with_suffix
 	-cp ${APPDIR}/sort-bed/bin/sort-bed$(MEGA) ${BINDIR}/
@@ -101,6 +103,7 @@ install_all: install_conversion_scripts_with_suffix
 	-cp ${APPDIR}/starch/bin/starchcat$(TYPICAL) ${BINDIR}/
 	-cp ${APPDIR}/starch/bin/starchstrip$(TYPICAL) ${BINDIR}/
 	-cp ${APPDIR}/conversion/bin/convert2bed$(TYPICAL) ${BINDIR}/
+	-cp ${OTHERDIR}/set-symlinks-BOPS ${BINDIR}/
 
 
 #######################
@@ -222,6 +225,7 @@ install_osx_packaging_bins: prep_c
 	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_sge ${OSXPKGDIR}/bam2starch_sge
 	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_slurm ${OSXPKGDIR}/bam2starch_slurm
 	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_gnuParallel ${OSXPKGDIR}/bam2starch_gnuParallel
+	-cp ${OTHERDIR}/set-symlinks-BOPS ${OSXPKGDIR}/set-symlinks-BOPS
 	mkdir -p ${OSXLIBDIR}
 
 update_bedops_version:
