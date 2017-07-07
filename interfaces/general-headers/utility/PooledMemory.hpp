@@ -21,8 +21,8 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#ifndef UTILS_SIMPLE_SMALLOBJ_MEM__
-#define UTILS_SIMPLE_SMALLOBJ_MEM__
+#ifndef UTILS_SIMPLE_SMALLOBJ_MEM
+#define UTILS_SIMPLE_SMALLOBJ_MEM
 
 #include <functional>
 #include <limits>
@@ -164,4 +164,4 @@ namespace Ext {
 
 } // namespace Ext
 
-#endif // UTILS_SIMPLE_SMALLOBJ_MEM__
+#endif // UTILS_SIMPLE_SMALLOBJ_MEM

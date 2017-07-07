@@ -41,13 +41,16 @@ BINDIR               = ../bin
 PROG                 = bedmap${POSTFIX}
 
 build: dependencies
-	$(CXX) -o $(BINDIR)/$(PROG)_$(ARCH) $(FLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIBRARIES} $(SOURCE1)
+	$(CXX) -o $(BINDIR)/$(PROG) $(FLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIBRARIES} $(SOURCE1)
+	rm -rf $(OBJDIR)
 
 build_debug: dependencies
-	$(CXX) -o $(BINDIR)/debug.$(PROG)_$(ARCH) $(DFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIBRARIES} $(SOURCE1)
+	$(CXX) -o $(BINDIR)/debug.$(PROG) $(DFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIBRARIES} $(SOURCE1)
+	rm -rf $(OBJDIR)
 
 build_gprof: dependencies
-	$(CXX) -o $(BINDIR)/gprof.$(PROG)_$(ARCH) $(GPROFFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIBRARIES} $(SOURCE1)
+	$(CXX) -o $(BINDIR)/gprof.$(PROG) $(GPROFFLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIBRARIES} $(SOURCE1)
+	rm -rf $(OBJDIR)
 
 dependencies:
 	rm -rf $(OBJDIR)

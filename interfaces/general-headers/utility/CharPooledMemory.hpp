@@ -20,8 +20,8 @@
 //    with this program; if not, write to the Free Software Foundation, Inc.,
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-#ifndef UTILS_SIMPLE_CHARARRAY_MEM__
-#define UTILS_SIMPLE_CHARARRAY_MEM__
+#ifndef UTILS_SIMPLE_CHARARRAY_MEM
+#define UTILS_SIMPLE_CHARARRAY_MEM
 
 #include <cstring>
 #include <exception>
@@ -518,4 +518,4 @@ namespace Ext {
 
 } // namespace Ext
 
-#endif // UTILS_SIMPLE_CHARARRAY_MEM__
+#endif // UTILS_SIMPLE_CHARARRAY_MEM

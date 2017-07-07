@@ -11,7 +11,7 @@ LIBSTARCHDEBUG            = libstarch_debug.a
 LIBJANSSON                = libjansson.a
 LIBBZIP2                  = libbz2.a
 LIBZLIB                   = libz.a
-LOCALSTARCHLIBDIR         = ../lib_${ARCH}
+LOCALSTARCHLIBDIR         = ../lib
 LOCALSTARCHLIB            = ${LOCALSTARCHLIBDIR}/${LIBSTARCH}
 LOCALSTARCHLIBDEBUG       = ${LOCALSTARCHLIBDIR}/${LIBSTARCHDEBUG}
 LOCALJANSSONDIR           = ${PARTY3}/darwin_intel_${ARCH}/jansson
@@ -27,10 +27,10 @@ LOCALZLIBLIBDIR           = ${LOCALZLIBDIR}
 LOCALZLIBLIB              = ${LOCALZLIBLIBDIR}/${LIBZLIB}
 LOCALZLIBINCDIR           = ${LOCALZLIBDIR}
 OBJDIR                    = ${INTERFACES}/src/data/starch
-LOCALOBJDIR               = objects_${ARCH}"${POSTFIX}"
+LOCALOBJDIR               = objects"${POSTFIX}"
 INCLUDES                  = -iquote${MAIN} -iquote${HEAD} -iquote${PARTY3} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 LIBRARIES                 = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
-BINDIR                    = ../bin_${ARCH}
+BINDIR                    = ../bin
 WARNINGS                  = -Weverything -Wno-c++98-compat-pedantic -Wno-padded
 ARCH_VERSION              = v2.2
 BIN_VERSION               = v2.4.27
@@ -58,7 +58,7 @@ dependencies: mkdirs
 	${CC} ${CCFLAGS} -c ${OBJDIR}/starchSha1Digest.c -o  ${LOCALOBJDIR}/starchSha1Digest.o ${INCLUDES}
 	${CC} ${CCFLAGS} -c ${OBJDIR}/starchBase64Coding.c -o  ${LOCALOBJDIR}/starchBase64Coding.o ${INCLUDES}
 
-build_debug: dependencies_debug starchLibrary_debug starch_debug unstarch_debug starchcat_debug starchstrip_debug
+build_debug: dependencies_debug starchLibrary_debug starch_debug unstarch_debug starchcat_debug starchstrip_debug starchcluster starch-diff
 	rm -f *~
 
 dependencies_debug: mkdirs
@@ -127,6 +127,9 @@ test: starch unstarch starchcat
 	make -C ${TEST} all
 
 mkdirs:
+	rm -rf ${LOCALOBJDIR}
+	rm -rf ${LOCALSTARCHLIBDIR}
+	rm -rf ${BINDIR}
 	mkdir -p ${LOCALOBJDIR}
 	mkdir -p ${LOCALSTARCHLIBDIR}
 	mkdir -p ${BINDIR}

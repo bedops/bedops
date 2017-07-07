@@ -21,8 +21,8 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#ifndef UTILS_BITMONITOR__
-#define UTILS_BITMONITOR__
+#ifndef UTILS_BITMONITOR
+#define UTILS_BITMONITOR
 
 #include <algorithm>
 #include <array>
