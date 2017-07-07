@@ -1,10 +1,10 @@
-#!/bin/bash -x
+#!/bin/bash
 # author : sjn
 # date : July.2017
 
-BINDIR=`pwd`
+BINDIR=$(dirname $0)
 TYPICAL="-typical"
-MEGA="-megarow"
+MEGA="-mega"
 EXTENSION=${TYPICAL}
 
 if [ ! -z "$1" ]

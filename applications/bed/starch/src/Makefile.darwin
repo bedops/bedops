@@ -93,11 +93,9 @@ unstarch_debug: starchLibrary_debug
 	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.unstarch.o -o ${BINDIR}/debug.unstarch"${POSTFIX}" ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
 
 starchcluster: starchcat
-ifeq (${POSTFIX},)
-	cp starchcluster_sge.tcsh ${BINDIR}/starchcluster_sge
-	cp starchcluster_gnuParallel.tcsh ${BINDIR}/starchcluster_gnuParallel
-	cp starchcluster_slurm.tcsh ${BINDIR}/starchcluster_slurm
-endif
+	cp starchcluster_sge.tcsh ${BINDIR}/starchcluster_sge"${POSTFIX}"
+	cp starchcluster_gnuParallel.tcsh ${BINDIR}/starchcluster_gnuParallel"${POSTFIX}"
+	cp starchcluster_slurm.tcsh ${BINDIR}/starchcluster_slurm"${POSTFIX}"
 
 starch-diff: unstarch
 ifeq (${POSTFIX},)
@@ -129,7 +127,6 @@ test: starch unstarch starchcat
 mkdirs:
 	rm -rf ${LOCALOBJDIR}
 	rm -rf ${LOCALSTARCHLIBDIR}
-	rm -rf ${BINDIR}
 	mkdir -p ${LOCALOBJDIR}
 	mkdir -p ${LOCALSTARCHLIBDIR}
 	mkdir -p ${BINDIR}
