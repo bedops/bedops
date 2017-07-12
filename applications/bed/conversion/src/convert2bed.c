@@ -1798,6 +1798,228 @@ c2b_line_convert_gff_ptr_to_bed(c2b_gff_t *g, char *dest_line, ssize_t *dest_siz
 }
 
 static void
+c2b_psl_init_element(c2b_psl_t **e)
+{
+    *e = malloc(sizeof(c2b_psl_t));
+    if (!*e) {
+        fprintf(stderr, "Error: Could not allocate space for PSL element pointer\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+
+    (*e)->matchesStr = NULL, (*e)->matchesStr = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->matchesStr)));
+    if (!(*e)->matchesStr) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element matchesStr malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->matchesStr_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->misMatchesStr = NULL, (*e)->misMatchesStr = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->misMatchesStr)));
+    if (!(*e)->misMatchesStr) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element misMatchesStr malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->misMatchesStr_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->repMatchesStr = NULL, (*e)->repMatchesStr = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->repMatchesStr)));
+    if (!(*e)->repMatchesStr) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element repMatchesStr malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->repMatchesStr_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->nCountStr = NULL, (*e)->nCountStr = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->nCountStr)));
+    if (!(*e)->nCountStr) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element nCountStr malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->nCountStr_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->qNumInsertStr = NULL, (*e)->qNumInsertStr = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->qNumInsertStr)));
+    if (!(*e)->qNumInsertStr) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element qNumInsertStr malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->qNumInsertStr_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->qBaseInsertStr = NULL, (*e)->qBaseInsertStr = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->qBaseInsertStr)));
+    if (!(*e)->qBaseInsertStr) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element qBaseInsertStr malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->qBaseInsertStr_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->tNumInsertStr = NULL, (*e)->tNumInsertStr = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->tNumInsertStr)));
+    if (!(*e)->tNumInsertStr) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element tNumInsertStr malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->tNumInsertStr_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->tBaseInsertStr = NULL, (*e)->tBaseInsertStr = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->tBaseInsertStr)));
+    if (!(*e)->tBaseInsertStr) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element tBaseInsertStr malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->tBaseInsertStr_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->strand = NULL, (*e)->strand = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->strand)));
+    if (!(*e)->strand) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element strand malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->strand_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->qName = NULL, (*e)->qName = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->qName)));
+    if (!(*e)->qName) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element qName malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->qName_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->qSizeStr = NULL, (*e)->qSizeStr = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->qSizeStr)));
+    if (!(*e)->qSizeStr) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element qSizeStr malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->qSizeStr_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->qStartStr = NULL, (*e)->qStartStr = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->qStartStr)));
+    if (!(*e)->qStartStr) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element qStartStr malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->qStartStr_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->qEndStr = NULL, (*e)->qEndStr = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->qEndStr)));
+    if (!(*e)->qEndStr) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element qEndStr malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->qEndStr_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->tName = NULL, (*e)->tName = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->tName)));
+    if (!(*e)->tName) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element tName malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->tName_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->tSizeStr = NULL, (*e)->tSizeStr = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->tSizeStr)));
+    if (!(*e)->tSizeStr) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element tSizeStr malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->tSizeStr_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->tStartStr = NULL, (*e)->tStartStr = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->tStartStr)));
+    if (!(*e)->tStartStr) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element tStartStr malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->tStartStr_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->tEndStr = NULL, (*e)->tEndStr = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->tEndStr)));
+    if (!(*e)->tEndStr) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element tEndStr malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->tEndStr_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->blockCountStr = NULL, (*e)->blockCountStr = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->blockCountStr)));
+    if (!(*e)->blockCountStr) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element blockCountStr malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->blockCountStr_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->blockSizes = NULL, (*e)->blockSizes = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->blockSizes)));
+    if (!(*e)->blockSizes) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element blockSizes malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->blockSizes_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->qStarts = NULL, (*e)->qStarts = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->qStarts)));
+    if (!(*e)->qStarts) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element qStarts malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->qStarts_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->tStarts = NULL, (*e)->tStarts = malloc(C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->tStarts)));
+    if (!(*e)->tStarts) { 
+        fprintf(stderr, "Error: Could not allocate space for PSL element tStarts malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->tStarts_capacity = C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+
+    (*e)->matches = 0;
+    (*e)->misMatches = 0;
+    (*e)->repMatches = 0;
+    (*e)->nCount = 0;
+    (*e)->qNumInsert = 0;
+    (*e)->qBaseInsert = 0;
+    (*e)->tNumInsert = 0;
+    (*e)->tBaseInsert = 0;
+    (*e)->qSize = 0;
+    (*e)->qStart = 0;
+    (*e)->qEnd = 0;
+    (*e)->tSize = 0;
+    (*e)->tStart = 0;
+    (*e)->tEnd = 0;
+    (*e)->blockCount = 0;
+}
+
+static void
+c2b_psl_delete_element(c2b_psl_t *e)
+{
+    if (e->matchesStr)      { free(e->matchesStr),      e->matchesStr = NULL;      }
+    if (e->misMatchesStr)   { free(e->misMatchesStr),   e->misMatchesStr = NULL;   }
+    if (e->repMatchesStr)   { free(e->repMatchesStr),   e->repMatchesStr = NULL;   }
+    if (e->nCountStr)       { free(e->nCountStr),       e->nCountStr = NULL;       }
+    if (e->qNumInsertStr)   { free(e->qNumInsertStr),   e->qNumInsertStr = NULL;   }
+    if (e->qBaseInsertStr)  { free(e->qBaseInsertStr),  e->qBaseInsertStr = NULL;  }
+    if (e->tNumInsertStr)   { free(e->tNumInsertStr),   e->tNumInsertStr = NULL;   }
+    if (e->tBaseInsertStr)  { free(e->tBaseInsertStr),  e->tBaseInsertStr = NULL;  }
+    if (e->strand)          { free(e->strand),          e->strand = NULL;          }
+    if (e->qName)           { free(e->qName),           e->qName = NULL;           }
+    if (e->qSizeStr)        { free(e->qSizeStr),        e->qSizeStr = NULL;        }
+    if (e->qStartStr)       { free(e->qStartStr),       e->qStartStr = NULL;       }
+    if (e->qEndStr)         { free(e->qEndStr),         e->qEndStr = NULL;         }
+    if (e->tName)           { free(e->tName),           e->tName = NULL;           }
+    if (e->tSizeStr)        { free(e->tSizeStr),        e->tSizeStr = NULL;        }
+    if (e->tStartStr)       { free(e->tStartStr),       e->tStartStr = NULL;       }
+    if (e->tEndStr)         { free(e->tEndStr),         e->tEndStr = NULL;         }
+    if (e->blockCountStr)   { free(e->blockCountStr),   e->blockCountStr = NULL;   }
+    if (e->blockSizes)      { free(e->blockSizes),      e->blockSizes = NULL;      }
+    if (e->qStarts)         { free(e->qStarts),         e->qStarts = NULL;         }
+    if (e->tStarts)         { free(e->tStarts),         e->tStarts = NULL;         }
+    if (e)                  { free(e),                  e = NULL;                  }
+}
+
+static void
 c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
 {
     ssize_t psl_field_offsets[C2B_MAX_FIELD_COUNT_VALUE];
@@ -1853,14 +2075,25 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     }
 
     /* 0 - matches */
-    char matches_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    ssize_t matches_size = psl_field_offsets[0];
-    memcpy(matches_str, src, matches_size);
-    matches_str[matches_size] = '\0';
-    uint64_t matches_val = strtoull(matches_str, NULL, 10);
+    ssize_t matchesStr_size = psl_field_offsets[0];
+    if (matchesStr_size >= c2b_globals.psl->element->matchesStr_capacity) {
+        char *matchesStr_resized = NULL;
+        matchesStr_resized = realloc(c2b_globals.psl->element->matchesStr, matchesStr_size + 1);
+        if (matchesStr_resized) {
+            c2b_globals.psl->element->matchesStr = matchesStr_resized;
+            c2b_globals.psl->element->matchesStr_capacity = matchesStr_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize matchesStr in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->matchesStr, src, matchesStr_size);
+    c2b_globals.psl->element->matchesStr[matchesStr_size] = '\0';
+    c2b_globals.psl->element->matches = strtoull(c2b_globals.psl->element->matchesStr, NULL, 10);
 
 #ifdef DEBUG
-    fprintf(stderr, "matches_str: [%s]\n", matches_str);
+    fprintf(stderr, "matchesStr: [%s]\n", c2b_globals.psl->element->matchesStr);
 #endif
 
     /* 
@@ -1868,7 +2101,7 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
        lines can mimic a genomic element
     */
 
-    if ((matches_val == 0) && (!isdigit(matches_str[0]))) {
+    if ((c2b_globals.psl->element->matches == 0) && (!isdigit(c2b_globals.psl->element->matchesStr[0]))) {
         if ((c2b_globals.psl->is_headered) && (c2b_globals.keep_header_flag) && (c2b_globals.header_line_idx <= 5)) {
             /* copy header line to destination stream buffer */
             char src_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
@@ -1884,262 +2117,459 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     }
 
     /* 1 - misMatches */
-    char misMatches_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    ssize_t misMatches_size = psl_field_offsets[1] - psl_field_offsets[0] - 1;
-    memcpy(misMatches_str, src + psl_field_offsets[0] + 1, misMatches_size);
-    misMatches_str[misMatches_size] = '\0';
-    uint64_t misMatches_val = strtoull(misMatches_str, NULL, 10);
+    ssize_t misMatchesStr_size = psl_field_offsets[1] - psl_field_offsets[0] - 1;
+    if (misMatchesStr_size >= c2b_globals.psl->element->misMatchesStr_capacity) {
+        char *misMatchesStr_resized = NULL;
+        misMatchesStr_resized = realloc(c2b_globals.psl->element->misMatchesStr, misMatchesStr_size + 1);
+        if (misMatchesStr_resized) {
+            c2b_globals.psl->element->misMatchesStr = misMatchesStr_resized;
+            c2b_globals.psl->element->misMatchesStr_capacity = misMatchesStr_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize misMatchesStr in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->misMatchesStr, src + psl_field_offsets[0] + 1, misMatchesStr_size);
+    c2b_globals.psl->element->misMatchesStr[misMatchesStr_size] = '\0';
+    c2b_globals.psl->element->misMatches = strtoull(c2b_globals.psl->element->misMatchesStr, NULL, 10);
     
 #ifdef DEBUG
-    fprintf(stderr, "misMatches_str: [%s]\n", misMatches_str);
+    fprintf(stderr, "misMatchesStr: [%s]\n", c2b_globals.psl->element->misMatchesStr);
 #endif
 
     /* 2 - repMatches */
-    char repMatches_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    ssize_t repMatches_size = psl_field_offsets[2] - psl_field_offsets[1] - 1;
-    memcpy(repMatches_str, src + psl_field_offsets[1] + 1, repMatches_size);
-    repMatches_str[repMatches_size] = '\0';
-    uint64_t repMatches_val = strtoull(repMatches_str, NULL, 10);
+    ssize_t repMatchesStr_size = psl_field_offsets[2] - psl_field_offsets[1] - 1;
+    if (repMatchesStr_size >= c2b_globals.psl->element->repMatchesStr_capacity) {
+        char *repMatchesStr_resized = NULL;
+        repMatchesStr_resized = realloc(c2b_globals.psl->element->repMatchesStr, repMatchesStr_size + 1);
+        if (repMatchesStr_resized) {
+            c2b_globals.psl->element->repMatchesStr = repMatchesStr_resized;
+            c2b_globals.psl->element->repMatchesStr_capacity = repMatchesStr_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize repMatchesStr in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->repMatchesStr, src + psl_field_offsets[1] + 1, repMatchesStr_size);
+    c2b_globals.psl->element->repMatchesStr[repMatchesStr_size] = '\0';
+    c2b_globals.psl->element->repMatches = strtoull(c2b_globals.psl->element->repMatchesStr, NULL, 10);
 
 #ifdef DEBUG
-    fprintf(stderr, "repMatches_str: [%s]\n", repMatches_str);
+    fprintf(stderr, "repMatchesStr: [%s]\n", c2b_globals.psl->element->repMatchesStr);
 #endif
 
     /* 3 - nCount */
-    char nCount_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    ssize_t nCount_size = psl_field_offsets[3] - psl_field_offsets[2] - 1;
-    memcpy(nCount_str, src + psl_field_offsets[2] + 1, nCount_size);
-    nCount_str[nCount_size] = '\0';
-    uint64_t nCount_val = strtoull(nCount_str, NULL, 10);
+    ssize_t nCountStr_size = psl_field_offsets[3] - psl_field_offsets[2] - 1;
+    if (nCountStr_size >= c2b_globals.psl->element->nCountStr_capacity) {
+        char *nCountStr_resized = NULL;
+        nCountStr_resized = realloc(c2b_globals.psl->element->nCountStr, nCountStr_size + 1);
+        if (nCountStr_resized) {
+            c2b_globals.psl->element->nCountStr = nCountStr_resized;
+            c2b_globals.psl->element->nCountStr_capacity = nCountStr_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize nCountStr in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->nCountStr, src + psl_field_offsets[2] + 1, nCountStr_size);
+    c2b_globals.psl->element->nCountStr[nCountStr_size] = '\0';
+    c2b_globals.psl->element->nCount = strtoull(c2b_globals.psl->element->nCountStr, NULL, 10);
 
 #ifdef DEBUG
-    fprintf(stderr, "nCount_str: [%s]\n", nCount_str);
+    fprintf(stderr, "nCountStr: [%s]\n", c2b_globals.psl->element->nCountStr);
 #endif
 
     /* 4 - qNumInsert */
-    char qNumInsert_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    ssize_t qNumInsert_size = psl_field_offsets[4] - psl_field_offsets[3] - 1;
-    memcpy(qNumInsert_str, src + psl_field_offsets[3] + 1, qNumInsert_size);
-    qNumInsert_str[qNumInsert_size] = '\0';
-    uint64_t qNumInsert_val = strtoull(qNumInsert_str, NULL, 10);
+    ssize_t qNumInsertStr_size = psl_field_offsets[4] - psl_field_offsets[3] - 1;
+    if (qNumInsertStr_size >= c2b_globals.psl->element->qNumInsertStr_capacity) {
+        char *qNumInsertStr_resized = NULL;
+        qNumInsertStr_resized = realloc(c2b_globals.psl->element->qNumInsertStr, qNumInsertStr_size + 1);
+        if (qNumInsertStr_resized) {
+            c2b_globals.psl->element->qNumInsertStr = qNumInsertStr_resized;
+            c2b_globals.psl->element->qNumInsertStr_capacity = qNumInsertStr_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize qNumInsertStr in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->qNumInsertStr, src + psl_field_offsets[3] + 1, qNumInsertStr_size);
+    c2b_globals.psl->element->qNumInsertStr[qNumInsertStr_size] = '\0';
+    c2b_globals.psl->element->qNumInsert = strtoull(c2b_globals.psl->element->qNumInsertStr, NULL, 10);
 
 #ifdef DEBUG
-    fprintf(stderr, "qNumInsert_str: [%s]\n", qNumInsert_str);
+    fprintf(stderr, "qNumInsertStr: [%s]\n", c2b_globals.psl->element->qNumInsertStr);
 #endif
 
     /* 5 - qBaseInsert */
-    char qBaseInsert_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    ssize_t qBaseInsert_size = psl_field_offsets[5] - psl_field_offsets[4] - 1;
-    memcpy(qBaseInsert_str, src + psl_field_offsets[4] + 1, qBaseInsert_size);
-    qBaseInsert_str[qBaseInsert_size] = '\0';
-    uint64_t qBaseInsert_val = strtoull(qBaseInsert_str, NULL, 10);
+    ssize_t qBaseInsertStr_size = psl_field_offsets[5] - psl_field_offsets[4] - 1;
+    if (qBaseInsertStr_size >= c2b_globals.psl->element->qBaseInsertStr_capacity) {
+        char *qBaseInsertStr_resized = NULL;
+        qBaseInsertStr_resized = realloc(c2b_globals.psl->element->qBaseInsertStr, qBaseInsertStr_size + 1);
+        if (qBaseInsertStr_resized) {
+            c2b_globals.psl->element->qBaseInsertStr = qBaseInsertStr_resized;
+            c2b_globals.psl->element->qBaseInsertStr_capacity = qBaseInsertStr_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize qBaseInsertStr in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->qBaseInsertStr, src + psl_field_offsets[4] + 1, qBaseInsertStr_size);
+    c2b_globals.psl->element->qBaseInsertStr[qBaseInsertStr_size] = '\0';
+    c2b_globals.psl->element->qBaseInsert = strtoull(c2b_globals.psl->element->qBaseInsertStr, NULL, 10);
 
 #ifdef DEBUG
-    fprintf(stderr, "qBaseInsert_str: [%s]\n", qBaseInsert_str);
+    fprintf(stderr, "qBaseInsertStr: [%s]\n", c2b_globals.psl->element->qBaseInsertStr);
 #endif
 
     /* 6 - tNumInsert */
-    char tNumInsert_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    ssize_t tNumInsert_size = psl_field_offsets[6] - psl_field_offsets[5] - 1;
-    memcpy(tNumInsert_str, src + psl_field_offsets[5] + 1, tNumInsert_size);
-    tNumInsert_str[tNumInsert_size] = '\0';
-    uint64_t tNumInsert_val = strtoull(tNumInsert_str, NULL, 10);
+    ssize_t tNumInsertStr_size = psl_field_offsets[6] - psl_field_offsets[5] - 1;
+    if (tNumInsertStr_size >= c2b_globals.psl->element->tNumInsertStr_capacity) {
+        char *tNumInsertStr_resized = NULL;
+        tNumInsertStr_resized = realloc(c2b_globals.psl->element->tNumInsertStr, tNumInsertStr_size + 1);
+        if (tNumInsertStr_resized) {
+            c2b_globals.psl->element->tNumInsertStr = tNumInsertStr_resized;
+            c2b_globals.psl->element->tNumInsertStr_capacity = tNumInsertStr_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize tNumInsertStr in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->tNumInsertStr, src + psl_field_offsets[5] + 1, tNumInsertStr_size);
+    c2b_globals.psl->element->tNumInsertStr[tNumInsertStr_size] = '\0';
+    c2b_globals.psl->element->tNumInsert = strtoull(c2b_globals.psl->element->tNumInsertStr, NULL, 10);
 
 #ifdef DEBUG
-    fprintf(stderr, "tNumInsert_str: [%s]\n", tNumInsert_str);
+    fprintf(stderr, "tNumInsertStr: [%s]\n", c2b_globals.psl->element->tNumInsertStr);
 #endif
 
     /* 7 - tBaseInsert */
-    char tBaseInsert_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    ssize_t tBaseInsert_size = psl_field_offsets[7] - psl_field_offsets[6] - 1;
-    memcpy(tBaseInsert_str, src + psl_field_offsets[6] + 1, tBaseInsert_size);
-    tBaseInsert_str[tBaseInsert_size] = '\0';
-    uint64_t tBaseInsert_val = strtoull(tBaseInsert_str, NULL, 10);
+    ssize_t tBaseInsertStr_size = psl_field_offsets[7] - psl_field_offsets[6] - 1;
+    if (tBaseInsertStr_size >= c2b_globals.psl->element->tBaseInsertStr_capacity) {
+        char *tBaseInsertStr_resized = NULL;
+        tBaseInsertStr_resized = realloc(c2b_globals.psl->element->tBaseInsertStr, tBaseInsertStr_size + 1);
+        if (tBaseInsertStr_resized) {
+            c2b_globals.psl->element->tBaseInsertStr = tBaseInsertStr_resized;
+            c2b_globals.psl->element->tBaseInsertStr_capacity = tBaseInsertStr_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize tBaseInsertStr in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->tBaseInsertStr, src + psl_field_offsets[6] + 1, tBaseInsertStr_size);
+    c2b_globals.psl->element->tBaseInsertStr[tBaseInsertStr_size] = '\0';
+    c2b_globals.psl->element->tBaseInsert = strtoull(c2b_globals.psl->element->tBaseInsertStr, NULL, 10);
 
 #ifdef DEBUG
-    fprintf(stderr, "tBaseInsert_str: [%s]\n", tBaseInsert_str);
+    fprintf(stderr, "tBaseInsertStr: [%s]\n", c2b_globals.psl->element->tBaseInsertStr);
 #endif
 
     /* 8 - strand */
-    char strand_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t strand_size = psl_field_offsets[8] - psl_field_offsets[7] - 1;
-    memcpy(strand_str, src + psl_field_offsets[7] + 1, strand_size);
-    strand_str[strand_size] = '\0';
+    if (strand_size >= c2b_globals.psl->element->strand_capacity) {
+        char *strand_resized = NULL;
+        strand_resized = realloc(c2b_globals.psl->element->strand, strand_size + 1);
+        if (strand_resized) {
+            c2b_globals.psl->element->strand = strand_resized;
+            c2b_globals.psl->element->strand_capacity = strand_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize strand in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->strand, src + psl_field_offsets[7] + 1, strand_size);
+    c2b_globals.psl->element->strand[strand_size] = '\0';
 
 #ifdef DEBUG
-    fprintf(stderr, "strand_str: [%s]\n", strand_str);
+    fprintf(stderr, "strand: [%s]\n", c2b_globals.psl->element->strand);
 #endif
 
     /* 9 - qName */
-    char qName_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t qName_size = psl_field_offsets[9] - psl_field_offsets[8] - 1;
-    memcpy(qName_str, src + psl_field_offsets[8] + 1, qName_size);
-    qName_str[qName_size] = '\0';
+    if (qName_size >= c2b_globals.psl->element->qName_capacity) {
+        char *qName_resized = NULL;
+        qName_resized = realloc(c2b_globals.psl->element->qName, qName_size + 1);
+        if (qName_resized) {
+            c2b_globals.psl->element->qName = qName_resized;
+            c2b_globals.psl->element->qName_capacity = qName_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize qName in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->qName, src + psl_field_offsets[8] + 1, qName_size);
+    c2b_globals.psl->element->qName[qName_size] = '\0';
 
 #ifdef DEBUG
-    fprintf(stderr, "qName_str: [%s]\n", qName_str);
+    fprintf(stderr, "qName: [%s]\n", c2b_globals.psl->element->qName);
 #endif
 
     /* 10 - qSize */
-    char qSize_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    ssize_t qSize_size = psl_field_offsets[10] - psl_field_offsets[9] - 1;
-    memcpy(qSize_str, src + psl_field_offsets[9] + 1, qSize_size);
-    qSize_str[qSize_size] = '\0';
-    uint64_t qSize_val = strtoull(qSize_str, NULL, 10);
+    ssize_t qSizeStr_size = psl_field_offsets[10] - psl_field_offsets[9] - 1;
+    if (qSizeStr_size >= c2b_globals.psl->element->qSizeStr_capacity) {
+        char *qSizeStr_resized = NULL;
+        qSizeStr_resized = realloc(c2b_globals.psl->element->qSizeStr, qSizeStr_size + 1);
+        if (qSizeStr_resized) {
+            c2b_globals.psl->element->qSizeStr = qSizeStr_resized;
+            c2b_globals.psl->element->qSizeStr_capacity = qSizeStr_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize qSizeStr in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->qSizeStr, src + psl_field_offsets[9] + 1, qSizeStr_size);
+    c2b_globals.psl->element->qSizeStr[qSizeStr_size] = '\0';
+    c2b_globals.psl->element->qSize = strtoull(c2b_globals.psl->element->qSizeStr, NULL, 10);
 
 #ifdef DEBUG
-    fprintf(stderr, "qSize_str: [%s]\n", qSize_str);
+    fprintf(stderr, "qSizeStr: [%s]\n", c2b_globals.psl->element->qSizeStr);
 #endif
 
     /* 11 - qStart */
-    char qStart_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    ssize_t qStart_size = psl_field_offsets[11] - psl_field_offsets[10] - 1;
-    memcpy(qStart_str, src + psl_field_offsets[10] + 1, qStart_size);
-    qStart_str[qStart_size] = '\0';
-    uint64_t qStart_val = strtoull(qStart_str, NULL, 10);
+    ssize_t qStartStr_size = psl_field_offsets[11] - psl_field_offsets[10] - 1;
+    if (qStartStr_size >= c2b_globals.psl->element->qStartStr_capacity) {
+        char *qStartStr_resized = NULL;
+        qStartStr_resized = realloc(c2b_globals.psl->element->qStartStr, qStartStr_size + 1);
+        if (qStartStr_resized) {
+            c2b_globals.psl->element->qStartStr = qStartStr_resized;
+            c2b_globals.psl->element->qStartStr_capacity = qStartStr_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize qStartStr in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->qStartStr, src + psl_field_offsets[10] + 1, qStartStr_size);
+    c2b_globals.psl->element->qStartStr[qStartStr_size] = '\0';
+    c2b_globals.psl->element->qStart = strtoull(c2b_globals.psl->element->qStartStr, NULL, 10);
 
 #ifdef DEBUG
-    fprintf(stderr, "qStart_str: [%s]\n", qStart_str);
+    fprintf(stderr, "qStartStr: [%s]\n", c2b_globals.psl->element->qStartStr);
 #endif
 
     /* 12 - qEnd */
-    char qEnd_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    ssize_t qEnd_size = psl_field_offsets[12] - psl_field_offsets[11] - 1;
-    memcpy(qEnd_str, src + psl_field_offsets[11] + 1, qEnd_size);
-    qEnd_str[qEnd_size] = '\0';
-    uint64_t qEnd_val = strtoull(qEnd_str, NULL, 10);
+    ssize_t qEndStr_size = psl_field_offsets[12] - psl_field_offsets[11] - 1;
+    if (qEndStr_size >= c2b_globals.psl->element->qEndStr_capacity) {
+        char *qEndStr_resized = NULL;
+        qEndStr_resized = realloc(c2b_globals.psl->element->qEndStr, qEndStr_size + 1);
+        if (qEndStr_resized) {
+            c2b_globals.psl->element->qEndStr = qEndStr_resized;
+            c2b_globals.psl->element->qEndStr_capacity = qEndStr_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize qEndStr in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->qEndStr, src + psl_field_offsets[11] + 1, qEndStr_size);
+    c2b_globals.psl->element->qEndStr[qEndStr_size] = '\0';
+    c2b_globals.psl->element->qEnd = strtoull(c2b_globals.psl->element->qEndStr, NULL, 10);
 
 #ifdef DEBUG
-    fprintf(stderr, "qEnd_str: [%s]\n", qEnd_str);
+    fprintf(stderr, "qEndStr: [%s]\n", c2b_globals.psl->element->qEndStr);
 #endif
 
     /* 13 - tName */
-    char tName_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t tName_size = psl_field_offsets[13] - psl_field_offsets[12] - 1;
-    memcpy(tName_str, src + psl_field_offsets[12] + 1, tName_size);
-    tName_str[tName_size] = '\0';
+    if (tName_size >= c2b_globals.psl->element->tName_capacity) {
+        char *tName_resized = NULL;
+        tName_resized = realloc(c2b_globals.psl->element->tName, tName_size + 1);
+        if (tName_resized) {
+            c2b_globals.psl->element->tName = tName_resized;
+            c2b_globals.psl->element->tName_capacity = tName_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize tName in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->tName, src + psl_field_offsets[12] + 1, tName_size);
+    c2b_globals.psl->element->tName[tName_size] = '\0';
 
 #ifdef DEBUG
-    fprintf(stderr, "tName_str: [%s]\n", tName_str);
+    fprintf(stderr, "tName: [%s]\n", c2b_globals.psl->element->tName);
 #endif
 
     /* 14 - tSize */
-    char tSize_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    ssize_t tSize_size = psl_field_offsets[14] - psl_field_offsets[13] - 1;
-    memcpy(tSize_str, src + psl_field_offsets[13] + 1, tSize_size);
-    tSize_str[tSize_size] = '\0';
-    uint64_t tSize_val = strtoull(tSize_str, NULL, 10);
+    ssize_t tSizeStr_size = psl_field_offsets[14] - psl_field_offsets[13] - 1;
+    if (tSizeStr_size >= c2b_globals.psl->element->tSizeStr_capacity) {
+        char *tSizeStr_resized = NULL;
+        tSizeStr_resized = realloc(c2b_globals.psl->element->tSizeStr, tSizeStr_size + 1);
+        if (tSizeStr_resized) {
+            c2b_globals.psl->element->tSizeStr = tSizeStr_resized;
+            c2b_globals.psl->element->tSizeStr_capacity = tSizeStr_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize tSizeStr in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->tSizeStr, src + psl_field_offsets[13] + 1, tSizeStr_size);
+    c2b_globals.psl->element->tSizeStr[tSizeStr_size] = '\0';
+    c2b_globals.psl->element->tSize = strtoull(c2b_globals.psl->element->tSizeStr, NULL, 10);
 
 #ifdef DEBUG
-    fprintf(stderr, "tSize_str: [%s]\n", tSize_str);
+    fprintf(stderr, "tSizeStr: [%s]\n", c2b_globals.psl->element->tSizeStr);
 #endif
 
     /* 15 - tStart */
-    char tStart_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    ssize_t tStart_size = psl_field_offsets[15] - psl_field_offsets[14] - 1;
-    memcpy(tStart_str, src + psl_field_offsets[14] + 1, tStart_size);
-    tStart_str[tStart_size] = '\0';
-    uint64_t tStart_val = strtoull(tStart_str, NULL, 10);
+    ssize_t tStartStr_size = psl_field_offsets[15] - psl_field_offsets[14] - 1;
+    if (tStartStr_size >= c2b_globals.psl->element->tStartStr_capacity) {
+        char *tStartStr_resized = NULL;
+        tStartStr_resized = realloc(c2b_globals.psl->element->tStartStr, tStartStr_size + 1);
+        if (tStartStr_resized) {
+            c2b_globals.psl->element->tStartStr = tStartStr_resized;
+            c2b_globals.psl->element->tStartStr_capacity = tStartStr_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize tStartStr in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->tStartStr, src + psl_field_offsets[14] + 1, tStartStr_size);
+    c2b_globals.psl->element->tStartStr[tStartStr_size] = '\0';
+    c2b_globals.psl->element->tStart = strtoull(c2b_globals.psl->element->tStartStr, NULL, 10);
 
 #ifdef DEBUG
-    fprintf(stderr, "tStart_str: [%s]\n", tStart_str);
+    fprintf(stderr, "tStartStr: [%s]\n", c2b_globals.psl->element->tStartStr);
 #endif
 
     /* 16 - tEnd */
-    char tEnd_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    ssize_t tEnd_size = psl_field_offsets[16] - psl_field_offsets[15] - 1;
-    memcpy(tEnd_str, src + psl_field_offsets[15] + 1, tEnd_size);
-    tEnd_str[tEnd_size] = '\0';
-    uint64_t tEnd_val = strtoull(tEnd_str, NULL, 10);
+    ssize_t tEndStr_size = psl_field_offsets[16] - psl_field_offsets[15] - 1;
+    if (tEndStr_size >= c2b_globals.psl->element->tEndStr_capacity) {
+        char *tEndStr_resized = NULL;
+        tEndStr_resized = realloc(c2b_globals.psl->element->tEndStr, tEndStr_size + 1);
+        if (tEndStr_resized) {
+            c2b_globals.psl->element->tEndStr = tEndStr_resized;
+            c2b_globals.psl->element->tEndStr_capacity = tEndStr_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize tEndStr in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->tEndStr, src + psl_field_offsets[15] + 1, tEndStr_size);
+    c2b_globals.psl->element->tEndStr[tEndStr_size] = '\0';
+    c2b_globals.psl->element->tEnd = strtoull(c2b_globals.psl->element->tEndStr, NULL, 10);
 
 #ifdef DEBUG
-    fprintf(stderr, "tEnd_str: [%s]\n", tEnd_str);
+    fprintf(stderr, "tEndStr: [%s]\n", c2b_globals.psl->element->tEndStr);
 #endif
 
     /* 17 - blockCount */
-    char blockCount_str[C2B_MAX_FIELD_LENGTH_VALUE];
-    ssize_t blockCount_size = psl_field_offsets[17] - psl_field_offsets[16] - 1;
-    memcpy(blockCount_str, src + psl_field_offsets[16] + 1, blockCount_size);
-    blockCount_str[blockCount_size] = '\0';
-    uint64_t blockCount_val = strtoull(blockCount_str, NULL, 10);
+    ssize_t blockCountStr_size = psl_field_offsets[17] - psl_field_offsets[16] - 1;
+    if (blockCountStr_size >= c2b_globals.psl->element->blockCountStr_capacity) {
+        char *blockCountStr_resized = NULL;
+        blockCountStr_resized = realloc(c2b_globals.psl->element->blockCountStr, blockCountStr_size + 1);
+        if (blockCountStr_resized) {
+            c2b_globals.psl->element->blockCountStr = blockCountStr_resized;
+            c2b_globals.psl->element->blockCountStr_capacity = blockCountStr_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize blockCountStr in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->blockCountStr, src + psl_field_offsets[16] + 1, blockCountStr_size);
+    c2b_globals.psl->element->blockCountStr[blockCountStr_size] = '\0';
+    c2b_globals.psl->element->blockCount = strtoull(c2b_globals.psl->element->blockCountStr, NULL, 10);
 
 #ifdef DEBUG
-    fprintf(stderr, "blockCount_str: [%s]\n", blockCount_str);
+    fprintf(stderr, "blockCountStr: [%s]\n", c2b_globals.psl->element->blockCountStr);
 #endif
 
     /* 18 - blockSizes */
-    char blockSizes_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t blockSizes_size = psl_field_offsets[18] - psl_field_offsets[17] - 1;
-    memcpy(blockSizes_str, src + psl_field_offsets[17] + 1, blockSizes_size);
-    blockSizes_str[blockSizes_size] = '\0';
+    if (blockSizes_size >= c2b_globals.psl->element->blockSizes_capacity) {
+        char *blockSizes_resized = NULL;
+        blockSizes_resized = realloc(c2b_globals.psl->element->blockSizes, blockSizes_size + 1);
+        if (blockSizes_resized) {
+            c2b_globals.psl->element->blockSizes = blockSizes_resized;
+            c2b_globals.psl->element->blockSizes_capacity = blockSizes_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize blockSizes in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->blockSizes, src + psl_field_offsets[17] + 1, blockSizes_size);
+    c2b_globals.psl->element->blockSizes[blockSizes_size] = '\0';
 
 #ifdef DEBUG
-    fprintf(stderr, "blockSizes_str: [%s]\n", blockSizes_str);
+    fprintf(stderr, "blockSizes: [%s]\n", c2b_globals.psl->element->blockSizes);
 #endif
 
     /* 19 - qStarts */
-    char qStarts_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t qStarts_size = psl_field_offsets[19] - psl_field_offsets[18] - 1;
-    memcpy(qStarts_str, src + psl_field_offsets[18] + 1, qStarts_size);
-    qStarts_str[qStarts_size] = '\0';
+    if (qStarts_size >= c2b_globals.psl->element->qStarts_capacity) {
+        char *qStarts_resized = NULL;
+        qStarts_resized = realloc(c2b_globals.psl->element->qStarts, qStarts_size + 1);
+        if (qStarts_resized) {
+            c2b_globals.psl->element->qStarts = qStarts_resized;
+            c2b_globals.psl->element->qStarts_capacity = qStarts_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize qStarts in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->qStarts, src + psl_field_offsets[18] + 1, qStarts_size);
+    c2b_globals.psl->element->qStarts[qStarts_size] = '\0';
 
 #ifdef DEBUG
-    fprintf(stderr, "qStarts_str: [%s]\n", qStarts_str);
+    fprintf(stderr, "qStarts: [%s]\n", c2b_globals.psl->element->qStarts);
 #endif
 
     /* 20 - tStarts */
-    char tStarts_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t tStarts_size = psl_field_offsets[20] - psl_field_offsets[19] - 1;
-    memcpy(tStarts_str, src + psl_field_offsets[19] + 1, tStarts_size);
-    tStarts_str[tStarts_size] = '\0';
+    if (tStarts_size >= c2b_globals.psl->element->tStarts_capacity) {
+        char *tStarts_resized = NULL;
+        tStarts_resized = realloc(c2b_globals.psl->element->tStarts, tStarts_size + 1);
+        if (tStarts_resized) {
+            c2b_globals.psl->element->tStarts = tStarts_resized;
+            c2b_globals.psl->element->tStarts_capacity = tStarts_size + 1;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize tStarts in PSL element struct\n");
+            exit(ENOMEM);
+        }
+    }
+    memcpy(c2b_globals.psl->element->tStarts, src + psl_field_offsets[19] + 1, tStarts_size);
+    c2b_globals.psl->element->tStarts[tStarts_size] = '\0';
 
 #ifdef DEBUG
-    fprintf(stderr, "tStarts_str: [%s]\n", tStarts_str);
+    fprintf(stderr, "tStarts: [%s]\n", c2b_globals.psl->element->tStarts);
 #endif
-
-    c2b_psl_t psl;
-    psl.matches = matches_val;
-    psl.misMatches = misMatches_val;
-    psl.repMatches = repMatches_val;
-    psl.nCount = nCount_val;
-    psl.qNumInsert = qNumInsert_val;
-    psl.qBaseInsert = qBaseInsert_val;
-    psl.tNumInsert = tNumInsert_val;
-    psl.tBaseInsert = tBaseInsert_val;
-    psl.strand = strand_str;
-    psl.qName = qName_str;
-    psl.qSize = qSize_val;
-    psl.qStart = qStart_val;
-    psl.qEnd = qEnd_val;
-    psl.tName = tName_str;
-    psl.tSize = tSize_val;
-    psl.tStart = tStart_val;
-    psl.tEnd = tEnd_val;
-    psl.blockCount = blockCount_val;
-    psl.blockSizes = blockSizes_str;
-    psl.qStarts = qStarts_str;
-    psl.tStarts = tStarts_str;
 
     /* 
        Convert PSL struct to BED string and copy it to destination
     */
 
-    if ((c2b_globals.split_flag) && (blockCount_val > 1)) {
-        if (c2b_globals.psl->block->max_count < blockCount_val) {
+    if ((c2b_globals.split_flag) && (c2b_globals.psl->element->blockCount > 1)) {
+        if (c2b_globals.psl->block->max_count < c2b_globals.psl->element->blockCount) {
             fprintf(stderr, "Error: Insufficent PSL block state global size\n");
             exit(ENOMEM); /* Not enough space (POSIX.1) */
         }
-        /* parse tStarts_str and blockSizes_str to write per-block elements */
-        c2b_psl_blockSizes_to_ptr(blockSizes_str, blockCount_val);
-        c2b_psl_tStarts_to_ptr(tStarts_str, blockCount_val);
-        for (uint64_t bc_idx = 0; bc_idx < blockCount_val; bc_idx++) {
-            psl.tStart = c2b_globals.psl->block->starts[bc_idx];
-            psl.tEnd = c2b_globals.psl->block->starts[bc_idx] + c2b_globals.psl->block->sizes[bc_idx];
-            c2b_line_convert_psl_to_bed(psl, dest, dest_size);
+        /* parse tStarts and blockSizes strings to write per-block elements */
+        c2b_psl_blockSizes_to_ptr(c2b_globals.psl->element->blockSizes, c2b_globals.psl->element->blockCount);
+        c2b_psl_tStarts_to_ptr(c2b_globals.psl->element->tStarts, c2b_globals.psl->element->blockCount);
+        for (uint64_t bc_idx = 0; bc_idx < c2b_globals.psl->element->blockCount; bc_idx++) {
+            c2b_globals.psl->element->tStart = c2b_globals.psl->block->starts[bc_idx];
+            c2b_globals.psl->element->tEnd = c2b_globals.psl->block->starts[bc_idx] + c2b_globals.psl->block->sizes[bc_idx];
+            c2b_line_convert_psl_ptr_to_bed(c2b_globals.psl->element, dest, dest_size);
         }
     }
     else {
-        c2b_line_convert_psl_to_bed(psl, dest, dest_size);
+        c2b_line_convert_psl_ptr_to_bed(c2b_globals.psl->element, dest, dest_size);
     }
 }
 
@@ -2220,7 +2650,7 @@ c2b_psl_tStarts_to_ptr(char *s, uint64_t bc)
 }
 
 static inline void
-c2b_line_convert_psl_to_bed(c2b_psl_t p, char *dest_line, ssize_t *dest_size)
+c2b_line_convert_psl_ptr_to_bed(c2b_psl_t *p, char *dest_line, ssize_t *dest_size)
 {
     /* 
        For PSL-formatted data, we use the mapping provided by BEDOPS convention described at:
@@ -2279,27 +2709,27 @@ c2b_line_convert_psl_to_bed(c2b_psl_t p, char *dest_line, ssize_t *dest_size)
                           "%s\t"                \
                           "%s\t"                \
                           "%s\n",
-                          p.tName,
-                          p.tStart,
-                          p.tEnd,
-                          p.qName,
-                          p.matches,
-                          p.strand,
-                          p.qSize,
-                          p.misMatches,
-                          p.repMatches,
-                          p.nCount,
-                          p.qNumInsert,
-                          p.qBaseInsert,
-                          p.tNumInsert,
-                          p.tBaseInsert,
-                          p.qStart,
-                          p.qEnd,
-                          p.tSize,
-                          p.blockCount,
-                          p.blockSizes,
-                          p.qStarts,
-                          p.tStarts);
+                          p->tName,
+                          p->tStart,
+                          p->tEnd,
+                          p->qName,
+                          p->matches,
+                          p->strand,
+                          p->qSize,
+                          p->misMatches,
+                          p->repMatches,
+                          p->nCount,
+                          p->qNumInsert,
+                          p->qBaseInsert,
+                          p->tNumInsert,
+                          p->tBaseInsert,
+                          p->qStart,
+                          p->qEnd,
+                          p->tSize,
+                          p->blockCount,
+                          p->blockSizes,
+                          p->qStarts,
+                          p->tStarts);
 }
 
 static void
@@ -6048,6 +6478,8 @@ c2b_init_global_psl_state()
         exit(ENOMEM); /* Not enough space (POSIX.1) */
     }
 
+    c2b_globals.psl->element = NULL, c2b_psl_init_element(&(c2b_globals.psl->element));
+
     c2b_globals.psl->is_headered = kTrue;
 
     c2b_globals.psl->block = NULL;
@@ -6087,6 +6519,10 @@ c2b_delete_global_psl_state()
     fprintf(stderr, "--- c2b_delete_global_psl_state() - enter ---\n");
 #endif
 
+    if (c2b_globals.psl->element) {
+        c2b_psl_delete_element(c2b_globals.psl->element);
+        c2b_globals.psl->element = NULL;
+    }
     free(c2b_globals.psl->block->starts), c2b_globals.psl->block->starts = NULL;
     free(c2b_globals.psl->block->sizes), c2b_globals.psl->block->sizes = NULL;
     c2b_globals.psl->block->max_count = 0;

@@ -79,6 +79,7 @@ const boolean kFalse = 0;
 #define C2B_GFF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
 #define C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
 #define C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
+#define C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
 #define C2B_THREAD_IO_BUFFER_SIZE 5000000
 
 extern const char *c2b_samtools;
@@ -409,27 +410,63 @@ typedef struct gtf {
 */
 
 typedef struct psl {
+    char *matchesStr;
+    ssize_t matchesStr_capacity;
     uint64_t matches;
+    char *misMatchesStr;
+    ssize_t misMatchesStr_capacity;
     uint64_t misMatches;
+    char *repMatchesStr;
+    ssize_t repMatchesStr_capacity;
     uint64_t repMatches;
+    char *nCountStr;
+    ssize_t nCountStr_capacity;
     uint64_t nCount;
+    char *qNumInsertStr;
+    ssize_t qNumInsertStr_capacity;
     uint64_t qNumInsert;
+    char *qBaseInsertStr;
+    ssize_t qBaseInsertStr_capacity;
     uint64_t qBaseInsert;
+    char *tNumInsertStr;
+    ssize_t tNumInsertStr_capacity;
     uint64_t tNumInsert;
+    char *tBaseInsertStr;
+    ssize_t tBaseInsertStr_capacity;
     uint64_t tBaseInsert;
     char *strand;
+    ssize_t strand_capacity;
     char *qName;
+    ssize_t qName_capacity;
+    char *qSizeStr;
+    ssize_t qSizeStr_capacity;
     uint64_t qSize;
+    char *qStartStr;
+    ssize_t qStartStr_capacity;
     uint64_t qStart;
+    char *qEndStr;
+    ssize_t qEndStr_capacity;
     uint64_t qEnd;
     char *tName;
+    ssize_t tName_capacity;
+    char *tSizeStr;
+    ssize_t tSizeStr_capacity;
     uint64_t tSize;
+    char *tStartStr;
+    ssize_t tStartStr_capacity;
     uint64_t tStart;
+    char *tEndStr;
+    ssize_t tEndStr_capacity;
     uint64_t tEnd;
+    char *blockCountStr;
+    ssize_t blockCountStr_capacity;
     uint64_t blockCount;
     char *blockSizes;
+    ssize_t blockSizes_capacity;
     char *qStarts;
+    ssize_t qStarts_capacity;
     char *tStarts;
+    ssize_t tStarts_capacity;
 } c2b_psl_t;
 
 typedef struct block {
@@ -1290,6 +1327,7 @@ typedef struct gtf_state {
 } c2b_gtf_state_t;
 
 typedef struct psl_state {
+    c2b_psl_t *element;
     boolean is_headered;
     c2b_psl_block_t *block;
 } c2b_psl_state_t;
@@ -1440,10 +1478,12 @@ extern "C" {
     static void              c2b_gff_delete_element(c2b_gff_t *e);
     static void              c2b_line_convert_gff_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
     static inline void       c2b_line_convert_gff_ptr_to_bed(c2b_gff_t *g, char *dest_line, ssize_t *dest_size);
+    static void              c2b_psl_init_element(c2b_psl_t **e);
+    static void              c2b_psl_delete_element(c2b_psl_t *e);
     static void              c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
     static inline void       c2b_psl_blockSizes_to_ptr(char *s, uint64_t bc);
     static inline void       c2b_psl_tStarts_to_ptr(char *s, uint64_t bc);
-    static inline void       c2b_line_convert_psl_to_bed(c2b_psl_t p, char *dest_line, ssize_t *dest_size);
+    static inline void       c2b_line_convert_psl_ptr_to_bed(c2b_psl_t *p, char *dest_line, ssize_t *dest_size);
     static void              c2b_rmsk_init_element(c2b_rmsk_t **e);
     static void              c2b_rmsk_delete_element(c2b_rmsk_t *e);
     static void              c2b_line_convert_rmsk_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);

@@ -44,6 +44,10 @@ This revision of BEDOPS includes significant performance improvements for defaul
   * Performance of :code:`closest-features` tool improved, doing the same work in **87.7%** of the time of all previous versions.
 
   * :code:`megarow` build target is available to compile a version of the program that can handle input files with very long rows (4M+ characters).  This requires more runtime memory than the default build.  The pertinent variables can be modified through the make system without changing source.
+
+* :ref:`psl2bed <psl2bed>`
+
+  * Migrated PSL state from stack to heap to address seg faults on OS X (thanks to rmartson@Biostars for the bug report).
   
 * :ref:`bam2bed <bam2bed>` and :ref:`sam2bed <sam2bed>`
 
