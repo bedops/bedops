@@ -18,7 +18,7 @@ then
 	EXTENSION=${MEGA}
 fi
 
-variablename=$(find ${BINDIR}/ -maxdepth 1 -mindepth 1 -type f -name *${EXTENSION} -print0 | xargs -L1 -0 -I{} sh -c 'basename {}')
+variablename=$(find ${BINDIR}/ -maxdepth 1 -mindepth 1 -type f -name '*${EXTENSION}' -print0 | xargs -L1 -0 -I{} sh -c 'basename {}')
 for i in ${variablename}; do
 	nm=`echo $i | sed "s/${EXTENSION}//"`;
 	ln -sf $i ${BINDIR}/${nm};
