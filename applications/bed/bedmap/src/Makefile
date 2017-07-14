@@ -19,7 +19,7 @@ LOCALBZIP2INCDIR    = ${LOCALBZIP2DIR}
 LOCALZLIBDIR        = ${PARTY3}/zlib
 LOCALZLIBLIB        = ${LOCALZLIBDIR}/${LIBZLIB}
 LOCALZLIBINCDIR     = ${LOCALZLIBDIR}
-OBJDIR              = objects${POSTFIX}
+OBJDIR              = objects_${BINARY_TYPE}
 INCLUDES            = -iquote${HEAD} -I${PARTY3} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 LIBLOCATION         = -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBDIR}
 LIBRARIES           = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
@@ -34,7 +34,7 @@ GPROFFLAGS          = ${SFLAGS} ${MEGAFLAGS} -pg -O -std=c++11 -Wall -pedantic $
 
 SOURCE1             = Bedmap.cpp
 BINDIR              = ../bin
-PROG                = bedmap${POSTFIX}
+PROG                = bedmap-${BINARY_TYPE}
 
 build: $(BINDIR)/$(PROG)
 	rm -rf ${OBJDIR}

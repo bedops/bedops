@@ -655,7 +655,7 @@ static int
 STARCHSTRIP_compare_chromosome_names(const void* a, const void* b)
 {
 #ifdef __cplusplus
-    return strcmp(*(const char**) a, *(const char**) b);
+    return strcmp((static_cast<const char*>(a)), (static_cast<const char*>(b)));
 #else
     return strcmp(*(const char**) a, *(const char**) b);
 #endif

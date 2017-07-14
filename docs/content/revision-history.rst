@@ -25,7 +25,7 @@ This revision of BEDOPS includes significant performance improvements for defaul
   
   * Performance of :code:`-u`/:code:`--everything` has improved, doing the same work in only **55.6%** of the time of previous versions when given a large number of input files.
   
-  * :code:`megarow` build target is available to compile a version of the program that can handle input files with very long rows (4M+ characters).  This requires more runtime memory than the default build.  The pertinent variables can be modified through the make system without changing source.
+  * :code:`megarow` build target is available to compile a version of the program that can handle input files with very long rows (4M+ characters).  This requires more runtime memory than the default ("typical") build.  The pertinent variables can be modified through the make system without changing source.
   
 * :ref:`bedmap <bedmap>`
 
@@ -45,15 +45,19 @@ This revision of BEDOPS includes significant performance improvements for defaul
 
   * :code:`megarow` build target is available to compile a version of the program that can handle input files with very long rows (4M+ characters).  This requires more runtime memory than the default build.  The pertinent variables can be modified through the make system without changing source.
 
-* :ref:`psl2bed <psl2bed>`
+* :ref:`convert2bed <convert2bed>`
 
-  * Migrated PSL state from stack to heap to address seg faults on OS X (thanks to rmartson@Biostars for the bug report).
-  
-* :ref:`bam2bed <bam2bed>` and :ref:`sam2bed <sam2bed>`
+  Numerous internal changes, including allowing line functors to resize the destination (write) buffer in mid-stream, and increased integration with BEDOPS-wide constants. Destination buffer resizing is particularly useful when converting very-large read BAM files containing numerous D (deletion) operations, as used with the new :code:`--split-with-deletions` option.
 
-  * Increased thread I/O heap buffer size to reduce likelihood of overflows while parsing reads from Nanopore and PacBio platforms.
+  * :ref:`psl2bed <psl2bed>`
   
-  * Added :code:`--split-with-deletions` option to split spliced junctions by :code:`N` and :code:`D` CIGAR operations. The :code:`--split` option now splits only on :code:`N` operations.
+    * Migrated PSL state from stack to heap to address seg faults on OS X (thanks to rmartson@Biostars for the bug report).
+  
+  * :ref:`bam2bed <bam2bed>` and :ref:`sam2bed <sam2bed>`
+
+    * Increased thread I/O heap buffer size to reduce likelihood of overflows while parsing reads from Nanopore and PacBio platforms.
+  
+    * Added :code:`--split-with-deletions` option to split spliced junctions by :code:`N` and :code:`D` CIGAR operations. The :code:`--split` option now splits only on :code:`N` operations.
 
 * :ref:`sort-bed <sort-bed>`
 
@@ -65,11 +69,13 @@ This revision of BEDOPS includes significant performance improvements for defaul
   
 * Starch C++ API
 
-  * Fixed output from :code:`bedops -u` (multiset union) on two or more Starch archives, such that the remainder string was not being cleared correctly.
+  * Fixed output from :code:`bedops -u` (:code:`--everything`, or multiset union) on two or more Starch archives, such that the remainder string was not being cleared correctly.
   
 * :ref:`starch-diff <starch_diff>`
   
   * Improved usage statement to clarify output (cf. `Issue 180 <https://github.com/bedops/bedops/issues/180>`_).
+
+* Resolved Clang warnings for various binaries.
 
 =================
 Previous versions

@@ -30,16 +30,6 @@
 // Don't use these directly; they just synchronize C and C++'s uses below
 //   - just want to utilize C++'s type system explicitly
 //
-// The minimum of running 'ulimit -s' on CentOS 7.2 and Mac OS X 10.12.4 shows
-// a stack size limit of 8192 kB (8388608 bytes) and we adjust the TOKENS_MAX_LENGTH
-// to this minimum value -- minus 4 MB, to leave some stack space for other parts of
-// a running binary.
-//
-// This change is specifically so that sort-bed can sort very-long reads obtained from
-// converting BAM to BED via convert2bed (e.g., Nanopore or PacBio sequencing reads), which
-// easily blow up line sizes past what we've generally been used to with short-read sequencers.
-// If read lengths get longer, we may need to explore some changes to sort-bed memory usage.
-//
 
 #ifndef REST_EXPONENT
 #define REST_EXPONENT 15

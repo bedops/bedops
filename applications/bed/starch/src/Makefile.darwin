@@ -1,5 +1,3 @@
-MIN_OSX_VERSION           = 10.7
-
 MAIN                      = ../../../..
 MAINAPPDIR                = ../..
 INTERFACES                = $(MAIN)/interfaces
@@ -27,7 +25,7 @@ LOCALZLIBLIBDIR           = ${LOCALZLIBDIR}
 LOCALZLIBLIB              = ${LOCALZLIBLIBDIR}/${LIBZLIB}
 LOCALZLIBINCDIR           = ${LOCALZLIBDIR}
 OBJDIR                    = ${INTERFACES}/src/data/starch
-LOCALOBJDIR               = objects"${POSTFIX}"
+LOCALOBJDIR               = objects_${BINARY_TYPE}
 INCLUDES                  = -iquote${MAIN} -iquote${HEAD} -iquote${PARTY3} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 LIBRARIES                 = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 BINDIR                    = ../bin
@@ -78,50 +76,48 @@ starchLibrary_debug: dependencies_debug
 
 starch: starchLibrary
 	${CC} ${CCFLAGS} -c starch.c -o $(LOCALOBJDIR)/starch.o ${INCLUDES}
-	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/starch.o -o ${BINDIR}/starch"${POSTFIX}" ${LOCALSTARCHLIB} ${LIBRARIES}
+	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/starch.o -o ${BINDIR}/starch-${BINARY_TYPE} ${LOCALSTARCHLIB} ${LIBRARIES}
 
 starch_debug: starchLibrary_debug
 	${CC} ${CDFLAGS} -c starch.c -o $(LOCALOBJDIR)/debug.starch.o ${INCLUDES}
-	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.starch.o -o ${BINDIR}/debug.starch"${POSTFIX}" ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
+	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.starch.o -o ${BINDIR}/debug.starch-${BINARY_TYPE} ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
 
 unstarch: starchLibrary
 	${CC} ${CCFLAGS} -c unstarch.c -o $(LOCALOBJDIR)/unstarch.o ${INCLUDES}
-	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/unstarch.o -o ${BINDIR}/unstarch"${POSTFIX}" ${LOCALSTARCHLIB} ${LIBRARIES}
+	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/unstarch.o -o ${BINDIR}/unstarch-${BINARY_TYPE} ${LOCALSTARCHLIB} ${LIBRARIES}
 
 unstarch_debug: starchLibrary_debug
 	${CC} ${CDFLAGS} -c unstarch.c -o $(LOCALOBJDIR)/debug.unstarch.o ${INCLUDES}
-	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.unstarch.o -o ${BINDIR}/debug.unstarch"${POSTFIX}" ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
+	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.unstarch.o -o ${BINDIR}/debug.unstarch-${BINARY_TYPE} ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
 
 starchcluster: starchcat
-	cp starchcluster_sge.tcsh ${BINDIR}/starchcluster_sge"${POSTFIX}"
-	cp starchcluster_gnuParallel.tcsh ${BINDIR}/starchcluster_gnuParallel"${POSTFIX}"
-	cp starchcluster_slurm.tcsh ${BINDIR}/starchcluster_slurm"${POSTFIX}"
+	cp starchcluster_sge.tcsh ${BINDIR}/starchcluster_sge-${BINARY_TYPE}
+	cp starchcluster_gnuParallel.tcsh ${BINDIR}/starchcluster_gnuParallel-${BINARY_TYPE}
+	cp starchcluster_slurm.tcsh ${BINDIR}/starchcluster_slurm-${BINARY_TYPE}
 
 starch-diff: unstarch
-ifeq (${POSTFIX},)
-	cp starch-diff.py ${BINDIR}/starch-diff
-endif
+	cp starch-diff.py ${BINDIR}/starch-diff-${BINARY_TYPE}
 
 starchcat: starchLibrary
 	${CC} ${CCFLAGS} -c starchcat.c -o $(LOCALOBJDIR)/starchcat.o ${INCLUDES}
-	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/starchcat.o -o ${BINDIR}/starchcat"${POSTFIX}" ${LOCALSTARCHLIB} ${LIBRARIES}
+	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/starchcat.o -o ${BINDIR}/starchcat-${BINARY_TYPE} ${LOCALSTARCHLIB} ${LIBRARIES}
 
 starchcat_debug: starchLibrary_debug
 	${CC} ${CDFLAGS} -c starchcat.c -o $(LOCALOBJDIR)/starchcat.o ${INCLUDES}
-	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/starchcat.o -o ${BINDIR}/debug.starchcat"${POSTFIX}" ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
+	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/starchcat.o -o ${BINDIR}/debug.starchcat-${BINARY_TYPE} ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
 
 starchstrip: starchLibrary
 	${CC} ${CCFLAGS} -c starchstrip.c -o $(LOCALOBJDIR)/starchstrip.o ${INCLUDES}
-	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/starchstrip.o -o ${BINDIR}/starchstrip"${POSTFIX}" ${LOCALSTARCHLIB} ${LIBRARIES}
+	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/starchstrip.o -o ${BINDIR}/starchstrip-${BINARY_TYPE} ${LOCALSTARCHLIB} ${LIBRARIES}
 
 starchstrip_debug: starchLibrary_debug
 	${CC} ${CDFLAGS} -c starchstrip.c -o $(LOCALOBJDIR)/debug.starchstrip.o ${INCLUDES}
-	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.starchstrip.o -o ${BINDIR}/debug.starchstrip"${POSTFIX}" ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
+	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.starchstrip.o -o ${BINDIR}/debug.starchstrip-${BINARY_TYPE} ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
 
 test: starch unstarch starchcat
-	cp ${BINDIR}/starch"${POSTFIX}" ${TEST_OSX_BINDIR}/starch"${POSTFIX}"
-	cp ${BINDIR}/unstarch"${POSTFIX}" ${TEST_OSX_BINDIR}/unstarch"${POSTFIX}"
-	cp ${BINDIR}/starchcat"${POSTFIX}" ${TEST_OSX_BINDIR}/starchcat"${POSTFIX}"
+	cp ${BINDIR}/starch-${BINARY_TYPE} ${TEST_OSX_BINDIR}/starch-${BINARY_TYPE}
+	cp ${BINDIR}/unstarch-${BINARY_TYPE} ${TEST_OSX_BINDIR}/unstarch-${BINARY_TYPE}
+	cp ${BINDIR}/starchcat-${BINARY_TYPE} ${TEST_OSX_BINDIR}/starchcat-${BINARY_TYPE}
 	make -C ${TEST} all
 
 mkdirs:

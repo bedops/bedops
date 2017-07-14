@@ -25,9 +25,9 @@ LOCALZLIBINCDIR     = ${LOCALZLIBDIR}
 LIBLOCATION         = -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBDIR}
 LIBRARIES           = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 
-PROG                = sort-bed${POSTFIX}
+PROG                = sort-bed-${BINARY_TYPE}
 BINDIR              = ../bin
-OBJDIR              = objects${POSTFIX}
+OBJDIR              = objects-${BINARY_TYPE}
 WARNINGS            = -Wall -Wextra -pedantic
 BLDFLAGS            = ${WARNINGS} -O3 -std=c++11 ${MEGAFLAGS}
 SFLAGS              = -static
@@ -45,7 +45,7 @@ else
 	WARNINGS += -U__STRICT_ANSI__
 endif
 
-build: $(dependencies) $(BINDIR)/$(PROG) update-sort-bed-slurm${POSTFIX} update-sort-bed-starch-slurm${POSTFIX} update-sort-bed-migrate-candidates${POSTFIX}
+build: $(dependencies) $(BINDIR)/$(PROG) update-sort-bed-slurm-${BINARY_TYPE} update-sort-bed-starch-slurm-${BINARY_TYPE} update-sort-bed-migrate-candidates-${BINARY_TYPE}
 	rm -rf ${OBJDIR}
 
 build_gprof: $(BINDIR)/gprof.$(PROG)
@@ -56,14 +56,14 @@ build_debug: $(BINDIR)/debug.$(PROG)
 
 dependencies: $(dependencies)
 
-update-sort-bed-slurm${POSTFIX}:
-	mkdir -p $(BINDIR) && cp update-sort-bed-slurm.py $(BINDIR)/update-sort-bed-slurm${POSTFIX}
+update-sort-bed-slurm-${BINARY_TYPE}:
+	mkdir -p $(BINDIR) && cp update-sort-bed-slurm.py $(BINDIR)/update-sort-bed-slurm-${BINARY_TYPE}
 
-update-sort-bed-starch-slurm${POSTFIX}:
-	mkdir -p $(BINDIR) && cp update-sort-bed-starch-slurm.py $(BINDIR)/update-sort-bed-starch-slurm${POSTFIX}
+update-sort-bed-starch-slurm-${BINARY_TYPE}:
+	mkdir -p $(BINDIR) && cp update-sort-bed-starch-slurm.py $(BINDIR)/update-sort-bed-starch-slurm-${BINARY_TYPE}
 
-update-sort-bed-migrate-candidates${POSTFIX}:
-	mkdir -p $(BINDIR) && cp update-sort-bed-migrate-candidates.py $(BINDIR)/update-sort-bed-migrate-candidates${POSTFIX}
+update-sort-bed-migrate-candidates-${BINARY_TYPE}:
+	mkdir -p $(BINDIR) && cp update-sort-bed-migrate-candidates.py $(BINDIR)/update-sort-bed-migrate-candidates-${BINARY_TYPE}
 
 $(BINDIR)/$(PROG) : $(dependencies)
 	mkdir -p $(BINDIR) && $(CXX) -o $@ $(FLAGS) $^ ${LIBRARIES}

@@ -23,7 +23,7 @@
 #include "convert2bed.h"
 
 int
-main(int argc, char **argv)
+main(int argc, char** argv)
 {
 #ifdef DEBUG
     fprintf (stderr, "--- convert2bed main() - enter ---\n");
@@ -65,7 +65,7 @@ main(int argc, char **argv)
 }
 
 static void
-c2b_init_conversion(c2b_pipeset_t *p)
+c2b_init_conversion(c2b_pipeset_t* p)
 {
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_init_conversion() - enter ---\n");
@@ -112,38 +112,38 @@ c2b_init_conversion(c2b_pipeset_t *p)
 }
 
 static void
-c2b_init_gff_conversion(c2b_pipeset_t *p)
+c2b_init_gff_conversion(c2b_pipeset_t* p)
 {
     c2b_init_generic_conversion(p, &c2b_line_convert_gff_to_bed_unsorted);
 }
 
 static void
-c2b_init_gtf_conversion(c2b_pipeset_t *p)
+c2b_init_gtf_conversion(c2b_pipeset_t* p)
 {
     c2b_init_generic_conversion(p, &c2b_line_convert_gtf_to_bed_unsorted);
 }
 
 static void
-c2b_init_gvf_conversion(c2b_pipeset_t *p)
+c2b_init_gvf_conversion(c2b_pipeset_t* p)
 {
     /* GVF format conversion uses the GFF functor */
     c2b_init_generic_conversion(p, &c2b_line_convert_gff_to_bed_unsorted);
 }
 
 static void
-c2b_init_psl_conversion(c2b_pipeset_t *p)
+c2b_init_psl_conversion(c2b_pipeset_t* p)
 {
     c2b_init_generic_conversion(p, &c2b_line_convert_psl_to_bed_unsorted);
 }
 
 static void
-c2b_init_rmsk_conversion(c2b_pipeset_t *p)
+c2b_init_rmsk_conversion(c2b_pipeset_t* p)
 {
     c2b_init_generic_conversion(p, &c2b_line_convert_rmsk_to_bed_unsorted);
 }
 
 static void
-c2b_init_sam_conversion(c2b_pipeset_t *p)
+c2b_init_sam_conversion(c2b_pipeset_t* p)
 {
     c2b_init_generic_conversion(p, (!c2b_globals.split_flag ?
                                     &c2b_line_convert_sam_to_bed_unsorted_without_split_operation :
@@ -151,19 +151,19 @@ c2b_init_sam_conversion(c2b_pipeset_t *p)
 }
 
 static void
-c2b_init_vcf_conversion(c2b_pipeset_t *p)
+c2b_init_vcf_conversion(c2b_pipeset_t* p)
 {
     c2b_init_generic_conversion(p, &c2b_line_convert_vcf_to_bed_unsorted);
 }
 
 static void
-c2b_init_wig_conversion(c2b_pipeset_t *p)
+c2b_init_wig_conversion(c2b_pipeset_t* p)
 {
     c2b_init_generic_conversion(p, &c2b_line_convert_wig_to_bed_unsorted);
 }
 
 static void
-c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *, ssize_t *, char *, ssize_t))
+c2b_init_generic_conversion(c2b_pipeset_t* p, void(*to_bed_line_functor)(char **, ssize_t *, ssize_t *, char *, ssize_t))
 {
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_init_generic_conversion() - enter ---\n");
@@ -183,10 +183,10 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
     c2b_pipeline_stage_t bed_sorted2stdout_stage;
     c2b_pipeline_stage_t bed_sorted2starch_stage;
     c2b_pipeline_stage_t starch2stdout_stage;
-    char cat2generic_cmd[C2B_MAX_LINE_LENGTH_VALUE];
-    char bed_unsorted2bed_sorted_cmd[C2B_MAX_LINE_LENGTH_VALUE];
-    char bed_sorted2starch_cmd[C2B_MAX_LINE_LENGTH_VALUE];
-    void (*generic2bed_unsorted_line_functor)(char *, ssize_t *, char *, ssize_t) = to_bed_line_functor;
+    char cat2generic_cmd[C2B_MAX_COMMAND_LINE_LENGTH_VALUE];
+    char bed_unsorted2bed_sorted_cmd[C2B_MAX_COMMAND_LINE_LENGTH_VALUE];
+    char bed_sorted2starch_cmd[C2B_MAX_COMMAND_LINE_LENGTH_VALUE];
+    void (*generic2bed_unsorted_line_functor)(char **, ssize_t *, ssize_t *, char *, ssize_t) = to_bed_line_functor;
     ssize_t buffer_size = C2B_THREAD_IO_BUFFER_SIZE;
     int errsv = 0;
 
@@ -461,7 +461,7 @@ c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *,
 }
 
 static void
-c2b_init_bam_conversion(c2b_pipeset_t *p)
+c2b_init_bam_conversion(c2b_pipeset_t* p)
 {
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_init_bam_conversion() - enter ---\n");
@@ -481,10 +481,10 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
     c2b_pipeline_stage_t bed_sorted2stdout_stage;
     c2b_pipeline_stage_t bed_sorted2starch_stage;
     c2b_pipeline_stage_t starch2stdout_stage;
-    char bam2sam_cmd[C2B_MAX_LINE_LENGTH_VALUE];
-    char bed_unsorted2bed_sorted_cmd[C2B_MAX_LINE_LENGTH_VALUE];
-    char bed_sorted2starch_cmd[C2B_MAX_LINE_LENGTH_VALUE];
-    void (*sam2bed_unsorted_line_functor)(char *, ssize_t *, char *, ssize_t) = NULL;
+    char bam2sam_cmd[C2B_MAX_COMMAND_LINE_LENGTH_VALUE];
+    char bed_unsorted2bed_sorted_cmd[C2B_MAX_COMMAND_LINE_LENGTH_VALUE];
+    char bed_sorted2starch_cmd[C2B_MAX_COMMAND_LINE_LENGTH_VALUE];
+    void (*sam2bed_unsorted_line_functor)(char **, ssize_t *, ssize_t *, char *, ssize_t) = NULL;
     ssize_t buffer_size = C2B_THREAD_IO_BUFFER_SIZE;
     int errsv = errno;
 
@@ -763,9 +763,9 @@ c2b_init_bam_conversion(c2b_pipeset_t *p)
 }
 
 static inline void
-c2b_cmd_cat_stdin(char *cmd)
+c2b_cmd_cat_stdin(char* cmd)
 {
-    const char *cat_args = " - ";
+    const char* cat_args = " - ";
     
     /* /path/to/cat - */
     memcpy(cmd,
@@ -778,9 +778,9 @@ c2b_cmd_cat_stdin(char *cmd)
 }
 
 static inline void
-c2b_cmd_bam_to_sam(char *cmd)
+c2b_cmd_bam_to_sam(char* cmd)
 {
-    const char *bam2sam_args = " view -h -";
+    const char* bam2sam_args = " view -h -";
 
     /* /path/to/samtools view -h - */
     memcpy(cmd, 
@@ -793,10 +793,10 @@ c2b_cmd_bam_to_sam(char *cmd)
 }
 
 static inline void
-c2b_cmd_sort_bed(char *cmd)
+c2b_cmd_sort_bed(char* cmd)
 {
-    char sort_bed_args[C2B_MAX_LINE_LENGTH_VALUE];
-    memset(sort_bed_args, 0, C2B_MAX_LINE_LENGTH_VALUE);
+    char sort_bed_args[C2B_MAX_COMMAND_LINE_LENGTH_VALUE];
+    memset(sort_bed_args, 0, C2B_MAX_COMMAND_LINE_LENGTH_VALUE);
 
     /* /path/to/sort-bed [--max-mem <val>] [--tmpdir <path>] - */
     if (c2b_globals.sort->max_mem_value) {
@@ -839,10 +839,10 @@ c2b_cmd_sort_bed(char *cmd)
 }
 
 static inline void
-c2b_cmd_starch_bed(char *cmd) 
+c2b_cmd_starch_bed(char* cmd) 
 {
-    char starch_args[C2B_MAX_LINE_LENGTH_VALUE];
-    memset(starch_args, 0, C2B_MAX_LINE_LENGTH_VALUE);
+    char starch_args[C2B_MAX_COMMAND_LINE_LENGTH_VALUE];
+    memset(starch_args, 0, C2B_MAX_COMMAND_LINE_LENGTH_VALUE);
 
     /* /path/to/starch [--bzip2 | --gzip] [--note="xyz..."] - */
     if (c2b_globals.starch->bzip2) {
@@ -896,7 +896,7 @@ c2b_cmd_starch_bed(char *cmd)
 }
 
 static void
-c2b_gtf_init_element(c2b_gtf_t **e)
+c2b_gtf_init_element(c2b_gtf_t** e)
 {
     *e = malloc(sizeof(c2b_gtf_t));
     if (!*e) {
@@ -982,7 +982,7 @@ c2b_gtf_init_element(c2b_gtf_t **e)
 }
 
 static void
-c2b_gtf_delete_element(c2b_gtf_t *e)
+c2b_gtf_delete_element(c2b_gtf_t* e)
 {
     if (e->seqname)         { free(e->seqname),         e->seqname = NULL;         }
     if (e->source)          { free(e->source),          e->source = NULL;          }
@@ -997,7 +997,7 @@ c2b_gtf_delete_element(c2b_gtf_t *e)
 }
 
 static void
-c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
+c2b_line_convert_gtf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size)
 {
     ssize_t gtf_field_offsets[C2B_MAX_FIELD_COUNT_VALUE];
     int gtf_field_idx = 0;
@@ -1027,14 +1027,27 @@ c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                     return;
                 }
                 else {
+                    /* set up temporary header stream buffers */
+                    if (!c2b_globals.src_line_str) {
+                        c2b_globals.src_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+                        if (!c2b_globals.src_line_str) {
+                            fprintf(stderr, "Error: Could not allocate space for globals source line buffer\n");
+                            exit(ENOMEM);
+                        }
+                    }
+                    if (!c2b_globals.dest_line_str) {
+                        c2b_globals.dest_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+                        if (!c2b_globals.dest_line_str) {
+                            fprintf(stderr, "Error: Could not allocate space for globals destination line buffer\n");
+                            exit(ENOMEM);
+                        }
+                    }
                     /* copy header line to destination stream buffer */
-                    char src_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
-                    char dest_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
-                    memcpy(src_header_line_str, src, src_size);
-                    src_header_line_str[src_size] = '\0';
-                    sprintf(dest_header_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), src_header_line_str);
-                    memcpy(dest + *dest_size, dest_header_line_str, strlen(dest_header_line_str));
-                    *dest_size += strlen(dest_header_line_str);
+                    memcpy(c2b_globals.src_line_str, src, src_size);
+                    c2b_globals.src_line_str[src_size] = '\0';
+                    sprintf(c2b_globals.dest_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), c2b_globals.src_line_str);
+                    memcpy(*dest + *dest_size, c2b_globals.dest_line_str, strlen(c2b_globals.dest_line_str));
+                    *dest_size += strlen(c2b_globals.dest_line_str);
                     c2b_globals.header_line_idx++;
                     return;
                 }
@@ -1294,12 +1307,12 @@ c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
        Convert GTF struct to BED string and copy it to destination
     */
 
-    c2b_line_convert_gtf_ptr_to_bed(c2b_globals.gtf->element, dest, dest_size);
+    c2b_line_convert_gtf_ptr_to_bed(c2b_globals.gtf->element, dest, dest_size, dest_capacity);
     c2b_globals.gtf->line_count++;
 }
 
 static inline void
-c2b_line_convert_gtf_ptr_to_bed(c2b_gtf_t *g, char *dest_line, ssize_t *dest_size)
+c2b_line_convert_gtf_ptr_to_bed(c2b_gtf_t* g, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity)
 {
     /* 
        For GTF-formatted data, we use the mapping provided by BEDOPS convention described at:
@@ -1331,8 +1344,21 @@ c2b_line_convert_gtf_ptr_to_bed(c2b_gtf_t *g, char *dest_line, ssize_t *dest_siz
        comments                  11                     -
     */
 
+    if ((ssize_t)(*dest_size + C2B_MAX_LINE_LENGTH_VALUE) > *dest_capacity) {
+        char *dest_line_resized = NULL;
+        dest_line_resized = realloc(*dest_line_ptr, *dest_capacity * 2);
+        if (dest_line_resized) {
+            *dest_capacity *= 2;
+            *dest_line_ptr = dest_line_resized;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize dest_line_ptr string in GTF pointer conversion fn\n");
+            exit(ENOMEM);
+        }
+    }
+
     if (strlen(g->comments) == 0) {
-        *dest_size += sprintf(dest_line + *dest_size,
+        *dest_size += sprintf(*dest_line_ptr + *dest_size,
                               "%s\t"            \
                               "%" PRIu64 "\t"   \
                               "%" PRIu64 "\t"   \
@@ -1355,7 +1381,7 @@ c2b_line_convert_gtf_ptr_to_bed(c2b_gtf_t *g, char *dest_line, ssize_t *dest_siz
                               g->attributes);
     }
     else {
-        *dest_size += sprintf(dest_line + *dest_size,
+        *dest_size += sprintf(*dest_line_ptr + *dest_size,
                               "%s\t"            \
                               "%" PRIu64 "\t"   \
                               "%" PRIu64 "\t"   \
@@ -1382,7 +1408,7 @@ c2b_line_convert_gtf_ptr_to_bed(c2b_gtf_t *g, char *dest_line, ssize_t *dest_siz
 }
 
 static void
-c2b_gff_init_element(c2b_gff_t **e)
+c2b_gff_init_element(c2b_gff_t** e)
 {
     *e = malloc(sizeof(c2b_gff_t));
     if (!*e) {
@@ -1460,7 +1486,7 @@ c2b_gff_init_element(c2b_gff_t **e)
 }
 
 static void
-c2b_gff_delete_element(c2b_gff_t *e)
+c2b_gff_delete_element(c2b_gff_t* e)
 {
     if (e->seqid)           { free(e->seqid),           e->seqid = NULL;           }
     if (e->source)          { free(e->source),          e->source = NULL;          }
@@ -1474,7 +1500,7 @@ c2b_gff_delete_element(c2b_gff_t *e)
 }
 
 static void
-c2b_line_convert_gff_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
+c2b_line_convert_gff_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size)
 {
     ssize_t gff_field_offsets[C2B_MAX_FIELD_COUNT_VALUE];
     int gff_field_idx = 0;
@@ -1513,14 +1539,27 @@ c2b_line_convert_gff_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                     return;
                 }
                 else {
+                    /* set up temporary header stream buffers */
+                    if (!c2b_globals.src_line_str) {
+                        c2b_globals.src_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+                        if (!c2b_globals.src_line_str) {
+                            fprintf(stderr, "Error: Could not allocate space for globals source line buffer\n");
+                            exit(ENOMEM);
+                        }
+                    }
+                    if (!c2b_globals.dest_line_str) {
+                        c2b_globals.dest_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+                        if (!c2b_globals.dest_line_str) {
+                            fprintf(stderr, "Error: Could not allocate space for globals destination line buffer\n");
+                            exit(ENOMEM);
+                        }
+                    }
                     /* copy header line to destination stream buffer */
-                    char src_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
-                    char dest_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
-                    memcpy(src_header_line_str, src, src_size);
-                    src_header_line_str[src_size] = '\0';
-                    sprintf(dest_header_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), src_header_line_str);
-                    memcpy(dest + *dest_size, dest_header_line_str, strlen(dest_header_line_str));
-                    *dest_size += strlen(dest_header_line_str);
+                    memcpy(c2b_globals.src_line_str, src, src_size);
+                    c2b_globals.src_line_str[src_size] = '\0';
+                    sprintf(c2b_globals.dest_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), c2b_globals.src_line_str);
+                    memcpy(*dest + *dest_size, c2b_globals.dest_line_str, strlen(c2b_globals.dest_line_str));
+                    *dest_size += strlen(c2b_globals.dest_line_str);
                     c2b_globals.header_line_idx++;
                     return;                    
                 }
@@ -1744,11 +1783,11 @@ c2b_line_convert_gff_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
        Convert GFF struct to BED string and copy it to destination
     */
 
-    c2b_line_convert_gff_ptr_to_bed(c2b_globals.gff->element, dest, dest_size);
+    c2b_line_convert_gff_ptr_to_bed(c2b_globals.gff->element, dest, dest_size, dest_capacity);
 }
 
 static inline void
-c2b_line_convert_gff_ptr_to_bed(c2b_gff_t *g, char *dest_line, ssize_t *dest_size)
+c2b_line_convert_gff_ptr_to_bed(c2b_gff_t* g, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity)
 {
     /* 
        For GFF- and GVF-formatted data, we use the mapping provided by BEDOPS convention described at:
@@ -1774,7 +1813,20 @@ c2b_line_convert_gff_ptr_to_bed(c2b_gff_t *g, char *dest_line, ssize_t *dest_siz
        attributes                10                     -
     */
 
-    *dest_size += sprintf(dest_line + *dest_size,
+    if ((ssize_t)(*dest_size + C2B_MAX_LINE_LENGTH_VALUE) > *dest_capacity) {
+        char *dest_line_resized = NULL;
+        dest_line_resized = realloc(*dest_line_ptr, *dest_capacity * 2);
+        if (dest_line_resized) {
+            *dest_capacity *= 2;
+            *dest_line_ptr = dest_line_resized;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize dest_line_ptr string in GFF pointer conversion fn\n");
+            exit(ENOMEM);
+        }
+    }
+
+    *dest_size += sprintf(*dest_line_ptr + *dest_size,
                           "%s\t"                \
                           "%" PRIu64 "\t"       \
                           "%" PRIu64 "\t"       \
@@ -1798,7 +1850,7 @@ c2b_line_convert_gff_ptr_to_bed(c2b_gff_t *g, char *dest_line, ssize_t *dest_siz
 }
 
 static void
-c2b_psl_init_element(c2b_psl_t **e)
+c2b_psl_init_element(c2b_psl_t** e)
 {
     *e = malloc(sizeof(c2b_psl_t));
     if (!*e) {
@@ -1993,7 +2045,7 @@ c2b_psl_init_element(c2b_psl_t **e)
 }
 
 static void
-c2b_psl_delete_element(c2b_psl_t *e)
+c2b_psl_delete_element(c2b_psl_t* e)
 {
     if (e->matchesStr)      { free(e->matchesStr),      e->matchesStr = NULL;      }
     if (e->misMatchesStr)   { free(e->misMatchesStr),   e->misMatchesStr = NULL;   }
@@ -2020,7 +2072,7 @@ c2b_psl_delete_element(c2b_psl_t *e)
 }
 
 static void
-c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
+c2b_line_convert_psl_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size)
 {
     ssize_t psl_field_offsets[C2B_MAX_FIELD_COUNT_VALUE];
     int psl_field_idx = 0;
@@ -2046,14 +2098,27 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     if (((psl_field_idx + 1) < c2b_psl_field_min) || ((psl_field_idx + 1) > c2b_psl_field_max)) {
         if ((psl_field_idx == 0) || (psl_field_idx == 17)) {
             if ((c2b_globals.psl->is_headered) && (c2b_globals.keep_header_flag) && (c2b_globals.header_line_idx <= 5)) {
+                /* set up temporary header stream buffers */
+                if (!c2b_globals.src_line_str) {
+                    c2b_globals.src_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+                    if (!c2b_globals.src_line_str) {
+                        fprintf(stderr, "Error: Could not allocate space for globals source line buffer\n");
+                        exit(ENOMEM);
+                    }
+                }
+                if (!c2b_globals.dest_line_str) {
+                    c2b_globals.dest_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+                    if (!c2b_globals.dest_line_str) {
+                        fprintf(stderr, "Error: Could not allocate space for globals destination line buffer\n");
+                        exit(ENOMEM);
+                    }
+                }
                 /* copy header line to destination stream buffer */
-                char src_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
-                char dest_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
-                memcpy(src_header_line_str, src, src_size);
-                src_header_line_str[src_size] = '\0';
-                sprintf(dest_header_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), src_header_line_str);
-                memcpy(dest + *dest_size, dest_header_line_str, strlen(dest_header_line_str));
-                *dest_size += strlen(dest_header_line_str);
+                memcpy(c2b_globals.src_line_str, src, src_size);
+                c2b_globals.src_line_str[src_size] = '\0';
+                sprintf(c2b_globals.dest_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), c2b_globals.src_line_str);
+                memcpy(*dest + *dest_size, c2b_globals.dest_line_str, strlen(c2b_globals.dest_line_str));
+                *dest_size += strlen(c2b_globals.dest_line_str);
                 c2b_globals.header_line_idx++;
                 return;                    
             }
@@ -2103,14 +2168,27 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
 
     if ((c2b_globals.psl->element->matches == 0) && (!isdigit(c2b_globals.psl->element->matchesStr[0]))) {
         if ((c2b_globals.psl->is_headered) && (c2b_globals.keep_header_flag) && (c2b_globals.header_line_idx <= 5)) {
+            /* set up temporary header stream buffers */
+            if (!c2b_globals.src_line_str) {
+                c2b_globals.src_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+                if (!c2b_globals.src_line_str) {
+                    fprintf(stderr, "Error: Could not allocate space for globals source line buffer\n");
+                    exit(ENOMEM);
+                }
+            }
+            if (!c2b_globals.dest_line_str) {
+                c2b_globals.dest_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+                if (!c2b_globals.dest_line_str) {
+                    fprintf(stderr, "Error: Could not allocate space for globals destination line buffer\n");
+                    exit(ENOMEM);
+                }
+            }
             /* copy header line to destination stream buffer */
-            char src_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
-            char dest_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
-            memcpy(src_header_line_str, src, src_size);
-            src_header_line_str[src_size] = '\0';
-            sprintf(dest_header_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), src_header_line_str);
-            memcpy(dest + *dest_size, dest_header_line_str, strlen(dest_header_line_str));
-            *dest_size += strlen(dest_header_line_str);
+            memcpy(c2b_globals.src_line_str, src, src_size);
+            c2b_globals.src_line_str[src_size] = '\0';
+            sprintf(c2b_globals.dest_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), c2b_globals.src_line_str);
+            memcpy(*dest + *dest_size, c2b_globals.dest_line_str, strlen(c2b_globals.dest_line_str));
+            *dest_size += strlen(c2b_globals.dest_line_str);
             c2b_globals.header_line_idx++;
         }
         return;
@@ -2565,11 +2643,11 @@ c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
         for (uint64_t bc_idx = 0; bc_idx < c2b_globals.psl->element->blockCount; bc_idx++) {
             c2b_globals.psl->element->tStart = c2b_globals.psl->block->starts[bc_idx];
             c2b_globals.psl->element->tEnd = c2b_globals.psl->block->starts[bc_idx] + c2b_globals.psl->block->sizes[bc_idx];
-            c2b_line_convert_psl_ptr_to_bed(c2b_globals.psl->element, dest, dest_size);
+            c2b_line_convert_psl_ptr_to_bed(c2b_globals.psl->element, dest, dest_size, dest_capacity);
         }
     }
     else {
-        c2b_line_convert_psl_ptr_to_bed(c2b_globals.psl->element, dest, dest_size);
+        c2b_line_convert_psl_ptr_to_bed(c2b_globals.psl->element, dest, dest_size, dest_capacity);
     }
 }
 
@@ -2650,7 +2728,7 @@ c2b_psl_tStarts_to_ptr(char *s, uint64_t bc)
 }
 
 static inline void
-c2b_line_convert_psl_ptr_to_bed(c2b_psl_t *p, char *dest_line, ssize_t *dest_size)
+c2b_line_convert_psl_ptr_to_bed(c2b_psl_t* p, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity)
 {
     /* 
        For PSL-formatted data, we use the mapping provided by BEDOPS convention described at:
@@ -2687,7 +2765,20 @@ c2b_line_convert_psl_ptr_to_bed(c2b_psl_t *p, char *dest_line, ssize_t *dest_siz
        tStarts                   21                     -
     */
 
-    *dest_size += sprintf(dest_line + *dest_size,
+    if ((ssize_t)(*dest_size + C2B_MAX_LINE_LENGTH_VALUE) > *dest_capacity) {
+        char *dest_line_resized = NULL;
+        dest_line_resized = realloc(*dest_line_ptr, *dest_capacity * 2);
+        if (dest_line_resized) {
+            *dest_capacity *= 2;
+            *dest_line_ptr = dest_line_resized;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize dest_line_ptr string in PSL pointer conversion fn\n");
+            exit(ENOMEM);
+        }
+    }
+
+    *dest_size += sprintf(*dest_line_ptr + *dest_size,
                           "%s\t"                \
                           "%" PRIu64 "\t"       \
                           "%" PRIu64 "\t"       \
@@ -2733,7 +2824,7 @@ c2b_line_convert_psl_ptr_to_bed(c2b_psl_t *p, char *dest_line, ssize_t *dest_siz
 }
 
 static void
-c2b_rmsk_init_element(c2b_rmsk_t **e)
+c2b_rmsk_init_element(c2b_rmsk_t** e)
 {
     *e = malloc(sizeof(c2b_rmsk_t));
     if (!*e) {
@@ -2856,7 +2947,7 @@ c2b_rmsk_init_element(c2b_rmsk_t **e)
 }
 
 static void
-c2b_rmsk_delete_element(c2b_rmsk_t *e)
+c2b_rmsk_delete_element(c2b_rmsk_t* e)
 {
     if (e->sw_score)                     { free(e->sw_score),                     e->sw_score = NULL;                     }
     if (e->perc_div)                     { free(e->perc_div),                     e->perc_div = NULL;                     }
@@ -2876,7 +2967,7 @@ c2b_rmsk_delete_element(c2b_rmsk_t *e)
 }
 
 static void
-c2b_line_convert_rmsk_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
+c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size)
 {
     /* 
        RepeatMasker annotation output is space-delimited and can have multiple spaces. We also need to walk
@@ -2947,13 +3038,26 @@ c2b_line_convert_rmsk_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src,
                 c2b_globals.rmsk->is_start_of_gap = kFalse;
                 if (c2b_globals.rmsk->line <= c2b_rmsk_header_line_count) {
                     if (c2b_globals.keep_header_flag) {
-                        char src_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
-                        char dest_header_line_str[C2B_MAX_LINE_LENGTH_VALUE];
-                        memcpy(src_header_line_str, src, src_size);
-                        src_header_line_str[src_size] = '\0';
-                        sprintf(dest_header_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), src_header_line_str);
-                        memcpy(dest + *dest_size, dest_header_line_str, strlen(dest_header_line_str));
-                        *dest_size += strlen(dest_header_line_str);
+                        /* set up temporary header stream buffers */
+                        if (!c2b_globals.src_line_str) {
+                            c2b_globals.src_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+                            if (!c2b_globals.src_line_str) {
+                                fprintf(stderr, "Error: Could not allocate space for globals source line buffer\n");
+                                exit(ENOMEM);
+                            }
+                        }
+                        if (!c2b_globals.dest_line_str) {
+                            c2b_globals.dest_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+                            if (!c2b_globals.dest_line_str) {
+                                fprintf(stderr, "Error: Could not allocate space for globals destination line buffer\n");
+                                exit(ENOMEM);
+                            }
+                        }
+                        memcpy(c2b_globals.src_line_str, src, src_size);
+                        c2b_globals.src_line_str[src_size] = '\0';
+                        sprintf(c2b_globals.dest_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), c2b_globals.src_line_str);
+                        memcpy(*dest + *dest_size, c2b_globals.dest_line_str, strlen(c2b_globals.dest_line_str));
+                        *dest_size += strlen(c2b_globals.dest_line_str);
                         c2b_globals.header_line_idx++;
                     }
                     return;
@@ -3354,14 +3458,14 @@ c2b_line_convert_rmsk_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src,
 #endif
     }
 
-    c2b_line_convert_rmsk_ptr_to_bed(c2b_globals.rmsk->element, dest, dest_size);
+    c2b_line_convert_rmsk_ptr_to_bed(c2b_globals.rmsk->element, dest, dest_size, dest_capacity);
 
     /* after writing a line, reset length of element higher_score_match string */
     c2b_globals.rmsk->element->higher_score_match[0] = '\0';
 }
 
 static inline void
-c2b_line_convert_rmsk_ptr_to_bed(c2b_rmsk_t *r, char *dest_line, ssize_t *dest_size)
+c2b_line_convert_rmsk_ptr_to_bed(c2b_rmsk_t* r, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity)
 {
     /* 
        For RepeatMasker annotation-formatted data, we use the mapping provided by BEDOPS
@@ -3394,8 +3498,21 @@ c2b_line_convert_rmsk_ptr_to_bed(c2b_rmsk_t *r, char *dest_line, ssize_t *dest_s
        higher_score_match        16                     -       
     */
 
+    if ((ssize_t)(*dest_size + C2B_MAX_LINE_LENGTH_VALUE) > *dest_capacity) {
+        char *dest_line_resized = NULL;
+        dest_line_resized = realloc(*dest_line_ptr, *dest_capacity * 2);
+        if (dest_line_resized) {
+            *dest_capacity *= 2;
+            *dest_line_ptr = dest_line_resized;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize dest_line_ptr string in RMSK pointer conversion fn\n");
+            exit(ENOMEM);
+        }
+    }
+
     if (strlen(r->higher_score_match) == 0) {
-        *dest_size += sprintf(dest_line + *dest_size,
+        *dest_size += sprintf(*dest_line_ptr + *dest_size,
                               "%s\t"            \
                               "%" PRIu64 "\t"   \
                               "%" PRIu64 "\t"   \
@@ -3428,7 +3545,7 @@ c2b_line_convert_rmsk_ptr_to_bed(c2b_rmsk_t *r, char *dest_line, ssize_t *dest_s
                               r->unique_id);
     }
     else {
-        *dest_size += sprintf(dest_line + *dest_size,
+        *dest_size += sprintf(*dest_line_ptr + *dest_size,
                               "%s\t"            \
                               "%" PRIu64 "\t"   \
                               "%" PRIu64 "\t"   \
@@ -3465,7 +3582,7 @@ c2b_line_convert_rmsk_ptr_to_bed(c2b_rmsk_t *r, char *dest_line, ssize_t *dest_s
 }
 
 static void
-c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
+c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size)
 {
     /* 
        This functor builds a list of tab delimiters, but first reads in the CIGAR string (6th field) and
@@ -3486,14 +3603,27 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
             return;
         }
         else {
+            /* set up temporary header stream buffers */
+            if (!c2b_globals.src_line_str) {
+                c2b_globals.src_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+                if (!c2b_globals.src_line_str) {
+                    fprintf(stderr, "Error: Could not allocate space for globals source line buffer\n");
+                    exit(ENOMEM);
+                }
+            }
+            if (!c2b_globals.dest_line_str) {
+                c2b_globals.dest_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+                if (!c2b_globals.dest_line_str) {
+                    fprintf(stderr, "Error: Could not allocate space for globals destination line buffer\n");
+                    exit(ENOMEM);
+                }
+            }
             /* copy header line to destination stream buffer */
-            char src_header_line_str[C2B_MAX_LINE_LENGTH_VALUE] = {0};
-            char dest_header_line_str[C2B_MAX_LINE_LENGTH_VALUE] = {0};
-            memcpy(src_header_line_str, src, src_size);
-            src_header_line_str[src_size] = '\0';
-            sprintf(dest_header_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), src_header_line_str);
-            memcpy(dest + *dest_size, dest_header_line_str, strlen(dest_header_line_str));
-            *dest_size += strlen(dest_header_line_str);
+            memcpy(c2b_globals.src_line_str, src, src_size);
+            c2b_globals.src_line_str[src_size] = '\0';
+            sprintf(c2b_globals.dest_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), c2b_globals.src_line_str);
+            memcpy(*dest + *dest_size, c2b_globals.dest_line_str, strlen(c2b_globals.dest_line_str));
+            *dest_size += strlen(c2b_globals.dest_line_str);
             c2b_globals.header_line_idx++;
             return;
         }
@@ -3803,11 +3933,11 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t
             }
     }
 
-    c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, kFalse);
+    c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, dest_capacity, kFalse);
 }
 
 static void
-c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
+c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size)
 {
     /* 
        This functor builds a list of tab delimiters, but first reads in the CIGAR string (6th field) and
@@ -3828,14 +3958,27 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
             return;
         }
         else {
+            /* set up temporary header stream buffers */
+            if (!c2b_globals.src_line_str) {
+                c2b_globals.src_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+                if (!c2b_globals.src_line_str) {
+                    fprintf(stderr, "Error: Could not allocate space for globals source line buffer\n");
+                    exit(ENOMEM);
+                }
+            }
+            if (!c2b_globals.dest_line_str) {
+                c2b_globals.dest_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+                if (!c2b_globals.dest_line_str) {
+                    fprintf(stderr, "Error: Could not allocate space for globals destination line buffer\n");
+                    exit(ENOMEM);
+                }
+            }
             /* copy header line to destination stream buffer */
-            char src_header_line_str[C2B_MAX_LINE_LENGTH_VALUE] = {0};
-            char dest_header_line_str[C2B_MAX_LINE_LENGTH_VALUE] = {0};
-            memcpy(src_header_line_str, src, src_size);
+            memcpy(c2b_globals.src_line_str, src, src_size);
             //src_header_line_str[src_size] = '\0';
-            sprintf(dest_header_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), src_header_line_str);
-            memcpy(dest + *dest_size, dest_header_line_str, strlen(dest_header_line_str));
-            *dest_size += strlen(dest_header_line_str);
+            sprintf(c2b_globals.dest_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), c2b_globals.src_line_str);
+            memcpy(*dest + *dest_size, c2b_globals.dest_line_str, strlen(c2b_globals.dest_line_str));
+            *dest_size += strlen(c2b_globals.dest_line_str);
             c2b_globals.header_line_idx++;
             return;
         }
@@ -4155,7 +4298,7 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
                         }
                         // block_idx string can be up to (C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION-1) characters long
                         sprintf(c2b_globals.sam->element->modified_qname, "%s/%zu", c2b_globals.sam->element->qname, block_idx++);
-                        c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, kTrue);
+                        c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, dest_capacity, kTrue);
                         c2b_globals.sam->element->start = c2b_globals.sam->element->stop;
                     }
                     break;
@@ -4195,7 +4338,7 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
                         if ((next_op == 'N') || (next_op == '\0')) {
                             // block_idx string can be up to (C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION-1) characters long
                             sprintf(c2b_globals.sam->element->modified_qname, "%s/%zu", c2b_globals.sam->element->qname, block_idx++);
-                            c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, kTrue);
+                            c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, dest_capacity, kTrue);
                             c2b_globals.sam->element->start = c2b_globals.sam->element->stop;
                         }
                     }
@@ -4226,19 +4369,19 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *d
     */
 
     if (block_idx == 1) {
-        c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, kFalse);
+        c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, dest_capacity, kFalse);
     }
 }
 
 static inline void
-c2b_sam_cigar_str_to_ops(char *s)
+c2b_sam_cigar_str_to_ops(char* s)
 {
     size_t s_idx;
     size_t s_len = strlen(s);
     size_t bases_idx = 0;
     boolean bases_flag = kTrue;
     boolean operation_flag = kFalse;
-    char curr_bases_field[C2B_MAX_OPERATION_FIELD_LENGTH_VALUE];
+    char curr_bases_field[C2B_MAX_OPERATION_FIELD_LENGTH_VALUE + 1];
     char curr_char = default_cigar_op_operation;
     unsigned int curr_bases = 0;
     ssize_t op_idx = 0;
@@ -4281,7 +4424,7 @@ c2b_sam_cigar_str_to_ops(char *s)
 }
 
 static void
-c2b_sam_init_element(c2b_sam_t **e)
+c2b_sam_init_element(c2b_sam_t** e)
 {
     *e = malloc(sizeof(c2b_sam_t));
     if (!*e) {
@@ -4393,7 +4536,7 @@ c2b_sam_init_element(c2b_sam_t **e)
 }
 
 static void
-c2b_sam_delete_element(c2b_sam_t *e) 
+c2b_sam_delete_element(c2b_sam_t* e) 
 {
     if (e->qname)           { free(e->qname),           e->qname = NULL;           }
     if (e->modified_qname)  { free(e->modified_qname),  e->modified_qname = NULL;  }
@@ -4411,7 +4554,7 @@ c2b_sam_delete_element(c2b_sam_t *e)
 }
 
 static void
-c2b_sam_init_cigar_ops(c2b_cigar_t **c, const ssize_t size)
+c2b_sam_init_cigar_ops(c2b_cigar_t** c, const ssize_t size)
 {
     *c = malloc(sizeof(c2b_cigar_t));
     if (!*c) {
@@ -4434,7 +4577,7 @@ c2b_sam_init_cigar_ops(c2b_cigar_t **c, const ssize_t size)
 }
 
 static void
-c2b_sam_resize_cigar_ops(c2b_cigar_t **new_c, c2b_cigar_t *old_c)
+c2b_sam_resize_cigar_ops(c2b_cigar_t** new_c, c2b_cigar_t* old_c)
 {
     *new_c = malloc(sizeof(c2b_cigar_t));
     if (!*new_c) {
@@ -4474,7 +4617,7 @@ static void c2b_sam_debug_cigar_ops() __attribute__ ((unused));
 #endif
 
 static void
-c2b_sam_debug_cigar_ops(c2b_cigar_t *c)
+c2b_sam_debug_cigar_ops(c2b_cigar_t* c)
 {
     ssize_t idx = 0;
     ssize_t length = c->length;
@@ -4484,7 +4627,7 @@ c2b_sam_debug_cigar_ops(c2b_cigar_t *c)
 }
 
 static void
-c2b_sam_delete_cigar_ops(c2b_cigar_t *c)
+c2b_sam_delete_cigar_ops(c2b_cigar_t* c)
 {
     if (c) {
         if (c->ops) {
@@ -4497,8 +4640,9 @@ c2b_sam_delete_cigar_ops(c2b_cigar_t *c)
 }
 
 static inline void
-c2b_line_convert_sam_ptr_to_bed(c2b_sam_t *s, char *dest_line, ssize_t *dest_size, boolean print_modified_qname)
+c2b_line_convert_sam_ptr_to_bed(c2b_sam_t* s, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity, boolean print_modified_qname)
 {
+    
     /*
        For SAM-formatted data, we use the mapping provided by BEDOPS convention described at: 
 
@@ -4537,8 +4681,21 @@ c2b_line_convert_sam_ptr_to_bed(c2b_sam_t *s, char *dest_line, ssize_t *dest_siz
        If the --reduced option is specified, only the first six columns are printed.
     */
 
+    if ((ssize_t)(*dest_size + C2B_MAX_LINE_LENGTH_VALUE) > *dest_capacity) {
+        char *dest_line_resized = NULL;
+        dest_line_resized = realloc(*dest_line_ptr, *dest_capacity * 2);
+        if (dest_line_resized) {
+            *dest_capacity *= 2;
+            *dest_line_ptr = dest_line_resized;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize dest_line_ptr string in SAM pointer conversion fn\n");
+            exit(ENOMEM);
+        }
+    }
+
     if ((!c2b_globals.reduced_flag) && (s->opt_length > 0)) {
-        *dest_size += sprintf(dest_line + *dest_size,
+        *dest_size += sprintf(*dest_line_ptr + *dest_size,
                               "%s\t"            \
                               "%" PRIu64 "\t"   \
                               "%" PRIu64 "\t"   \
@@ -4569,7 +4726,7 @@ c2b_line_convert_sam_ptr_to_bed(c2b_sam_t *s, char *dest_line, ssize_t *dest_siz
                               s->opt);
     } 
     else if ((!c2b_globals.reduced_flag) && (s->opt_length == 0)) {
-        *dest_size += sprintf(dest_line + *dest_size,
+        *dest_size += sprintf(*dest_line_ptr + *dest_size,
                               "%s\t"            \
                               "%" PRIu64 "\t"   \
                               "%" PRIu64 "\t"   \
@@ -4598,7 +4755,7 @@ c2b_line_convert_sam_ptr_to_bed(c2b_sam_t *s, char *dest_line, ssize_t *dest_siz
                               s->qual);
     }
     else if (c2b_globals.reduced_flag) {
-        *dest_size += sprintf(dest_line + *dest_size,
+        *dest_size += sprintf(*dest_line_ptr + *dest_size,
                               "%s\t"            \
                               "%" PRIu64 "\t"   \
                               "%" PRIu64 "\t"   \
@@ -4615,7 +4772,7 @@ c2b_line_convert_sam_ptr_to_bed(c2b_sam_t *s, char *dest_line, ssize_t *dest_siz
 }
 
 static void
-c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
+c2b_line_convert_vcf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size)
 {
     ssize_t vcf_field_offsets[C2B_MAX_VCF_FIELD_COUNT_VALUE];
     int vcf_field_idx = 0;
@@ -4656,27 +4813,26 @@ c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
     c2b_globals.vcf->element->chrom[chrom_size] = '\0';
 
     if ((c2b_globals.vcf->element->chrom[0] == c2b_vcf_header_prefix) && (c2b_globals.keep_header_flag)) {
-        char *src_header_line_str = NULL; 
-        src_header_line_str = malloc(C2B_MAX_LONGER_LINE_LENGTH_VALUE);
-        if (!src_header_line_str) {
-            fprintf(stderr, "Error: Could not allocate space for VCF source header line string\n");
-            exit(ENOMEM); /* Not enough space (POSIX.1) */        
+        if (!c2b_globals.src_line_str) {
+            c2b_globals.src_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+            if (!c2b_globals.src_line_str) {
+                fprintf(stderr, "Error: Could not allocate space for globals source line buffer\n");
+                exit(ENOMEM);
+            }
         }
-
-        char *dest_header_line_str = NULL;
-        dest_header_line_str = malloc(C2B_MAX_LONGER_LINE_LENGTH_VALUE);
-        if (!dest_header_line_str) {
-            fprintf(stderr, "Error: Could not allocate space for VCF destination header line string\n");
-            exit(ENOMEM); /* Not enough space (POSIX.1) */        
+        if (!c2b_globals.dest_line_str) {
+            c2b_globals.dest_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+            if (!c2b_globals.dest_line_str) {
+                fprintf(stderr, "Error: Could not allocate space for globals destination line buffer\n");
+                exit(ENOMEM);
+            }
         }
-        memcpy(src_header_line_str, src, src_size);
-        src_header_line_str[src_size] = '\0';
-        sprintf(dest_header_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), src_header_line_str);
-        memcpy(dest + *dest_size, dest_header_line_str, strlen(dest_header_line_str));
-        *dest_size += strlen(dest_header_line_str);
+        memcpy(c2b_globals.src_line_str, src, src_size);
+        c2b_globals.src_line_str[src_size] = '\0';
+        sprintf(c2b_globals.dest_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), c2b_globals.src_line_str);
+        memcpy(*dest + *dest_size, c2b_globals.dest_line_str, strlen(c2b_globals.dest_line_str));
+        *dest_size += strlen(c2b_globals.dest_line_str);
         c2b_globals.header_line_idx++;
-        free(src_header_line_str);
-        free(dest_header_line_str);
         return;
     }
     else if (c2b_globals.vcf->element->chrom[0] == c2b_vcf_header_prefix) {
@@ -4857,7 +5013,7 @@ c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                  ((c2b_globals.vcf->only_insertions) && (c2b_vcf_record_is_insertion(c2b_globals.vcf->element->ref, c2b_globals.vcf->element->alt))) ||
                  ((c2b_globals.vcf->only_deletions) && (c2b_vcf_record_is_deletion(c2b_globals.vcf->element->ref, c2b_globals.vcf->element->alt))) ) 
                 {
-                    c2b_line_convert_vcf_ptr_to_bed(c2b_globals.vcf->element, dest, dest_size);
+                    c2b_line_convert_vcf_ptr_to_bed(c2b_globals.vcf->element, dest, dest_size, dest_capacity);
                 }
         }
         free(alt_alleles_copy), alt_alleles_copy = NULL;
@@ -4874,37 +5030,37 @@ c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
              ((c2b_globals.vcf->only_insertions) && (c2b_vcf_record_is_insertion(c2b_globals.vcf->element->ref, c2b_globals.vcf->element->alt))) ||
              ((c2b_globals.vcf->only_deletions) && (c2b_vcf_record_is_deletion(c2b_globals.vcf->element->ref, c2b_globals.vcf->element->alt))) ) 
             {
-                c2b_line_convert_vcf_ptr_to_bed(c2b_globals.vcf->element, dest, dest_size);
+                c2b_line_convert_vcf_ptr_to_bed(c2b_globals.vcf->element, dest, dest_size, dest_capacity);
             }
     }
 }
 
 static inline boolean
-c2b_vcf_allele_is_id(char *s)
+c2b_vcf_allele_is_id(char* s)
 {
     return ((s[0] == c2b_vcf_id_prefix) && (s[strlen(s)-1] == c2b_vcf_id_suffix)) ? kTrue : kFalse;
 }
 
 static inline boolean
-c2b_vcf_record_is_snv(char *ref, char *alt) 
+c2b_vcf_record_is_snv(char* ref, char* alt) 
 {
     return ((!c2b_vcf_allele_is_id(alt)) && (((int) strlen(ref) - (int) strlen(alt)) == 0)) ? kTrue : kFalse;
 }
 
 static inline boolean
-c2b_vcf_record_is_insertion(char *ref, char *alt) 
+c2b_vcf_record_is_insertion(char* ref, char* alt) 
 {
     return ((!c2b_vcf_allele_is_id(alt)) && (((int) strlen(ref) - (int) strlen(alt)) < 0)) ? kTrue : kFalse;
 }
 
 static inline boolean
-c2b_vcf_record_is_deletion(char *ref, char *alt) 
+c2b_vcf_record_is_deletion(char* ref, char* alt) 
 {
     return ((!c2b_vcf_allele_is_id(alt)) && (((int) strlen(ref) - (int) strlen(alt)) > 0)) ? kTrue : kFalse;
 }
 
 static void
-c2b_vcf_init_element(c2b_vcf_t **e)
+c2b_vcf_init_element(c2b_vcf_t** e)
 {
     *e = malloc(sizeof(c2b_vcf_t));
     if (!*e) {
@@ -4991,7 +5147,7 @@ c2b_vcf_init_element(c2b_vcf_t **e)
 }
 
 static void
-c2b_vcf_delete_element(c2b_vcf_t *e)
+c2b_vcf_delete_element(c2b_vcf_t* e)
 {
     if (e->chrom)           { free(e->chrom),           e->chrom = NULL;           }
     if (e->id)              { free(e->id),              e->id = NULL;              }
@@ -5006,7 +5162,7 @@ c2b_vcf_delete_element(c2b_vcf_t *e)
 }
 
 static inline void
-c2b_line_convert_vcf_ptr_to_bed(c2b_vcf_t *v, char *dest_line, ssize_t *dest_size) 
+c2b_line_convert_vcf_ptr_to_bed(c2b_vcf_t* v, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity) 
 {
     /* 
        For VCF v4.2-formatted data, we use the mapping provided by BEDOPS convention described at:
@@ -5043,8 +5199,21 @@ c2b_line_convert_vcf_ptr_to_bed(c2b_vcf_t *v, char *dest_line, ssize_t *dest_siz
        ...
     */
 
+    if ((ssize_t)(*dest_size + C2B_MAX_LINE_LENGTH_VALUE) > *dest_capacity) {
+        char *dest_line_resized = NULL;
+        dest_line_resized = realloc(*dest_line_ptr, *dest_capacity * 2);
+        if (dest_line_resized) {
+            *dest_capacity *= 2;
+            *dest_line_ptr = dest_line_resized;
+        }
+        else {
+            fprintf(stderr, "Error: Could not resize dest_line_ptr string in VCF pointer conversion fn\n");
+            exit(ENOMEM);
+        }
+    }
+
     if (strlen(v->format) > 0) {
-        *dest_size += sprintf(dest_line + *dest_size,
+        *dest_size += sprintf(*dest_line_ptr + *dest_size,
                               "%s\t"            \
                               "%" PRIu64 "\t"   \
                               "%" PRIu64 "\t"   \
@@ -5069,7 +5238,7 @@ c2b_line_convert_vcf_ptr_to_bed(c2b_vcf_t *v, char *dest_line, ssize_t *dest_siz
                               v->samples);
     }
     else {
-        *dest_size += sprintf(dest_line + *dest_size,
+        *dest_size += sprintf(*dest_line_ptr + *dest_size,
                               "%s\t"            \
                               "%" PRIu64 "\t"   \
                               "%" PRIu64 "\t"   \
@@ -5092,10 +5261,22 @@ c2b_line_convert_vcf_ptr_to_bed(c2b_vcf_t *v, char *dest_line, ssize_t *dest_siz
 }
 
 static void
-c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size)
+c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size)
 {
-    char src_line_str[C2B_MAX_LINE_LENGTH_VALUE];
-    char dest_line_str[C2B_MAX_LINE_LENGTH_VALUE];
+    if (!c2b_globals.src_line_str) {
+        c2b_globals.src_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+        if (!c2b_globals.src_line_str) {
+            fprintf(stderr, "Error: Could not allocate space for globals source line buffer\n");
+            exit(ENOMEM);
+        }
+    }
+    if (!c2b_globals.dest_line_str) {
+        c2b_globals.dest_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+        if (!c2b_globals.dest_line_str) {
+            fprintf(stderr, "Error: Could not allocate space for globals destination line buffer\n");
+            exit(ENOMEM);
+        }
+    }
 
     /* 
        Initialize and increment parameters
@@ -5121,29 +5302,42 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                     c2b_globals.wig->basename, 
                     ++c2b_globals.wig->section);
         }
-        if (c2b_globals.keep_header_flag) { 
+        if (c2b_globals.keep_header_flag) {
             /* copy header line to destination stream buffer */
-            memcpy(src_line_str, src, src_size);
-            src_line_str[src_size] = '\0';
+            memcpy(c2b_globals.src_line_str, src, src_size);
+            c2b_globals.src_line_str[src_size] = '\0';
             if (!c2b_globals.wig->basename) {
-                sprintf(dest_line_str, 
+                sprintf(c2b_globals.dest_line_str, 
                         "%s\t%u\t%u\t%s\n", 
                         c2b_header_chr_name, 
                         c2b_globals.header_line_idx, 
                         c2b_globals.header_line_idx + 1, 
-                        src_line_str);
+                        c2b_globals.src_line_str);
             }
             else {
-                sprintf(dest_line_str, 
+                sprintf(c2b_globals.dest_line_str, 
                         "%s\t%u\t%u\t%s\t%s\n", 
                         c2b_header_chr_name, 
                         c2b_globals.header_line_idx, 
                         c2b_globals.header_line_idx + 1, 
                         c2b_globals.wig->id,
-                        src_line_str);
+                        c2b_globals.src_line_str);
             }
-            memcpy(dest + *dest_size, dest_line_str, strlen(dest_line_str));
-            *dest_size += strlen(dest_line_str);
+            /* resize destination buffer, if necessary */
+            if ((ssize_t)(*dest_size + C2B_MAX_LINE_LENGTH_VALUE) > *dest_capacity) {
+                char *dest_line_resized = NULL;
+                dest_line_resized = realloc(*dest, *dest_capacity * 2);
+                if (dest_line_resized) {
+                    *dest_capacity *= 2;
+                    *dest = dest_line_resized;
+                }
+                else {
+                    fprintf(stderr, "Error: Could not resize dest string in WIG pointer conversion fn\n");
+                    exit(ENOMEM);
+                }
+            }
+            memcpy(*dest + *dest_size, c2b_globals.dest_line_str, strlen(c2b_globals.dest_line_str));
+            *dest_size += strlen(c2b_globals.dest_line_str);
             c2b_globals.header_line_idx++;
             return;
         }
@@ -5162,27 +5356,40 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
         }
         if (c2b_globals.keep_header_flag) { 
             /* copy header line to destination stream buffer */
-            memcpy(src_line_str, src, src_size);
-            src_line_str[src_size] = '\0';
+            memcpy(c2b_globals.src_line_str, src, src_size);
+            c2b_globals.src_line_str[src_size] = '\0';
             if (!c2b_globals.wig->basename) {
-                sprintf(dest_line_str, 
+                sprintf(c2b_globals.dest_line_str, 
                         "%s\t%u\t%u\t%s\n", 
                         c2b_header_chr_name, 
                         c2b_globals.header_line_idx, 
                         c2b_globals.header_line_idx + 1, 
-                        src_line_str);
+                        c2b_globals.src_line_str);
             }
             else {
-                sprintf(dest_line_str, 
+                sprintf(c2b_globals.dest_line_str, 
                         "%s\t%u\t%u\t%s\t%s\n", 
                         c2b_header_chr_name, 
                         c2b_globals.header_line_idx, 
                         c2b_globals.header_line_idx + 1, 
                         c2b_globals.wig->id,
-                        src_line_str);
+                        c2b_globals.src_line_str);
             }
-            memcpy(dest + *dest_size, dest_line_str, strlen(dest_line_str));
-            *dest_size += strlen(dest_line_str);
+            /* resize destination buffer, if necessary */
+            if ((ssize_t)(*dest_size + C2B_MAX_LINE_LENGTH_VALUE) > *dest_capacity) {
+                char *dest_line_resized = NULL;
+                dest_line_resized = realloc(*dest, *dest_capacity * 2);
+                if (dest_line_resized) {
+                    *dest_capacity *= 2;
+                    *dest = dest_line_resized;
+                }
+                else {
+                    fprintf(stderr, "Error: Could not resize dest string in WIG pointer conversion fn\n");
+                    exit(ENOMEM);
+                }
+            }
+            memcpy(*dest + *dest_size, c2b_globals.dest_line_str, strlen(c2b_globals.dest_line_str));
+            *dest_size += strlen(c2b_globals.dest_line_str);
             c2b_globals.header_line_idx++;
             return;
         }
@@ -5191,9 +5398,9 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
         }        
     }
     else if (strncmp(src, c2b_wig_variable_step_prefix, strlen(c2b_wig_variable_step_prefix)) == 0) {
-        memcpy(src_line_str, src, src_size);
-        src_line_str[src_size] = '\0';
-        int variable_step_fields = sscanf(src_line_str, 
+        memcpy(c2b_globals.src_line_str, src, src_size);
+        c2b_globals.src_line_str[src_size] = '\0';
+        int variable_step_fields = sscanf(c2b_globals.src_line_str, 
                                           "variableStep chrom=%s span=%" SCNu64 "\n", 
                                           c2b_globals.wig->chr, 
                                           &(c2b_globals.wig->span));
@@ -5214,24 +5421,37 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
         if (c2b_globals.keep_header_flag) { 
             /* copy header line to destination stream buffer */
             if (!c2b_globals.wig->basename) {
-                sprintf(dest_line_str, 
+                sprintf(c2b_globals.dest_line_str, 
                         "%s\t%u\t%u\t%s\n", 
                         c2b_header_chr_name, 
                         c2b_globals.header_line_idx, 
                         c2b_globals.header_line_idx + 1, 
-                        src_line_str);
+                        c2b_globals.src_line_str);
             }
             else {
-                sprintf(dest_line_str, 
+                sprintf(c2b_globals.dest_line_str, 
                         "%s\t%u\t%u\t%s\t%s\n", 
                         c2b_header_chr_name, 
                         c2b_globals.header_line_idx, 
                         c2b_globals.header_line_idx + 1, 
                         c2b_globals.wig->id,
-                        src_line_str);
+                        c2b_globals.src_line_str);
             }
-            memcpy(dest + *dest_size, dest_line_str, strlen(dest_line_str));
-            *dest_size += strlen(dest_line_str);
+            /* resize destination buffer, if necessary */
+            if ((ssize_t)(*dest_size + C2B_MAX_LINE_LENGTH_VALUE) > *dest_capacity) {
+                char *dest_line_resized = NULL;
+                dest_line_resized = realloc(*dest, *dest_capacity * 2);
+                if (dest_line_resized) {
+                    *dest_capacity *= 2;
+                    *dest = dest_line_resized;
+                }
+                else {
+                    fprintf(stderr, "Error: Could not resize dest string in WIG pointer conversion fn\n");
+                    exit(ENOMEM);
+                }
+            }
+            memcpy(*dest + *dest_size, c2b_globals.dest_line_str, strlen(c2b_globals.dest_line_str));
+            *dest_size += strlen(c2b_globals.dest_line_str);
             c2b_globals.header_line_idx++;
             return;
         }
@@ -5240,9 +5460,9 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
         }                
     }
     else if (strncmp(src, c2b_wig_fixed_step_prefix, strlen(c2b_wig_fixed_step_prefix)) == 0) {
-        memcpy(src_line_str, src, src_size);
-        src_line_str[src_size] = '\0';
-        int fixed_step_fields = sscanf(src_line_str, 
+        memcpy(c2b_globals.src_line_str, src, src_size);
+        c2b_globals.src_line_str[src_size] = '\0';
+        int fixed_step_fields = sscanf(c2b_globals.src_line_str, 
                                        "fixedStep chrom=%s start=%" SCNu64 " step=%" SCNu64 " span=%" SCNu64 "\n", 
                                        c2b_globals.wig->chr, 
                                        &(c2b_globals.wig->start_pos), 
@@ -5259,24 +5479,37 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
         if (c2b_globals.keep_header_flag) { 
             /* copy header line to destination stream buffer */
             if (!c2b_globals.wig->basename) {
-                sprintf(dest_line_str, 
+                sprintf(c2b_globals.dest_line_str, 
                         "%s\t%u\t%u\t%s\n", 
                         c2b_header_chr_name, 
                         c2b_globals.header_line_idx, 
                         c2b_globals.header_line_idx + 1, 
-                        src_line_str);
+                        c2b_globals.src_line_str);
             }
             else {
-                sprintf(dest_line_str, 
+                sprintf(c2b_globals.dest_line_str, 
                         "%s\t%u\t%u\t%s\t%s\n", 
                         c2b_header_chr_name, 
                         c2b_globals.header_line_idx, 
                         c2b_globals.header_line_idx + 1, 
                         c2b_globals.wig->id,
-                        src_line_str);
+                        c2b_globals.src_line_str);
             }
-            memcpy(dest + *dest_size, dest_line_str, strlen(dest_line_str));
-            *dest_size += strlen(dest_line_str);
+            /* resize destination buffer, if necessary */
+            if ((ssize_t)(*dest_size + C2B_MAX_LINE_LENGTH_VALUE) > *dest_capacity) {
+                char *dest_line_resized = NULL;
+                dest_line_resized = realloc(*dest, *dest_capacity * 2);
+                if (dest_line_resized) {
+                    *dest_capacity *= 2;
+                    *dest = dest_line_resized;
+                }
+                else {
+                    fprintf(stderr, "Error: Could not resize dest string in WIG pointer conversion fn\n");
+                    exit(ENOMEM);
+                }
+            }
+            memcpy(*dest + *dest_size, c2b_globals.dest_line_str, strlen(c2b_globals.dest_line_str));
+            *dest_size += strlen(c2b_globals.dest_line_str);
             c2b_globals.header_line_idx++;
             return;
         }
@@ -5285,9 +5518,9 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
         }        
     }
     else if (strncmp(src, c2b_wig_chr_prefix, strlen(c2b_wig_chr_prefix)) == 0) {
-        memcpy(src_line_str, src, src_size);
-        src_line_str[src_size] = '\0';
-        int bed_fields = sscanf(src_line_str, 
+        memcpy(c2b_globals.src_line_str, src, src_size);
+        c2b_globals.src_line_str[src_size] = '\0';
+        int bed_fields = sscanf(c2b_globals.src_line_str, 
                                 "%s\t%" SCNu64 "\t%" SCNu64 "\t%lf\n", 
                                 c2b_globals.wig->chr,
                                 &(c2b_globals.wig->start_pos), 
@@ -5304,7 +5537,7 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
             exit(EINVAL); /* Invalid argument (POSIX.1) */
         }
         if (!c2b_globals.wig->basename) {
-            sprintf(dest_line_str,
+            sprintf(c2b_globals.dest_line_str,
                     "%s\t"                      \
                     "%" PRIu64 "\t"             \
                     "%" PRIu64 "\t"             \
@@ -5317,7 +5550,7 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                     c2b_globals.wig->score);
         }
         else {
-            sprintf(dest_line_str,
+            sprintf(c2b_globals.dest_line_str,
                     "%s\t"                      \
                     "%" PRIu64 "\t"             \
                     "%" PRIu64 "\t"             \
@@ -5331,16 +5564,29 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                     c2b_globals.wig->score);
         }
         c2b_globals.wig->start_write = kTrue;
-        memcpy(dest + *dest_size, dest_line_str, strlen(dest_line_str));
-        *dest_size += strlen(dest_line_str);
+        /* resize destination buffer, if necessary */
+        if ((ssize_t)(*dest_size + C2B_MAX_LINE_LENGTH_VALUE) > *dest_capacity) {
+            char *dest_line_resized = NULL;
+            dest_line_resized = realloc(*dest, *dest_capacity * 2);
+            if (dest_line_resized) {
+                *dest_capacity *= 2;
+                *dest = dest_line_resized;
+            }
+            else {
+                fprintf(stderr, "Error: Could not resize dest string in WIG pointer conversion fn\n");
+                exit(ENOMEM);
+            }
+        }
+        memcpy(*dest + *dest_size, c2b_globals.dest_line_str, strlen(c2b_globals.dest_line_str));
+        *dest_size += strlen(c2b_globals.dest_line_str);
     }
     else {
-        memcpy(src_line_str, src, src_size);
-        src_line_str[src_size] = '\0';
+        memcpy(c2b_globals.src_line_str, src, src_size);
+        c2b_globals.src_line_str[src_size] = '\0';
 
         if (c2b_globals.wig->is_fixed_step) {
 
-            int fixed_step_column_fields = sscanf(src_line_str, "%lf\n", &(c2b_globals.wig->score));
+            int fixed_step_column_fields = sscanf(c2b_globals.src_line_str, "%lf\n", &(c2b_globals.wig->score));
             if (fixed_step_column_fields != 1) {
                 fprintf(stderr, "Error: Invalid WIG line %u\n", c2b_globals.wig->line);
                 exit(EINVAL); /* Invalid argument (POSIX.1) */
@@ -5352,7 +5598,7 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                 exit(EINVAL); /* Invalid argument (POSIX.1) */
             }
             if (!c2b_globals.wig->basename) {
-                sprintf(dest_line_str,
+                sprintf(c2b_globals.dest_line_str,
                         "%s\t"                  \
                         "%" PRIu64 "\t"         \
                         "%" PRIu64 "\t"         \
@@ -5365,7 +5611,7 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                         c2b_globals.wig->score);
             }
             else {
-                sprintf(dest_line_str,
+                sprintf(c2b_globals.dest_line_str,
                         "%s\t"                  \
                         "%" PRIu64 "\t"         \
                         "%" PRIu64 "\t"         \
@@ -5380,11 +5626,24 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
             }            
             c2b_globals.wig->start_pos += c2b_globals.wig->step;
             c2b_globals.wig->start_write = kTrue;
-            memcpy(dest + *dest_size, dest_line_str, strlen(dest_line_str));
-            *dest_size += strlen(dest_line_str);
+            /* resize destination buffer, if necessary */
+            if ((ssize_t)(*dest_size + C2B_MAX_LINE_LENGTH_VALUE) > *dest_capacity) {
+                char *dest_line_resized = NULL;
+                dest_line_resized = realloc(*dest, *dest_capacity * 2);
+                if (dest_line_resized) {
+                    *dest_capacity *= 2;
+                    *dest = dest_line_resized;
+                }
+                else {
+                    fprintf(stderr, "Error: Could not resize dest string in WIG pointer conversion fn\n");
+                    exit(ENOMEM);
+                }
+            }
+            memcpy(*dest + *dest_size, c2b_globals.dest_line_str, strlen(c2b_globals.dest_line_str));
+            *dest_size += strlen(c2b_globals.dest_line_str);
         }
         else {
-            int variable_step_column_fields = sscanf(src_line_str, 
+            int variable_step_column_fields = sscanf(c2b_globals.src_line_str, 
                                                      "%" SCNu64 "\t%lf\n", 
                                                      &(c2b_globals.wig->start_pos), 
                                                      &(c2b_globals.wig->score));
@@ -5399,7 +5658,7 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                 exit(EINVAL); /* Invalid argument (POSIX.1) */
             }
             if (!c2b_globals.wig->basename) {
-                sprintf(dest_line_str,
+                sprintf(c2b_globals.dest_line_str,
                         "%s\t"                  \
                         "%" PRIu64 "\t"         \
                         "%" PRIu64 "\t"         \
@@ -5412,7 +5671,7 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
                         c2b_globals.wig->score);
             }
             else {
-                sprintf(dest_line_str,
+                sprintf(c2b_globals.dest_line_str,
                         "%s\t"                  \
                         "%" PRIu64 "\t"         \
                         "%" PRIu64 "\t"         \
@@ -5427,18 +5686,31 @@ c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, 
             }            
             c2b_globals.wig->start_pos += c2b_globals.wig->step;
             c2b_globals.wig->start_write = kTrue;
-            memcpy(dest + *dest_size, dest_line_str, strlen(dest_line_str));
-            *dest_size += strlen(dest_line_str);
+            /* resize destination buffer, if necessary */
+            if ((ssize_t)(*dest_size + C2B_MAX_LINE_LENGTH_VALUE) > *dest_capacity) {
+                char *dest_line_resized = NULL;
+                dest_line_resized = realloc(*dest, *dest_capacity * 2);
+                if (dest_line_resized) {
+                    *dest_capacity *= 2;
+                    *dest = dest_line_resized;
+                }
+                else {
+                    fprintf(stderr, "Error: Could not resize dest string in WIG pointer conversion fn\n");
+                    exit(ENOMEM);
+                }
+            }
+            memcpy(*dest + *dest_size, c2b_globals.dest_line_str, strlen(c2b_globals.dest_line_str));
+            *dest_size += strlen(c2b_globals.dest_line_str);
         }
     }
 }
 
 static void *
-c2b_read_bytes_from_stdin(void *arg)
+c2b_read_bytes_from_stdin(void* arg)
 {
-    c2b_pipeline_stage_t *stage = (c2b_pipeline_stage_t *) arg;
-    c2b_pipeset_t *pipes = stage->pipeset;
-    char *buffer = NULL;
+    c2b_pipeline_stage_t* stage = (c2b_pipeline_stage_t *) arg;
+    c2b_pipeset_t* pipes = stage->pipeset;
+    char* buffer = NULL;
     ssize_t buffer_size = stage->buffer_size;
     ssize_t bytes_read;
     int exit_status = 0;
@@ -5478,12 +5750,12 @@ c2b_read_bytes_from_stdin(void *arg)
 }
 
 static void *
-c2b_process_intermediate_bytes_by_lines(void *arg)
+c2b_process_intermediate_bytes_by_lines(void* arg)
 {
-    c2b_pipeline_stage_t *stage = (c2b_pipeline_stage_t *) arg;
-    c2b_pipeset_t *pipes = stage->pipeset;
-    char *src_buffer = NULL;
-    ssize_t src_buffer_size = C2B_THREAD_IO_BUFFER_SIZE;
+    c2b_pipeline_stage_t* stage = (c2b_pipeline_stage_t *) arg;
+    c2b_pipeset_t* pipes = stage->pipeset;
+    char* src_buffer = NULL;
+    ssize_t src_buffer_capacity = C2B_THREAD_IO_BUFFER_SIZE;
     ssize_t src_bytes_read = 0;
     ssize_t remainder_length = 0;
     ssize_t remainder_offset = 0;
@@ -5491,24 +5763,24 @@ c2b_process_intermediate_bytes_by_lines(void *arg)
     ssize_t lines_offset = 0;
     ssize_t start_offset = 0;
     ssize_t end_offset = 0;
-    char *dest_buffer = NULL;
-    ssize_t dest_buffer_size = C2B_THREAD_IO_BUFFER_SIZE * C2B_MAX_LINES_VALUE;
+    char* dest_buffer = NULL;
+    ssize_t dest_buffer_capacity = C2B_THREAD_IO_BUFFER_SIZE;
     ssize_t dest_bytes_written = 0;
-    void (*line_functor)(char *, ssize_t *, char *, ssize_t) = stage->line_functor;
+    void (*line_functor)(char **, ssize_t *, ssize_t *, char *, ssize_t) = stage->line_functor;
     int exit_status = 0;
 
     /* 
        We read from the src out pipe, then write to the dest in pipe 
     */
     
-    src_buffer = malloc(src_buffer_size);
+    src_buffer = malloc(src_buffer_capacity);
     if (!src_buffer) {
         fprintf(stderr, "Error: Could not allocate space for intermediate source buffer.\n");
         c2b_print_usage(stderr);
         exit(ENOMEM); /* Not enough space (POSIX.1) */
     }
 
-    dest_buffer = malloc(dest_buffer_size);
+    dest_buffer = malloc(dest_buffer_capacity);
     if (!dest_buffer) {
         fprintf(stderr, "Error: Could not allocate space for intermediate destination buffer.\n");
         c2b_print_usage(stderr);
@@ -5518,7 +5790,7 @@ c2b_process_intermediate_bytes_by_lines(void *arg)
 
     while ((src_bytes_read = read(pipes->out[stage->src][PIPE_READ],
                                   src_buffer + remainder_length,
-                                  src_buffer_size - remainder_length)) > 0) {
+                                  src_buffer_capacity - remainder_length)) > 0) {
 
         /* 
            So here's what src_buffer looks like initially; basically, some stuff separated by
@@ -5572,11 +5844,11 @@ c2b_process_intermediate_bytes_by_lines(void *arg)
            src_buffer_size to something smaller.
         */
 
-        c2b_memrchr_offset(&remainder_offset, src_buffer, src_buffer_size, src_bytes_read + remainder_length, line_delim);
+        c2b_memrchr_offset(&remainder_offset, src_buffer, src_buffer_capacity, src_bytes_read + remainder_length, line_delim);
 
         if (remainder_offset == -1) {
-            if (src_bytes_read + remainder_length == src_buffer_size) {
-                fprintf(stderr, "Error: Could not find newline in intermediate buffer; check input [%zu | %zu | %zu]\n", (unsigned long) src_bytes_read, (unsigned long) remainder_length, (unsigned long) src_buffer_size);
+            if (src_bytes_read + remainder_length == src_buffer_capacity) {
+                fprintf(stderr, "Error: Could not find newline in intermediate buffer; check input [%zu | %zu | %zu]\n", (unsigned long) src_bytes_read, (unsigned long) remainder_length, (unsigned long) src_buffer_capacity);
                 c2b_print_usage(stderr);
                 exit(EINVAL); /* Invalid argument (POSIX.1) */
             }
@@ -5596,7 +5868,7 @@ c2b_process_intermediate_bytes_by_lines(void *arg)
             if (src_buffer[lines_offset] == line_delim) {
                 end_offset = lines_offset;
                 /* for a given line from src, we write dest_bytes_written number of bytes to dest_buffer (plus written offset) */
-                (*line_functor)(dest_buffer, &dest_bytes_written, src_buffer + start_offset, end_offset - start_offset);
+                (*line_functor)(&dest_buffer, &dest_bytes_written, &dest_buffer_capacity, src_buffer + start_offset, end_offset - start_offset);
                 start_offset = end_offset + 1;
             }
             lines_offset++;            
@@ -5610,7 +5882,7 @@ c2b_process_intermediate_bytes_by_lines(void *arg)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result"
         write(pipes->in[stage->dest][PIPE_WRITE], dest_buffer, dest_bytes_written);
-        //fprintf(stderr, "dest_bytes_written [%zu]\n", dest_bytes_written);
+        //fprintf(stderr, "dest_bytes_written [%zu] of dest_buffer_size [%zu] (diff [%zu])\n", dest_bytes_written, dest_buffer_capacity, dest_buffer_capacity - dest_bytes_written);
 #pragma GCC diagnostic pop
 
         remainder_length = src_bytes_read + remainder_length - remainder_offset;
@@ -5640,11 +5912,11 @@ c2b_process_intermediate_bytes_by_lines(void *arg)
 }
 
 static void *
-c2b_write_in_bytes_to_in_process(void *arg)
+c2b_write_in_bytes_to_in_process(void* arg)
 {
-    c2b_pipeline_stage_t *stage = (c2b_pipeline_stage_t *) arg;
-    c2b_pipeset_t *pipes = stage->pipeset;
-    char *buffer = NULL;
+    c2b_pipeline_stage_t* stage = (c2b_pipeline_stage_t *) arg;
+    c2b_pipeset_t* pipes = stage->pipeset;
+    char* buffer = NULL;
     ssize_t buffer_size = stage->buffer_size;
     ssize_t bytes_read;
     int exit_status = 0;
@@ -5682,11 +5954,11 @@ c2b_write_in_bytes_to_in_process(void *arg)
 }
 
 static void *
-c2b_write_out_bytes_to_in_process(void *arg)
+c2b_write_out_bytes_to_in_process(void* arg)
 {
-    c2b_pipeline_stage_t *stage = (c2b_pipeline_stage_t *) arg;
-    c2b_pipeset_t *pipes = stage->pipeset;
-    char *buffer = NULL;
+    c2b_pipeline_stage_t* stage = (c2b_pipeline_stage_t *) arg;
+    c2b_pipeset_t* pipes = stage->pipeset;
+    char* buffer = NULL;
     ssize_t buffer_size = stage->buffer_size;
     ssize_t bytes_read;
     int exit_status = 0;
@@ -5724,11 +5996,11 @@ c2b_write_out_bytes_to_in_process(void *arg)
 }
 
 static void *
-c2b_write_in_bytes_to_stdout(void *arg)
+c2b_write_in_bytes_to_stdout(void* arg)
 {
-    c2b_pipeline_stage_t *stage = (c2b_pipeline_stage_t *) arg;
-    c2b_pipeset_t *pipes = stage->pipeset;
-    char *buffer = NULL;
+    c2b_pipeline_stage_t* stage = (c2b_pipeline_stage_t *) arg;
+    c2b_pipeset_t* pipes = stage->pipeset;
+    char* buffer = NULL;
     ssize_t buffer_size = stage->buffer_size;
     ssize_t bytes_read;
     int exit_status = 0;
@@ -5763,11 +6035,11 @@ c2b_write_in_bytes_to_stdout(void *arg)
 }
 
 static void *
-c2b_write_out_bytes_to_stdout(void *arg)
+c2b_write_out_bytes_to_stdout(void* arg)
 {
-    c2b_pipeline_stage_t *stage = (c2b_pipeline_stage_t *) arg;
-    c2b_pipeset_t *pipes = stage->pipeset;
-    char *buffer = NULL;
+    c2b_pipeline_stage_t* stage = (c2b_pipeline_stage_t *) arg;
+    c2b_pipeset_t* pipes = stage->pipeset;
+    char* buffer = NULL;
     ssize_t buffer_size = stage->buffer_size;
     ssize_t bytes_read;
     int exit_status = 0;
@@ -5802,7 +6074,7 @@ c2b_write_out_bytes_to_stdout(void *arg)
 }
 
 static void
-c2b_memrchr_offset(ssize_t *offset, char *buf, ssize_t buf_size, ssize_t len, char delim)
+c2b_memrchr_offset(ssize_t* offset, char* buf, ssize_t buf_size, ssize_t len, char delim)
 {
     ssize_t left = len;
     
@@ -5820,15 +6092,15 @@ c2b_memrchr_offset(ssize_t *offset, char *buf, ssize_t buf_size, ssize_t len, ch
 }
 
 static void
-c2b_init_pipeset(c2b_pipeset_t *p, const size_t num)
+c2b_init_pipeset(c2b_pipeset_t* p, const size_t num)
 {
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_init_pipeset() - enter ---\n");
 #endif
 
-    int **ins = NULL;
-    int **outs = NULL;
-    int **errs = NULL;
+    int** ins = NULL;
+    int** outs = NULL;
+    int** errs = NULL;
     size_t n;
 
     ins = malloc(num * sizeof(int *));
@@ -5894,7 +6166,7 @@ static void c2b_debug_pipeset() __attribute__ ((unused));
 #endif
 
 static void
-c2b_debug_pipeset(c2b_pipeset_t *p, const size_t num)
+c2b_debug_pipeset(c2b_pipeset_t* p, const size_t num)
 {
     size_t n;
     size_t s;
@@ -5913,7 +6185,7 @@ c2b_debug_pipeset(c2b_pipeset_t *p, const size_t num)
 }
 
 static void
-c2b_delete_pipeset(c2b_pipeset_t *p)
+c2b_delete_pipeset(c2b_pipeset_t* p)
 {
     size_t n;
     size_t s;
@@ -6029,8 +6301,8 @@ c2b_test_dependencies()
     fprintf(stderr, "--- c2b_test_dependencies() - enter ---\n");
 #endif
 
-    char *p = NULL;
-    char *path = NULL;
+    char* p = NULL;
+    char* path = NULL;
 
     if ((p = getenv("PATH")) == NULL) {
         fprintf(stderr, "Error: Cannot retrieve environment PATH variable\n");
@@ -6046,7 +6318,7 @@ c2b_test_dependencies()
     memcpy(path, p, strlen(p) + 1);
 
     if ((c2b_globals.input_format_idx == BAM_FORMAT) || (c2b_globals.input_format_idx == SAM_FORMAT)) {
-        char *samtools = NULL;
+        char* samtools = NULL;
         samtools = malloc(strlen(c2b_samtools) + 1);
         if (!samtools) {
             fprintf(stderr, "Error: Cannot allocate space for samtools variable copy\n");
@@ -6055,7 +6327,7 @@ c2b_test_dependencies()
         }
         memcpy(samtools, c2b_samtools, strlen(c2b_samtools) + 1);
 
-        char *path_samtools = NULL;
+        char* path_samtools = NULL;
         path_samtools = malloc(strlen(path) + 1);
         if (!path_samtools) {
             fprintf(stderr, "Error: Cannot allocate space for path (samtools) copy\n");
@@ -6078,7 +6350,7 @@ c2b_test_dependencies()
     }
 
     if (c2b_globals.sort->is_enabled) {
-        char *sort_bed = NULL;
+        char* sort_bed = NULL;
         sort_bed = malloc(strlen(c2b_sort_bed) + 1);
         if (!sort_bed) {
             fprintf(stderr, "Error: Cannot allocate space for sort-bed variable copy\n");
@@ -6087,7 +6359,7 @@ c2b_test_dependencies()
         }
         memcpy(sort_bed, c2b_sort_bed, strlen(c2b_sort_bed) + 1);
 
-        char *path_sort_bed = NULL;
+        char* path_sort_bed = NULL;
         path_sort_bed = malloc(strlen(path) + 1);
         if (!path_sort_bed) {
             fprintf(stderr, "Error: Cannot allocate space for path (samtools) copy\n");
@@ -6110,7 +6382,7 @@ c2b_test_dependencies()
     }
 
     if (c2b_globals.output_format_idx == STARCH_FORMAT) {
-        char *starch = NULL;
+        char* starch = NULL;
         starch = malloc(strlen(c2b_starch) + 1);
         if (!starch) {
             fprintf(stderr, "Error: Cannot allocate space for starch variable copy\n");
@@ -6119,7 +6391,7 @@ c2b_test_dependencies()
         }
         memcpy(starch, c2b_starch, strlen(c2b_starch) + 1);
 
-        char *path_starch = NULL;
+        char* path_starch = NULL;
         path_starch = malloc(strlen(path) + 1);
         if (!path_starch) {
             fprintf(stderr, "Error: Cannot allocate space for path (starch) copy\n");
@@ -6142,7 +6414,7 @@ c2b_test_dependencies()
     }
 
     if (c2b_globals.input_format_idx != BAM_FORMAT) {
-        char *cat = NULL;
+        char* cat = NULL;
         cat = malloc(strlen(c2b_cat) + 1);
         if (!cat) {
             fprintf(stderr, "Error: Cannot allocate space for cat variable copy\n");
@@ -6151,7 +6423,7 @@ c2b_test_dependencies()
         }
         memcpy(cat, c2b_cat, strlen(c2b_cat) + 1);
         
-        char *path_cat = NULL;
+        char* path_cat = NULL;
         path_cat = malloc(strlen(path) + 1);
         if (!path_cat) {
             fprintf(stderr, "Error: Cannot allocate space for path (cat) copy\n");
@@ -6181,14 +6453,14 @@ c2b_test_dependencies()
 }
 
 static boolean
-c2b_print_matches(char *path, char *fn)
+c2b_print_matches(char* path, char* fn)
 {
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_print_matches() - enter ---\n");
 #endif
 
     char candidate[PATH_MAX];
-    const char *d;
+    const char* d;
     boolean found = kFalse;
 
     if (strchr(fn, '/') != NULL) {
@@ -6254,12 +6526,12 @@ c2b_print_matches(char *path, char *fn)
 }
 
 static char *
-c2b_strsep(char **stringp, const char *delim)
+c2b_strsep(char** stringp, const char* delim)
 {
-    char *s;
-    const char *spanp;
+    char* s;
+    const char* spanp;
     int c, sc;
-    char *tok;
+    char* tok;
 
     if ((s = *stringp) == NULL)
         return NULL;
@@ -6283,7 +6555,7 @@ c2b_strsep(char **stringp, const char *delim)
 }
 
 static boolean
-c2b_is_there(char *candidate)
+c2b_is_there(char* candidate)
 {
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_is_there() - enter ---\n");
@@ -6347,6 +6619,8 @@ c2b_init_globals()
     c2b_init_global_sort_params();
     c2b_globals.starch = NULL;
     c2b_init_global_starch_params();
+    c2b_globals.src_line_str = NULL;
+    c2b_globals.dest_line_str = NULL;
 
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_init_globals() - exit  ---\n");
@@ -6379,6 +6653,8 @@ c2b_delete_globals()
     if (c2b_globals.cat) c2b_delete_global_cat_params();
     if (c2b_globals.sort) c2b_delete_global_sort_params();
     if (c2b_globals.starch) c2b_delete_global_starch_params();
+    if (c2b_globals.src_line_str) free(c2b_globals.src_line_str), c2b_globals.src_line_str = NULL;
+    if (c2b_globals.dest_line_str) free(c2b_globals.dest_line_str), c2b_globals.dest_line_str = NULL;
 
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_delete_globals() - exit  ---\n");
@@ -7085,7 +7361,7 @@ c2b_init_command_line_options(int argc, char **argv)
 }
 
 static void
-c2b_print_version(FILE *stream)
+c2b_print_version(FILE* stream)
 {
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_print_version() - enter ---\n");
@@ -7105,7 +7381,7 @@ c2b_print_version(FILE *stream)
 }
 
 static void
-c2b_print_usage(FILE *stream)
+c2b_print_usage(FILE* stream)
 {
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_print_usage() - enter ---\n");
@@ -7133,7 +7409,7 @@ c2b_print_usage(FILE *stream)
 }
 
 static void
-c2b_print_format_usage(FILE *stream)
+c2b_print_format_usage(FILE* stream)
 {
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_print_format_usage() - enter ---\n");
@@ -7245,7 +7521,7 @@ c2b_print_format_usage(FILE *stream)
 }
 
 static char *
-c2b_to_lowercase(const char *src)
+c2b_to_lowercase(const char* src)
 {
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_to_lowercase() - enter ---\n");
@@ -7275,7 +7551,7 @@ c2b_to_lowercase(const char *src)
 }
 
 static c2b_format_t
-c2b_to_input_format(const char *input_format)
+c2b_to_input_format(const char* input_format)
 {
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_to_input_format() - enter ---\n");
@@ -7296,7 +7572,7 @@ c2b_to_input_format(const char *input_format)
 }
 
 static c2b_format_t
-c2b_to_output_format(const char *output_format)
+c2b_to_output_format(const char* output_format)
 {
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_to_output_format() - enter ---\n");
@@ -7308,4 +7584,3 @@ c2b_to_output_format(const char *output_format)
         (strcmp(output_format, "starch") == 0) ? STARCH_FORMAT :
         UNDEFINED_FORMAT;
 }
-

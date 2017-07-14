@@ -19,7 +19,7 @@ LOCALBZIP2INCDIR    = ${LOCALBZIP2DIR}
 LOCALZLIBDIR        = ${PARTY3}/zlib
 LOCALZLIBLIB        = ${LOCALZLIBDIR}/${LIBZLIB}
 LOCALZLIBINCDIR     = ${LOCALZLIBDIR}
-OBJDIR              = objects${POSTFIX}
+OBJDIR              = objects_${BINARY_TYPE}
 INCLUDES            = -iquote$(HEAD) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 LIBLOCATION         = -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBDIR}
 LIBRARIES           = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
@@ -33,7 +33,7 @@ DFLAGS              = $(SFLAGS) ${MEGAFLAGS} -g -O0 -std=c++11 -Wall -fno-inline
 GPROFFLAGS          = $(SFLAGS) ${MEGAFLAGS} -O -std=c++11 -Wall -pedantic -pg $(dependencies) ${LIBLOCATION} ${INCLUDES}
 SOURCE1             = ClosestFeature.cpp
 BINDIR              = ../bin
-PROG                = closest-features${POSTFIX}
+PROG                = closest-features-${BINARY_TYPE}
 
 build: $(BINDIR)/$(PROG)
 	rm -rf $(OBJDIR)

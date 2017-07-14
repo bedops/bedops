@@ -6579,8 +6579,11 @@ STARCHCAT2_transformCompressionBuffer (const char *compBuf, char *retransBuf, Tr
     fprintf(stderr, "\n--- STARCHCAT2_transformCompressionBuffer() ---\n");
 #endif
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpointer-bool-conversion"
     if ((!retransState->r_chromosome) || (strlen(retransState->r_chromosome) == 0))
         return STARCH_EXIT_FAILURE;
+#pragma clang diagnostic pop
 
     static const char tab                                  = '\t';
     size_t nCompBuf                                        = strlen(compBuf);

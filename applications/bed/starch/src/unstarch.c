@@ -320,7 +320,8 @@ main(int argc, char **argv)
                 strlen(jsonString),
                 mdHashBuffer);        
 #endif
-            free(jsonString), jsonString = NULL;
+            free(jsonString);
+            jsonString = NULL;
             json_decref(metadataJSON);
             metadataJSON = NULL;
         }   

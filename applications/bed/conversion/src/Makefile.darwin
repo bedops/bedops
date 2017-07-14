@@ -1,13 +1,15 @@
-MIN_OSX_VERSION           = 10.7
 BLDFLAGS                  = -Wall -Wextra -pedantic -std=c99
 COMMONFLAGS               = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 ${MEGAFLAGS}
 CFLAGS                    = -O3
 CDFLAGS                   = -DDEBUG=1 -g -O0 -fno-inline
 CPFLAGS                   = -pg
 LIBS                      = -lpthread
-INCLUDES                 := -iquote"${CURDIR}"
+MAIN                      = ../../../..
+INTERFACES                = $(MAIN)/interfaces
+HEAD                      = ${INTERFACES}/general-headers
+INCLUDES                 := -iquote"${CURDIR}" -iquote"${HEAD}"
 DISTDIR                   = ../bin
-OBJDIR                    = objects"${POSTFIX}"
+OBJDIR                    = objects_${BINARY_TYPE}
 WRAPPERDIR                = wrappers
 PROG                      = convert2bed
 SOURCE                    = convert2bed.c
@@ -23,18 +25,18 @@ setup:
 
 build: setup
 	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(BLDFLAGS) $(COMMONFLAGS) $(CFLAGS) -c $(SOURCE) -o $(OBJDIR)/$(PROG).o $(INCLUDES)
-	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(BLDFLAGS) $(COMMONFLAGS) $(CFLAGS) $(OBJDIR)/$(PROG).o -o $(DISTDIR)/$(PROG)${POSTFIX} $(LIBS)
+	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(BLDFLAGS) $(COMMONFLAGS) $(CFLAGS) $(OBJDIR)/$(PROG).o -o $(DISTDIR)/$(PROG)-${BINARY_TYPE} $(LIBS)
 	rm -rf $(OBJDIR)
 
 build_debug: setup
 	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(BLDFLAGS) $(COMMONFLAGS) $(CDFLAGS) -c $(SOURCE) -o $(OBJDIR)/$(PROG).o $(INCLUDES)
-	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(BLDFLAGS) $(COMMONFLAGS) $(CDFLAGS) $(OBJDIR)/$(PROG).o -o $(DISTDIR)/debug.$(PROG)${POSTFIX} $(LIBS)
+	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(BLDFLAGS) $(COMMONFLAGS) $(CDFLAGS) $(OBJDIR)/$(PROG).o -o $(DISTDIR)/debug.$(PROG)-${BINARY_TYPE} $(LIBS)
 	rm -rf $(OBJDIR)
 
 build_gprof: setup
 	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) -shared -fPIC gprof-helper.c -o gprof-helper.so $(LIBS) -ldl
 	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(BLDFLAGS) $(COMMONFLAGS) $(CPFLAGS) -c $(SOURCE) -o $(OBJDIR)/$(PROG).o $(INCLUDES)
-	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(BLDFLAGS) $(COMMONFLAGS) $(CPFLAGS) $(OBJDIR)/$(PROG).o -o $(DISTDIR)/$(PROG)${POSTFIX} $(LIBS)
+	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(BLDFLAGS) $(COMMONFLAGS) $(CPFLAGS) $(OBJDIR)/$(PROG).o -o $(DISTDIR)/$(PROG)-${BINARY_TYPE} $(LIBS)
 	@echo "\nNote: To profile convert2bed with gprof/pthreads, run:\n\t$$ LD_PRELOAD=/path/to/gprof-helper.so convert2bed"
 	rm -rf $(OBJDIR)
 

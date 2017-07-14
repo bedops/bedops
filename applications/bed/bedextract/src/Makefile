@@ -6,7 +6,7 @@ LIB2                    = $(MAIN)/interfaces/src/utility
 LIB3                    = $(MAIN)/interfaces/src/data/starch
 THISDIR                 = ${shell pwd}
 PARTY3                  = ${THISDIR}/$(MAIN)/third-party
-OBJDIR                  = objects${POSTFIX}
+OBJDIR                  = objects_${BINARY_TYPE}
 LIBJANSSON              = libjansson.a
 LIBBZIP2                = libbz2.a
 LIBZLIB                 = libz.a
@@ -35,7 +35,7 @@ GPROFFLAGS              = $(SFLAGS) -O -std=c++11 -Wall -pedantic -pg $(dependen
 
 SOURCE1                 = ExtractRows.cpp
 BINDIR                  = ../bin
-PROG                    = bedextract${POSTFIX}
+PROG                    = bedextract-${BINARY_TYPE}
 
 build: $(BINDIR)/$(PROG)
 	rm -rf ${OBJDIR}

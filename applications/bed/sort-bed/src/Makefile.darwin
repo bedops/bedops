@@ -1,12 +1,10 @@
-MIN_OSX_VERSION      = 10.7
-
 MAIN                 = ../../../..
 MAINAPPDIR           = ../..
 HEAD                 = $(MAIN)/interfaces/general-headers
 LIB3                 = $(MAIN)/interfaces/src/data/starch
-PROG                 = sort-bed"${POSTFIX}"
+PROG                 = sort-bed-${BINARY_TYPE}
 DIST_DIR             = ../bin
-OBJ_DIR              = objects_${ARCH}"${POSTFIX}"
+OBJ_DIR              = objects_${ARCH}_${BINARY_TYPE}
 OPTIMIZE             = -O3 -std=c++11 -stdlib=libc++
 WARNINGS             = -Wall
 MAIN                 = ../../../..
@@ -40,13 +38,13 @@ build: sort check-cp
 	rm -rf ${OBJ_DIR}
 
 update-sort-bed-slurm:
-	cp update-sort-bed-slurm.py ${DIST_DIR}/update-sort-bed-slurm${POSTFIX}
+	cp update-sort-bed-slurm.py ${DIST_DIR}/update-sort-bed-slurm-${BINARY_TYPE}
 
 update-sort-bed-starch-slurm:
-	cp update-sort-bed-starch-slurm.py ${DIST_DIR}/update-sort-bed-starch-slurm${POSTFIX}
+	cp update-sort-bed-starch-slurm.py ${DIST_DIR}/update-sort-bed-starch-slurm-${BINARY_TYPE}
 
 update-sort-bed-migrate-candidates:
-	cp update-sort-bed-migrate-candidates.py ${DIST_DIR}/update-sort-bed-migrate-candidates${POSTFIX}
+	cp update-sort-bed-migrate-candidates.py ${DIST_DIR}/update-sort-bed-migrate-candidates-${BINARY_TYPE}
 
 check-cp:
 	make -f ${SELF} update-sort-bed-slurm

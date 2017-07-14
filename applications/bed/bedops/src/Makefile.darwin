@@ -1,5 +1,3 @@
-MIN_OSX_VERSION      = 10.7
-
 MAIN                 = ../../../..
 MAINAPPDIR           = ../..
 HEAD                 = $(MAIN)/interfaces/general-headers
@@ -22,7 +20,7 @@ LOCALBZIP2INCDIR     = ${LOCALBZIP2DIR}
 LOCALZLIBDIR         = ${PARTY3}/darwin_intel_${ARCH}/zlib
 LOCALZLIBLIB         = ${LOCALZLIBDIR}/${LIBZLIB}
 LOCALZLIBINCDIR      = ${LOCALZLIBDIR}
-OBJDIR               = objects_$(ARCH)${POSTFIX}
+OBJDIR               = objects_$(ARCH)_${BINARY_TYPE}
 INCLUDES             = -iquote$(HEAD) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 LIBLOCATION          = -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBDIR}
 LIBRARIES            = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
@@ -37,7 +35,7 @@ GPROFFLAGS           = ${MEGAFLAGS} -O -pg ${STDFLAGS} $(OBJDIR)/NaN.o $(OBJDIR)
 
 SOURCE1              = Bedops.cpp
 BINDIR               = ../bin
-PROG                 = bedops${POSTFIX}
+PROG                 = bedops-${BINARY_TYPE}
 
 build: dependencies
 	$(CXX) -o $(BINDIR)/$(PROG) $(FLAGS) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) ${LIBRARIES} $(SOURCE1)

@@ -51,6 +51,8 @@
 #include <sys/param.h>
 #include <sys/wait.h>
 
+#include "suite/BEDOPS.Constants.hpp"
+
 #define C2B_VERSION "2.4.27"
 
 typedef int boolean;
@@ -60,11 +62,11 @@ const boolean kTrue = 1;
 const boolean kFalse = 0;
 
 #define C2B_MAX_FIELD_COUNT_VALUE 64
-#define C2B_MAX_FIELD_LENGTH_VALUE 24576
-#define C2B_MAX_OPERATION_FIELD_LENGTH_VALUE 32
+#define C2B_MAX_FIELD_LENGTH_VALUE TOKEN_REST_MAX_LENGTH
+#define C2B_MAX_OPERATION_FIELD_LENGTH_VALUE MAX_DEC_INTEGERS
 #define C2B_MAX_STRAND_LENGTH_VALUE 4
-#define C2B_MAX_LINE_LENGTH_VALUE 131072
-#define C2B_MAX_LONGER_LINE_LENGTH_VALUE 1048576
+#define C2B_MAX_LINE_LENGTH_VALUE 24 * TOKENS_MAX_LENGTH
+#define C2B_MAX_COMMAND_LINE_LENGTH_VALUE 65536
 #define C2B_MAX_LINES_VALUE 32
 #define C2B_MAX_CHROMOSOME_LENGTH 32
 #define C2B_MAX_PSL_BLOCKS 1024
@@ -82,42 +84,42 @@ const boolean kFalse = 0;
 #define C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
 #define C2B_THREAD_IO_BUFFER_SIZE 5000000
 
-extern const char *c2b_samtools;
-extern const char *c2b_sort_bed;
-extern const char *c2b_starch;
-extern const char *c2b_cat;
-extern const char *c2b_default_output_format;
-extern const char *c2b_unmapped_read_chr_name;
-extern const char *c2b_header_chr_name;
-extern const char *sort_bed_max_mem_arg;
-extern const char *sort_bed_max_mem_default_arg;
-extern const char *sort_bed_tmpdir_arg;
-extern const char *sort_bed_stdin;
-extern const char *starch_bzip2_arg;
-extern const char *starch_gzip_arg;
-extern const char *starch_note_prefix_arg;
-extern const char *starch_note_suffix_arg;
-extern const char *starch_stdin_arg;
+extern const char* c2b_samtools;
+extern const char* c2b_sort_bed;
+extern const char* c2b_starch;
+extern const char* c2b_cat;
+extern const char* c2b_default_output_format;
+extern const char* c2b_unmapped_read_chr_name;
+extern const char* c2b_header_chr_name;
+extern const char* sort_bed_max_mem_arg;
+extern const char* sort_bed_max_mem_default_arg;
+extern const char* sort_bed_tmpdir_arg;
+extern const char* sort_bed_stdin;
+extern const char* starch_bzip2_arg;
+extern const char* starch_gzip_arg;
+extern const char* starch_note_prefix_arg;
+extern const char* starch_note_suffix_arg;
+extern const char* starch_stdin_arg;
 extern const char c2b_tab_delim;
 extern const char c2b_line_delim;
 extern const char c2b_space_delim;
 extern const char c2b_sam_header_prefix;
-extern const char *c2b_gff_header;
-extern const char *c2b_gff_fasta;
+extern const char* c2b_gff_header;
+extern const char* c2b_gff_fasta;
 extern const int c2b_gff_field_min;
 extern const int c2b_gff_field_max;
-extern const char *c2b_gff_zero_length_insertion_attribute;
+extern const char* c2b_gff_zero_length_insertion_attribute;
 extern const int c2b_gtf_field_min;
 extern const int c2b_gtf_field_max;
-extern const char *c2b_gtf_gene_id_prefix;
-extern const char *c2b_gtf_transcript_id_prefix;
+extern const char* c2b_gtf_gene_id_prefix;
+extern const char* c2b_gtf_transcript_id_prefix;
 extern const char c2b_gtf_id_delimiter;
-extern const char *c2b_gtf_field_delimiter;
-extern const char *c2b_gtf_field_placeholder;
+extern const char* c2b_gtf_field_delimiter;
+extern const char* c2b_gtf_field_placeholder;
 extern const char c2b_gtf_comment;
-extern const char *c2b_gtf_zero_length_insertion_attribute;
-extern const char *c2b_gvf_header;
-extern const char *c2b_gvf_generic_header;
+extern const char* c2b_gtf_zero_length_insertion_attribute;
+extern const char* c2b_gvf_header;
+extern const char* c2b_gvf_generic_header;
 extern const int c2b_psl_field_min;
 extern const int c2b_psl_field_max;
 extern const char c2b_psl_blockSizes_delimiter;
@@ -125,56 +127,56 @@ extern const char c2b_psl_tStarts_delimiter;
 extern const uint64_t c2b_rmsk_header_line_count;
 extern const int c2b_rmsk_field_min;
 extern const int c2b_rmsk_field_max;
-extern const char *c2b_rmsk_strand_complement;
-extern const char *c2b_rmsk_strand_complement_replacement;
+extern const char* c2b_rmsk_strand_complement;
+extern const char* c2b_rmsk_strand_complement_replacement;
 extern const int c2b_vcf_field_min;
 extern const char c2b_vcf_header_prefix;
 extern const char c2b_vcf_alt_allele_delim;
 extern const char c2b_vcf_id_prefix;
 extern const char c2b_vcf_id_suffix;
 extern const char c2b_wig_header_prefix;
-extern const char *c2b_wig_track_prefix;
-extern const char *c2b_wig_browser_prefix;
-extern const char *c2b_wig_variable_step_prefix;
-extern const char *c2b_wig_fixed_step_prefix;
-extern const char *c2b_wig_chr_prefix;
+extern const char* c2b_wig_track_prefix;
+extern const char* c2b_wig_browser_prefix;
+extern const char* c2b_wig_variable_step_prefix;
+extern const char* c2b_wig_fixed_step_prefix;
+extern const char* c2b_wig_chr_prefix;
 
-const char *c2b_samtools = "samtools";
-const char *c2b_sort_bed = "sort-bed";
-const char *c2b_starch = "starch";
-const char *c2b_cat = "cat";
-const char *c2b_default_output_format = "bed";
-const char *c2b_unmapped_read_chr_name = "_unmapped";
-const char *c2b_header_chr_name = "_header";
-const char *sort_bed_max_mem_arg = " --max-mem ";
-const char *sort_bed_max_mem_default_arg = " --max-mem 2G ";
-const char *sort_bed_tmpdir_arg = " --tmpdir ";
-const char *sort_bed_stdin = " - ";
-const char *starch_bzip2_arg = " --bzip2 ";
-const char *starch_gzip_arg = " --gzip ";
-const char *starch_note_prefix_arg = " --note=\"";
-const char *starch_note_suffix_arg = "\" ";
-const char *starch_stdin_arg = " - ";
+const char* c2b_samtools = "samtools";
+const char* c2b_sort_bed = "sort-bed";
+const char* c2b_starch = "starch";
+const char* c2b_cat = "cat";
+const char* c2b_default_output_format = "bed";
+const char* c2b_unmapped_read_chr_name = "_unmapped";
+const char* c2b_header_chr_name = "_header";
+const char* sort_bed_max_mem_arg = " --max-mem ";
+const char* sort_bed_max_mem_default_arg = " --max-mem 2G ";
+const char* sort_bed_tmpdir_arg = " --tmpdir ";
+const char* sort_bed_stdin = " - ";
+const char* starch_bzip2_arg = " --bzip2 ";
+const char* starch_gzip_arg = " --gzip ";
+const char* starch_note_prefix_arg = " --note=\"";
+const char* starch_note_suffix_arg = "\" ";
+const char* starch_stdin_arg = " - ";
 const char c2b_tab_delim = '\t';
 const char c2b_line_delim = '\n';
 const char c2b_space_delim = 0x20;
 const char c2b_sam_header_prefix = '@';
-const char *c2b_gff_header = "##gff-version 3";
-const char *c2b_gff_fasta = "##FASTA";
+const char* c2b_gff_header = "##gff-version 3";
+const char* c2b_gff_fasta = "##FASTA";
 const int c2b_gff_field_min = 9;
 const int c2b_gff_field_max = 9;
-const char *c2b_gff_zero_length_insertion_attribute = ";zero_length_insertion=True";
+const char* c2b_gff_zero_length_insertion_attribute = ";zero_length_insertion=True";
 const int c2b_gtf_field_min = 9;
 const int c2b_gtf_field_max = 10;
-const char *c2b_gtf_gene_id_prefix = "gene_id ";
-const char *c2b_gtf_transcript_id_prefix = "transcript_id ";
+const char* c2b_gtf_gene_id_prefix = "gene_id ";
+const char* c2b_gtf_transcript_id_prefix = "transcript_id ";
 const char c2b_gtf_id_delimiter = '"';
-const char *c2b_gtf_field_delimiter = ";";
-const char *c2b_gtf_field_placeholder = ".";
+const char* c2b_gtf_field_delimiter = ";";
+const char* c2b_gtf_field_placeholder = ".";
 const char c2b_gtf_comment = '#';
-const char *c2b_gtf_zero_length_insertion_attribute = "; zero_length_insertion=True"; 
-const char *c2b_gvf_header = "##gvf-version 1.07";
-const char *c2b_gvf_generic_header = "##";
+const char* c2b_gtf_zero_length_insertion_attribute = "; zero_length_insertion=True"; 
+const char* c2b_gvf_header = "##gvf-version 1.07";
+const char* c2b_gvf_generic_header = "##";
 const int c2b_psl_field_min = 21;
 const int c2b_psl_field_max = 21;
 const char c2b_psl_blockSizes_delimiter = ',';
@@ -182,19 +184,19 @@ const char c2b_psl_tStarts_delimiter = ',';
 const uint64_t c2b_rmsk_header_line_count = 3;
 const int c2b_rmsk_field_min = 15;
 const int c2b_rmsk_field_max = 16;
-const char *c2b_rmsk_strand_complement = "C";
-const char *c2b_rmsk_strand_complement_replacement = "-";
+const char* c2b_rmsk_strand_complement = "C";
+const char* c2b_rmsk_strand_complement_replacement = "-";
 const int c2b_vcf_field_min = 8;
 const char c2b_vcf_header_prefix = '#';
 const char c2b_vcf_alt_allele_delim = ',';
 const char c2b_vcf_id_prefix = '<';
 const char c2b_vcf_id_suffix = '>';
 const char c2b_wig_header_prefix = '#';
-const char *c2b_wig_track_prefix = "track";
-const char *c2b_wig_browser_prefix = "browser";
-const char *c2b_wig_variable_step_prefix = "variableStep";
-const char *c2b_wig_fixed_step_prefix = "fixedStep";
-const char *c2b_wig_chr_prefix = "chr";
+const char* c2b_wig_track_prefix = "track";
+const char* c2b_wig_browser_prefix = "browser";
+const char* c2b_wig_variable_step_prefix = "variableStep";
+const char* c2b_wig_fixed_step_prefix = "fixedStep";
+const char* c2b_wig_chr_prefix = "chr";
 
 /* 
    Allowed input and output formats
@@ -262,32 +264,32 @@ const char default_cigar_op_operation = '-';
 */
 
 typedef struct sam {
-    char *qname;
+    char* qname;
     ssize_t qname_capacity;
-    char *modified_qname;
+    char* modified_qname;
     ssize_t modified_qname_capacity;
     int flag;
-    char *strand;
+    char* strand;
     ssize_t strand_capacity;
-    char *rname;
+    char* rname;
     ssize_t rname_capacity;
     uint64_t start;
     uint64_t stop;
-    char *mapq;
+    char* mapq;
     ssize_t mapq_capacity;
-    char *cigar;
+    char* cigar;
     ssize_t cigar_capacity;
-    char *rnext;
+    char* rnext;
     ssize_t rnext_capacity;
-    char *pnext;
+    char* pnext;
     ssize_t pnext_capacity;
-    char *tlen;
+    char* tlen;
     ssize_t tlen_capacity;
-    char *seq;
+    char* seq;
     ssize_t seq_capacity;
-    char *qual;
+    char* qual;
     ssize_t qual_capacity;
-    char *opt;
+    char* opt;
     ssize_t opt_length;
     ssize_t opt_capacity;
 } c2b_sam_t;
@@ -313,23 +315,23 @@ typedef struct sam {
 */
 
 typedef struct gff {
-    char *seqid;
+    char* seqid;
     ssize_t seqid_capacity;
-    char *source;
+    char* source;
     ssize_t source_capacity;
-    char *type;
+    char* type;
     ssize_t type_capacity;
     uint64_t start;
     uint64_t end;
-    char *score;
+    char* score;
     ssize_t score_capacity;
-    char *strand;
+    char* strand;
     ssize_t strand_capacity;
-    char *phase;
+    char* phase;
     ssize_t phase_capacity;
-    char *attributes;
+    char* attributes;
     ssize_t attributes_capacity;
-    char *id;
+    char* id;
     ssize_t id_capacity;
 } c2b_gff_t;
 
@@ -355,25 +357,25 @@ typedef struct gff {
 */
 
 typedef struct gtf {
-    char *seqname;
+    char* seqname;
     ssize_t seqname_capacity;
-    char *source;
+    char* source;
     ssize_t source_capacity;
-    char *feature;
+    char* feature;
     ssize_t feature_capacity;
     uint64_t start;
     uint64_t end;
-    char *score;
+    char* score;
     ssize_t score_capacity;
-    char *strand;
+    char* strand;
     ssize_t strand_capacity;
-    char *frame;
+    char* frame;
     ssize_t frame_capacity;
-    char *attributes;
+    char* attributes;
     ssize_t attributes_capacity;
-    char *id;
+    char* id;
     ssize_t id_capacity;
-    char *comments;
+    char* comments;
     ssize_t comments_capacity;
 } c2b_gtf_t;
 
@@ -410,62 +412,62 @@ typedef struct gtf {
 */
 
 typedef struct psl {
-    char *matchesStr;
+    char* matchesStr;
     ssize_t matchesStr_capacity;
     uint64_t matches;
-    char *misMatchesStr;
+    char* misMatchesStr;
     ssize_t misMatchesStr_capacity;
     uint64_t misMatches;
-    char *repMatchesStr;
+    char* repMatchesStr;
     ssize_t repMatchesStr_capacity;
     uint64_t repMatches;
-    char *nCountStr;
+    char* nCountStr;
     ssize_t nCountStr_capacity;
     uint64_t nCount;
-    char *qNumInsertStr;
+    char* qNumInsertStr;
     ssize_t qNumInsertStr_capacity;
     uint64_t qNumInsert;
-    char *qBaseInsertStr;
+    char* qBaseInsertStr;
     ssize_t qBaseInsertStr_capacity;
     uint64_t qBaseInsert;
-    char *tNumInsertStr;
+    char* tNumInsertStr;
     ssize_t tNumInsertStr_capacity;
     uint64_t tNumInsert;
-    char *tBaseInsertStr;
+    char* tBaseInsertStr;
     ssize_t tBaseInsertStr_capacity;
     uint64_t tBaseInsert;
-    char *strand;
+    char* strand;
     ssize_t strand_capacity;
-    char *qName;
+    char* qName;
     ssize_t qName_capacity;
-    char *qSizeStr;
+    char* qSizeStr;
     ssize_t qSizeStr_capacity;
     uint64_t qSize;
-    char *qStartStr;
+    char* qStartStr;
     ssize_t qStartStr_capacity;
     uint64_t qStart;
-    char *qEndStr;
+    char* qEndStr;
     ssize_t qEndStr_capacity;
     uint64_t qEnd;
-    char *tName;
+    char* tName;
     ssize_t tName_capacity;
-    char *tSizeStr;
+    char* tSizeStr;
     ssize_t tSizeStr_capacity;
     uint64_t tSize;
-    char *tStartStr;
+    char* tStartStr;
     ssize_t tStartStr_capacity;
     uint64_t tStart;
-    char *tEndStr;
+    char* tEndStr;
     ssize_t tEndStr_capacity;
     uint64_t tEnd;
-    char *blockCountStr;
+    char* blockCountStr;
     ssize_t blockCountStr_capacity;
     uint64_t blockCount;
-    char *blockSizes;
+    char* blockSizes;
     ssize_t blockSizes_capacity;
-    char *qStarts;
+    char* qStarts;
     ssize_t qStarts_capacity;
-    char *tStarts;
+    char* tStarts;
     ssize_t tStarts_capacity;
 } c2b_psl_t;
 
@@ -508,35 +510,35 @@ typedef struct block {
 */
 
 typedef struct rmsk {
-    char *sw_score;
+    char* sw_score;
     ssize_t sw_score_capacity;
-    char *perc_div;
+    char* perc_div;
     ssize_t perc_div_capacity;
-    char *perc_deleted;
+    char* perc_deleted;
     ssize_t perc_deleted_capacity;
-    char *perc_inserted;
+    char* perc_inserted;
     ssize_t perc_inserted_capacity;
-    char *query_seq;
+    char* query_seq;
     ssize_t query_seq_capacity;
     uint64_t query_start;
     uint64_t query_end;
-    char *bases_past_match;
+    char* bases_past_match;
     ssize_t bases_past_match_capacity;
-    char *strand;
+    char* strand;
     ssize_t strand_capacity;
-    char *repeat_name;
+    char* repeat_name;
     ssize_t repeat_name_capacity;
-    char *repeat_class;
+    char* repeat_class;
     ssize_t repeat_class_capacity;
-    char *bases_before_match_comp;
+    char* bases_before_match_comp;
     ssize_t bases_before_match_comp_capacity;
-    char *match_start;
+    char* match_start;
     ssize_t match_start_capacity;
-    char *match_end;
+    char* match_end;
     ssize_t match_end_capacity;
-    char *unique_id;
+    char* unique_id;
     ssize_t unique_id_capacity;
-    char *higher_score_match;
+    char* higher_score_match;
     ssize_t higher_score_match_capacity;
 } c2b_rmsk_t;
 
@@ -571,26 +573,26 @@ typedef struct rmsk {
 */
 
 typedef struct vcf {
-    char *chrom;
+    char* chrom;
     ssize_t chrom_capacity;
     uint64_t pos;
     uint64_t start;
     uint64_t end;
-    char *id;
+    char* id;
     ssize_t id_capacity;
-    char *ref;
+    char* ref;
     ssize_t ref_capacity;
-    char *alt;
+    char* alt;
     ssize_t alt_capacity;
-    char *qual;
+    char* qual;
     ssize_t qual_capacity;
-    char *filter;
+    char* filter;
     ssize_t filter_capacity;
-    char *info;
+    char* info;
     ssize_t info_capacity;
-    char *format;
+    char* format;
     ssize_t format_capacity;
-    char *samples;
+    char* samples;
     ssize_t samples_capacity;
 } c2b_vcf_t;
 
@@ -629,9 +631,9 @@ typedef struct vcf {
 #define MAX_PIPES 4
 
 typedef struct pipeset {
-    int **in;
-    int **out;
-    int **err;
+    int** in;
+    int** out;
+    int** err;
     size_t num;
 } c2b_pipeset_t;
 
@@ -644,12 +646,12 @@ typedef struct pipeset {
 */
 
 typedef struct pipeline_stage {
-    c2b_pipeset_t *pipeset;
+    c2b_pipeset_t* pipeset;
     unsigned int src;
     unsigned int dest;
     void (*line_functor)();
     int status;
-    char *description;
+    char* description;
     pid_t pid;
     ssize_t buffer_size;
 } c2b_pipeline_stage_t;
@@ -668,18 +670,18 @@ typedef struct pipeline_stage {
 #define POPEN4_FLAG_CLOSE_CHILD_STDOUT          (1U << 4)
 #define POPEN4_FLAG_CLOSE_CHILD_STDERR          (1U << 5)
 
-static const char *application_name = "convert2bed";
+static const char* application_name = "convert2bed";
 
-static const char *application_version = C2B_VERSION;
+static const char* application_version = C2B_VERSION;
 
-static const char *application_authors = "Alex Reynolds";
+static const char* application_authors = "Alex Reynolds";
 
-static const char *general_usage = "\n"                                 \
+static const char* general_usage = "\n"                                 \
     "  Usage:\n"                                                        \
     "\n"                                                                \
     "  $ convert2bed --input=fmt [--output=fmt] [options] < input > output\n";
 
-static const char *general_description =                                \
+static const char* general_description =                                \
     "  Convert BAM, GFF, GTF, GVF, PSL, RepeatMasker (OUT), SAM, VCF\n" \
     "  and WIG genomic formats to BED or BEDOPS Starch (compressed BED)\n"      \
     "\n"                                                                \
@@ -688,7 +690,7 @@ static const char *general_description =                                \
     "\n"                                                                \
     "  $ some_upstream_process ... | convert2bed --input=fmt - > output\n";
 
-static const char *general_io_options =                                 \
+static const char* general_io_options =                                 \
     "  Input (required):\n\n"                                           \
     "  --input=[bam|gff|gtf|gvf|psl|rmsk|sam|vcf|wig] (-i <fmt>)\n"     \
     "      Genomic format of input file (required)\n\n"                 \
@@ -696,7 +698,7 @@ static const char *general_io_options =                                 \
     "  --output=[bed|starch] (-o <fmt>)\n"                              \
     "      Format of output file, either BED or BEDOPS Starch (optional, default is BED)\n";
 
-static const char *general_options =                                    \
+static const char* general_options =                                    \
     "  Other processing options:\n\n"                                   \
     "  --do-not-sort (-d)\n"                                            \
     "      Do not sort BED output with sort-bed (not compatible with --output=starch)\n" \
@@ -720,9 +722,9 @@ static const char *general_options =                                    \
     "  --version (-w)\n"                                                \
     "      Show application version\n";
 
-static const char *bam_name = "convert2bed -i bam";
+static const char* bam_name = "convert2bed -i bam";
 
-static const char *bam_description =                                    \
+static const char* bam_description =                                    \
     "  The BAM format is an indexed, binary representation of a SAM (Sequence\n" \
     "  Alignment/Map) file. Internally, it is a 0-based, half-open [a-1,b)\n" \
     "  file, but printing it to text via samtools turns it into a SAM file, which\n" \
@@ -766,7 +768,7 @@ static const char *bam_description =                                    \
     "  --keep-header option to preserve the header data from the SAM input as\n" \
     "  pseudo-BED elements that use the \"_header\" chromosome name.\n";
 
-static const char *bam_options =                                        \
+static const char* bam_options =                                        \
     "  BAM conversion options:\n\n"                                     \
     "  --all-reads (-a)\n"                                              \
     "      Include both unmapped and mapped reads in output\n"          \
@@ -781,7 +783,7 @@ static const char *bam_options =                                        \
     "  --reduced (-R)\n"                                                \
     "      Only print first six columns of output\n";
 
-static const char *bam_usage =                                          \
+static const char* bam_usage =                                          \
     "  Converts 0-based, half-open [a-1,b) headered or headerless BAM input\n" \
     "  into 0-based, half-open [a-1,b) extended BED or BEDOPS Starch\n\n" \
     "  Usage:\n"                                                        \
@@ -802,9 +804,9 @@ static const char *bam_usage =                                          \
     "\n"                                                                \
     "  $ bam2bed --do-not-sort < foo.bam > unsorted-foo.bam.bed\n";
 
-static const char *gff_name = "convert2bed -i gff";
+static const char* gff_name = "convert2bed -i gff";
 
-static const char *gff_description =                                    \
+static const char* gff_description =                                    \
     "  The GFF3 specification (http://www.sequenceontology.org/gff3.shtml) \n" \
     "  contains columns that do not map directly to common or UCSC BED columns.\n" \
     "  Therefore, we add the following columns to preserve the ability to\n" \
@@ -834,12 +836,12 @@ static const char *gff_description =                                    \
     "  option to preserve these data as pseudo-BED elements that use the \"_header\"\n" \
     "  chromosome name.\n";
 
-static const char *gff_options =                                        \
+static const char* gff_options =                                        \
     "  GFF conversion options:\n\n"                                     \
     "  --keep-header (-k)\n"                                            \
     "      Preserve header section as pseudo-BED elements\n";
 
-static const char *gff_usage =                                          \
+static const char* gff_usage =                                          \
     "  Converts 1-based, closed [a, b] GFF3 input into 0-based, half-\n" \
     "  open [a-1, b) six-column extended BED or BEDOPS Starch\n"        \
     "\n"                                                                \
@@ -861,9 +863,9 @@ static const char *gff_usage =                                          \
     "\n"                                                                \
     "  $ gff2bed --do-not-sort < foo.gff > unsorted-foo.gff.bed\n";
 
-static const char *gtf_name = "convert2bed -i gtf";
+static const char* gtf_name = "convert2bed -i gtf";
 
-static const char *gtf_usage =                                          \
+static const char* gtf_usage =                                          \
     "  Converts 1-based, closed [a, b] GTF2.2 input into 0-based, half-\n" \
     "  open [a-1, b) six-column extended BED and BEDOPS Starch\n"       \
     "\n"                                                                \
@@ -885,7 +887,7 @@ static const char *gtf_usage =                                          \
     "\n"                                                                \
     "  $ gtf2bed --do-not-sort < foo.gtf > unsorted-foo.gtf.bed\n";
 
-static const char *gtf_description =                                    \
+static const char* gtf_description =                                    \
     "  The GTF2.2 specification (http://mblab.wustl.edu/GTF22.html)\n"  \
     "  contains columns that do not map directly to common or UCSC BED columns.\n" \
     "  Therefore, we add the following columns to preserve the ability to\n" \
@@ -912,11 +914,11 @@ static const char *gtf_description =                                    \
     "  and a 'zero_length_insertion' attribute is added to the 'attributes' GTF\n" \
     "  column data.\n";
 
-static const char *gtf_options = NULL;
+static const char* gtf_options = NULL;
 
-static const char *gvf_name = "convert2bed -i gvf";
+static const char* gvf_name = "convert2bed -i gvf";
 
-static const char *gvf_description =                                    \
+static const char* gvf_description =                                    \
     "  GVF is a type of GFF3 file with additional pragmas and attributes \n" \
     "  specified (http://www.sequenceontology.org/resources/gvf.html).\n" \
     "  The GVF format has the same nine-column tab-delimited format as \n" \
@@ -952,12 +954,12 @@ static const char *gvf_description =                                    \
     "  option to preserve these data as pseudo-BED elements that use the \"_header\"\n" \
     "  chromosome name.\n";
 
-static const char *gvf_options =                                        \
+static const char* gvf_options =                                        \
     "  GVF conversion options:\n\n"                                     \
     "  --keep-header (-k)\n"                                            \
     "      Preserve header section as pseudo-BED elements\n";
 
-static const char *gvf_usage =                                          \
+static const char* gvf_usage =                                          \
     "  Converts 1-based, closed [a, b] GVF (GFF3) input into 0-based,\n" \
     "  half-open [a-1, b) six-column extended BED or BEDOPS Starch\n"   \
     "\n"                                                                \
@@ -979,9 +981,9 @@ static const char *gvf_usage =                                          \
     "\n"                                                                \
     "  $ gvf2bed --do-not-sort < foo.gvf > unsorted-foo.gvf.bed\n";
 
-static const char *psl_name = "convert2bed -i psl";
+static const char* psl_name = "convert2bed -i psl";
 
-static const char *psl_usage =                                          \
+static const char* psl_usage =                                          \
     "  Converts 0-based, half-open [a-1, b) headered or headerless PSL\n" \
     "  input into 0-based, half-open [a-1, b) extended BED or BEDOPS Starch\n" \
     "\n"                                                                \
@@ -1001,7 +1003,7 @@ static const char *psl_usage =                                          \
     "\n"                                                                \
     "  $ psl2bed --do-not-sort < foo.psl > unsorted-foo.psl.bed\n";
 
-static const char *psl_description =                                    \
+static const char* psl_description =                                    \
     "  The PSL specification (http://genome.ucsc.edu/goldenPath/help/blatSpec.html)\n" \
     "  contains 21 columns, some which map to UCSC BED columns and some which do not.\n" \
     "\n"                                                                \
@@ -1046,16 +1048,16 @@ static const char *psl_description =                                    \
     "  - qStarts\n"                                                     \
     "  - tStarts\n";
 
-static const char *psl_options =                                        \
+static const char* psl_options =                                        \
     "  PSL conversion options:\n\n"                                     \
     "  --keep-header (-k)\n"                                            \
     "      Preserve header section as pseudo-BED elements (requires --headered)\n" \
     "  --split (-s)\n"                                                  \
     "      Split record into multiple BED elements, based on tStarts field value\n";
 
-static const char *rmsk_name = "convert2bed -i rmsk";
+static const char* rmsk_name = "convert2bed -i rmsk";
 
-static const char *rmsk_usage =                                         \
+static const char* rmsk_usage =                                         \
     "  Converts 1-base, closed [a, b] RepeatMasker annotation input\n"  \
     "  into 0-based, half-open [a-1, b) extended BED or BEDOPS Starch\n" \
     "\n"                                                                \
@@ -1077,7 +1079,7 @@ static const char *rmsk_usage =                                         \
     "\n"                                                                \
     "  $ rmsk2bed --do-not-sort < foo.out > unsorted-foo.out.bed\n";
 
-static const char *rmsk_description =                                   \
+static const char* rmsk_description =                                   \
     "  The RepeatMasker annotation format is 1-based and closed [a, b]\n" \
     "  which is converted to 0-based, half-closed [a-1, b) when creating\n" \
     "  BED output.\n"                                                   \
@@ -1110,14 +1112,14 @@ static const char *rmsk_description =                                   \
     "  to RepeatMasker annotation output with a simple awk statement or other script\n" \
     "  that calculates 1-based coordinates and permutes columns.\n";
 
-static const char *rmsk_options =                                       \
+static const char* rmsk_options =                                       \
     "  RepeatMasker annotation conversion options:\n\n"                 \
     "  --keep-header (-k)\n"                                            \
     "      Preserve header section as pseudo-BED elements\n";
 
-static const char *sam_name = "convert2bed -i sam";
+static const char* sam_name = "convert2bed -i sam";
 
-static const char *sam_usage =                                          \
+static const char* sam_usage =                                          \
     "  Converts 1-based, closed [a, b] headered or headerless SAM input\n" \
     "  into 0-based, half-open [a-1, b) extended BED or BEDOPS Starch\n" \
     "\n"                                                                \
@@ -1139,7 +1141,7 @@ static const char *sam_usage =                                          \
     "\n"                                                                \
     "  $ sam2bed --do-not-sort < foo.sam > unsorted-foo.sam.bed\n";
 
-static const char *sam_description =                                    \
+static const char* sam_description =                                    \
     "  The SAM (Sequence Alignment/Map) format is 1-based and closed [a, b]\n" \
     "  which is converted to 0-based, half-closed [a-1, b) when creating\n" \
     "  BED output.\n"                                                   \
@@ -1181,7 +1183,7 @@ static const char *sam_description =                                    \
     "  --keep-header option to preserve the header data from the SAM input as\n" \
     "  pseudo-BED elements.\n";
 
-static const char *sam_options =                                        \
+static const char* sam_options =                                        \
     "  SAM conversion options:\n\n"                                     \
     "  --all-reads (-a)\n"                                              \
     "      Include both unmapped and mapped reads in output\n"          \
@@ -1196,9 +1198,9 @@ static const char *sam_options =                                        \
     "  --reduced (-R)\n"                                                \
     "      Only print first six columns of output\n";
 
-static const char *vcf_name = "convert2bed -i vcf";
+static const char* vcf_name = "convert2bed -i vcf";
 
-static const char *vcf_usage =                                          \
+static const char* vcf_usage =                                          \
     "  Converts 1-based, closed [a, b] VCF v4 input into 0-based,\n"    \
     "  half-open [a-1, b) extended BED or BEDOPS Starch\n"              \
     "\n"                                                                \
@@ -1220,7 +1222,7 @@ static const char *vcf_usage =                                          \
     "\n"                                                                \
     "  $ vcf2bed --do-not-sort < foo.vcf > unsorted-foo.vcf.bed\n";
 
-static const char *vcf_description =                                    \
+static const char* vcf_description =                                    \
     "  This conversion utility relies on the VCF v4.2 format, with its\n" \
     "  specifications outlined here by the 1000 Genomes and Samtools projects:\n" \
     "\n"                                                                \
@@ -1254,7 +1256,7 @@ static const char *vcf_description =                                    \
     "     problems. It may be useful to validate the VCF v4.2 input\n"  \
     "     before conversion.\n";
 
-static const char *vcf_options =                                        \
+static const char* vcf_options =                                        \
     "  VCF conversion options:\n\n"                                     \
     "  --do-not-split (-p)\n"                                           \
     "      By default, this application prints multiple BED elements for each alternate\n" \
@@ -1268,9 +1270,9 @@ static const char *vcf_options =                                        \
     "  --keep-header (-k)\n"                                            \
     "      Preserve header section as pseudo-BED elements\n";
 
-static const char *wig_name = "convert2bed -i wig";
+static const char* wig_name = "convert2bed -i wig";
 
-static const char *wig_usage =                                          \
+static const char* wig_usage =                                          \
     "  Convert UCSC Wiggle to extended BED or BEDOPS Starch\n"          \
     "\n"                                                                \
     "  Usage:\n"                                                        \
@@ -1291,7 +1293,7 @@ static const char *wig_usage =                                          \
     "\n"                                                                \
     "  $ wig2bed --do-not-sort < foo.wig > unsorted-foo.wig.bed\n";
 
-static const char *wig_description =                                    \
+static const char* wig_description =                                    \
     "  The UCSC Wiggle format (http://genome.ucsc.edu/goldenPath/help/wiggle.html)\n" \
     "  is 1-based, closed [a, b] and is offered in variable or fixed step varieties.\n" \
     "  We convert either variety to 0-based, half-open [a-1, b) indexing when creating\n" \
@@ -1300,7 +1302,7 @@ static const char *wig_description =                                    \
     "  By default, data are passed internally to BEDOPS sort-bed to provide sorted\n" \
     "  output ready for use with other BEDOPS utilities.\n";
 
-static const char *wig_options =                                        \
+static const char* wig_options =                                        \
     "  WIG conversion options:\n\n"                                     \
     "  --keep-header (-k)\n"                                            \
     "      Preserve header section as pseudo-BED elements\n"            \
@@ -1313,36 +1315,36 @@ static const char *wig_options =                                        \
     "      with input derived from bigWigToWig, for example, where the bigWig\n" \
     "      data are originally zero-indexed.\n";
 
-static const char *format_undefined_usage =                             \
+static const char* format_undefined_usage =                             \
     "  Note: Please specify format to get detailed usage parameters:\n\n" \
     "  --help[-bam|-gff|-gtf|-gvf|-psl|-rmsk|-sam|-vcf|-wig] (-h <fmt>)\n";
 
 typedef struct gff_state {
-    c2b_gff_t *element;
+    c2b_gff_t* element;
 } c2b_gff_state_t;
 
 typedef struct gtf_state {
-    c2b_gtf_t *element;
+    c2b_gtf_t* element;
     uint64_t line_count;
 } c2b_gtf_state_t;
 
 typedef struct psl_state {
-    c2b_psl_t *element;
+    c2b_psl_t* element;
     boolean is_headered;
-    c2b_psl_block_t *block;
+    c2b_psl_block_t* block;
 } c2b_psl_state_t;
 
 typedef struct rmsk_state {
-    c2b_rmsk_t *element;
+    c2b_rmsk_t* element;
     uint64_t line;
     boolean is_start_of_line;
     boolean is_start_of_gap;
 } c2b_rmsk_state_t;
 
 typedef struct sam_state {
-    char *samtools_path;
-    c2b_cigar_t *cigar;
-    c2b_sam_t *element;
+    char* samtools_path;
+    c2b_cigar_t* cigar;
+    c2b_sam_t* element;
 } c2b_sam_state_t;
 
 typedef struct vcf_state {
@@ -1363,38 +1365,38 @@ typedef struct wig_state {
     uint64_t start_pos;
     uint64_t end_pos;
     double score;
-    char *chr;
-    char *id;
+    char* chr;
+    char* id;
     boolean is_fixed_step;
     boolean start_write;
-    char *basename;
+    char* basename;
     int start_shift;
     int end_shift;
 } c2b_wig_state_t;
 
 typedef struct cat_params {
-    char *path;
+    char* path;
 } c2b_cat_params_t;
 
 typedef struct sort_params {
     boolean is_enabled;
-    char *sort_bed_path;
-    char *max_mem_value;
-    char *sort_tmpdir_path;
+    char* sort_bed_path;
+    char* max_mem_value;
+    char* sort_tmpdir_path;
 } c2b_sort_params_t;
 
 typedef struct starch_params {
-    char *path;
+    char* path;
     boolean bzip2;
     boolean gzip;
-    char *note;
+    char* note;
 } c2b_starch_params_t;
 
 static struct globals {
     c2b_format_t help_format_idx;
-    char *input_format;
+    char* input_format;
     c2b_format_t input_format_idx;
-    char *output_format;
+    char* output_format;
     c2b_format_t output_format_idx;
     unsigned int header_line_idx;
     boolean all_reads_flag;
@@ -1403,16 +1405,18 @@ static struct globals {
     boolean split_with_deletions_flag;
     boolean reduced_flag;
     boolean zero_indexed_flag;
-    c2b_gff_state_t *gff;
-    c2b_gtf_state_t *gtf;
-    c2b_psl_state_t *psl;
-    c2b_rmsk_state_t *rmsk;
-    c2b_sam_state_t *sam;
-    c2b_vcf_state_t *vcf;
-    c2b_wig_state_t *wig;
-    c2b_cat_params_t *cat;
-    c2b_sort_params_t *sort;
-    c2b_starch_params_t *starch;
+    c2b_gff_state_t* gff;
+    c2b_gtf_state_t* gtf;
+    c2b_psl_state_t* psl;
+    c2b_rmsk_state_t* rmsk;
+    c2b_sam_state_t* sam;
+    c2b_vcf_state_t* vcf;
+    c2b_wig_state_t* wig;
+    c2b_cat_params_t* cat;
+    c2b_sort_params_t* sort;
+    c2b_starch_params_t* starch;
+    char* src_line_str;
+    char* dest_line_str;
 } c2b_globals;
 
 static struct option c2b_client_long_options[] = {
@@ -1449,82 +1453,82 @@ static struct option c2b_client_long_options[] = {
     { NULL,                            no_argument,         NULL,     0  }
 };
 
-static const char *c2b_client_opt_string = "i:o:daksSpRvtnzge:m:r:b:xhw12345678?";
+static const char* c2b_client_opt_string = "i:o:daksSpRvtnzge:m:r:b:xhw12345678?";
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-    static void              c2b_init_conversion(c2b_pipeset_t *p);
-    static void              c2b_init_gff_conversion(c2b_pipeset_t *p);
-    static void              c2b_init_gtf_conversion(c2b_pipeset_t *p);
-    static void              c2b_init_gvf_conversion(c2b_pipeset_t *p);
-    static void              c2b_init_psl_conversion(c2b_pipeset_t *p);
-    static void              c2b_init_rmsk_conversion(c2b_pipeset_t *p);
-    static void              c2b_init_sam_conversion(c2b_pipeset_t *p);
-    static void              c2b_init_vcf_conversion(c2b_pipeset_t *p);
-    static void              c2b_init_wig_conversion(c2b_pipeset_t *p);
-    static void              c2b_init_generic_conversion(c2b_pipeset_t *p, void(*to_bed_line_functor)(char *, ssize_t *, char *, ssize_t));
-    static void              c2b_init_bam_conversion(c2b_pipeset_t *p);
-    static inline void       c2b_cmd_cat_stdin(char *cmd);
-    static inline void       c2b_cmd_bam_to_sam(char *cmd);
-    static inline void       c2b_cmd_sort_bed(char *cmd);
-    static inline void       c2b_cmd_starch_bed(char *cmd);
-    static void              c2b_gtf_init_element(c2b_gtf_t **e);
-    static void              c2b_gtf_delete_element(c2b_gtf_t *e);
-    static void              c2b_line_convert_gtf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
-    static inline void       c2b_line_convert_gtf_ptr_to_bed(c2b_gtf_t *g, char *dest_line, ssize_t *dest_size);
-    static void              c2b_gff_init_element(c2b_gff_t **e);
-    static void              c2b_gff_delete_element(c2b_gff_t *e);
-    static void              c2b_line_convert_gff_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
-    static inline void       c2b_line_convert_gff_ptr_to_bed(c2b_gff_t *g, char *dest_line, ssize_t *dest_size);
-    static void              c2b_psl_init_element(c2b_psl_t **e);
-    static void              c2b_psl_delete_element(c2b_psl_t *e);
-    static void              c2b_line_convert_psl_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
-    static inline void       c2b_psl_blockSizes_to_ptr(char *s, uint64_t bc);
-    static inline void       c2b_psl_tStarts_to_ptr(char *s, uint64_t bc);
-    static inline void       c2b_line_convert_psl_ptr_to_bed(c2b_psl_t *p, char *dest_line, ssize_t *dest_size);
-    static void              c2b_rmsk_init_element(c2b_rmsk_t **e);
-    static void              c2b_rmsk_delete_element(c2b_rmsk_t *e);
-    static void              c2b_line_convert_rmsk_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
-    static inline void       c2b_line_convert_rmsk_ptr_to_bed(c2b_rmsk_t *r, char *dest_line, ssize_t *dest_size);
-    static void              c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
-    static void              c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char *dest, ssize_t *dest_size, char *src, ssize_t src_size); 
-    static inline void       c2b_sam_cigar_str_to_ops(char *s);
-    static void              c2b_sam_init_element(c2b_sam_t **e);
-    static void              c2b_sam_delete_element(c2b_sam_t *e);
-    static void              c2b_sam_init_cigar_ops(c2b_cigar_t **c, const ssize_t size);
-    static void              c2b_sam_resize_cigar_ops(c2b_cigar_t **new_c, c2b_cigar_t *old_c);
-    static void              c2b_sam_debug_cigar_ops(c2b_cigar_t *c);
-    static void              c2b_sam_delete_cigar_ops(c2b_cigar_t *c);
-    static inline void       c2b_line_convert_sam_ptr_to_bed(c2b_sam_t *s, char *dest_line, ssize_t *dest_size, boolean print_modified_qname);
-    static void              c2b_line_convert_vcf_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
-    static inline boolean    c2b_vcf_allele_is_id(char *s);
-    static inline boolean    c2b_vcf_record_is_snv(char *ref, char *alt);
-    static inline boolean    c2b_vcf_record_is_insertion(char *ref, char *alt);
-    static inline boolean    c2b_vcf_record_is_deletion(char *ref, char *alt);
-    static void              c2b_vcf_init_element(c2b_vcf_t **e);
-    static void              c2b_vcf_delete_element(c2b_vcf_t *e);
-    static inline void       c2b_line_convert_vcf_ptr_to_bed(c2b_vcf_t *v, char *dest_line, ssize_t *dest_size);
-    static void              c2b_line_convert_wig_to_bed_unsorted(char *dest, ssize_t *dest_size, char *src, ssize_t src_size);
+    static void              c2b_init_conversion(c2b_pipeset_t* p);
+    static void              c2b_init_gff_conversion(c2b_pipeset_t* p);
+    static void              c2b_init_gtf_conversion(c2b_pipeset_t* p);
+    static void              c2b_init_gvf_conversion(c2b_pipeset_t* p);
+    static void              c2b_init_psl_conversion(c2b_pipeset_t* p);
+    static void              c2b_init_rmsk_conversion(c2b_pipeset_t* p);
+    static void              c2b_init_sam_conversion(c2b_pipeset_t* p);
+    static void              c2b_init_vcf_conversion(c2b_pipeset_t* p);
+    static void              c2b_init_wig_conversion(c2b_pipeset_t* p);
+    static void              c2b_init_generic_conversion(c2b_pipeset_t* p, void(*to_bed_line_functor)(char**, ssize_t*, ssize_t*, char*, ssize_t));
+    static void              c2b_init_bam_conversion(c2b_pipeset_t* p);
+    static inline void       c2b_cmd_cat_stdin(char* cmd);
+    static inline void       c2b_cmd_bam_to_sam(char* cmd);
+    static inline void       c2b_cmd_sort_bed(char* cmd);
+    static inline void       c2b_cmd_starch_bed(char* cmd);
+    static void              c2b_gtf_init_element(c2b_gtf_t** e);
+    static void              c2b_gtf_delete_element(c2b_gtf_t* e);
+    static void              c2b_line_convert_gtf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
+    static inline void       c2b_line_convert_gtf_ptr_to_bed(c2b_gtf_t* g, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity);
+    static void              c2b_gff_init_element(c2b_gff_t** e);
+    static void              c2b_gff_delete_element(c2b_gff_t* e);
+    static void              c2b_line_convert_gff_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
+    static inline void       c2b_line_convert_gff_ptr_to_bed(c2b_gff_t* g, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity);
+    static void              c2b_psl_init_element(c2b_psl_t** e);
+    static void              c2b_psl_delete_element(c2b_psl_t* e);
+    static void              c2b_line_convert_psl_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
+    static inline void       c2b_psl_blockSizes_to_ptr(char* s, uint64_t bc);
+    static inline void       c2b_psl_tStarts_to_ptr(char* s, uint64_t bc);
+    static inline void       c2b_line_convert_psl_ptr_to_bed(c2b_psl_t* p, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity);
+    static void              c2b_rmsk_init_element(c2b_rmsk_t** e);
+    static void              c2b_rmsk_delete_element(c2b_rmsk_t* e);
+    static void              c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
+    static inline void       c2b_line_convert_rmsk_ptr_to_bed(c2b_rmsk_t* r, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity);
+    static void              c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
+    static void              c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size); 
+    static inline void       c2b_sam_cigar_str_to_ops(char* s);
+    static void              c2b_sam_init_element(c2b_sam_t** e);
+    static void              c2b_sam_delete_element(c2b_sam_t* e);
+    static void              c2b_sam_init_cigar_ops(c2b_cigar_t** c, const ssize_t size);
+    static void              c2b_sam_resize_cigar_ops(c2b_cigar_t** new_c, c2b_cigar_t* old_c);
+    static void              c2b_sam_debug_cigar_ops(c2b_cigar_t* c);
+    static void              c2b_sam_delete_cigar_ops(c2b_cigar_t* c);
+    static inline void       c2b_line_convert_sam_ptr_to_bed(c2b_sam_t* s, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity, boolean print_modified_qname);
+    static void              c2b_line_convert_vcf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
+    static inline boolean    c2b_vcf_allele_is_id(char* s);
+    static inline boolean    c2b_vcf_record_is_snv(char* ref, char* alt);
+    static inline boolean    c2b_vcf_record_is_insertion(char* ref, char* alt);
+    static inline boolean    c2b_vcf_record_is_deletion(char* ref, char* alt);
+    static void              c2b_vcf_init_element(c2b_vcf_t** e);
+    static void              c2b_vcf_delete_element(c2b_vcf_t* e);
+    static inline void       c2b_line_convert_vcf_ptr_to_bed(c2b_vcf_t* v, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity);
+    static void              c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
     static void *            c2b_read_bytes_from_stdin(void *arg);
-    static void *            c2b_process_intermediate_bytes_by_lines(void *arg);
-    static void *            c2b_write_in_bytes_to_in_process(void *arg);
-    static void *            c2b_write_out_bytes_to_in_process(void *arg);
-    static void *            c2b_write_in_bytes_to_stdout(void *arg);
-    static void *            c2b_write_out_bytes_to_stdout(void *arg);
-    static void              c2b_memrchr_offset(ssize_t *offset, char *buf, ssize_t buf_size, ssize_t len, char delim);
-    static void              c2b_init_pipeset(c2b_pipeset_t *p, const size_t num);
-    static void              c2b_debug_pipeset(c2b_pipeset_t *p, const size_t num);
-    static void              c2b_delete_pipeset(c2b_pipeset_t *p);
+    static void *            c2b_process_intermediate_bytes_by_lines(void* arg);
+    static void *            c2b_write_in_bytes_to_in_process(void* arg);
+    static void *            c2b_write_out_bytes_to_in_process(void* arg);
+    static void *            c2b_write_in_bytes_to_stdout(void* arg);
+    static void *            c2b_write_out_bytes_to_stdout(void* arg);
+    static void              c2b_memrchr_offset(ssize_t* offset, char* buf, ssize_t buf_size, ssize_t len, char delim);
+    static void              c2b_init_pipeset(c2b_pipeset_t* p, const size_t num);
+    static void              c2b_debug_pipeset(c2b_pipeset_t* p, const size_t num);
+    static void              c2b_delete_pipeset(c2b_pipeset_t* p);
     static void              c2b_set_close_exec_flag(int fd);
     static void              c2b_unset_close_exec_flag(int fd);
     static int               c2b_pipe4(int fd[2], int flags);
     static pid_t             c2b_popen4(const char* cmd, int pin[2], int pout[2], int perr[2], int flags);
     static void              c2b_test_dependencies();
-    static boolean           c2b_print_matches(char *path, char *fn);
-    static char *            c2b_strsep(char **stringp, const char *delim);
-    static boolean           c2b_is_there(char *candidate);
+    static boolean           c2b_print_matches(char* path, char* fn);
+    static char *            c2b_strsep(char** stringp, const char* delim);
+    static boolean           c2b_is_there(char* candidate);
     static void              c2b_init_globals();
     static void              c2b_delete_globals();
     static void              c2b_init_global_gff_state();
@@ -1547,13 +1551,13 @@ extern "C" {
     static void              c2b_delete_global_sort_params();
     static void              c2b_init_global_starch_params();
     static void              c2b_delete_global_starch_params();
-    static void              c2b_init_command_line_options(int argc, char **argv);
-    static void              c2b_print_version(FILE *stream);
-    static void              c2b_print_usage(FILE *stream);
-    static void              c2b_print_format_usage(FILE *stream);
-    static char *            c2b_to_lowercase(const char *src);
-    static c2b_format_t      c2b_to_input_format(const char *input_format);
-    static c2b_format_t      c2b_to_output_format(const char *output_format);
+    static void              c2b_init_command_line_options(int argc, char** argv);
+    static void              c2b_print_version(FILE* stream);
+    static void              c2b_print_usage(FILE* stream);
+    static void              c2b_print_format_usage(FILE* stream);
+    static char*             c2b_to_lowercase(const char* src);
+    static c2b_format_t      c2b_to_input_format(const char* input_format);
+    static c2b_format_t      c2b_to_output_format(const char* output_format);
 
 #ifdef __cplusplus
 }
