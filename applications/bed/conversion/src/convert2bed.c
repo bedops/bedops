@@ -4842,7 +4842,7 @@ c2b_line_convert_vcf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
     /* 1 - POS */
     char pos_str[C2B_MAX_FIELD_LENGTH_VALUE];
     ssize_t pos_size = vcf_field_offsets[1] - vcf_field_offsets[0] - 1;
-    if (pos_size >= C2B_MAX_FIELD_LENGTH_VALUE) {
+    if (pos_size >= (ssize_t)(C2B_MAX_FIELD_LENGTH_VALUE)) {
         fprintf(stderr, "Error: Intermediate POS string too long to store in stack variable\n");
         exit(ENOMEM);
     }

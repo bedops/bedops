@@ -17,7 +17,15 @@ v2.4.27
 
 Released: **TBD**
 
-This revision of BEDOPS includes significant performance improvements for default and :code:`megarow` builds of BEDOPS. Tests were performed on whole-genome TRANSFAC FIMO scans, with cache purges in between runs.  The pre-built binaries for Darwin and GNU/Linux will include both the default :code:`typical` and :code:`megarow` builds of BEDOPS.  Usual program names will be symlinked to the :code:`typical` builds.  This can be switched to the :code:`megarow` builds by calling :code:`set-symlinks-BOPS mega`, which will symlink usual program names to the :code:`megarow` builds.  The top-level Makefile includes some new variables for those who choose to build from source.  The :code:`JPARALLEL` variable sets the number of CPUs to use in parallel when compiling BEDOPS.  The :code:`MASSIVE_REST_EXP`, :code:`MASSIVE_ID_EXP`, and :code:`MASSIVE_CHROM_EXP` are used when building the :code:`megarow` to support any required row lengths (build using :code:`make megarow`).  These are the exponents (the n in 2^n) for holding all characters after chrom/start/stop fields, the ID field (col4), and the chrom field (col1).  We have removed pre-built 32-bit program versions in this release.  These can be built from source still.
+This revision of BEDOPS includes significant performance improvements for default (:code:'typical') and so-called :code:`megarow` builds of BEDOPS, reflecting the types of input each build is optimized to use. Performance tests were done with whole-genome TRANSFAC FIMO scans, with cache purges in between trials. 
+
+Pre-built binaries for Darwin and GNU/Linux targets include both the default :code:`typical` and :code:`megarow` builds of BEDOPS. The program names that you are accustomed to will remain as-is, but the binaries will exist as symbolic links pointing to the :code:`typical` builds. These links can be repointed to the :code:`megarow` builds by calling :code:`switch-BEDOPS-binary-type --megarow`, which will set the usual BEDOPS binaries to link to the :code:`megarow` builds. One can use :code:`switch-BEDOPS-binary-type --typical` at any time, to revert to the default links.
+
+The top-level Makefile includes some new variables for those who choose to build from source. The :code:`JPARALLEL` variable sets the number of CPUs to use in parallel when compiling BEDOPS, which can speed compilation time dramatically. The :code:`MASSIVE_REST_EXP`, :code:`MASSIVE_ID_EXP`, and :code:`MASSIVE_CHROM_EXP` are used when building the :code:`megarow` to support any required row lengths (build using :code:`make megarow`).  These are the exponents (the *n* in 2:sup:n) for holding all characters after chromosome, start, and stop fields, the ID field (column 4, typically), and the chromosome field (column 1). 
+
+To simplify distribution and support, we have removed pre-built 32-bit program versions in this release. These can be built from source by specifying the correct :code:`ARCH` value in the top-level Makefile. For OS X, our package installer requires that you have OS X 10.10 or greater installed.
+
+Application-level notes follow:
 
 * :ref:`bedops <bedops>`
 
@@ -25,33 +33,33 @@ This revision of BEDOPS includes significant performance improvements for defaul
   
   * Performance of :code:`-u`/:code:`--everything` has improved, doing the same work in only **55.6%** of the time of previous versions when given a large number of input files.
   
-  * :code:`megarow` build target is available to compile a version of the program that can handle input files with very long rows (4M+ characters).  This requires more runtime memory than the default ("typical") build.  The pertinent variables can be modified through the make system without changing source.
+  * The :code:`megarow` build of this application handles input files with very long rows (4M+ characters). Such input might arise from conversion of very-long-read BAM files to BED via :code:`bam2bed`, such as those that may come from Nanopore or PacBio MinION platforms. This build requires more runtime memory than the default (:code:`typical`) build. Pertinent variables for :code:`megarow` execution can be modified through the make system without changing source.
   
 * :ref:`bedmap <bedmap>`
 
-  * Automatically use --faster option when --exact is used as the overlap criterion, or if the input files are formatted as Starch, no fully-nested elements exist, and the overlap criterion supports --faster (--bp-ovr, --exact, --range).
+  * Automatically use :code:`--faster` option when :code:`--exact` is used as the overlap criterion, or if the input files are formatted as Starch archives, no fully-nested elements exist in the archives, and the overlap criterion supports :code:`--faster` (such as :code:`--bp-ovr`, :code:`--exact`, and :code:`--range`).
 
   * Performance of :code:`bedmap` tool improved, doing the same work in **86.7%** of the time of all previous versions.
 
-  * :code:`megarow` build target is available to compile a version of the program that can handle input files with very long rows (4M+ characters).  This requires more runtime memory than the default build.  The pertinent variables can be modified through the make system without changing source.
+  * The :code:`megarow` build target handles input files with very long rows (4M+ characters). Such input might arise from conversion of very-long-read BAM files to BED via :code:`bam2bed`, such as those that may come from Nanopore or PacBio MinION platforms. This build requires more runtime memory than the default (:code:`typical`) build. Pertinent variables for :code:`megarow` execution can be modified through the make system without changing source.
   
-  * New :code:`--min-memory` option for use when the reference file has very large regions, and the map file has many small regions that fall within those larger regions. One example is when :code:`--range 100000` is used and the map file consists of whole-genome motif scan hits.  Memory overhead can be reduced to that used by all versions up to and including v2.4.26.
+  * New :code:`--min-memory` option for use when the reference file has very large regions, and the map file has many small regions that fall within those larger regions. One example is when :code:`--range 100000` is used and the map file consists of whole-genome motif scan hits.  Memory overhead can be reduced to that used by all previous versions, up to and including v2.4.26.
   
   * Added :code:`--faster` automatically when :code:`--exact` is used, which is robust even when nested elements exist in inputs.  Similarly, :code:`--faster` is used automatically when inputs are Starch-formatted archives, none of which have nested elements (see :code:`unstarch --has-nested`) when the overlap criterion allows for :code:`--faster`.
   
 * :ref:`closest-features <closest-features>`
 
-  * Performance of :code:`closest-features` tool improved, doing the same work in **87.7%** of the time of all previous versions.
+  * Performance of :code:`closest-features` tool has been improved, doing the same work in **87.7%** of the time of all previous versions.
 
-  * :code:`megarow` build target is available to compile a version of the program that can handle input files with very long rows (4M+ characters).  This requires more runtime memory than the default build.  The pertinent variables can be modified through the make system without changing source.
+  * The :code:`megarow` build target is available to compile a version of the program that can handle input files with very long rows (4M+ characters).  This requires more runtime memory than the default build.  Pertinent variables can be modified through the make system without editing source.
 
 * :ref:`convert2bed <convert2bed>`
 
-  Numerous internal changes, including allowing line functors to resize the destination (write) buffer in mid-stream, and increased integration with BEDOPS-wide constants. Destination buffer resizing is particularly useful when converting very-large read BAM files containing numerous D (deletion) operations, as used with the new :code:`--split-with-deletions` option.
+  Numerous internal changes, including giving line functors the ability to resize the destination (write) buffer in mid-stream, along with increased integration with BEDOPS-wide constants. Destination buffer resizing is particularly useful when converting very-long-read BAM files containing numerous D (deletion) operations, such as when used with the new :code:`--split-with-deletions` option.
 
   * :ref:`psl2bed <psl2bed>`
   
-    * Migrated PSL state from stack to heap to address seg faults on OS X (thanks to rmartson@Biostars for the bug report).
+    * Migrated storage of PSL conversion state from stack to heap, which helps address segmentation faults on OS X (thanks to rmartson@Biostars for the bug report).
   
   * :ref:`bam2bed <bam2bed>` and :ref:`sam2bed <sam2bed>`
 
@@ -61,21 +69,23 @@ This revision of BEDOPS includes significant performance improvements for defaul
 
 * :ref:`sort-bed <sort-bed>`
 
-  * :code:`megarow` build target is available to compile a version of the program that can handle input files with very long rows (4M+ characters).  This requires more runtime memory than the default build.  The pertinent variables can be modified through the make system without changing source.  This is useful for converting ultra-long reads from Nanopore and PacBio platforms to BED via :code:`convert2bed`.
+  * The :code:`megarow` build target is available to compile a version of the program that can handle input files with very long rows (4M+ characters).  This requires more runtime memory than the default build.  The pertinent variables can be modified through the make system without changing source.  This is useful for converting ultra-long reads from Nanopore and PacBio platforms to BED via :code:`bam2bed` / :code:`convert2bed`.
   
 * :ref:`starch <starch>`
 
-  * Fixed potential segmentation fault with :code:`--header` usage.
+  * Fixed a potential segmentation fault result with :code:`--header` usage.
   
 * Starch C++ API
 
-  * Fixed output from :code:`bedops -u` (:code:`--everything`, or multiset union) on two or more Starch archives, such that the remainder string was not being cleared correctly.
+  * Fixed output from :code:`bedops -u` (:code:`--everything`, or multiset union) on two or more Starch archives, where the remainder string was not being cleared correctly.
   
 * :ref:`starch-diff <starch_diff>`
   
   * Improved usage statement to clarify output (cf. `Issue 180 <https://github.com/bedops/bedops/issues/180>`_).
 
-* Resolved Clang warnings for various binaries.
+* Clang warnings
+
+  * Resolved compilation warnings for several binaries.
 
 =================
 Previous versions
