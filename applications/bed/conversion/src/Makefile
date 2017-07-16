@@ -25,30 +25,30 @@ all: build
 
 .PHONY: build build_debug build_gprof clean
 
-build: $(DISTDIR)/$(PROG)${POSTFIX}
+build: $(DISTDIR)/$(PROG)-${BINARY_TYPE}
 	rm -rf $(OBJDIR)
-build_debug: $(DISTDIR)/debug.$(PROG)${POSTFIX}
+build_debug: $(DISTDIR)/debug.$(PROG)-${BINARY_TYPE}
 	rm -rf $(OBJDIR)
-build_gprof: $(DISTDIR)/gprof.$(PROG)${POSTFIX}
+build_gprof: $(DISTDIR)/gprof.$(PROG)-${BINARY_TYPE}
 	rm -rf $(OBJDIR)
 
-$(DISTDIR)/$(PROG): $(PROG).c
+$(DISTDIR)/$(PROG)-${BINARY_TYPE}: $(PROG).c
 	mkdir -p $(DISTDIR) && $(CC) $(TFLAG) $(BLDFLAGS) ${MEGAFLAGS} $(COMMONFLAGS) $(CFLAGS) $(SFLAGS) $(INCLUDES) $^ -o $@ $(LIBS)
 
-$(DISTDIR)/%${POSTFIX}: %.c
+$(DISTDIR)/%-${BINARY_TYPE}: %.c
 	mkdir -p $(DISTDIR) && $(CC) $(TFLAG) $(BLDFLAGS) ${MEGAFLAGS} $(COMMONFLAGS) $(CFLAGS) $(SFLAGS) $(INCLUDES) $^ -o $@ $(LIBS)
 
 $(DISTDIR)/debug.$(PROG): $(PROG).c
 	mkdir -p $(DISTDIR) && $(CC) $(TFLAG) $(BLDFLAGS) ${MEGAFLAGS} $(COMMONFLAGS) $(CDFLAGS) $(SFLAGS) $(INCLUDES) $^ -o $@ $(LIBS)
 
-$(DISTDIR)/debug.%${POSTFIX}: %.c
+$(DISTDIR)/debug.%-${BINARY_TYPE}: %.c
 	mkdir -p $(DISTDIR) && $(CC) $(TFLAG) $(BLDFLAGS) ${MEGAFLAGS} $(COMMONFLAGS) $(CDFLAGS) $(SFLAGS) $(INCLUDES) $^ -o $@ $(LIBS)
 
 $(DISTDIR)/gprof.$(PROG): $(PROG).c gprof-helper.so
 	mkdir -p $(DISTDIR) && $(CC) $(TFLAG) $(BLDFLAGS) ${MEGAFLAGS} $(COMMONFLAGS) $(CPFLAGS) $(SFLAGS) $(INCLUDES) $< -o $@ $(LIBS)
 	@echo -e "\nNote: To profile convert2bed with gprof/pthreads, run:\n\t$$ LD_PRELOAD=/path/to/gprof-helper.so convert2bed"
 
-$(DISTDIR)/gprof.%${POSTFIX}: %.c gprof-helper.so
+$(DISTDIR)/gprof.%-${BINARY_TYPE}: %.c gprof-helper.so
 	mkdir -p $(DISTDIR) && $(CC) $(TFLAG) $(BLDFLAGS) ${MEGAFLAGS} $(COMMONFLAGS) $(CPFLAGS) $(SFLAGS) $(INCLUDES) $< -o $@ $(LIBS)
 	@echo -e "\nNote: To profile convert2bed with gprof/pthreads, run:\n\t$$ LD_PRELOAD=/path/to/gprof-helper.so convert2bed"
 

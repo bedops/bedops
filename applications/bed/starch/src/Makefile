@@ -64,14 +64,14 @@ build_gprof: $(BINDIR)/gprof.starch $(BINDIR)/gprof.unstarch $(BINDIR)/gprof.sta
 % : %.o
 % : %.c
 
-starch: $(BINDIR)/starch${POSTFIX}
-unstarch: $(BINDIR)/unstarch${POSTFIX}
-starchcat: $(BINDIR)/starchcat${POSTFIX}
-starchcluster: $(BINDIR)/starchcluster_gnuParallel${POSTFIX} $(BINDIR)/starchcluster_sge${POSTFIX} $(BINDIR)/starchcluster_slurm${POSTFIX}
-starch-diff: $(BINDIR)/starch-diff${POSTFIX}
-starchstrip: $(BINDIR)/starchstrip${POSTFIX}
+starch: $(BINDIR)/starch-$(BINARY_TYPE)
+unstarch: $(BINDIR)/unstarch-$(BINARY_TYPE)
+starchcat: $(BINDIR)/starchcat-$(BINARY_TYPE)
+starchcluster: $(BINDIR)/starchcluster_gnuParallel-$(BINARY_TYPE) $(BINDIR)/starchcluster_sge-$(BINARY_TYPE) $(BINDIR)/starchcluster_slurm-$(BINARY_TYPE)
+starch-diff: $(BINDIR)/starch-diff-$(BINARY_TYPE)
+starchstrip: $(BINDIR)/starchstrip-$(BINARY_TYPE)
 
-$(BINDIR)/%${POSTFIX} : %.c $(LOCALSTARCHLIB) $(LIBRARIES)
+$(BINDIR)/%-$(BINARY_TYPE) : %.c $(LOCALSTARCHLIB) $(LIBRARIES)
 	mkdir -p $(BINDIR)
 	${CXX} ${CXXFLAGS} ${TFLAG} ${MEGAFLAGS} -c $*.c -o $(LOCALOBJDIR)/$*.o ${INCLUDES}
 	${CXX} ${CXXFLAGS} ${TFLAG} ${MEGAFLAGS} $(LOCALOBJDIR)/$*.o -o $@ ${LOCALSTARCHLIB} ${LIBRARIES}
@@ -90,7 +90,7 @@ $(BINDIR)/% : %.tcsh
 	mkdir -p $(BINDIR)
 	cp $< $@
 
-$(BINDIR)/%${POSTFIX} : %.tcsh
+$(BINDIR)/%-$(BINARY_TYPE) : %.tcsh
 	mkdir -p $(BINDIR)
 	cp $< $@
 
@@ -98,7 +98,7 @@ $(BINDIR)/% : %.py
 	mkdir -p $(BINDIR)
 	cp $< $@
 
-$(BINDIR)/%${POSTFIX} : %.py
+$(BINDIR)/%-$(BINARY_TYPE) : %.py
 	mkdir -p $(BINDIR)
 	cp $< $@
 
@@ -113,9 +113,9 @@ $(LOCALOBJDIR)/%.o : $(OBJDIR)/%.c $(LIBRARIES)
 	${CXX} ${CXXFLAGS} ${TFLAG} -c $< -o $@ ${INCLUDES}
 
 test: starch unstarch starchcat
-	cp ${BINDIR}/starch${POSTFIX} ${TEST_LINUX_BINDIR}/starch${POSTFIX}
-	cp ${BINDIR}/unstarch${POSTFIX} ${TEST_LINUX_BINDIR}/unstarch${POSTFIX}
-	cp ${BINDIR}/starchcat${POSTFIX} ${TEST_LINUX_BINDIR}/starchcat${POSTFIX}
+	cp ${BINDIR}/starch-${BINARY_TYPE} ${TEST_LINUX_BINDIR}/starch-${BINARY_TYPE}
+	cp ${BINDIR}/unstarch-${BINARY_TYPE} ${TEST_LINUX_BINDIR}/unstarch-${BINARY_TYPE}
+	cp ${BINDIR}/starchcat-${BINARY_TYPE} ${TEST_LINUX_BINDIR}/starchcat-${BINARY_TYPE}
 	make -C ${TEST} all
 
 clean:
