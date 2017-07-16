@@ -94,7 +94,6 @@ static const char *usage = "\n" \
     "                                     chr\"). If <chromosome> is specified but\n" \
     "                                     is not in the output list, nothing is\n" \
     "                                     returned.\n\n" \
-    
     "    --note                           Show descriptive note, if available.\n\n" \
     "    --signature                      Display the Base64-encoded SHA-1 data\n" \
     "                                     integrity signature for specified\n" \
@@ -117,14 +116,24 @@ static const char *usage = "\n" \
     "    --version                        Show binary version.\n\n" \
     "    --help                           Show this usage message.\n";
 
+#if BEDOPS_BINARY_TYPE == 0
+static const char* application_type = "typical";
+#else
+#if BEDOPS_BINARY_TYPE == 1
+static const char* application_type = "megarow";
+#else
+static const char* application_type = "typical";
+#endif
+#endif
+
 #ifdef __cplusplus
 namespace starch {
 #endif
 
-int                  UNSTARCH_parseCommandLineInputs(int argc, 
-                                                    char **argv, 
-                                                    char **chr, 
-                                                    char **fn, 
+int                  UNSTARCH_parseCommandLineInputs(int argc,
+                                                    char **argv,
+                                                    char **chr,
+                                                    char **fn,
                                                     char **optn,
                                                      int *pval);
 void                 UNSTARCH_printUsage(int t);

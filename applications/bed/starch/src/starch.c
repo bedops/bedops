@@ -41,7 +41,7 @@ namespace {
 #endif
 
 int
-main (int argc, char **argv)
+main(int argc, char **argv)
 {
 #ifdef DEBUG
     fprintf (stderr, "\n--- starch main() - enter ---\n");
@@ -64,15 +64,15 @@ main (int argc, char **argv)
     parseValue = STARCH_parseCommandLineOptions (argc, argv);
     switch (parseValue) {
         case STARCH_HELP_ERROR: {
-            STARCH_printUsage (STARCH_HELP_ERROR);
+            STARCH_printUsage(STARCH_HELP_ERROR);
             return EXIT_SUCCESS;
         }
         case STARCH_VERSION_ERROR: {
-            STARCH_printRevision ();
+            STARCH_printRevision();
             return EXIT_SUCCESS;
         }
         case STARCH_FATAL_ERROR: {
-            STARCH_printUsage (STARCH_FATAL_ERROR);
+            STARCH_printUsage(STARCH_FATAL_ERROR);
             return EXIT_FAILURE;
         }
     }
@@ -205,7 +205,7 @@ main (int argc, char **argv)
         }
 #endif
     }
-    
+
     else if (STARCH_MAJOR_VERSION > 2) {
         fprintf (stderr, "ERROR: Starch does not yet support making archives in this major version release (built as: %d.%d.%d)\n", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION); // this condition is preserved in case of test-builds of future-proofed Starch binaries
         exit (EXIT_FAILURE);
@@ -239,7 +239,7 @@ namespace starch {
 #endif
 
 void
-STARCH_initializeGlobals ()
+STARCH_initializeGlobals()
 {
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCH_initializeGlobals() ---\n");
@@ -257,7 +257,7 @@ STARCH_initializeGlobals ()
 }
 
 int
-STARCH_parseCommandLineOptions (int argc, char **argv)
+STARCH_parseCommandLineOptions(int argc, char **argv)
 {
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCH_parseCommandLineOptions()  ---\n");
@@ -348,7 +348,7 @@ STARCH_parseCommandLineOptions (int argc, char **argv)
 }
 
 void
-STARCH_printUsage (int errorType)
+STARCH_printUsage(int errorType)
 {
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCH_printUsage() ---\n");
@@ -366,7 +366,7 @@ STARCH_printUsage (int errorType)
                 case STARCH_FATAL_ERROR:
                 case STARCH_HELP_ERROR:
                 default: {
-                    fprintf(stderr, "%s\n  citation: %s\n  binary version: %s (creates archive version: %s)\n  authors:  %s\n%s\n\n", name, BEDOPS::citation(), BEDOPS::revision(), avStr, authors, usage);
+                    fprintf(stderr, "%s\n  citation: %s\n  binary version: %s (%s) (creates archive version: %s)\n  authors:  %s\n%s\n\n", name, BEDOPS::citation(), BEDOPS::revision(), application_type, avStr, authors, usage);
                     break;
                 }
             }
@@ -376,7 +376,7 @@ STARCH_printUsage (int errorType)
 }
 
 void
-STARCH_printRevision ()
+STARCH_printRevision()
 {
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCH_printRevision() ---\n");
@@ -390,7 +390,7 @@ STARCH_printRevision ()
     if (avStr != NULL) {
         int result = sprintf (avStr, "%d.%d.%d", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION);
         if (result != -1)
-            fprintf (stderr, "%s\n  binary version: %s (creates archive version: %s)\n", name, BEDOPS::revision(), avStr);
+            fprintf (stderr, "%s\n  binary version: %s (%s) (creates archive version: %s)\n", name, BEDOPS::revision(), application_type, avStr);
         free (avStr);
     }
 }

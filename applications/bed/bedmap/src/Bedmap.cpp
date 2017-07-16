@@ -61,6 +61,16 @@ namespace BedMap {
   constexpr std::size_t PoolSz = 8*8*8;
   bool minimumMemory = false;
 
+#if BEDOPS_BINARY_TYPE == 0
+  const std::string application_type = "typical";
+#else
+#if BEDOPS_BINARY_TYPE == 1
+  const std::string application_type = "megarow";
+#else
+  const std::string application_type = "typical";
+#endif
+#endif
+
   //======
   // Help
   //======
@@ -172,19 +182,19 @@ int main(int argc, char **argv) {
   } catch(const BedMap::Help& h) { // show usage and exit success
     std::cout << BedMap::prognm << std::endl;
     std::cout << "  citation: " << BedMap::citation << std::endl;
-    std::cout << "  version:  " << BedMap::version << std::endl;
+    std::cout << "  version:  " << BedMap::version + " (" + BedMap::application_type + ")" << std::endl;
     std::cout << "  authors:  " << BedMap::authors << std::endl;
     std::cout << BedMap::Usage() << std::endl;
     return EXIT_SUCCESS;
   } catch(const BedMap::Version& v) { // show version and exit success
     std::cout << BedMap::prognm << std::endl;
     std::cout << "  citation: " << BedMap::citation << std::endl;
-    std::cout << "  version:  " << BedMap::version << std::endl;
+    std::cout << "  version:  " << BedMap::version + " (" + BedMap::application_type + ")" << std::endl;
     std::cout << "  authors:  " << BedMap::authors << std::endl;
   } catch(const BedMap::NoInput& ni) { // show usage and exit failure
     std::cerr << BedMap::prognm << std::endl;
     std::cerr << "  citation: " << BedMap::citation << std::endl;
-    std::cerr << "  version:  " << BedMap::version << std::endl;
+    std::cerr << "  version:  " << BedMap::version + " (" + BedMap::application_type + ")" << std::endl;
     std::cerr << "  authors:  " << BedMap::authors << std::endl;
     std::cerr << BedMap::Usage() << std::endl;
   } catch(std::string& s) {
@@ -467,10 +477,9 @@ namespace BedMap {
 
       typedef VisitorTypes<BaseVisitor> VTypes;
       BaseVisitor* rtn = 0;
-  
+
       // Create an instance associated with each name in classNames
       std::string nm = upper(className);
-   
 
       if ( nm == visName<typename VTypes::Count>() )
         rtn = new typename VTypes::Count;
@@ -527,7 +536,7 @@ namespace BedMap {
                           const std::vector<std::string>& args,
                           const std::string& multivalColSep,
                           int precision, bool useScientific) {
-  
+
       typedef VisitorTypes<BaseVisitor> VTypes;
       BaseVisitor* rtn = SuperClass::generate(d, className, args, multivalColSep, precision, useScientific);
       if ( rtn )
@@ -563,7 +572,7 @@ namespace BedMap {
                           const std::vector<std::string>& args,
                           const std::string& multivalColSep,
                           int precision, bool useScientific) {
-  
+
       typedef VisitorTypes<BaseVisitor> VTypes;
       BaseVisitor* rtn = SuperClass::generate(d, className, args, multivalColSep, precision, useScientific);
       if ( rtn )

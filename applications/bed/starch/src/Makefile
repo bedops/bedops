@@ -5,9 +5,9 @@ MAINAPPDIR                = ../..
 PARTY3                    = $(HEAD)/third-party
 BINDIR                    = ../bin
 THISDIR                   = ${shell pwd}
-LIBSTARCH                 = libstarch-${BINARY_TYPE}.a
-LIBSTARCHDEBUG            = libstarch_debug-${BINARY_TYPE}.a
-LIBSTARCHGPROF            = libstarch_gprof-${BINARY_TYPE}.a
+LIBSTARCH                 = libstarch${POSTFIX}.a
+LIBSTARCHDEBUG            = libstarch_debug${POSTFIX}.a
+LIBSTARCHGPROF            = libstarch_gprof${POSTFIX}.a
 LIBJANSSON                = libjansson.a
 LIBBZIP2                  = libbz2.a
 LIBZLIB                   = libz.a
@@ -28,7 +28,7 @@ LOCALZLIBLIBDIR           = ${LOCALZLIBDIR}
 LOCALZLIBLIB              = ${LOCALZLIBLIBDIR}/${LIBZLIB}
 LOCALZLIBINCDIR           = ${LOCALZLIBDIR}
 OBJDIR                    = ${INTERFACES}/src/data/starch
-LOCALOBJDIR               = objects_${BINARY_TYPE}
+LOCALOBJDIR               = objects${POSTFIX}
 INCLUDES                  = -iquote${MAIN} -iquote${HEAD} -iquote${PARTY3} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 LIBRARIES                 = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 ARCH_VERSION              = v2.2
@@ -45,6 +45,12 @@ CXXGFLAGS                 = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_L
 STARCH_NAMES              = starchConstants unstarchHelpers starchHelpers starchMetadataHelpers starchFileHelpers starchSha1Digest starchBase64Coding
 STARCH_OBJECTS            = $(addprefix $(LOCALOBJDIR)/, $(addsuffix .o, $(STARCH_NAMES)))
 
+ifeq ($(BINARY_TYPE),)
+	TFLAG = -DBEDOPS_BINARY_TYPE=0
+else
+	TFLAG = -DBEDOPS_BINARY_TYPE=$(BINARY_TYPE_NUM)
+endif
+
 .PHONY: starchcluster starch unstarch starchcat build build_debug build_gprof starch-diff starchstrip
 
 build: starch unstarch starchcat starchcluster starch-diff starchstrip
@@ -58,33 +64,33 @@ build_gprof: $(BINDIR)/gprof.starch $(BINDIR)/gprof.unstarch $(BINDIR)/gprof.sta
 % : %.o
 % : %.c
 
-starch: $(BINDIR)/starch-${BINARY_TYPE}
-unstarch: $(BINDIR)/unstarch-${BINARY_TYPE}
-starchcat: $(BINDIR)/starchcat-${BINARY_TYPE}
-starchcluster: $(BINDIR)/starchcluster_gnuParallel-${BINARY_TYPE} $(BINDIR)/starchcluster_sge-${BINARY_TYPE} $(BINDIR)/starchcluster_slurm-${BINARY_TYPE}
-starch-diff: $(BINDIR)/starch-diff-${BINARY_TYPE}
-starchstrip: $(BINDIR)/starchstrip-${BINARY_TYPE}
+starch: $(BINDIR)/starch${POSTFIX}
+unstarch: $(BINDIR)/unstarch${POSTFIX}
+starchcat: $(BINDIR)/starchcat${POSTFIX}
+starchcluster: $(BINDIR)/starchcluster_gnuParallel${POSTFIX} $(BINDIR)/starchcluster_sge${POSTFIX} $(BINDIR)/starchcluster_slurm${POSTFIX}
+starch-diff: $(BINDIR)/starch-diff${POSTFIX}
+starchstrip: $(BINDIR)/starchstrip${POSTFIX}
 
-$(BINDIR)/%${BINARY_TYPE} : %.c $(LOCALSTARCHLIB) $(LIBRARIES)
+$(BINDIR)/%${POSTFIX} : %.c $(LOCALSTARCHLIB) $(LIBRARIES)
 	mkdir -p $(BINDIR)
-	${CXX} ${CXXFLAGS} ${MEGAFLAGS} -c $*.c -o $(LOCALOBJDIR)/$*.o ${INCLUDES}
-	${CXX} ${CXXFLAGS} ${MEGAFLAGS} $(LOCALOBJDIR)/$*.o -o $@ ${LOCALSTARCHLIB} ${LIBRARIES}
+	${CXX} ${CXXFLAGS} ${TFLAG} ${MEGAFLAGS} -c $*.c -o $(LOCALOBJDIR)/$*.o ${INCLUDES}
+	${CXX} ${CXXFLAGS} ${TFLAG} ${MEGAFLAGS} $(LOCALOBJDIR)/$*.o -o $@ ${LOCALSTARCHLIB} ${LIBRARIES}
 
 $(BINDIR)/debug.% : %.c $(LOCALSTARCHLIB) $(LIBRARIES)
 	mkdir -p $(BINDIR)
-	${CXX} ${CXXDFLAGS} ${MEGAFLAGS} -c $*.c -o $(LOCALOBJDIR)/$*.o ${INCLUDES}
-	${CXX} ${CXXDFLAGS} ${MEGAFLAGS} $(LOCALOBJDIR)/$*.o -o $@ ${LOCALSTARCHLIB} ${LIBRARIES}
+	${CXX} ${CXXDFLAGS} ${TFLAG} ${MEGAFLAGS} -c $*.c -o $(LOCALOBJDIR)/$*.o ${INCLUDES}
+	${CXX} ${CXXDFLAGS} ${TFLAG} ${MEGAFLAGS} $(LOCALOBJDIR)/$*.o -o $@ ${LOCALSTARCHLIB} ${LIBRARIES}
 
 $(BINDIR)/gprof.% : %.c $(LOCALSTARCHLIB) $(LIBRARIES)
 	mkdir -p $(BINDIR)
-	${CXX} ${CXXGFLAGS} ${MEGAFLAGS} -c $*.c -o $(LOCALOBJDIR)/$*.o ${INCLUDES}
-	${CXX} ${CXXGFLAGS} ${MEGAFLAGS} $(LOCALOBJDIR)/$*.o -o $@ ${LOCALSTARCHLIB} ${LIBRARIES}
+	${CXX} ${CXXGFLAGS} ${TFLAG} ${MEGAFLAGS} -c $*.c -o $(LOCALOBJDIR)/$*.o ${INCLUDES}
+	${CXX} ${CXXGFLAGS} ${TFLAG} ${MEGAFLAGS} $(LOCALOBJDIR)/$*.o -o $@ ${LOCALSTARCHLIB} ${LIBRARIES}
 
 $(BINDIR)/% : %.tcsh
 	mkdir -p $(BINDIR)
 	cp $< $@
 
-$(BINDIR)/%${BINARY_TYPE} : %.tcsh
+$(BINDIR)/%${POSTFIX} : %.tcsh
 	mkdir -p $(BINDIR)
 	cp $< $@
 
@@ -92,7 +98,7 @@ $(BINDIR)/% : %.py
 	mkdir -p $(BINDIR)
 	cp $< $@
 
-$(BINDIR)/%${BINARY_TYPE} : %.py
+$(BINDIR)/%${POSTFIX} : %.py
 	mkdir -p $(BINDIR)
 	cp $< $@
 
@@ -104,18 +110,17 @@ $(LOCALSTARCHLIB) : $(STARCH_OBJECTS)
 
 $(LOCALOBJDIR)/%.o : $(OBJDIR)/%.c $(LIBRARIES)
 	mkdir -p $(LOCALOBJDIR)
-	${CXX} ${CXXFLAGS} -c $< -o $@ ${INCLUDES}
+	${CXX} ${CXXFLAGS} ${TFLAG} -c $< -o $@ ${INCLUDES}
 
 test: starch unstarch starchcat
-	cp ${BINDIR}/starch-${BINARY_TYPE} ${TEST_LINUX_BINDIR}/starch-${BINARY_TYPE}
-	cp ${BINDIR}/unstarch-${BINARY_TYPE} ${TEST_LINUX_BINDIR}/unstarch-${BINARY_TYPE}
-	cp ${BINDIR}/starchcat-${BINARY_TYPE} ${TEST_LINUX_BINDIR}/starchcat-${BINARY_TYPE}
+	cp ${BINDIR}/starch${POSTFIX} ${TEST_LINUX_BINDIR}/starch${POSTFIX}
+	cp ${BINDIR}/unstarch${POSTFIX} ${TEST_LINUX_BINDIR}/unstarch${POSTFIX}
+	cp ${BINDIR}/starchcat${POSTFIX} ${TEST_LINUX_BINDIR}/starchcat${POSTFIX}
 	make -C ${TEST} all
 
 clean:
 	rm -f $(LOCALSTARCHLIB)
 	rm -f ${LOCALSTARCHLIBDEBUG}
 	rm -f ${LOCALSTARCHLIBGPROF}
-	rm -f ${BINDIR}/*starch*
 	rm -rf ${LOCALOBJDIR}
 	rm -rf ${BINDIR}

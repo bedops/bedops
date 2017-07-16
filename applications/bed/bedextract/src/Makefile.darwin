@@ -28,12 +28,17 @@ LIBRARIES            = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 STDFLAGS             = -Wall -pedantic -std=c++11 -stdlib=libc++
 BLDFLAGS             = -O3 ${STDFLAGS}
 
+ifeq ($(BINARY_TYPE),)
+	TFLAG = -DBEDOPS_BINARY_TYPE=0
+else
+	TFLAG = -DBEDOPS_BINARY_TYPE=$(BINARY_TYPE_NUM)
+endif
 
-FLAGS                = $(BLDFLAGS) $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
+FLAGS                = $(BLDFLAGS) $(TFLAG) $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
 
-DFLAGS               = -g -O0 ${STDFLAGS} $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
+DFLAGS               = -g -O0 ${STDFLAGS} $(TFLAG) $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
 
-GPROFFLAGS           = -O -pg ${STDFLAGS} $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
+GPROFFLAGS           = -O -pg ${STDFLAGS} $(TFLAG) $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
 
 SOURCE1              = ExtractRows.cpp
 BINDIR               = ../bin
@@ -65,6 +70,4 @@ dependencies:
 
 clean:
 	rm -rf $(OBJDIR)
-	rm -rf $(BINDIR)/$(PROG)*
-	rm -rf $(BINDIR)/*.$(PROG)*
 	rm -rf $(BINDIR)

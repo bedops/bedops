@@ -21,9 +21,9 @@ Preparing a major, minor or maintenance release of BEDOPS from a development bra
 
    a. Follow the :ref:`Installation (via source code) <installation_via_source_code>` documentation to build BEDOPS for the given platform. 
 
-      1) For Linux, we build two versions, one 64-bit and one 32-bit. It may help to use `VirtualBox <https://www.virtualbox.org>`_ or a similar virtualization host to set up and run different (and consistent) versions of Linux build hosts.
+      1) For Linux, we build a 64-bit version. It may help to use `VirtualBox <https://www.virtualbox.org>`_ or a similar virtualization host to set up and run different (and consistent) versions of Linux build hosts.
 
-      2) For Mac OS X, we currently build the Mac target with whatever the modern Xcode and current OS X release happens to be (currently, command-line tools that ship with Xcode 7 and OS X Sierra/10.12). If things work correctly, build flags generate "fat" binaries that should run on 10.7 and newer OS releases.
+      2) For Mac OS X, we currently build the Mac target with whatever the modern Xcode and current OS X release happens to be (currently, command-line tools that ship with Xcode 8 and OS X Sierra/10.12). If things work correctly, build flags generate 64-bit binaries that should run on 10.10 and newer OS releases.
 
    b. For all platforms, run test suites for various tools and conversion scripts; tests should pass on supported platforms. If not, add an Issue ticket, fix it, close it and start over with the build/test process.
 
@@ -34,9 +34,8 @@ Preparing a major, minor or maintenance release of BEDOPS from a development bra
    ::
 
      bedops_linux_x86_64-vX.Y.Z.tar.bz2 (64-bit)
-     bedops_linux_i386-vX.Y.Z.tar.bz2 (32-bit)
 
-   Run ``shasum -a 256`` on each tarball to get its SHA256 hash (store this SHA256 hash in a file for later retrieval).
+   Run ``shasum -a 256`` on the tarball to get its SHA256 hash (store this SHA256 hash in a file for later retrieval).
 
    For the OS X Installer, use ``productsign`` per :ref:`OS X Installer <installation_os_x_installer_construction>` documentation to digitally sign the package. Compress the Installer with the Finder or `zip`:
 
@@ -85,8 +84,7 @@ Release
 
      ### Linux
      **bedops_linux_x86_64-vX.Y.Z.tar.bz2** (64-bit, SHA256: ``abcd1234``)
-     **bedops_linux_i386-vX.Y.Z.tar.bz2** (32-bit, SHA256: ``abcd1234``)
-     This package of BEDOPS vX.Y.Z binaries is for Linux 64- and 32-bit hosts. Pick the installer that matches your host architecture. If your host can run 64-bit binaries, we recommend downloading the 64-bit package.
+     This package of BEDOPS vX.Y.Z binaries is for Linux 64-bit hosts. Those who require 32-bit binaries will need to build them from source code.
 
      For installation instructions, please read [§2.1.1. Linux] (http://bedops.readthedocs.io/en/latest/content/installation.html#linux) of the BEDOPS Installation document.
 
@@ -94,11 +92,11 @@ Release
 
      ### Mac OS X
      **BEDOPS.X.Y.Z.pkg.zip**
-     This package of BEDOPS vX.Y.Z binaries is a digitally-signed installer for OS X (10.7 - 10.12) running on Intel-based Macs.
+     This package of BEDOPS vX.Y.Z is a digitally-signed installer for 64-bit binaries that run under OS X (10.10 - 10.12) on Intel-based Macs.
 
      For installation instructions, please read [§2.1.2. Mac OS X] (http://bedops.readthedocs.io/en/latest/content/installation.html#mac-os-x) of the BEDOPS Installation document.
 
-   d. Attach per-platform binaries to this release by dragging each of them into the field underneath the description text. It can take a few moments for the web browser to upload each binary into the release page, so be patient. There should be at least three binaries: two for Linux 64- and 32-bit, and one for (fat) Mac OS X.
+   d. Attach per-platform binaries to this release by dragging each of them into the field underneath the description text. It can take a few moments for the web browser to upload each binary into the release page, so be patient. There should be at least two binary packages: one for Linux 64-bit, and one for Mac OS X.
 
    e. Click the *Publish Release* button.
 

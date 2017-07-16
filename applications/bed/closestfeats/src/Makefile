@@ -26,11 +26,17 @@ LIBRARIES           = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 BLDFLAGS            = -Wall -pedantic -O3 -std=c++11
 SFLAGS              = -static
 
+ifeq ($(BINARY_TYPE),)
+	TFLAG = -DBEDOPS_BINARY_TYPE=0
+else
+	TFLAG = -DBEDOPS_BINARY_TYPE=$(BINARY_TYPE_NUM)
+endif
+
 dependency_names    = NaN starchConstants starchFileHelpers starchHelpers starchMetadataHelpers unstarchHelpers starchSha1Digest starchBase64Coding
 dependencies        = $(addprefix $(OBJDIR)/, $(addsuffix .o, $(dependency_names)))
-FLAGS               = $(SFLAGS) ${MEGAFLAGS} -s $(BLDFLAGS) $(dependencies) ${LIBLOCATION} ${INCLUDES}
-DFLAGS              = $(SFLAGS) ${MEGAFLAGS} -g -O0 -std=c++11 -Wall -fno-inline -pedantic $(dependencies) ${LIBLOCATION} ${INCLUDES}
-GPROFFLAGS          = $(SFLAGS) ${MEGAFLAGS} -O -std=c++11 -Wall -pedantic -pg $(dependencies) ${LIBLOCATION} ${INCLUDES}
+FLAGS               = $(SFLAGS) $(TFLAG) ${MEGAFLAGS} -s $(BLDFLAGS) $(dependencies) ${LIBLOCATION} ${INCLUDES}
+DFLAGS              = $(SFLAGS) $(TFLAG) ${MEGAFLAGS} -g -O0 -std=c++11 -Wall -fno-inline -pedantic $(dependencies) ${LIBLOCATION} ${INCLUDES}
+GPROFFLAGS          = $(SFLAGS) $(TFLAG) ${MEGAFLAGS} -O -std=c++11 -Wall -pedantic -pg $(dependencies) ${LIBLOCATION} ${INCLUDES}
 SOURCE1             = ClosestFeature.cpp
 BINDIR              = ../bin
 PROG                = closest-features-${BINARY_TYPE}
@@ -62,7 +68,5 @@ $(OBJDIR)/%.o : $(LIB3)/%.c
 	mkdir -p $(OBJDIR) && $(CXX) -c ${BLDFLAGS} $^ -o $@ ${INCLUDES}
 
 clean:
-	rm -f $(BINDIR)/$(PROG)
-	rm -f $(BINDIR)/*.$(PROG)
 	rm -rf $(OBJDIR)
 	rm -rf $(BINDIR)

@@ -53,6 +53,16 @@ namespace {
   const std::string authors = "Shane Neph & Alex Reynolds";
   constexpr std::size_t PoolSz = 2*8;
 
+#if BEDOPS_BINARY_TYPE == 0
+  const std::string application_type = "typical";
+#else
+#if BEDOPS_BINARY_TYPE == 1
+  const std::string application_type = "megarow";
+#else
+  const std::string application_type = "typical";
+#endif
+#endif
+
   //======
   // Help
   //======
@@ -338,20 +348,20 @@ int main(int argc, char** argv) {
   } catch(const Help& h) {
     std::cout << prognm << std::endl;
     std::cout << "  citation: " + citation << std::endl;
-    std::cout << "  version:  " + version << std::endl;
+    std::cout << "  version:  " + version + " (" + application_type + ")" << std::endl;
     std::cout << "  authors:  " + authors << std::endl;
     std::cout << usage() << std::endl;
     isok = true;
   } catch(const Version& v) {
     std::cout << prognm << std::endl;
     std::cout << "  citation: " + citation << std::endl;
-    std::cout << "  version:  " + version << std::endl;
+    std::cout << "  version:  " + version + " (" + application_type + ")" << std::endl;
     std::cout << "  authors:  " + authors << std::endl;
     isok = true;
   } catch(std::string& msg) {
     std::cerr << prognm << std::endl;
     std::cerr << "  citation: " + citation << std::endl;
-    std::cerr << "  version:  " + version << std::endl;
+    std::cerr << "  version:  " + version + " (" + application_type + ")" << std::endl;
     std::cerr << "  authors:  " + authors << std::endl;
     std::cerr << usage() << std::endl;
     std::cerr << msg << std::endl;

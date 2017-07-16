@@ -674,6 +674,16 @@ static const char* application_name = "convert2bed";
 
 static const char* application_version = C2B_VERSION;
 
+#if BEDOPS_BINARY_TYPE == 0
+static const char* application_type = "typical";
+#else
+#if BEDOPS_BINARY_TYPE == 1
+static const char* application_type = "megarow";
+#else
+static const char* application_type = "typical";
+#endif
+#endif
+
 static const char* application_authors = "Alex Reynolds";
 
 static const char* general_usage = "\n"                                 \

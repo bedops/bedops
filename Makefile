@@ -2,7 +2,6 @@ export KERNEL      := ${shell uname -a | cut -f1 -d' '}
 APPDIR              = applications/bed
 OTHERDIR            = applications/other
 BINDIR              = bin
-MEGABINDIR          = bin/megarow
 OSXPKGROOT          = packaging/os_x
 OSXBUILDDIR         = ${OSXPKGROOT}/build
 OSXPKGDIR           = ${OSXPKGROOT}/resources/bin
@@ -19,17 +18,9 @@ WRAPPERS            = $(wildcard ${APPDIR}/conversion/src/wrappers/*)
 
 default:
 ifeq ($(KERNEL), Darwin)
-ifeq ($(BINARY_TYPE),)
-	$(MAKE) BINARY_TYPE=$(DEFAULT_BINARY_TYPE) $(MAKECMDGOALS) -j $(JPARALLEL) -f system.mk/Makefile.darwin
-else
 	$(MAKE) $(MAKECMDGOALS) -j $(JPARALLEL) -f system.mk/Makefile.darwin
-endif
-else
-ifeq ($(BINARY_TYPE),)
-	$(MAKE) BINARY_TYPE=$(DEFAULT_BINARY_TYPE) $(MAKECMDGOALS) -j $(JPARALLEL) -f system.mk/Makefile.linux
 else
 	$(MAKE) $(MAKECMDGOALS) -j $(JPARALLEL) -f system.mk/Makefile.linux
-endif
 endif
 
 clean: default
@@ -48,10 +39,10 @@ all:
 	$(MAKE) symlink_typical -f ${SELF}
 
 megarow:
-	$(MAKE) BINARY_TYPE=$(MEGA) MEGAFLAGS="-DREST_EXPONENT=${MASSIVE_REST_EXP} -DID_EXPONENT=${MASSIVE_ID_EXP} -DCHROM_EXPONENT=${MASSIVE_CHROM_EXP}" -f ${SELF}
+	$(MAKE) BINARY_TYPE=$(MEGA) BINARY_TYPE_NUM=1 POSTFIX=-$(MEGA) MEGAFLAGS="-DREST_EXPONENT=${MASSIVE_REST_EXP} -DID_EXPONENT=${MASSIVE_ID_EXP} -DCHROM_EXPONENT=${MASSIVE_CHROM_EXP}" -f ${SELF}
 
 typical:
-	$(MAKE) BINARY_TYPE=$(TYPICAL) -f ${SELF}
+	$(MAKE) BINARY_TYPE=$(TYPICAL) BINARY_TYPE_NUM=0 POSTFIX=-$(TYPICAL) -f ${SELF}
 
 symlink_typical:
 	$(eval variablename=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(TYPICAL)' -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`)
@@ -70,19 +61,19 @@ symlink_megarow:
 	done
 
 install: prep_c install_conversion_scripts install_starch_scripts
-	-cp ${APPDIR}/sort-bed/bin/sort-bed-$(DEFAULT_BINARY_TYPE) ${BINDIR}/sort-bed
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm-$(DEFAULT_BINARY_TYPE) ${BINDIR}/update-sort-bed-slurm
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm-$(DEFAULT_BINARY_TYPE) ${BINDIR}/update-sort-bed-starch-slurm
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates-$(DEFAULT_BINARY_TYPE) ${BINDIR}/update-sort-bed-migrate-candidates
-	-cp ${APPDIR}/bedops/bin/bedops-$(DEFAULT_BINARY_TYPE) ${BINDIR}/bedops
-	-cp ${APPDIR}/closestfeats/bin/closest-features-$(DEFAULT_BINARY_TYPE) ${BINDIR}/closest-features
-	-cp ${APPDIR}/bedmap/bin/bedmap-$(DEFAULT_BINARY_TYPE) ${BINDIR}/bedmap
-	-cp ${APPDIR}/bedextract/bin/bedextract-$(DEFAULT_BINARY_TYPE) ${BINDIR}/bedextract
-	-cp ${APPDIR}/starch/bin/starch-$(DEFAULT_BINARY_TYPE) ${BINDIR}/starch
-	-cp ${APPDIR}/starch/bin/unstarch-$(DEFAULT_BINARY_TYPE) ${BINDIR}/unstarch
-	-cp ${APPDIR}/starch/bin/starchcat-$(DEFAULT_BINARY_TYPE) ${BINDIR}/starchcat
-	-cp ${APPDIR}/starch/bin/starchstrip-$(DEFAULT_BINARY_TYPE) ${BINDIR}/starchstrip
-	-cp ${APPDIR}/conversion/bin/convert2bed-$(DEFAULT_BINARY_TYPE) ${BINDIR}/convert2bed
+	-cp ${APPDIR}/sort-bed/bin/sort-bed- ${BINDIR}/sort-bed
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm- ${BINDIR}/update-sort-bed-slurm
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm- ${BINDIR}/update-sort-bed-starch-slurm
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates- ${BINDIR}/update-sort-bed-migrate-candidates
+	-cp ${APPDIR}/bedops/bin/bedops- ${BINDIR}/bedops
+	-cp ${APPDIR}/closestfeats/bin/closest-features- ${BINDIR}/closest-features
+	-cp ${APPDIR}/bedmap/bin/bedmap- ${BINDIR}/bedmap
+	-cp ${APPDIR}/bedextract/bin/bedextract- ${BINDIR}/bedextract
+	-cp ${APPDIR}/starch/bin/starch ${BINDIR}/starch
+	-cp ${APPDIR}/starch/bin/unstarch ${BINDIR}/unstarch
+	-cp ${APPDIR}/starch/bin/starchcat ${BINDIR}/starchcat
+	-cp ${APPDIR}/starch/bin/starchstrip ${BINDIR}/starchstrip
+	-cp ${APPDIR}/conversion/bin/convert2bed ${BINDIR}/convert2bed
 
 install_all: install_conversion_scripts_with_suffix install_starch_scripts_with_suffix
 	-cp ${APPDIR}/sort-bed/bin/sort-bed-$(MEGA) ${BINDIR}/sort-bed-$(MEGA)
@@ -121,40 +112,40 @@ prep_c:
 	mkdir -p ${BINDIR}
 
 install_debug: prep_c install_conversion_scripts install_starch_scripts
-	-cp ${APPDIR}/sort-bed/bin/debug.sort-bed-$(DEFAULT_BINARY_TYPE) ${BINDIR}/debug.sort-bed
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm-$(DEFAULT_BINARY_TYPE) ${BINDIR}/update-sort-bed-slurm
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm-$(DEFAULT_BINARY_TYPE) ${BINDIR}/update-sort-bed-starch-slurm
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates-$(DEFAULT_BINARY_TYPE) ${BINDIR}/update-sort-bed-migrate-candidates
-	-cp ${APPDIR}/bedops/bin/debug.bedops-$(DEFAULT_BINARY_TYPE) ${BINDIR}/debug.bedops
-	-cp ${APPDIR}/closestfeats/bin/debug.closest-features-$(DEFAULT_BINARY_TYPE) ${BINDIR}/debug.closest-features
-	-cp ${APPDIR}/bedmap/bin/debug.bedmap-$(DEFAULT_BINARY_TYPE) ${BINDIR}/debug.bedmap
-	-cp ${APPDIR}/bedextract/bin/debug.bedextract-$(DEFAULT_BINARY_TYPE) ${BINDIR}/debug.bedextract
-	-cp ${APPDIR}/starch/bin/debug.starch-$(DEFAULT_BINARY_TYPE) ${BINDIR}/debug.starch
-	-cp ${APPDIR}/starch/bin/debug.unstarch-$(DEFAULT_BINARY_TYPE) ${BINDIR}/debug.unstarch
-	-cp ${APPDIR}/starch/bin/debug.starchcat-$(DEFAULT_BINARY_TYPE) ${BINDIR}/debug.starchcat
-	-cp ${APPDIR}/starch/bin/debug.starchstrip-$(DEFAULT_BINARY_TYPE) ${BINDIR}/debug.starchstrip
-	-cp ${APPDIR}/conversion/bin/debug.convert2bed-$(DEFAULT_BINARY_TYPE) ${BINDIR}/debug.convert2bed
+	-cp ${APPDIR}/sort-bed/bin/debug.sort-bed- ${BINDIR}/debug.sort-bed
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm- ${BINDIR}/update-sort-bed-slurm
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm- ${BINDIR}/update-sort-bed-starch-slurm
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates- ${BINDIR}/update-sort-bed-migrate-candidates
+	-cp ${APPDIR}/bedops/bin/debug.bedops- ${BINDIR}/debug.bedops
+	-cp ${APPDIR}/closestfeats/bin/debug.closest-features- ${BINDIR}/debug.closest-features
+	-cp ${APPDIR}/bedmap/bin/debug.bedmap- ${BINDIR}/debug.bedmap
+	-cp ${APPDIR}/bedextract/bin/debug.bedextract- ${BINDIR}/debug.bedextract
+	-cp ${APPDIR}/starch/bin/debug.starch ${BINDIR}/debug.starch
+	-cp ${APPDIR}/starch/bin/debug.unstarch ${BINDIR}/debug.unstarch
+	-cp ${APPDIR}/starch/bin/debug.starchcat ${BINDIR}/debug.starchcat
+	-cp ${APPDIR}/starch/bin/debug.starchstrip ${BINDIR}/debug.starchstrip
+	-cp ${APPDIR}/conversion/bin/debug.convert2bed ${BINDIR}/debug.convert2bed
 
 install_gprof: prep_c install_conversion_scripts install_starch_scripts
-	-cp ${APPDIR}/sort-bed/bin/gprof.sort-bed-$(DEFAULT_BINARY_TYPE) ${BINDIR}/gprof.sort-bed
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm-$(DEFAULT_BINARY_TYPE) ${BINDIR}/update-sort-bed-slurm
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm-$(DEFAULT_BINARY_TYPE) ${BINDIR}/update-sort-bed-starch-slurm
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates-$(DEFAULT_BINARY_TYPE) ${BINDIR}/update-sort-bed-migrate-candidates
-	-cp ${APPDIR}/bedops/bin/gprof.bedops-$(DEFAULT_BINARY_TYPE) ${BINDIR}/gprof.bedops
-	-cp ${APPDIR}/closestfeats/bin/gprof.closest-features-$(DEFAULT_BINARY_TYPE) ${BINDIR}/gprof.closest-features
-	-cp ${APPDIR}/bedmap/bin/gprof.bedmap-$(DEFAULT_BINARY_TYPE) ${BINDIR}/gprof.bedmap
-	-cp ${APPDIR}/bedextract/bin/gprof.bedextract-$(DEFAULT_BINARY_TYPE) ${BINDIR}/gprof.bedextract
-	-cp ${APPDIR}/starch/bin/gprof.starch-$(DEFAULT_BINARY_TYPE) ${BINDIR}/gprof.starch
-	-cp ${APPDIR}/starch/bin/gprof.unstarch-$(DEFAULT_BINARY_TYPE) ${BINDIR}/gprof.unstarch
-	-cp ${APPDIR}/starch/bin/gprof.starchcat-$(DEFAULT_BINARY_TYPE) ${BINDIR}/gprof.starchcat
-	-cp ${APPDIR}/starch/bin/gprof.starchstrip-$(DEFAULT_BINARY_TYPE) ${BINDIR}/gprof.starchstrip
-	-cp ${APPDIR}/conversion/bin/gprof.convert2bed-$(DEFAULT_BINARY_TYPE) ${BINDIR}/gprof.convert2bed
+	-cp ${APPDIR}/sort-bed/bin/gprof.sort-bed- ${BINDIR}/gprof.sort-bed
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm- ${BINDIR}/update-sort-bed-slurm
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm- ${BINDIR}/update-sort-bed-starch-slurm
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates- ${BINDIR}/update-sort-bed-migrate-candidates
+	-cp ${APPDIR}/bedops/bin/gprof.bedops- ${BINDIR}/gprof.bedops
+	-cp ${APPDIR}/closestfeats/bin/gprof.closest-features- ${BINDIR}/gprof.closest-features
+	-cp ${APPDIR}/bedmap/bin/gprof.bedmap- ${BINDIR}/gprof.bedmap
+	-cp ${APPDIR}/bedextract/bin/gprof.bedextract- ${BINDIR}/gprof.bedextract
+	-cp ${APPDIR}/starch/bin/gprof.starch ${BINDIR}/gprof.starch
+	-cp ${APPDIR}/starch/bin/gprof.unstarch ${BINDIR}/gprof.unstarch
+	-cp ${APPDIR}/starch/bin/gprof.starchcat ${BINDIR}/gprof.starchcat
+	-cp ${APPDIR}/starch/bin/gprof.starchstrip ${BINDIR}/gprof.starchstrip
+	-cp ${APPDIR}/conversion/bin/gprof.convert2bed ${BINDIR}/gprof.convert2bed
 
 install_starch_scripts: prep_c
-	-cp ${APPDIR}/starch/bin/starchcluster_sge-$(DEFAULT_BINARY_TYPE) ${BINDIR}/starchcluster_sge
-	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel-$(DEFAULT_BINARY_TYPE) ${BINDIR}/starchcluster_gnuParallel
-	-cp ${APPDIR}/starch/bin/starchcluster_slurm-$(DEFAULT_BINARY_TYPE) ${BINDIR}/starchcluster_slurm
-	-cp ${APPDIR}/starch/bin/starch-diff-$(DEFAULT_BINARY_TYPE) ${BINDIR}/starch-diff
+	-cp ${APPDIR}/starch/bin/starchcluster_sge ${BINDIR}/starchcluster_sge
+	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel ${BINDIR}/starchcluster_gnuParallel
+	-cp ${APPDIR}/starch/bin/starchcluster_slurm ${BINDIR}/starchcluster_slurm
+	-cp ${APPDIR}/starch/bin/starch-diff ${BINDIR}/starch-diff
 
 install_starch_scripts_with_suffix: prep_c
 	-cp ${APPDIR}/starch/bin/starchcluster_sge-$(TYPICAL) ${BINDIR}/starchcluster_sge-$(TYPICAL)
@@ -200,50 +191,50 @@ $(WRAPPERS): prep_c
 	cp $@ $(patsubst %,$(BINDIR)/%-$(TYPICAL), $(notdir $@))
 	cp $@ $(patsubst %,$(BINDIR)/%-$(MEGA), $(notdir $@))
 
-install_osx_packaging_bins: prep_c
+install_osx_packaging_bins: prep_c all
 	mkdir -p ${OSXPKGDIR}
-	-cp ${APPDIR}/sort-bed/bin/sort-bed ${OSXPKGDIR}/
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm ${OSXPKGDIR}/
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm ${OSXPKGDIR}/
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates ${OSXPKGDIR}/
-	-cp ${APPDIR}/bedops/bin/bedops ${OSXPKGDIR}/
-	-cp ${APPDIR}/closestfeats/bin/closest-features ${OSXPKGDIR}/
-	-cp ${APPDIR}/bedmap/bin/bedmap ${OSXPKGDIR}/
-	-cp ${APPDIR}/bedextract/bin/bedextract ${OSXPKGDIR}/
-	-cp ${APPDIR}/starch/bin/starch ${OSXPKGDIR}/
-	-cp ${APPDIR}/starch/bin/unstarch ${OSXPKGDIR}/
-	-cp ${APPDIR}/starch/bin/starchcat ${OSXPKGDIR}/
-	-cp ${APPDIR}/starch/bin/starchstrip ${OSXPKGDIR}/
-	-cp ${APPDIR}/starch/bin/starchcluster_sge ${OSXPKGDIR}/starchcluster_sge
-	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel ${OSXPKGDIR}/starchcluster_gnuParallel
-	-cp ${APPDIR}/starch/bin/starchcluster_slurm ${OSXPKGDIR}/starchcluster_slurm
-	-cp ${APPDIR}/starch/bin/starch-diff ${OSXPKGDIR}/starch-diff
-	-cp ${APPDIR}/conversion/bin/convert2bed ${OSXPKGDIR}/
-	-cp ${APPDIR}/conversion/src/wrappers/bam2bed ${OSXPKGDIR}/bam2bed
-	-cp ${APPDIR}/conversion/src/wrappers/gff2bed ${OSXPKGDIR}/gff2bed
-	-cp ${APPDIR}/conversion/src/wrappers/gtf2bed ${OSXPKGDIR}/gtf2bed
-	-cp ${APPDIR}/conversion/src/wrappers/gvf2bed ${OSXPKGDIR}/gvf2bed
-	-cp ${APPDIR}/conversion/src/wrappers/psl2bed ${OSXPKGDIR}/psl2bed
-	-cp ${APPDIR}/conversion/src/wrappers/rmsk2bed ${OSXPKGDIR}/rmsk2bed
-	-cp ${APPDIR}/conversion/src/wrappers/sam2bed ${OSXPKGDIR}/sam2bed
-	-cp ${APPDIR}/conversion/src/wrappers/vcf2bed ${OSXPKGDIR}/vcf2bed
-	-cp ${APPDIR}/conversion/src/wrappers/wig2bed ${OSXPKGDIR}/wig2bed
-	-cp ${APPDIR}/conversion/src/wrappers/bam2starch ${OSXPKGDIR}/bam2starch
-	-cp ${APPDIR}/conversion/src/wrappers/gff2starch ${OSXPKGDIR}/gff2starch
-	-cp ${APPDIR}/conversion/src/wrappers/gtf2starch ${OSXPKGDIR}/gtf2starch
-	-cp ${APPDIR}/conversion/src/wrappers/gvf2starch ${OSXPKGDIR}/gvf2starch
-	-cp ${APPDIR}/conversion/src/wrappers/psl2starch ${OSXPKGDIR}/psl2starch
-	-cp ${APPDIR}/conversion/src/wrappers/rmsk2starch ${OSXPKGDIR}/rmsk2starch
-	-cp ${APPDIR}/conversion/src/wrappers/sam2starch ${OSXPKGDIR}/sam2starch
-	-cp ${APPDIR}/conversion/src/wrappers/vcf2starch ${OSXPKGDIR}/vcf2starch
-	-cp ${APPDIR}/conversion/src/wrappers/wig2starch ${OSXPKGDIR}/wig2starch
-	-cp ${APPDIR}/conversion/src/wrappers/bam2bed_sge ${OSXPKGDIR}/bam2bed_sge
-	-cp ${APPDIR}/conversion/src/wrappers/bam2bed_slurm ${OSXPKGDIR}/bam2bed_slurm
-	-cp ${APPDIR}/conversion/src/wrappers/bam2bed_gnuParallel ${OSXPKGDIR}/bam2bed_gnuParallel
-	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_sge ${OSXPKGDIR}/bam2starch_sge
-	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_slurm ${OSXPKGDIR}/bam2starch_slurm
-	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_gnuParallel ${OSXPKGDIR}/bam2starch_gnuParallel
-	-cp ${OTHERDIR}/switch-BEDOPS-binary-type ${OSXPKGDIR}/switch-BEDOPS-binary-type
+	-cp ${APPDIR}/sort-bed/bin/sort-bed* ${OSXPKGDIR}
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm* ${OSXPKGDIR}
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm* ${OSXPKGDIR}
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates* ${OSXPKGDIR}
+	-cp ${APPDIR}/bedops/bin/bedops* ${OSXPKGDIR}
+	-cp ${APPDIR}/closestfeats/bin/closest-features* ${OSXPKGDIR}
+	-cp ${APPDIR}/bedmap/bin/bedmap* ${OSXPKGDIR}
+	-cp ${APPDIR}/bedextract/bin/bedextract* ${OSXPKGDIR}
+	-cp ${APPDIR}/starch/bin/starch* ${OSXPKGDIR}
+	-cp ${APPDIR}/starch/bin/unstarch* ${OSXPKGDIR}
+	-cp ${APPDIR}/starch/bin/starchcat* ${OSXPKGDIR}
+	-cp ${APPDIR}/starch/bin/starchstrip* ${OSXPKGDIR}
+	-cp ${APPDIR}/starch/bin/starchcluster_sge* ${OSXPKGDIR}
+	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel* ${OSXPKGDIR}
+	-cp ${APPDIR}/starch/bin/starchcluster_slurm* ${OSXPKGDIR}
+	-cp ${APPDIR}/starch/bin/starch-diff* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/bin/convert2bed* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/bam2bed* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/gff2bed* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/gtf2bed* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/gvf2bed* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/psl2bed* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/rmsk2bed* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/sam2bed* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/vcf2bed* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/wig2bed* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/bam2starch* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/gff2starch* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/gtf2starch* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/gvf2starch* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/psl2starch* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/rmsk2starch* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/sam2starch* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/vcf2starch* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/wig2starch* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/bam2bed_sge* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/bam2bed_slurm* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/bam2bed_gnuParallel* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_sge* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_slurm* ${OSXPKGDIR}
+	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_gnuParallel* ${OSXPKGDIR}
+	-cp ${OTHERDIR}/switch-BEDOPS-binary-type ${OSXPKGDIR}
 	mkdir -p ${OSXLIBDIR}
 
 update_bedops_version:

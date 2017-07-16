@@ -39,8 +39,17 @@ using namespace std;
 static const char *name = "sort-bed";
 static const char *authors = "Scott Kuehn";
 static const char *usage = "\nUSAGE: sort-bed [--help] [--version] [--check-sort] [--max-mem <val>] [--tmpdir <path>] <file1.bed> <file2.bed> <...>\n        Sort BED file(s).\n        May use '-' to indicate stdin.\n        Results are sent to stdout.\n\n        <val> for --max-mem may be 8G, 8000M, or 8000000000 to specify 8 GB of memory.\n        --tmpdir is useful only with --max-mem.\n";
+#if BEDOPS_BINARY_TYPE == 0
+static const char *application_type = "typical";
+#else
+#if BEDOPS_BINARY_TYPE == 1
+static const char *application_type = "megarow";
+#else
+static const char *application_type = "typical";
+#endif
+#endif
 
-static void 
+static void
 getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, int *justCheck, double* maxMem, char **tmpPath)
 {
     int numFiles, i, j, stdincnt = 0, changeMem = 0, units = 0, changeTDir = 0;
@@ -51,14 +60,14 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, i
     numFiles = argc - 1;
     if(numFiles < 1)
         {
-            fprintf(stderr, "%s\n  citation: %s\n  version:  %s\n  authors:  %s\n%s\n",
-                    name, BEDOPS::citation(), BEDOPS::revision(), authors, usage);
+            fprintf(stderr, "%s\n  citation: %s\n  version:  %s (%s)\n  authors:  %s\n%s\n",
+                    name, BEDOPS::citation(), BEDOPS::revision(), application_type, authors, usage);
             exit(EXIT_FAILURE);
         }
     else if (numFiles > MAX_INFILES)
         {
-            fprintf(stderr, "%s\n  citation: %s\n  version:  %s\n  authors:  %s\n%s\nToo Many Files\n",
-                    name, BEDOPS::citation(), BEDOPS::revision(), authors, usage);
+            fprintf(stderr, "%s\n  citation: %s\n  version:  %s (%s)\n  authors:  %s\n%s\nToo Many Files\n",
+                    name, BEDOPS::citation(), BEDOPS::revision(), application_type, authors, usage);
             exit(EXIT_FAILURE);
         }
     else
@@ -68,14 +77,14 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, i
                     /* Check for --help */
                     if(strcmp(argv[i], "--help") == 0) 
                         {
-                            fprintf(stdout, "%s\n  citation: %s\n  version:  %s\n  authors:  %s\n%s\n",
-                                    name, BEDOPS::citation(), BEDOPS::revision(), authors, usage);
+                            fprintf(stdout, "%s\n  citation: %s\n  version:  %s (%s)\n  authors:  %s\n%s\n",
+                                    name, BEDOPS::citation(), BEDOPS::revision(), application_type, authors, usage);
                             exit(EXIT_SUCCESS);
                         }
                     else if (strcmp(argv[i], "--version") == 0)
                         {
-                            fprintf(stdout, "%s\n  citation: %s\n  version:  %s\n  authors:  %s\n",
-                                    name, BEDOPS::citation(), BEDOPS::revision(), authors);
+                            fprintf(stdout, "%s\n  citation: %s\n  version:  %s (%s)\n  authors:  %s\n",
+                                    name, BEDOPS::citation(), BEDOPS::revision(), application_type, authors);
                             exit(EXIT_SUCCESS);
                         }
                     /* Check for max memory before merge-sort */
@@ -183,8 +192,8 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, i
         }
     else if(numFiles < 1) /* can be different from before if --max-mem was used, for example*/
         {
-            fprintf(stderr, "%s\n  citation: %s\n  version:  %s\n  authors:  %s\n%s\n%s\n",
-                    name, BEDOPS::citation(), BEDOPS::revision(), authors, usage, "No file given.");
+            fprintf(stderr, "%s\n  citation: %s\n  version:  %s (%s)\n  authors:  %s\n%s\n%s\n",
+                    name, BEDOPS::citation(), BEDOPS::revision(), application_type, authors, usage, "No file given.");
             exit(EXIT_FAILURE);
         }
     return;
@@ -222,7 +231,7 @@ main(int argc, char **argv)
                 {
                     tmpPath = getenv("TMPDIR");
                 }
-        
+
             // sort
             rval = processData(inFiles, numInFiles, maxMemory, tmpPath);
 

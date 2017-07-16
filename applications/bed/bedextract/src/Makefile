@@ -27,11 +27,17 @@ LIBRARIES               = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 BLDFLAGS                = -Wall -pedantic -O3 -std=c++11
 SFLAGS                  = -static ${MEGAFLAGS}
 
+ifeq ($(BINARY_TYPE),)
+	TFLAG = -DBEDOPS_BINARY_TYPE=0
+else
+	TFLAG = -DBEDOPS_BINARY_TYPE=$(BINARY_TYPE_NUM)
+endif
+
 dependency_names        = NaN starchConstants starchFileHelpers starchHelpers starchMetadataHelpers unstarchHelpers starchSha1Digest starchBase64Coding
 dependencies            = $(addprefix $(OBJDIR)/, $(addsuffix .o, $(dependency_names)))
-FLAGS                   = $(SFLAGS) -s $(BLDFLAGS) $(dependencies) ${LIBLOCATION} ${INCLUDES}
-DFLAGS                  = $(SFLAGS) -g -O0 -std=c++11 -Wall -fno-inline -pedantic $(dependencies) ${LIBLOCATION} ${INCLUDES}
-GPROFFLAGS              = $(SFLAGS) -O -std=c++11 -Wall -pedantic -pg $(dependencies) ${LIBLOCATION} ${INCLUDES}
+FLAGS                   = $(SFLAGS) -s $(TFLAG) $(BLDFLAGS) $(dependencies) ${LIBLOCATION} ${INCLUDES}
+DFLAGS                  = $(SFLAGS) -g -O0 -std=c++11 -Wall -fno-inline -pedantic $(dependencies) $(TFLAG) ${LIBLOCATION} ${INCLUDES}
+GPROFFLAGS              = $(SFLAGS) -O -std=c++11 -Wall -pedantic -pg $(dependencies) $(TFLAG) ${LIBLOCATION} ${INCLUDES}
 
 SOURCE1                 = ExtractRows.cpp
 BINDIR                  = ../bin
@@ -64,6 +70,4 @@ $(OBJDIR)/%.o : $(LIB3)/%.c
 
 clean:
 	rm -rf $(OBJDIR)
-	rm -f $(BINDIR)/$(PROG)
-	rm -f $(BINDIR)/*.$(PROG)
 	rm -rf $(BINDIR)

@@ -44,12 +44,12 @@ namespace {
 #endif
 
 int
-main (int argc, char** argv)
+main(int argc, char** argv)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- starchstrip main() - enter ---\n");
 #endif
-    
+
     setlocale(LC_ALL, "POSIX");
     STARCHSTRIP_init_globals();
     STARCHSTRIP_init_command_line_options(argc, argv);
@@ -97,11 +97,11 @@ STARCHSTRIP_write_updated_metadata(FILE* os)
     }
 
     /* archive version and creation timestamp are NULL, in order to write default values */
-    md_json_buffer = STARCH_generateJSONMetadata(starchstrip_globals.output_records, 
-                                                 starchstrip_globals.archive_type, 
-                                                 starchstrip_globals.archive_version, 
-                                                 NULL, 
-                                                 starchstrip_globals.archive_note, 
+    md_json_buffer = STARCH_generateJSONMetadata(starchstrip_globals.output_records,
+                                                 starchstrip_globals.archive_type,
+                                                 starchstrip_globals.archive_version,
+                                                 NULL,
+                                                 starchstrip_globals.archive_note,
                                                  starchstrip_globals.archive_header_flag);
     if (!md_json_buffer) {
         fprintf(stderr, "Error: Could not write JSON-formatted metadata to buffer\n");
@@ -112,18 +112,18 @@ STARCHSTRIP_write_updated_metadata(FILE* os)
 
 #ifdef __cplusplus
     STARCH_SHA1_All(reinterpret_cast<const unsigned char *>( md_json_buffer ), strlen(md_json_buffer), sha1_digest);
-    STARCH_encodeBase64(&base64_encoded_sha1_digest, 
-            static_cast<const size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
-            reinterpret_cast<const unsigned char *>( sha1_digest ), 
+    STARCH_encodeBase64(&base64_encoded_sha1_digest,
+            static_cast<const size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ),
+            reinterpret_cast<const unsigned char *>( sha1_digest ),
             static_cast<const size_t>( STARCH2_MD_FOOTER_SHA1_LENGTH ));
-    sprintf(footer_cumulative_record_size_buffer, "%020llu", static_cast<unsigned long long>( starchstrip_globals.cumulative_output_size )); 
+    sprintf(footer_cumulative_record_size_buffer, "%020llu", static_cast<unsigned long long>( starchstrip_globals.cumulative_output_size ));
 #else
     STARCH_SHA1_All((const unsigned char *) md_json_buffer, strlen(md_json_buffer), sha1_digest);
-    STARCH_encodeBase64(&base64_encoded_sha1_digest, 
-            (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
-            (const unsigned char *) sha1_digest, 
+    STARCH_encodeBase64(&base64_encoded_sha1_digest,
+            (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH,
+            (const unsigned char *) sha1_digest,
             (const size_t) STARCH2_MD_FOOTER_SHA1_LENGTH);
-    sprintf(footer_cumulative_record_size_buffer, "%020llu", (unsigned long long) starchstrip_globals.cumulative_output_size); 
+    sprintf(footer_cumulative_record_size_buffer, "%020llu", (unsigned long long) starchstrip_globals.cumulative_output_size);
 #endif
 
     memcpy(footer_buffer, footer_cumulative_record_size_buffer, strlen(footer_cumulative_record_size_buffer));
@@ -215,11 +215,11 @@ STARCHSTRIP_write_chromosome_streams(FILE* os)
 
 #ifdef __cplusplus
                 if (records_added == 0) {
-                    output_records_tail = STARCH_createMetadata( const_cast<char *>( iter->chromosome ), 
-                                                                 iter->filename, 
-                                                                 iter->size, 
-                                                                 iter->lineCount, 
-                                                                 iter->totalNonUniqueBases, 
+                    output_records_tail = STARCH_createMetadata( const_cast<char *>( iter->chromosome ),
+                                                                 iter->filename,
+                                                                 iter->size,
+                                                                 iter->lineCount,
+                                                                 iter->totalNonUniqueBases,
                                                                  iter->totalUniqueBases,
                                                                  iter->duplicateElementExists,
                                                                  iter->nestedElementExists,
@@ -228,12 +228,12 @@ STARCHSTRIP_write_chromosome_streams(FILE* os)
                     starchstrip_globals.output_records = output_records_tail;
                 }
                 else {
-                    output_records_tail = STARCH_addMetadata( output_records_tail, 
-                                                              const_cast<char *>( iter->chromosome ), 
-                                                              iter->filename, 
-                                                              iter->size, 
-                                                              iter->lineCount, 
-                                                              iter->totalNonUniqueBases, 
+                    output_records_tail = STARCH_addMetadata( output_records_tail,
+                                                              const_cast<char *>( iter->chromosome ),
+                                                              iter->filename,
+                                                              iter->size,
+                                                              iter->lineCount,
+                                                              iter->totalNonUniqueBases,
                                                               iter->totalUniqueBases,
                                                               iter->duplicateElementExists,
                                                               iter->nestedElementExists,
@@ -242,11 +242,11 @@ STARCHSTRIP_write_chromosome_streams(FILE* os)
                 }
 #else
                 if (records_added == 0) {
-                    output_records_tail = STARCH_createMetadata( (char *) iter->chromosome, 
-                                                                 iter->filename, 
-                                                                 iter->size, 
-                                                                 iter->lineCount, 
-                                                                 iter->totalNonUniqueBases, 
+                    output_records_tail = STARCH_createMetadata( (char *) iter->chromosome,
+                                                                 iter->filename,
+                                                                 iter->size,
+                                                                 iter->lineCount,
+                                                                 iter->totalNonUniqueBases,
                                                                  iter->totalUniqueBases,
                                                                  iter->duplicateElementExists,
                                                                  iter->nestedElementExists,
@@ -255,12 +255,12 @@ STARCHSTRIP_write_chromosome_streams(FILE* os)
                     starchstrip_globals.output_records = output_records_tail;
                 }
                 else {
-                    output_records_tail = STARCH_addMetadata( output_records_tail, 
-                                                             (char *) iter->chromosome, 
-                                                             iter->filename, 
-                                                             iter->size, 
-                                                             iter->lineCount, 
-                                                             iter->totalNonUniqueBases, 
+                    output_records_tail = STARCH_addMetadata( output_records_tail,
+                                                             (char *) iter->chromosome,
+                                                             iter->filename,
+                                                             iter->size,
+                                                             iter->lineCount,
+                                                             iter->totalNonUniqueBases,
                                                              iter->totalUniqueBases,
                                                              iter->duplicateElementExists,
                                                              iter->nestedElementExists,
@@ -478,7 +478,6 @@ STARCHSTRIP_check_chromosome_stream_names()
             }
         }
     }
-    
 
 #ifdef DEBUG
     fprintf(stderr, "--- STARCHSTRIP_check_chromosome_stream_names() - exit  ---\n");
@@ -492,7 +491,7 @@ STARCHSTRIP_check_archive_version()
     fprintf(stderr, "--- STARCHSTRIP_check_archive_version() - enter ---\n");
 #endif
 
-    if ((starchstrip_globals.archive_version->major < starchstrip_archive_version_major_minimum) 
+    if ((starchstrip_globals.archive_version->major < starchstrip_archive_version_major_minimum)
         ||
         ((starchstrip_globals.archive_version->major == starchstrip_archive_version_major_minimum) && (starchstrip_globals.archive_version->minor < starchstrip_archive_version_minor_minimum))) {
         fprintf(stderr, "Error: Archive must be v2.1 or greater -- use 'starchcat' to update archive, if needed\n");
@@ -511,21 +510,21 @@ STARCHSTRIP_init_archive_metadata()
     fprintf(stderr, "--- STARCHSTRIP_init_archive_metadata() - enter ---\n");
 #endif
 
-    if (STARCH_readJSONMetadata( &starchstrip_globals.archive_metadata_json, 
-                                 &starchstrip_globals.archive_fp, 
+    if (STARCH_readJSONMetadata( &starchstrip_globals.archive_metadata_json,
+                                 &starchstrip_globals.archive_fp,
 #ifdef __cplusplus
-                                 reinterpret_cast<const char *>( starchstrip_globals.archive_fn ), 
+                                 reinterpret_cast<const char *>( starchstrip_globals.archive_fn ),
 #else
-                                 (const char *) starchstrip_globals.archive_fn, 
+                                 (const char *) starchstrip_globals.archive_fn,
 #endif
-                                 &starchstrip_globals.archive_records, 
-                                 &starchstrip_globals.archive_type, 
-                                 &starchstrip_globals.archive_version, 
-                                 &starchstrip_globals.archive_timestamp, 
-                                 &starchstrip_globals.archive_note, 
-                                 &starchstrip_globals.archive_metadata_offset, 
-                                 &starchstrip_globals.archive_header_flag, 
-                                 starchstrip_globals.archive_suppress_error_msgs, 
+                                 &starchstrip_globals.archive_records,
+                                 &starchstrip_globals.archive_type,
+                                 &starchstrip_globals.archive_version,
+                                 &starchstrip_globals.archive_timestamp,
+                                 &starchstrip_globals.archive_note,
+                                 &starchstrip_globals.archive_metadata_offset,
+                                 &starchstrip_globals.archive_header_flag,
+                                 starchstrip_globals.archive_suppress_error_msgs,
                                  starchstrip_globals.archive_preserve_json_ref) != STARCH_EXIT_SUCCESS) {
         fprintf(stderr, "Error: Could not read metadata from archive -- use 'unstarch --is-starch' to test if archive is valid\n");
         exit(EINVAL); /* Invalid argument (POSIX.1) */
@@ -651,7 +650,7 @@ STARCHSTRIP_init_chromosomes_list()
 #endif
 }
 
-static int 
+static int
 STARCHSTRIP_compare_chromosome_names(const void* a, const void* b)
 {
 #ifdef __cplusplus
@@ -710,7 +709,7 @@ STARCHSTRIP_delete_globals()
     free(starchstrip_globals.chromosomes);
     starchstrip_globals.chromosomes = NULL;
     starchstrip_globals.chromosomes_num = 0;
-    
+
     free(starchstrip_globals.chromosomes_str);
     starchstrip_globals.chromosomes_str = NULL;
 
@@ -724,29 +723,29 @@ STARCHSTRIP_delete_globals()
 
     free(starchstrip_globals.archive_fn);
     starchstrip_globals.archive_fn = NULL;
-    if (starchstrip_globals.archive_metadata_json) { 
+    if (starchstrip_globals.archive_metadata_json) {
         json_decref(starchstrip_globals.archive_metadata_json);
-        starchstrip_globals.archive_metadata_json = NULL; 
+        starchstrip_globals.archive_metadata_json = NULL;
     }
     if (starchstrip_globals.archive_fp) {
         fclose(starchstrip_globals.archive_fp);
-        starchstrip_globals.archive_fp = NULL; 
+        starchstrip_globals.archive_fp = NULL;
     }
     if (starchstrip_globals.archive_records) {
         STARCH_freeMetadata(&starchstrip_globals.archive_records);
-        starchstrip_globals.archive_records = NULL; 
+        starchstrip_globals.archive_records = NULL;
     }
-    if (starchstrip_globals.archive_version) { 
+    if (starchstrip_globals.archive_version) {
         free(starchstrip_globals.archive_version);
-        starchstrip_globals.archive_version = NULL; 
+        starchstrip_globals.archive_version = NULL;
     }
     if (starchstrip_globals.archive_timestamp) {
         free(starchstrip_globals.archive_timestamp);
         starchstrip_globals.archive_timestamp = NULL;
-    } 
+    }
     if (starchstrip_globals.archive_note) {
-        free(starchstrip_globals.archive_note); 
-        starchstrip_globals.archive_note = NULL; 
+        free(starchstrip_globals.archive_note);
+        starchstrip_globals.archive_note = NULL;
     }
 
     STARCH_freeMetadata(&starchstrip_globals.output_records);
@@ -875,13 +874,14 @@ STARCHSTRIP_print_version(FILE* os)
 #endif
 
     fprintf(os,
-            "%s\n"              \
-            "  citation: %s\n"  \
-            "  version:  %s\n"  \
+            "%s\n"                   \
+            "  citation: %s\n"       \
+            "  version:  %s (%s)\n"  \
             "  authors:  %s\n",
             name,
             BEDOPS::citation(),
             BEDOPS::revision(),
+            application_type,
             authors);
 
 #ifdef DEBUG
@@ -897,14 +897,15 @@ STARCHSTRIP_print_usage(FILE* os)
 #endif
 
     fprintf(os,
-            "%s\n"             \
-            "  citation: %s\n" \
-            "  version:  %s\n" \
-            "  authors:  %s\n" \
+            "%s\n"                  \
+            "  citation: %s\n"      \
+            "  version:  %s (%s)\n" \
+            "  authors:  %s\n"      \
             "%s\n",
             name,
             BEDOPS::citation(),
             BEDOPS::revision(),
+            application_type,
             authors,
             usage);
 
@@ -913,7 +914,7 @@ STARCHSTRIP_print_usage(FILE* os)
 #endif
 }
 
-static Boolean 
+static Boolean
 STARCHSTRIP_file_exists(char* fn)
 {
   struct stat buf;

@@ -109,6 +109,16 @@ namespace BedOperations {
   const std::string version = BEDOPS::revision();
   const std::string authors = "Shane Neph & Scott Kuehn";
 
+#if BEDOPS_BINARY_TYPE == 0
+  const std::string application_type = "typical";
+#else
+#if BEDOPS_BINARY_TYPE == 1
+  const std::string application_type = "megarow";
+#else
+  const std::string application_type = "typical";
+#endif
+#endif
+
   void doWork(const Input& input);
 } // namespace BedOperations
 
@@ -126,7 +136,7 @@ int main(int argc, char** argv) {
   } catch(BedOperations::HelpException& h) {
     std::cout << BedOperations::prognm << std::endl;
     std::cout << "  citation: " + BedOperations::citation << std::endl;
-    std::cout << "  version:  " + BedOperations::version << std::endl;
+    std::cout << "  version:  " + BedOperations::version + " (" + BedOperations::application_type + ")" << std::endl;
     std::cout << "  authors:  " + BedOperations::authors << std::endl;
     std::cout << BedOperations::Usage() << std::endl;
     return(EXIT_SUCCESS);
@@ -134,7 +144,7 @@ int main(int argc, char** argv) {
     try {
       std::cout << BedOperations::prognm << std::endl;
       std::cout << "  citation: " + BedOperations::citation << std::endl;
-      std::cout << "  version:  " + BedOperations::version << std::endl;
+      std::cout << "  version:  " + BedOperations::version + " (" + BedOperations::application_type + ")" << std::endl;
       std::cout << "  authors:  " + BedOperations::authors << std::endl;
       std::cout << BedOperations::DetailedUsage(e.m_) << std::endl;
     } catch(const std::exception& s) {
@@ -144,13 +154,13 @@ int main(int argc, char** argv) {
   } catch(BedOperations::Version& v) {
     std::cout << BedOperations::prognm << std::endl;
     std::cout << "  citation: " + BedOperations::citation << std::endl;
-    std::cout << "  version:  " + BedOperations::version << std::endl;
+    std::cout << "  version:  " + BedOperations::version + " (" + BedOperations::application_type + ")" << std::endl;
     std::cout << "  authors:  " + BedOperations::authors << std::endl;
     return(EXIT_SUCCESS);
   } catch(BedOperations::NoInput& ni) {
     std::cout << BedOperations::prognm << std::endl;
     std::cout << "  citation: " + BedOperations::citation << std::endl;
-    std::cout << "  version:  " + BedOperations::version << std::endl;
+    std::cout << "  version:  " + BedOperations::version + " (" + BedOperations::application_type + ")" << std::endl;
     std::cout << "  authors:  " + BedOperations::authors << std::endl;
     std::cerr << BedOperations::Usage() << std::endl;
   } catch(std::string& s) {

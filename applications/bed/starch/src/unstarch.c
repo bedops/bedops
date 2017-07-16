@@ -54,8 +54,8 @@ namespace {
 } //  unnamed
 #endif
 
-int 
-main(int argc, char **argv) 
+int
+main(int argc, char **argv)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- unstarch main() enter ---\n");
@@ -93,7 +93,7 @@ main(int argc, char **argv)
 
     setlocale(LC_ALL, "POSIX");
     if (UNSTARCH_parseCommandLineInputs( argc, argv, &whichChromosome, &inFile, &option, &parseValue ) != 0) {
-        switch (parseValue) {            
+        switch (parseValue) {
             case 0: {
                 resultValue = EXIT_FAILURE;
                 break;
@@ -209,15 +209,15 @@ main(int argc, char **argv)
         }
     }
 
-    if ((resultValue == 0) || 
-        (resultValue == UNSTARCH_ARCHIVE_VERSION_ERROR) || 
+    if ((resultValue == 0) ||
+        (resultValue == UNSTARCH_ARCHIVE_VERSION_ERROR) ||
         (resultValue == UNSTARCH_ARCHIVE_CREATION_TIMESTAMP_ERROR) ||
-        (resultValue == UNSTARCH_ELEMENT_COUNT_ALL_ERROR) || 
-        (resultValue == UNSTARCH_ELEMENT_COUNT_CHR_ERROR) || 
-        (resultValue == UNSTARCH_BASES_COUNT_ALL_ERROR) || 
-        (resultValue == UNSTARCH_BASES_COUNT_CHR_ERROR) || 
-        (resultValue == UNSTARCH_BASES_UNIQUE_COUNT_ALL_ERROR) || 
-        (resultValue == UNSTARCH_BASES_UNIQUE_COUNT_CHR_ERROR) || 
+        (resultValue == UNSTARCH_ELEMENT_COUNT_ALL_ERROR) ||
+        (resultValue == UNSTARCH_ELEMENT_COUNT_CHR_ERROR) ||
+        (resultValue == UNSTARCH_BASES_COUNT_ALL_ERROR) ||
+        (resultValue == UNSTARCH_BASES_COUNT_CHR_ERROR) ||
+        (resultValue == UNSTARCH_BASES_UNIQUE_COUNT_ALL_ERROR) ||
+        (resultValue == UNSTARCH_BASES_UNIQUE_COUNT_CHR_ERROR) ||
         (resultValue == UNSTARCH_LIST_CHROMOSOMES_ERROR) ||
         (resultValue == UNSTARCH_ARCHIVE_NOTE_ERROR) ||
         (resultValue == UNSTARCH_ARCHIVE_COMPRESSION_TYPE_ERROR) ||
@@ -232,21 +232,21 @@ main(int argc, char **argv)
         (resultValue == UNSTARCH_ELEMENT_MAX_STRING_LENGTH_CHR_ERROR) ||
         (resultValue == UNSTARCH_ELEMENT_MAX_STRING_LENGTH_ALL_ERROR))
     {
-        if (STARCH_readJSONMetadata( &metadataJSON, 
-                     &inFilePtr, 
+        if (STARCH_readJSONMetadata( &metadataJSON,
+                     &inFilePtr,
 #ifdef __cplusplus
-                     reinterpret_cast<const char *>( inFile ), 
+                     reinterpret_cast<const char *>( inFile ),
 #else
-                     (const char *) inFile, 
+                     (const char *) inFile,
 #endif
-                     &records, 
-                     &type, 
-                     &archiveVersion, 
-                     &archiveTimestamp, 
-                     &note, 
-                     &metadataOffset, 
-                     &headerFlag, 
-                     suppressErrorMsgs, 
+                     &records,
+                     &type,
+                     &archiveVersion,
+                     &archiveTimestamp,
+                     &note,
+                     &metadataOffset,
+                     &headerFlag,
+                     suppressErrorMsgs,
                      preserveJSONRef) != STARCH_EXIT_SUCCESS) {
             fprintf(stderr, "ERROR: Could not read metadata\n");
             resultValue = EXIT_FAILURE;
@@ -255,21 +255,21 @@ main(int argc, char **argv)
     else if (resultValue == UNSTARCH_IS_STARCH_ARCHIVE_ERROR)
     {
         /* we suppress warnings from STARCH_readJSONMetadata() */
-        if (STARCH_readJSONMetadata( &metadataJSON, 
-                     &inFilePtr, 
+        if (STARCH_readJSONMetadata( &metadataJSON,
+                     &inFilePtr,
 #ifdef __cplusplus
-                     reinterpret_cast<const char *>( inFile ), 
+                     reinterpret_cast<const char *>( inFile ),
 #else
-                     (const char *) inFile, 
+                     (const char *) inFile,
 #endif
-                     &records, 
-                     &type, 
-                     &archiveVersion, 
-                     &archiveTimestamp, 
-                     &note, 
-                     &metadataOffset, 
-                     &headerFlag, 
-                     kStarchTrue, 
+                     &records,
+                     &type,
+                     &archiveVersion,
+                     &archiveTimestamp,
+                     &note,
+                     &metadataOffset,
+                     &headerFlag,
+                     kStarchTrue,
                      kStarchTrue) != STARCH_EXIT_SUCCESS) {
             fprintf(stdout, "0\n"); /* false -- no valid metadata, therefore not a starch archive */
             return EXIT_FAILURE;
@@ -281,21 +281,21 @@ main(int argc, char **argv)
     }
     else if ( (resultValue == UNSTARCH_METADATA_SHA1_SIGNATURE_ERROR) || (resultValue == UNSTARCH_SIGNATURE_ERROR) || (resultValue == UNSTARCH_SIGNATURE_VERIFY_ERROR) )
     {
-        if (STARCH_readJSONMetadata( &metadataJSON, 
-                     &inFilePtr, 
+        if (STARCH_readJSONMetadata( &metadataJSON,
+                     &inFilePtr,
 #ifdef __cplusplus
-                     reinterpret_cast<const char *>( inFile ), 
+                     reinterpret_cast<const char *>( inFile ),
 #else
-                     (const char *) inFile, 
+                     (const char *) inFile,
 #endif
-                     &records, 
-                     &type, 
-                     &archiveVersion, 
-                     &archiveTimestamp, 
-                     &note, 
-                     &metadataOffset, 
-                     &headerFlag, 
-                     suppressErrorMsgs, 
+                     &records,
+                     &type,
+                     &archiveVersion,
+                     &archiveTimestamp,
+                     &note,
+                     &metadataOffset,
+                     &headerFlag,
+                     suppressErrorMsgs,
                      kStarchTrue) != STARCH_EXIT_SUCCESS) {
             fprintf(stderr, "ERROR: Could not read metadata\n");
             resultValue = EXIT_FAILURE;
@@ -312,19 +312,19 @@ main(int argc, char **argv)
 #endif
         if (jsonString) {
 #ifdef __cplusplus
-            STARCH_SHA1_All(reinterpret_cast<const unsigned char *>( reinterpret_cast<unsigned char *>( jsonString ) ), 
-                strlen(jsonString), 
-                mdHashBuffer);        
-#else
-            STARCH_SHA1_All((const unsigned char *) jsonString, 
+            STARCH_SHA1_All(reinterpret_cast<const unsigned char *>( reinterpret_cast<unsigned char *>( jsonString ) ),
                 strlen(jsonString),
-                mdHashBuffer);        
+                mdHashBuffer);
+#else
+            STARCH_SHA1_All((const unsigned char *) jsonString,
+                strlen(jsonString),
+                mdHashBuffer);
 #endif
             free(jsonString);
             jsonString = NULL;
             json_decref(metadataJSON);
             metadataJSON = NULL;
-        }   
+        }
         else {
             fprintf(stderr, "ERROR: Could not encode JSON structure into string representation\n");
             resultValue = EXIT_FAILURE;
@@ -360,24 +360,24 @@ main(int argc, char **argv)
         else if (option && (strcmp(option, "version") == 0))
             resultValue = UNSTARCH_VERSION_ERROR;
         else if (option && ((strcmp(option, "archiveVersion") == 0) || (strcmp(option, "archive-version") == 0)))
-            resultValue = UNSTARCH_ARCHIVE_VERSION_ERROR;        
+            resultValue = UNSTARCH_ARCHIVE_VERSION_ERROR;
         else {
             if ((STARCH_MAJOR_VERSION == 1) || (archiveVersion->major == 1)) {
                 switch (type) {
                     case kBzip2: {
 #ifdef __cplusplus
-                        if (UNSTARCH_extractDataWithBzip2(&inFilePtr, 
-                                                          NULL, 
-                                                          whichChromosome, 
-                                                          reinterpret_cast<const Metadata *>( records ), 
-                                                          static_cast<const unsigned long long>( metadataOffset ), 
+                        if (UNSTARCH_extractDataWithBzip2(&inFilePtr,
+                                                          NULL,
+                                                          whichChromosome,
+                                                          reinterpret_cast<const Metadata *>( records ),
+                                                          static_cast<const unsigned long long>( metadataOffset ),
                                                           static_cast<const Boolean>( headerFlag )) != 0) {
 #else
-                        if (UNSTARCH_extractDataWithBzip2(&inFilePtr, 
-                                                          NULL, 
-                                                          whichChromosome, 
-                                                          (const Metadata *) records, 
-                                                          (const unsigned long long) metadataOffset, 
+                        if (UNSTARCH_extractDataWithBzip2(&inFilePtr,
+                                                          NULL,
+                                                          whichChromosome,
+                                                          (const Metadata *) records,
+                                                          (const unsigned long long) metadataOffset,
                                                           (const Boolean) headerFlag) != 0) {
 #endif
                             fprintf(stderr, "ERROR: Backend extraction failed (bzip2)\n");
@@ -387,18 +387,18 @@ main(int argc, char **argv)
                     }
                     case kGzip: {
 #ifdef __cplusplus
-                        if (UNSTARCH_extractDataWithGzip(&inFilePtr, 
-                                                         NULL, 
-                                                         whichChromosome, 
-                                                         reinterpret_cast<const Metadata *>( records ), 
-                                                         static_cast<const unsigned long long>( metadataOffset ), 
+                        if (UNSTARCH_extractDataWithGzip(&inFilePtr,
+                                                         NULL,
+                                                         whichChromosome,
+                                                         reinterpret_cast<const Metadata *>( records ),
+                                                         static_cast<const unsigned long long>( metadataOffset ),
                                                          static_cast<const Boolean>( headerFlag )) != 0) {
 #else
-                        if (UNSTARCH_extractDataWithGzip(&inFilePtr, 
-                                                         NULL, 
-                                                         whichChromosome, 
-                                                         (const Metadata *) records, 
-                                                         (const unsigned long long) metadataOffset, 
+                        if (UNSTARCH_extractDataWithGzip(&inFilePtr,
+                                                         NULL,
+                                                         whichChromosome,
+                                                         (const Metadata *) records,
+                                                         (const unsigned long long) metadataOffset,
                                                          (const Boolean) headerFlag) != 0) {
 #endif
                             fprintf(stderr, "ERROR: Backend extraction failed (gzip)\n");
@@ -417,18 +417,18 @@ main(int argc, char **argv)
                 switch (type) {
                     case kBzip2: {
 #ifdef __cplusplus
-                        if (UNSTARCH_extractDataWithBzip2(&inFilePtr, 
-                                                          NULL, 
-                                                          whichChromosome, 
-                                                          reinterpret_cast<const Metadata *>( records ), 
-                                                          static_cast<const unsigned long long>( sizeof(starchRevision2HeaderBytes) ), 
+                        if (UNSTARCH_extractDataWithBzip2(&inFilePtr,
+                                                          NULL,
+                                                          whichChromosome,
+                                                          reinterpret_cast<const Metadata *>( records ),
+                                                          static_cast<const unsigned long long>( sizeof(starchRevision2HeaderBytes) ),
                                                           static_cast<const Boolean>( headerFlag )) != 0) {
 #else
-                        if (UNSTARCH_extractDataWithBzip2(&inFilePtr, 
-                                                          NULL, 
-                                                          whichChromosome, 
-                                                          (const Metadata *) records, 
-                                                          (const unsigned long long) sizeof(starchRevision2HeaderBytes), 
+                        if (UNSTARCH_extractDataWithBzip2(&inFilePtr,
+                                                          NULL,
+                                                          whichChromosome,
+                                                          (const Metadata *) records,
+                                                          (const unsigned long long) sizeof(starchRevision2HeaderBytes),
                                                           (const Boolean) headerFlag) != 0) {
 #endif
                             fprintf(stderr, "ERROR: Backend extraction failed (bzip2)\n");
@@ -438,18 +438,18 @@ main(int argc, char **argv)
                     }
                     case kGzip: {
 #ifdef __cplusplus
-                        if (UNSTARCH_extractDataWithGzip(&inFilePtr, 
-                                                         NULL, 
-                                                         whichChromosome, 
-                                                         reinterpret_cast<const Metadata *>( records ), 
-                                                         static_cast<const unsigned long long>( sizeof(starchRevision2HeaderBytes) ), 
+                        if (UNSTARCH_extractDataWithGzip(&inFilePtr,
+                                                         NULL,
+                                                         whichChromosome,
+                                                         reinterpret_cast<const Metadata *>( records ),
+                                                         static_cast<const unsigned long long>( sizeof(starchRevision2HeaderBytes) ),
                                                          static_cast<const Boolean>( headerFlag )) != 0) {
 #else
-                        if (UNSTARCH_extractDataWithGzip(&inFilePtr, 
-                                                         NULL, 
-                                                         whichChromosome, 
-                                                         (const Metadata *) records, 
-                                                         (const unsigned long long) sizeof(starchRevision2HeaderBytes), 
+                        if (UNSTARCH_extractDataWithGzip(&inFilePtr,
+                                                         NULL,
+                                                         whichChromosome,
+                                                         (const Metadata *) records,
+                                                         (const unsigned long long) sizeof(starchRevision2HeaderBytes),
                                                          (const Boolean) headerFlag) != 0) {
 #endif
                             fprintf(stderr, "ERROR: Backend extraction failed (gzip)\n");
@@ -466,12 +466,12 @@ main(int argc, char **argv)
             }
             else if (STARCH_MAJOR_VERSION > 2) {
                 fprintf(stderr, "ERROR: Unstarch does not support extracting archives in this major version release (built as: %d.%d.%d)\n", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION); // this is preserved for future-proofing test builds of Starch binaries
-                exit(EXIT_FAILURE);                
+                exit(EXIT_FAILURE);
             }
         }
     }
 
-    else if (resultValue == EXIT_FAILURE) 
+    else if (resultValue == EXIT_FAILURE)
         UNSTARCH_printUsage(EXIT_FAILURE);
 
     else if (resultValue == UNSTARCH_HELP_ERROR) {
@@ -551,7 +551,7 @@ main(int argc, char **argv)
                     UNSTARCH_printLineCountForChromosome(records, whichChromosome);
                 else {
                     fprintf(stderr, "ERROR: Archive version (%d.%d.%d) does not support element counting (starchcat the archive to bring its version to v1.3.0 or greater)\n", archiveVersion->major, archiveVersion->minor, archiveVersion->revision);
-                    resultValue = EXIT_FAILURE;                    
+                    resultValue = EXIT_FAILURE;
                 }
                 break;
             }
@@ -561,8 +561,8 @@ main(int argc, char **argv)
                     UNSTARCH_printLineCountForAllChromosomes(records);
                 else {
                     fprintf(stderr, "ERROR: Archive version (%d.%d.%d) does not support element counting (starchcat the archive to bring its version to v1.3.0 or greater)\n", archiveVersion->major, archiveVersion->minor, archiveVersion->revision);
-                    resultValue = EXIT_FAILURE;                    
-                }                
+                    resultValue = EXIT_FAILURE;
+                }
                 break;
             }
             case UNSTARCH_BASES_COUNT_CHR_ERROR: {
@@ -571,7 +571,7 @@ main(int argc, char **argv)
                     UNSTARCH_printNonUniqueBaseCountForChromosome(records, whichChromosome);
                 else {
                     fprintf(stderr, "ERROR: Archive version (%d.%d.%d) does not support base counting (starchcat the archive to bring its version to v1.4.0 or greater)\n", archiveVersion->major, archiveVersion->minor, archiveVersion->revision);
-                    resultValue = EXIT_FAILURE;                    
+                    resultValue = EXIT_FAILURE;
                 }
                 break;
             }
@@ -581,7 +581,7 @@ main(int argc, char **argv)
                     UNSTARCH_printNonUniqueBaseCountForAllChromosomes(records);
                 else {
                     fprintf(stderr, "ERROR: Archive version (%d.%d.%d) does not support base counting (starchcat the archive to bring its version to v1.4.0 or greater)\n", archiveVersion->major, archiveVersion->minor, archiveVersion->revision);
-                    resultValue = EXIT_FAILURE;                    
+                    resultValue = EXIT_FAILURE;
                 }
                 break;
             }
@@ -591,7 +591,7 @@ main(int argc, char **argv)
                     UNSTARCH_printUniqueBaseCountForChromosome(records, whichChromosome);
                 else {
                     fprintf(stderr, "ERROR: Archive version (%d.%d.%d) does not support base counting (starchcat the archive to bring its version to v1.4.0 or greater)\n", archiveVersion->major, archiveVersion->minor, archiveVersion->revision);
-                    resultValue = EXIT_FAILURE;                    
+                    resultValue = EXIT_FAILURE;
                 }
                 break;
             }
@@ -601,10 +601,10 @@ main(int argc, char **argv)
                     UNSTARCH_printUniqueBaseCountForAllChromosomes(records);
                 else {
                     fprintf(stderr, "ERROR: Archive version (%d.%d.%d) does not support base counting (starchcat the archive to bring its version to v1.4.0 or greater)\n", archiveVersion->major, archiveVersion->minor, archiveVersion->revision);
-                    resultValue = EXIT_FAILURE;                    
+                    resultValue = EXIT_FAILURE;
                 }
                 break;
-            }            
+            }
             case UNSTARCH_ARCHIVE_CREATION_TIMESTAMP_ERROR: {
                 if (((archiveVersion->major == 1) && (archiveVersion->minor >= 5)) ||
                     ((archiveVersion->major == 2) && (archiveVersion->minor >= 0))) {
@@ -614,9 +614,9 @@ main(int argc, char **argv)
                         return EXIT_FAILURE;
                     }
 #ifdef __cplusplus
-                    UNSTARCH_printArchiveTimestamp(const_cast<const char *>( archiveTimestamp )); 
+                    UNSTARCH_printArchiveTimestamp(const_cast<const char *>( archiveTimestamp ));
 #else
-                    UNSTARCH_printArchiveTimestamp((const char *)archiveTimestamp); 
+                    UNSTARCH_printArchiveTimestamp((const char *)archiveTimestamp);
 #endif
                 }
                 else {
@@ -764,23 +764,23 @@ main(int argc, char **argv)
             case UNSTARCH_SIGNATURE_VERIFY_ERROR: {
                 if ((archiveVersion->major == 2) && (archiveVersion->minor >= 2)) {
                     if (whichChromosome) {
-                        signatureVerificationFlag = UNSTARCH_verifySignature(&inFilePtr, 
+                        signatureVerificationFlag = UNSTARCH_verifySignature(&inFilePtr,
                                                                              records,
 #ifdef __cplusplus
-                                                                             static_cast<const unsigned long long>( sizeof(starchRevision2HeaderBytes) ), 
+                                                                             static_cast<const unsigned long long>( sizeof(starchRevision2HeaderBytes) ),
 #else
-                                                                             (const unsigned long long) sizeof(starchRevision2HeaderBytes), 
+                                                                             (const unsigned long long) sizeof(starchRevision2HeaderBytes),
 #endif
                                                                              whichChromosome,
                                                                              type);
                     }
                     else {
-                        signatureVerificationFlag = UNSTARCH_verifyAllSignatures(&inFilePtr, 
-                                                                                 records, 
+                        signatureVerificationFlag = UNSTARCH_verifyAllSignatures(&inFilePtr,
+                                                                                 records,
 #ifdef __cplusplus
-                                                                                 static_cast<const unsigned long long>( sizeof(starchRevision2HeaderBytes) ), 
+                                                                                 static_cast<const unsigned long long>( sizeof(starchRevision2HeaderBytes) ),
 #else
-                                                                                 (const unsigned long long) sizeof(starchRevision2HeaderBytes), 
+                                                                                 (const unsigned long long) sizeof(starchRevision2HeaderBytes),
 #endif
                                                                                  type);
                     }
@@ -817,8 +817,8 @@ main(int argc, char **argv)
     if ((resultValue == UNSTARCH_SIGNATURE_VERIFY_ERROR) && (signatureVerificationFlag == kStarchFalse)) {
         resultValue = EXIT_FAILURE;
     }
-    else if ((resultValue == UNSTARCH_HELP_ERROR) || 
-        (resultValue == UNSTARCH_VERSION_ERROR) || 
+    else if ((resultValue == UNSTARCH_HELP_ERROR) ||
+        (resultValue == UNSTARCH_VERSION_ERROR) ||
         (resultValue == UNSTARCH_ARCHIVE_VERSION_ERROR) ||
         (resultValue == UNSTARCH_ARCHIVE_CREATION_TIMESTAMP_ERROR) ||
         (resultValue == UNSTARCH_ELEMENT_COUNT_CHR_ERROR) ||
@@ -841,26 +841,25 @@ main(int argc, char **argv)
         (resultValue == UNSTARCH_SIGNATURE_ERROR) ||
         (resultValue == UNSTARCH_SIGNATURE_VERIFY_ERROR) ||
         (resultValue == UNSTARCH_ELEMENT_MAX_STRING_LENGTH_CHR_ERROR) ||
-        (resultValue == UNSTARCH_ELEMENT_MAX_STRING_LENGTH_ALL_ERROR) ) 
+        (resultValue == UNSTARCH_ELEMENT_MAX_STRING_LENGTH_ALL_ERROR) )
     {
         resultValue = EXIT_SUCCESS;
     }
-        
 
     /* cleanup */
     if (option)
         free(option);
     if (whichChromosome)
-        free(whichChromosome);     
+        free(whichChromosome);
     if (inFile)
-        free(inFile);     
+        free(inFile);
     if (inFilePtr)
-        fclose(inFilePtr);     
+        fclose(inFilePtr);
     if (records)
         STARCH_freeMetadata(&records);
     if (archiveVersion)
         free(archiveVersion);
-    if (archiveTimestamp) 
+    if (archiveTimestamp)
         free(archiveTimestamp);
 
 #ifdef DEBUG
@@ -1034,21 +1033,21 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
 #endif
 
 
-    if ( (! *fn)                                               || 
-         (! *chr)                                              || 
-         (strcmp(*fn, "-") == 0)                               || 
-         (strcmp(*fn, "--list") == 0)                          || 
-         (strcmp(*fn, "--listJSON") == 0)                      || 
-         (strcmp(*fn, "--list-json") == 0)                     || 
-         (strcmp(*fn, "--list-json-no-trailing-newline") == 0) || 
-         (strcmp(*fn, "--note") == 0)                          || 
-         (strcmp(*fn, "--archive-type") == 0)                  || 
-         (strcmp(*fn, "--archive-version") == 0)               || 
-         (strcmp(*fn, "--archive-timestamp") == 0)             || 
-         (strcmp(*fn, "--sha1-signature") == 0)                || 
-         (strcmp(*fn, "--signature") == 0)                     || 
-         (strcmp(*fn, "--verify-signature") == 0)              || 
-         (strcmp(*fn, "--is-starch") == 0) ) 
+    if ( (! *fn)                                               ||
+         (! *chr)                                              ||
+         (strcmp(*fn, "-") == 0)                               ||
+         (strcmp(*fn, "--list") == 0)                          ||
+         (strcmp(*fn, "--listJSON") == 0)                      ||
+         (strcmp(*fn, "--list-json") == 0)                     ||
+         (strcmp(*fn, "--list-json-no-trailing-newline") == 0) ||
+         (strcmp(*fn, "--note") == 0)                          ||
+         (strcmp(*fn, "--archive-type") == 0)                  ||
+         (strcmp(*fn, "--archive-version") == 0)               ||
+         (strcmp(*fn, "--archive-timestamp") == 0)             ||
+         (strcmp(*fn, "--sha1-signature") == 0)                ||
+         (strcmp(*fn, "--signature") == 0)                     ||
+         (strcmp(*fn, "--verify-signature") == 0)              ||
+         (strcmp(*fn, "--is-starch") == 0) )
     {
         if (ftr1)
             free(ftr1);
@@ -1064,7 +1063,7 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
 
     *optn = (ftr1) ? STARCH_strdup(ftr1) : ((ftr2) ? STARCH_strdup(ftr2) : NULL);
 
-    if (*optn) {        
+    if (*optn) {
         if (strcmp(*optn, "help") == 0) {
             *pval = UNSTARCH_HELP_ERROR;
             return *pval;
@@ -1072,7 +1071,7 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
         else if (strcmp(*optn, "version") == 0) {
             *pval = UNSTARCH_VERSION_ERROR;
             return *pval;
-        }    
+        }
         else if (strcmp(*optn, "is-starch") == 0) {
             *pval = UNSTARCH_IS_STARCH_ARCHIVE_ERROR;
             return *pval;
@@ -1120,7 +1119,7 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
         else if (strcmp(*optn, "bases") == 0) {
             *pval = (strcmp(*chr, "--bases") == 0) ? UNSTARCH_BASES_COUNT_ALL_ERROR : UNSTARCH_BASES_COUNT_CHR_ERROR;
             return *pval;
-        }        
+        }
         else if (strcmp(*optn, "bases-uniq") == 0) {
             *pval = (strcmp(*chr, "--bases-uniq") == 0) ? UNSTARCH_BASES_UNIQUE_COUNT_ALL_ERROR : UNSTARCH_BASES_UNIQUE_COUNT_CHR_ERROR;
             return *pval;
@@ -1141,9 +1140,9 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
             *pval = (strcmp(*chr, "--has-nested") == 0) ? UNSTARCH_ELEMENT_NESTED_ALL_INT_ERROR : UNSTARCH_ELEMENT_NESTED_CHR_INT_ERROR;
             return *pval;
         }
-        else if ((strcmp(*optn, "list") != 0) && 
-                 (strcmp(*optn, "listJSON") != 0) && 
-                 (strcmp(*optn, "list-json") != 0) && 
+        else if ((strcmp(*optn, "list") != 0) &&
+                 (strcmp(*optn, "listJSON") != 0) &&
+                 (strcmp(*optn, "list-json") != 0) &&
                  (strcmp(*optn, "list-json-no-trailing-newline") != 0) ) {
             fprintf(stderr, "ERROR: Wrong option specified\n");
             return UNSTARCH_FATAL_ERROR;
@@ -1153,8 +1152,8 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
     return EXIT_SUCCESS;
 }
 
-void 
-UNSTARCH_printUsage(int errorType) 
+void
+UNSTARCH_printUsage(int errorType)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_printUsage() ---\n");
@@ -1172,13 +1171,14 @@ UNSTARCH_printUsage(int errorType)
                 case EXIT_FAILURE:
                 case UNSTARCH_HELP_ERROR:
                 default:
-                    fprintf(stderr, 
-                "%s\n  citation: %s\n  binary version: %s (extracts archive version: %s or older)\n  authors: %s\n%s\n", 
-                name, 
-                BEDOPS::citation(), 
-                BEDOPS::revision(), 
-                avStr, 
-                authors, 
+                    fprintf(stderr,
+                "%s\n  citation: %s\n  binary version: %s (%s) (extracts archive version: %s or older)\n  authors: %s\n%s\n",
+                name,
+                BEDOPS::citation(),
+                BEDOPS::revision(),
+                application_type,
+                avStr,
+                authors,
                 usage);
                     break;
             }
@@ -1187,8 +1187,8 @@ UNSTARCH_printUsage(int errorType)
     }
 }
 
-void 
-UNSTARCH_printRevision() 
+void
+UNSTARCH_printRevision()
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_printRevision() ---\n");
@@ -1202,27 +1202,28 @@ UNSTARCH_printRevision()
     if (avStr != NULL) {
         int result = sprintf(avStr, "%d.%d.%d", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION);
         if (result != -1)
-            fprintf(stdout, 
-            "%s\n  binary version: %s (extracts archive version: %s or older)\n", 
-            name, 
-            BEDOPS::revision(), 
+            fprintf(stdout,
+            "%s\n  binary version: %s (%s) (extracts archive version: %s or older)\n",
+            name,
+            BEDOPS::revision(),
+            application_type,
             avStr);
         free(avStr);
     }
 }
 
-void 
-UNSTARCH_printArchiveVersion(const ArchiveVersion *av) 
+void
+UNSTARCH_printArchiveVersion(const ArchiveVersion *av)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_printArchiveVersion() ---\n");
 #endif
     if (av)
-        fprintf(stdout, 
-        "%s\n  archive version: %d.%d.%d\n", 
-        name, 
-        av->major, 
-        av->minor, 
+        fprintf(stdout,
+        "%s\n  archive version: %d.%d.%d\n",
+        name,
+        av->major,
+        av->minor,
         av->revision);
 }
 
@@ -1233,8 +1234,8 @@ UNSTARCH_printArchiveTimestamp(const char *at)
     fprintf(stderr, "\n--- UNSTARCH_printArchiveTimestamp() ---\n");
 #endif
     if (at)
-        fprintf(stdout, 
-        "%s\n", 
+        fprintf(stdout,
+        "%s\n",
         at);
 }
 
@@ -1245,13 +1246,13 @@ UNSTARCH_printNote(const char *note)
     fprintf(stderr, "\n--- UNSTARCH_printNote() ---\n");
 #endif
     if (note)
-        fprintf(stdout, 
-        "%s\n", 
+        fprintf(stdout,
+        "%s\n",
         note);
 }
 
 void
-UNSTARCH_printCompressionType(const CompressionType t) 
+UNSTARCH_printCompressionType(const CompressionType t)
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_printCompressionType() ---\n");
@@ -1284,14 +1285,14 @@ UNSTARCH_printMetadataSha1Signature(unsigned char *sha1Buffer)
 #endif
 
 #ifdef __cplusplus
-    STARCH_encodeBase64(&jsonBase64String, 
-            static_cast<const size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
-            const_cast<const unsigned char *>( sha1Buffer ), 
+    STARCH_encodeBase64(&jsonBase64String,
+            static_cast<const size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ),
+            const_cast<const unsigned char *>( sha1Buffer ),
             static_cast<const size_t>( sha1BufferLength ));
 #else
-    STARCH_encodeBase64(&jsonBase64String, 
-            (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
-            (const unsigned char *) sha1Buffer, 
+    STARCH_encodeBase64(&jsonBase64String,
+            (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH,
+            (const unsigned char *) sha1Buffer,
             (const size_t) sha1BufferLength);
 #endif
 

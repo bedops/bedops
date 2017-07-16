@@ -58,14 +58,13 @@ Contents
          <img src="_images/linux_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
             <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.27/bedops_linux_x86_64-v2.4.27.tar.bz2">x86-64 (64-bit)</a> binaries</li>
-            <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.27/bedops_linux_i386-v2.4.27.tar.bz2">i386 (32-bit)</a> binaries</li>
             <li><a href="content/installation.html#linux">Installation instructions</a> for Linux hosts</li>
          </ul>
       </div>
       <div class="col_element">
          <img src="_images/macosx_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
-            <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.27/BEDOPS.2.4.27.pkg.zip">Intel (32-/64-bit, 10.7-10.12)</a> installer package</li>
+            <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.27/BEDOPS.2.4.27.pkg.zip">Intel (64-bit, 10.10-10.12)</a> installer package</li>
             <li><a href="content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
          </ul>
       </div>
@@ -97,7 +96,6 @@ Contents
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
    <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.27/bedops_linux_x86_64-v2.4.27.tar.bz2">x86-64 (64-bit)</a> binaries</li>
-   <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.27/bedops_linux_i386-v2.4.27.tar.bz2">i386 (32-bit)</a> binaries</li>
    <li><a href="content/installation.html#linux">Installation instructions</a> for Linux hosts</li>
    </ul>
 
@@ -111,7 +109,7 @@ Contents
 .. |macosx_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.27/BEDOPS.2.4.27.pkg.zip">Intel (32-/64-bit, 10.7-10.10)</a> installer package</li>
+   <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.27/BEDOPS.2.4.27.pkg.zip">Intel (64-bit, 10.10-10.12)</a> installer package</li>
    <li><a href="content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
    </ul>
 

@@ -35,10 +35,16 @@ BIN_VERSION               = v2.4.27
 TEST                      = ../test
 TEST_OSX_BINDIR           = ${TEST}/binaries/osx/${ARCH_VERSION}/bin
 
-CCFLAGS                   = ${MEGAFLAGS} -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 ${WARNINGS} -std=c99 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH} -x c++ -v -stdlib=libc++ -std=c++11
-CXXFLAGS                  = ${MEGAFLAGS} -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 ${WARNINGS} -std=c++11 -stdlib=libc++ -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH}
-CDFLAGS                   = ${MEGAFLAGS} -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g ${WARNINGS} -std=c99 -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH} -x c++ -v -stdlib=libc++ -std=c++11
-CXXDFLAGS                 = ${MEGAFLAGS} -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g ${WARNINGS} -std=c++11 -stdlib=libc++ -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH}
+ifeq ($(BINARY_TYPE),)
+	TFLAG = -DBEDOPS_BINARY_TYPE=0
+else
+	TFLAG = -DBEDOPS_BINARY_TYPE=$(BINARY_TYPE_NUM)
+endif
+
+CCFLAGS                   = ${MEGAFLAGS} ${TFLAG} -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 ${WARNINGS} -std=c99 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH} -x c++ -v -stdlib=libc++ -std=c++11
+CXXFLAGS                  = ${MEGAFLAGS} ${TFLAG} -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 ${WARNINGS} -std=c++11 -stdlib=libc++ -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH}
+CDFLAGS                   = ${MEGAFLAGS} ${TFLAG} -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g ${WARNINGS} -std=c99 -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH} -x c++ -v -stdlib=libc++ -std=c++11
+CXXDFLAGS                 = ${MEGAFLAGS} ${TFLAG} -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g ${WARNINGS} -std=c++11 -stdlib=libc++ -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH}
 
 build: dependencies starchLibrary starch unstarch starchcat starchcluster starch-diff starchstrip
 	rm -f *~
@@ -130,8 +136,6 @@ mkdirs:
 clean:
 	rm -f $(LOCALSTARCHLIB)
 	rm -f ${LOCALSTARCHLIBDEBUG}
-	rm -Rf ${LOCALOBJDIR}
-	rm -Rf ${LOCALSTARCHLIBDIR}
-	rm -rf ${BINDIR}/*starch*
-	rm -Rf ${BINDIR}
-	rm -Rf ${THISDIR}/../bin
+	rm -rf ${LOCALOBJDIR}
+	rm -rf ${LOCALSTARCHLIBDIR}
+	rm -rf ${BINDIR}

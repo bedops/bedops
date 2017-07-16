@@ -58,6 +58,16 @@ namespace FeatDist {
   const Bed::SignedCoordType minus_infinite = std::numeric_limits<Bed::SignedCoordType>::min();
   const std::size_t PoolSz = 8*8*8; // only 2 file inputs
 
+#if BEDOPS_BINARY_TYPE == 0
+  const std::string application_type = "typical";
+#else
+#if BEDOPS_BINARY_TYPE == 1
+  const std::string application_type = "megarow";
+#else
+  const std::string application_type = "typical";
+#endif
+#endif
+
   void doWork(const Input&);
 } // namespace FeatDist
 
@@ -75,20 +85,20 @@ int main(int argc, char** argv) {
   } catch(FeatDist::HelpException& h) {
     std::cout << FeatDist::prognm << std::endl;
     std::cout << "  citation: " + FeatDist::citation << std::endl;
-    std::cout << "  version:  " + FeatDist::version << std::endl;
+    std::cout << "  version:  " + FeatDist::version + " (" + FeatDist::application_type + ")" << std::endl;
     std::cout << "  authors:  " + FeatDist::authors << std::endl;
     std::cout << FeatDist::Usage() << std::endl;
     return(EXIT_SUCCESS);
   } catch(FeatDist::VersionException& v) {
     std::cout << FeatDist::prognm << std::endl;
     std::cout << "  citation: " + FeatDist::citation << std::endl;
-    std::cout << "  version:  " + FeatDist::version << std::endl;
+    std::cout << "  version:  " + FeatDist::version + " (" + FeatDist::application_type + ")" << std::endl;
     std::cout << "  authors:  " + FeatDist::authors << std::endl;
     return(EXIT_SUCCESS);
   } catch(FeatDist::NoInput& ni) {
     std::cerr << FeatDist::prognm << std::endl;
     std::cerr << "  citation: " + FeatDist::citation << std::endl;
-    std::cerr << "  version:  " + FeatDist::version << std::endl;
+    std::cerr << "  version:  " + FeatDist::version + " (" + FeatDist::application_type + ")" << std::endl;
     std::cerr << "  authors:  " + FeatDist::authors << std::endl;
     std::cerr << FeatDist::Usage() << std::endl;
   } catch(const std::exception& stx) {
@@ -157,12 +167,12 @@ struct createWork {
       typedef Bed::bed_check_iterator<BedType2*, PoolSz> IterType2;
       typedef BedReader<IterType1> BedReaderType1;
       typedef BedReader<IterType2> BedReaderType2;
-  
+
       StreamPtr refFilePtr = static_cast<StreamPtr>(0);
       StreamPtr nonRefFilePtr = static_cast<StreamPtr>(0);
       BedReaderType1* refFile = static_cast<BedReaderType1*>(0);
       BedReaderType2* nonRefFile = static_cast<BedReaderType2*>(0);
-  
+
       bool isStdin = (input.GetReferenceFileName() == "-");
       refFilePtr = new std::ifstream(input.GetReferenceFileName().c_str());
       if ( isStdin ) {
@@ -174,7 +184,7 @@ struct createWork {
         IterType1 fileI(*refFilePtr, input.GetReferenceFileName(), mem1, input.Chrome());
         refFile = new BedReaderType1(fileI);
       }
-  
+
       isStdin = (input.GetNonReferenceFileName() == "-");
       nonRefFilePtr = new std::ifstream(input.GetNonReferenceFileName().c_str());
       if ( isStdin ) {
@@ -201,22 +211,22 @@ struct createWork {
         delete refFilePtr;
       if ( nonRefFilePtr )
         delete nonRefFilePtr;
-  
+
     } else { // fast-mode
       typedef Ext::FPWrap<Ext::InvalidFile> FPType;
       typedef Bed::allocate_iterator_starch_bed<BedType1*, PoolSz> IterType1;
       typedef Bed::allocate_iterator_starch_bed<BedType2*, PoolSz> IterType2;
       typedef BedReader<IterType1> BedReaderType1;
       typedef BedReader<IterType2> BedReaderType2;
-  
+
       FPType* refFilePtr = static_cast<FPType*>(0);
       FPType* nonRefFilePtr = static_cast<FPType*>(0);
       BedReaderType1* refFile = static_cast<BedReaderType1*>(0);
       BedReaderType2* nonRefFile = static_cast<BedReaderType2*>(0);
-  
+
       refFilePtr = new FPType(input.GetReferenceFileName());
       refFile = new BedReaderType1(IterType1(*refFilePtr, mem1, input.Chrome()));
-  
+
       nonRefFilePtr = new FPType(input.GetNonReferenceFileName());
       nonRefFile = new BedReaderType2(IterType2(*nonRefFilePtr, mem2, input.Chrome()));
 

@@ -8,7 +8,7 @@ CMD="switch-BEDOPS-binary-type"
 
 help()
 {
-    echo "Switch the binary type of BEDOPS binaries from typical to megarow, or vice versa"
+    echo "Switch the BEDOPS binary build from typical to megarow, or vice versa"
     echo "Usage: ${CMD} [ --help ] [ --typical | --megarow ]" >&2
     exit $1
 }
@@ -54,23 +54,23 @@ while getopts "$OPTSPEC" OPTCHAR; do
     esac
 done
 
-if [[ "${TYPICAL}" == true ]] && [[ "${MEGAROW}" == true ]] 
+if [[ $# -eq 0 ]]
 then
     help 1
 fi
 
-if [[ "${TYPICAL}" == false ]] && [[ "${MEGAROW}" == false ]]
+# XOR
+if [[ ("${TYPICAL}" && !"${MEGAROW}") || (!"${TYPICAL}" && "${MEGAROW}") ]] 
 then
+    VARNAME=$(find ${BINDIR}/ -maxdepth 1 -mindepth 1 -type f -name \*${EXTENSION})
+    for V in ${VARNAME} 
+    do
+        BV=$(basename "$V")
+        NAME=`echo $BV | sed "s/${EXTENSION}//"`
+        ln -sf ${V} ${BINDIR}/${NAME}
+    done
+else
     help 1
 fi
-
-
-VARNAME=$(find ${BINDIR}/ -maxdepth 1 -mindepth 1 -type f -name \*${EXTENSION} -print0 | xargs -0 basename)
-
-for V in ${VARNAME} 
-do
-	NAME=`echo $V | sed "s/${EXTENSION}//"`
-	ln -sf ${V} ${BINDIR}/${NAME}
-done
 
 exit 0

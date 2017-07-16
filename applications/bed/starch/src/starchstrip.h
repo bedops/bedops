@@ -68,6 +68,16 @@ static const char *usage = "\n" \
     "    --version                       Show binary version.\n\n" \
     "    --help                          Show this usage message.\n";
 
+#if BEDOPS_BINARY_TYPE == 0
+static const char* application_type = "typical";
+#else
+#if BEDOPS_BINARY_TYPE == 1
+static const char* application_type = "megarow";
+#else
+static const char* application_type = "typical";
+#endif
+#endif
+
 static struct globals {
     char* chromosomes_str;
     char** chromosomes;

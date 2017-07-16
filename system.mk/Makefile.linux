@@ -20,7 +20,6 @@ default: support
 	$(MAKE) build -f $(SELF)
 
 SUBDIRS = ${APPDIR}/bedmap/src ${APPDIR}/sort-bed/src ${APPDIR}/bedops/src ${APPDIR}/closestfeats/src ${APPDIR}/bedextract/src ${APPDIR}/starch/src ${APPDIR}/conversion/src
-
 .PHONY: $(SUBDIRS)
 
 build: $(SUBDIRS)
