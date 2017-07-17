@@ -37,6 +37,7 @@ all_reads=false
 keep_header=false
 split=false
 split_with_deletions=false
+reduced=false
 
 help()
 {
@@ -44,7 +45,7 @@ help()
     exit $1
 }
 
-optspec=":r:m:dhaksS-:"
+optspec=":r:m:dhaksSR-:"
 while getopts "$optspec" optchar; do
     case "${optchar}" in
         -)
@@ -98,6 +99,9 @@ while getopts "$optspec" optchar; do
                 split-with-deletions)
                     split_with_deletions=true
                     ;;
+                reduced)
+                    reduced=true
+                    ;;
                 *)
                     help 1
                     #if [ "$OPTERR" = 1 ] && [ "${optspec:0:1}" != ":" ]; then echo "Unknown option --${OPTARG}" >&2; fi
@@ -129,6 +133,9 @@ while getopts "$optspec" optchar; do
         S)
             split_with_deletions=true
             ;;
+        R)
+            reduced=true
+            ;;
         *)
             help 1
             #if [ "$OPTERR" != 1 ] || [ "${optspec:0:1}" = ":" ]; then echo "Non-option argument: '-${OPTARG}'" >&2; fi
@@ -152,5 +159,6 @@ if [ "${all_reads}" = true ]; then options="${options} --all-reads"; fi
 if [ "${keep_header}" = true ]; then options="${options} --keep-header"; fi
 if [ "${split}" = true ]; then options="${options} --split"; fi
 if [ "${split_with_deletions}" = true ]; then options="${options} --split-with-deletions"; fi
+if [ "${reduced}" = true ]; then options="${options} --reduced"; fi
 
 ${cmd} ${options} - <&0
