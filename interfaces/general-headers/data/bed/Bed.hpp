@@ -664,10 +664,10 @@ namespace Bed {
       *id_ = '\0';
       *fullrest_ = '\0';
       restOffset_ = -1;
-      int numScanned = std::sscanf(inputLine.c_str(),
-                                   format, chrom_,
-                                   &start_, &end_, id_,
-                                   &measurement_, other);
+      const int numScanned = std::sscanf(inputLine.c_str(),
+                                         format, chrom_,
+                                         &start_, &end_, id_,
+                                         &measurement_, other);
 
       const int numWritten = std::snprintf(fullrest_, MAXRESTSIZE+1, (std::string("\t%s\t") + BaseClass::MFormat).c_str(), id_, measurement_);
       if ( other[0] != '\0' && numWritten < MAXRESTSIZE ) {
@@ -685,10 +685,10 @@ namespace Bed {
       *id_ = '\0';
       *fullrest_ = '\0';
       restOffset_ = -1;
-      int numScanned = std::fscanf(inputFile,
-                                   format, chrom_,
-                                   &start_, &end_, id_,
-                                   &measurement_, other);
+      const int numScanned = std::fscanf(inputFile,
+                                         format, chrom_,
+                                         &start_, &end_, id_,
+                                         &measurement_, other);
 
       std::fgetc(inputFile); // Read and discard trailing newline
 
