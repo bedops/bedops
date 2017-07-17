@@ -15,6 +15,7 @@ MEGA                = megarow
 TYPICAL             = typical
 DEFAULT_BINARY_TYPE = ${TYPICAL} 
 WRAPPERS            = $(wildcard ${APPDIR}/conversion/src/wrappers/*)
+CWD                := $(shell pwd)
 
 default:
 ifeq ($(KERNEL), Darwin)
@@ -193,55 +194,38 @@ $(WRAPPERS): prep_c
 
 install_osx_packaging_bins: prep_c all
 	mkdir -p ${OSXPKGDIR}
-	-cp ${APPDIR}/sort-bed/bin/sort-bed ${OSXPKGDIR}/sort-bed
 	-cp ${APPDIR}/sort-bed/bin/sort-bed-typical ${OSXPKGDIR}/sort-bed-typical
 	-cp ${APPDIR}/sort-bed/bin/sort-bed-megarow ${OSXPKGDIR}/sort-bed-megarow
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm ${OSXPKGDIR}/update-sort-bed-slurm
 	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm-typical ${OSXPKGDIR}/update-sort-bed-slurm-typical
 	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm-megarow ${OSXPKGDIR}/update-sort-bed-slurm-megarow
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm ${OSXPKGDIR}/update-sort-bed-starch-slurm
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm-megarow ${OSXPKGDIR}/update-sort-bed-starch-slurm-megarow
 	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm-typical ${OSXPKGDIR}/update-sort-bed-starch-slurm-typical
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates ${OSXPKGDIR}/update-sort-bed-migrate-candidates
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm-megarow ${OSXPKGDIR}/update-sort-bed-starch-slurm-megarow
 	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates-typical ${OSXPKGDIR}/update-sort-bed-migrate-candidates-typical
 	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates-megarow ${OSXPKGDIR}/update-sort-bed-migrate-candidates-megarow
-	-cp ${APPDIR}/bedops/bin/bedops ${OSXPKGDIR}/bedops
 	-cp ${APPDIR}/bedops/bin/bedops-typical ${OSXPKGDIR}/bedops-typical
 	-cp ${APPDIR}/bedops/bin/bedops-megarow ${OSXPKGDIR}/bedops-megarow
-	-cp ${APPDIR}/closestfeats/bin/closest-features ${OSXPKGDIR}/closest-features
 	-cp ${APPDIR}/closestfeats/bin/closest-features-typical ${OSXPKGDIR}/closest-features-typical
 	-cp ${APPDIR}/closestfeats/bin/closest-features-megarow ${OSXPKGDIR}/closest-features-megarow
-	-cp ${APPDIR}/bedmap/bin/bedmap ${OSXPKGDIR}/bedmap
 	-cp ${APPDIR}/bedmap/bin/bedmap-typical ${OSXPKGDIR}/bedmap-typical
 	-cp ${APPDIR}/bedmap/bin/bedmap-megarow ${OSXPKGDIR}/bedmap-megarow
-	-cp ${APPDIR}/bedextract/bin/bedextract ${OSXPKGDIR}/bedextract
 	-cp ${APPDIR}/bedextract/bin/bedextract-typical ${OSXPKGDIR}/bedextract-typical
 	-cp ${APPDIR}/bedextract/bin/bedextract-megarow ${OSXPKGDIR}/bedextract-megarow
-	-cp ${APPDIR}/starch/bin/starch ${OSXPKGDIR}/starch
 	-cp ${APPDIR}/starch/bin/starch-typical ${OSXPKGDIR}/starch-typical
 	-cp ${APPDIR}/starch/bin/starch-megarow ${OSXPKGDIR}/starch-megarow
-	-cp ${APPDIR}/starch/bin/unstarch ${OSXPKGDIR}/unstarch
 	-cp ${APPDIR}/starch/bin/unstarch-typical ${OSXPKGDIR}/unstarch-typical
 	-cp ${APPDIR}/starch/bin/unstarch-megarow ${OSXPKGDIR}/unstarch-megarow
-	-cp ${APPDIR}/starch/bin/starchcat ${OSXPKGDIR}/starchcat
 	-cp ${APPDIR}/starch/bin/starchcat-typical ${OSXPKGDIR}/starchcat-typical
 	-cp ${APPDIR}/starch/bin/starchcat-megarow ${OSXPKGDIR}/starchcat-megarow
-	-cp ${APPDIR}/starch/bin/starchstrip ${OSXPKGDIR}/starchstrip
 	-cp ${APPDIR}/starch/bin/starchstrip-typical ${OSXPKGDIR}/starchstrip-typical
 	-cp ${APPDIR}/starch/bin/starchstrip-megarow ${OSXPKGDIR}/starchstrip-megarow
-	-cp ${APPDIR}/starch/bin/starchcluster_sge ${OSXPKGDIR}/starchcluster_sge
 	-cp ${APPDIR}/starch/bin/starchcluster_sge-typical ${OSXPKGDIR}/starchcluster_sge-typical
 	-cp ${APPDIR}/starch/bin/starchcluster_sge-megarow ${OSXPKGDIR}/starchcluster_sge-megarow
-	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel ${OSXPKGDIR}/starchcluster_gnuParallel
 	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel-typical ${OSXPKGDIR}/starchcluster_gnuParallel-typical
 	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel-megarow ${OSXPKGDIR}/starchcluster_gnuParallel-megarow
-	-cp ${APPDIR}/starch/bin/starchcluster_slurm ${OSXPKGDIR}/starchcluster_slurm
 	-cp ${APPDIR}/starch/bin/starchcluster_slurm-typical ${OSXPKGDIR}/starchcluster_slurm-typical
 	-cp ${APPDIR}/starch/bin/starchcluster_slurm-megarow ${OSXPKGDIR}/starchcluster_slurm-megarow
-	-cp ${APPDIR}/starch/bin/starch-diff ${OSXPKGDIR}/starch-diff
 	-cp ${APPDIR}/starch/bin/starch-diff-typical ${OSXPKGDIR}/starch-diff-typical
 	-cp ${APPDIR}/starch/bin/starch-diff-megarow ${OSXPKGDIR}/starch-diff-megarow
-	-cp ${APPDIR}/conversion/bin/convert2bed ${OSXPKGDIR}/convert2bed
 	-cp ${APPDIR}/conversion/bin/convert2bed-typical ${OSXPKGDIR}/convert2bed-typical
 	-cp ${APPDIR}/conversion/bin/convert2bed-megarow ${OSXPKGDIR}/convert2bed-megarow
 	-cp ${APPDIR}/conversion/src/wrappers/bam2bed ${OSXPKGDIR}/bam2bed
@@ -269,7 +253,26 @@ install_osx_packaging_bins: prep_c all
 	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_slurm ${OSXPKGDIR}/bam2starch_slurm
 	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_gnuParallel ${OSXPKGDIR}/bam2starch_gnuParallel
 	-cp ${OTHERDIR}/switch-BEDOPS-binary-type ${OSXPKGDIR}
-	mkdir -p ${OSXLIBDIR}
+	-cd ${OSXPKGDIR}; \
+	ln -sf ./sort-bed-typical ./sort-bed; \
+	ln -sf ./update-sort-bed-slurm-typical ./update-sort-bed-slurm; \
+	ln -sf ./update-sort-bed-starch-slurm-typical ./update-sort-bed-starch-slurm; \
+	ln -sf ./update-sort-bed-migrate-candidates-typical ./update-sort-bed-migrate-candidates; \
+	ln -sf ./bedops-typical ./bedops; \
+	ln -sf ./closest-features-typical ./closest-features; \
+	ln -sf ./bedmap-typical ./bedmap; \
+	ln -sf ./bedextract-typical ./bedextract; \
+	ln -sf ./starch-typical ./starch; \
+	ln -sf ./unstarch-typical ./unstarch; \
+	ln -sf ./starchcat-typical ./starchcat; \
+	ln -sf ./starchstrip-typical ./starchstrip; \
+	ln -sf ./starchcluster_sge-typical ./starchcluster_sge; \
+	ln -sf ./starchcluster_gnuParallel-typical ./starchcluster_gnuParallel; \
+	ln -sf ./starchcluster_slurm-typical ./starchcluster_slurm; \
+	ln -sf ./starch-diff-typical ./starch-diff; \
+	ln -sf ./convert2bed-typical ./convert2bed; \
+	cd ${CWD}; \
+	mkdir -p ${OSXLIBDIR}; \
 
 update_bedops_version:
 ifndef OLD_VER
