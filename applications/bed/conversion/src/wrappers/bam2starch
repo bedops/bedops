@@ -40,6 +40,7 @@ starch_not_set=false
 all_reads=false
 keep_header=false
 split=false
+split_with_deletions=false
 
 help()
 {
@@ -47,7 +48,7 @@ help()
     exit $1
 }
 
-optspec=":e:zgr:m:dhaks-:"
+optspec=":e:zgr:m:dhaksS-:"
 while getopts "$optspec" optchar; do
     case "${optchar}" in
         -)
@@ -114,6 +115,9 @@ while getopts "$optspec" optchar; do
                 split)
                     split=true
                     ;;
+                split-with-deletions)
+                    split_with_deletions=true
+                    ;;
                 *)
                     help 1
                     #if [ "$OPTERR" = 1 ] && [ "${optspec:0:1}" != ":" ]; then echo "Unknown option --${OPTARG}" >&2; fi
@@ -152,6 +156,9 @@ while getopts "$optspec" optchar; do
         s)
             split=true
             ;;
+        S)
+            split_with_deletions=true
+            ;;
         *)
             help 1
             #if [ "$OPTERR" != 1 ] || [ "${optspec:0:1}" = ":" ]; then echo "Non-option argument: '-${OPTARG}'" >&2; fi
@@ -177,5 +184,6 @@ if [ "${starch_note_set}" = true ]; then options="${options} --starch-note=\"${s
 if [ "${all_reads}" = true ]; then options="${options} --all-reads"; fi
 if [ "${keep_header}" = true ]; then options="${options} --keep-header"; fi
 if [ "${split}" = true ]; then options="${options} --split"; fi
+if [ "${split_with_deletions}" = true ]; then options="${options} --split-with-deletions"; fi
 
 ${cmd} ${options} - <&0

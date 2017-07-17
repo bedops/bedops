@@ -36,6 +36,7 @@ sort_tmpdir="/tmp"
 all_reads=false
 keep_header=false
 split=false
+split_with_deletions=false
 
 help()
 {
@@ -43,7 +44,7 @@ help()
     exit $1
 }
 
-optspec=":r:m:dhaks-:"
+optspec=":r:m:dhaksS-:"
 while getopts "$optspec" optchar; do
     case "${optchar}" in
         -)
@@ -94,6 +95,9 @@ while getopts "$optspec" optchar; do
                 split)
                     split=true
                     ;;
+                split-with-deletions)
+                    split_with_deletions=true
+                    ;;
                 *)
                     help 1
                     #if [ "$OPTERR" = 1 ] && [ "${optspec:0:1}" != ":" ]; then echo "Unknown option --${OPTARG}" >&2; fi
@@ -122,6 +126,9 @@ while getopts "$optspec" optchar; do
         s)
             split=true
             ;;
+        S)
+            split_with_deletions=true
+            ;;
         *)
             help 1
             #if [ "$OPTERR" != 1 ] || [ "${optspec:0:1}" = ":" ]; then echo "Non-option argument: '-${OPTARG}'" >&2; fi
@@ -144,5 +151,6 @@ if [ "${do_not_sort}" = true ]; then options="${options} --do-not-sort"; fi
 if [ "${all_reads}" = true ]; then options="${options} --all-reads"; fi
 if [ "${keep_header}" = true ]; then options="${options} --keep-header"; fi
 if [ "${split}" = true ]; then options="${options} --split"; fi
+if [ "${split_with_deletions}" = true ]; then options="${options} --split-with-deletions"; fi
 
 ${cmd} ${options} - <&0
