@@ -205,7 +205,7 @@ namespace Visitors {
       }
 
       void operator()(const Signal::NaN& s) const {
-        throw(std::string("Unable to process a 'NAN' with PrintAllScorePrecision."));
+        PrintTypes::Print("");
       }
 
     protected:
@@ -213,8 +213,8 @@ namespace Visitors {
       typename std::enable_if<T::UseRest, void>::type printRest(T* t) const {
         // PrintTypes::Print(t->rest()); // already includes '\t' out front
         // t->full_rest() now includes t->id() and t->measurement(), exclude here
-        if ( t->full_rest()[0] != '\0' )
-          PrintTypes::Print(t->full_rest());
+        if ( t->full_rest()[0] != '\0' && t->rest_offset() >= 0 )
+          PrintTypes::Print(t->full_rest() + t->rest_offset());
       }
 
       template <typename T>

@@ -70,9 +70,9 @@ namespace BedMap {
     typedef Visitors::Average<ProcessScorePrecision, BaseClass> Average;
     typedef Visitors::CoeffVariation<ProcessScorePrecision, BaseClass> CoeffVariation;
     typedef Visitors::Count<ProcessScore, BaseClass> Count;
+    typedef Visitors::Indicator<ProcessScore, BaseClass> Indicator;
     typedef Visitors::RollingKthAverage<ProcessScorePrecision, BaseClass, Ext::ArgumentError> KthAverage;
     typedef Visitors::Extreme<ProcessScorePrecision, BaseClass, MaxOrderArb> Max;
-    typedef Visitors::Indicator<ProcessScore, BaseClass> Indicator;
     typedef Visitors::Median<ProcessScorePrecision, BaseClass> Median;
     typedef Visitors::MedianAbsoluteDeviation<ProcessScorePrecision, BaseClass> MedianAbsoluteDeviation;
     typedef Visitors::Extreme<ProcessScorePrecision, BaseClass, MinOrderArb> Min;

@@ -114,7 +114,7 @@ namespace Visitors {
       if ( !m_.empty() )
         pt_.operator()(onTies.breakTie(m_));
       else
-        pt_.operator()(nan);      
+        pt_.operator()(nan);
     }
 
 

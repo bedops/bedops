@@ -785,6 +785,7 @@ namespace Bed {
       // Properties
       char const* rest() const { return rest_; }
       char const* full_rest() const { return fullrest_; }
+      int rest_offset() const { return 0; /* not applicable in min-memory case */ }
 
       // IO
       inline void print() const {
