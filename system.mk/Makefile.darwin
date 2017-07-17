@@ -1,23 +1,28 @@
-PARTY3           = third-party
-BZIP2VERSION     = bzip2-1.0.6
-WHICHBZIP2      := ${PARTY3}/${BZIP2VERSION}
-JANSSONVERSION   = jansson-2.6
-WHICHJANSSON    := ${PARTY3}/${JANSSONVERSION}
-ZLIBVERSION      = zlib-1.2.7
-WHICHZLIB       := ${PARTY3}/${ZLIBVERSION}
-APPDIR           = applications/bed
-BINDIR           = bin
-OSXPKGROOT       = packaging/os_x
-OSXBUILDDIR      = ${OSXPKGROOT}/build
-OSXPKGDIR        = ${OSXPKGROOT}/resources/bin
-OSXLIBDIR        = ${OSXPKGROOT}/resources/lib
-WDIR             = ${shell pwd}
-export CC        = clang
-export CXX       = clang++
-SELF             = ${WDIR}/system.mk/Makefile.darwin
-I386             = darwin_intel_i386
-X86_64           = darwin_intel_x86_64
-MIN_OSX_VERSION  = 10.10
+PARTY3                = third-party
+BZIP2VERSION          = bzip2-1.0.6
+WHICHBZIP2           := ${PARTY3}/${BZIP2VERSION}
+JANSSONVERSION        = jansson-2.6
+WHICHJANSSON         := ${PARTY3}/${JANSSONVERSION}
+ZLIBVERSION           = zlib-1.2.7
+WHICHZLIB            := ${PARTY3}/${ZLIBVERSION}
+APPDIR                = applications/bed
+OSXPKGROOT            = packaging/os_x
+OSXBUILDDIR           = ${OSXPKGROOT}/build
+OSXPKGDIR             = ${OSXPKGROOT}/resources/bin
+OSXLIBDIR             = ${OSXPKGROOT}/resources/lib
+WDIR                  = ${shell pwd}
+export CC             = clang
+export CXX            = clang++
+SELF                  = ${WDIR}/system.mk/Makefile.darwin
+I386                  = darwin_intel_i386
+X86_64                = darwin_intel_x86_64
+MIN_OSX_VERSION       = 10.10
+MEGAROW               = megarow
+TYPICAL               = typical
+BINDIR                = bin
+BINDIR_MODULE         = modules
+BINDIR_MODULE_TYPICAL = ${BINDIR_MODULE}/${TYPICAL}
+BINDIR_MODULE_MEGAROW = ${BINDIR_MODULE}/${MEGAROW}
 
 ifeq ($(ARCH),)
 ARCH := x86_64
@@ -49,6 +54,7 @@ build_debug: all
 #
 clean: clean_debug clean_gprof all
 	rm -rf ${BINDIR}
+	rm -rf ${BINDIR_MODULE}
 	rm -rf ${OSXPKGDIR}
 	rm -rf ${OSXLIBDIR}
 	rm -rf ${OSXBUILDDIR}

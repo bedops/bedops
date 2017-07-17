@@ -39,7 +39,7 @@ help = """
   Starch v2.2+ archives for all chromosomes, or for a specified chromosome.
   
   The typical output of 'starch-diff' is a message indicating that the 
-  archives’ chromosome(s) are identical or dissimilar, written to the standard
+  archives' chromosome(s) are identical or dissimilar, written to the standard
   error stream.
   
   In addition, if all chromosomes are identical, 'starch-diff' exits with a 

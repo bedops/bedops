@@ -1,21 +1,24 @@
-export KERNEL      := ${shell uname -a | cut -f1 -d' '}
-APPDIR              = applications/bed
-OTHERDIR            = applications/other
-BINDIR              = bin
-OSXPKGROOT          = packaging/os_x
-OSXBUILDDIR         = ${OSXPKGROOT}/build
-OSXPKGDIR           = ${OSXPKGROOT}/resources/bin
-OSXLIBDIR           = ${OSXPKGROOT}/resources/lib
-SELF                = ${shell pwd}/Makefile
-MASSIVE_REST_EXP    = 22
-MASSIVE_ID_EXP      = 14
-MASSIVE_CHROM_EXP   = 8
-JPARALLEL           = 8
-MEGA                = megarow
-TYPICAL             = typical
-DEFAULT_BINARY_TYPE = ${TYPICAL} 
-WRAPPERS            = $(wildcard ${APPDIR}/conversion/src/wrappers/*)
-CWD                := $(shell pwd)
+export KERNEL        := ${shell uname -a | cut -f1 -d' '}
+APPDIR                = applications/bed
+OTHERDIR              = applications/other
+OSXPKGROOT            = packaging/os_x
+OSXBUILDDIR           = ${OSXPKGROOT}/build
+OSXPKGDIR             = ${OSXPKGROOT}/resources/bin
+OSXLIBDIR             = ${OSXPKGROOT}/resources/lib
+SELF                  = ${shell pwd}/Makefile
+MASSIVE_REST_EXP      = 22
+MASSIVE_ID_EXP        = 14
+MASSIVE_CHROM_EXP     = 8
+JPARALLEL             = 8
+MEGAROW               = megarow
+TYPICAL               = typical
+DEFAULT_BINARY_TYPE   = ${TYPICAL} 
+WRAPPERS              = $(wildcard ${APPDIR}/conversion/src/wrappers/*)
+CWD                  := $(shell pwd)
+BINDIR                = bin
+BINDIR_MODULE         = modules
+BINDIR_MODULE_TYPICAL = ${BINDIR_MODULE}/${TYPICAL}
+BINDIR_MODULE_MEGAROW = ${BINDIR_MODULE}/${MEGAROW}
 
 default:
 ifeq ($(KERNEL), Darwin)
@@ -39,8 +42,15 @@ all:
 	$(MAKE) install_all -f ${SELF}
 	$(MAKE) symlink_typical -f ${SELF}
 
+module_all:
+	$(MAKE) support -f ${SELF}
+	$(MAKE) typical -f ${SELF}
+	$(MAKE) megarow -f ${SELF}
+	$(MAKE) install_all -f ${SELF}
+	$(MAKE) module_binaries -f ${SELF}
+
 megarow:
-	$(MAKE) BINARY_TYPE=$(MEGA) BINARY_TYPE_NUM=1 POSTFIX=-$(MEGA) MEGAFLAGS="-DREST_EXPONENT=${MASSIVE_REST_EXP} -DID_EXPONENT=${MASSIVE_ID_EXP} -DCHROM_EXPONENT=${MASSIVE_CHROM_EXP}" -f ${SELF}
+	$(MAKE) BINARY_TYPE=$(MEGAROW) BINARY_TYPE_NUM=1 POSTFIX=-$(MEGAROW) MEGAFLAGS="-DREST_EXPONENT=${MASSIVE_REST_EXP} -DID_EXPONENT=${MASSIVE_ID_EXP} -DCHROM_EXPONENT=${MASSIVE_CHROM_EXP}" -f ${SELF}
 
 typical:
 	$(MAKE) BINARY_TYPE=$(TYPICAL) BINARY_TYPE_NUM=0 POSTFIX=-$(TYPICAL) -f ${SELF}
@@ -54,9 +64,9 @@ symlink_typical:
 	done
 
 symlink_megarow:
-	$(eval variablename=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(MEGA)' -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`)
+	$(eval variablename=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(MEGAROW)' -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`)
 	for i in ${variablename}; do \
-		fooname=`echo $$i | sed 's/-$(MEGA)//'`; \
+		fooname=`echo $$i | sed 's/-$(MEGAROW)//'`; \
 		echo $${fooname}; \
 		ln -sf $$i $(BINDIR)/$${fooname}; \
 	done
@@ -77,19 +87,19 @@ install: prep_c install_conversion_scripts install_starch_scripts
 	-cp ${APPDIR}/conversion/bin/convert2bed- ${BINDIR}/convert2bed
 
 install_all: install_conversion_scripts_with_suffix install_starch_scripts_with_suffix
-	-cp ${APPDIR}/sort-bed/bin/sort-bed-$(MEGA) ${BINDIR}/sort-bed-$(MEGA)
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm-$(MEGA) ${BINDIR}/update-sort-bed-slurm-$(MEGA)
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm-$(MEGA) ${BINDIR}/update-sort-bed-starch-slurm-$(MEGA)
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates-$(MEGA) ${BINDIR}/update-sort-bed-migrate-candidates-$(MEGA)
-	-cp ${APPDIR}/bedops/bin/bedops-$(MEGA) ${BINDIR}/bedops-$(MEGA)
-	-cp ${APPDIR}/closestfeats/bin/closest-features-$(MEGA) ${BINDIR}/closest-features-$(MEGA)
-	-cp ${APPDIR}/bedmap/bin/bedmap-$(MEGA) ${BINDIR}/bedmap-$(MEGA)
-	-cp ${APPDIR}/bedextract/bin/bedextract-$(MEGA) ${BINDIR}/bedextract-$(MEGA)
-	-cp ${APPDIR}/starch/bin/starch-$(MEGA) ${BINDIR}/starch-$(MEGA)
-	-cp ${APPDIR}/starch/bin/unstarch-$(MEGA) ${BINDIR}/unstarch-$(MEGA)
-	-cp ${APPDIR}/starch/bin/starchcat-$(MEGA) ${BINDIR}/starchcat-$(MEGA)
-	-cp ${APPDIR}/starch/bin/starchstrip-$(MEGA) ${BINDIR}/starchstrip-$(MEGA)
-	-cp ${APPDIR}/conversion/bin/convert2bed-$(MEGA) ${BINDIR}/convert2bed-$(MEGA)
+	-cp ${APPDIR}/sort-bed/bin/sort-bed-$(MEGAROW) ${BINDIR}/sort-bed-$(MEGAROW)
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm-$(MEGAROW) ${BINDIR}/update-sort-bed-slurm-$(MEGAROW)
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm-$(MEGAROW) ${BINDIR}/update-sort-bed-starch-slurm-$(MEGAROW)
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates-$(MEGAROW) ${BINDIR}/update-sort-bed-migrate-candidates-$(MEGAROW)
+	-cp ${APPDIR}/bedops/bin/bedops-$(MEGAROW) ${BINDIR}/bedops-$(MEGAROW)
+	-cp ${APPDIR}/closestfeats/bin/closest-features-$(MEGAROW) ${BINDIR}/closest-features-$(MEGAROW)
+	-cp ${APPDIR}/bedmap/bin/bedmap-$(MEGAROW) ${BINDIR}/bedmap-$(MEGAROW)
+	-cp ${APPDIR}/bedextract/bin/bedextract-$(MEGAROW) ${BINDIR}/bedextract-$(MEGAROW)
+	-cp ${APPDIR}/starch/bin/starch-$(MEGAROW) ${BINDIR}/starch-$(MEGAROW)
+	-cp ${APPDIR}/starch/bin/unstarch-$(MEGAROW) ${BINDIR}/unstarch-$(MEGAROW)
+	-cp ${APPDIR}/starch/bin/starchcat-$(MEGAROW) ${BINDIR}/starchcat-$(MEGAROW)
+	-cp ${APPDIR}/starch/bin/starchstrip-$(MEGAROW) ${BINDIR}/starchstrip-$(MEGAROW)
+	-cp ${APPDIR}/conversion/bin/convert2bed-$(MEGAROW) ${BINDIR}/convert2bed-$(MEGAROW)
 	-cp ${APPDIR}/sort-bed/bin/sort-bed-$(TYPICAL) ${BINDIR}/sort-bed-$(TYPICAL)
 	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm-$(TYPICAL) ${BINDIR}/update-sort-bed-slurm-$(TYPICAL)
 	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm-$(TYPICAL) ${BINDIR}/update-sort-bed-starch-slurm-$(TYPICAL)
@@ -105,6 +115,85 @@ install_all: install_conversion_scripts_with_suffix install_starch_scripts_with_
 	-cp ${APPDIR}/conversion/bin/convert2bed-$(TYPICAL) ${BINDIR}/convert2bed-$(TYPICAL)
 	-cp ${OTHERDIR}/switch-BEDOPS-binary-type ${BINDIR}/switch-BEDOPS-binary-type
 
+module_binaries:
+	mkdir -p ${BINDIR_MODULE_TYPICAL}
+	-cp ${BINDIR}/sort-bed-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/sort-bed
+	-cp ${BINDIR}/update-sort-bed-slurm-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/update-sort-bed-slurm
+	-cp ${BINDIR}/update-sort-bed-starch-slurm-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/update-sort-bed-starch-slurm
+	-cp ${BINDIR}/update-sort-bed-migrate-candidates-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/update-sort-bed-migrate-candidates
+	-cp ${BINDIR}/bedops-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/bedops
+	-cp ${BINDIR}/closest-features-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/closest-features
+	-cp ${BINDIR}/bedmap-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/bedmap
+	-cp ${BINDIR}/bedextract-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/bedextract
+	-cp ${BINDIR}/starch-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/starch
+	-cp ${BINDIR}/unstarch-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/unstarch
+	-cp ${BINDIR}/starchcat-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/starchcat
+	-cp ${BINDIR}/starchstrip-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/starchstrip
+	-cp ${BINDIR}/starch-diff-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/starch-diff
+	-cp ${BINDIR}/convert2bed-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/convert2bed
+	-cp ${BINDIR}/bam2bed-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/bam2bed
+	-cp ${BINDIR}/gff2bed-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/gff2bed
+	-cp ${BINDIR}/gtf2bed-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/gtf2bed
+	-cp ${BINDIR}/gvf2bed-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/gvf2bed
+	-cp ${BINDIR}/psl2bed-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/psl2bed
+	-cp ${BINDIR}/rmsk2bed-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/rmsk2bed
+	-cp ${BINDIR}/sam2bed-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/sam2bed
+	-cp ${BINDIR}/vcf2bed-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/vcf2bed
+	-cp ${BINDIR}/wig2bed-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/wig2bed
+	-cp ${BINDIR}/bam2starch-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/bam2starch
+	-cp ${BINDIR}/gff2starch-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/gff2starch
+	-cp ${BINDIR}/gtf2starch-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/gtf2starch
+	-cp ${BINDIR}/gvf2starch-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/gvf2starch
+	-cp ${BINDIR}/psl2starch-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/psl2starch
+	-cp ${BINDIR}/rmsk2starch-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/rmsk2starch
+	-cp ${BINDIR}/sam2starch-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/sam2starch
+	-cp ${BINDIR}/vcf2starch-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/vcf2starch
+	-cp ${BINDIR}/wig2starch-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/wig2starch
+	-cp ${BINDIR}/bam2bed_sge-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/bam2bed_sge
+	-cp ${BINDIR}/bam2bed_slurm-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/bam2bed_slurm
+	-cp ${BINDIR}/bam2bed_gnuParallel-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/bam2bed_gnuParallel
+	-cp ${BINDIR}/bam2starch_sge-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/bam2starch_sge
+	-cp ${BINDIR}/bam2starch_slurm-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/bam2starch_slurm
+	-cp ${BINDIR}/bam2starch_gnuParallel-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/bam2starch_gnuParallel
+	mkdir -p ${BINDIR_MODULE_MEGAROW}
+	-cp ${BINDIR}/sort-bed-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/sort-bed
+	-cp ${BINDIR}/update-sort-bed-slurm-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/update-sort-bed-slurm
+	-cp ${BINDIR}/update-sort-bed-starch-slurm-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/update-sort-bed-starch-slurm
+	-cp ${BINDIR}/update-sort-bed-migrate-candidates-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/update-sort-bed-migrate-candidates
+	-cp ${BINDIR}/bedops-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/bedops
+	-cp ${BINDIR}/closest-features-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/closest-features
+	-cp ${BINDIR}/bedmap-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/bedmap
+	-cp ${BINDIR}/bedextract-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/bedextract
+	-cp ${BINDIR}/starch-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/starch
+	-cp ${BINDIR}/unstarch-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/unstarch
+	-cp ${BINDIR}/starchcat-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/starchcat
+	-cp ${BINDIR}/starchstrip-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/starchstrip
+	-cp ${BINDIR}/starch-diff-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/starch-diff
+	-cp ${BINDIR}/convert2bed-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/convert2bed
+	-cp ${BINDIR}/bam2bed-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/bam2bed
+	-cp ${BINDIR}/gff2bed-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/gff2bed
+	-cp ${BINDIR}/gtf2bed-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/gtf2bed
+	-cp ${BINDIR}/gvf2bed-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/gvf2bed
+	-cp ${BINDIR}/psl2bed-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/psl2bed
+	-cp ${BINDIR}/rmsk2bed-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/rmsk2bed
+	-cp ${BINDIR}/sam2bed-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/sam2bed
+	-cp ${BINDIR}/vcf2bed-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/vcf2bed
+	-cp ${BINDIR}/wig2bed-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/wig2bed
+	-cp ${BINDIR}/bam2starch-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/bam2starch
+	-cp ${BINDIR}/gff2starch-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/gff2starch
+	-cp ${BINDIR}/gtf2starch-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/gtf2starch
+	-cp ${BINDIR}/gvf2starch-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/gvf2starch
+	-cp ${BINDIR}/psl2starch-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/psl2starch
+	-cp ${BINDIR}/rmsk2starch-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/rmsk2starch
+	-cp ${BINDIR}/sam2starch-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/sam2starch
+	-cp ${BINDIR}/vcf2starch-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/vcf2starch
+	-cp ${BINDIR}/wig2starch-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/wig2starch
+	-cp ${BINDIR}/bam2bed_sge-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/bam2bed_sge
+	-cp ${BINDIR}/bam2bed_slurm-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/bam2bed_slurm
+	-cp ${BINDIR}/bam2bed_gnuParallel-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/bam2bed_gnuParallel
+	-cp ${BINDIR}/bam2starch_sge-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/bam2starch_sge
+	-cp ${BINDIR}/bam2starch_slurm-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/bam2starch_slurm
+	-cp ${BINDIR}/bam2starch_gnuParallel-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/bam2starch_gnuParallel
 
 #######################
 # install details
@@ -153,10 +242,10 @@ install_starch_scripts_with_suffix: prep_c
 	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel-$(TYPICAL) ${BINDIR}/starchcluster_gnuParallel-$(TYPICAL)
 	-cp ${APPDIR}/starch/bin/starchcluster_slurm-$(TYPICAL) ${BINDIR}/starchcluster_slurm-$(TYPICAL)
 	-cp ${APPDIR}/starch/bin/starch-diff-$(TYPICAL) ${BINDIR}/starch-diff-$(TYPICAL)
-	-cp ${APPDIR}/starch/bin/starchcluster_sge-$(MEGA) ${BINDIR}/starchcluster_sge-$(MEGA)
-	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel-$(MEGA) ${BINDIR}/starchcluster_gnuParallel-$(MEGA)
-	-cp ${APPDIR}/starch/bin/starchcluster_slurm-$(MEGA) ${BINDIR}/starchcluster_slurm-$(MEGA)
-	-cp ${APPDIR}/starch/bin/starch-diff-$(MEGA) ${BINDIR}/starch-diff-$(MEGA)
+	-cp ${APPDIR}/starch/bin/starchcluster_sge-$(MEGAROW) ${BINDIR}/starchcluster_sge-$(MEGAROW)
+	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel-$(MEGAROW) ${BINDIR}/starchcluster_gnuParallel-$(MEGAROW)
+	-cp ${APPDIR}/starch/bin/starchcluster_slurm-$(MEGAROW) ${BINDIR}/starchcluster_slurm-$(MEGAROW)
+	-cp ${APPDIR}/starch/bin/starch-diff-$(MEGAROW) ${BINDIR}/starch-diff-$(MEGAROW)
 
 install_conversion_scripts: prep_c
 	-cp ${APPDIR}/conversion/src/wrappers/bam2bed ${BINDIR}/bam2bed
@@ -190,7 +279,7 @@ install_conversion_scripts_with_suffix: $(WRAPPERS)
 
 $(WRAPPERS): prep_c
 	cp $@ $(patsubst %,$(BINDIR)/%-$(TYPICAL), $(notdir $@))
-	cp $@ $(patsubst %,$(BINDIR)/%-$(MEGA), $(notdir $@))
+	cp $@ $(patsubst %,$(BINDIR)/%-$(MEGAROW), $(notdir $@))
 
 install_osx_packaging_bins: prep_c all
 	mkdir -p ${OSXPKGDIR}

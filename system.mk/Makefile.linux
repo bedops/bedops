@@ -1,20 +1,21 @@
-PARTY3           = third-party
-BZIP2VERSION     = bzip2-1.0.6
-WHICHBZIP2      := ${PARTY3}/${BZIP2VERSION}
-JANSSONVERSION   = jansson-2.6
-WHICHJANSSON    := ${PARTY3}/${JANSSONVERSION}
-ZLIBVERSION      = zlib-1.2.7
-WHICHZLIB       := ${PARTY3}/${ZLIBVERSION}
-APPDIR           = applications/bed
-BINDIR           = bin
-OSXPKGROOT       = packaging/os_x
-OSXBUILDDIR      = ${OSXPKGROOT}/build
-OSXPKGDIR        = ${OSXPKGROOT}/resources/bin
-OSXLIBDIR        = ${OSXPKGROOT}/resources/lib
-WDIR             = ${shell pwd}
-export CC        = gcc
-export CXX       = g++
-SELF             = ${WDIR}/system.mk/Makefile.linux
+PARTY3                = third-party
+BZIP2VERSION          = bzip2-1.0.6
+WHICHBZIP2           := ${PARTY3}/${BZIP2VERSION}
+JANSSONVERSION        = jansson-2.6
+WHICHJANSSON         := ${PARTY3}/${JANSSONVERSION}
+ZLIBVERSION           = zlib-1.2.7
+WHICHZLIB            := ${PARTY3}/${ZLIBVERSION}
+APPDIR                = applications/bed
+WDIR                  = ${shell pwd}
+export CC             = gcc
+export CXX            = g++
+SELF                  = ${WDIR}/system.mk/Makefile.linux
+MEGAROW               = megarow
+TYPICAL               = typical
+BINDIR                = bin
+BINDIR_MODULE         = modules
+BINDIR_MODULE_TYPICAL = ${BINDIR_MODULE}/${TYPICAL}
+BINDIR_MODULE_MEGAROW = ${BINDIR_MODULE}/${MEGAROW}
 
 default: support
 	$(MAKE) build -f $(SELF)
@@ -38,9 +39,6 @@ gprof: support
 build_gprof: $(SUBDIRS)
 
 clean: clean_debug clean_gprof clean_postfix $(SUBDIRS)
-	rm -f ${OSXPKGDIR}/*
-	rm -f ${OSXLIBDIR}/*
-	rm -Rf ${OSXBUILDDIR}/*
 	rm -rf ${WHICHBZIP2}
 	rm -f ${PARTY3}/bzip2
 	rm -rf ${WHICHJANSSON}
@@ -57,6 +55,7 @@ clean_gprof:
 
 clean_postfix:
 	rm -rf ${BINDIR}
+	rm -rf ${BINDIR_MODULE}
 
 #
 # third-party libraries
