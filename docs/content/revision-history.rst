@@ -15,15 +15,15 @@ Current version
 v2.4.27
 -------
 
-Released: **TBD**
+Released: **July 17, 2017**
 
-This revision of BEDOPS includes significant performance improvements for default (:code:'typical') and so-called :code:`megarow` builds of BEDOPS, reflecting the types of input each build is optimized to use. Performance tests were done with whole-genome TRANSFAC FIMO scans, with cache purges in between trials. 
+This revision of BEDOPS includes significant performance improvements for core tools: :code:`bedops`, :code:`bedmap`, and :code:`closest-features`. Performance tests were done with whole-genome TRANSFAC FIMO scans, with cache purges in between trials. 
 
-Pre-built binaries for Darwin and GNU/Linux targets include both the default :code:`typical` and :code:`megarow` builds of BEDOPS. The program names that you are accustomed to will remain as-is, but the binaries will exist as symbolic links pointing to the :code:`typical` builds. These links can be repointed to the :code:`megarow` builds by calling :code:`switch-BEDOPS-binary-type --megarow`, which will set the usual BEDOPS binaries to link to the :code:`megarow` builds. One can use :code:`switch-BEDOPS-binary-type --typical` at any time, to revert to the default links.
+Pre-built binaries for Darwin and GNU/Linux targets include both the default :code:`typical` and :code:`megarow` builds of BEDOPS. The program names that you are accustomed to will remain as-is, but the binaries will exist as symbolic links pointing to the :code:`typical` builds. These links can be repointed to the :code:`megarow` builds by calling :code:`switch-BEDOPS-binary-type --megarow`, which will set the usual BEDOPS binaries to link to the :code:`megarow` builds. One can run :code:`switch-BEDOPS-binary-type --typical` at any time to revert to the default (:code:`typical`) builds.
 
 The top-level Makefile includes some new variables for those who choose to build from source. The :code:`JPARALLEL` variable sets the number of CPUs to use in parallel when compiling BEDOPS, which can speed compilation time dramatically. The :code:`MASSIVE_REST_EXP`, :code:`MASSIVE_ID_EXP`, and :code:`MASSIVE_CHROM_EXP` are used when building the :code:`megarow` to support any required row lengths (build using :code:`make megarow`).  These are the exponents (the *n* in 2:sup:n) for holding all characters after chromosome, start, and stop fields, the ID field (column 4, typically), and the chromosome field (column 1). 
 
-To simplify distribution and support, we have removed pre-built 32-bit program versions in this release. These can be built from source by specifying the correct :code:`ARCH` value in the top-level Makefile. For OS X, our package installer requires that you have OS X 10.10 or greater installed.
+To simplify distribution and support, we have removed pre-built 32-bit program versions in this release. These can be built from source by specifying the correct :code:`ARCH` value in the top-level Makefile. For OS X, our package installer now requires OS X version 10.10 or greater.
 
 Application-level notes follow:
 
@@ -37,9 +37,9 @@ Application-level notes follow:
 
 * :ref:`bedmap <bedmap>`
 
-  * Automatically use :code:`--faster` option when :code:`--exact` is used as the overlap criterion, or if the input files are formatted as Starch archives, no fully-nested elements exist in the archives, and the overlap criterion supports :code:`--faster` (such as :code:`--bp-ovr`, :code:`--exact`, and :code:`--range`).
-
   * Performance of :code:`bedmap` tool improved, doing the same work in **86.7%** of the time of all previous versions.
+
+  * Automatically use :code:`--faster` option when :code:`--exact` is used as the overlap criterion, or if the input files are formatted as Starch archives, no fully-nested elements exist in the archives, and the overlap criterion supports :code:`--faster` (such as :code:`--bp-ovr`, :code:`--exact`, and :code:`--range`).
 
   * The :code:`megarow` build target handles input files with very long rows (4M+ characters). Such input might arise from conversion of very-long-read BAM files to BED via :code:`bam2bed`, such as those that may come from Nanopore or PacBio MinION platforms. This build requires more runtime memory than the default (:code:`typical`) build. Pertinent variables for :code:`megarow` execution can be modified through the make system without changing source.
 
@@ -75,7 +75,7 @@ Application-level notes follow:
 
 * :ref:`sort-bed <sort-bed>`
 
-  * The :code:`megarow` build target is available to compile a version of the program that can handle input files with very long rows (4M+ characters).  This requires more runtime memory than the default build.  The pertinent variables can be modified through the make system without changing source.  This is useful for converting ultra-long reads from Nanopore and PacBio platforms to BED via :code:`bam2bed` / :code:`convert2bed`.
+  * The :code:`megarow` build target is available to compile a version of the program that can handle input files with very long rows (4M+ characters).  This requires more runtime memory than the default build.  The pertinent variables can be modified through the make system without changing source.  This is useful for converting ultra-long reads from Nanopore and PacBio sequencing platforms to BED via :code:`bam2bed` / :code:`convert2bed`.
   
 * :ref:`starch <starch>`
 
