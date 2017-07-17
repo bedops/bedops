@@ -1524,57 +1524,48 @@ c2b_line_convert_gff_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
     */
 
     if (((gff_field_idx + 1) < c2b_gff_field_min) || ((gff_field_idx + 1) > c2b_gff_field_max)) {
-        if (gff_field_idx == 0) {
-            char non_interval_str[C2B_MAX_FIELD_LENGTH_VALUE];
-            memcpy(non_interval_str, src, current_src_posn);
-            non_interval_str[current_src_posn] = '\0';
-            char non_int_prefix[C2B_MAX_FIELD_LENGTH_VALUE];
-            strncpy(non_int_prefix, non_interval_str, 2);
-            non_int_prefix[2] = '\0';
-            /* We compare against either of two standard GFF3 or GVF header pragmas */
-            if ((strcmp(non_interval_str, c2b_gff_header) == 0) || 
-                (strcmp(non_interval_str, c2b_gvf_header) == 0) || 
-                (strcmp(non_int_prefix, c2b_gvf_generic_header) == 0)) {
-                if (!c2b_globals.keep_header_flag) {
-                    return;
-                }
-                else {
-                    /* set up temporary header stream buffers */
-                    if (!c2b_globals.src_line_str) {
-                        c2b_globals.src_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
-                        if (!c2b_globals.src_line_str) {
-                            fprintf(stderr, "Error: Could not allocate space for globals source line buffer\n");
-                            exit(ENOMEM);
-                        }
-                    }
-                    if (!c2b_globals.dest_line_str) {
-                        c2b_globals.dest_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
-                        if (!c2b_globals.dest_line_str) {
-                            fprintf(stderr, "Error: Could not allocate space for globals destination line buffer\n");
-                            exit(ENOMEM);
-                        }
-                    }
-                    /* copy header line to destination stream buffer */
-                    memcpy(c2b_globals.src_line_str, src, src_size);
-                    c2b_globals.src_line_str[src_size] = '\0';
-                    sprintf(c2b_globals.dest_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), c2b_globals.src_line_str);
-                    memcpy(*dest + *dest_size, c2b_globals.dest_line_str, strlen(c2b_globals.dest_line_str));
-                    *dest_size += strlen(c2b_globals.dest_line_str);
-                    c2b_globals.header_line_idx++;
-                    return;                    
-                }
-            }
-            else if (strcmp(non_interval_str, c2b_gff_fasta) == 0) {
+        char header_str[C2B_MAX_FIELD_LENGTH_VALUE];
+        memcpy(header_str, src, gff_field_offsets[0]);
+        header_str[gff_field_offsets[0]] = '\0';
+        char non_int_prefix[C2B_MAX_FIELD_LENGTH_VALUE];
+        strncpy(non_int_prefix, header_str, 2);
+        non_int_prefix[2] = '\0';
+        /* We compare against either of two standard GFF3 or GVF header pragmas */
+        if ((strcmp(header_str, c2b_gff_header) == 0) ||
+            (strcmp(header_str, c2b_gff_fasta) == 0) ||
+            (strcmp(header_str, c2b_gvf_header) == 0) ||
+            (strcmp(non_int_prefix, c2b_gvf_generic_header) == 0)) {
+            if (!c2b_globals.keep_header_flag) {
                 return;
             }
             else {
+                /* set up temporary header stream buffers */
+                if (!c2b_globals.src_line_str) {
+                    c2b_globals.src_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+                    if (!c2b_globals.src_line_str) {
+                        fprintf(stderr, "Error: Could not allocate space for globals source line buffer\n");
+                        exit(ENOMEM);
+                    }
+                }
+                if (!c2b_globals.dest_line_str) {
+                    c2b_globals.dest_line_str = malloc(C2B_MAX_LINE_LENGTH_VALUE + 1);
+                    if (!c2b_globals.dest_line_str) {
+                        fprintf(stderr, "Error: Could not allocate space for globals destination line buffer\n");
+                        exit(ENOMEM);
+                    }
+                }
+                /* copy header line to destination stream buffer */
+                memcpy(c2b_globals.src_line_str, src, src_size);
+                c2b_globals.src_line_str[src_size] = '\0';
+                sprintf(c2b_globals.dest_line_str, "%s\t%u\t%u\t%s\n", c2b_header_chr_name, c2b_globals.header_line_idx, (c2b_globals.header_line_idx + 1), c2b_globals.src_line_str);
+                memcpy(*dest + *dest_size, c2b_globals.dest_line_str, strlen(c2b_globals.dest_line_str));
+                *dest_size += strlen(c2b_globals.dest_line_str);
+                c2b_globals.header_line_idx++;
                 return;
             }
         }
         else {
-            fprintf(stderr, "Error: Invalid field count (%d) -- input file may not match input format\n", gff_field_idx);
-            c2b_print_usage(stderr);
-            exit(EINVAL); /* Invalid argument (POSIX.1) */
+            return;
         }
     }
 

@@ -30,11 +30,11 @@ Application-level notes follow:
 * :ref:`bedops <bedops>`
 
   * Performance of :code:`bedops` tool improved, doing typical work in **76.5%** of the time of all previous versions.
-  
+
   * Performance of :code:`-u`/:code:`--everything` has improved, doing the same work in only **55.6%** of the time of previous versions when given a large number of input files.
-  
+
   * The :code:`megarow` build of this application handles input files with very long rows (4M+ characters). Such input might arise from conversion of very-long-read BAM files to BED via :code:`bam2bed`, such as those that may come from Nanopore or PacBio MinION platforms. This build requires more runtime memory than the default (:code:`typical`) build. Pertinent variables for :code:`megarow` execution can be modified through the make system without changing source.
-  
+
 * :ref:`bedmap <bedmap>`
 
   * Automatically use :code:`--faster` option when :code:`--exact` is used as the overlap criterion, or if the input files are formatted as Starch archives, no fully-nested elements exist in the archives, and the overlap criterion supports :code:`--faster` (such as :code:`--bp-ovr`, :code:`--exact`, and :code:`--range`).
@@ -42,11 +42,11 @@ Application-level notes follow:
   * Performance of :code:`bedmap` tool improved, doing the same work in **86.7%** of the time of all previous versions.
 
   * The :code:`megarow` build target handles input files with very long rows (4M+ characters). Such input might arise from conversion of very-long-read BAM files to BED via :code:`bam2bed`, such as those that may come from Nanopore or PacBio MinION platforms. This build requires more runtime memory than the default (:code:`typical`) build. Pertinent variables for :code:`megarow` execution can be modified through the make system without changing source.
-  
+
   * New :code:`--min-memory` option for use when the reference file has very large regions, and the map file has many small regions that fall within those larger regions. One example is when :code:`--range 100000` is used and the map file consists of whole-genome motif scan hits.  Memory overhead can be reduced to that used by all previous versions, up to and including v2.4.26.
-  
+
   * Added :code:`--faster` automatically when :code:`--exact` is used, which is robust even when nested elements exist in inputs.  Similarly, :code:`--faster` is used automatically when inputs are Starch-formatted archives, none of which have nested elements (see :code:`unstarch --has-nested`) when the overlap criterion allows for :code:`--faster`.
-  
+
 * :ref:`closest-features <closest-features>`
 
   * Performance of :code:`closest-features` tool has been improved, doing the same work in **87.7%** of the time of all previous versions.
@@ -58,14 +58,20 @@ Application-level notes follow:
   Numerous internal changes, including giving line functors the ability to resize the destination (write) buffer in mid-stream, along with increased integration with BEDOPS-wide constants. Destination buffer resizing is particularly useful when converting very-long-read BAM files containing numerous D (deletion) operations, such as when used with the new :code:`--split-with-deletions` option.
 
   * :ref:`psl2bed <psl2bed>`
-  
+
     * Migrated storage of PSL conversion state from stack to heap, which helps address segmentation faults on OS X (thanks to rmartson@Biostars for the bug report).
-  
+
   * :ref:`bam2bed <bam2bed>` and :ref:`sam2bed <sam2bed>`
 
     * Increased thread I/O heap buffer size to reduce likelihood of overflows while parsing reads from Nanopore and PacBio platforms.
-  
+
     * Added :code:`--split-with-deletions` option to split spliced junctions by :code:`N` and :code:`D` CIGAR operations. The :code:`--split` option now splits only on :code:`N` operations.
+
+    * Added :code:`--reduced` option to print first six columns of BED data to standard output.
+
+  * :ref:`gff2bed <gff2bed>`
+
+    * Resolved issue parsing GFF input with :code:`##FASTA` directive.
 
 * :ref:`sort-bed <sort-bed>`
 
