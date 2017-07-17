@@ -752,9 +752,9 @@ namespace Bed {
     struct Bed5
       : public Bed5<Bed4Type, MeasureType, false> { /* Bed4Type is forced to be Bed4<> specialization above */
 
-      Bed5() : BaseClass(), rest_(new char[1]) { *rest_ = '\0'; }
+      Bed5() : BaseClass(), rest_(new char[1]), fullrest_(new char[1]) { *rest_ = '\0'; *fullrest_ = '\0'; restOffset_ = -1; }
       Bed5(const Bed5& c)
-        : BaseClass(c), rest_(new char[(c.rest_ != NULL) ? (std::strlen(c.rest_+1)) : 1]),
+        : BaseClass(c), restOffset_(c.restOffset_), rest_(new char[(c.rest_ != NULL) ? (std::strlen(c.rest_+1)) : 1]),
           fullrest_(new char[(c.fullrest_ != NULL) ? (std::strlen(c.fullrest_+1)) : 1])
         {
           *rest_ = '\0'; if ( c.rest_ != NULL ) std::strcpy(rest_, c.rest_);
@@ -785,7 +785,7 @@ namespace Bed {
       // Properties
       char const* rest() const { return rest_; }
       char const* full_rest() const { return fullrest_; }
-      int rest_offset() const { return 0; /* not applicable in min-memory case */ }
+      int rest_offset() const { return restOffset_; }
 
       // IO
       inline void print() const {
@@ -822,7 +822,10 @@ namespace Bed {
           delete [] fullrest_;
         std::size_t sz = (std::strlen(restBuf)+1) + (std::strlen(idBuf) + 1);
         fullrest_ = new char[sz];
+        restOffset_ = -1;
         std::strcpy(fullrest_, idBuf);
+        if ( restBuf[0] != '\0' )
+          restOffset_ = std::strlen(idBuf);
         std::strcat(fullrest_, restBuf);
         return numScanned;
       }
@@ -851,11 +854,14 @@ namespace Bed {
 
         if ( fullrest_ )
           delete [] fullrest_;
+
         std::size_t sz = (std::strlen(restBuf)+1) + (std::strlen(idBuf) + 1);
         fullrest_ = new char[sz];
+        restOffset_ = -1;
         std::strcpy(fullrest_, idBuf);
+        if ( restBuf[0] != '\0' )
+          restOffset_ = std::strlen(idBuf);
         std::strcat(fullrest_, restBuf);
-
         return numScanned;
       }
 
@@ -891,6 +897,7 @@ namespace Bed {
       using BaseClass::id_;
       using BaseClass::measurement_;
 
+      int restOffset_;
       char* rest_;
       char* fullrest_;
 
