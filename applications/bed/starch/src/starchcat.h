@@ -67,6 +67,9 @@ static const char* application_type = "typical";
 #define STARCHCAT_RETRANSFORM_BUFFER_SIZE 1024*1024
 #define STARCHCAT_FIELD_BUFFER_MAX_LENGTH 16
 
+#define GCC_COMPILER (defined(__GNUC__) && !defined(__clang__))
+#define CLANG_COMPILER defined(__clang__)
+
 /*
     This is simply a struct containing a starch file's
     metadata, pathname and other data useful for our 
