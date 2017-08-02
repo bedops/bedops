@@ -12,6 +12,16 @@ Current version
 ===============
 
 -------
+v2.4.28
+-------
+
+Released: **TBD**
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.27
 -------
 
@@ -92,10 +102,6 @@ Application-level notes follow:
 * Clang warnings
 
   * Resolved compilation warnings for several binaries.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.26
