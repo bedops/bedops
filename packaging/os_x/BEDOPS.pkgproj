@@ -3110,7 +3110,56 @@
 									<array>
 										<dict>
 											<key>CHILDREN</key>
-											<array/>
+											<array>
+												<dict>
+													<key>CHILDREN</key>
+													<array/>
+													<key>GID</key>
+													<integer>0</integer>
+													<key>PATH</key>
+													<string>resources/bin/closest-features</string>
+													<key>PATH_TYPE</key>
+													<integer>1</integer>
+													<key>PERMISSIONS</key>
+													<integer>493</integer>
+													<key>TYPE</key>
+													<integer>3</integer>
+													<key>UID</key>
+													<integer>0</integer>
+												</dict>
+												<dict>
+													<key>CHILDREN</key>
+													<array/>
+													<key>GID</key>
+													<integer>0</integer>
+													<key>PATH</key>
+													<string>resources/bin/closest-features-megarow</string>
+													<key>PATH_TYPE</key>
+													<integer>1</integer>
+													<key>PERMISSIONS</key>
+													<integer>493</integer>
+													<key>TYPE</key>
+													<integer>3</integer>
+													<key>UID</key>
+													<integer>0</integer>
+												</dict>
+												<dict>
+													<key>CHILDREN</key>
+													<array/>
+													<key>GID</key>
+													<integer>0</integer>
+													<key>PATH</key>
+													<string>resources/bin/closest-features-typical</string>
+													<key>PATH_TYPE</key>
+													<integer>1</integer>
+													<key>PERMISSIONS</key>
+													<integer>493</integer>
+													<key>TYPE</key>
+													<integer>3</integer>
+													<key>UID</key>
+													<integer>0</integer>
+												</dict>
+											</array>
 											<key>GID</key>
 											<integer>0</integer>
 											<key>PATH</key>
@@ -3121,54 +3170,6 @@
 											<integer>493</integer>
 											<key>TYPE</key>
 											<integer>2</integer>
-											<key>UID</key>
-											<integer>0</integer>
-										</dict>
-										<dict>
-											<key>CHILDREN</key>
-											<array/>
-											<key>GID</key>
-											<integer>0</integer>
-											<key>PATH</key>
-											<string>resources/bin/closest-features</string>
-											<key>PATH_TYPE</key>
-											<integer>1</integer>
-											<key>PERMISSIONS</key>
-											<integer>493</integer>
-											<key>TYPE</key>
-											<integer>3</integer>
-											<key>UID</key>
-											<integer>0</integer>
-										</dict>
-										<dict>
-											<key>CHILDREN</key>
-											<array/>
-											<key>GID</key>
-											<integer>0</integer>
-											<key>PATH</key>
-											<string>resources/bin/closest-features-megarow</string>
-											<key>PATH_TYPE</key>
-											<integer>1</integer>
-											<key>PERMISSIONS</key>
-											<integer>493</integer>
-											<key>TYPE</key>
-											<integer>3</integer>
-											<key>UID</key>
-											<integer>0</integer>
-										</dict>
-										<dict>
-											<key>CHILDREN</key>
-											<array/>
-											<key>GID</key>
-											<integer>0</integer>
-											<key>PATH</key>
-											<string>resources/bin/closest-features-typical</string>
-											<key>PATH_TYPE</key>
-											<integer>1</integer>
-											<key>PERMISSIONS</key>
-											<integer>493</integer>
-											<key>TYPE</key>
-											<integer>3</integer>
 											<key>UID</key>
 											<integer>0</integer>
 										</dict>
