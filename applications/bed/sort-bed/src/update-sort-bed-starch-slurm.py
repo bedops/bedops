@@ -288,7 +288,7 @@ def main():
             '--partition',
             slurm_partition,
             '--wrap',
-            '"srun ' + unstarch_path + ' ' + chromosome + ' ' + args.input_fn + ' | ' + sort_bed_path + ' - | ' + starch_path + ' - > ' + temp_dest + '"'
+            '"srun ' + unstarch_path + ' ' + chromosome + ' ' + args.input_original_fn + ' | ' + sort_bed_path + ' - | ' + starch_path + ' - > ' + temp_dest + '"'
         ]
         if logger: logger.info('Submitting job via [%s]' % (' '.join(per_chromosome_sort_cmd_components)))
         try:

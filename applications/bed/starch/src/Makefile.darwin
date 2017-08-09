@@ -134,7 +134,7 @@ mkdirs:
 	mkdir -p ${BINDIR}
 
 clean:
-	rm -f $(LOCALSTARCHLIB)
+	rm -rf $(LOCALSTARCHLIBDIR)
 	rm -f ${LOCALSTARCHLIBDEBUG}
 	rm -rf ${LOCALOBJDIR}
 	rm -rf ${LOCALSTARCHLIBDIR}

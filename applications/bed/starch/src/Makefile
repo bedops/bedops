@@ -119,7 +119,7 @@ test: starch unstarch starchcat
 	make -C ${TEST} all
 
 clean:
-	rm -f $(LOCALSTARCHLIB)
+	rm -rf $(LOCALSTARCHLIBDIR)
 	rm -f ${LOCALSTARCHLIBDEBUG}
 	rm -f ${LOCALSTARCHLIBGPROF}
 	rm -rf ${LOCALOBJDIR}
