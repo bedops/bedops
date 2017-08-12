@@ -24,8 +24,8 @@ BINDIR_MODULE         = modules
 BINDIR_MODULE_TYPICAL = ${BINDIR_MODULE}/${TYPICAL}
 BINDIR_MODULE_MEGAROW = ${BINDIR_MODULE}/${MEGAROW}
 
-ifeq ($(ARCH),)
-ARCH := x86_64
+ifeq ($(BUILD_ARCH),)
+BUILD_ARCH := x86_64
 endif
 
 default: support
@@ -38,7 +38,7 @@ SUBDIRS_FULL := $(patsubst %,${APPDIR}/%,$(SUBDIRS))
 
 # $@ has full path info
 $(SUBDIRS_FULL):
-	export ARCH=${ARCH} MIN_OSX_VERSION=${MIN_OSX_VERSION} && $(MAKE) -C $@ -f Makefile.darwin $(MAKECMDGOALS)
+	export ARCH=${BUILD_ARCH} MIN_OSX_VERSION=${MIN_OSX_VERSION} && $(MAKE) -C $@ -f Makefile.darwin $(MAKECMDGOALS)
 
 all: $(SUBDIRS_FULL)
 
@@ -64,7 +64,7 @@ clean: clean_debug clean_gprof all
 	rm -f ${PARTY3}/jansson
 	rm -rf ${WHICHZLIB}
 	rm -f ${PARTY3}/zlib
-	rm -rf ${PARTY3}/darwin_intel_${ARCH}
+	rm -rf ${PARTY3}/darwin_intel_${BUILD_ARCH}
 
 clean_debug:
 	rm -rf ${BINDIR}
@@ -76,7 +76,7 @@ clean_gprof:
 # mkdir's
 #
 mkdirs:
-	mkdir -p ${PARTY3}/darwin_intel_${ARCH}
+	mkdir -p ${PARTY3}/darwin_intel_${BUILD_ARCH}
 	mkdir -p ${APPDIR}/sort-bed/bin
 	mkdir -p ${APPDIR}/bedops/bin
 	mkdir -p ${APPDIR}/closestfeats/bin
@@ -95,14 +95,14 @@ support: | mkdirs
 	$(MAKE) support_intel -f $(SELF)
 
 jansson_support_c:
-	bzcat ${WHICHJANSSON}.tar.bz2 | tar -x -C ${PARTY3}/darwin_intel_${ARCH}/
-	cd ${PARTY3}/darwin_intel_${ARCH}/${JANSSONVERSION} && export MACOSX_DEPLOYMENT_TARGET=${MIN_OSX_VERSION} && export ARCH=${ARCH} && export CC=${CC} && export CXX=${CXX} && ./configure --prefix=${WDIR}/${PARTY3}/darwin_intel_${ARCH}/${JANSSONVERSION} CFLAGS="-arch ${ARCH}" --build="${ARCH}" && $(MAKE) && $(MAKE) install && cd ../ && rm -f jansson && ln -sf ${JANSSONVERSION} jansson && cd ${WDIR}
+	bzcat ${WHICHJANSSON}.tar.bz2 | tar -x -C ${PARTY3}/darwin_intel_${BUILD_ARCH}/
+	cd ${PARTY3}/darwin_intel_${BUILD_ARCH}/${JANSSONVERSION} && export MACOSX_DEPLOYMENT_TARGET=${MIN_OSX_VERSION} && export ARCH=${BUILD_ARCH} && export CC=${CC} && export CXX=${CXX} && ./configure --prefix=${WDIR}/${PARTY3}/darwin_intel_${BUILD_ARCH}/${JANSSONVERSION} CFLAGS="-arch ${BUILD_ARCH}" --build="${BUILD_ARCH}" && $(MAKE) && $(MAKE) install && cd ../ && rm -f jansson && ln -sf ${JANSSONVERSION} jansson && cd ${WDIR}
 
 bzip2_support_c:
-	bzcat ${WHICHBZIP2}.tar.bz2 | tar -x -C ${PARTY3}/darwin_intel_${ARCH}/
-	cd ${PARTY3}/darwin_intel_${ARCH}/${BZIP2VERSION} && export MACOSX_DEPLOYMENT_TARGET=${MIN_OSX_VERSION} && export ARCH=${ARCH} && export CC=${CC} && export CXX=${CXX} && $(MAKE) -f Makefile.darwin_${ARCH} libbz2.a && cd ../ && rm -f bzip2 && ln -sf ${BZIP2VERSION} bzip2 && cd ${WDIR}
+	bzcat ${WHICHBZIP2}.tar.bz2 | tar -x -C ${PARTY3}/darwin_intel_${BUILD_ARCH}/
+	cd ${PARTY3}/darwin_intel_${BUILD_ARCH}/${BZIP2VERSION} && export MACOSX_DEPLOYMENT_TARGET=${MIN_OSX_VERSION} && export ARCH=${BUILD_ARCH} && export CC=${CC} && export CXX=${CXX} && $(MAKE) -f Makefile.darwin_${BUILD_ARCH} libbz2.a && cd ../ && rm -f bzip2 && ln -sf ${BZIP2VERSION} bzip2 && cd ${WDIR}
 
 zlib_support_intel_c:
-	bzcat ${WHICHZLIB}.tar.bz2 | tar -x -C ${PARTY3}/darwin_intel_${ARCH}/
-	cd ${PARTY3}/darwin_intel_${ARCH}/${ZLIBVERSION} && export MACOSX_DEPLOYMENT_TARGET=${MIN_OSX_VERSION} && export ARCH=${ARCH} && export CC=${CC} && export CXX=${CXX} && ./configure --static --archs="-arch ${ARCH}" && $(MAKE) && cd ../ && rm -f zlib && ln -sf ${ZLIBVERSION} zlib && cd ${WDIR}
+	bzcat ${WHICHZLIB}.tar.bz2 | tar -x -C ${PARTY3}/darwin_intel_${BUILD_ARCH}/
+	cd ${PARTY3}/darwin_intel_${BUILD_ARCH}/${ZLIBVERSION} && export MACOSX_DEPLOYMENT_TARGET=${MIN_OSX_VERSION} && export ARCH=${BUILD_ARCH} && export CC=${CC} && export CXX=${CXX} && ./configure --static --archs="-arch ${BUILD_ARCH}" && $(MAKE) && cd ../ && rm -f zlib && ln -sf ${ZLIBVERSION} zlib && cd ${WDIR}
 
