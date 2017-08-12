@@ -119,7 +119,7 @@ Compilation of BEDOPS on Linux requires GCC 4.8.2 (both ``gcc`` and ``g++`` and 
      $ cd bedops
      $ make
 
-.. tip:: BEDOPS now supports parallel builds. If you are compiling on a multicore or multiprocessor workstation, use ``make -j N`` where ``N`` is ``2``, ``4`` or however many cores or processors you have, in order to parallelize and speed up the build process.
+.. tip:: BEDOPS supports parallel builds, which speeds up compilation considerably. If you are compiling on a multicore or multiprocessor workstation, edit the ``JPARALLEL`` variable in the top-level Makefile, or override it, specifying the number of cores or processors you wish to use to compile.
 
 5. Once the build is complete, install compiled binaries and scripts to a local ``bin`` folder: 
 
@@ -141,9 +141,9 @@ Compilation of BEDOPS on Linux requires GCC 4.8.2 (both ``gcc`` and ``g++`` and 
 Mac OS X
 --------
 
-In Mac OS X, you have two options to install BEDOPS via source code: Compile the code manually, or use the Homebrew package manager to manage installation of a prebuilt pacakge.
+In Mac OS X, you have a few options to install BEDOPS via source code: Compile the code manually, or use the Bioconda or Homebrew package manager to manage installation.
 
-Compilation of BEDOPS on Mac OS X via either procedure requires Clang/LLVM 3.5 or greater, which includes support for `C++11 <http://en.wikipedia.org/wiki/C%2B%2B11>`_ features required by core BEDOPS tools. Other tools may be required as described in the installation documentation that follows. GNU GCC is no longer required for compilation on OS X hosts.
+Compilation of BEDOPS on Mac OS X requires Clang/LLVM 3.5 or greater, which includes support for `C++11 <http://en.wikipedia.org/wiki/C%2B%2B11>`_ features required by core BEDOPS tools. Other tools may be required as described in the installation documentation that follows. GNU GCC is no longer required for compilation on OS X hosts.
 
 ^^^^^^^^^^^^^^^^^^
 Manual compilation
@@ -174,7 +174,7 @@ Manual compilation
      $ cd bedops
      $ make
 
-.. tip:: BEDOPS now supports parallel builds. If you are compiling on a multicore or multiprocessor workstation, use ``make -j N`` where ``N`` is ``2``, ``4`` or however many cores or processors you have, in order to parallelize and speed up the build process.
+.. tip:: BEDOPS supports parallel builds, which speeds up compilation considerably. If you are compiling on a multicore or multiprocessor workstation, edit the ``JPARALLEL`` variable in the top-level Makefile, or override it, specifying the number of cores or processors you wish to use to compile.
 
 5. Once the build is complete, install compiled binaries and scripts to a local ``bin`` folder: 
 
@@ -190,6 +190,33 @@ Manual compilation
 
    Change this destination folder, as needed.
 
+^^^^^^^^^^^^^^^^^^^^^^^^^
+Installation via Bioconda
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Bioconda is a bioinformatics resource that extends the Conda package manager with scientific software packages, including BEDOPS. We aim to keep the recipe concurrent with the present release; occasionally, it may be a minor version behind.
+
+What follows are steps taken from the `Bioconda installation page <https://bioconda.github.io/>`_. Use this guide for the most current set of instructions, which we briefly cover here:
+
+1. Follow the instructions on `Conda's website <http://conda.pydata.org/miniconda.html>`_ to install the Miniconda package, which installs the ``conda`` command-line tool.
+
+2. If you have not already done so, add the Conda channels that Bioconda depends upon:
+
+   ::
+
+      $ (conda config --add channels r)
+      $ conda config --add channels defaults
+      $ conda config --add channels conda-forge
+      $ conda config --add channels bioconda
+
+3. Install the BEDOPS package:
+
+   ::
+
+      $ conda install bedops
+
+`Other recipes <https://bioconda.github.io/recipes.html#recipes>`_ are available for installation, as well.
+   
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 Installation via Homebrew
 ^^^^^^^^^^^^^^^^^^^^^^^^^
