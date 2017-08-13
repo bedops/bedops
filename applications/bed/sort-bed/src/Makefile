@@ -40,6 +40,7 @@ endif
 
 dependency_names    = starchConstants starchFileHelpers starchHelpers starchMetadataHelpers unstarchHelpers starchSha1Digest starchBase64Coding SortDetails Sort CheckSort
 dependencies        = $(addprefix $(OBJDIR)/, $(addsuffix .o, $(dependency_names)))
+debug_dependencies  = $(addprefix $(OBJDIR)/, $(addsuffix .do, $(dependency_names)))
 
 FLAGS               = $(SFLAGS) ${MEGAFLAGS} -s ${BLDFLAGS} ${LIBLOCATION} ${INCLUDES}
 DFLAGS              = $(SFLAGS) ${MEGAFLAGS} -g -O0 -std=c++11 -Wall -fno-inline -pedantic ${LIBLOCATION} ${INCLUDES}
@@ -62,6 +63,8 @@ build_debug: $(BINDIR)/debug.$(PROG)
 
 dependencies: $(dependencies)
 
+debug_dependencies: $(debug_dependencies)
+
 update-sort-bed-slurm-${BINARY_TYPE}:
 	mkdir -p $(BINDIR) && cp update-sort-bed-slurm.py $(BINDIR)/update-sort-bed-slurm-${BINARY_TYPE}
 
@@ -77,7 +80,7 @@ $(BINDIR)/$(PROG) : $(dependencies)
 $(BINDIR)/gprof.$(PROG) : $(dependencies)
 	mkdir -p $(BINDIR) && $(CXX) -o $@ ${TFLAG} $(GPROFFLAGS) $^ ${LIBRARIES}
 
-$(BINDIR)/debug.$(PROG) : $(dependencies)
+$(BINDIR)/debug.$(PROG) : $(debug_dependencies)
 	mkdir -p $(BINDIR) && $(CXX) -o $@ ${TFLAG} $(DFLAGS) $^ ${LIBRARIES}
 	rm -rf ${OBJDIR}
 
@@ -89,6 +92,15 @@ $(OBJDIR)/%.o : $(LIB3)/%.c
 
 $(OBJDIR)/%.o : %.cpp
 	mkdir -p $(OBJDIR) && $(CXX) -c ${TFLAG} ${BLDFLAGS} $^ -o $@ ${INCLUDES}
+
+$(OBJDIR)/%.do : $(LIB1)/%.cpp
+	mkdir -p $(OBJDIR) && $(CXX) -c ${TFLAG} $(DFLAGS) $^ -o $@ ${INCLUDES}
+
+$(OBJDIR)/%.do : $(LIB3)/%.c
+	mkdir -p $(OBJDIR) && $(CXX) -c ${TFLAG} ${DFLAGS} $^ -o $@ ${INCLUDES}
+
+$(OBJDIR)/%.do : %.cpp
+	mkdir -p $(OBJDIR) && $(CXX) -c ${TFLAG} ${DFLAGS} $^ -o $@ ${INCLUDES}
 
 clean:
 	rm -rf ${OBJDIR}

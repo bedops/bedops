@@ -450,9 +450,9 @@ mergeSort(FILE* output, FILE **tmpFiles, unsigned int numFiles)
                             else if(0 == val)
                                 {
                                     if(starts[i] < starts[currMin])
-                                        currMin = static_cast<int>(i);
+                                        currMin = static_cast<int>(i), currRest = rests[i];
                                     else if(starts[i] == starts[currMin] && ends[i] < ends[currMin])
-                                        currMin = static_cast<int>(i);
+                                        currMin = static_cast<int>(i), currRest = rests[i];
                                     else if(starts[i] == starts[currMin] && ends[i] == ends[currMin])
                                         {
                                             if (currRest == NULL)
