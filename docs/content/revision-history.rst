@@ -15,7 +15,25 @@ Current version
 v2.4.28
 -------
 
-Released: **TBD**
+Released: **August 16, 2017**
+
+* :ref: `bedextract <bedextract>`
+
+  * Updated documentation with fixed usage statement.
+
+* :ref: `sort-bed <sort-bed>`
+
+  * Patched typo in :code:`update-sort-bed-starch-slurm.py` script.
+
+  * Fixed bug with :code:`--max-mem` on properly ordering things on fourth and subsequent columns, when the genomic intervals are the same.
+
+* :ref: `starch <starch>`
+
+  * Updated Makefiles to remove `lib` on `clean` target and to help prevent :code:`ARCH` variable from getting clobbered by third-party package managers.
+
+* OS X 
+
+  * Updated the installer XML to resolve missing asset links.
 
 =================
 Previous versions
