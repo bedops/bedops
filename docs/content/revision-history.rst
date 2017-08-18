@@ -35,9 +35,11 @@ Released: **August 18, 2017**
 
   * Updated Makefiles to remove `lib` on `clean` target and to help prevent :code:`ARCH` variable from getting clobbered by third-party package managers.
 
-* OS X 
+* Build process
 
-  * Updated the installer XML to resolve missing asset links.
+  * Updated the OS X installer XML to resolve missing asset links.
+  
+  * Updated the :code:`module_binaries` target to copy over :code:`starchcluster_*` and :code:`starch-diff` assets for :code:`modules` distributions.
 
 =================
 Previous versions
