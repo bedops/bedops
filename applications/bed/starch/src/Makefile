@@ -67,9 +67,13 @@ build_gprof: $(BINDIR)/gprof.starch $(BINDIR)/gprof.unstarch $(BINDIR)/gprof.sta
 starch: $(BINDIR)/starch-$(BINARY_TYPE)
 unstarch: $(BINDIR)/unstarch-$(BINARY_TYPE)
 starchcat: $(BINDIR)/starchcat-$(BINARY_TYPE)
-starchcluster: $(BINDIR)/starchcluster_gnuParallel-$(BINARY_TYPE) $(BINDIR)/starchcluster_sge-$(BINARY_TYPE) $(BINDIR)/starchcluster_slurm-$(BINARY_TYPE)
 starch-diff: $(BINDIR)/starch-diff-$(BINARY_TYPE)
 starchstrip: $(BINDIR)/starchstrip-$(BINARY_TYPE)
+
+starchcluster:
+	cp starchcluster_sge.tcsh ${BINDIR}/starchcluster_sge-${BINARY_TYPE}
+	cp starchcluster_gnuParallel.tcsh ${BINDIR}/starchcluster_gnuParallel-${BINARY_TYPE}
+	cp starchcluster_slurm.tcsh ${BINDIR}/starchcluster_slurm-${BINARY_TYPE}
 
 $(BINDIR)/%-$(BINARY_TYPE) : %.c $(LOCALSTARCHLIB) $(LIBRARIES)
 	mkdir -p $(BINDIR)
