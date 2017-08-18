@@ -33,7 +33,7 @@ import logging
 name = "update-sort-bed-starch-slurm"
 citation = "  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract"
 authors = "  authors:  Alex Reynolds and Shane Neph"
-version = "  version:  2.4.27"
+version = "  version:  2.4.28"
 usage = """  $ update-sort-bed-starch-slurm [ --slurm-memory <MB> ] 
                                  [ --slurm-partition <SLURM partition> ] 
                                  [ --slurm-workdir <working directory> ]
@@ -288,7 +288,7 @@ def main():
             '--partition',
             slurm_partition,
             '--wrap',
-            '"srun ' + unstarch_path + ' ' + chromosome + ' ' + args.input_fn + ' | ' + sort_bed_path + ' - | ' + starch_path + ' - > ' + temp_dest + '"'
+            '"srun ' + unstarch_path + ' ' + chromosome + ' ' + args.input_original_fn + ' | ' + sort_bed_path + ' - | ' + starch_path + ' - > ' + temp_dest + '"'
         ]
         if logger: logger.info('Submitting job via [%s]' % (' '.join(per_chromosome_sort_cmd_components)))
         try:

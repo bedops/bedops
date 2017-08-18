@@ -2,7 +2,7 @@
 
 # author  : sjn and apr
 # date    : 13 Sep 2016
-# version : v2.4.27
+# version : v2.4.28
 
 #
 #    BEDOPS

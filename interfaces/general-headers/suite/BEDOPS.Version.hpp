@@ -34,11 +34,11 @@ namespace BEDOPS {
 #endif
 
   static const char* revision() {
-    return("2.4.27");
+    return("2.4.28");
   }
 
   static const char* citation() {
-    return("http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract");
+    return("http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract\n            https://doi.org/10.1093/bioinformatics/bts277");
   }
 
 #ifdef __cplusplus

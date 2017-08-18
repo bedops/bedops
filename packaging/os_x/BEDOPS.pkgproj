@@ -6466,7 +6466,7 @@
 						<key>LANGUAGE</key>
 						<string>English</string>
 						<key>VALUE</key>
-						<string>BEDOPS 2.4.27</string>
+						<string>BEDOPS 2.4.28</string>
 					</dict>
 				</array>
 			</dict>
@@ -6697,7 +6697,7 @@
 				</dict>
 			</array>
 			<key>NAME</key>
-			<string>BEDOPS 2.4.27</string>
+			<string>BEDOPS 2.4.28</string>
 		</dict>
 	</dict>
 	<key>TYPE</key>

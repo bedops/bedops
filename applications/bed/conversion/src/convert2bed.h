@@ -53,7 +53,7 @@
 
 #include "suite/BEDOPS.Constants.hpp"
 
-#define C2B_VERSION "2.4.27"
+#define C2B_VERSION "2.4.28"
 
 typedef int boolean;
 extern const boolean kTrue;

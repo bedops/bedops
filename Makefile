@@ -155,6 +155,10 @@ module_binaries:
 	-cp ${BINDIR}/bam2starch_sge-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/bam2starch_sge
 	-cp ${BINDIR}/bam2starch_slurm-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/bam2starch_slurm
 	-cp ${BINDIR}/bam2starch_gnuParallel-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/bam2starch_gnuParallel
+	-cp ${BINDIR}/starchcluster_sge-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/starchcluster_sge
+	-cp ${BINDIR}/starchcluster_gnuParallel-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/starchcluster_gnuParallel
+	-cp ${BINDIR}/starchcluster_slurm-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/starchcluster_slurm
+	-cp ${BINDIR}/starch-diff-$(TYPICAL) ${BINDIR_MODULE_TYPICAL}/starch-diff
 	mkdir -p ${BINDIR_MODULE_MEGAROW}
 	-cp ${BINDIR}/sort-bed-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/sort-bed
 	-cp ${BINDIR}/update-sort-bed-slurm-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/update-sort-bed-slurm
@@ -194,6 +198,10 @@ module_binaries:
 	-cp ${BINDIR}/bam2starch_sge-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/bam2starch_sge
 	-cp ${BINDIR}/bam2starch_slurm-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/bam2starch_slurm
 	-cp ${BINDIR}/bam2starch_gnuParallel-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/bam2starch_gnuParallel
+	-cp ${BINDIR}/starchcluster_sge-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/starchcluster_sge
+	-cp ${BINDIR}/starchcluster_gnuParallel-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/starchcluster_gnuParallel
+	-cp ${BINDIR}/starchcluster_slurm-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/starchcluster_slurm
+	-cp ${BINDIR}/starch-diff-$(MEGAROW) ${BINDIR_MODULE_MEGAROW}/starch-diff
 
 #######################
 # install details

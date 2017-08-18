@@ -12,6 +12,40 @@ Current version
 ===============
 
 -------
+v2.4.28
+-------
+
+Released: **August 18, 2017**
+
+* :ref: `bedmap <bedmap>`
+
+  * Patched `issue 191 <https://github.com/bedops/bedops/issues/191>`_ where :code:`--wmean` option was not recognized.
+
+* :ref: `bedextract <bedextract>`
+
+  * Updated documentation with fixed usage statement.
+
+* :ref: `sort-bed <sort-bed>`
+
+  * Patched typo in :code:`update-sort-bed-starch-slurm.py` script.
+
+  * Fixed bug with :code:`--max-mem` on properly ordering things on fourth and subsequent columns, when the genomic intervals are the same.
+
+* :ref: `starch <starch>`
+
+  * Updated Makefiles to remove `lib` on `clean` target and to help prevent :code:`ARCH` variable from getting clobbered by third-party package managers.
+
+* Build process
+
+  * Updated the OS X installer XML to resolve missing asset links.
+  
+  * Updated the :code:`module_binaries` target to copy over :code:`starchcluster_*` and :code:`starch-diff` assets for :code:`modules` distributions.
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.27
 -------
 
@@ -92,10 +126,6 @@ Application-level notes follow:
 * Clang warnings
 
   * Resolved compilation warnings for several binaries.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.26
