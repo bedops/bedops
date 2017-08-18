@@ -17,21 +17,21 @@ v2.4.28
 
 Released: **August 18, 2017**
 
-* :ref: `bedmap <bedmap>`
+* :ref:`bedmap <bedmap>`
 
   * Patched `issue 191 <https://github.com/bedops/bedops/issues/191>`_ where :code:`--wmean` option was not recognized.
 
-* :ref: `bedextract <bedextract>`
+* :ref:`bedextract <bedextract>`
 
   * Updated documentation with fixed usage statement.
 
-* :ref: `sort-bed <sort-bed>`
+* :ref:`sort-bed <sort-bed>`
 
   * Patched typo in :code:`update-sort-bed-starch-slurm.py` script.
 
   * Fixed bug with :code:`--max-mem` on properly ordering things on fourth and subsequent columns, when the genomic intervals are the same.
 
-* :ref: `starch <starch>`
+* :ref:`starch <starch>`
 
   * Updated Makefiles to remove `lib` on `clean` target and to help prevent :code:`ARCH` variable from getting clobbered by third-party package managers.
 
