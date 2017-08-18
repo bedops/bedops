@@ -15,7 +15,11 @@ Current version
 v2.4.28
 -------
 
-Released: **August 16, 2017**
+Released: **August 18, 2017**
+
+* :ref: `bedmap <bedmap>`
+
+  * Patched `issue 191 <https://github.com/bedops/bedops/issues/191>`_ where :code:`--wmean` option was not recognized.
 
 * :ref: `bedextract <bedextract>`
 
