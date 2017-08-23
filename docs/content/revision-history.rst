@@ -12,6 +12,16 @@ Current version
 ===============
 
 -------
+v2.4.29
+-------
+
+Released: **TBD**
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.28
 -------
 
@@ -40,10 +50,6 @@ Released: **August 18, 2017**
   * Updated the OS X installer XML to resolve missing asset links.
   
   * Updated the :code:`module_binaries` target to copy over :code:`starchcluster_*` and :code:`starch-diff` assets for :code:`modules` distributions.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.27

@@ -39,7 +39,7 @@ Use the ``--help`` option to list all options:
 
     starch-diff
       citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-      version:  2.4.28
+      version:  2.4.29
       authors:  Alex Reynolds and Shane Neph
 
       $ starch-diff [ --chr <chr> ] starch-file-1 starch-file-2 [ starch-file-3 ... ]

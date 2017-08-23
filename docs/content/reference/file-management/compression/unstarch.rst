@@ -43,7 +43,7 @@ Use the ``--help`` option to list all options:
 
   unstarch
    citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-   binary version: 2.4.28 (extracts archive version: 2.2.0 or older)
+   binary version: 2.4.29 (typical) (extracts archive version: 2.2.0 or older)
    authors: Alex Reynolds and Shane Neph
 
   USAGE: unstarch [ <chromosome> ]  [ --elements | 

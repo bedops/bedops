@@ -43,7 +43,7 @@ The ``--help`` option is fairly basic, but describes the usage:
 
   sort-bed
     citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-    version:  2.4.28
+    version:  2.4.29 (typical)
     authors:  Scott Kuehn
 
   USAGE: sort-bed [--help] [--version] [--check-sort] [--max-mem <val>] [--tmpdir <path>] <file1.bed> <file2.bed> <...>
