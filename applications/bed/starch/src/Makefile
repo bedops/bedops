@@ -110,7 +110,7 @@ $(LOCALSTARCHLIB) : $(STARCH_OBJECTS)
 
 $(LOCALOBJDIR)/%.o : $(OBJDIR)/%.c $(LIBRARIES)
 	mkdir -p $(LOCALOBJDIR)
-	${CXX} ${CXXFLAGS} ${TFLAG} -c $< -o $@ ${INCLUDES}
+	${CXX} ${CXXFLAGS} ${TFLAG} ${MEGAFLAGS} -c $< -o $@ ${INCLUDES}
 
 test: starch unstarch starchcat
 	cp ${BINDIR}/starch-${BINARY_TYPE} ${TEST_LINUX_BINDIR}/starch-${BINARY_TYPE}
