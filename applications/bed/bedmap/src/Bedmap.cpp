@@ -88,6 +88,7 @@ namespace BedMap {
                    int minRefFields,
                    int minMapFields,
                    bool errorCheck,
+                   bool nestCheck,
                    const std::string& colSep,
                    const std::string& multivalColSep,
                    int precision,
@@ -125,55 +126,57 @@ int main(int argc, char **argv) {
     // if all Starch inputs and no nested elements, then can use --faster if the
     //   overlap criterion allows it.
     const bool starchFast = !BedMap::checkStarchNesting(input.refFileName_, input.mapFileName_);
+    const bool nestCheck = input.errorCheck_; // true under most cases
 
     if ( input.isPercMap_ ) { // % overlap relative to MapType's size (signalmapish)
       Bed::PercentOverlapMapping bedDist(input.percOvr_);
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
       BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
-                          input.minRefFields_, input.minMapFields_, input.errorCheck_,
+                          input.minRefFields_, input.minMapFields_, input.errorCheck_, nestCheck,
                           input.outDelim_, input.multiDelim_, prec, sci, input.fastMode_,
                           input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
     } else if ( input.isPercRef_ ) { // % overlap relative to RefTypes's size (setops -e)
       Bed::PercentOverlapReference bedDist(input.percOvr_);
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
       BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
-                          input.minRefFields_, input.minMapFields_, input.errorCheck_,
+                          input.minRefFields_, input.minMapFields_, input.errorCheck_, nestCheck,
                           input.outDelim_, input.multiDelim_, prec, sci, input.fastMode_,
                           input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
     } else if ( input.isPercBoth_ ) { // % overlap relative to both MapType's and RefType's sizes
       Bed::PercentOverlapBoth bedDist(input.percOvr_);
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
       BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
-                          input.minRefFields_, input.minMapFields_, input.errorCheck_,
+                          input.minRefFields_, input.minMapFields_, input.errorCheck_, nestCheck,
                           input.outDelim_, input.multiDelim_, prec, sci, input.fastMode_,
                           input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
     } else if ( input.isExact_ ) { // must be identical coordinates; should work fine with fully-nested elements
       Bed::Exact bedDist;
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
       const bool fastMode = true;
+      const bool noNestCheck = false; // safe with fully-nested elements
       BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
-                          input.minRefFields_, input.minMapFields_, input.errorCheck_,
+                          input.minRefFields_, input.minMapFields_, input.errorCheck_, noNestCheck,
                           input.outDelim_, input.multiDelim_, prec, sci, fastMode,
                           input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
     } else if ( input.isPercEither_ ) { // % overlap relative to either MapType's or RefType's size
       Bed::PercentOverlapEither bedDist(input.percOvr_);
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
       BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
-                          input.minRefFields_, input.minMapFields_, input.errorCheck_,
+                          input.minRefFields_, input.minMapFields_, input.errorCheck_, nestCheck,
                           input.outDelim_, input.multiDelim_, prec, sci, input.fastMode_,
                           input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
     } else if ( input.isRangeBP_ ) { // buffer each reference element
       Bed::RangedDist bedDist(input.rangeBP_);
       Bed::RangedDist sweepDist(input.rangeBP_); // same as bedDist in this case
       BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
-                          input.minRefFields_, input.minMapFields_, input.errorCheck_,
+                          input.minRefFields_, input.minMapFields_, input.errorCheck_, nestCheck,
                           input.outDelim_, input.multiDelim_, prec, sci, (input.fastMode_ || starchFast),
                           input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
     } else { // require a certain amount of bp overlap
       Bed::Overlapping bedDist(input.overlapBP_);
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
       BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
-                          input.minRefFields_, input.minMapFields_, input.errorCheck_,
+                          input.minRefFields_, input.minMapFields_, input.errorCheck_, nestCheck,
                           input.outDelim_, input.multiDelim_, prec, sci, (input.fastMode_ || starchFast),
                           input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
     }
@@ -765,6 +768,7 @@ namespace BedMap {
                  int minRefFields,
                  int minMapFields,
                  bool errorCheck,
+                 bool nestCheck,
                  const std::string& colSep,
                  const std::string& multivalColSep,
                  int precision,
@@ -781,7 +785,6 @@ namespace BedMap {
 
     constexpr bool UseMemPool = true;
     constexpr bool NoUseMemPool = !UseMemPool;
-    const bool nestCheck = ProcessMode;
     if ( minMapFields < 4 ) { // just need Bed3
       if ( !BedMap::minimumMemory ) {
         typedef typename SelectBED<3, UseMemPool>::BType RefType;
@@ -862,6 +865,7 @@ namespace BedMap {
                  const std::string& refFileName,
                  int minRefFields,
                  bool errorCheck,
+                 bool nestCheck,
                  const std::string& colSep,
                  const std::string& multivalColSep,
                  int precision,
@@ -871,7 +875,6 @@ namespace BedMap {
                  const std::vector<std::string>& visitorNames,
                  const std::vector< std::vector<std::string> >& visitorArgs) {
 
-    constexpr bool nestCheck = ProcessMode;
     constexpr bool UseMemPool = true;
     constexpr bool NoUseMemPool = !UseMemPool;
     if ( minRefFields < 4 ) { // just need Bed3
@@ -943,6 +946,7 @@ namespace BedMap {
                    int minRefFields,
                    int minMapFields,
                    bool errorCheck,
+                   bool nestCheck,
                    const std::string& colSep,
                    const std::string& multivalColSep,
                    int precision,
@@ -961,19 +965,19 @@ namespace BedMap {
 
     if ( mapFileName.empty() ) { // single-file mode
       if ( fastMode )
-        callSweep<SpecialMode>(st, dt, refFileName, minRefFields, errorCheck, colSep, multivalColSep,
+        callSweep<SpecialMode>(st, dt, refFileName, minRefFields, errorCheck, nestCheck, colSep, multivalColSep,
                                precision, useScientific, chrom, skipUnmappedRows, visitorNames, visitorArgs);
       else
-        callSweep<GeneralMode>(st, dt, refFileName, minRefFields, errorCheck, colSep, multivalColSep,
+        callSweep<GeneralMode>(st, dt, refFileName, minRefFields, errorCheck, nestCheck, colSep, multivalColSep,
                                precision, useScientific, chrom, skipUnmappedRows, visitorNames, visitorArgs);
     } else { // dual-file mode
       if ( fastMode )
         callSweep<SpecialMode>(st, dt, refFileName, mapFileName, minRefFields, minMapFields,
-                               errorCheck, colSep, multivalColSep, precision, useScientific,
+                               errorCheck, nestCheck, colSep, multivalColSep, precision, useScientific,
                                chrom, skipUnmappedRows, sweepAll, visitorNames, visitorArgs);
       else
         callSweep<GeneralMode>(st, dt, refFileName, mapFileName, minRefFields, minMapFields,
-                               errorCheck, colSep, multivalColSep, precision, useScientific,
+                               errorCheck, nestCheck, colSep, multivalColSep, precision, useScientific,
                                chrom, skipUnmappedRows, sweepAll, visitorNames, visitorArgs);
     }
   }
