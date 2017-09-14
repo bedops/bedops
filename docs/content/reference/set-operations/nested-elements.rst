@@ -33,6 +33,34 @@ These two elements :math:`A` and :math:`B` have the following relations:
 
 If we further restrict these ranges: :math:`a_{start} < b_{start}` and :math:`b_{stop} < a_{stop}`, then for the purposes of BEDOPS we call the element :math:`B` a *nested element*, one which is contained or *nested* within element :math:`A`.
 
+It can be useful to be able to identify nested elements in an input set. Here's a method that uses :code:`awk`:
+
+::
+
+    #!/usr/bin/env awk -f
+    {
+        if (NR > 1) {
+            currentChr = $1
+            currentStart = $2
+            currentStop = $3
+            if ((previousStart < currentStart) && (previousStop > currentStop)) {
+                print $0;
+            }
+            else {
+                previousChr = currentChr
+                previousStart = currentStart
+                previousStop = currentStop
+            }
+        }
+        else {
+            previousChr = $1
+            previousStart = $2
+            previousStop = $3
+        }
+    }
+
+If this script is given the name :code:`getNestedElements.awk` and is made executable, one could filter a BED file via :code:`./getNestedElements.awk foo.bed > nested.bed`, or similar.
+
 .. _example_of_a_nested_element:
 
 =======
