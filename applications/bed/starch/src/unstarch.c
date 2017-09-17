@@ -272,7 +272,7 @@ main(int argc, char **argv)
                      kStarchTrue,
                      kStarchTrue) != STARCH_EXIT_SUCCESS) {
             fprintf(stdout, "0\n"); /* false -- no valid metadata, therefore not a starch archive */
-            return EXIT_FAILURE;
+            return EXIT_SUCCESS;
         }
         else {
             fprintf(stdout, "1\n"); /* true -- valid metadata, therefore a starch archive */
