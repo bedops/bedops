@@ -669,7 +669,9 @@ namespace Bed {
                                          &start_, &end_, id_,
                                          &measurement_, other);
 
-      const int numWritten = std::snprintf(fullrest_, MAXRESTSIZE+1, (std::string("\t%s\t") + BaseClass::MFormat).c_str(), id_, measurement_);
+      static const std::string fstr = std::string("\t%s\t") + BaseClass::MFormat;
+      static const char* f = fstr.c_str();
+      const int numWritten = std::snprintf(fullrest_, MAXRESTSIZE+1, f, id_, measurement_);
       if ( other[0] != '\0' && static_cast<CoordType>(numWritten) < MAXRESTSIZE ) {
         restOffset_ = numWritten;
         std::snprintf(fullrest_ + numWritten, MAXRESTSIZE+1-numWritten, "%s", other);
@@ -692,7 +694,8 @@ namespace Bed {
 
       std::fgetc(inputFile); // Read and discard trailing newline
 
-      static const char* f = (std::string("\t%s\t") + BaseClass::MFormat).c_str();
+      static const std::string fstr = std::string("\t%s\t") + BaseClass::MFormat;
+      static const char* f = fstr.c_str();
       const int numWritten = std::snprintf(fullrest_, MAXRESTSIZE+1, f, id_, measurement_);
       if ( other[0] != '\0' && static_cast<CoordType>(numWritten) < MAXRESTSIZE ) {
         restOffset_ = numWritten;

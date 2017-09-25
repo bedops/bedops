@@ -97,7 +97,7 @@ namespace Visitors {
       }
   
     protected:
-      typedef Bed::GenomicAddressCompare<MapType, MapType> Comp;
+      typedef Bed::GenomicRestAddressCompare<MapType, MapType> Comp;
       typedef std::set<MapType*, Comp> SType;
       typedef typename SType::const_iterator cacheI;
   

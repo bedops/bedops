@@ -60,7 +60,7 @@ namespace Visitors {
       virtual ~EchoMapBed() { }
 
     private:
-      typedef std::set< MapType*, Bed::GenomicAddressCompare<MapType, MapType> > SType; // consistent w/sort-bed
+      typedef std::set< MapType*, Bed::GenomicRestAddressCompare<MapType, MapType> > SType; // consistent w/sort-bed
       ProcessType pt_;
       SType win_;
     };

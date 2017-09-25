@@ -75,7 +75,7 @@ namespace Visitors {
       virtual ~EchoMapIntersectLength() { }
   
     protected:
-      typedef Bed::GenomicAddressCompare<MapType, MapType> Comp;
+      typedef Bed::GenomicRestAddressCompare<MapType, MapType> Comp;
       typedef std::set<MapType*, Comp> SType;
   
       RefType* refItem_;
