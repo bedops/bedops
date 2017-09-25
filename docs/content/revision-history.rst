@@ -21,6 +21,8 @@ Released: **TBD**
 
   * Increased megarow build ID length up to 2^18.
 
+  * Changed behavior of mapping to return mapped items in sort order provided in inputs. This follows up on `issue 198 <https://github.com/bedops/bedops/issues/198>`_.
+
 * :ref:`unstarch <unstarch>`
 
   * Changed behavior of :code:`--is-starch` option to always return a successful exit code of :code:`0` whether or not the input file is a Starch archive. It will now be up to the person running this option to test the 0 (false) or 1 (true) value printed to the standard output stream. This follows up on `issue 197 <https://github.com/bedops/bedops/issues/197>`_. 
