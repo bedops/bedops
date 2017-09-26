@@ -23,7 +23,7 @@ Preparing a major, minor or maintenance release of BEDOPS from a development bra
 
       1) For Linux, we build a 64-bit version. It may help to use `VirtualBox <https://www.virtualbox.org>`_ or a similar virtualization host to set up and run different (and consistent) versions of Linux build hosts.
 
-      2) For Mac OS X, we currently build the Mac target with whatever the modern Xcode and current OS X release happens to be (currently, command-line tools that ship with Xcode 8 and OS X Sierra/10.12). If things work correctly, build flags generate 64-bit binaries that should run on 10.10 and newer OS releases.
+      2) For Mac OS X, we currently build the Mac target with whatever the modern Xcode and current OS X release happens to be (currently, command-line tools that ship with Xcode 9 and OS X High Sierra/10.13). If things work correctly, build flags generate 64-bit binaries that should run on 10.10 and newer OS releases.
 
    b. For all platforms, run test suites for various tools and conversion scripts; tests should pass on supported platforms. If not, add an Issue ticket, fix it, close it and start over with the build/test process.
 

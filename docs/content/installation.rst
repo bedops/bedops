@@ -357,7 +357,9 @@ Building an OS X installer package for redistribution
 
      $ make install_osx_packaging_bins
 
-3. Install `WhiteBox Packages.app <http://s.sudre.free.fr/Software/Packages/about.html>`_, an application for building OS X installers, if not already installed.
+3. Install `WhiteBox Packages.app <http://s.sudre.free.fr/Software/Packages/about.html>`_, an application for building OS X installers, if not already installed. 
+
+    On 10.13 hosts, it may be necessary to install a more recent development build of ``Packages.app`` via `Packages Q&A #6 <http://s.sudre.free.fr/Software/Packages/Q&A_6.html>`_.
 
 4. Create a ``build`` directory to store the installer and open the ``BEDOPS.pkgproj`` file in the top-level of the local copy of the BEDOPS repository, in order to open the BEDOPS installer project, *e.g.*:
 
