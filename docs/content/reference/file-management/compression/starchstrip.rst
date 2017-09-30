@@ -39,7 +39,7 @@ Use the ``--help`` option to list all options:
 
   starchstrip
     citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-    version:  2.4.29 (typical)
+    version:  2.4.30 (typical)
     authors:  Alex Reynolds and Shane Neph
 
   USAGE: starchstrip [ --include | --exclude ] <chromosome-list> <starch-file>
