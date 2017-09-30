@@ -15,6 +15,16 @@ Current version
 v2.4.30
 -------
 
+Released: **TBD**
+
+=================
+Previous versions
+=================
+
+-------
+v2.4.29
+-------
+
 Released: **September 26, 2017**
 
 * :ref:`bedmap <bedmap>`
@@ -26,10 +36,6 @@ Released: **September 26, 2017**
 * :ref:`unstarch <unstarch>`
 
   * Changed behavior of :code:`--is-starch` option to always return a successful exit code of :code:`0` whether or not the input file is a Starch archive. It will now be up to the person running this option to test the 0 (false) or 1 (true) value printed to the standard output stream. This follows up on `issue 197 <https://github.com/bedops/bedops/issues/197>`_. 
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.28
