@@ -12,7 +12,7 @@ Current version
 ===============
 
 -------
-v2.4.29
+v2.4.30
 -------
 
 Released: **September 26, 2017**
