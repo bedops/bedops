@@ -17,6 +17,10 @@ v2.4.30
 
 Released: **TBD**
 
+* :ref:`bedmap <bedmap>`
+  
+  * Errors are no longer reported when error checking is enabled and running in non-fast mode, when a fully-nested element is detected. This follows up on `issue 199 <https://github.com/bedops/bedops/issues/199>`_.
+
 =================
 Previous versions
 =================
