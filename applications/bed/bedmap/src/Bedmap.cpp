@@ -126,7 +126,7 @@ int main(int argc, char **argv) {
     // if all Starch inputs and no nested elements, then can use --faster if the
     //   overlap criterion allows it.
     const bool starchFast = !BedMap::checkStarchNesting(input.refFileName_, input.mapFileName_);
-    const bool nestCheck = input.errorCheck_; // true under most cases
+    const bool nestCheck = input.errorCheck_ && input.fastMode_;
 
     if ( input.isPercMap_ ) { // % overlap relative to MapType's size (signalmapish)
       Bed::PercentOverlapMapping bedDist(input.percOvr_);
