@@ -1146,7 +1146,7 @@ STARCH_readJSONMetadata(json_t **metadataJSON,
         fprintf(stderr, "\tcurrentMdOffset: %" PRIu64 "\n", static_cast<uint64_t>( currentMdOffset ));
 #else
         fprintf(stderr, "\tcurrentMdOffset: %" PRIu64 "\n", (uint64_t) currentMdOffset);
-#endif
+#endif 
 #endif
         for (mdHashIndex = 0; mdHashIndex < STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH - 1; mdHashIndex++) {
 #ifdef __cplusplus

@@ -1742,8 +1742,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     z_stream zStream;
     size_t zHave;
     int bzError = BZ_OK;
-    unsigned int bzBytesConsumed = 0U;
-    unsigned int bzBytesWritten = 0U;
+    unsigned int bzBytesConsumedLo32 = 0U;
+    unsigned int bzBytesConsumedHi32 = 0U;
+    size_t bzBytesWritten = 0;
+    unsigned int bzBytesWrittenLo32 = 0U;
+    unsigned int bzBytesWrittenHi32 = 0U;
     FILE *outFp = stdout;
     BZFILE *bzFp = NULL;
     char footerCumulativeRecordSizeBuffer[STARCH2_MD_FOOTER_CUMULATIVE_RECORD_SIZE_LENGTH + 1] = {0};
@@ -1951,7 +1954,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                             }
 
                             /* close bzip2 stream and collect/reset stats */
-                            BZ2_bzWriteClose(&bzError, bzFp, STARCH_BZ_ABANDON, &bzBytesConsumed, &bzBytesWritten);
+                            BZ2_bzWriteClose64(&bzError, bzFp, STARCH_BZ_ABANDON, &bzBytesConsumedLo32, &bzBytesConsumedHi32, &bzBytesWrittenLo32, &bzBytesWrittenHi32);
                             if (bzError != BZ_OK) {
                                 switch (bzError) {
                                     case BZ_SEQUENCE_ERROR: {
@@ -1968,9 +1971,12 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                                     }
                                 }
                             }
+                            bzBytesWritten = (size_t) bzBytesWrittenHi32 << 32 | bzBytesWrittenLo32;
                             cumulativeRecSize += bzBytesWritten;
                             currentRecSize += bzBytesWritten;
-                            bzBytesWritten = 0U;
+                            bzBytesWritten = 0;
+                            bzBytesWrittenLo32 = 0U;
+                            bzBytesWrittenHi32 = 0U;
                             bzFp = NULL;
 
                             if (STARCH_updateMetadataForChromosome(md, 
@@ -2633,7 +2639,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 #ifdef DEBUG
         fprintf(stderr, "\t(last-pass) attempting to close bzip2-stream...\n");
 #endif
-        BZ2_bzWriteClose(&bzError, bzFp, STARCH_BZ_ABANDON, &bzBytesConsumed, &bzBytesWritten);
+        BZ2_bzWriteClose64(&bzError, bzFp, STARCH_BZ_ABANDON, &bzBytesConsumedLo32, &bzBytesConsumedHi32, &bzBytesWrittenLo32, &bzBytesWrittenHi32);
         if (bzError != BZ_OK) {
             switch (bzError) {
                 case BZ_PARAM_ERROR: {
@@ -2654,6 +2660,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                 }
             }
         }
+        bzBytesWritten = (size_t) bzBytesWrittenHi32 << 32 | bzBytesWrittenLo32;
         cumulativeRecSize += bzBytesWritten;
         currentRecSize += bzBytesWritten;
 
@@ -2895,8 +2902,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     z_stream zStream;
     size_t zHave;
     int bzError = BZ_OK;
-    unsigned int bzBytesConsumed = 0U;
-    unsigned int bzBytesWritten = 0U;
+    unsigned int bzBytesConsumedLo32 = 0U;
+    unsigned int bzBytesConsumedHi32 = 0U;
+    size_t bzBytesWritten = 0;
+    unsigned int bzBytesWrittenLo32 = 0U;
+    unsigned int bzBytesWrittenHi32 = 0U;
     FILE *outFp = stdout;
     BZFILE *bzFp = NULL;
     char footerCumulativeRecordSizeBuffer[STARCH2_MD_FOOTER_CUMULATIVE_RECORD_SIZE_LENGTH + 1] = {0};
@@ -3100,7 +3110,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                             }
 
                             /* close bzip2 stream and collect/reset stats */
-                            BZ2_bzWriteClose(&bzError, bzFp, STARCH_BZ_ABANDON, &bzBytesConsumed, &bzBytesWritten);
+                            BZ2_bzWriteClose64(&bzError, bzFp, STARCH_BZ_ABANDON, &bzBytesConsumedLo32, &bzBytesConsumedHi32, &bzBytesWrittenLo32, &bzBytesWrittenHi32);
                             if (bzError != BZ_OK) {
                                 switch (bzError) {
                                     case BZ_SEQUENCE_ERROR: {
@@ -3117,9 +3127,12 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                                     }
                                 }
                             }
+                            bzBytesWritten = (size_t) bzBytesWrittenHi32 << 32 | bzBytesWrittenLo32;
                             cumulativeRecSize += bzBytesWritten;
                             currentRecSize += bzBytesWritten;
-                            bzBytesWritten = 0U;
+                            bzBytesWritten = 0;
+                            bzBytesWrittenLo32 = 0U;
+                            bzBytesWrittenHi32 = 0U;
                             bzFp = NULL;
 
                             if (STARCH_updateMetadataForChromosome(md, 
@@ -3800,7 +3813,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #ifdef DEBUG
         fprintf(stderr, "\t(last-pass) attempting to close bzip2 stream...\n");
 #endif
-        BZ2_bzWriteClose(&bzError, bzFp, STARCH_BZ_ABANDON, &bzBytesConsumed, &bzBytesWritten);
+        BZ2_bzWriteClose64(&bzError, bzFp, STARCH_BZ_ABANDON, &bzBytesConsumedLo32, &bzBytesConsumedHi32, &bzBytesWrittenLo32, &bzBytesWrittenHi32);
         if (bzError != BZ_OK) {
             switch (bzError) {
                 case BZ_PARAM_ERROR: {
@@ -3821,9 +3834,9 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                 }
             }
         }
+        bzBytesWritten = (size_t) bzBytesWrittenHi32 << 32 | bzBytesWrittenLo32;
         cumulativeRecSize += bzBytesWritten;
         currentRecSize += bzBytesWritten;
-
 #ifdef DEBUG
         fprintf(stderr, "\t(last-pass) closed bzip2 stream...\n");
 #endif

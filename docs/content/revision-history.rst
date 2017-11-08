@@ -21,6 +21,10 @@ Released: **TBD**
   
   * Errors are no longer reported when error checking is enabled and running in non-fast mode, when a fully-nested element is detected. This follows up on `issue 199 <https://github.com/bedops/bedops/issues/199>`_.
 
+* :ref:`starch <starch>`
+
+  * Previously, a chromosome record in a Starch archive would result in corrupted metadata, if the chromosome is larger than :code:`UINT32_MAX` bytes (~4.3GB) in size when compressed. This limitation is now removed, and a single chromosome (when compressed in a Starch archive) can be up to :code:`UINT64_MAX` bytes in size.
+
 =================
 Previous versions
 =================
