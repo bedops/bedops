@@ -808,8 +808,11 @@ STARCHCAT2_rewriteInputRecordToOutput(Metadata **outMd, const char *outTag, cons
     size_t nBzRead = 0;
     size_t bzBufIndex = 0;
     unsigned char *bzLineBuf = NULL;
-    unsigned int bzOutBytesConsumed = 0U;
-    unsigned int bzOutBytesWritten = 0U;
+    unsigned int bzOutBytesConsumedLo32 = 0U;
+    unsigned int bzOutBytesConsumedHi32 = 0U;
+    size_t bzOutBytesWritten = 0;
+    unsigned int bzOutBytesWrittenLo32 = 0U;
+    unsigned int bzOutBytesWrittenHi32 = 0U;
 
     /* allocate memory for bzip2 variables */
 #ifdef __cplusplus
@@ -2035,7 +2038,7 @@ STARCHCAT2_rewriteInputRecordToOutput(Metadata **outMd, const char *outTag, cons
     /* clean up outbound compression stream */
     switch (outType) {
         case kBzip2: {
-            BZ2_bzWriteClose(&bzOutError, bzOutFp, STARCH_BZ_ABANDON, &bzOutBytesConsumed, &bzOutBytesWritten);
+            BZ2_bzWriteClose64(&bzOutError, bzOutFp, STARCH_BZ_ABANDON, &bzOutBytesConsumedLo32, &bzOutBytesConsumedHi32, &bzOutBytesWrittenLo32, &bzOutBytesWrittenHi32);
             if (bzOutError != BZ_OK) {
                 fprintf(stderr, "ERROR: Bzip2 error after closing write stream: %d\n", bzOutError);
                 switch (bzOutError) {
@@ -2048,14 +2051,17 @@ STARCHCAT2_rewriteInputRecordToOutput(Metadata **outMd, const char *outTag, cons
                         return STARCHCAT_EXIT_FAILURE;
                     }
                     default: {
-                        fprintf(stderr, "ERROR: Unknown error with BZ2_bzWriteClose() (err: %d)\n", bzOutError);
+                        fprintf(stderr, "ERROR: Unknown error with BZ2_bzWriteClose64() (err: %d)\n", bzOutError);
                         return STARCHCAT_EXIT_FAILURE;
                     }
                 }
             }
+            bzOutBytesWritten = (size_t) bzOutBytesWrittenHi32 << 32 | bzOutBytesWrittenLo32;
             t_fileSize += bzOutBytesWritten;
             *cumulativeOutputSize += bzOutBytesWritten;
-            bzOutBytesWritten = 0U;
+            bzOutBytesWritten = 0;
+            bzOutBytesWrittenLo32 = 0U;
+            bzOutBytesWrittenHi32 = 0U;
             break;
         }
         case kGzip: {
@@ -5687,7 +5693,7 @@ STARCHCAT2_breakdownBzip2OutputStream(BZFILE **bzStream, uint64_t *bzOutBytesCon
                 break;
             }
             default: {
-                fprintf(stderr, "ERROR: Unknown error with BZ2_bzWriteClose() (err: %d)\n", bzError);
+                fprintf(stderr, "ERROR: Unknown error with BZ2_bzWriteClose64() (err: %d)\n", bzError);
                 break;
             }
         }
