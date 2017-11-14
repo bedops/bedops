@@ -59,14 +59,14 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
 #ifdef DEBUG_VERBOSE
     fprintf(stderr, "\n--- UNSTARCH_extractDataWithGzip() ---\n");
 #endif
-    const Metadata *iter;
-    char *chromosome;
+    const Metadata* iter;
+    char* chromosome;
     uint64_t size;	
     uint64_t cumulativeSize = 0;
     SignedCoordType start, pLength, lastEnd;
-    char const *all = "all";
-    char firstInputToken[UNSTARCH_FIRST_TOKEN_MAX_LENGTH]; 
-    char secondInputToken[UNSTARCH_SECOND_TOKEN_MAX_LENGTH];
+    char const* all = "all";
+    char* firstInputToken = NULL;
+    char* secondInputToken = NULL;
     unsigned char zInBuf[STARCH_Z_CHUNK];
     unsigned char zOutBuf[STARCH_Z_CHUNK];
     unsigned char zLineBuf[STARCH_Z_CHUNK];
@@ -84,7 +84,26 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
     if (!outFp)
         outFp = stdout;
 
+#ifdef __cplusplus
+    firstInputToken = static_cast<char *>( malloc(UNSTARCH_FIRST_TOKEN_MAX_LENGTH) );
+#else
+    firstInputToken = malloc(UNSTARCH_FIRST_TOKEN_MAX_LENGTH);
+#endif
+    if (!firstInputToken) {
+        fprintf(stderr, "ERROR: (UNSTARCH_extractDataWithGzip) Could not allocate space for first input token\n");
+        return UNSTARCH_FATAL_ERROR;
+    }
     firstInputToken[0] = '\0';
+
+#ifdef __cplusplus
+    secondInputToken = static_cast<char *>( malloc(UNSTARCH_SECOND_TOKEN_MAX_LENGTH) );
+#else
+    secondInputToken = malloc(UNSTARCH_SECOND_TOKEN_MAX_LENGTH);
+#endif
+    if (!secondInputToken) {
+        fprintf(stderr, "ERROR: (UNSTARCH_extractDataWithGzip) Could not allocate space for second input token\n");
+        return UNSTARCH_FATAL_ERROR;
+    }
     secondInputToken[0] = '\0';
 
     for (iter = md; iter != NULL; iter = iter->next) {
@@ -250,12 +269,24 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
         }
     }
     
-    if (zRemainderBuf)
+    if (zRemainderBuf) {
         free(zRemainderBuf);
+        zRemainderBuf = NULL;
+    }
 
     if (!chrFound) {
         fprintf(stderr, "ERROR: Could not find specified chromosome\n");
         return UNSTARCH_FATAL_ERROR;
+    }
+
+    if (firstInputToken) {
+        free(firstInputToken);
+        firstInputToken = NULL;
+    }
+    
+    if (secondInputToken) {
+        free(secondInputToken);
+        secondInputToken = NULL;
     }
 
     return 0;
@@ -267,14 +298,14 @@ UNSTARCH_extractDataWithBzip2(FILE **inFp, FILE *outFp, const char *whichChr, co
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_extractDataWithBzip2() ---\n");
 #endif
-    const Metadata *iter;
-    char *chromosome;
+    const Metadata* iter;
+    char* chromosome;
     uint64_t size;	
     uint64_t cumulativeSize = 0;
     SignedCoordType start, pLength, lastEnd;
-    char const *all = "all";
-    char firstInputToken[UNSTARCH_FIRST_TOKEN_MAX_LENGTH]; 
-    char secondInputToken[UNSTARCH_SECOND_TOKEN_MAX_LENGTH];
+    char const* all = "all";
+    char* firstInputToken = NULL;
+    char* secondInputToken = NULL;
     BZFILE *bzFp;
     int bzError;
     unsigned char *bzOutput;
@@ -284,7 +315,26 @@ UNSTARCH_extractDataWithBzip2(FILE **inFp, FILE *outFp, const char *whichChr, co
     if (!outFp)
         outFp = stdout;
 
+#ifdef __cplusplus
+    firstInputToken = static_cast<char *>( malloc(UNSTARCH_FIRST_TOKEN_MAX_LENGTH) );
+#else
+    firstInputToken = malloc(UNSTARCH_FIRST_TOKEN_MAX_LENGTH);
+#endif
+    if (!firstInputToken) {
+        fprintf(stderr, "ERROR: (UNSTARCH_extractDataWithBzip2) Could not allocate space for first input token\n");
+        return UNSTARCH_FATAL_ERROR;
+    }
     firstInputToken[0] = '\0';
+
+#ifdef __cplusplus
+    secondInputToken = static_cast<char *>( malloc(UNSTARCH_SECOND_TOKEN_MAX_LENGTH) );
+#else
+    secondInputToken = malloc(UNSTARCH_SECOND_TOKEN_MAX_LENGTH);
+#endif
+    if (!secondInputToken) {
+        fprintf(stderr, "ERROR: (UNSTARCH_extractDataWithBzip2) Could not allocate space for second input token\n");
+        return UNSTARCH_FATAL_ERROR;
+    }
     secondInputToken[0] = '\0';
 
     for (iter = md; iter != NULL; iter = iter->next) {
@@ -349,6 +399,16 @@ UNSTARCH_extractDataWithBzip2(FILE **inFp, FILE *outFp, const char *whichChr, co
             return UNSTARCH_FATAL_ERROR;
         }
     */
+
+    if (firstInputToken) {
+        free(firstInputToken);
+        firstInputToken = NULL;
+    }
+    
+    if (secondInputToken) {
+        free(secondInputToken);
+        secondInputToken = NULL;
+    }
 
     return 0;
 }

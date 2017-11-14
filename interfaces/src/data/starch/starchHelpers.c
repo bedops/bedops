@@ -430,15 +430,15 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
             buffer[(charCnt - 1)] = '\0';
         }
         /* test id field length */
-        while ((buffer[idIdx] != delim) && (idIdx++ < TOKEN_ID_MAX_LENGTH)) {}
-        if (idIdx == TOKEN_ID_MAX_LENGTH) {
+        while (((buffer[idIdx] != delim) && (buffer[idIdx] != '\0')) && (idIdx++ < TOKEN_ID_MAX_LENGTH)) { }
+        if (idIdx >= TOKEN_ID_MAX_LENGTH) {
             fprintf(stderr, "ERROR: Id field is too long (must be less than %lu characters long)\n", TOKEN_ID_MAX_LENGTH);
             return STARCH_FATAL_ERROR;
         }
         /* test remnant of buffer, if there is more to look at */
         if (charCnt > idIdx) {
             while ((buffer[idIdx++] != '\0') && (restIdx++ < TOKEN_REST_MAX_LENGTH)) {}
-            if (restIdx == TOKEN_REST_MAX_LENGTH) {
+            if (restIdx > TOKEN_REST_MAX_LENGTH) {
                 fprintf(stderr, "ERROR: Remainder of BED input after id field is too long (must be less than %lu characters long)\n", TOKEN_REST_MAX_LENGTH);
                 return STARCH_FATAL_ERROR;
             }
@@ -601,15 +601,15 @@ STARCH_createTransformTokensForHeaderlessInput(const char *s, const char delim, 
     if (elemCnt > 3) {
         buffer[(charCnt - 1)] = '\0';
         /* test id field length */
-        while ((buffer[idIdx] != delim) && (idIdx++ < TOKEN_ID_MAX_LENGTH)) {}
-        if (idIdx == TOKEN_ID_MAX_LENGTH) {
+        while (((buffer[idIdx] != delim) && (buffer[idIdx] != '\0')) && (idIdx++ < TOKEN_ID_MAX_LENGTH)) { }
+        if (idIdx >= TOKEN_ID_MAX_LENGTH) {
             fprintf(stderr, "ERROR: Id field is too long (must be less than %lu characters long)\n", TOKEN_ID_MAX_LENGTH);
             return STARCH_FATAL_ERROR;
         }
         /* test remnant ("rest") of buffer, if there is more to look at */
         if (charCnt > idIdx) {
             while ((buffer[idIdx++] != '\0') && (restIdx++ < TOKEN_REST_MAX_LENGTH)) {}
-            if (restIdx == TOKEN_REST_MAX_LENGTH) {
+            if (restIdx > TOKEN_REST_MAX_LENGTH) {
                 fprintf(stderr, "ERROR: Remainder of BED input after id field is too long (must be less than %lu characters long)\n", TOKEN_REST_MAX_LENGTH);
                 return STARCH_FATAL_ERROR;
             }

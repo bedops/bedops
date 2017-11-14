@@ -25,9 +25,15 @@ Released: **TBD**
 
   * Previously, a chromosome record in a Starch archive would result in corrupted metadata, if the chromosome is larger than :code:`UINT32_MAX` bytes (~4.3GB) in size when compressed. This limitation is now removed, and a single chromosome (when compressed in a Starch archive) can be up to :code:`UINT64_MAX` bytes in size.
 
+  * The :code:`starch` binary does more stringent input checks for the character lengths of ID and remainder strings, which must be no larger than 2\ :sup:`ID_EXPONENT` - 1 and 2\ :sup:`REST_EXPONENT` - 1 characters in length. (These constants are specific to the build-time settings in the Makefile and in the app-wide constants.) This follows up on `issue 195 <https://github.com/bedops/bedops/issues/195>`_.
+
 * :ref:`starchcat <starchcat>`
 
   * Previously, a chromosome record in a Starch archive would result in corrupted metadata, if the chromosome is larger than :code:`UINT32_MAX` bytes (~4.3GB) in size when compressed. This limitation is now removed, and a single chromosome (when compressed in a Starch archive) can be up to :code:`UINT64_MAX` bytes in size.
+
+* :ref:`unstarch <unstarch>`
+
+  * The :code:`unstarch` binary implements the character length constants of ID and remainder strings, specific to the build-time settings in the Makefile and in the app-wide constants. This follows up on `issue 195 <https://github.com/bedops/bedops/issues/195>`_.
 
 =================
 Previous versions
@@ -41,7 +47,7 @@ Released: **September 26, 2017**
 
 * :ref:`bedmap <bedmap>`
 
-  * Increased megarow build ID length up to 2^18.
+  * Increased megarow build ID length up to 2\ :sup:`18`.
 
   * Changed behavior of mapping to return mapped items in sort order provided in inputs. This follows up on `issue 198 <https://github.com/bedops/bedops/issues/198>`_.
 
@@ -89,7 +95,7 @@ This revision of BEDOPS includes significant performance improvements for core t
 
 Pre-built binaries for Darwin and GNU/Linux targets include both the default :code:`typical` and :code:`megarow` builds of BEDOPS. The program names that you are accustomed to will remain as-is, but the binaries will exist as symbolic links pointing to the :code:`typical` builds. These links can be repointed to the :code:`megarow` builds by calling :code:`switch-BEDOPS-binary-type --megarow`, which will set the usual BEDOPS binaries to link to the :code:`megarow` builds. One can run :code:`switch-BEDOPS-binary-type --typical` at any time to revert to the default (:code:`typical`) builds.
 
-The top-level Makefile includes some new variables for those who choose to build from source. The :code:`JPARALLEL` variable sets the number of CPUs to use in parallel when compiling BEDOPS, which can speed compilation time dramatically. The :code:`MASSIVE_REST_EXP`, :code:`MASSIVE_ID_EXP`, and :code:`MASSIVE_CHROM_EXP` are used when building the :code:`megarow` to support any required row lengths (build using :code:`make megarow`).  These are the exponents (the *n* in 2:sup:n) for holding all characters after chromosome, start, and stop fields, the ID field (column 4, typically), and the chromosome field (column 1). 
+The top-level Makefile includes some new variables for those who choose to build from source. The :code:`JPARALLEL` variable sets the number of CPUs to use in parallel when compiling BEDOPS, which can speed compilation time dramatically. The :code:`MASSIVE_REST_EXP`, :code:`MASSIVE_ID_EXP`, and :code:`MASSIVE_CHROM_EXP` are used when building the :code:`megarow` to support any required row lengths (build using :code:`make megarow`).  These are the exponents (the *n* in 2\ :sup:`n`\ ) for holding all characters after chromosome, start, and stop fields, the ID field (column 4, typically), and the chromosome field (column 1). 
 
 To simplify distribution and support, we have removed pre-built 32-bit program versions in this release. These can be built from source by specifying the correct :code:`ARCH` value in the top-level Makefile. For OS X, our package installer now requires OS X version 10.10 or greater.
 
