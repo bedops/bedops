@@ -17,48 +17,52 @@ my @archive_types = qw(bzip2
 my @version_dirs = qw(v1.2
                       v1.5
                       v2.0
-                      v2.1);
+                      v2.1
+                      v2.2);
 
 my @bzip2_fns = qw(random_1p2p0_bzip2.starch
                    random_1p5p0_bzip2.starch
                    random_2p0p0_bzip2.starch
-                   random_2p1p0_bzip2.starch);
+                   random_2p1p0_bzip2.starch
+                   random_2p2p0_bzip2.starch);
 
 my @gzip_fns = qw(random_1p2p0_gzip.starch
                   random_1p5p0_gzip.starch
                   random_2p0p0_gzip.starch
-                  random_2p1p0_gzip.starch);
+                  random_2p1p0_gzip.starch
+                  random_2p2p0_gzip.starch);
 
-my @elem_counts = qw(250000
-                     250000
-                     250000
-                     250000);
+my @elem_counts = qw(200000
+                     200000
+                     200000
+                     200000
+                     200000);
 
-my $version_str = "v2.1";
+my $version_str = "v2.2";
 
-# this script will randomly pick four archives from the bzip2- and gzip-based starch archive pool
-# and pull disjoint sets of 250K, 250K, 250K, and 250K elements from these files, respectively. the 
-# resulting elements are then starch'ed into four archives.
+# this script will randomly pick five archives from the bzip2- and gzip-based starch archive pool
+# and pull disjoint sets of 200K elements from these files, respectively. the resulting elements 
+# are then starch'ed into archives.
 
 foreach my $archive_type (@archive_types) {
     #print STDERR "making $archive_type archive...\n";
-    # total of eight files
-    my @fn_indices = (0..7); 
+    # total of ten files
+    my @fn_indices = (0..9); 
     my @shuffled_indices = shuffle (@fn_indices);
-    # we grab the first four indices
-    my @inds = @shuffled_indices[0..3];
+    # we grab the first five indices
+    my @inds = @shuffled_indices[0..4];
     my @fns = ();
     undef @fns;
     # grab either a bzip2 or gzip archive at random
     foreach my $ind (@inds) {
-        if ($ind < 4) {
+        if ($ind < 5) {
             push (@fns, $bzip2_fns[$ind]);
         }
         else {
-            push (@fns, $gzip_fns[$ind - 4]);
+            push (@fns, $gzip_fns[$ind - 5]);
         }
     }
-    my @select_inds = (0..3);
+    my @select_inds = (0..4);
     my $total_line_count = 0;
     foreach my $ind (@select_inds) {
         my $real_line_count = 0;

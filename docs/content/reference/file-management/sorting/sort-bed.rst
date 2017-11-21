@@ -31,7 +31,7 @@ The ``sort-bed`` utility requires one or more three-column BED file(s). Support 
 Output
 ------
 
-The ``sort-bed`` utility sends sorted BED data to standard output, which can be redirected to a file or piped to other utilities, including core BEDOPS utilities like :ref:`bedops` and :ref:`bedmap`. Sort order is defined by a lexicographical sort on chromosome name, a numerical sort on start coordinates, a numerical sort on stop coordinates where there are start matches, and finally a lexicographical sort on the remainder of the BED element (if additional columns are present).
+The ``sort-bed`` utility sends sorted BED data to standard output, which can be redirected to a file or piped to other utilities, including core BEDOPS utilities like :ref:`bedops` and :ref:`bedmap`. Sort order is defined by a lexicographical sort on chromosome name, a numerical sort on start coordinates, a numerical sort on stop coordinates where there are start matches, and finally a lexicographical sort on the remainder of the BED element (if additional columns are present). Additional options may be specified to print only unique or duplicate elements, or check the sort order of input.
 
 =====
 Usage
@@ -46,13 +46,15 @@ The ``--help`` option is fairly basic, but describes the usage:
     version:  2.4.30 (typical)
     authors:  Scott Kuehn
 
-  USAGE: sort-bed [--help] [--version] [--check-sort] [--max-mem <val>] [--tmpdir <path>] <file1.bed> <file2.bed> <...>
+  USAGE: sort-bed [--help] [--version] [--check-sort] [--max-mem <val>] [--tmpdir <path>] [--unique] [--duplicates] <file1.bed> <file2.bed> <...>
           Sort BED file(s).
           May use '-' to indicate stdin.
           Results are sent to stdout.
 
           <val> for --max-mem may be 8G, 8000M, or 8000000000 to specify 8 GB of memory.
           --tmpdir is useful only with --max-mem.
+          --unique can be used to print only unique BED elements (similar to "sort -u").
+          --duplicates can be used to print only duplicated or repeated elements (similar to "uniq -d").
 
 A simple example of using ``sort-bed`` would be:
 
@@ -77,6 +79,8 @@ For example, to use the current working directory to store temporary data, one c
   $ sort-bed --max-mem 2G --tmpdir $PWD reallyHugeUnsortedData.bed > reallyHugeSortedData.bed
 
 Use of the ``--check-sort`` option returns a message if the input is sorted, or not.
+
+The ``--unique`` and ``--duplicates`` options print only unique or duplicated elements in sorted output, respectively. These options mimic ``sort -u`` and ``uniq -d`` commands, respectively.
 
 .. |--| unicode:: U+2013   .. en dash
 .. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace

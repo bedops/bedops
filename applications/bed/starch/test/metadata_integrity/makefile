@@ -20,8 +20,8 @@ USR_BINDIR     = /usr/bin
 OPT_BINDIR     = /opt/local/bin
 LOCAL_BINDIR   = /usr/local/bin
 BINDIR         = /bin
-VERSION        = v2.1
-VERSIONP       = 2p1p0
+VERSION        = v2.2
+VERSIONP       = 2p2p0
 
 all: dependent_binaries archives tests
 

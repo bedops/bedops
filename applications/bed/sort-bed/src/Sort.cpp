@@ -38,7 +38,7 @@ using namespace std;
 
 static const char *name = "sort-bed";
 static const char *authors = "Scott Kuehn";
-static const char *usage = "\nUSAGE: sort-bed [--help] [--version] [--check-sort] [--max-mem <val>] [--tmpdir <path>] <file1.bed> <file2.bed> <...>\n        Sort BED file(s).\n        May use '-' to indicate stdin.\n        Results are sent to stdout.\n\n        <val> for --max-mem may be 8G, 8000M, or 8000000000 to specify 8 GB of memory.\n        --tmpdir is useful only with --max-mem.\n";
+static const char *usage = "\nUSAGE: sort-bed [--help] [--version] [--check-sort] [--max-mem <val>] [--tmpdir <path>] [--unique] [--duplicates] <file1.bed> <file2.bed> <...>\n        Sort BED file(s).\n        May use '-' to indicate stdin.\n        Results are sent to stdout.\n\n        <val> for --max-mem may be 8G, 8000M, or 8000000000 to specify 8 GB of memory.\n        --tmpdir is useful only with --max-mem.\n        --unique can be used to print only unique BED elements (similar to 'sort -u'). Cannot be used with --duplicates.\n        --duplicates can be used to print only duplicated or repeated elements (similar to 'uniq -d'). Cannot be used with --unique.\n";
 #if BEDOPS_BINARY_TYPE == 0
 static const char *application_type = "typical";
 #else
@@ -50,7 +50,7 @@ static const char *application_type = "typical";
 #endif
 
 static void
-getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, int *justCheck, double* maxMem, char **tmpPath)
+getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, int *justCheck, double* maxMem, char **tmpPath, bool *printUniques, bool *printDuplicates)
 {
     int numFiles, i, j, stdincnt = 0, changeMem = 0, units = 0, changeTDir = 0;
     size_t k;
@@ -176,6 +176,20 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, i
                             numFiles -= 1;
                             continue;
                         }
+                    else if((strcmp(argv[i], "--unique") == 0) || (strcmp(argv[i], "-u") == 0))
+                        {
+                            *printUniques = true;
+                            --j;
+                            numFiles -= 1;
+                            continue;
+                        }
+                    else if((strcmp(argv[i], "--duplicates") == 0) || (strcmp(argv[i], "-d") == 0))
+                        {
+                            *printDuplicates = true;
+                            --j;
+                            numFiles -= 1;
+                            continue;
+                        }
                     else if(strcmp(argv[i], "-") == 0) /* stdin */
                         {
                             stdincnt++;
@@ -190,7 +204,7 @@ getArgs(int argc, char **argv, const char **inFiles, unsigned int *numInFiles, i
             fprintf(stderr, "Cannot specify '-' more than once\n");
             exit(EXIT_FAILURE);
         }
-    else if(numFiles < 1) /* can be different from before if --max-mem was used, for example*/
+    else if((numFiles < 1) || (*printUniques && *printDuplicates)) /* can be different from before if --max-mem was used, for example*/
         {
             fprintf(stderr, "%s\n  citation: %s\n  version:  %s (%s)\n  authors:  %s\n%s\n%s\n",
                     name, BEDOPS::citation(), BEDOPS::revision(), application_type, authors, usage, "No file given.");
@@ -209,8 +223,10 @@ main(int argc, char **argv)
     bool clean = false;
     int justCheck = 0;
     int rval = EXIT_FAILURE;
+    bool printUniques = false;
+    bool printDuplicates = false;
 
-    getArgs(argc, argv, inFiles, &numInFiles, &justCheck, &maxMemory, &tmpPath);
+    getArgs(argc, argv, inFiles, &numInFiles, &justCheck, &maxMemory, &tmpPath, &printUniques, &printDuplicates);
     if(justCheck) /* just checking inputs */
         rval = checkSort(inFiles, numInFiles);
     else /* sorting */
@@ -233,7 +249,7 @@ main(int argc, char **argv)
                 }
 
             // sort
-            rval = processData(inFiles, numInFiles, maxMemory, tmpPath);
+            rval = processData(inFiles, numInFiles, maxMemory, tmpPath, printUniques, printDuplicates);
 
             if(clean)
                 free(tmpPath);

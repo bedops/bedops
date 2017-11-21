@@ -47,26 +47,26 @@ ifeq ($(PLATFORM),Darwin)
 endif
 	@echo "[STARCH] merging disjoint versions into one archive..."
 ifeq ($(PLATFORM),Linux)
-	$(LINUX_BINDIR)/v2.1/bin/starchcat --bzip2 $(RESULTS)/version_test_bzip2_*.starch > $(RESULTS)/version_test_bzip2.starch
-	$(LINUX_BINDIR)/v2.1/bin/starchcat --gzip $(RESULTS)/version_test_gzip_*.starch > $(RESULTS)/version_test_gzip.starch
+	$(LINUX_BINDIR)/v2.2/bin/starchcat --bzip2 $(RESULTS)/version_test_bzip2_*.starch > $(RESULTS)/version_test_bzip2.starch
+	$(LINUX_BINDIR)/v2.2/bin/starchcat --gzip $(RESULTS)/version_test_gzip_*.starch > $(RESULTS)/version_test_gzip.starch
 endif
 ifeq ($(PLATFORM),Darwin)
-	@$(OSX_BINDIR)/v2.1/bin/starchcat --bzip2 $(RESULTS)/version_test_bzip2_*.starch > $(RESULTS)/version_test_bzip2.starch
-	@$(OSX_BINDIR)/v2.1/bin/starchcat --gzip $(RESULTS)/version_test_gzip_*.starch > $(RESULTS)/version_test_gzip.starch
+	@$(OSX_BINDIR)/v2.2/bin/starchcat --bzip2 $(RESULTS)/version_test_bzip2_*.starch > $(RESULTS)/version_test_bzip2.starch
+	@$(OSX_BINDIR)/v2.2/bin/starchcat --gzip $(RESULTS)/version_test_gzip_*.starch > $(RESULTS)/version_test_gzip.starch
 endif
 	@echo "[STARCH] comparing element counts of disjoint archives with merged archive..."
 ifeq ($(PLATFORM),Linux)
-	@$(SRC)/compare_disjoint_element_counts_with_merged_archive.pl $(LINUX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/version_test_bzip2.starch $(RESULTS)/version_test_bzip2_*.starch
+	@$(SRC)/compare_disjoint_element_counts_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/version_test_bzip2.starch $(RESULTS)/version_test_bzip2_*.starch
 endif
 ifeq ($(PLATFORM),Darwin)
-	@$(SRC)/compare_disjoint_element_counts_with_merged_archive.pl $(OSX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/version_test_bzip2.starch $(RESULTS)/version_test_bzip2_*.starch
+	@$(SRC)/compare_disjoint_element_counts_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/version_test_bzip2.starch $(RESULTS)/version_test_bzip2_*.starch
 endif
 	@echo "[STARCH] comparing diffs of manually concatenated disjoint archives with merged archive..."
 ifeq ($(PLATFORM),Linux)
-	@$(SRC)/diff_disjoint_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/version_test_bzip2.starch $(RESULTS)/version_test_bzip2_*.starch
+	@$(SRC)/diff_disjoint_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/version_test_bzip2.starch $(RESULTS)/version_test_bzip2_*.starch
 endif
 ifeq ($(PLATFORM),Darwin)
-	@$(SRC)/diff_disjoint_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/version_test_bzip2.starch $(RESULTS)/version_test_bzip2_*.starch
+	@$(SRC)/diff_disjoint_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/version_test_bzip2.starch $(RESULTS)/version_test_bzip2_*.starch
 endif
 
 # ---------------------------------------------
@@ -81,43 +81,51 @@ ifeq ($(PLATFORM),Darwin)
 endif
 ifeq ($(PLATFORM),Linux)
 	@echo "[STARCH] comparing diffs of manually concatenated per-chromosome disjoint archives with merged bzip2 archive..."
-	@echo "[STARCH] v1.2 disjoint <-> v2.1"
-	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/random_1p2p0_bzip2.starch.merge_test $(RESULTS)/disjoint_by_chr.random_1p2p0_bzip2.starch.chr*
-	@echo "[STARCH] v1.5 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/random_1p5p0_bzip2.starch.merge_test $(RESULTS)/disjoint_by_chr.random_1p5p0_bzip2.starch.chr*
-	@echo "[STARCH] v2.0 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/random_2p0p0_bzip2.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p0p0_bzip2.starch.chr*
-	@echo "[STARCH] v2.1 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/random_2p1p0_bzip2.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p1p0_bzip2.starch.chr*
+	@echo "[STARCH] v1.2 disjoint <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_1p2p0_bzip2.starch.merge_test $(RESULTS)/disjoint_by_chr.random_1p2p0_bzip2.starch.chr*
+	@echo "[STARCH] v1.5 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_1p5p0_bzip2.starch.merge_test $(RESULTS)/disjoint_by_chr.random_1p5p0_bzip2.starch.chr*
+	@echo "[STARCH] v2.0 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_2p0p0_bzip2.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p0p0_bzip2.starch.chr*
+	@echo "[STARCH] v2.1 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_2p1p0_bzip2.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p1p0_bzip2.starch.chr*
+	@echo "[STARCH] v2.2 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_2p2p0_bzip2.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p2p0_bzip2.starch.chr*
 	@echo "[STARCH] comparing diffs of manually concatenated per-chromosome disjoint archives with merged gzip archive..."
-	@echo "[STARCH] v1.2 disjoint <-> v2.1"
-	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/random_1p2p0_gzip.starch.merge_test $(RESULTS)/disjoint_by_chr.random_1p2p0_gzip.starch.chr*
-	@echo "[STARCH] v1.5 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/random_1p5p0_gzip.starch.merge_test $(RESULTS)/disjoint_by_chr.random_1p5p0_gzip.starch.chr*
-	@echo "[STARCH] v2.0 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/random_2p0p0_gzip.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p0p0_gzip.starch.chr*
-	@echo "[STARCH] v2.1 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/random_2p1p0_gzip.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p1p0_gzip.starch.chr*
+	@echo "[STARCH] v1.2 disjoint <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_1p2p0_gzip.starch.merge_test $(RESULTS)/disjoint_by_chr.random_1p2p0_gzip.starch.chr*
+	@echo "[STARCH] v1.5 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_1p5p0_gzip.starch.merge_test $(RESULTS)/disjoint_by_chr.random_1p5p0_gzip.starch.chr*
+	@echo "[STARCH] v2.0 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_2p0p0_gzip.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p0p0_gzip.starch.chr*
+	@echo "[STARCH] v2.1 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_2p1p0_gzip.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p1p0_gzip.starch.chr*
+	@echo "[STARCH] v2.2 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_2p2p0_gzip.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p2p0_gzip.starch.chr*
 endif
 ifeq ($(PLATFORM),Darwin)
 	@echo "[STARCH] comparing diffs of manually concatenated per-chromosome disjoint archives with merged bzip2 archive..."
-	@echo "[STARCH] v1.2 disjoint <-> v2.1"
-	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/random_1p2p0_bzip2.starch.merge_test $(RESULTS)/disjoint_by_chr.random_1p2p0_bzip2.starch.chr*
-	@echo "[STARCH] v1.5 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/random_1p5p0_bzip2.starch.merge_test $(RESULTS)/disjoint_by_chr.random_1p5p0_bzip2.starch.chr*
-	@echo "[STARCH] v2.0 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/random_2p0p0_bzip2.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p0p0_bzip2.starch.chr*
-	@echo "[STARCH] v2.1 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/random_2p1p0_bzip2.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p1p0_bzip2.starch.chr*
+	@echo "[STARCH] v1.2 disjoint <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_1p2p0_bzip2.starch.merge_test $(RESULTS)/disjoint_by_chr.random_1p2p0_bzip2.starch.chr*
+	@echo "[STARCH] v1.5 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_1p5p0_bzip2.starch.merge_test $(RESULTS)/disjoint_by_chr.random_1p5p0_bzip2.starch.chr*
+	@echo "[STARCH] v2.0 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_2p0p0_bzip2.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p0p0_bzip2.starch.chr*
+	@echo "[STARCH] v2.1 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_2p1p0_bzip2.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p1p0_bzip2.starch.chr*
+	@echo "[STARCH] v2.2 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_2p2p0_bzip2.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p2p0_bzip2.starch.chr*
 	@echo "[STARCH] comparing diffs of manually concatenated per-chromosome disjoint archives with merged gzip archive..."
-	@echo "[STARCH] v1.2 disjoint <-> v2.1"
-	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/random_1p2p0_gzip.starch.merge_test $(RESULTS)/disjoint_by_chr.random_1p2p0_gzip.starch.chr*
-	@echo "[STARCH] v1.5 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/random_1p5p0_gzip.starch.merge_test $(RESULTS)/disjoint_by_chr.random_1p5p0_gzip.starch.chr*
-	@echo "[STARCH] v2.0 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/random_2p0p0_gzip.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p0p0_gzip.starch.chr*
-	@echo "[STARCH] v2.1 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.1/bin/unstarch $(RESULTS)/random_2p1p0_gzip.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p1p0_gzip.starch.chr*
+	@echo "[STARCH] v1.2 disjoint <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_1p2p0_gzip.starch.merge_test $(RESULTS)/disjoint_by_chr.random_1p2p0_gzip.starch.chr*
+	@echo "[STARCH] v1.5 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_1p5p0_gzip.starch.merge_test $(RESULTS)/disjoint_by_chr.random_1p5p0_gzip.starch.chr*
+	@echo "[STARCH] v2.0 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_2p0p0_gzip.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p0p0_gzip.starch.chr*
+	@echo "[STARCH] v2.1 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_2p1p0_gzip.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p1p0_gzip.starch.chr*
+	@echo "[STARCH] v2.2 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_chromosome_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(RESULTS)/random_2p2p0_gzip.starch.merge_test $(RESULTS)/disjoint_by_chr.random_2p2p0_gzip.starch.chr*
 endif
 
 # ---------------------------------------------
@@ -132,45 +140,53 @@ ifeq ($(PLATFORM),Darwin)
 endif
 	@echo "[STARCH] comparing diffs of manually concatenated fixed-size disjoint archives with merged bzip2 archive"
 ifeq ($(PLATFORM),Linux)
-	@echo "[STARCH] v1.2 disjoint <-> v2.1"
-	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.1/bin/unstarch $(COMPEXTRES_DIR)/random_1p2p0_bzip2.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_1p2p0_bzip2.starch
-	@echo "[STARCH] v1.5 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.1/bin/unstarch $(COMPEXTRES_DIR)/random_1p5p0_bzip2.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_1p5p0_bzip2.starch
-	@echo "[STARCH] v2.0 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.1/bin/unstarch $(COMPEXTRES_DIR)/random_2p0p0_bzip2.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p0p0_bzip2.starch
-	@echo "[STARCH] v2.1 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.1/bin/unstarch $(COMPEXTRES_DIR)/random_2p1p0_bzip2.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p1p0_bzip2.starch
+	@echo "[STARCH] v1.2 disjoint <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_1p2p0_bzip2.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_1p2p0_bzip2.starch
+	@echo "[STARCH] v1.5 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_1p5p0_bzip2.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_1p5p0_bzip2.starch
+	@echo "[STARCH] v2.0 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_2p0p0_bzip2.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p0p0_bzip2.starch
+	@echo "[STARCH] v2.1 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_2p1p0_bzip2.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p1p0_bzip2.starch
+	@echo "[STARCH] v2.2 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_2p2p0_bzip2.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p2p0_bzip2.starch
 endif
 ifeq ($(PLATFORM),Darwin)
-	@echo "[STARCH] v1.2 disjoint <-> v2.1"
-	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.1/bin/unstarch $(COMPEXTRES_DIR)/random_1p2p0_bzip2.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_1p2p0_bzip2.starch
-	@echo "[STARCH] v1.5 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.1/bin/unstarch $(COMPEXTRES_DIR)/random_1p5p0_bzip2.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_1p5p0_bzip2.starch
-	@echo "[STARCH] v2.0 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.1/bin/unstarch $(COMPEXTRES_DIR)/random_2p0p0_bzip2.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p0p0_bzip2.starch
-	@echo "[STARCH] v2.1 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.1/bin/unstarch $(COMPEXTRES_DIR)/random_2p1p0_bzip2.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p1p0_bzip2.starch
+	@echo "[STARCH] v1.2 disjoint <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_1p2p0_bzip2.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_1p2p0_bzip2.starch
+	@echo "[STARCH] v1.5 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_1p5p0_bzip2.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_1p5p0_bzip2.starch
+	@echo "[STARCH] v2.0 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_2p0p0_bzip2.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p0p0_bzip2.starch
+	@echo "[STARCH] v2.1 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_2p1p0_bzip2.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p1p0_bzip2.starch
+	@echo "[STARCH] v2.2 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_2p2p0_bzip2.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p2p0_bzip2.starch
 endif
 	@echo "[STARCH] comparing diffs of manually concatenated fixed-size disjoint archives with merged gzip archive"
 ifeq ($(PLATFORM),Linux)
-	@echo "[STARCH] v1.2 disjoint <-> v2.1"
-	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.1/bin/unstarch $(COMPEXTRES_DIR)/random_1p2p0_gzip.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_1p2p0_gzip.starch
-	@echo "[STARCH] v1.5 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.1/bin/unstarch $(COMPEXTRES_DIR)/random_1p5p0_gzip.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_1p5p0_gzip.starch
-	@echo "[STARCH] v2.0 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.1/bin/unstarch $(COMPEXTRES_DIR)/random_2p0p0_gzip.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p0p0_gzip.starch
-	@echo "[STARCH] v2.1 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.1/bin/unstarch $(COMPEXTRES_DIR)/random_2p1p0_gzip.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p1p0_gzip.starch
+	@echo "[STARCH] v1.2 disjoint <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_1p2p0_gzip.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_1p2p0_gzip.starch
+	@echo "[STARCH] v1.5 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_1p5p0_gzip.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_1p5p0_gzip.starch
+	@echo "[STARCH] v2.0 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_2p0p0_gzip.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p0p0_gzip.starch
+	@echo "[STARCH] v2.1 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_2p1p0_gzip.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p1p0_gzip.starch
+	@echo "[STARCH] v2.2 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(LINUX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_2p2p0_gzip.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p2p0_gzip.starch
 endif
 ifeq ($(PLATFORM),Darwin)
-	@echo "[STARCH] v1.2 disjoint <-> v2.1"
-	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.1/bin/unstarch $(COMPEXTRES_DIR)/random_1p2p0_gzip.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_1p2p0_gzip.starch
-	@echo "[STARCH] v1.5 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.1/bin/unstarch $(COMPEXTRES_DIR)/random_1p5p0_gzip.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_1p5p0_gzip.starch
-	@echo "[STARCH] v2.0 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.1/bin/unstarch $(COMPEXTRES_DIR)/random_2p0p0_gzip.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p0p0_gzip.starch
-	@echo "[STARCH] v2.1 <-> v2.1"
-	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.1/bin/unstarch $(COMPEXTRES_DIR)/random_2p1p0_gzip.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p1p0_gzip.starch
+	@echo "[STARCH] v1.2 disjoint <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_1p2p0_gzip.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_1p2p0_gzip.starch
+	@echo "[STARCH] v1.5 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_1p5p0_gzip.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_1p5p0_gzip.starch
+	@echo "[STARCH] v2.0 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_2p0p0_gzip.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p0p0_gzip.starch
+	@echo "[STARCH] v2.1 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_2p1p0_gzip.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p1p0_gzip.starch
+	@echo "[STARCH] v2.2 <-> v2.2"
+	@$(SRC)/diff_disjoint_by_fixed_size_archives_with_merged_archive.pl $(OSX_BINDIR)/v2.2/bin/unstarch $(COMPEXTRES_DIR)/random_2p2p0_gzip.starch $(RESULTS)/fixed_merged_merged_fixed_size_random_2p2p0_gzip.starch
 endif
 # ---------------------------------------------
 

@@ -104,10 +104,11 @@ int
 mergeSort(FILE **tmpFiles, unsigned int numFiles);
 
 int
-processData(char const **bedFileNames, unsigned int numFiles, double maxMem, char *tmpPath);
+processData(char const **bedFileNames, unsigned int numFiles, double maxMem, char *tmpPath, 
+            const bool printUniques, const bool printDuplicates);
 
 void
-printBed(FILE *out, BedData *beds);
+printBed(FILE *out, BedData *beds, const bool printUniques, const bool printDuplicates);
 
 void
 freeBedData(BedData *beds);

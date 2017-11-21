@@ -101,7 +101,7 @@ typedef struct transformState {
     SignedCoordType          t_lastEnd;
     char                     t_firstInputToken[UNSTARCH_FIRST_TOKEN_MAX_LENGTH + 1];
     char                     t_secondInputToken[UNSTARCH_SECOND_TOKEN_MAX_LENGTH + 1];
-    char                     t_currentChromosome[TOKEN_CHR_MAX_LENGTH + 1];
+    char                     t_currentChromosome[TOKEN_CHR_MAX_LENGTH];
     size_t                   t_currentChromosomeLength;
     SignedCoordType          t_currentStart;
     SignedCoordType          t_currentStop;
@@ -111,7 +111,7 @@ typedef struct transformState {
     SignedCoordType          t_lcDiff;    
     size_t                   t_nExtractionBuffer;
     size_t                   t_nExtractionBufferPos;
-    char                     r_chromosome[TOKEN_CHR_MAX_LENGTH + 1];
+    char                     r_chromosome[TOKEN_CHR_MAX_LENGTH];
     char                     r_remainder[UNSTARCH_SECOND_TOKEN_MAX_LENGTH + 1];
     SignedCoordType          r_start;
     SignedCoordType          r_stop;

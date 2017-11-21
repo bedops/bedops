@@ -17,19 +17,22 @@ my @archive_types = qw(bzip2
 my @version_dirs = qw(v1.2
                       v1.5
                       v2.0
-                      v2.1);
+                      v2.1
+                      v2.2);
 
 my @bzip2_fns = qw(random_1p2p0_bzip2.starch
                    random_1p5p0_bzip2.starch
                    random_2p0p0_bzip2.starch
-                   random_2p1p0_bzip2.starch);
+                   random_2p1p0_bzip2.starch
+                   random_2p2p0_bzip2.starch);
 
 my @gzip_fns = qw(random_1p2p0_gzip.starch
                   random_1p5p0_gzip.starch
                   random_2p0p0_gzip.starch
-                  random_2p1p0_gzip.starch);
+                  random_2p1p0_gzip.starch
+                  random_2p2p0_gzip.starch);
 
-my $version_str = "v2.1";
+my $version_str = "v2.2";
 
 my $fragment_size = 100000;
 my $max_size = 1000000;

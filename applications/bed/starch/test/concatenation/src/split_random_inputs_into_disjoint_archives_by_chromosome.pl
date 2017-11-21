@@ -11,7 +11,7 @@ my $compr_extr_results_dir = $ARGV[0];
 my $concat_results_dir     = $ARGV[1];
 my $binaries_dir           = $ARGV[2];
 
-my $version = "v2.1";
+my $version = "v2.2";
 
 my @archive_types = qw(bzip2
                        gzip);
@@ -19,16 +19,19 @@ my @archive_types = qw(bzip2
 my @version_dirs = qw(v1.2
                       v1.5
                       v2.0
-                      v2.1);
+                      v2.1
+                      v2.2);
 
 my @bzip2_fns = qw(random_1p2p0_bzip2.starch
                    random_1p5p0_bzip2.starch
                    random_2p0p0_bzip2.starch
-                   random_2p1p0_bzip2.starch);
+                   random_2p1p0_bzip2.starch
+                   random_2p2p0_bzip2.starch);
 
 my @gzip_fns = qw(random_1p2p0_gzip.starch
                   random_1p5p0_gzip.starch
                   random_2p0p0_gzip.starch
+                  random_2p2p0_gzip.starch
                   random_2p1p0_gzip.starch);
 
 # this script will randomly pick three archives from the bzip2- and gzip-based starch archive pool

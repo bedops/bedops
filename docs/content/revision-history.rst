@@ -31,9 +31,19 @@ Released: **TBD**
 
   * Previously, a chromosome record in a Starch archive would result in corrupted metadata, if the chromosome is larger than :code:`UINT32_MAX` bytes (~4.3GB) in size when compressed. This limitation is now removed, and a single chromosome (when compressed in a Starch archive) can be up to :code:`UINT64_MAX` bytes in size.
 
+  * More stringent memory management and stricter adherance to BEDOPS-wide constants, to help reduce likelihood of pointer access out of bounds and incidence of segfaults.
+
 * :ref:`unstarch <unstarch>`
 
   * The :code:`unstarch` binary implements the character length constants of ID and remainder strings, specific to the build-time settings in the Makefile and in the app-wide constants. This follows up on `issue 195 <https://github.com/bedops/bedops/issues/195>`_.
+
+* :ref:`sort-bed <sort-bed>`
+
+  * Added :code:`--unique` (:code:`-u`) and :code:`--duplicates` (:code:`-d`) options to only print unique and duplicate in sorted output, to mimic the behavior of :code:`sort -u` and :code:`uniq -d` Unix tools. This follows up on `issue 196 <https://github.com/bedops/bedops/issues/196>`_.
+
+* Revision testing
+  
+  * Starch suite tests were updated for v2.2 archives created via v2.4.30 binaries (Linux, libc 2.22).
 
 =================
 Previous versions

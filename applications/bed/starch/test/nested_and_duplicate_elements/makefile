@@ -14,21 +14,21 @@ PLATFORM       := ${shell uname}
 BIN_DIR         = ${THIS_DIR}/../binaries
 LINUX_BINDIR    = ${BIN_DIR}/linux
 OSX_BINDIR      = ${BIN_DIR}/osx
-VERSION         = v2.1
-VERSIONP        = 2p1p0
+VERSION         = v2.2
+VERSIONP        = 2p2p0
 
 all: archives tests
 
 archives:
 	if [ ! -d ${RESULTS} ]; then mkdir -p ${RESULTS}; fi
-	@echo "[STARCH] making bzip2-starch archive with v2.1 or greater metadata..."
+	@echo "[STARCH] making bzip2-starch archive with v2.2 or greater metadata..."
 ifeq (${PLATFORM},Linux)
 	if [ ! -s ${STARCH_BZIP2} ]; then ${LINUX_BINDIR}/${VERSION}/bin/starch --bzip2 ${BED_INPUT} > ${STARCH_BZIP2}; fi
 endif
 ifeq (${PLATFORM},Darwin)
 	if [ ! -s ${STARCH_BZIP2} ]; then ${OSX_BINDIR}/${VERSION}/bin/starch --bzip2 ${BED_INPUT} > ${STARCH_BZIP2}; fi
 endif
-	@echo "[STARCH] making gzip-starch archive with v2.1 or greater metadata..."
+	@echo "[STARCH] making gzip-starch archive with v2.2 or greater metadata..."
 ifeq (${PLATFORM},Linux)
 	if [ ! -s ${STARCH_GZIP} ]; then ${LINUX_BINDIR}/${VERSION}/bin/starch --gzip ${BED_INPUT} > ${STARCH_GZIP}; fi
 endif

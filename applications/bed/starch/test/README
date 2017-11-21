@@ -54,22 +54,22 @@ To explain the version numbering applied to starch/starchcat/unstarch binaries, 
 distinction between "archive version" and "binary version". 
 
 The "binary version" value will always be concurrent with the rest of the BEDOPS toolkit.
-As of April 30 2014, this is v2.5.0.
+As of Nov 20 2017, this is v2.4.30.
 
 The "archive version" value refers to the version of metadata contained within a Starch archive
-file. Different archive versions provide access to different metadata. As of April 30 2014, the
-current archive version is v2.1.0. 
+file. Different archive versions provide access to different metadata. As of Nov 20 2017, the
+current archive version is v2.2.0. 
 
-Starch binaries that can open archives containing v2.1 and older metadata are also called 
-"v2.1-metadata" binaries. Similarly, binaries that can open and access v2.0 and older metadata 
-properties are called "v2.0-metadata" binaries, and so on.
+Starch binaries that can open archives containing v2.2 and older metadata are also called 
+"v2.2-metadata" binaries. Similarly, binaries that can open and access v2.1 and older metadata 
+properties are called "v2.1-metadata" binaries, and so on.
 
 The "binaries" folder in this test suite contains platform-specific starch binaries. The 
 v1.2-metadata binaries are sourced from our old Google Code site. The v1.5-metadata binaries 
 were compiled from a private source repository through version edits to starchMetadataHelpers.h. 
 The archive-v2.0 binaries were sourced from our Github site (generally the latest version
 that creates a v2.0 Starch archive; on April 30 2014 this would be a v2.4.2 binary release). 
-As of April 30, 2014 we support v2.1-metadata archives with v2.5.0 binaries.
+As of Nov 20, 2017 we support v2.2-metadata archives with v2.4.30 binaries.
 
 For architecture, we currently offer tests of 64-bit binaries for Linux and universal ("fat")
 binaries on the OS X platforms. We do not offer Cygwin tests at this time.
@@ -104,9 +104,9 @@ The remaining folders are described below and represent test categories.
 Compression and Extraction
 ====================================================================================
 To ensure backwards compatibility, this tests whether data compressed with (at this 
-time, April 30 2014, archive version v1.2, v1.5, v2.0 and v2.1) starch binaries can 
+time, Nov 20 2017, archive version v1.2, v1.5, v2.0, v2.1, and v2.2) starch binaries can 
 each be extracted with the versions of unstarch: the version that created the archive, 
-and  the current version of unstarch (binary v2.5). Finally, we use 'diff' to ensure 
+and  the current version of unstarch (binary v2.4.30). Finally, we use 'diff' to ensure 
 that the BED input and extracted output are identical.
 
 To run these tests directly:
@@ -126,10 +126,10 @@ use cases:
 
 For the first test, we start with the different versions of archives created in the
 "compression-and-extraction" test category. The original BED file has 1M elements, so
-we take, say, 250K elements from the first v1.2 archive and recompress them. We take 
-the next 250K elements from the next v1.5 archive and recompress those. We take the 
-remaining 500K elements from the third and fourth v2.0 and v2.1 archives, resp. and 
-recompress them. 
+we take, say, 200K elements from the first v1.2 archive and recompress them. We take 
+the next 200K elements from the next v1.5 archive and recompress those. We take the 
+remaining 600K elements from the third, fourth, and fifth archives (v2.0-v2.2, resp.)
+and recompress them. 
 
 If we concatenate these smaller archives, we expect that the final archive will 
 contain all 1M original elements and in the same sort order. (If there are more, fewer 
@@ -155,7 +155,7 @@ To run these tests directly:
 Metadata Integrity
 ====================================================================================
 We extract the JSON-formatted metadata (with --list-json-no-trailing-newline) from a 
-v2.1 archive and create a Base64-encoded SHA-1 hash of that data, using OpenSSL, xxd,
+v2.2 archive and create a Base64-encoded SHA-1 hash of that data, using OpenSSL, xxd,
 and base64 command-line utilities. This is compared with the result stored in the 
 archive via --sha1-signature. If the hashes are identical, this provides assurance of
 the integrity of the metadata.
@@ -174,11 +174,11 @@ To run these tests directly:
 
 Nested and Duplicate Elements
 ====================================================================================
-Starch v2.1 metadata (written by starch/starchcat v2.5 or greater, and read by unstarch
-v2.5 or greater) include flags that indicate if a nested or duplicate element is located 
+Starch v2.2 metadata (written by starch/starchcat v2.4.26 or greater, and read by unstarch
+v2.4.26 or greater) include flags that indicate if a nested or duplicate element is located 
 in a specified chromosome (or if the chromosome is omitted, if the condition is present 
 in any chromosome contained within the archive). Here, we test if a given BED file 
-compressed and extracted with v2.5 or greater tools display condition flags with 
+compressed and extracted with v2.4.30 or greater tools display condition flags with 
 expected values.
 
 To run these tests directly:
@@ -191,8 +191,8 @@ To run these tests directly:
 Updating
 ====================================================================================
 Starchcat can also update older archives to current archive version, writing fresh
-metadata in the process. We test whether v1.2, v1.5 and v2.0 archives can be updated 
-to v2.1 Starch archives. Additionally, we compare extracted BED streams.
+metadata in the process. We test whether v1.2, v1.5, v2.0, and v2.1 archives can be 
+updated to v2.2 Starch archives. Additionally, we compare extracted BED streams.
 
 To run these tests directly:
 

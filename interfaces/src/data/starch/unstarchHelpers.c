@@ -589,7 +589,6 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
     char *pTest = NULL;
     char *pTestChars;
     const char *pTestParam = "p";
-    char *currentChrCopy = NULL;
     char *currentRemainderCopy = NULL;
 
     /* if *str begins with a reserved header name, then we shortcut and print the line without transformation */
@@ -639,24 +638,15 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
                 *lastEnd = *start + *pLength;
                 if (! *currentChr) {
 #ifdef __cplusplus
-                    *currentChr = static_cast<char *>( malloc(strlen(chr) + 1) );
+                    *currentChr = static_cast<char *>( malloc(TOKEN_CHR_MAX_LENGTH) );
 #else
-                    *currentChr = malloc(strlen(chr) + 1);
+                    *currentChr = malloc(TOKEN_CHR_MAX_LENGTH);
 #endif
-                    *currentChrLen = strlen(chr) + 1;
+                    *currentChrLen = TOKEN_CHR_MAX_LENGTH;
                 }
                 else if ((strlen(chr) + 1) > *currentChrLen) {
-#ifdef __cplusplus
-                    currentChrCopy = static_cast<char *>( realloc(*currentChr, strlen(chr) * 2) );
-#else
-                    currentChrCopy = realloc(*currentChr, strlen(chr) * 2);
-#endif
-                    if (!currentChrCopy) {
-                        fprintf(stderr, "ERROR: Ran out of memory while extending chr token\n");
-                        return UNSTARCH_FATAL_ERROR;
-                    }
-                    *currentChr = currentChrCopy;
-                    *currentChrLen = strlen(chr) * 2;
+                    fprintf(stderr, "ERROR: Could not extend chr token beyond TOKEN_CHR_MAX_LENGTH characters\n");
+                    return UNSTARCH_FATAL_ERROR;
                 }
                 strncpy(*currentChr, chr, strlen(chr) + 1);
                 if (!*currentChr) {
@@ -706,24 +696,15 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
 #endif
                 if (! *currentChr) {
 #ifdef __cplusplus
-                    *currentChr = static_cast<char *>( malloc(strlen(chr) + 1) );
+                    *currentChr = static_cast<char *>( malloc(TOKEN_CHR_MAX_LENGTH) );
 #else
-                    *currentChr = malloc(strlen(chr) + 1);
+                    *currentChr = malloc(TOKEN_CHR_MAX_LENGTH);
 #endif
-                    *currentChrLen = strlen(chr) + 1;
+                    *currentChrLen = TOKEN_CHR_MAX_LENGTH;
                 }
                 else if ((strlen(chr) + 1) > *currentChrLen) {
-#ifdef __cplusplus
-                    currentChrCopy = static_cast<char *>( realloc(*currentChr, strlen(chr) * 2) );
-#else
-                    currentChrCopy = realloc(*currentChr, strlen(chr) * 2);
-#endif
-                    if (!currentChrCopy) {
-                        fprintf(stderr, "ERROR: Ran out of memory while extending chr token\n");
-                        return UNSTARCH_FATAL_ERROR;
-                    }
-                    *currentChr = currentChrCopy;
-                    *currentChrLen = strlen(chr) * 2;
+                    fprintf(stderr, "ERROR: Cannot extend chr token past TOKEN_CHR_MAX_LENGTH bytes\n");
+                    return UNSTARCH_FATAL_ERROR;
                 }
                 strncpy(*currentChr, chr, strlen(chr) + 1);
                 if (!*currentChr) {
@@ -798,24 +779,15 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
                 *lastEnd = *start + *pLength;
                 if (! *currentChr) {
 #ifdef __cplusplus
-                    *currentChr = static_cast<char *>( malloc(strlen(chr) + 1) );
+                    *currentChr = static_cast<char *>( malloc(TOKEN_CHR_MAX_LENGTH) );
 #else
-                    *currentChr = malloc(strlen(chr) + 1);
+                    *currentChr = malloc(TOKEN_CHR_MAX_LENGTH);
 #endif
-                    *currentChrLen = strlen(chr) + 1;
+                    *currentChrLen = TOKEN_CHR_MAX_LENGTH;
                 }
                 else if ((strlen(chr) + 1) > *currentChrLen) {
-#ifdef __cplusplus
-                    currentChrCopy = static_cast<char *>( realloc(*currentChr, strlen(chr) * 2) );
-#else
-                    currentChrCopy = realloc(*currentChr, strlen(chr) * 2);
-#endif
-                    if (!currentChrCopy) {
-                        fprintf(stderr, "ERROR: Ran out of memory while extending chr token\n");
-                        return UNSTARCH_FATAL_ERROR;
-                    }
-                    *currentChr = currentChrCopy;
-                    *currentChrLen = strlen(chr) * 2;
+                    fprintf(stderr, "ERROR: Cannot extend chr token beyond TOKEN_CHR_MAX_LENGTH in length\n");
+                    return UNSTARCH_FATAL_ERROR;
                 }
                 strncpy(*currentChr, chr, strlen(chr) + 1);
                 if (!*currentChr) {
@@ -944,32 +916,28 @@ int
 UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned char *str, char delim, SignedCoordType *start, SignedCoordType *pLength, SignedCoordType *lastEnd, char *elemTok1, char *elemTok2, char **currentChr, size_t *currentChrLen, SignedCoordType *currentStart, SignedCoordType *currentStop, char **currentRemainder, size_t *currentRemainderLen)
 {
 #ifdef DEBUG
-    
-    fprintf(stderr, "\n--- UNSTARCH_sReverseTransformIgnoringHeaderedInput() ---\n");
     /*
-    fprintf(stderr, "\tchr -> %s\n", chr);
-    fprintf(stderr, "\tstr -> %s\n", str);
-    fprintf(stderr, "\tdelim -> %c\n", delim);
-    fprintf(stderr, "\tstart -> %" PRId64 "\n", *start);
-    fprintf(stderr, "\tpLength -> %" PRId64 "\n", *pLength);
-    fprintf(stderr, "\tlastEnd -> %" PRId64 "\n", *lastEnd);
-    fprintf(stderr, "\telemTok1 -> %s\n", elemTok1);
-    fprintf(stderr, "\telemTok2 -> %s\n", elemTok2);
-    fprintf(stderr, "\tcurrentChr -> %s\n", *currentChr);
-    fprintf(stderr, "\tcurrentChrLen -> %zu\n", *currentChrLen);
-    fprintf(stderr, "\tcurrentStart -> %" PRId64 "\n", *currentStart);
-    fprintf(stderr, "\tcurrentStop -> %" PRId64 "\n", *currentStop);
-    fprintf(stderr, "\tcurrentRemainder -> %s\n", *currentRemainder);
-    fprintf(stderr, "\tcurrentRemainderLen -> %zu\n", *currentRemainderLen);
+    fprintf(stderr, "\n--- UNSTARCH_sReverseTransformIgnoringHeaderedInput() --- start\n");
+    fprintf(stderr, "\tchr -> [%s]\n", chr);
+    fprintf(stderr, "\tcurrentChr -> [%s]\n", *currentChr);
+    fprintf(stderr, "\tcurrentChrLen -> [%zu]\n", *currentChrLen);
+    fprintf(stderr, "\tstr -> [%s]\n", str);
+    fprintf(stderr, "\tdelim -> [%c]\n", delim);
+    fprintf(stderr, "\tstart -> [%" PRId64 "]\n", *start);
+    fprintf(stderr, "\tpLength -> [%" PRId64 "]\n", *pLength);
+    fprintf(stderr, "\tlastEnd -> [%" PRId64 "]\n", *lastEnd);
+    fprintf(stderr, "\telemTok1 -> [%s]\n", elemTok1);
+    fprintf(stderr, "\telemTok2 -> [%s]\n", elemTok2);
+    fprintf(stderr, "\tcurrentStart -> [%" PRId64 "]\n", *currentStart);
+    fprintf(stderr, "\tcurrentStop -> [%" PRId64 "]\n", *currentStop);
+    fprintf(stderr, "\tcurrentRemainder -> [%s]\n", *currentRemainder);
+    fprintf(stderr, "\tcurrentRemainderLen -> [%zu]\n", *currentRemainderLen);
     */
 #endif
     char pTestChars[MAX_DEC_INTEGERS] = {0};
-    char *currentChrCopy = NULL;
     char *currentRemainderCopy = NULL;
 
     /* if *str begins with a reserved header name, then we shortcut */
-
-    /* fprintf(stdout, "UNSTARCH_sReverseTransformIgnoringHeaderedInput - str: %s\n", str); */
 
 #ifdef __cplusplus
     if (strncmp(reinterpret_cast<const char *>(const_cast<unsigned char *>(str)), kStarchBedHeaderTrack, strlen(kStarchBedHeaderTrack)) == 0)
@@ -998,7 +966,6 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
     /* otherwise, we transform *str back into printable tokens */
 
     else if (UNSTARCH_createInverseTransformTokens(str, delim, elemTok1, elemTok2) == 0) { 
-
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
 #ifdef __cplusplus
@@ -1011,25 +978,17 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
                 fprintf(stderr, "A: %s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, *start, *lastEnd, elemTok2);
 #endif
                 if (! *currentChr) {
+                    fprintf(stderr, "malloc-ing *currentChr in UNSTARCH_sReverseTransformIgnoringHeaderedInput()\n");
 #ifdef __cplusplus
-                    *currentChr = static_cast<char *>( malloc(strlen(chr) + 1) );
+                    *currentChr = static_cast<char *>( malloc(TOKEN_CHR_MAX_LENGTH) );
 #else
-                    *currentChr = malloc(strlen(chr) + 1);
+                    *currentChr = malloc(TOKEN_CHR_MAX_LENGTH);
 #endif
-                    *currentChrLen = strlen(chr) + 1;
+                    *currentChrLen = TOKEN_CHR_MAX_LENGTH;
                 }
                 else if ((strlen(chr) + 1) > *currentChrLen) {
-#ifdef __cplusplus
-                    currentChrCopy = static_cast<char *>( realloc(*currentChr, strlen(chr) * 2) );
-#else
-                    currentChrCopy = realloc(*currentChr, strlen(chr) * 2);
-#endif
-                    if (!currentChrCopy) {
-                        fprintf(stderr, "ERROR: Ran out of memory while extending chr token\n");
-                        return UNSTARCH_FATAL_ERROR;
-                    }
-                    *currentChr = currentChrCopy;
-                    *currentChrLen = strlen(chr) * 2;
+                    fprintf(stderr, "ERROR: Cannot extend chr token past TOKEN_CHR_MAX_LENGTH\n");
+                    return UNSTARCH_FATAL_ERROR;
                 }
                 strncpy(*currentChr, chr, strlen(chr) + 1);
                 if (!*currentChr) {
@@ -1064,17 +1023,13 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
                     exit(-1);
                 }
 #ifdef DEBUG
-                /*
                 fprintf(stderr, "BEFORE currentRemainder -> [%s]\n", *currentRemainder);
                 fprintf(stderr, "BEFORE elemTok2         -> [%s]\n", elemTok2);
-                */
 #endif
                 strncpy(*currentRemainder, elemTok2, strlen(elemTok2) + 1);  
 #ifdef DEBUG
-                /*
                 fprintf(stderr, "AFTER  currentRemainder -> [%s]\n", *currentRemainder);
                 fprintf(stderr, "AFTER  elemTok2         -> [%s]\n", elemTok2);
-                */
 #endif
                 if (!*currentRemainder) {
                     fprintf(stderr, "ERROR: Current remainder token could not be copied\n");
@@ -1088,30 +1043,21 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
                 *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
 #endif
 #ifdef DEBUG
-                /* fprintf(stderr, "B: %s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (int64_t) strtoull(elemTok1, NULL, UNSTARCH_RADIX), *lastEnd, elemTok2); */
+                fprintf(stderr, "B: %s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (int64_t) strtoull(elemTok1, NULL, UNSTARCH_RADIX), *lastEnd, elemTok2);
 #endif
                 if (! *currentChr) {
 #ifdef __cplusplus
-                    *currentChr = static_cast<char *>( malloc(strlen(chr) + 1) );
+                    *currentChr = static_cast<char *>( malloc(TOKEN_CHR_MAX_LENGTH) );
 #else
-                    *currentChr = (char *) malloc(strlen(chr) + 1);
+                    *currentChr = (char *) malloc(TOKEN_CHR_MAX_LENGTH);
 #endif
-                    *currentChrLen = strlen(chr) + 1;
+                    *currentChrLen = TOKEN_CHR_MAX_LENGTH;
                 }
-                else if (strlen(chr) > *currentChrLen) {
-#ifdef __cplusplus
-                    currentChrCopy = static_cast<char *>( realloc(*currentChr, strlen(chr) * 2) );
-#else
-                    currentChrCopy = realloc(*currentChr, strlen(chr) * 2);
-#endif
-                    if (!currentChrCopy) {
-                        fprintf(stderr, "ERROR: Ran out of memory while extending chr token\n");
-                        return UNSTARCH_FATAL_ERROR;
-                    }
-                    *currentChr = currentChrCopy;
-                    *currentChrLen = strlen(chr) * 2;
+                else if (strlen(chr) + 1 > *currentChrLen) {
+                    fprintf(stderr, "ERROR: Cannot extend chr token past TOKEN_CHR_MAX_LENGTH\n");
+                    return UNSTARCH_FATAL_ERROR;
                 }
-                /* strncpy(*currentChr, chr, strlen(chr) + 1); */
+                strncpy(*currentChr, chr, strlen(chr) + 1);
                 if (! *currentChr) {
                     fprintf(stderr, "ERROR: Current chromosome name could not be copied\n");
                     return UNSTARCH_FATAL_ERROR;
@@ -1153,34 +1099,21 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
         else {
             if (! *currentChr) {
 #ifdef __cplusplus
-                *currentChr = static_cast<char *>( malloc(strlen(chr) + 1) );
+                *currentChr = static_cast<char *>( malloc(TOKEN_CHR_MAX_LENGTH) );
 #else
-                *currentChr = malloc(strlen(chr) + 1);
+                *currentChr = malloc(TOKEN_CHR_MAX_LENGTH);
 #endif
                 if (! *currentChr) {
                     fprintf(stderr, "ERROR: Ran out of memory while allocating chr token\n");
                     return UNSTARCH_FATAL_ERROR;
                 }
-                *currentChrLen = strlen(chr) + 1;
+                *currentChrLen = TOKEN_CHR_MAX_LENGTH;
             }
             else if ((strlen(chr) + 1) > *currentChrLen) {
-#ifdef __cplusplus
-                currentChrCopy = static_cast<char *>( realloc(*currentChr, strlen(chr) * 2) );
-#else
-                currentChrCopy = realloc(*currentChr, strlen(chr) * 2);
-#endif
-                if (!currentChrCopy) {
-                    fprintf(stderr, "ERROR: Ran out of memory while extending chr token\n");
-                    return UNSTARCH_FATAL_ERROR;
-                }
-                *currentChr = currentChrCopy;
-                *currentChrLen = strlen(chr) * 2;
-            }
-            strncpy(*currentChr, chr, strlen(chr) + 1);
-            if (! *currentChr) {
-                fprintf(stderr, "ERROR: Current chromosome name could not be copied\n");
+                fprintf(stderr, "ERROR: Cannot extend chr token beyond TOKEN_CHR_MAX_LENGTH\n");
                 return UNSTARCH_FATAL_ERROR;
             }
+            strncpy(*currentChr, chr, strlen(chr) + 1);
 
             if (elemTok1[0] == 'p') {
                 strncpy(pTestChars, elemTok1 + 1, strlen(elemTok1));
@@ -1198,15 +1131,13 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
 #endif
                 *lastEnd = *start + *pLength;
 #ifdef DEBUG
-                /* fprintf(stderr, "D: %s\t%" PRId64 "\t%" PRId64 "\n", chr, *start, *lastEnd); */
+                fprintf(stderr, "D: %s\t%" PRId64 "\t%" PRId64 "\n", chr, *start, *lastEnd);
 #endif
                 *currentStart = *start;
                 *currentStop = *lastEnd;
             }
             if (*currentRemainder) {
-                free(*currentRemainder);
-                *currentRemainder = NULL;
-                *currentRemainderLen = 0;
+                *currentRemainder[0] = '\0';
             }
         }
     }
@@ -1216,7 +1147,7 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
     }
 
 #ifdef DEBUG
-    /* fprintf(stderr, "\n--- leaving UNSTARCH_sReverseTransformIgnoringHeaderedInput() ---\n"); */
+    fprintf(stderr, "\n--- leaving UNSTARCH_sReverseTransformIgnoringHeaderedInput() ---\n");
 #endif
 
     return 0;
@@ -1338,7 +1269,7 @@ UNSTARCH_extractRawLine(const char *chr, const unsigned char *str, char delim, S
     */
 
 #ifdef DEBUG
-    /* fprintf(stderr, "\n--- UNSTARCH_extractRawLine() ---\n"); */
+    fprintf(stderr, "\n--- UNSTARCH_extractRawLine() ---\n");
     /* fprintf(stderr, "\tstr -> %s\nstart -> %" PRId64 "\n---\n", str, *start); */
 #endif
     int res;
@@ -1353,9 +1284,9 @@ UNSTARCH_extractRawLine(const char *chr, const unsigned char *str, char delim, S
         fprintf(stderr, "\tintermediate lastEnd (A) -> %" PRId64 "\n", *lastEnd);
         */
 #endif
-        if (res != 0)
+        if (res != 0) {
             res = UNSTARCH_sReverseTransformIgnoringHeaderedInput(chr, str, delim, &(*start), &(*pLength), &(*lastEnd), elemTok1, elemTok2, currentChr, &(*currentChrLen), &(*currentStart), &(*currentStop), &(*currentRemainder), &(*currentRemainderLen));
-
+        }
 #ifdef DEBUG
         /*
         fprintf(stderr, "\tintermediate start   (B) -> %" PRId64 "\n", *start);
@@ -1391,7 +1322,6 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
     char *pTest = NULL;
     char *pTestChars;
     const char *pTestParam = "p";
-    char *currentChrCopy = NULL;
     char *currentRemainderCopy = NULL;
 
     if (UNSTARCH_createInverseTransformTokens(str, delim, elemTok1, elemTok2) == 0) 
@@ -1404,27 +1334,22 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
 #endif
                 *lastEnd = *start + *pLength;
-                //sprintf(out, "%s\t%lld\t%lld\t%s\n", chr, *start, *lastEnd, elemTok2);
+#ifdef DEBUG
+                /*
+                sprintf(out, "%s\t%lld\t%lld\t%s\n", chr, *start, *lastEnd, elemTok2);
+                */
+#endif
                 if (! *currentChr) {
 #ifdef __cplusplus
-                    *currentChr = static_cast<char *>( malloc(strlen(chr) + 1) );
+                    *currentChr = static_cast<char *>( malloc(TOKEN_CHR_MAX_LENGTH) );
 #else
-                    *currentChr = malloc(strlen(chr) + 1);
+                    *currentChr = malloc(TOKEN_CHR_MAX_LENGTH);
 #endif
-                    *currentChrLen = strlen(chr) + 1;
+                    *currentChrLen = TOKEN_CHR_MAX_LENGTH;
                 }
                 else if ((strlen(chr) + 1) > *currentChrLen) {
-#ifdef __cplusplus
-                    currentChrCopy = static_cast<char *>( realloc(*currentChr, strlen(chr) * 2) );
-#else
-                    currentChrCopy = realloc(*currentChr, strlen(chr) * 2);
-#endif
-                    if (!currentChrCopy) {
-                        fprintf(stderr, "ERROR: Ran out of memory while extending chr token\n");
-                        return UNSTARCH_FATAL_ERROR;
-                    }
-                    *currentChr = currentChrCopy;
-                    *currentChrLen = strlen(chr) * 2;
+                    fprintf(stderr, "ERROR: Could not extend chr token past TOKEN_CHR_MAX_LENGTH characters\n");
+                    return UNSTARCH_FATAL_ERROR;
                 }
                 strncpy(*currentChr, chr, strlen(chr) + 1);
                 if (!*currentChr) {
@@ -1466,27 +1391,22 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
 #else
                 *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
 #endif
-                //sprintf(out, "%s\t%lld\t%lld\t%s\n", chr, (int64_t) strtoull(elemTok1, NULL, UNSTARCH_RADIX), *lastEnd, elemTok2);
+#ifdef DEBUG
+                /*
+                sprintf(out, "%s\t%lld\t%lld\t%s\n", chr, (int64_t) strtoull(elemTok1, NULL, UNSTARCH_RADIX), *lastEnd, elemTok2);
+                */
+#endif
                 if (! *currentChr) {
 #ifdef __cplusplus
-                    *currentChr = static_cast<char *>( malloc(strlen(chr) + 1) );
+                    *currentChr = static_cast<char *>( malloc(TOKEN_CHR_MAX_LENGTH) );
 #else
-                    *currentChr = malloc(strlen(chr) + 1);
+                    *currentChr = malloc(TOKEN_CHR_MAX_LENGTH);
 #endif
-                    *currentChrLen = strlen(chr) + 1;
+                    *currentChrLen = TOKEN_CHR_MAX_LENGTH;
                 }
                 else if ((strlen(chr) + 1) > *currentChrLen) {
-#ifdef __cplusplus
-                    currentChrCopy = static_cast<char *>( realloc(*currentChr, strlen(chr) * 2) );
-#else
-                    currentChrCopy = realloc(*currentChr, strlen(chr) * 2);
-#endif
-                    if (!currentChrCopy) {
-                        fprintf(stderr, "ERROR: Ran out of memory while extending chr token\n");
-                        return UNSTARCH_FATAL_ERROR;
-                    }
-                    *currentChr = currentChrCopy;
-                    *currentChrLen = strlen(chr) * 2;
+                    fprintf(stderr, "ERROR: Cannot extend chr token past TOKEN_CHR_MAX_LENGTH characters in length\n");
+                    return UNSTARCH_FATAL_ERROR;
                 }
                 strncpy(*currentChr, chr, strlen(chr) + 1);
                 if (!*currentChr) {
@@ -1559,27 +1479,22 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
 #endif
                 *lastEnd = *start + *pLength;
-                //sprintf(out, "%s\t%lld\t%lld\n", chr, *start, *lastEnd);
+#ifdef DEBUG
+                /*
+                sprintf(out, "%s\t%lld\t%lld\n", chr, *start, *lastEnd);
+                */
+#endif
                 if (! *currentChr) {
 #ifdef __cplusplus
-                    *currentChr = static_cast<char *>( malloc(strlen(chr) + 1) );
+                    *currentChr = static_cast<char *>( malloc(TOKEN_CHR_MAX_LENGTH) );
 #else
-                    *currentChr = malloc(strlen(chr) + 1);
+                    *currentChr = malloc(TOKEN_CHR_MAX_LENGTH);
 #endif
-                    *currentChrLen = strlen(chr) + 1;
+                    *currentChrLen = TOKEN_CHR_MAX_LENGTH;
                 }
                 else if ((strlen(chr) + 1) > *currentChrLen) {
-#ifdef __cplusplus
-                    currentChrCopy = static_cast<char *>( realloc(*currentChr, strlen(chr) * 2) );
-#else
-                    currentChrCopy = realloc(*currentChr, strlen(chr) * 2);
-#endif
-                    if (!currentChrCopy) {
-                        fprintf(stderr, "ERROR: Ran out of memory while extending chr token\n");
-                        return UNSTARCH_FATAL_ERROR;
-                    }
-                    *currentChr = currentChrCopy;
-                    *currentChrLen = strlen(chr) * 2;
+                    fprintf(stderr, "ERROR: Cannot extend chr token past TOKEN_CHR_MAX_LENGTH characters\n");
+                    return UNSTARCH_FATAL_ERROR;
                 }
                 strncpy(*currentChr, chr, strlen(chr) + 1);
                 if (!*currentChr) {
@@ -1603,7 +1518,7 @@ int
 UNSTARCH_createInverseTransformTokens(const unsigned char *s, const char delim, char elemTok1[], char elemTok2[])
 {
 #ifdef DEBUG
-    fprintf(stderr, "\n--- UNSTARCH_createInverseTransformTokens() ---\n");
+    fprintf(stderr, "\n--- UNSTARCH_createInverseTransformTokens() --- start\n");
 #endif
     int charCnt, sCnt, elemCnt;
     unsigned char buffer[UNSTARCH_BUFFER_MAX_LENGTH];
@@ -1620,6 +1535,9 @@ UNSTARCH_createInverseTransformTokens(const unsigned char *s, const char delim, 
         if (buffer[(charCnt - 1)] == delim) {
             if (elemCnt == 0) {
                 buffer[(charCnt - 1)] = '\0';
+#ifdef DEBUG
+                fprintf(stderr, "copying buffer [%d] [%s] to elemTok1 (A)\n", charCnt-1, buffer);
+#endif
 #ifdef __cplusplus
                 strncpy(elemTok1, reinterpret_cast<const char *>( buffer ), strlen(reinterpret_cast<const char *>( buffer )) + 1);
 #else
@@ -1632,7 +1550,10 @@ UNSTARCH_createInverseTransformTokens(const unsigned char *s, const char delim, 
     } while (s[sCnt++] != 0);
 
     if (elemCnt == 0) {
-        buffer[charCnt] = '\0';
+        buffer[charCnt-1] = '\0';
+#ifdef DEBUG
+        fprintf(stderr, "copying buffer [%d] [%s] to elemTok1 (B)\n", charCnt-1, buffer);
+#endif
 #ifdef __cplusplus
         strncpy(elemTok1, reinterpret_cast<const char *>( buffer ), strlen(reinterpret_cast<const char *>( buffer )) + 1);
 #else
@@ -1640,13 +1561,20 @@ UNSTARCH_createInverseTransformTokens(const unsigned char *s, const char delim, 
 #endif
     }
     if (elemCnt == 1) {
-        buffer[charCnt] = '\0';
+        buffer[charCnt-1] = '\0';
+#ifdef DEBUG
+        fprintf(stderr, "copying buffer [%d] [%s] to elemTok2 (C)\n", charCnt-1, buffer);
+#endif
 #ifdef __cplusplus
         strncpy(elemTok2, reinterpret_cast<const char *>( buffer ), strlen(reinterpret_cast<const char *>( buffer )) + 1);
 #else
         strncpy(elemTok2, (const char *) buffer, strlen((const char *) buffer) + 1);
 #endif
     }
+
+#ifdef DEBUG
+    fprintf(stderr, "\n--- UNSTARCH_createInverseTransformTokens() --- end\n");
+#endif
 
     return 0;
 }

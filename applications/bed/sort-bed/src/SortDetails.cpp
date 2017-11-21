@@ -527,7 +527,7 @@ freeTmpFiles(unsigned int fcount, FILE **tmpFiles, char **tmpFileNames) {
 }
 
 int
-processData(char const **bedFileNames, unsigned int numFiles, const double maxMem, char *tmpPath)
+processData(char const **bedFileNames, unsigned int numFiles, const double maxMem, char *tmpPath, const bool printUniques, const bool printDuplicates)
 {
     /* maxMem will be ignored if <= 0 */
     /* function does not do a great job of cleaning up memory on failure (including user input problems).
@@ -565,13 +565,34 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
     std::map<std::string, unsigned int>::iterator siter;
 
     /*Line reading buffers*/
-    char bedLine[BED_LINE_LEN + 1];
-    char chromBuf[CHROM_NAME_LEN + 1];
+    char *bedLine = NULL;
+    char *chromBuf = NULL;
+    char *tmpArr = NULL;
     char *cptr = NULL;
     char *dptr = NULL;
-    char tmpArr[BED_LINE_LEN + 1];
+
+    bedLine = static_cast<char *>( malloc(BED_LINE_LEN + 1) );
+    if(!bedLine) 
+        {
+            fprintf(stderr, "Error: Could not allocate space for BED line input buffer\n");
+            return EXIT_FAILURE;
+        }
+    chromBuf = static_cast<char *>( malloc(CHROM_NAME_LEN + 1) );
+    if(!chromBuf)
+        {
+            fprintf(stderr, "Error: Could not allocate space for chromosome name input buffer\n");
+            return EXIT_FAILURE;
+        }
+    tmpArr = static_cast<char *>( malloc(BED_LINE_LEN + 1) );
+    if(!tmpArr)
+        {
+            fprintf(stderr, "Error: Could not allocate space for temporary BED line input buffer\n");
+            return EXIT_FAILURE;
+        }
+
     bedLine[0] = '\0';
     chromBuf[0] = '\0';
+    tmpArr[0] = '\0';
 
     /* check input files */
     if(0 != checkFiles(bedFileNames, numFiles))
@@ -987,7 +1008,7 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                              totalBytes += (tfile == NULL) ? 0 : (strlen(tfile)+1);
                              tmpFileNames[tmpFileCount] = tfile;
                              lexSortBedData(beds);
-                             printBed(tmpFiles[tmpFileCount], beds);
+                             printBed(tmpFiles[tmpFileCount], beds, printUniques, printDuplicates);
                              for(tidx = 0; tidx < beds->numChroms; ++tidx)
                                  free(chromBytes[tidx]);
                              free(chromBytes);
@@ -1062,7 +1083,7 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                  }
          } /* for */
 
-     if(tmpFileCount > 0)
+    if(tmpFileCount > 0)
         {
             if(beds->numChroms > 0)
                 { /* sort and spit out what's in memory */
@@ -1091,7 +1112,7 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                         }
                     tmpFileNames[tmpFileCount] = tfile;
                     lexSortBedData(beds);
-                    printBed(tmpFiles[tmpFileCount], beds);
+                    printBed(tmpFiles[tmpFileCount], beds, printUniques, printDuplicates);
                     ++tmpFileCount;
                     for(tidx = 0; tidx < beds->numChroms; ++tidx)
                         free(chromBytes[tidx]);
@@ -1108,17 +1129,25 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
     else
         {
             lexSortBedData(beds);
-            printBed(stdout, beds);
+            printBed(stdout, beds, printUniques, printDuplicates);
             for(tidx = 0; tidx < beds->numChroms; ++tidx)
                 free(chromBytes[tidx]);
             free(chromBytes);
             /* freeBedData(beds); let the OS clean up - takes significant time to do this step manually */
         }
+
+    free(bedLine);
+    bedLine = NULL;
+    free(chromBuf);
+    chromBuf = NULL;
+    free(tmpArr);
+    tmpArr = NULL;
+    
     return EXIT_SUCCESS;
 }
 
 void 
-printBed(FILE *out, BedData *beds)
+printBed(FILE *out, BedData *beds, const bool printUniques, const bool printDuplicates)
 {
     unsigned int i = 0U;
     Bed::LineCountType j = 0;
@@ -1126,16 +1155,122 @@ printBed(FILE *out, BedData *beds)
     if(beds == NULL) 
         return;
 
-    for(i = 0; i < beds->numChroms; i++)
-        for(j = 0; j < beds->chroms[i]->numCoords; j++) 
-            {
-                fprintf(out, "%s\t%" PRId64 "\t%" PRId64, beds->chroms[i]->chromName, beds->chroms[i]->coords[j].startCoord, 
-                        beds->chroms[i]->coords[j].endCoord);
-                if(beds->chroms[i]->coords[j].data)
-                    fprintf(out, "\t%s\n", beds->chroms[i]->coords[j].data);
-                else
-                    fprintf(out, "\n");
-            }
+    char *currElem = NULL;
+    char *prevElem = NULL;
+    char *nextElem = NULL;
+
+    prevElem = static_cast<char *>( malloc(BED_LINE_LEN + 1) );
+    if(!prevElem)
+        {
+            fprintf(stderr, "Error: Could not allocate space for previous BED line input buffer\n");
+            exit(EXIT_FAILURE);
+        }
+
+    currElem = static_cast<char *>( malloc(BED_LINE_LEN + 1) );
+    if(!currElem)
+        {
+            fprintf(stderr, "Error: Could not allocate space for current BED line input buffer\n");
+            exit(EXIT_FAILURE);
+        }
+
+    nextElem = static_cast<char *>( malloc(BED_LINE_LEN + 1) );
+    if(!nextElem)
+        {
+            fprintf(stderr, "Error: Could not allocate space for next BED line input buffer\n");
+            exit(EXIT_FAILURE);
+        }
+
+    if (!printUniques && !printDuplicates)
+        for(i = 0; i < beds->numChroms; i++)
+            for(j = 0; j < beds->chroms[i]->numCoords; j++) 
+                {
+                    fprintf(out, 
+                            "%s\t%" PRId64 "\t%" PRId64, 
+                            beds->chroms[i]->chromName, 
+                            beds->chroms[i]->coords[j].startCoord, 
+                            beds->chroms[i]->coords[j].endCoord);
+                    if(beds->chroms[i]->coords[j].data)
+                        fprintf(out, "\t%s\n", beds->chroms[i]->coords[j].data);
+                    else
+                        fprintf(out, "\n");
+                }
+    else 
+        {
+            for(i = 0; i < beds->numChroms; i++)
+                for(j = 0; j < beds->chroms[i]->numCoords; j++) 
+                    {
+                        sprintf(currElem,
+                                "%s\t%" PRId64 "\t%" PRId64,
+                                beds->chroms[i]->chromName, 
+                                beds->chroms[i]->coords[j].startCoord, 
+                                beds->chroms[i]->coords[j].endCoord);
+                        if(beds->chroms[i]->coords[j].data)
+                            sprintf(currElem + strlen(currElem), "\t%s\n", beds->chroms[i]->coords[j].data);
+                        else
+                            sprintf(currElem + strlen(currElem), "\n");
+
+                        if (j < beds->chroms[i]->numCoords - 1) 
+                            {
+                                sprintf(nextElem,
+                                        "%s\t%" PRId64 "\t%" PRId64,
+                                        beds->chroms[i]->chromName, 
+                                        beds->chroms[i]->coords[j+1].startCoord, 
+                                        beds->chroms[i]->coords[j+1].endCoord);
+                                if(beds->chroms[i]->coords[j].data)
+                                    sprintf(nextElem + strlen(nextElem), "\t%s\n", beds->chroms[i]->coords[j+1].data);
+                                else
+                                    sprintf(nextElem + strlen(nextElem), "\n");
+                            }
+                        else 
+                            {
+                                nextElem[0] = '\0';
+                            }
+
+                        if (printUniques)
+                            {
+                                if((prevElem[0] == '\0') && (strcmp(currElem, nextElem) != 0))
+                                    {
+                                        fprintf(out, "%s", currElem);
+                                    }
+                                else if ((strcmp(prevElem, currElem) != 0) && (strcmp(currElem, nextElem) != 0))
+                                    {
+                                        fprintf(out, "%s", currElem);
+                                    }
+                            }
+                        else if (printDuplicates)
+                            {
+                                if((strcmp(prevElem, currElem) == 0) && (strcmp(currElem, nextElem) == 0))
+                                    {
+                                        continue;
+                                    }
+                                else if(strcmp(currElem, prevElem) == 0)
+                                    {
+                                        fprintf(out, "%s", currElem);
+                                    }
+                            }
+
+                        sprintf(prevElem,
+                                "%s\t%" PRId64 "\t%" PRId64,
+                                beds->chroms[i]->chromName, 
+                                beds->chroms[i]->coords[j].startCoord, 
+                                beds->chroms[i]->coords[j].endCoord);
+                        if(beds->chroms[i]->coords[j].data)
+                            sprintf(prevElem + strlen(prevElem), "\t%s\n", beds->chroms[i]->coords[j].data);
+                        else
+                            sprintf(prevElem + strlen(prevElem), "\n");
+
+                    }
+        }
+
+    free(prevElem);
+    prevElem = NULL;
+
+    free(currElem);
+    currElem = NULL;
+
+    free(nextElem);
+    nextElem = NULL;
+
     return;
 }
 
