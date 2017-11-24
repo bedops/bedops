@@ -41,6 +41,8 @@ Released: **TBD**
 
   * Added :code:`--unique` (:code:`-u`) and :code:`--duplicates` (:code:`-d`) options to only print unique and duplicate in sorted output, to mimic the behavior of :code:`sort -u` and :code:`uniq -d` Unix tools. This follows up on `issue 196 <https://github.com/bedops/bedops/issues/196>`_.
 
+  * Switched compile-time, stack-allocated :code:`char` arrays to runtime, heap-based pointers. Timing tests on shuffled FIMO datasets suggest the impact from having to allocate space for buffers at runtime is very minimal. Moving from stack to heap will help avoid segfaults from running into OS-level stack limits, when BEDOPS-level constants change the maximum line length to something larger than the stack.
+
 * Revision testing
   
   * Starch suite tests were updated for v2.2 archives created via v2.4.30 binaries (Linux, libc 2.22).

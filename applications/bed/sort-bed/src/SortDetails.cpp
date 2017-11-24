@@ -568,8 +568,6 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
     char *bedLine = NULL;
     char *chromBuf = NULL;
     char *tmpArr = NULL;
-    char *cptr = NULL;
-    char *dptr = NULL;
 
     bedLine = static_cast<char *>( malloc(BED_LINE_LEN + 1) );
     if(!bedLine) 
@@ -593,6 +591,9 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
     bedLine[0] = '\0';
     chromBuf[0] = '\0';
     tmpArr[0] = '\0';
+
+    char *cptr = NULL;
+    char *dptr = NULL;
 
     /* check input files */
     if(0 != checkFiles(bedFileNames, numFiles))
@@ -1155,31 +1156,6 @@ printBed(FILE *out, BedData *beds, const bool printUniques, const bool printDupl
     if(beds == NULL) 
         return;
 
-    char *currElem = NULL;
-    char *prevElem = NULL;
-    char *nextElem = NULL;
-
-    prevElem = static_cast<char *>( malloc(BED_LINE_LEN + 1) );
-    if(!prevElem)
-        {
-            fprintf(stderr, "Error: Could not allocate space for previous BED line input buffer\n");
-            exit(EXIT_FAILURE);
-        }
-
-    currElem = static_cast<char *>( malloc(BED_LINE_LEN + 1) );
-    if(!currElem)
-        {
-            fprintf(stderr, "Error: Could not allocate space for current BED line input buffer\n");
-            exit(EXIT_FAILURE);
-        }
-
-    nextElem = static_cast<char *>( malloc(BED_LINE_LEN + 1) );
-    if(!nextElem)
-        {
-            fprintf(stderr, "Error: Could not allocate space for next BED line input buffer\n");
-            exit(EXIT_FAILURE);
-        }
-
     if (!printUniques && !printDuplicates)
         for(i = 0; i < beds->numChroms; i++)
             for(j = 0; j < beds->chroms[i]->numCoords; j++) 
@@ -1196,21 +1172,45 @@ printBed(FILE *out, BedData *beds, const bool printUniques, const bool printDupl
                 }
     else 
         {
+            char *currElem = NULL;
+            char *prevElem = NULL;
+            char *nextElem = NULL;
+
+            prevElem = static_cast<char *>( malloc(BED_LINE_LEN + 1) );
+            if(!prevElem)
+                {
+                    fprintf(stderr, "Error: Could not allocate space for previous BED line input buffer\n");
+                    exit(EXIT_FAILURE);
+                }
+            
+            currElem = static_cast<char *>( malloc(BED_LINE_LEN + 1) );
+            if(!currElem)
+                {
+                    fprintf(stderr, "Error: Could not allocate space for current BED line input buffer\n");
+                    exit(EXIT_FAILURE);
+                }
+            
+            nextElem = static_cast<char *>( malloc(BED_LINE_LEN + 1) );
+            if(!nextElem)
+                {
+                    fprintf(stderr, "Error: Could not allocate space for next BED line input buffer\n");
+                    exit(EXIT_FAILURE);
+                }
+
             for(i = 0; i < beds->numChroms; i++)
                 for(j = 0; j < beds->chroms[i]->numCoords; j++) 
                     {
-                        sprintf(currElem,
-                                "%s\t%" PRId64 "\t%" PRId64,
-                                beds->chroms[i]->chromName, 
-                                beds->chroms[i]->coords[j].startCoord, 
-                                beds->chroms[i]->coords[j].endCoord);
-                        if(beds->chroms[i]->coords[j].data)
-                            sprintf(currElem + strlen(currElem), "\t%s\n", beds->chroms[i]->coords[j].data);
-                        else
-                            sprintf(currElem + strlen(currElem), "\n");
-
-                        if (j < beds->chroms[i]->numCoords - 1) 
-                            {
+                        if (j == 0) {
+                            sprintf(currElem,
+                                    "%s\t%" PRId64 "\t%" PRId64,
+                                    beds->chroms[i]->chromName, 
+                                    beds->chroms[i]->coords[j].startCoord, 
+                                    beds->chroms[i]->coords[j].endCoord);
+                            if(beds->chroms[i]->coords[j].data)
+                                sprintf(currElem + strlen(currElem), "\t%s\n", beds->chroms[i]->coords[j].data);
+                            else
+                                sprintf(currElem + strlen(currElem), "\n");
+                            if (beds->chroms[i]->numCoords > 1) {
                                 sprintf(nextElem,
                                         "%s\t%" PRId64 "\t%" PRId64,
                                         beds->chroms[i]->chromName, 
@@ -1221,10 +1221,26 @@ printBed(FILE *out, BedData *beds, const bool printUniques, const bool printDupl
                                 else
                                     sprintf(nextElem + strlen(nextElem), "\n");
                             }
-                        else 
-                            {
+                            else {
                                 nextElem[0] = '\0';
                             }
+                        }
+                        else if (j < beds->chroms[i]->numCoords - 1) {
+                            memcpy(currElem, nextElem, strlen(nextElem)+1); 
+                            sprintf(nextElem,
+                                    "%s\t%" PRId64 "\t%" PRId64,
+                                    beds->chroms[i]->chromName, 
+                                    beds->chroms[i]->coords[j+1].startCoord, 
+                                    beds->chroms[i]->coords[j+1].endCoord);
+                            if(beds->chroms[i]->coords[j].data)
+                                sprintf(nextElem + strlen(nextElem), "\t%s\n", beds->chroms[i]->coords[j+1].data);
+                            else
+                                sprintf(nextElem + strlen(nextElem), "\n");
+                        }
+                        else {
+                            memcpy(currElem, nextElem, strlen(nextElem)+1); 
+                            nextElem[0] = '\0';
+                        }
 
                         if (printUniques)
                             {
@@ -1249,27 +1265,18 @@ printBed(FILE *out, BedData *beds, const bool printUniques, const bool printDupl
                                     }
                             }
 
-                        sprintf(prevElem,
-                                "%s\t%" PRId64 "\t%" PRId64,
-                                beds->chroms[i]->chromName, 
-                                beds->chroms[i]->coords[j].startCoord, 
-                                beds->chroms[i]->coords[j].endCoord);
-                        if(beds->chroms[i]->coords[j].data)
-                            sprintf(prevElem + strlen(prevElem), "\t%s\n", beds->chroms[i]->coords[j].data);
-                        else
-                            sprintf(prevElem + strlen(prevElem), "\n");
-
+                        memcpy(prevElem, currElem, strlen(currElem)+1);
                     }
+
+            free(prevElem);
+            prevElem = NULL;
+            
+            free(currElem);
+            currElem = NULL;
+            
+            free(nextElem);
+            nextElem = NULL;
         }
-
-    free(prevElem);
-    prevElem = NULL;
-
-    free(currElem);
-    currElem = NULL;
-
-    free(nextElem);
-    nextElem = NULL;
 
     return;
 }
