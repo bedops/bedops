@@ -35,7 +35,7 @@ The header data of a VCF file is usually discarded, unless you add the ``--keep-
 
 .. note:: By default, multiple BED annotations are printed if there are multiple alternate alleles in a variant call. Use the ``--do-not-split-alt-alleles`` option to preserve the alternate allele string and print only one BED element for the variant call.
 
-.. tip:: By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the ``--do-not-sort`` option. Run the script with the ``--help`` option for more details.
+.. tip:: By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If the converted BED output looks truncated or incomplete, and you are converting a VCF file that is larger than the capacity of your ``/tmp`` folder, then use the ``--sort-tmpdir`` option to specify an alternative directory to store intermediate sort results. Or, if you do not want to sort the converted output, use the ``--do-not-sort`` option. Run the script with the ``--help`` option for more details.
 
 .. tip:: If you are sorting data larger than system memory, use the ``--max-mem`` option to limit sort memory usage to a reasonable fraction of available memory, *e.g.*, ``--max-mem 2G`` or similar. See ``--help`` for more details.
 
