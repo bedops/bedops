@@ -84,7 +84,7 @@ Release
 
      ### Linux
      **bedops_linux_x86_64-vX.Y.Z.tar.bz2** (64-bit, SHA256: ``abcd1234``)
-     This package of BEDOPS vX.Y.Z binaries is for Linux 64-bit hosts. Those who require 32-bit binaries will need to build them from source code.
+     This package of BEDOPS vX.Y.Z binaries is for Linux 64-bit (glibc v2.17) hosts. Those who require 32-bit or pre-2.17 glibc-compiled binaries will need to build binaries from source code; please read [§2.2. Via source-code] (http://bedops.readthedocs.io/en/latest/content/installation.html#via-source-code) of the BEDOPS Installation document for details.
 
      For installation instructions, please read [§2.1.1. Linux] (http://bedops.readthedocs.io/en/latest/content/installation.html#linux) of the BEDOPS Installation document.
 

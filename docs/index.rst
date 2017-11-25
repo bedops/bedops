@@ -109,7 +109,7 @@ Contents
 .. |macosx_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.30/BEDOPS.2.4.30.pkg.zip">Intel (64-bit, 10.10-10.12)</a> installer package</li>
+   <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.30/BEDOPS.2.4.30.pkg.zip">Intel (64-bit, 10.10-10.13)</a> installer package</li>
    <li><a href="content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
    </ul>
 
