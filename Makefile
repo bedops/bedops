@@ -420,6 +420,19 @@ else
 	find docs/content -type f -exec sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" {} +
 endif
 
+update_bedops_copyright_date:
+ifndef OLD_CPD
+	$(error Old copyright date variable OLD_CPD is undefined (e.g., 2011-2017))
+endif
+ifndef NEW_CPD
+	$(error New copyright date variable NEW_CPD is undefined (e.g., 2011-2018))
+endif
+ifeq ($(KERNEL), Darwin)
+	gfind . -exec gsed -i "s/"$$OLD_CPD"/"$$NEW_CPD"/g" {} \;
+else
+	find . -exec sed -i "s/"$$OLD_CPD"/"$$NEW_CPD"/g" {} \;
+endif
+
 docker: packaging/docker/Dockerfile
 	docker build -t bedops -f packaging/docker/Dockerfile  .
 
