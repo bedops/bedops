@@ -12,6 +12,20 @@ Current version
 ===============
 
 -------
+v2.4.31
+-------
+
+Released: **TBD**
+
+* User forum
+
+  * BEDOPS user forum moved from http://bedops.stamlab.org to https://bedops.altius.org
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.30
 -------
 
@@ -45,11 +59,7 @@ Released: **November 25, 2017**
 
 * Revision testing
   
-  * Starch suite tests were updated for v2.2 archives created via v2.4.30 binaries (Linux, libc 2.22).
-
-=================
-Previous versions
-=================
+  * Starch suite tests were updated for v2.2 archives created via v2.4.31 binaries (Linux, libc 2.22).
 
 -------
 v2.4.29

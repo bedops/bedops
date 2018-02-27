@@ -2,7 +2,7 @@
 
 #
 #    BEDOPS
-#    Copyright (C) 2011-2017 Shane Neph, Scott Kuehn and Alex Reynolds
+#    Copyright (C) 2011-2018 Shane Neph, Scott Kuehn and Alex Reynolds
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ import logging
 name = "update-sort-bed-starch-slurm"
 citation = "  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract"
 authors = "  authors:  Alex Reynolds and Shane Neph"
-version = "  version:  2.4.30"
+version = "  version:  2.4.31"
 usage = """  $ update-sort-bed-starch-slurm [ --slurm-memory <MB> ] 
                                  [ --slurm-partition <SLURM partition> ] 
                                  [ --slurm-workdir <working directory> ]
