@@ -239,7 +239,7 @@ Homebrew is a popular package management toolkit for Mac OS X. It facilitates ea
 
    ::
 
-     $ brew install homebrew/science/bedops
+     $ brew install bedops
 
 .. _installation_via_source_code_on_docker:
 
