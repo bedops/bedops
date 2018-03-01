@@ -19,7 +19,11 @@ Released: **TBD**
 
 * User forum
 
-  * BEDOPS user forum moved from http://bedops.stamlab.org to https://bedops.altius.org
+  * BEDOPS user forum moved domains from http://bedops.stamlab.org to https://bedops.altius.org
+
+* Documentation
+
+  * Updated Homebrew installation instructions per `issue 202 <https://github.com/bedops/bedops/issues/202>`_ (thanks to user EricFromCanada).
 
 =================
 Previous versions
