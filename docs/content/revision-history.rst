@@ -25,6 +25,10 @@ Released: **TBD**
 
   * Updated Homebrew installation instructions per `issue 202 <https://github.com/bedops/bedops/issues/202>`_ (thanks to user EricFromCanada).
 
+* :ref:`wig2bed <wig2bed>`
+
+  * Increased maximum length of chromosome name buffer to suite-wide ``TOKEN_CHR_MAX_LENGTH`` value, to reduce likelihood of segmentation faults (thanks to user ma-diroma for the bug report).
+
 =================
 Previous versions
 =================
