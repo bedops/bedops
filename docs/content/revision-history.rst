@@ -15,11 +15,13 @@ Current version
 v2.4.31
 -------
 
-Released: **TBD**
+Released: **March 8, 2018**
 
 * User forum
 
   * BEDOPS user forum moved domains from http://bedops.stamlab.org to https://bedops.altius.org
+
+  * Testing out administrator approval requirement for new forum accounts, to help try to reduce visits from spammers.
 
 * Documentation
 
@@ -27,7 +29,11 @@ Released: **TBD**
 
 * :ref:`wig2bed <wig2bed>`
 
-  * Increased maximum length of chromosome name buffer to suite-wide ``TOKEN_CHR_MAX_LENGTH`` value, to reduce likelihood of segmentation faults (thanks to user ma-diroma for the bug report).
+  * Increased maximum length of chromosome name buffer to suite-wide :code:`TOKEN_CHR_MAX_LENGTH` value, to reduce likelihood of segmentation faults (thanks to user ma-diroma).
+
+* General
+
+  * Updated copyright dates in source and headers.
 
 =================
 Previous versions
