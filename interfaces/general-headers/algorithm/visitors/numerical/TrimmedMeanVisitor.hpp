@@ -31,6 +31,7 @@
 #include <string>
 
 #include "data/measurement/NaN.hpp"
+#include "data/measurement/SelectMeasureType.hpp"
 #include "utility/Assertion.hpp"
 #include "utility/Exception.hpp"
 #include "utility/OrderCompare.hpp"
@@ -51,7 +52,7 @@ namespace Visitors {
     typedef MapType* PtrType;
     typedef Ordering::CompValueThenAddressLesser<MapType, MapType> Comp;
     typedef std::set<PtrType, Comp> ScoreTypeContainer;
-
+    typedef typename Signal::SelectMeasure<MapType>::MeasureType MT;
 
     //==============
     // Construction
@@ -150,7 +151,7 @@ namespace Visitors {
 
 
   protected:
-    inline void add(PtrType ptr, typename ScoreTypeContainer::iterator& marker, std::size_t& pos, double& sum) {
+    inline void add(PtrType ptr, typename ScoreTypeContainer::iterator& marker, std::size_t& pos, MT& sum) {
       static Comp comp;
       if ( marker == scoresBuf_.end() ) {
         marker = scoresBuf_.begin();
@@ -162,7 +163,7 @@ namespace Visitors {
       }
     }
 
-    inline void remove(PtrType ptr, typename ScoreTypeContainer::iterator& marker, std::size_t& pos, double& sum) {
+    inline void remove(PtrType ptr, typename ScoreTypeContainer::iterator& marker, std::size_t& pos, MT& sum) {
       // keep in mind that you cannot be here if there is <= 1 element
       //  in the scoresBuf_ containers.
       static Comp comp;
@@ -183,7 +184,7 @@ namespace Visitors {
       }
     }
 
-    inline void doneRef(typename ScoreTypeContainer::iterator& marker, std::size_t& pos, double& sum, std::size_t newPos) {
+    inline void doneRef(typename ScoreTypeContainer::iterator& marker, std::size_t& pos, MT& sum, std::size_t newPos) {
 
       // Increment markers as needed
       while ( newPos > pos ) {
@@ -201,7 +202,7 @@ namespace Visitors {
   protected:
     const double lowerKth_;
     const double upperKth_;
-    double lowerSum_, upperSum_;
+    MT lowerSum_, upperSum_;
     std::size_t currentAtPosLower_, currentAtPosUpper_;
     bool doKth_, symmetric_;
     ProcessType pt_;

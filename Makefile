@@ -100,7 +100,37 @@ install: prep_c install_conversion_scripts install_starch_scripts
 	-cp ${APPDIR}/starch/bin/starchstrip- ${BINDIR}/starchstrip
 	-cp ${APPDIR}/conversion/bin/convert2bed- ${BINDIR}/convert2bed
 
-install_all: install_conversion_scripts_with_suffix install_starch_scripts_with_suffix
+install_float128: prep_c install_conversion_scripts
+	-cp ${APPDIR}/sort-bed/bin/sort-bed-${FLOAT128} ${BINDIR}/sort-bed
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm-${FLOAT128} ${BINDIR}/update-sort-bed-slurm
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm-${FLOAT128} ${BINDIR}/update-sort-bed-starch-slurm
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates-${FLOAT128} ${BINDIR}/update-sort-bed-migrate-candidates
+	-cp ${APPDIR}/bedops/bin/bedops-${FLOAT128} ${BINDIR}/bedops
+	-cp ${APPDIR}/closestfeats/bin/closest-features-${FLOAT128} ${BINDIR}/closest-features
+	-cp ${APPDIR}/bedmap/bin/bedmap-${FLOAT128} ${BINDIR}/bedmap
+	-cp ${APPDIR}/bedextract/bin/bedextract-${FLOAT128} ${BINDIR}/bedextract
+	-cp ${APPDIR}/starch/bin/starch-${FLOAT128} ${BINDIR}/starch
+	-cp ${APPDIR}/starch/bin/unstarch-${FLOAT128} ${BINDIR}/unstarch
+	-cp ${APPDIR}/starch/bin/starchcat-${FLOAT128} ${BINDIR}/starchcat
+	-cp ${APPDIR}/starch/bin/starchstrip-${FLOAT128} ${BINDIR}/starchstrip
+	-cp ${APPDIR}/conversion/bin/convert2bed-${FLOAT128} ${BINDIR}/convert2bed
+
+install_megarow: prep_c install_conversion_scripts
+	-cp ${APPDIR}/sort-bed/bin/sort-bed-${MEGAROW} ${BINDIR}/sort-bed
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm-${MEGAROW} ${BINDIR}/update-sort-bed-slurm
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm-${MEGAROW} ${BINDIR}/update-sort-bed-starch-slurm
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates-${MEGAROW} ${BINDIR}/update-sort-bed-migrate-candidates
+	-cp ${APPDIR}/bedops/bin/bedops-${MEGAROW} ${BINDIR}/bedops
+	-cp ${APPDIR}/closestfeats/bin/closest-features-${MEGAROW} ${BINDIR}/closest-features
+	-cp ${APPDIR}/bedmap/bin/bedmap-${MEGAROW} ${BINDIR}/bedmap
+	-cp ${APPDIR}/bedextract/bin/bedextract-${MEGAROW} ${BINDIR}/bedextract
+	-cp ${APPDIR}/starch/bin/starch-${MEGAROW} ${BINDIR}/starch
+	-cp ${APPDIR}/starch/bin/unstarch-${MEGAROW} ${BINDIR}/unstarch
+	-cp ${APPDIR}/starch/bin/starchcat-${MEGAROW} ${BINDIR}/starchcat
+	-cp ${APPDIR}/starch/bin/starchstrip-${MEGAROW} ${BINDIR}/starchstrip
+	-cp ${APPDIR}/conversion/bin/convert2bed-${MEGAROW} ${BINDIR}/convert2bed
+
+install_all: prep_c install_conversion_scripts_with_suffix install_starch_scripts_with_suffix
 	for btype in ${ALL_BINARY_TYPES}; do \
 		cp ${APPDIR}/sort-bed/bin/sort-bed-$$btype ${BINDIR}/sort-bed-$$btype; \
 		cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm-$$btype ${BINDIR}/update-sort-bed-slurm-$$btype; \

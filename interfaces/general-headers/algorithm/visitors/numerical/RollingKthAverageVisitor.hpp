@@ -74,9 +74,9 @@ namespace Visitors {
 
       if ( size > 1 ) {
         if ( kthPosUp == kthPosDown ) { // a true integer; take average of two adjacent integers
-          double one = **BaseClass::currentMarker_;
+          MT one = **BaseClass::currentMarker_;
           typename BaseClass::ScoreTypeContainer::iterator next = BaseClass::currentMarker_;
-          double two = **++next;
+          MT two = **++next;
           pt_.operator()((one + two)/2.0);
         } else if ( BaseClass::currentAtPos_ == kthPosUp ) {
           pt_.operator()(static_cast<MT>(**BaseClass::currentMarker_));

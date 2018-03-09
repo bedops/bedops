@@ -52,7 +52,7 @@ namespace Formats {
   inline const char* Format(long double, int precision, bool scientific) {
     static char prec[20];
     if ( scientific )
-      std::sprintf(prec, "%%.%de", precision);
+      std::sprintf(prec, "%%.%dLe", precision);
     else
       std::sprintf(prec, "%%.%dLf", precision);
     return(prec);

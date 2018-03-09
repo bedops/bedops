@@ -25,6 +25,7 @@
 #define VARIANCEVISITOR_HPP
 
 #include "data/measurement/NaN.hpp"
+#include "data/measurement/SelectMeasureType.hpp"
 
 namespace Visitors {
   
@@ -38,6 +39,7 @@ namespace Visitors {
     typedef Process ProcessType;
     typedef typename BaseClass::RefType RefType;
     typedef typename BaseClass::MapType MapType;
+    typedef typename Signal::SelectMeasure<MapType>::MeasureType MT;
 
     explicit Variance(const ProcessType& pt = ProcessType())
        : pt_(pt), sum_(0), squareSum_(0), count_(0)
@@ -60,8 +62,8 @@ namespace Visitors {
       if ( count_ <= 1 )
         pt_.operator()(nan);
       else {
-        double numer = (count_ * squareSum_) - (sum_ * sum_);
-        double denom = (count_ * (count_ - 1));
+        MT numer = (count_ * squareSum_) - (sum_ * sum_);
+        MT denom = (count_ * (count_ - 1));
         pt_.operator()(numer / denom);
       }
     }
@@ -70,9 +72,9 @@ namespace Visitors {
 
   protected:
     ProcessType pt_;
-    double sum_;
-    double squareSum_;
-    double count_;
+    MT sum_;
+    MT squareSum_;
+    long count_;
   };
 
 } // namespace Visitors

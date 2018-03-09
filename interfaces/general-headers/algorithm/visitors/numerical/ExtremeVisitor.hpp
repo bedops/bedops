@@ -33,6 +33,7 @@
 #include <type_traits>
 
 #include "data/measurement/NaN.hpp"
+#include "data/measurement/SelectMeasureType.hpp"
 #include "utility/OrderCompare.hpp"
 
 namespace Visitors {
@@ -53,7 +54,7 @@ namespace Visitors {
       // s is not empty if Extreme is calling
       std::vector<T*> toRand;
       bool first = true;
-      double best = 0;
+      typename Signal::SelectMeasure<T>::MeasureType best = 0;
       for ( auto iter = s.begin(); iter != s.end(); ++iter ) {
         if ( first ) {
           best = **iter;

@@ -25,6 +25,7 @@
 #define CLASS_WINDOW_AVERAGE_VISITOR_H
 
 #include "data/measurement/NaN.hpp"
+#include "data/measurement/SelectMeasureType.hpp"
 
 namespace Visitors {
 
@@ -71,7 +72,7 @@ namespace Visitors {
 
   protected:
     ProcessType pt_;
-    double sum_;
+    typename Signal::SelectMeasure<MapType>::MeasureType sum_;
     int counter_;
   };
 

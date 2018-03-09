@@ -29,8 +29,8 @@
 #include <set>
 #include <string>
 
-#include "data/measurement/SelectMeasureType.hpp"
 #include "data/measurement/NaN.hpp"
+#include "data/measurement/SelectMeasureType.hpp"
 #include "utility/Assertion.hpp"
 #include "utility/Exception.hpp"
 #include "utility/OrderCompare.hpp"
