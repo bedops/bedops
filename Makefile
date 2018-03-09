@@ -116,6 +116,7 @@ install_all: install_conversion_scripts_with_suffix install_starch_scripts_with_
 		cp ${APPDIR}/starch/bin/starchstrip-$$btype ${BINDIR}/starchstrip-$$btype; \
 		cp ${APPDIR}/conversion/bin/convert2bed-$$btype ${BINDIR}/convert2bed-$$btype; \
 	done
+	-cp ${OTHERDIR}/switch-BEDOPS-binary-type ${BINDIR}
 
 module_binaries:
 	for btype in ${ALL_BINARY_TYPES}; do \
