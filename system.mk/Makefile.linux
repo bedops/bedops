@@ -10,12 +10,8 @@ WDIR                  = ${shell pwd}
 export CC             = gcc
 export CXX            = g++
 SELF                  = ${WDIR}/system.mk/Makefile.linux
-MEGAROW               = megarow
-TYPICAL               = typical
 BINDIR                = bin
 BINDIR_MODULE         = modules
-BINDIR_MODULE_TYPICAL = ${BINDIR_MODULE}/${TYPICAL}
-BINDIR_MODULE_MEGAROW = ${BINDIR_MODULE}/${MEGAROW}
 
 default: support
 	$(MAKE) build -f $(SELF)

@@ -32,6 +32,7 @@ namespace Formats {
   constexpr const char* Format(const char*) { return "%s"; }
   constexpr const char* Format(char) { return "%c"; }
   constexpr const char* Format(double) { return "%lf"; }
+  constexpr const char* Format(long double) { return "%Lf"; }
   constexpr const char* Format(float) { return "%f"; }
   constexpr const char* Format(int) { return "%d"; }
   constexpr const char* Format(unsigned int) { return "%u"; }
@@ -45,6 +46,15 @@ namespace Formats {
       std::sprintf(prec, "%%.%de", precision);
     else
       std::sprintf(prec, "%%.%dlf", precision);
+    return(prec);
+  }
+
+  inline const char* Format(long double, int precision, bool scientific) {
+    static char prec[20];
+    if ( scientific )
+      std::sprintf(prec, "%%.%de", precision);
+    else
+      std::sprintf(prec, "%%.%dLf", precision);
     return(prec);
   }
 

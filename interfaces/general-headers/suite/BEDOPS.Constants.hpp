@@ -43,6 +43,10 @@
 #define CHROM_EXPONENT 7
 #endif
 
+#ifndef MEASURE_TYPE /* could be long double for 128 bits, for example */
+#define MEASURE_TYPE double
+#endif
+
 #ifdef __cplusplus
 
 #include "utility/CompilerMath.hpp"
@@ -82,6 +86,7 @@ namespace Bed {
   typedef CoordType LineCountType;
   typedef CoordType BaseCountType;
   typedef unsigned long LineLengthType;
+  typedef MEASURE_TYPE MeasurementType;
 
   static_assert(sizeof(SignedCoordType) >= sizeof(INT_MAX_COORD_VALUE), "INT_MAX_COORD_VALUE is too big!"); // expected-warning {{static_assert declarations are incompatible with C++98}}
 
@@ -108,6 +113,7 @@ namespace Bed {
   typedef CoordType LineCountType;
   typedef CoordType BaseCountType;
   typedef unsigned long LineLengthType;
+  typedef MEASURE_TYPE MeasurementType;
 
 #define TOKEN_CHR_MAX_LENGTH INT_TOKEN_CHR_MAX_LENGTH
 #define TOKEN_ID_MAX_LENGTH INT_TOKEN_ID_MAX_LENGTH

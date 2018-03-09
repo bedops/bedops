@@ -27,13 +27,14 @@
 
 #include "data/bed/Bed.hpp"
 #include "data/bed/Bed_minmem.hpp"
+#include "suite/BEDOPS.Constants.hpp"
 
 namespace Bed {
 
   /***********************************************/
   /* Typedef helper for user applications        */
   /***********************************************/
-  template <bool UseNonStaticChrom, bool UseRest, typename MType = double, bool MemPool = true>
+  template <bool UseNonStaticChrom, bool UseRest, typename MType = Bed::MeasurementType, bool MemPool = true>
   struct BedTypes {
     typedef MType                                   MeasureType;
     typedef BasicCoords<UseNonStaticChrom, UseRest> Bed3Type;
@@ -55,8 +56,8 @@ namespace Bed {
   /***********************************************/
   /* Common typedefs                             */
   /***********************************************/
-  typedef BedTypes<AllChrom, Rest, double>    BTAllRest;
-  typedef BedTypes<AllChrom, NoRest, double>  BTAllNoRest;
+  typedef BedTypes<AllChrom, Rest, Bed::MeasurementType>    BTAllRest;
+  typedef BedTypes<AllChrom, NoRest, Bed::MeasurementType>  BTAllNoRest;
   typedef BTAllRest::Bed3Type   B3Rest;
   typedef BTAllNoRest::Bed3Type B3NoRest;
 
@@ -67,8 +68,8 @@ namespace Bed {
   typedef BTAllNoRest::Bed5Type B5NoRest;
 
 
-  typedef BedTypes<AllChrom, Rest, double, NoPooling>    BTAllRestNoPool;
-  typedef BedTypes<AllChrom, NoRest, double, NoPooling>  BTAllNoRestNoPool;
+  typedef BedTypes<AllChrom, Rest, Bed::MeasurementType, NoPooling>    BTAllRestNoPool;
+  typedef BedTypes<AllChrom, NoRest, Bed::MeasurementType, NoPooling>  BTAllNoRestNoPool;
 
   typedef BTAllRestNoPool::Bed3Type   B3RestNoPool;
   typedef BTAllNoRestNoPool::Bed3Type B3NoRestNoPool;

@@ -8,16 +8,17 @@ CMD="switch-BEDOPS-binary-type"
 
 help()
 {
-    echo "Switch the BEDOPS binary build from typical to megarow, or vice versa"
-    echo "Usage: ${CMD} [ --help ] [ --typical | --megarow ]" >&2
+    echo "Switch the BEDOPS binary build to typical, megarow, or float128"
+    echo "Usage: ${CMD} [ --help ] [ --typical | --megarow | --float128 ]" >&2
     exit $1
 }
 
 TYPICAL=false
 MEGAROW=false
+FLOAT128=false
 EXTENSION="null"
 
-OPTSPEC=":tmh-:"
+OPTSPEC=":tmfh-:"
 while getopts "$OPTSPEC" OPTCHAR; do
     case "${OPTCHAR}" in
         -)
@@ -29,6 +30,10 @@ while getopts "$OPTSPEC" OPTCHAR; do
                 megarow)
                     MEGAROW=true
                     EXTENSION="-megarow"
+                    ;;
+                float128)
+                    FLOAT128=true
+                    EXTENSION="-float128"
                     ;;
                 help)
                     help 0
@@ -45,6 +50,10 @@ while getopts "$OPTSPEC" OPTCHAR; do
             MEGAROW=true
             EXTENSION="-megarow"
             ;;
+        f)
+            FLOAT128=true
+            EXTENSION="-float128"
+            ;;
         h)
             help 0
             ;;
@@ -59,18 +68,26 @@ then
     help 1
 fi
 
-# XOR
-if [[ ("${TYPICAL}" && !"${MEGAROW}") || (!"${TYPICAL}" && "${MEGAROW}") ]] 
+
+cntr=0
+if $MEGAROW ; then ((cntr+=1)); fi
+if $TYPICAL ; then ((cntr+=1)); fi
+if $FLOAT128 ; then ((cntr+=1)); fi
+
+if [[ "$cntr" -ne "1" ]]
 then
-    VARNAME=$(find ${BINDIR}/ -maxdepth 1 -mindepth 1 -type f -name \*${EXTENSION})
-    for V in ${VARNAME} 
-    do
-        BV=$(basename "$V")
-        NAME=`echo $BV | sed "s/${EXTENSION}//"`
-        ln -sf ${V} ${BINDIR}/${NAME}
-    done
-else
-    help 1
+  help 1
 fi
+
+WD=$(pwd)
+VARNAME=$(find ${BINDIR}/ -maxdepth 1 -mindepth 1 -type f -name \*${EXTENSION})
+for V in ${VARNAME} 
+do
+    BV=$(basename "$V")
+    NAME=`echo $BV | sed "s/${EXTENSION}//"`
+    cd ${BINDIR}
+    ln -sf ${BV} ${NAME}
+    cd ${WD}
+done
 
 exit 0

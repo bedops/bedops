@@ -15,6 +15,18 @@ Current version
 v2.4.32
 -------
 
+* :ref: `bedmap <bedmap>`
+
+  * Support build with 128 bit floating point for measurement/calculated values using :code:`make float128`:code:
+
+=================
+Previous versions
+=================
+
+-------
+v2.4.31
+-------
+
 Released: **March 8, 2018**
 
 * User forum
@@ -34,10 +46,6 @@ Released: **March 8, 2018**
 * General
 
   * Updated copyright dates in source and headers.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.30
