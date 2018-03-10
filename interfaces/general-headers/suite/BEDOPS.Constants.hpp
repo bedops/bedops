@@ -27,25 +27,9 @@
 #define CONSTANTS_BEDOPS_H
 
 //
-// Don't use these directly; they just synchronize C and C++'s uses below
-//   - just want to utilize C++'s type system explicitly
+// Typically don't use these directly in an application
+//   (further down are comments on stuff to use)
 //
-
-#ifndef REST_EXPONENT
-#define REST_EXPONENT 15
-#endif
-
-#ifndef ID_EXPONENT
-#define ID_EXPONENT 13
-#endif
-
-#ifndef CHROM_EXPONENT
-#define CHROM_EXPONENT 7
-#endif
-
-#ifndef MEASURE_TYPE /* could be long double for 128 bits, for example */
-#define MEASURE_TYPE double
-#endif
 
 #ifdef __cplusplus
 
@@ -65,6 +49,46 @@
 
 #endif
 
+#undef NORMAL_REST
+#undef NORMAL_ID
+#undef NORMAL_CHR
+#define SPECIALFLOAT_BUILD 1
+
+#ifndef REST_EXPONENT
+#define REST_EXPONENT 15
+#define NORMAL_REST 1
+#endif
+
+#ifndef ID_EXPONENT
+#define ID_EXPONENT 13
+#define NORMAL_ID 1
+#endif
+
+#ifndef CHROM_EXPONENT
+#define CHROM_EXPONENT 7
+#define NORMAL_CHR 1
+#endif
+
+#ifndef MEASURE_TYPE /* could be long double for 128 bits, for example */
+#define MEASURE_TYPE double
+#undef SPECIALFLOAT_BUILD
+#endif
+
+#if !defined NORMAL_REST || !defined NORMAL_ID || !defined NORMAL_CHR
+#define MEGASIZE_BUILD 1
+#endif
+
+#if defined MEGASIZE_BUILD
+#if defined SPECIALFLOAT_BUILD
+#define BUILD_OPTS "(megarow + float128)"
+#endif
+#define BUILD_OPTS "(megarow)";
+#elif defined SPECIALFLOAT_BUILD
+#define BUILD_OPTS "(float128)"
+#else
+#define BUILD_OPTS "(typical)"
+#endif
+
 #define INT_MAX_DEC_INTEGERS 12L
 #define INT_MAX_COORD_VALUE 999999999999 /* INT_MAX_DEC_INTEGERS decimal integers; we assume >= 64-bit systems */
 #define INT_TOKENS_MAX_LENGTH (INT_TOKEN_CHR_MAX_LENGTH + INT_TOKEN_ID_MAX_LENGTH + INT_TOKEN_REST_MAX_LENGTH + 2*INT_MAX_DEC_INTEGERS)
@@ -73,6 +97,11 @@
 #define INT_TOKEN_START_FIELD_INDEX 1
 #define INT_TOKEN_STOP_FIELD_INDEX 2
 #define INT_MEM_CHUNK_SZ 64 // how many BED elements allocated at a time
+
+
+//
+// The constants and typedefs to use in applications are defined below
+//
 
 #ifdef __cplusplus
 

@@ -876,12 +876,11 @@ STARCHSTRIP_print_version(FILE* os)
     fprintf(os,
             "%s\n"                   \
             "  citation: %s\n"       \
-            "  version:  %s (%s)\n"  \
+            "  version:  %s\n"       \
             "  authors:  %s\n",
             name,
             BEDOPS::citation(),
-            BEDOPS::revision(),
-            application_type,
+            BEDOPS::version(),
             authors);
 
 #ifdef DEBUG
@@ -899,13 +898,12 @@ STARCHSTRIP_print_usage(FILE* os)
     fprintf(os,
             "%s\n"                  \
             "  citation: %s\n"      \
-            "  version:  %s (%s)\n" \
+            "  version:  %s\n"      \
             "  authors:  %s\n"      \
             "%s\n",
             name,
             BEDOPS::citation(),
-            BEDOPS::revision(),
-            application_type,
+            BEDOPS::version(),
             authors,
             usage);
 

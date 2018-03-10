@@ -26,17 +26,11 @@ LIBRARIES           = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 BLDFLAGS            = -Wall -pedantic -O3 -std=c++11 
 SFLAGS              = -static
 
-ifeq ($(BINARY_TYPE),)
-	TFLAG = -DBEDOPS_BINARY_TYPE=0
-else
-	TFLAG = -DBEDOPS_BINARY_TYPE=$(BINARY_TYPE_NUM)
-endif
-
 dependency_names    = NaN starchConstants starchFileHelpers starchHelpers starchMetadataHelpers unstarchHelpers starchSha1Digest starchBase64Coding
 dependencies        = $(addprefix $(OBJDIR)/, $(addsuffix .o, $(dependency_names)))
-FLAGS               = ${TFLAG} ${SFLAGS} ${MEGAFLAGS} -s ${BLDFLAGS} $(dependencies) ${LIBLOCATION} ${INCLUDES}
-DFLAGS              = ${TFLAG} ${SFLAGS} ${MEGAFLAGS} -g -O0 -std=c++11 -DDEBUG=1 -fno-inline -Wall -pedantic $(dependencies) ${LIBLOCATION} ${INCLUDES}
-GPROFFLAGS          = ${TFLAG} ${SFLAGS} ${MEGAFLAGS} -pg -O -std=c++11 -Wall -pedantic $(dependencies) ${LIBLOCATION} ${INCLUDES}
+FLAGS               = ${SFLAGS} ${MEGAFLAGS} -s ${BLDFLAGS} $(dependencies) ${LIBLOCATION} ${INCLUDES}
+DFLAGS              = ${SFLAGS} ${MEGAFLAGS} -g -O0 -std=c++11 -DDEBUG=1 -fno-inline -Wall -pedantic $(dependencies) ${LIBLOCATION} ${INCLUDES}
+GPROFFLAGS          = ${SFLAGS} ${MEGAFLAGS} -pg -O -std=c++11 -Wall -pedantic $(dependencies) ${LIBLOCATION} ${INCLUDES}
 
 SOURCE1             = Bedmap.cpp
 BINDIR              = ../bin

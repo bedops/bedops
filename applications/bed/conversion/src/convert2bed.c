@@ -7360,11 +7360,10 @@ c2b_print_version(FILE* stream)
 
     fprintf(stream,
             "%s\n"                              \
-            "  version:  %s (%s)\n"             \
+            "  version:  %s\n"                  \
             "  author:   %s\n",
             application_name,
             application_version,
-            application_type,
             application_authors);
 
 #ifdef DEBUG
@@ -7381,7 +7380,7 @@ c2b_print_usage(FILE* stream)
 
     fprintf(stream,
             "%s\n"                  \
-            "  version:  %s (%s)\n" \
+            "  version:  %s\n"      \
             "  author:   %s\n"      \
             "%s\n"                  \
             "%s\n"                  \
@@ -7389,7 +7388,6 @@ c2b_print_usage(FILE* stream)
             "%s\n",
             application_name,
             application_version,
-            application_type,
             application_authors,
             general_usage,
             general_description,
@@ -7478,7 +7476,7 @@ c2b_print_format_usage(FILE* stream)
     if (format_options) {
         fprintf(stream,
                 "%s\n"                           \
-                "  version:  %s (%s)\n"          \
+                "  version:  %s\n"               \
                 "  author:   %s\n\n"             \
                 "%s\n"                           \
                 "%s\n"                           \
@@ -7486,7 +7484,6 @@ c2b_print_format_usage(FILE* stream)
                 "%s\n",
                 format_name,
                 application_version,
-                application_type,
                 application_authors,
                 format_usage,
                 format_description,
@@ -7496,14 +7493,13 @@ c2b_print_format_usage(FILE* stream)
     else {
         fprintf(stream,
                 "%s\n"                           \
-                "  version:  %s (%s)\n"          \
+                "  version:  %s\n"               \
                 "  author:   %s\n\n"             \
                 "%s\n"                           \
                 "%s\n"                           \
                 "%s\n",
                 format_name,
                 application_version,
-                application_type,
                 application_authors,
                 format_usage,
                 format_description,

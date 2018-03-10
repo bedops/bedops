@@ -1172,11 +1172,10 @@ UNSTARCH_printUsage(int errorType)
                 case UNSTARCH_HELP_ERROR:
                 default:
                     fprintf(stderr,
-                "%s\n  citation: %s\n  binary version: %s (%s) (extracts archive version: %s or older)\n  authors: %s\n%s\n",
+                "%s\n  citation: %s\n  binary version: %s (extracts archive version: %s or older)\n  authors: %s\n%s\n",
                 name,
                 BEDOPS::citation(),
-                BEDOPS::revision(),
-                application_type,
+                BEDOPS::version(),
                 avStr,
                 authors,
                 usage);
@@ -1203,10 +1202,9 @@ UNSTARCH_printRevision()
         int result = sprintf(avStr, "%d.%d.%d", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION);
         if (result != -1)
             fprintf(stdout,
-            "%s\n  binary version: %s (%s) (extracts archive version: %s or older)\n",
+            "%s\n  binary version: %s (extracts archive version: %s or older)\n",
             name,
-            BEDOPS::revision(),
-            application_type,
+            BEDOPS::version(),
             avStr);
         free(avStr);
     }

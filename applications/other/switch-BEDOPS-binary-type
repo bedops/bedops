@@ -16,7 +16,9 @@ help()
 TYPICAL=false
 MEGAROW=false
 FLOAT128=false
-EXTENSION="null"
+CMD_TYPICAL="make -C ${BINDIR}/../ symlink_typical"
+CMD_MEGAROW="make -C ${BINDIR}/../ symlink_megarow"
+CMD_FLOAT128="make -C ${BINDIR}/../ symlink_float128"
 
 OPTSPEC=":tmfh-:"
 while getopts "$OPTSPEC" OPTCHAR; do
@@ -25,15 +27,12 @@ while getopts "$OPTSPEC" OPTCHAR; do
             case "${OPTARG}" in
                 typical)
                     TYPICAL=true
-                    EXTENSION="-typical"
                     ;;
                 megarow)
                     MEGAROW=true
-                    EXTENSION="-megarow"
                     ;;
                 float128)
                     FLOAT128=true
-                    EXTENSION="-float128"
                     ;;
                 help)
                     help 0
@@ -44,15 +43,12 @@ while getopts "$OPTSPEC" OPTCHAR; do
             esac;;
         t)
             TYPICAL=true
-            EXTENSION="-typical"
             ;;
         m)
             MEGAROW=true
-            EXTENSION="-megarow"
             ;;
         f)
             FLOAT128=true
-            EXTENSION="-float128"
             ;;
         h)
             help 0
@@ -70,24 +66,15 @@ fi
 
 
 cntr=0
-if $MEGAROW ; then ((cntr+=1)); fi
-if $TYPICAL ; then ((cntr+=1)); fi
-if $FLOAT128 ; then ((cntr+=1)); fi
+if $MEGAROW ; then ((cntr+=1)); CMD=${CMD_MEGAROW}; fi
+if $TYPICAL ; then ((cntr+=1)); CMD=${CMD_TYPICAL}; fi
+if $FLOAT128 ; then ((cntr+=1)); CMD=${CMD_FLOAT128}; fi
 
 if [[ "$cntr" -ne "1" ]]
 then
   help 1
 fi
 
-WD=$(pwd)
-VARNAME=$(find ${BINDIR}/ -maxdepth 1 -mindepth 1 -type f -name \*${EXTENSION})
-for V in ${VARNAME} 
-do
-    BV=$(basename "$V")
-    NAME=`echo $BV | sed "s/${EXTENSION}//"`
-    cd ${BINDIR}
-    ln -sf ${BV} ${NAME}
-    cd ${WD}
-done
+${CMD}
 
 exit 0

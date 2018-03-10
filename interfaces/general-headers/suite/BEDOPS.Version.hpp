@@ -29,12 +29,14 @@
 #ifndef REVISION_HISTORY_BEDOPS_H
 #define REVISION_HISTORY_BEDOPS_H
 
+#include "suite/BEDOPS.Constants.hpp"
+
 #ifdef __cplusplus
 namespace BEDOPS {
 #endif
 
-  static const char* revision() {
-    return("2.4.32");
+  static const char* version() {
+    return "2.3.32 " BUILD_OPTS; // preprocessor string concatenation
   }
 
   static const char* citation() {

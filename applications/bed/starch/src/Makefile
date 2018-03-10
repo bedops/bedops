@@ -45,12 +45,6 @@ CXXGFLAGS                 = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_L
 STARCH_NAMES              = starchConstants unstarchHelpers starchHelpers starchMetadataHelpers starchFileHelpers starchSha1Digest starchBase64Coding
 STARCH_OBJECTS            = $(addprefix $(LOCALOBJDIR)/, $(addsuffix .o, $(STARCH_NAMES)))
 
-ifeq ($(BINARY_TYPE),)
-	TFLAG = -DBEDOPS_BINARY_TYPE=0
-else
-	TFLAG = -DBEDOPS_BINARY_TYPE=$(BINARY_TYPE_NUM)
-endif
-
 .PHONY: starchcluster starch unstarch starchcat build build_debug build_gprof starch-diff starchstrip
 
 build: starch unstarch starchcat starchcluster starch-diff starchstrip
@@ -73,18 +67,18 @@ starchstrip: $(BINDIR)/starchstrip-$(BINARY_TYPE)
 
 $(BINDIR)/%-$(BINARY_TYPE) : %.c $(LOCALSTARCHLIB) $(LIBRARIES)
 	mkdir -p $(BINDIR)
-	${CXX} ${CXXFLAGS} ${TFLAG} ${MEGAFLAGS} -c $*.c -o $(LOCALOBJDIR)/$*.o ${INCLUDES}
-	${CXX} ${CXXFLAGS} ${TFLAG} ${MEGAFLAGS} $(LOCALOBJDIR)/$*.o -o $@ ${LOCALSTARCHLIB} ${LIBRARIES}
+	${CXX} ${CXXFLAGS} ${MEGAFLAGS} -c $*.c -o $(LOCALOBJDIR)/$*.o ${INCLUDES}
+	${CXX} ${CXXFLAGS} ${MEGAFLAGS} $(LOCALOBJDIR)/$*.o -o $@ ${LOCALSTARCHLIB} ${LIBRARIES}
 
 $(BINDIR)/debug.% : %.c $(LOCALSTARCHLIB) $(LIBRARIES)
 	mkdir -p $(BINDIR)
-	${CXX} ${CXXDFLAGS} ${TFLAG} ${MEGAFLAGS} -c $*.c -o $(LOCALOBJDIR)/$*.o ${INCLUDES}
-	${CXX} ${CXXDFLAGS} ${TFLAG} ${MEGAFLAGS} $(LOCALOBJDIR)/$*.o -o $@ ${LOCALSTARCHLIB} ${LIBRARIES}
+	${CXX} ${CXXDFLAGS} ${MEGAFLAGS} -c $*.c -o $(LOCALOBJDIR)/$*.o ${INCLUDES}
+	${CXX} ${CXXDFLAGS} ${MEGAFLAGS} $(LOCALOBJDIR)/$*.o -o $@ ${LOCALSTARCHLIB} ${LIBRARIES}
 
 $(BINDIR)/gprof.% : %.c $(LOCALSTARCHLIB) $(LIBRARIES)
 	mkdir -p $(BINDIR)
-	${CXX} ${CXXGFLAGS} ${TFLAG} ${MEGAFLAGS} -c $*.c -o $(LOCALOBJDIR)/$*.o ${INCLUDES}
-	${CXX} ${CXXGFLAGS} ${TFLAG} ${MEGAFLAGS} $(LOCALOBJDIR)/$*.o -o $@ ${LOCALSTARCHLIB} ${LIBRARIES}
+	${CXX} ${CXXGFLAGS} ${MEGAFLAGS} -c $*.c -o $(LOCALOBJDIR)/$*.o ${INCLUDES}
+	${CXX} ${CXXGFLAGS} ${MEGAFLAGS} $(LOCALOBJDIR)/$*.o -o $@ ${LOCALSTARCHLIB} ${LIBRARIES}
 
 $(BINDIR)/% : %.tcsh
 	mkdir -p $(BINDIR)
@@ -110,7 +104,7 @@ $(LOCALSTARCHLIB) : $(STARCH_OBJECTS)
 
 $(LOCALOBJDIR)/%.o : $(OBJDIR)/%.c $(LIBRARIES)
 	mkdir -p $(LOCALOBJDIR)
-	${CXX} ${CXXFLAGS} ${TFLAG} ${MEGAFLAGS} -c $< -o $@ ${INCLUDES}
+	${CXX} ${CXXFLAGS} ${MEGAFLAGS} -c $< -o $@ ${INCLUDES}
 
 test: starch unstarch starchcat
 	cp ${BINDIR}/starch-${BINARY_TYPE} ${TEST_LINUX_BINDIR}/starch-${BINARY_TYPE}

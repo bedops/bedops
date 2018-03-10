@@ -32,12 +32,6 @@ WARNINGS            = -Wall -Wextra -pedantic
 BLDFLAGS            = ${WARNINGS} -O3 -std=c++11 ${MEGAFLAGS}
 SFLAGS              = -static
 
-ifeq ($(BINARY_TYPE),)
-	TFLAG = -DBEDOPS_BINARY_TYPE=0
-else
-	TFLAG = -DBEDOPS_BINARY_TYPE=$(BINARY_TYPE_NUM)
-endif
-
 dependency_names    = starchConstants starchFileHelpers starchHelpers starchMetadataHelpers unstarchHelpers starchSha1Digest starchBase64Coding SortDetails Sort CheckSort
 dependencies        = $(addprefix $(OBJDIR)/, $(addsuffix .o, $(dependency_names)))
 debug_dependencies  = $(addprefix $(OBJDIR)/, $(addsuffix .do, $(dependency_names)))
@@ -75,32 +69,32 @@ update-sort-bed-migrate-candidates-${BINARY_TYPE}:
 	mkdir -p $(BINDIR) && cp update-sort-bed-migrate-candidates.py $(BINDIR)/update-sort-bed-migrate-candidates-${BINARY_TYPE}
 
 $(BINDIR)/$(PROG) : $(dependencies)
-	mkdir -p $(BINDIR) && $(CXX) -o $@ ${TFLAG} $(FLAGS) $^ ${LIBRARIES}
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(FLAGS) $^ ${LIBRARIES}
 
 $(BINDIR)/gprof.$(PROG) : $(dependencies)
-	mkdir -p $(BINDIR) && $(CXX) -o $@ ${TFLAG} $(GPROFFLAGS) $^ ${LIBRARIES}
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(GPROFFLAGS) $^ ${LIBRARIES}
 
 $(BINDIR)/debug.$(PROG) : $(debug_dependencies)
-	mkdir -p $(BINDIR) && $(CXX) -o $@ ${TFLAG} $(DFLAGS) $^ ${LIBRARIES}
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(DFLAGS) $^ ${LIBRARIES}
 	rm -rf ${OBJDIR}
 
 $(OBJDIR)/%.o : $(LIB1)/%.cpp
-	mkdir -p $(OBJDIR) && $(CXX) -c ${TFLAG} $(BLDFLAGS) $^ -o $@ ${INCLUDES}
+	mkdir -p $(OBJDIR) && $(CXX) -c $(BLDFLAGS) $^ -o $@ ${INCLUDES}
 
 $(OBJDIR)/%.o : $(LIB3)/%.c
-	mkdir -p $(OBJDIR) && $(CXX) -c ${TFLAG} ${BLDFLAGS} $^ -o $@ ${INCLUDES}
+	mkdir -p $(OBJDIR) && $(CXX) -c ${BLDFLAGS} $^ -o $@ ${INCLUDES}
 
 $(OBJDIR)/%.o : %.cpp
-	mkdir -p $(OBJDIR) && $(CXX) -c ${TFLAG} ${BLDFLAGS} $^ -o $@ ${INCLUDES}
+	mkdir -p $(OBJDIR) && $(CXX) -c ${BLDFLAGS} $^ -o $@ ${INCLUDES}
 
 $(OBJDIR)/%.do : $(LIB1)/%.cpp
-	mkdir -p $(OBJDIR) && $(CXX) -c ${TFLAG} $(DFLAGS) $^ -o $@ ${INCLUDES}
+	mkdir -p $(OBJDIR) && $(CXX) -c $(DFLAGS) $^ -o $@ ${INCLUDES}
 
 $(OBJDIR)/%.do : $(LIB3)/%.c
-	mkdir -p $(OBJDIR) && $(CXX) -c ${TFLAG} ${DFLAGS} $^ -o $@ ${INCLUDES}
+	mkdir -p $(OBJDIR) && $(CXX) -c ${DFLAGS} $^ -o $@ ${INCLUDES}
 
 $(OBJDIR)/%.do : %.cpp
-	mkdir -p $(OBJDIR) && $(CXX) -c ${TFLAG} ${DFLAGS} $^ -o $@ ${INCLUDES}
+	mkdir -p $(OBJDIR) && $(CXX) -c ${DFLAGS} $^ -o $@ ${INCLUDES}
 
 clean:
 	rm -rf ${OBJDIR}

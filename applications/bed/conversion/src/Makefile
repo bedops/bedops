@@ -15,12 +15,6 @@ PROG                      = convert2bed
 SOURCE                    = convert2bed.c
 SFLAGS                    = -static
 
-ifeq ($(BINARY_TYPE),)
-	TFLAG = -DBEDOPS_BINARY_TYPE=0
-else
-	TFLAG = -DBEDOPS_BINARY_TYPE=$(BINARY_TYPE_NUM)
-endif
-
 all: build
 
 .PHONY: build build_debug build_gprof clean
@@ -33,23 +27,23 @@ build_gprof: $(DISTDIR)/gprof.$(PROG)-${BINARY_TYPE}
 	rm -rf $(OBJDIR)
 
 $(DISTDIR)/$(PROG)-${BINARY_TYPE}: $(PROG).c
-	mkdir -p $(DISTDIR) && $(CC) $(TFLAG) $(BLDFLAGS) ${MEGAFLAGS} $(COMMONFLAGS) $(CFLAGS) $(SFLAGS) $(INCLUDES) $^ -o $@ $(LIBS)
+	mkdir -p $(DISTDIR) && $(CC) $(BLDFLAGS) ${MEGAFLAGS} $(COMMONFLAGS) $(CFLAGS) $(SFLAGS) $(INCLUDES) $^ -o $@ $(LIBS)
 
 $(DISTDIR)/%-${BINARY_TYPE}: %.c
-	mkdir -p $(DISTDIR) && $(CC) $(TFLAG) $(BLDFLAGS) ${MEGAFLAGS} $(COMMONFLAGS) $(CFLAGS) $(SFLAGS) $(INCLUDES) $^ -o $@ $(LIBS)
+	mkdir -p $(DISTDIR) && $(CC) $(BLDFLAGS) ${MEGAFLAGS} $(COMMONFLAGS) $(CFLAGS) $(SFLAGS) $(INCLUDES) $^ -o $@ $(LIBS)
 
 $(DISTDIR)/debug.$(PROG): $(PROG).c
-	mkdir -p $(DISTDIR) && $(CC) $(TFLAG) $(BLDFLAGS) ${MEGAFLAGS} $(COMMONFLAGS) $(CDFLAGS) $(SFLAGS) $(INCLUDES) $^ -o $@ $(LIBS)
+	mkdir -p $(DISTDIR) && $(CC) $(BLDFLAGS) ${MEGAFLAGS} $(COMMONFLAGS) $(CDFLAGS) $(SFLAGS) $(INCLUDES) $^ -o $@ $(LIBS)
 
 $(DISTDIR)/debug.%-${BINARY_TYPE}: %.c
-	mkdir -p $(DISTDIR) && $(CC) $(TFLAG) $(BLDFLAGS) ${MEGAFLAGS} $(COMMONFLAGS) $(CDFLAGS) $(SFLAGS) $(INCLUDES) $^ -o $@ $(LIBS)
+	mkdir -p $(DISTDIR) && $(CC) $(BLDFLAGS) ${MEGAFLAGS} $(COMMONFLAGS) $(CDFLAGS) $(SFLAGS) $(INCLUDES) $^ -o $@ $(LIBS)
 
 $(DISTDIR)/gprof.$(PROG): $(PROG).c gprof-helper.so
-	mkdir -p $(DISTDIR) && $(CC) $(TFLAG) $(BLDFLAGS) ${MEGAFLAGS} $(COMMONFLAGS) $(CPFLAGS) $(SFLAGS) $(INCLUDES) $< -o $@ $(LIBS)
+	mkdir -p $(DISTDIR) && $(CC) $(BLDFLAGS) ${MEGAFLAGS} $(COMMONFLAGS) $(CPFLAGS) $(SFLAGS) $(INCLUDES) $< -o $@ $(LIBS)
 	@echo -e "\nNote: To profile convert2bed with gprof/pthreads, run:\n\t$$ LD_PRELOAD=/path/to/gprof-helper.so convert2bed"
 
 $(DISTDIR)/gprof.%-${BINARY_TYPE}: %.c gprof-helper.so
-	mkdir -p $(DISTDIR) && $(CC) $(TFLAG) $(BLDFLAGS) ${MEGAFLAGS} $(COMMONFLAGS) $(CPFLAGS) $(SFLAGS) $(INCLUDES) $< -o $@ $(LIBS)
+	mkdir -p $(DISTDIR) && $(CC) $(BLDFLAGS) ${MEGAFLAGS} $(COMMONFLAGS) $(CPFLAGS) $(SFLAGS) $(INCLUDES) $< -o $@ $(LIBS)
 	@echo -e "\nNote: To profile convert2bed with gprof/pthreads, run:\n\t$$ LD_PRELOAD=/path/to/gprof-helper.so convert2bed"
 
 %.so: %.c

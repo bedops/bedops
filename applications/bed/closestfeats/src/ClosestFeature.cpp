@@ -50,23 +50,13 @@
 
 namespace FeatDist {
   const std::string prognm = "closest-features";
-  const std::string version = BEDOPS::revision();
+  const std::string version = BEDOPS::version();
   const std::string authors = "Shane Neph & Scott Kuehn";
   const std::string citation = BEDOPS::citation();
   const char* none = "NA";
   const Bed::SignedCoordType plus_infinite = std::numeric_limits<Bed::SignedCoordType>::max();
   const Bed::SignedCoordType minus_infinite = std::numeric_limits<Bed::SignedCoordType>::min();
   const std::size_t PoolSz = 8*8*8; // only 2 file inputs
-
-#if BEDOPS_BINARY_TYPE == 0
-  const std::string application_type = "typical";
-#else
-#if BEDOPS_BINARY_TYPE == 1
-  const std::string application_type = "megarow";
-#else
-  const std::string application_type = "typical";
-#endif
-#endif
 
   void doWork(const Input&);
 } // namespace FeatDist
@@ -85,20 +75,20 @@ int main(int argc, char** argv) {
   } catch(FeatDist::HelpException& h) {
     std::cout << FeatDist::prognm << std::endl;
     std::cout << "  citation: " + FeatDist::citation << std::endl;
-    std::cout << "  version:  " + FeatDist::version + " (" + FeatDist::application_type + ")" << std::endl;
+    std::cout << "  version:  " + FeatDist::version << std::endl;
     std::cout << "  authors:  " + FeatDist::authors << std::endl;
     std::cout << FeatDist::Usage() << std::endl;
     return(EXIT_SUCCESS);
   } catch(FeatDist::VersionException& v) {
     std::cout << FeatDist::prognm << std::endl;
     std::cout << "  citation: " + FeatDist::citation << std::endl;
-    std::cout << "  version:  " + FeatDist::version + " (" + FeatDist::application_type + ")" << std::endl;
+    std::cout << "  version:  " + FeatDist::version << std::endl;
     std::cout << "  authors:  " + FeatDist::authors << std::endl;
     return(EXIT_SUCCESS);
   } catch(FeatDist::NoInput& ni) {
     std::cerr << FeatDist::prognm << std::endl;
     std::cerr << "  citation: " + FeatDist::citation << std::endl;
-    std::cerr << "  version:  " + FeatDist::version + " (" + FeatDist::application_type + ")" << std::endl;
+    std::cerr << "  version:  " + FeatDist::version << std::endl;
     std::cerr << "  authors:  " + FeatDist::authors << std::endl;
     std::cerr << FeatDist::Usage() << std::endl;
   } catch(const std::exception& stx) {

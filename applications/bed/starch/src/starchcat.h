@@ -47,16 +47,6 @@ namespace starch {
   using namespace Bed;
 #endif
 
-#if BEDOPS_BINARY_TYPE == 0
-static const char* application_type = "typical";
-#else
-#if BEDOPS_BINARY_TYPE == 1
-static const char* application_type = "megarow";
-#else
-static const char* application_type = "typical";
-#endif
-#endif
-
 #define STARCHCAT_EXIT_FAILURE 0
 #define STARCHCAT_EXIT_SUCCESS 1
 #define STARCHCAT_FATAL_ERROR -1
