@@ -15,9 +15,15 @@ Current version
 v2.4.32
 -------
 
+Released: **TBD**
+
 * :ref: `bedmap <bedmap>`
 
-  * Support build with 128 bit floating point for measurement/calculated values using :code:`make float128`:code:
+  * Support build with 128-bit floating point for measurement/calculated values using :code:`make float128`:code:
+
+* OS X (Darwin) build
+
+  * Some applications in the kit lacked megarow build support, despite those flags being specified in the parent Makefile, specifically: :code:`bedextract`, :code:`bedmap`, and :code:`convert2bed`. These binaries rely on wider suite-wide constants and data types that this build variety specifies. The Darwin-specific Makefiles have been fixed to resolve this build issue, so that all OS X BEDOPS binaries should now be able to compile in megarow- and float128-specific settings.
 
 =================
 Previous versions
