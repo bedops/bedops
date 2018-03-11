@@ -82,7 +82,7 @@
 #if defined SPECIALFLOAT_BUILD
 #define BUILD_OPTS "(megarow + float128)"
 #endif
-#define BUILD_OPTS "(megarow)";
+#define BUILD_OPTS "(megarow)"
 #elif defined SPECIALFLOAT_BUILD
 #define BUILD_OPTS "(float128)"
 #else
