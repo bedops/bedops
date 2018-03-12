@@ -80,11 +80,11 @@
 
 #if defined MEGASIZE_BUILD
 #if defined SPECIALFLOAT_BUILD
-#define BUILD_OPTS "(megarow + float128)"
+#define BUILD_OPTS "(megarow, quadruple precision float)"
 #endif
 #define BUILD_OPTS "(megarow)"
 #elif defined SPECIALFLOAT_BUILD
-#define BUILD_OPTS "(float128)"
+#define BUILD_OPTS "(typical, quadruple precision float)"
 #else
 #define BUILD_OPTS "(typical)"
 #endif
