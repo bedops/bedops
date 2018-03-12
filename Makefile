@@ -64,27 +64,27 @@ typical:
 	$(MAKE) BINARY_TYPE=$(TYPICAL) -f ${SELF}
 
 symlink_typical:
-	$(eval variablename=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(TYPICAL)' -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`)
-	for i in ${variablename}; do \
-		fooname=`echo $$i | sed 's/-$(TYPICAL)//'`; \
-		echo $${fooname}; \
-		ln -sf $$i $(BINDIR)/$${fooname}; \
+	$(eval SRCNAMES=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(TYPICAL)' -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`)
+	for SRCNAME in ${SRCNAMES}; do \
+		DESTNAME=`echo $$SRCNAME | sed 's/-$(TYPICAL)//'`; \
+		echo $${DESTNAME}; \
+		ln -sf $$SRCNAME $(BINDIR)/$${DESTNAME}; \
 	done
 
 symlink_megarow:
-	$(eval variablename=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(MEGAROW)' -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`)
-	for i in ${variablename}; do \
-		fooname=`echo $$i | sed 's/-$(MEGAROW)//'`; \
-		echo $${fooname}; \
-		ln -sf $$i $(BINDIR)/$${fooname}; \
+	$(eval SRCNAMES=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(MEGAROW)' -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`)
+	for SRCNAME in ${SRCNAMES}; do \
+		DESTNAME=`echo $$SRCNAME | sed 's/-$(MEGAROW)//'`; \
+		echo $${DESTNAME}; \
+		ln -sf $$SRCNAME $(BINDIR)/$${DESTNAME}; \
 	done
 
 symlink_float128:
-	$(eval variablename=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(FLOAT128)' -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`)
-	for i in ${variablename}; do \
-		fooname=`echo $$i | sed 's/-$(FLOAT128)//'`; \
-		echo $${fooname}; \
-		ln -sf $$i $(BINDIR)/$${fooname}; \
+	$(eval SRCNAMES=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(FLOAT128)' -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`)
+	for SRCNAME in ${SRCNAMES}; do \
+		DESTNAME=`echo $$SRCNAME | sed 's/-$(FLOAT128)//'`; \
+		echo $${DESTNAME}; \
+		ln -sf $$SRCNAME $(BINDIR)/$${DESTNAME}; \
 	done
 
 install: prep_c install_conversion_scripts install_starch_scripts
@@ -269,38 +269,55 @@ install_osx_packaging_bins: prep_c all
 	mkdir -p ${OSXPKGDIR}
 	-cp ${APPDIR}/sort-bed/bin/sort-bed-typical ${OSXPKGDIR}/sort-bed-typical
 	-cp ${APPDIR}/sort-bed/bin/sort-bed-megarow ${OSXPKGDIR}/sort-bed-megarow
+	-cp ${APPDIR}/sort-bed/bin/sort-bed-float128 ${OSXPKGDIR}/sort-bed-float128
 	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm-typical ${OSXPKGDIR}/update-sort-bed-slurm-typical
 	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm-megarow ${OSXPKGDIR}/update-sort-bed-slurm-megarow
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm-float128 ${OSXPKGDIR}/update-sort-bed-slurm-float128
 	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm-typical ${OSXPKGDIR}/update-sort-bed-starch-slurm-typical
 	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm-megarow ${OSXPKGDIR}/update-sort-bed-starch-slurm-megarow
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm-float128 ${OSXPKGDIR}/update-sort-bed-starch-slurm-float128
 	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates-typical ${OSXPKGDIR}/update-sort-bed-migrate-candidates-typical
 	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates-megarow ${OSXPKGDIR}/update-sort-bed-migrate-candidates-megarow
+	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates-float128 ${OSXPKGDIR}/update-sort-bed-migrate-candidates-float128
 	-cp ${APPDIR}/bedops/bin/bedops-typical ${OSXPKGDIR}/bedops-typical
 	-cp ${APPDIR}/bedops/bin/bedops-megarow ${OSXPKGDIR}/bedops-megarow
+	-cp ${APPDIR}/bedops/bin/bedops-float128 ${OSXPKGDIR}/bedops-float128
 	-cp ${APPDIR}/closestfeats/bin/closest-features-typical ${OSXPKGDIR}/closest-features-typical
 	-cp ${APPDIR}/closestfeats/bin/closest-features-megarow ${OSXPKGDIR}/closest-features-megarow
+	-cp ${APPDIR}/closestfeats/bin/closest-features-float128 ${OSXPKGDIR}/closest-features-float128
 	-cp ${APPDIR}/bedmap/bin/bedmap-typical ${OSXPKGDIR}/bedmap-typical
 	-cp ${APPDIR}/bedmap/bin/bedmap-megarow ${OSXPKGDIR}/bedmap-megarow
+	-cp ${APPDIR}/bedmap/bin/bedmap-float128 ${OSXPKGDIR}/bedmap-float128
 	-cp ${APPDIR}/bedextract/bin/bedextract-typical ${OSXPKGDIR}/bedextract-typical
 	-cp ${APPDIR}/bedextract/bin/bedextract-megarow ${OSXPKGDIR}/bedextract-megarow
+	-cp ${APPDIR}/bedextract/bin/bedextract-float128 ${OSXPKGDIR}/bedextract-float128
 	-cp ${APPDIR}/starch/bin/starch-typical ${OSXPKGDIR}/starch-typical
 	-cp ${APPDIR}/starch/bin/starch-megarow ${OSXPKGDIR}/starch-megarow
+	-cp ${APPDIR}/starch/bin/starch-float128 ${OSXPKGDIR}/starch-float128
 	-cp ${APPDIR}/starch/bin/unstarch-typical ${OSXPKGDIR}/unstarch-typical
 	-cp ${APPDIR}/starch/bin/unstarch-megarow ${OSXPKGDIR}/unstarch-megarow
+	-cp ${APPDIR}/starch/bin/unstarch-float128 ${OSXPKGDIR}/unstarch-float128
 	-cp ${APPDIR}/starch/bin/starchcat-typical ${OSXPKGDIR}/starchcat-typical
 	-cp ${APPDIR}/starch/bin/starchcat-megarow ${OSXPKGDIR}/starchcat-megarow
+	-cp ${APPDIR}/starch/bin/starchcat-float128 ${OSXPKGDIR}/starchcat-float128
 	-cp ${APPDIR}/starch/bin/starchstrip-typical ${OSXPKGDIR}/starchstrip-typical
 	-cp ${APPDIR}/starch/bin/starchstrip-megarow ${OSXPKGDIR}/starchstrip-megarow
+	-cp ${APPDIR}/starch/bin/starchstrip-float128 ${OSXPKGDIR}/starchstrip-float128
 	-cp ${APPDIR}/starch/bin/starchcluster_sge-typical ${OSXPKGDIR}/starchcluster_sge-typical
 	-cp ${APPDIR}/starch/bin/starchcluster_sge-megarow ${OSXPKGDIR}/starchcluster_sge-megarow
+	-cp ${APPDIR}/starch/bin/starchcluster_sge-float128 ${OSXPKGDIR}/starchcluster_sge-float128
 	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel-typical ${OSXPKGDIR}/starchcluster_gnuParallel-typical
 	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel-megarow ${OSXPKGDIR}/starchcluster_gnuParallel-megarow
+	-cp ${APPDIR}/starch/bin/starchcluster_gnuParallel-float128 ${OSXPKGDIR}/starchcluster_gnuParallel-float128
 	-cp ${APPDIR}/starch/bin/starchcluster_slurm-typical ${OSXPKGDIR}/starchcluster_slurm-typical
 	-cp ${APPDIR}/starch/bin/starchcluster_slurm-megarow ${OSXPKGDIR}/starchcluster_slurm-megarow
+	-cp ${APPDIR}/starch/bin/starchcluster_slurm-float128 ${OSXPKGDIR}/starchcluster_slurm-float128
 	-cp ${APPDIR}/starch/bin/starch-diff-typical ${OSXPKGDIR}/starch-diff-typical
 	-cp ${APPDIR}/starch/bin/starch-diff-megarow ${OSXPKGDIR}/starch-diff-megarow
+	-cp ${APPDIR}/starch/bin/starch-diff-float128 ${OSXPKGDIR}/starch-diff-float128
 	-cp ${APPDIR}/conversion/bin/convert2bed-typical ${OSXPKGDIR}/convert2bed-typical
 	-cp ${APPDIR}/conversion/bin/convert2bed-megarow ${OSXPKGDIR}/convert2bed-megarow
+	-cp ${APPDIR}/conversion/bin/convert2bed-float128 ${OSXPKGDIR}/convert2bed-float128
 	-cp ${APPDIR}/conversion/src/wrappers/bam2bed ${OSXPKGDIR}/bam2bed
 	-cp ${APPDIR}/conversion/src/wrappers/gff2bed ${OSXPKGDIR}/gff2bed
 	-cp ${APPDIR}/conversion/src/wrappers/gtf2bed ${OSXPKGDIR}/gtf2bed
@@ -327,24 +344,8 @@ install_osx_packaging_bins: prep_c all
 	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_gnuParallel ${OSXPKGDIR}/bam2starch_gnuParallel
 	-cp ${OTHERDIR}/switch-BEDOPS-binary-type ${OSXPKGDIR}
 	-cd ${OSXPKGDIR}; \
-	ln -sf ./sort-bed-typical ./sort-bed; \
-	ln -sf ./update-sort-bed-slurm-typical ./update-sort-bed-slurm; \
-	ln -sf ./update-sort-bed-starch-slurm-typical ./update-sort-bed-starch-slurm; \
-	ln -sf ./update-sort-bed-migrate-candidates-typical ./update-sort-bed-migrate-candidates; \
-	ln -sf ./bedops-typical ./bedops; \
-	ln -sf ./closest-features-typical ./closest-features; \
-	ln -sf ./bedmap-typical ./bedmap; \
-	ln -sf ./bedextract-typical ./bedextract; \
-	ln -sf ./starch-typical ./starch; \
-	ln -sf ./unstarch-typical ./unstarch; \
-	ln -sf ./starchcat-typical ./starchcat; \
-	ln -sf ./starchstrip-typical ./starchstrip; \
-	ln -sf ./starchcluster_sge-typical ./starchcluster_sge; \
-	ln -sf ./starchcluster_gnuParallel-typical ./starchcluster_gnuParallel; \
-	ln -sf ./starchcluster_slurm-typical ./starchcluster_slurm; \
-	ln -sf ./starch-diff-typical ./starch-diff; \
-	ln -sf ./convert2bed-typical ./convert2bed; \
-	cd ${CWD}; \
+	./switch-BEDOPS-binary-type --typical
+	-cd ${CWD}; \
 	mkdir -p ${OSXLIBDIR}; \
 
 update_bedops_version:

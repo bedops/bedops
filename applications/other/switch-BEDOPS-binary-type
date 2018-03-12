@@ -16,9 +16,8 @@ help()
 TYPICAL=false
 MEGAROW=false
 FLOAT128=false
-CMD_TYPICAL="make -C ${BINDIR}/../ symlink_typical"
-CMD_MEGAROW="make -C ${BINDIR}/../ symlink_megarow"
-CMD_FLOAT128="make -C ${BINDIR}/../ symlink_float128"
+
+cntr=0
 
 OPTSPEC=":tmfh-:"
 while getopts "$OPTSPEC" OPTCHAR; do
@@ -26,12 +25,15 @@ while getopts "$OPTSPEC" OPTCHAR; do
         -)
             case "${OPTARG}" in
                 typical)
+                    ((cntr+=1))
                     TYPICAL=true
                     ;;
                 megarow)
+                    ((cntr+=1))
                     MEGAROW=true
                     ;;
                 float128)
+                    ((cntr+=1))
                     FLOAT128=true
                     ;;
                 help)
@@ -42,12 +44,15 @@ while getopts "$OPTSPEC" OPTCHAR; do
                     ;;
             esac;;
         t)
+            ((cntr+=1))
             TYPICAL=true
             ;;
         m)
+            ((cntr+=1))
             MEGAROW=true
             ;;
         f)
+            ((cntr+=1))
             FLOAT128=true
             ;;
         h)
@@ -59,22 +64,28 @@ while getopts "$OPTSPEC" OPTCHAR; do
     esac
 done
 
-if [[ $# -eq 0 ]]
+if [[ "$cntr" -ne "1" ]]
 then
     help 1
 fi
 
-
-cntr=0
-if $MEGAROW ; then ((cntr+=1)); CMD=${CMD_MEGAROW}; fi
-if $TYPICAL ; then ((cntr+=1)); CMD=${CMD_TYPICAL}; fi
-if $FLOAT128 ; then ((cntr+=1)); CMD=${CMD_FLOAT128}; fi
-
-if [[ "$cntr" -ne "1" ]]
+if $MEGAROW
 then
-  help 1
+    TYPE=megarow
+fi
+if $TYPICAL
+then 
+    TYPE=typical
+fi
+if $FLOAT128
+then
+    TYPE=float128
 fi
 
-${CMD}
+for SRCNAME in `find . -maxdepth 1 -mindepth 1 -type f -name "*${TYPE}" -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`
+do
+    DESTNAME=`echo $SRCNAME | perl -Tpe 's/-'${TYPE}'//'`
+    ln -sf ${SRCNAME} ${DESTNAME}
+done
 
 exit 0

@@ -119,13 +119,23 @@ Compilation of BEDOPS on Linux requires GCC 4.8.2 (both ``gcc`` and ``g++`` and 
      $ cd bedops
      $ make
 
+   Running :code:`make` on its own will build so-called "typical" BEDOPS binaries, which make assumptions about line length for most usage scenarios. 
+
+   Use :code:`make megarow` or :code:`make float128` to build support for longer-length rows, or BED data which requires statistical or measurement operations with :ref:`bedmap` with 128-bit precision floating point support.
+
+   If you want all build types, run :code:`make all`.
+
 .. tip:: BEDOPS supports parallel builds, which speeds up compilation considerably. If you are compiling on a multicore or multiprocessor workstation, edit the ``JPARALLEL`` variable in the top-level Makefile, or override it, specifying the number of cores or processors you wish to use to compile.
 
-5. Once the build is complete, install compiled binaries and scripts to a local ``bin`` folder: 
+5. Once the build is complete, install compiled binaries and scripts to a local ``bin`` directory: 
 
    ::
 
      $ make install
+
+   If you ran :code:`make megarow` or :code:`make float128`, instead use :code:`make install_megarow` or :code:`make install_float128`, respectively, to install those binaries.
+
+   If you ran :code:`make all`, use :code:`make install_all` to install all binaries of the three types (typical, megarow, and float128) to the :code:`./bin` directory. You can use the :code:`switch-BEDOPS-binary-type` script to switch symbolic links to one of the three binary types.
 
 6. Copy the extracted binaries to a location of your choice that is in your environment's ``PATH``, *e.g.* ``/usr/local/bin``: 
 
@@ -174,6 +184,12 @@ Manual compilation
      $ cd bedops
      $ make
 
+   Running :code:`make` on its own will build so-called "typical" BEDOPS binaries, which make assumptions about line length for most usage scenarios. 
+
+   Use :code:`make megarow` or :code:`make float128` to build support for longer-length rows, or BED data which requires statistical or measurement operations with :ref:`bedmap` with 128-bit precision floating point support.
+
+   If you want all build types, run :code:`make all`.
+
 .. tip:: BEDOPS supports parallel builds, which speeds up compilation considerably. If you are compiling on a multicore or multiprocessor workstation, edit the ``JPARALLEL`` variable in the top-level Makefile, or override it, specifying the number of cores or processors you wish to use to compile.
 
 5. Once the build is complete, install compiled binaries and scripts to a local ``bin`` folder: 
@@ -181,6 +197,12 @@ Manual compilation
    ::
 
      $ make install
+
+   If you ran :code:`make megarow` or :code:`make float128`, instead use :code:`make install_megarow` or :code:`make install_float128`, respectively, to install those binaries.
+
+   If you ran :code:`make all`, use :code:`make install_all` to install all binaries of the three types (typical, megarow, and float128) to the :code:`./bin` directory.
+
+   You can use the :code:`switch-BEDOPS-binary-type` script to switch symbolic links to one of the three binary types.
 
 6. Copy the extracted binaries to a location of your choice that is in your environment's ``PATH``, *e.g.* ``/usr/local/bin``: 
 

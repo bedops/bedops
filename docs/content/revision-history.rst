@@ -17,9 +17,15 @@ v2.4.32
 
 Released: **TBD**
 
-* :ref: `bedmap <bedmap>`
+* New build type (128-bit precision floating point arithmetic, :code:`float128`)
 
-  * Support build with 128-bit floating point for measurement/calculated values using :code:`make float128`:code:
+  * Build is added to use :code:`long double` for 128-bit floating point support for measurement/calculated values in :ref:`bedmap <bedmap>`. 
+
+  * This includes support for measurements on values from approximately 3.3621e−4932 to 1.1897e4932, which enables :ref:`bedmap <bedmap>` to handle, for example, very low p-values without log- or other transformation preprocessing steps.
+
+  * Use :code:`make float128 && make install_float128` to install this build type.
+
+  * This build type combines support for quadruple, 128-bit precision with the :code:`typical` build type for handling typical BED4+ style line lengths. 
 
 * OS X (Darwin) build
 
