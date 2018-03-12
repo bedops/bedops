@@ -1149,6 +1149,7 @@ Released: **August 17, 2012**
 .. |--| unicode:: U+2013        .. en dash
 .. |---| unicode:: U+2014       .. em dash, trimming surrounding whitespace
    :trim:
-.. |plusminus| unicode:: U+2213 .. plus-minus symbol
+.. |plusminus| unicode:: U+2213 .. plus-minus symbol, trimming right whitespace
+   :rtrim:
 .. role:: bash(code)
    :language: bash
