@@ -19,17 +19,21 @@ Released: **TBD**
 
 * New build type (128-bit precision floating point arithmetic, :code:`float128`)
 
-  * Build is added to use :code:`long double` for 128-bit floating point support for measurement/calculated values in :ref:`bedmap <bedmap>`. 
+  * A new build type adds support for :code:`long double` or 128-bit floating point operations on measurement values in :ref:`bedmap <bedmap>`, such as is used with score operators like: :code:`--min`, :code:`--max`, :code:`--min-element`, :code:`--max-element`, :code:`--mean`, and so on.
 
-  * This includes support for measurements on values from approximately 3.3621e−4932 to 1.1897e4932, which enables :ref:`bedmap <bedmap>` to handle, for example, very low p-values without log- or other transformation preprocessing steps.
+  * This build includes support for measurements on values ranging from approximately |plusminus|6.48e−4966 to |plusminus|6.48e4966 (`subnormal <https://en.wikipedia.org/wiki/Denormal_number>`_), or |plusminus|1.19e-4932 to |plusminus|1.19e4932 (normal), which enables :ref:`bedmap <bedmap>` to handle, for example, lower p-values without log- or other transformation preprocessing steps. The article on `quadruple precision <https://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format>`_ can be useful for technical review.
 
-  * Use :code:`make float128 && make install_float128` to install this build type.
+  * For comparison, the current "non-float128" typical and megarow builds allow measurements on values from approximately |plusminus|5e−324 to |plusminus|5e324 (subnormal) or |plusminus|2.23e-308 to |plusminus|2.23e308 (normal). Please refer to the article on `double precision <https://en.wikipedia.org/wiki/Double-precision_floating-point_format>`_ for more technical detail.
 
-  * This build type combines support for quadruple, 128-bit precision with the :code:`typical` build type for handling typical BED4+ style line lengths. 
+  * Please use :code:`make float128 && make install_float128` to install this build type.
 
-* OS X (Darwin) build
+  * This build type combines support for quadruple, 128-bit precision with the :code:`typical` build type for handling "typical" BED4+ style line lengths. At this time, "megarow" support is not enabled with higher precision.
 
-  * Some applications in the kit lacked megarow build support, despite those flags being specified in the parent Makefile, specifically: :code:`bedextract`, :code:`bedmap`, and :code:`convert2bed`. These binaries rely on wider suite-wide constants and data types that this build variety specifies. The Darwin-specific Makefiles have been fixed to resolve this build issue, so that all OS X BEDOPS binaries should now be able to compile in megarow- and float128-specific settings.
+  * This build will use more memory to store floating-point values with higher precision, and processing those data will require more computational time. It is recommended that this build be used only if analyses genuinely require a higher level of precision than what the `double` type allows.
+
+* OS X (Darwin) megarow build
+
+  * Some applications packaged in the OS X installer or compiled via the OS X command-line developer toolkit lacked `megarow <http://bedops.readthedocs.io/en/latest/content/revision-history.html#v2-4-27>`_ build support, despite those flags being specified in the parent Makefile. These applications specifically were affected: :code:`bedextract`, :code:`bedmap`, and :code:`convert2bed`. These binaries rely on wider suite-wide constants and data types that the megarow build variety specifies. The Darwin-specific Makefiles have been fixed to resolve this build issue, so that all OS X BEDOPS binaries should now be able to compile in the correct megarow-specific settings.
 
 =================
 Previous versions
@@ -1142,8 +1146,9 @@ Released: **August 17, 2012**
 
 * Assorted changes to conversion scripts and associated companion download.
 
-.. |--| unicode:: U+2013   .. en dash
-.. |---| unicode:: U+2014  .. em dash, trimming surrounding whitespace
+.. |--| unicode:: U+2013        .. en dash
+.. |---| unicode:: U+2014       .. em dash, trimming surrounding whitespace
    :trim:
+.. |plusminus| unicode:: U+2213 .. plus-minus symbol
 .. role:: bash(code)
    :language: bash
