@@ -21,15 +21,15 @@ Released: **TBD**
 
   * A new build type adds support for :code:`long double` or 128-bit floating point operations on measurement values in :ref:`bedmap <bedmap>`, such as is used with score operators like: :code:`--min`, :code:`--max`, :code:`--min-element`, :code:`--max-element`, :code:`--mean`, and so on.
 
-  * This build includes support for measurements on values ranging from approximately :raw-html:`&plusmn`6.48e−4966 to :raw-html:`&plusmn`6.48e4966 (`subnormal <https://en.wikipedia.org/wiki/Denormal_number>`_), or :raw-html:`&plusmn`1.19e-4932 to :raw-html:`&plusmn`1.19e4932 (normal), which enables :ref:`bedmap <bedmap>` to handle, for example, lower p-values without log- or other transformation preprocessing steps. The article on `quadruple precision <https://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format>`_ can be useful for technical review.
+  * This build includes support for measurements on values ranging from approximately :raw-html:`&plusmn` 6.48e−4966 to :raw-html:`&plusmn` 6.48e4966 (`subnormal <https://en.wikipedia.org/wiki/Denormal_number>`_), or :raw-html:`&plusmn` 1.19e-4932 to :raw-html:`&plusmn` 1.19e4932 (normal), which enables :ref:`bedmap <bedmap>` to handle, for example, lower p-values without log- or other transformation preprocessing steps. The article on `quadruple precision <https://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format>`_ can be useful for technical review.
 
-  * For comparison, the current "non-float128" typical and megarow builds allow measurements on values from approximately :raw-html:`&plusmn`5e−324 to :raw-html:`&plusmn`5e324 (subnormal) or :raw-html:`&plusmn`2.23e-308 to :raw-html:`&plusmn`2.23e308 (normal). Please refer to the article on `double precision <https://en.wikipedia.org/wiki/Double-precision_floating-point_format>`_ for more technical detail.
+  * For comparison, the current "non-float128" typical and megarow builds allow measurements on values from approximately :raw-html:`&plusmn` 5e−324 to :raw-html:`&plusmn` 5e324 (subnormal) or :raw-html:`&plusmn` 2.23e-308 to :raw-html:`&plusmn` 2.23e308 (normal). Please refer to the article on `double precision <https://en.wikipedia.org/wiki/Double-precision_floating-point_format>`_ for more technical detail.
 
   * Please use :code:`make float128 && make install_float128` to install this build type.
 
   * This build type combines support for quadruple, 128-bit precision with the :code:`typical` build type for handling "typical" BED4+ style line lengths. At this time, "megarow" support is not enabled with higher precision.
 
-  * This build will use more memory to store floating-point values with higher precision, and processing those data will require more computational time. It is recommended that this build be used only if analyses genuinely require a higher level of precision than what the `double` type allows.
+  * This build will use more memory to store floating-point values with higher precision, and processing those data will require more computation time. It is recommended that this build be used only if analyses require a higher level of precision than what the `double` type allows.
 
 * OS X (Darwin) megarow build
 
@@ -1149,7 +1149,7 @@ Released: **August 17, 2012**
 .. |--| unicode:: U+2013        .. en dash
 .. |---| unicode:: U+2014       .. em dash, trimming surrounding whitespace
    :trim:
-.. |plusminus| unicode:: U+2213 .. plus-minus symbol, trimming right whitespace
+.. |plusminus| unicode:: U+2213 .. plus-minus symbol
 .. role:: bash(code)
    :language: bash
 .. role:: raw-html(raw)
