@@ -17,6 +17,7 @@ FLOAT128               = float128
 ALL_BINARY_TYPES       = ${TYPICAL} ${MEGAROW} ${FLOAT128}
 DEFAULT_BINARY_TYPE    = ${TYPICAL}
 export BINARY_TYPE     = ${DEFAULT_BINARY_TYPE}
+DEBUG_TYPE             = ${TYPICAL}
 WRAPPERS               = $(wildcard ${APPDIR}/conversion/src/wrappers/*)
 CWD                   := $(shell pwd)
 BINDIR                 = bin
@@ -67,7 +68,6 @@ symlink_typical:
 	$(eval SRCNAMES=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(TYPICAL)' -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`)
 	for SRCNAME in ${SRCNAMES}; do \
 		DESTNAME=`echo $$SRCNAME | sed 's/-$(TYPICAL)//'`; \
-		echo $${DESTNAME}; \
 		ln -sf $$SRCNAME $(BINDIR)/$${DESTNAME}; \
 	done
 
@@ -75,7 +75,6 @@ symlink_megarow:
 	$(eval SRCNAMES=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(MEGAROW)' -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`)
 	for SRCNAME in ${SRCNAMES}; do \
 		DESTNAME=`echo $$SRCNAME | sed 's/-$(MEGAROW)//'`; \
-		echo $${DESTNAME}; \
 		ln -sf $$SRCNAME $(BINDIR)/$${DESTNAME}; \
 	done
 
@@ -83,7 +82,6 @@ symlink_float128:
 	$(eval SRCNAMES=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(FLOAT128)' -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`)
 	for SRCNAME in ${SRCNAMES}; do \
 		DESTNAME=`echo $$SRCNAME | sed 's/-$(FLOAT128)//'`; \
-		echo $${DESTNAME}; \
 		ln -sf $$SRCNAME $(BINDIR)/$${DESTNAME}; \
 	done
 
@@ -204,19 +202,7 @@ prep_c:
 	mkdir -p ${BINDIR}
 
 install_debug: prep_c install_conversion_scripts install_starch_scripts
-	-cp ${APPDIR}/sort-bed/bin/debug.sort-bed ${BINDIR}/debug.sort-bed
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-slurm ${BINDIR}/update-sort-bed-slurm
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-starch-slurm ${BINDIR}/update-sort-bed-starch-slurm
-	-cp ${APPDIR}/sort-bed/bin/update-sort-bed-migrate-candidates ${BINDIR}/update-sort-bed-migrate-candidates
-	-cp ${APPDIR}/bedops/bin/debug.bedops ${BINDIR}/debug.bedops
-	-cp ${APPDIR}/closestfeats/bin/debug.closest-features ${BINDIR}/debug.closest-features
-	-cp ${APPDIR}/bedmap/bin/debug.bedmap ${BINDIR}/debug.bedmap
-	-cp ${APPDIR}/bedextract/bin/debug.bedextract ${BINDIR}/debug.bedextract
-	-cp ${APPDIR}/starch/bin/debug.starch ${BINDIR}/debug.starch
-	-cp ${APPDIR}/starch/bin/debug.unstarch ${BINDIR}/debug.unstarch
-	-cp ${APPDIR}/starch/bin/debug.starchcat ${BINDIR}/debug.starchcat
-	-cp ${APPDIR}/starch/bin/debug.starchstrip ${BINDIR}/debug.starchstrip
-	-cp ${APPDIR}/conversion/bin/debug.convert2bed ${BINDIR}/debug.convert2bed
+	find ${APPDIR}/ -maxdepth 4 -mindepth 1 -type f -name 'debug.*${DEBUG_TYPE}' -exec cp {} ${BINDIR} \;
 
 install_gprof: prep_c install_conversion_scripts install_starch_scripts
 	-cp ${APPDIR}/sort-bed/bin/gprof.sort-bed ${BINDIR}/gprof.sort-bed
