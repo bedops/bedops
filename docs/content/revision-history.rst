@@ -15,7 +15,7 @@ Current version
 v2.4.32
 -------
 
-Released: **TBD**
+Released: **March 14, 2018**
 
 * New build type (128-bit precision floating point arithmetic, :code:`float128`)
 
@@ -27,9 +27,9 @@ Released: **TBD**
 
   * Please use :code:`make float128 && make install_float128` to install this build type.
 
-  * This build type combines support for quadruple, 128-bit precision with the :code:`typical` build type for handling "typical" BED4+ style line lengths. At this time, "megarow" support is not enabled with higher precision.
+  * This build type combines support for quadruple, 128-bit precision floats with the :code:`typical` build type for handling "typical" BED4+ style line lengths. At this time, "megarow" support is not enabled with higher precision floats.
 
-  * This build will use more memory to store floating-point values with higher precision, and processing those data will require more computation time. It is recommended that this build be used only if analyses require a higher level of precision than what the `double` type allows.
+  * This build will use more memory to store floating-point values with higher precision, and processing those data will require more computation time. It is recommended that this build be used only if analyses require a higher level of precision than what the :code:`double` type allows.
 
 * OS X (Darwin) megarow build
 
@@ -97,7 +97,7 @@ Released: **November 25, 2017**
 
 * Revision testing
   
-  * Starch suite tests were updated for v2.2 archives created via v2.4.32 binaries (Linux, libc 2.22).
+  * Starch suite tests were updated for v2.2 archives created via v2.4.30 binaries (Linux, libc 2.22).
 
 -------
 v2.4.29
@@ -1150,5 +1150,6 @@ Released: **August 17, 2012**
 .. |---| unicode:: U+2014       .. em dash, trimming surrounding whitespace
    :trim:
 .. |plusminus| unicode:: U+00B1 .. plus-minus symbol
+   :rtrim:
 .. role:: bash(code)
    :language: bash
