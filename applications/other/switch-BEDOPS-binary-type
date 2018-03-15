@@ -2,7 +2,7 @@
 # author : sjn + apr
 # date : July.2017
 
-BINDIR=`which bedops`
+BINDIR=$(dirname `which bedops`)
 
 CMD="switch-BEDOPS-binary-type"
 
@@ -69,22 +69,22 @@ then
     help 1
 fi
 
-if $MEGAROW
+if ${MEGAROW}
 then
     TYPE=megarow
 fi
-if $TYPICAL
+if ${TYPICAL}
 then 
     TYPE=typical
 fi
-if $FLOAT128
+if ${FLOAT128}
 then
     TYPE=float128
 fi
 
 for SRCNAME in `find ${BINDIR} -maxdepth 1 -mindepth 1 -type f -name "*${TYPE}" -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`
 do
-    DESTNAME=`echo $SRCNAME | perl -Tpe 's/-'${TYPE}'//'`
+    DESTNAME=`echo ${SRCNAME} | perl -Tpe 's/-'${TYPE}'//'`
     ln -sf ${SRCNAME} ${DESTNAME}
 done
 
