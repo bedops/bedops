@@ -3,14 +3,14 @@
 # date : July.2017
 
 BINDIR=$(dirname `which bedops`)
-[ -n "${1}" ] && BINDIR=${1} 
+[ -n "${2}" ] && BINDIR=${2}
 
 CMD="switch-BEDOPS-binary-type"
 
 help()
 {
     echo "Switch the BEDOPS binary build to typical, megarow, or float128"
-    echo "Usage: ${CMD} [ --help ] [ --typical | --megarow | --float128 ]" >&2
+    echo "Usage: ${CMD} [ --help ] [ --typical | --megarow | --float128 ] [ <binary-directory> (optional) ]" >&2
     exit $1
 }
 
