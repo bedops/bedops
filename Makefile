@@ -330,7 +330,7 @@ install_osx_packaging_bins: prep_c all
 	-cp ${APPDIR}/conversion/src/wrappers/bam2starch_gnuParallel ${OSXPKGDIR}/bam2starch_gnuParallel
 	-cp ${OTHERDIR}/switch-BEDOPS-binary-type ${OSXPKGDIR}
 	-cd ${OSXPKGDIR}; \
-	./switch-BEDOPS-binary-type --typical
+	./switch-BEDOPS-binary-type --typical ${OSXPKGDIR}
 	-cd ${CWD}; \
 	mkdir -p ${OSXLIBDIR}; \
 

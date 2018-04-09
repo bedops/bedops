@@ -3,6 +3,7 @@
 # date : July.2017
 
 BINDIR=$(dirname `which bedops`)
+[ -n "${1}" ] && BINDIR=${1} 
 
 CMD="switch-BEDOPS-binary-type"
 
