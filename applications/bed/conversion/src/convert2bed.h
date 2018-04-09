@@ -1,7 +1,7 @@
 /* 
    convert2bed.h
    -----------------------------------------------------------------------
-   Copyright (C) 2014-2017 Alex Reynolds
+   Copyright (C) 2014-2018 Alex Reynolds
 
    wig2bed components, (C) 2011-2018 Scott Kuehn and Shane Neph
 
@@ -53,7 +53,7 @@
 
 #include "suite/BEDOPS.Constants.hpp"
 
-#define C2B_VERSION "2.4.32"
+#define C2B_VERSION "2.4.33"
 
 typedef int boolean;
 extern const boolean kTrue;
@@ -269,10 +269,14 @@ typedef struct sam {
     char* modified_qname;
     ssize_t modified_qname_capacity;
     int flag;
+    char* flag_str;
+    ssize_t flag_str_capacity;
     char* strand;
     ssize_t strand_capacity;
     char* rname;
     ssize_t rname_capacity;
+    char* pos_str;
+    ssize_t pos_str_capacity;
     uint64_t start;
     uint64_t stop;
     char* mapq;
@@ -315,6 +319,8 @@ typedef struct sam {
 */
 
 typedef struct gff {
+    char* header;
+    ssize_t header_capacity;
     char* seqid;
     ssize_t seqid_capacity;
     char* source;
@@ -322,7 +328,11 @@ typedef struct gff {
     char* type;
     ssize_t type_capacity;
     uint64_t start;
+    char* start_str;
+    ssize_t start_str_capacity;
     uint64_t end;
+    char* end_str;
+    ssize_t end_str_capacity;
     char* score;
     ssize_t score_capacity;
     char* strand;
@@ -333,6 +343,8 @@ typedef struct gff {
     ssize_t attributes_capacity;
     char* id;
     ssize_t id_capacity;
+    char* non_int_prefix;
+    ssize_t non_int_prefix_capacity;
 } c2b_gff_t;
 
 /* 
@@ -364,7 +376,11 @@ typedef struct gtf {
     char* feature;
     ssize_t feature_capacity;
     uint64_t start;
+    char* start_str;
+    ssize_t start_str_capacity;
     uint64_t end;
+    char* end_str;
+    ssize_t end_str_capacity;
     char* score;
     ssize_t score_capacity;
     char* strand;
@@ -521,7 +537,11 @@ typedef struct rmsk {
     char* query_seq;
     ssize_t query_seq_capacity;
     uint64_t query_start;
+    char* query_start_str;
+    ssize_t query_start_str_capacity;
     uint64_t query_end;
+    char* query_end_str;
+    ssize_t query_end_str_capacity;
     char* bases_past_match;
     ssize_t bases_past_match_capacity;
     char* strand;
@@ -576,6 +596,8 @@ typedef struct vcf {
     char* chrom;
     ssize_t chrom_capacity;
     uint64_t pos;
+    char* pos_str;
+    ssize_t pos_str_capacity;
     uint64_t start;
     uint64_t end;
     char* id;

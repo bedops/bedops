@@ -12,6 +12,20 @@ Current version
 ===============
 
 -------
+v2.4.33
+-------
+
+Released: **April 9, 2018**
+
+* :ref:`convert2bed <convert2bed>`
+
+  * Resolved `Issue 207 <https://github.com/bedops/bedops/issues/207>`_ where a megarow build of :ref:`convert2bed <convert2bed>` would raise segmentation faults when converting SAM input. This build uses constants that define a longer BED line length. Arrays ended up using more stack than available, resulting in segmentation faults. This issue could potentially affect conversion of any data with the megarow build of :ref:`convert2bed <convert2bed>`. Arrays using megarow-constants were replaced with heap- or dynamically-allocated pointers. Thanks to Erich Schwarz for the initial report.
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.32
 -------
 
@@ -34,10 +48,6 @@ Released: **March 14, 2018**
 * OS X (Darwin) megarow build
 
   * Some applications packaged in the OS X installer or compiled via the OS X command-line developer toolkit lacked `megarow <http://bedops.readthedocs.io/en/latest/content/revision-history.html#v2-4-27>`_ build support, despite those flags being specified in the parent Makefile. These applications specifically were affected: :code:`bedextract`, :code:`bedmap`, and :code:`convert2bed`. These binaries rely on wider suite-wide constants and data types that the megarow build variety specifies. The Darwin-specific Makefiles have been fixed to resolve this build issue, so that all OS X BEDOPS binaries should now be able to compile in the correct megarow-specific settings.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.31
