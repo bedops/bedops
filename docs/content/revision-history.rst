@@ -12,6 +12,24 @@ Current version
 ===============
 
 -------
+v2.4.34
+-------
+
+Released: **TBD**
+
+* :ref:`convert2bed <convert2bed>`
+
+  * In `Issue 208 <https://github.com/bedops/bedops/issues/208>`_ builds of :ref:`convert2bed <convert2bed>` would exit with an error state when converting SAM input with newline-delimited records longer than the 5 MB interthread I/O buffer. The :code:`C2B_THREAD_IO_BUFFER_SIZE` constant is now set to the suite-wide :code:`TOKENS_MAX_LENGTH` value, which should make it easier to compile custom builds of BEDOPS that support very-long line lengths. Thanks to Erich Schwarz for the initial report.
+
+* :ref:`starchstrip <starchstrip>`
+
+  * When `starchstrip` is compiled with a C compiler, :code:`qsort` uses a comparator that works correctly on the input chromosome list. When compiled with a C++ compiler (such as when building the larger BEDOPS toolkit), a different comparator is used that does not make variables of the correct type, and so the :code:`qsort` result is garbage, leading to missing chromosomes. Thanks to Jemma Nelson for the initial report.
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.33
 -------
 
@@ -20,10 +38,6 @@ Released: **April 9, 2018**
 * :ref:`convert2bed <convert2bed>`
 
   * Resolved `Issue 207 <https://github.com/bedops/bedops/issues/207>`_ where a megarow build of :ref:`convert2bed <convert2bed>` would raise segmentation faults when converting SAM input. This build uses constants that define a longer BED line length. Arrays ended up using more stack than available, resulting in segmentation faults. This issue could potentially affect conversion of any data with the megarow build of :ref:`convert2bed <convert2bed>`. Arrays using megarow-constants were replaced with heap- or dynamically-allocated pointers. Thanks to Erich Schwarz for the initial report.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.32

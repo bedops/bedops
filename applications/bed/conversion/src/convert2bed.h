@@ -53,7 +53,7 @@
 
 #include "suite/BEDOPS.Constants.hpp"
 
-#define C2B_VERSION "2.4.33"
+#define C2B_VERSION "2.4.34"
 
 typedef int boolean;
 extern const boolean kTrue;
@@ -82,7 +82,7 @@ const boolean kFalse = 0;
 #define C2B_GTF_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
 #define C2B_RMSK_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
 #define C2B_PSL_ELEMENT_FIELD_LENGTH_VALUE_INITIAL 32
-#define C2B_THREAD_IO_BUFFER_SIZE 5000000
+#define C2B_THREAD_IO_BUFFER_SIZE TOKENS_MAX_LENGTH
 
 extern const char* c2b_samtools;
 extern const char* c2b_sort_bed;

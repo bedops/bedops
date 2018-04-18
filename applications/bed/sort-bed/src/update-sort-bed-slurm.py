@@ -33,7 +33,7 @@ import logging
 name = "update-sort-bed-slurm"
 citation = "  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract"
 authors = "  authors:  Alex Reynolds and Shane Neph"
-version = "  version:  2.4.33"
+version = "  version:  2.4.34"
 usage = """  $ update-sort-bed-slurm [ --slurm-memory <MB> ] 
                           [ --slurm-partition <SLURM partition> ] 
                           [ --slurm-workdir <working directory> ]

@@ -49,7 +49,7 @@ Use the ``--help`` option to list all options:
 
   starch
    citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-   binary version: 2.4.33 (typical) (creates archive version: 2.2.0)
+   binary version: 2.4.34 (typical) (creates archive version: 2.2.0)
    authors:  Alex Reynolds and Shane Neph
 
   USAGE: starch [ --note="foo bar..." ]

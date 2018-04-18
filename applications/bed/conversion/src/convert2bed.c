@@ -6084,6 +6084,7 @@ c2b_process_intermediate_bytes_by_lines(void* arg)
         if (remainder_offset == -1) {
             if (src_bytes_read + remainder_length == src_buffer_capacity) {
                 fprintf(stderr, "Error: Could not find newline in intermediate buffer; check input [%zu | %zu | %zu]\n", (unsigned long) src_bytes_read, (unsigned long) remainder_length, (unsigned long) src_buffer_capacity);
+                fprintf(stderr, "       Please check that your input contains Unix newlines (cat -A) or increase TOKENS_MAX_LENGTH in BEDOPS.Constants.hpp and recompile BEDOPS.\n");
                 c2b_print_usage(stderr);
                 exit(EINVAL); /* Invalid argument (POSIX.1) */
             }
