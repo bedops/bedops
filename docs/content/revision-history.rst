@@ -15,11 +15,11 @@ Current version
 v2.4.34
 -------
 
-Released: **TBD**
+Released: **April 26, 2018**
 
 * :ref:`convert2bed <convert2bed>`
 
-  * In `Issue 208 <https://github.com/bedops/bedops/issues/208>`_ builds of :ref:`convert2bed <convert2bed>` would exit with an error state when converting SAM input with newline-delimited records longer than the 5 MB interthread I/O buffer. The :code:`C2B_THREAD_IO_BUFFER_SIZE` constant is now set to the suite-wide :code:`TOKENS_MAX_LENGTH` value, which should make it easier to compile custom builds of BEDOPS that support very-long line lengths. Thanks to Erich Schwarz for the initial report.
+  * In `Issue 208 <https://github.com/bedops/bedops/issues/208>`_ builds of :ref:`convert2bed <convert2bed>` would exit with an error state when converting SAM input with newline-delimited records longer than the 5 MB per-thread I/O buffer. The :code:`C2B_THREAD_IO_BUFFER_SIZE` constant is now set to the suite-wide :code:`TOKENS_MAX_LENGTH` value, which should make it easier to compile custom builds of BEDOPS that support very-long line lengths. Thanks to Erich Schwarz for the initial report.
 
 * :ref:`starchstrip <starchstrip>`
 
