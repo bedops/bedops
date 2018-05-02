@@ -1760,6 +1760,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     char const *nullSig = "null";
     struct sha1_ctx perChromosomeHashCtx;
     LineLengthType maxStringLength = STARCH_DEFAULT_LINE_STRING_LENGTH;
+    Boolean previousAndCurrentChromosomesAreIdentical = kStarchTrue;
 
     /* increment total file size by header bytes */
 #ifdef DEBUG
@@ -1861,9 +1862,10 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 
             if (STARCH_createTransformTokens(untransformedBuffer, '\t', &chromosome, &start, &stop, &remainder, &lineType) == 0) {
                 if (pRemainder) {
+                    previousAndCurrentChromosomesAreIdentical = ((prevChromosome) && (strcmp(chromosome, prevChromosome) == 0)) ? kStarchTrue : kStarchFalse;
                     /* if previous start and stop coordinates are the same, compare the remainder here */
-                    if ((start == pStart) && (stop == pStop) && (strcmp(remainder, pRemainder) < 0)) {
-                        fprintf(stderr, "ERROR: Elements with same start and stop coordinates have remainders in wrong sort order.\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+                    if ((start == pStart) && (stop == pStop) && (strcmp(remainder, pRemainder) < 0) && (previousAndCurrentChromosomesAreIdentical)) {
+                        fprintf(stderr, "ERROR: (A) Elements with same start and stop coordinates have remainders in wrong sort order.\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\nDebug:\nchromosome [%s] start [%" PRId64 "] stop [%" PRId64 "]\nline [%ld]\nremainder A [%s]\nremainder B [%s]\nstrcmp(A,B) [%d]\n", chromosome, start, stop, lineIdx, remainder, pRemainder, strcmp(remainder, pRemainder));
                         return STARCH_FATAL_ERROR;
                     }
                     free(pRemainder);
@@ -2561,9 +2563,10 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                 nestedElementExistsFlag = kStarchTrue;
 
             if (pRemainder) {
+                previousAndCurrentChromosomesAreIdentical = ((prevChromosome) && (strcmp(chromosome, prevChromosome) == 0)) ? kStarchTrue : kStarchFalse;
                 /* if previous start and stop coordinates are the same, compare the remainder here */
-                if ((start == pStart) && (stop == pStop) && (strcmp(remainder, pRemainder) < 0)) {
-                    fprintf(stderr, "ERROR: Elements with same start and stop coordinates have remainders in wrong sort order.\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+                if ((start == pStart) && (stop == pStop) && (strcmp(remainder, pRemainder) < 0) && (previousAndCurrentChromosomesAreIdentical)) {
+                    fprintf(stderr, "ERROR: (B) Elements with same start and stop coordinates have remainders in wrong sort order.\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\nDebug:\nchromosome [%s] start [%" PRId64 "] stop [%" PRId64 "]\nline [%ld]\nremainder A [%s]\nremainder B [%s]\nstrcmp(A,B) [%d]\n", chromosome, start, stop, lineIdx, remainder, pRemainder, strcmp(remainder, pRemainder));
                     return STARCH_FATAL_ERROR;
                 }
                 free(pRemainder);
@@ -2917,6 +2920,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     char const *nullSig = "null";
     struct sha1_ctx perChromosomeHashCtx;
     LineLengthType maxStringLength = STARCH_DEFAULT_LINE_STRING_LENGTH;
+    Boolean previousAndCurrentChromosomesAreIdentical = kStarchTrue;
 
     /* increment total file size by header bytes */
 #ifdef DEBUG
@@ -3018,9 +3022,10 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 
             if (STARCH_createTransformTokensForHeaderlessInput(untransformedBuffer, '\t', &chromosome, &start, &stop, &remainder) == 0) {
                 if (pRemainder) {
+                    previousAndCurrentChromosomesAreIdentical = ((prevChromosome) && (strcmp(chromosome, prevChromosome) == 0)) ? kStarchTrue : kStarchFalse;
                     /* if previous start and stop coordinates are the same, compare the remainder here */
-                    if ((start == pStart) && (stop == pStop) && (strcmp(remainder, pRemainder) < 0)) {
-                        fprintf(stderr, "ERROR: Elements with same start and stop coordinates have remainders in wrong sort order.\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+                    if ((start == pStart) && (stop == pStop) && (strcmp(remainder, pRemainder) < 0) && (previousAndCurrentChromosomesAreIdentical)) {
+                        fprintf(stderr, "ERROR: (C) Elements with same start and stop coordinates have remainders in wrong sort order.\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\nDebug:\nchromosome [%s] start [%" PRId64 "] stop [%" PRId64 "]\nline [%ld]\nremainder A [%s]\nremainder B [%s]\nstrcmp(A,B) [%d]\n", chromosome, start, stop, lineIdx, remainder, pRemainder, strcmp(remainder, pRemainder));
                         return STARCH_FATAL_ERROR;
                     }
                     free(pRemainder); 
@@ -3730,9 +3735,10 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                 nestedElementExistsFlag = kStarchTrue;
 
             if (pRemainder) {
+                previousAndCurrentChromosomesAreIdentical = ((prevChromosome) && (strcmp(chromosome, prevChromosome) == 0)) ? kStarchTrue : kStarchFalse;
                 /* if previous start and stop coordinates are the same, compare the remainder here */
-                if ((start == pStart) && (stop == pStop) && (strcmp(remainder, pRemainder) < 0)) {
-                    fprintf(stderr, "ERROR: Elements with same start and stop coordinates have remainders in wrong sort order.\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\n");
+                if ((start == pStart) && (stop == pStop) && (strcmp(remainder, pRemainder) < 0) && (previousAndCurrentChromosomesAreIdentical)) {
+                    fprintf(stderr, "ERROR: (D) Elements with same start and stop coordinates have remainders in wrong sort order.\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\nDebug:\nchromosome [%s] start [%" PRId64 "] stop [%" PRId64 "]\nline [%ld]\nremainder A [%s]\nremainder B [%s]\nstrcmp(A,B) [%d]\n", chromosome, start, stop, lineIdx, remainder, pRemainder, strcmp(remainder, pRemainder));
                     return STARCH_FATAL_ERROR;
                 }
                 free(pRemainder);
