@@ -15,6 +15,20 @@ Current version
 v2.4.35
 -------
 
+Released: **May 2, 2018**
+
+* :ref:`starch <starch>`
+
+  * When compressing records, if the last interval in the former chromosome is identical to the first interval of the next chromosome, then a test on the sort order of the remainder string of that interval is applied (incorrectly). This is patched to test that chromosome names are identical before applying sort order rules. Thanks to Andrew Nishida for the report and for providing test input.
+
+=================
+Previous versions
+=================
+
+-------
+v2.4.34
+-------
+
 Released: **April 26, 2018**
 
 * :ref:`convert2bed <convert2bed>`
@@ -24,10 +38,6 @@ Released: **April 26, 2018**
 * :ref:`starchstrip <starchstrip>`
 
   * When `starchstrip` is compiled with a C compiler, :code:`qsort` uses a comparator that works correctly on the input chromosome list. When compiled with a C++ compiler (such as when building the larger BEDOPS toolkit), a different comparator is used that does not make variables of the correct type, and so the :code:`qsort` result is garbage, leading to missing chromosomes. Thanks to Jemma Nelson for the initial report.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.33
