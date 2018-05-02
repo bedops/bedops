@@ -36,7 +36,7 @@ namespace BEDOPS {
 #endif
 
   static const char* version() {
-    return "2.4.34 " BUILD_OPTS; // preprocessor string concatenation
+    return "2.4.35 " BUILD_OPTS; // preprocessor string concatenation
   }
 
   static const char* citation() {

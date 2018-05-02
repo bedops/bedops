@@ -1,5 +1,5 @@
 Name:           bedops
-Version:        2.4.34
+Version:        2.4.35
 Release:        1
 Summary:        A suite of tools to address common questions raised in genomic studies.
 Group:          Applications/Productivity
