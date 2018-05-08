@@ -10,16 +10,16 @@ RUN apt-get clean
 ADD . /bedops
 
 # populate base debian package tree
-RUN mkdir /bedops_2.4.35
-WORKDIR /bedops_2.4.35
+RUN mkdir /bedops_2.4.36
+WORKDIR /bedops_2.4.36
 RUN mkdir -p DEBIAN usr/bin usr/share/doc/bedops
 RUN cp /bedops/LICENSE /bedops/README.md usr/share/doc/bedops
 RUN cp /bedops/packaging/deb/control DEBIAN
 
 # build and install bedops into debian package tree
 WORKDIR /bedops
-RUN make -j `nproc` && make install BINDIR=/bedops_2.4.35/usr/bin
+RUN make -j `nproc` && make install BINDIR=/bedops_2.4.36/usr/bin
 WORKDIR /
-RUN dpkg-deb --build bedops_2.4.35
+RUN dpkg-deb --build bedops_2.4.36
 
 # deb file should now be located in / directory

@@ -15,7 +15,7 @@ Preparing a major, minor or maintenance release of BEDOPS from a development bra
 
    a. Close out open documentation or feature issues, making necessary pushes to the current development branch.
 
-   b. If any issues can't be closed out, rename the assigned version tag to the next anticipated release version (*e.g.*, *v2.4.35* to *v2p5p0*, etc.)
+   b. If any issues can't be closed out, rename the assigned version tag to the next anticipated release version (*e.g.*, *v2.4.36* to *v2p5p0*, etc.)
 
 2. Pull the most recent commit for the development branch to a local folder on build hosts (Linux with sufficiently old kernel, current OS X, etc.).
 
@@ -43,7 +43,7 @@ Preparing a major, minor or maintenance release of BEDOPS from a development bra
 
      BEDOPS.X.Y.Z.pkg.zip
 
-   The *X.Y.Z* scheme should follow the development branch name, *e.g.* 2.4.35, etc.
+   The *X.Y.Z* scheme should follow the development branch name, *e.g.* 2.4.36, etc.
 
 3. Collect tarballs and zipped Installer in one location for later addition with web browser, via BEDOPS Github web site.
 
@@ -62,7 +62,7 @@ Release
 
    Ideally, whatever steps are used to merge the development branch into the master branch should preserve the overall commit history.
 
-   As before, the *X.Y.Z* scheme should follow the development branch name, *e.g.* 2.4.35, etc.
+   As before, the *X.Y.Z* scheme should follow the development branch name, *e.g.* 2.4.36, etc.
 
 2. Add a `new release <https://github.com/bedops/bedops/releases/new>`_ via the Github site. Or click on the `Draft a new release <https://github.com/bedops/bedops/releases>`_ button from the Github Releases page.
 
@@ -104,7 +104,7 @@ Release
 
    If not, take a look at the `build <https://readthedocs.org/builds/bedops/>`_ page to manually trigger document rebuilds, or examine error logs, if necessary.
 
-4. Update the Github bedops/bedops master `README.md <https://github.com/bedops/bedops/blob/v2.4.35/README.md>`_ file to note the current version number, if necessary.
+4. Update the Github bedops/bedops master `README.md <https://github.com/bedops/bedops/blob/v2.4.36/README.md>`_ file to note the current version number, if necessary.
 
 5. Push fixes to any documentation errors in the master branch. 
 

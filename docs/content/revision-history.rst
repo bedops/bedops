@@ -12,6 +12,20 @@ Current version
 ===============
 
 -------
+v2.4.36
+-------
+
+Released: **TBD**
+
+* :ref:`bedmap <bedmap>`
+
+  * To avoid mapping problems, map elements should not contain spaces in the ID or subsequent non-interval fields. Use of the :code:`--ec` can help identify problems in map input, at the cost of a longer runtime. The documentation is clarified to warn users about avoiding spaces in map input. Thanks to Wouter Meuleman for the report and providing test input.
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.35
 -------
 
@@ -20,10 +34,6 @@ Released: **May 2, 2018**
 * :ref:`starch <starch>`
 
   * When compressing records, if the last interval in the former chromosome is identical to the first interval of the next chromosome, then a test on the sort order of the remainder string of that interval is applied (incorrectly). This is patched to test that chromosome names are identical before applying sort order rules. Thanks to Andrew Nishida for the report and for providing test input.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.34

@@ -6891,7 +6891,7 @@
 						<key>LANGUAGE</key>
 						<string>English</string>
 						<key>VALUE</key>
-						<string>BEDOPS 2.4.35</string>
+						<string>BEDOPS 2.4.36</string>
 					</dict>
 				</array>
 			</dict>
@@ -7116,7 +7116,7 @@
 				</dict>
 			</array>
 			<key>NAME</key>
-			<string>BEDOPS 2.4.35</string>
+			<string>BEDOPS 2.4.36</string>
 			<key>PAYLOAD_ONLY</key>
 			<false/>
 			<key>TREAT_MISSING_PRESENTATION_DOCUMENTS_AS_WARNING</key>

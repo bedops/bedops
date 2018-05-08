@@ -20,6 +20,10 @@ The :ref:`bedmap` program takes in *reference* and *mapping* files and calculate
 
 The :ref:`bedmap` program requires files in a relaxed variation of the BED format as described by `UCSC's browser documentation <http://genome.ucsc.edu/FAQ/FAQformat.html#format1>`_. The chromosome field can be any non-empty string, the score field can be any valid numeric value, and information is unconstrained beyond the minimum number of columns required by the chosen options.
 
+.. note:: Information is unconstrained, with one important exception: Map input (defined below) should not contain spaces in the ID or in subsequent fields. Running :ref:`bedmap` with :code:`--ec` will identify problematic input. 
+
+   An :code:`awk` script can help with translating ID spaces to another non-whitespace delimiter, *e.g.*, :code:`bedmap (--options...) reference.bed <(awk -vOFS="\t" -vFS="\t" '{gsub(" ", "%%", $4); print;}' map.bed)` and then `awk -vOFS="\t" -vFS="\t" '{gsub("%%", " "); print;}' result.bed` to convert delimiters back to spaces.
+
 Alternatively, :ref:`bedmap` can accept :ref:`Starch-formatted archives <starch>` of BED data as input |---| it is no longer necessary to extract Starch archive data to intermediate BED files!
 
 Support for common headers (including UCSC browser track headers) is available with the ``--header`` option, although headers are stripped from output.
@@ -48,7 +52,7 @@ The ``--help`` option describes the various mapping and analytical operations an
 
   bedmap
     citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract
-    version:  2.4.35 (typical)
+    version:  2.4.36 (typical)
     authors:  Shane Neph & Scott Kuehn
 
    USAGE: bedmap [process-flags] [overlap-option] <operation(s)...> <ref-file> [map-file]
@@ -281,6 +285,10 @@ The variety of score operators include common statistical measures:
 
 One can also take the sum of scores (``--sum``), find the minimum or maximum score over a region (``--min`` and ``--max``, respectively), or retrieve the map element with the least or greatest signal over the reference region (``--min-element`` and ``--max-element``, respectively).
 
+.. note:: Map input should not contain spaces in the ID or in subsequent fields. Running :ref:`bedmap` with :code:`--ec` will identify problematic input. Spaces in these fields will cause problems with :code:`--min-element`, :code:`--max-element`, and other options that require parsing of the fourth and subsequent columns of the map input.
+
+   An :code:`awk` script can help with translating ID spaces to another non-whitespace delimiter, *e.g.*, :code:`bedmap (--options...) reference.bed <(awk -vOFS="\t" -vFS="\t" '{gsub(" ", "%%", $4); print;}' map.bed)` and then `awk -vOFS="\t" -vFS="\t" '{gsub("%%", " "); print;}' result.bed` to convert delimiters back to spaces.
+
 We will demonstrate some of these operators by applying them to the ``Reference`` and ``Map`` datasets (see the :ref:`Downloads <bedmap_downloads>` section for sample inputs).
 
 As a reminder, the ``Map`` file contains regions of DNaseI-seq tag density. If we want the mean of the density across `Reference` elements, we use the ``--mean`` option:
@@ -421,9 +429,9 @@ As an example of using the ``--echo-map-id`` operator in a biological context, w
 ::
 
   chr1    4534161 4534177 -V_GRE_C        4.20586e-06     -       CGTACACACAGTTCTT
-  chr1    4534192.4.354205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
+  chr1    4534192.4.364205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
   chr1    4534209 4534223 +V_HNF4_Q6_01   6.93604e-06     +       GGACCAGAGTCCAC
-  chr1    4962522.4.352540 -V_GCNF_01      9.4497e-06      -       CCCAAGGTCAAGATAAAG
+  chr1    4962522.4.362540 -V_GCNF_01      9.4497e-06      -       CCCAAGGTCAAGATAAAG
   chr1    4962529 4962539 +V_NUR77_Q5     8.43564e-06     +       TTGACCTTGG
   ...
 
@@ -468,6 +476,10 @@ The ``--echo-map-range`` flag tells :ref:`bedmap` to report the genomic range of
   chr21   33031900    33032000    ref-3|chr21 33031885    33032005
 
 .. note:: The ``--echo-map-range`` option produces three-column BED results that are not always guaranteed to be sorted. The ``--echo`` operation is independent, and it produces reference elements in proper BEDOPS order, as shown. If the results of the ``--echo-map-range`` option will be used directly as BED coordinates in downstream BEDOPS analyses (*i.e.*, no ``--echo`` operator), first pipe them to :ref:`sort-bed` to ensure proper sort order.
+
+.. note:: Map input should not contain spaces in the ID or in subsequent fields. Running :ref:`bedmap` with :code:`--ec` will identify problematic input. Spaces in these fields will cause problems with :code:`--echo-map-id`, :code:`--echo-map-id-uniq`, and other options that require parsing of the fourth and subsequent columns of the map input.
+
+   An :code:`awk` script can help with translating ID spaces to another non-whitespace delimiter, *e.g.*, :code:`bedmap (--options...) reference.bed <(awk -vOFS="\t" -vFS="\t" '{gsub(" ", "%%", $4); print;}' map.bed)` and then `awk -vOFS="\t" -vFS="\t" '{gsub("%%", " "); print;}' result.bed` to convert delimiters back to spaces.
 
 The ``--echo-ref-size`` flag reports the difference between the stop and start coordinates of the reference element.  The ``--echo-ref-name`` flag produces a converted format for the first 3 BED fields, A:B-C, where A is the chromosome name, B is the start coordinate, and C is the stop coordinate for that reference element.
 
@@ -675,9 +687,9 @@ To demonstrate their use, we revisit the ``Motifs`` dataset, which includes *p*-
 ::
 
   chr1    4534161 4534177 -V_GRE_C        4.20586e-06     -       CGTACACACAGTTCTT
-  chr1    4534192.4.354205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
+  chr1    4534192.4.364205 -V_STAT_Q6      2.21622e-06     -       AGCACTTCTGGGA
   chr1    4534209 4534223 +V_HNF4_Q6_01   6.93604e-06     +       GGACCAGAGTCCAC
-  chr1    4962522.4.352540 -V_GCNF_01      9.4497e-06      -       CCCAAGGTCAAGATAAAG
+  chr1    4962522.4.362540 -V_GCNF_01      9.4497e-06      -       CCCAAGGTCAAGATAAAG
   chr1    4962529 4962539 +V_NUR77_Q5     8.43564e-06     +       TTGACCTTGG
   ...
 
