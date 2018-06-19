@@ -49,9 +49,9 @@ STARCH_OBJECTS            = $(addprefix $(LOCALOBJDIR)/, $(addsuffix .o, $(STARC
 
 build: starch unstarch starchcat starchcluster starch-diff starchstrip
 	rm -rf ${LOCALOBJDIR}
-build_debug: $(BINDIR)/debug.starch $(BINDIR)/debug.unstarch $(BINDIR)/debug.starchcat $(BINDIR)/debug.starchstrip
+build_debug: $(BINDIR)/debug.starch $(BINDIR)/debug.unstarch $(BINDIR)/debug.starchcat $(BINDIR)/debug.starchstrip starchcluster starch-diff
 	rm -rf ${LOCALOBJDIR}
-build_gprof: $(BINDIR)/gprof.starch $(BINDIR)/gprof.unstarch $(BINDIR)/gprof.starchcat $(BINDIR)/gprof.starchstrip
+build_gprof: $(BINDIR)/gprof.starch $(BINDIR)/gprof.unstarch $(BINDIR)/gprof.starchcat $(BINDIR)/gprof.starchstrip starchcluster starch-diff
 	rm -rf ${LOCALOBJDIR}
 
 # Cancel implicit compilation rules
