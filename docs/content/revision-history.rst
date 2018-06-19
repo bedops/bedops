@@ -19,6 +19,8 @@ Released: **TBD**
 
 * :ref:`bedmap <bedmap>`
 
+  * Resolved an issue preventing use of a :code:`bash` process substitution or Unix named pipe in the reference position: *i.e.*, :code:`bedmap --options <(processToGenerateReferenceElements) map.bed` and similar would issue incorrect output. Thanks to Wouter Meuleman and others for reports and test input.
+
   * To avoid mapping problems, map elements should not contain spaces in the ID or subsequent non-interval fields. Use of the :code:`--ec` can help identify problems in map input, at the cost of a longer runtime. The documentation is clarified to warn users about avoiding spaces in map input. Thanks to Wouter Meuleman for the report and providing test input.
 
 =================
