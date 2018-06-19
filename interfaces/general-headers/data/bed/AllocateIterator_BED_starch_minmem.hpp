@@ -59,7 +59,7 @@ namespace Bed {
     template <typename ErrorType>
     allocate_iterator_starch_bed_mm(Ext::FPWrap<ErrorType>& fp, const std::string& chr = "all") /* this ASSUMES fp is open and meaningful */
       : fp_(fp), _M_ok(fp_ && !std::feof(fp_)), _M_value(0),
-        is_starch_(false),
+        is_starch_(_M_ok && (fp_ != stdin) && starch::Starch::isStarch(fp_)),
         all_(0 == std::strcmp(chr.c_str(), "all")), archive_(NULL) {
 
       chr_[0] = '\0';
@@ -80,7 +80,7 @@ namespace Bed {
           throw(ErrorType("Error: stat() failed on: " + fp.Name()));
         is_namedpipe = (S_ISFIFO(st.st_mode) != 0);
       }
-      is_starch = !is_namedpipe && _M_ok && (fp_ != stdin) && starch::Starch::isStarch(fp_);
+      is_starch_ = (is_starch_ && !is_namedpipe);
 
       if ( (fp_ == stdin || is_namedpipe) && !all_ ) { // BED, chrom-specific, using stdin
         // stream through until we find what we want

@@ -21,8 +21,6 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
-#include <sys/stat.h>
-
 #include <cctype>
 #include <cstdlib>
 #include <exception>
@@ -712,28 +710,13 @@ namespace BedMap {
     typedef Bed::BTAllRestNoPool::Bed5Type BType;
   };
 
-  //==============
-  // named_pipe()
-  //==============
-  bool named_pipe(const std::string& fname) {
-    bool is_namedpipe = false;
-    if ( fname != "-" ) {
-      struct stat st;
-      if ( stat(fname.c_str(), &st) == -1 )
-        throw(Ext::InvalidFile("Error: stat() failed on: " + fname));
-      is_namedpipe = (S_ISFIFO(st.st_mode) != 0);
-    }
-    return is_namedpipe;
-  }
-
   //======================
   // checkStarchNesting()
   //======================
   bool checkStarchNesting(const std::string& f1, const std::string& f2) {
     constexpr bool NoUseMemPool = false;
     typedef SelectBED<3, NoUseMemPool>::BType BedType;
-
-    if ( f1 == "-" || f2 == "-" || named_pipe(f1) || named_pipe(f2) )
+    if ( f1 == "-" || f2 == "-" )
       return true; // not applicable
     Ext::FPWrap<Ext::InvalidFile> file1(f1);
     Bed::allocate_iterator_starch_bed_mm<BedType*> a(file1);

@@ -196,7 +196,7 @@ class Test implements Comparable {
   }
 
 private int order_         = -1;
-private String call_       = "../../bin/bedops-typical --ec ";
+private String call_       = "../../bin/bedops --ec ";
 private String inputFiles_ = "";
 private String answer_     = "";
 private String output_     = "";
