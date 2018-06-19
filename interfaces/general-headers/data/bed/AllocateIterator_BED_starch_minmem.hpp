@@ -80,7 +80,7 @@ namespace Bed {
           throw(ErrorType("Error: stat() failed on: " + fp.Name()));
         is_namedpipe = (S_ISFIFO(st.st_mode) != 0);
       }
-      is_starch = !is_namedpipe && _M_ok && (fp_ != stdin) && starch::Starch::isStarch(fp_);
+      is_starch_ = !is_namedpipe && _M_ok && (fp_ != stdin) && starch::Starch::isStarch(fp_);
 
       if ( (fp_ == stdin || is_namedpipe) && !all_ ) { // BED, chrom-specific, using stdin
         // stream through until we find what we want
