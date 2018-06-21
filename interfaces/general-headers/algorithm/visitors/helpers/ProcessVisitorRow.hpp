@@ -150,14 +150,18 @@ namespace Visitors {
       typedef PrintType PType;
 
       explicit PrintRangeDelim(const PrintType& p = PrintType(),
-                               const std::string& delim = ";")
-          : Base(delim), pt_(p)
+                               const std::string& delim = ";",
+                               const std::string& onEmpty = "")
+          : Base(delim), pt_(p), oe_(onEmpty)
         { /* */ }
 
       template <typename Iter>
       void operator()(Iter beg, Iter end) const {
-        if ( beg == end )
+        if ( beg == end ) {
+          if ( !oe_.empty() )
+            PrintTypes::Print(oe_.c_str());
           return;
+        }
         pt_.operator()(*beg);
         while ( ++beg != end ) {
           Base::operator()();
@@ -167,6 +171,7 @@ namespace Visitors {
 
     private:
       PrintType pt_;
+      std::string oe_;
     };
 
   } // namespace Helpers

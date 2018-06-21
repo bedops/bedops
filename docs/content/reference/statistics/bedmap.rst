@@ -82,6 +82,7 @@ The ``--help`` option describes the various mapping and analytical operations an
         --sci                 Use scientific notation for score outputs.
         --skip-unmapped       Print no output for a row with no mapped elements.
         --sweep-all           Ensure <map-file> is read completely (helps to prevent broken pipes).
+        --unmapped-val <val>  Use <val> in place of the empty string on unmapped --echo-map* ops.
         --version             Print program information.
 
       Overlap Options (At most, one may be selected.  By default, --bp-ovr 1 is used):
