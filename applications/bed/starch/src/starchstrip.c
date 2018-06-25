@@ -83,10 +83,14 @@ STARCHSTRIP_write_updated_metadata(FILE* os)
 #ifdef DEBUG
     fprintf(stderr, "--- STARCHSTRIP_write_updated_metadata() - enter ---\n");
 #endif
-
+#ifdef __cplusplus
+    char *md_json_buffer = nullptr;
+    char *base64_encoded_sha1_digest = nullptr;
+#else
     char *md_json_buffer = NULL;
-    unsigned char sha1_digest[STARCH2_MD_FOOTER_SHA1_LENGTH] = {0};
     char *base64_encoded_sha1_digest = NULL;
+#endif
+    unsigned char sha1_digest[STARCH2_MD_FOOTER_SHA1_LENGTH] = {0};
     char footer_cumulative_record_size_buffer[STARCH2_MD_FOOTER_CUMULATIVE_RECORD_SIZE_LENGTH + 1] = {0};
     char footer_remainder_buffer[STARCH2_MD_FOOTER_REMAINDER_LENGTH + 1] = {0};
     char footer_buffer[STARCH2_MD_FOOTER_LENGTH + 1] = {0};
@@ -100,7 +104,11 @@ STARCHSTRIP_write_updated_metadata(FILE* os)
     md_json_buffer = STARCH_generateJSONMetadata(starchstrip_globals.output_records,
                                                  starchstrip_globals.archive_type,
                                                  starchstrip_globals.archive_version,
+#ifdef __cplusplus
+						 nullptr,
+#else
                                                  NULL,
+#endif
                                                  starchstrip_globals.archive_note,
                                                  starchstrip_globals.archive_header_flag);
     if (!md_json_buffer) {
@@ -141,10 +149,17 @@ STARCHSTRIP_write_updated_metadata(FILE* os)
     fflush(os);
 
     /* cleanup */
+#ifdef __cplusplus
+    free(md_json_buffer);
+    md_json_buffer = nullptr;
+    free(base64_encoded_sha1_digest);
+    base64_encoded_sha1_digest = nullptr;
+#else
     free(md_json_buffer);
     md_json_buffer = NULL;
     free(base64_encoded_sha1_digest);
     base64_encoded_sha1_digest = NULL;
+#endif
 
 #ifdef DEBUG
     fprintf(stderr, "--- STARCHSTRIP_write_updated_metadata() - exit  ---\n");
@@ -157,9 +172,13 @@ STARCHSTRIP_write_chromosome_streams(FILE* os)
 #ifdef DEBUG
     fprintf(stderr, "--- STARCHSTRIP_write_chromosome_streams() - enter ---\n");
 #endif
-
+#ifdef __cplusplus
+    Metadata* iter = nullptr;
+    Metadata* output_records_tail = nullptr;
+#else
     Metadata* iter = NULL;
     Metadata* output_records_tail = NULL;
+#endif
     size_t chr_to_process_idx = 0;
     uint64_t start_offset = 0;
     uint64_t bytes_to_copy = 0;
@@ -169,7 +188,11 @@ STARCHSTRIP_write_chromosome_streams(FILE* os)
 
     if (starchstrip_globals.archive_version->major == 2) {
         start_offset += STARCH2_MD_HEADER_BYTE_LENGTH;
+#ifdef __cplusplus
+        for (iter = starchstrip_globals.archive_records; iter != nullptr; iter = iter->next) {
+#else
         for (iter = starchstrip_globals.archive_records; iter != NULL; iter = iter->next) {
+#endif
             if ((starchstrip_globals.exclusion_flag) && (strcmp(iter->chromosome, starchstrip_globals.chromosomes_to_process[chr_to_process_idx]) == 0)) {
                 continue;
             }
@@ -293,7 +316,11 @@ STARCHSTRIP_write_header(FILE* os)
 #endif
 
     if (starchstrip_globals.archive_version->major == 2) {
+#ifdef __cplusplus
+        unsigned char* archive_header = nullptr;
+#else
         unsigned char* archive_header = NULL;
+#endif
         if (STARCH2_initializeStarchHeader(&archive_header) != STARCH_EXIT_SUCCESS) {
             fprintf(stderr, "Error: Could not initialize output archive header\n");
             exit(EIO); /* Input/output error (POSIX.1) */
@@ -303,7 +330,11 @@ STARCHSTRIP_write_header(FILE* os)
             exit(EIO); /* Input/output error (POSIX.1) */
         }
         free(archive_header);
+#ifdef __cplusplus
+        archive_header = nullptr;
+#else
         archive_header = NULL;
+#endif
         starchstrip_globals.cumulative_output_size += STARCH2_MD_HEADER_BYTE_LENGTH;
     }
     else {
@@ -322,8 +353,11 @@ STARCHSTRIP_check_chromosome_stream_names()
 #ifdef DEBUG
     fprintf(stderr, "--- STARCHSTRIP_check_chromosome_stream_names() - enter ---\n");
 #endif
-
+#ifdef __cplusplus
+    Metadata* iter = nullptr;
+#else
     Metadata* iter = NULL;
+#endif
     size_t chr_idx = 0;
     size_t chr_to_process_idx = 0;
     size_t num_records = 0;
@@ -333,12 +367,20 @@ STARCHSTRIP_check_chromosome_stream_names()
     // loop through input metadata records, compare against chromosome name array
     if (starchstrip_globals.archive_version->major == 2) {
         // full count
+#ifdef __cplusplus
+        for (iter = starchstrip_globals.archive_records; iter != nullptr; iter = iter->next) {
+#else
         for (iter = starchstrip_globals.archive_records; iter != NULL; iter = iter->next) {
+#endif
             num_records++;
         }
         // inclusion
         if (starchstrip_globals.inclusion_flag) {
+#ifdef __cplusplus
+            for (iter = starchstrip_globals.archive_records; iter != nullptr; iter = iter->next) {
+#else
             for (iter = starchstrip_globals.archive_records; iter != NULL; iter = iter->next) {
+#endif
                 while (strcmp(iter->chromosome, starchstrip_globals.chromosomes[chr_idx]) > 0) {
                     chr_idx++;
                     if (chr_idx == starchstrip_globals.chromosomes_num) {
@@ -369,15 +411,22 @@ STARCHSTRIP_check_chromosome_stream_names()
             starchstrip_globals.chromosomes_to_process_num = num_records_to_include;
 #ifdef __cplusplus
             starchstrip_globals.chromosomes_to_process = static_cast<char**>( malloc(sizeof(char*) * starchstrip_globals.chromosomes_to_process_num) );
+            for (chr_to_process_idx = 0; chr_to_process_idx < starchstrip_globals.chromosomes_to_process_num; ++chr_to_process_idx) {
+                starchstrip_globals.chromosomes_to_process[chr_to_process_idx] = nullptr;
+            }
 #else
             starchstrip_globals.chromosomes_to_process = malloc(sizeof(char*) * starchstrip_globals.chromosomes_to_process_num);
-#endif
             for (chr_to_process_idx = 0; chr_to_process_idx < starchstrip_globals.chromosomes_to_process_num; ++chr_to_process_idx) {
                 starchstrip_globals.chromosomes_to_process[chr_to_process_idx] = NULL;
             }
+#endif
             chr_idx = 0;
             chr_to_process_idx = 0;
+#ifdef __cplusplus
+            for (iter = starchstrip_globals.archive_records; iter != nullptr; iter = iter->next) {
+#else
             for (iter = starchstrip_globals.archive_records; iter != NULL; iter = iter->next) {
+#endif
                 while (strcmp(iter->chromosome, starchstrip_globals.chromosomes[chr_idx]) > 0) {
                     chr_idx++;
                     if (chr_idx == starchstrip_globals.chromosomes_num) {
@@ -409,7 +458,11 @@ STARCHSTRIP_check_chromosome_stream_names()
 
         // exclusion
         else if (starchstrip_globals.exclusion_flag) {
+#ifdef __cplusplus
+            for (iter = starchstrip_globals.archive_records; iter != nullptr; iter = iter->next) {
+#else
             for (iter = starchstrip_globals.archive_records; iter != NULL; iter = iter->next) {
+#endif
                 while (strcmp(iter->chromosome, starchstrip_globals.chromosomes[chr_idx]) > 0) {
                     chr_idx++;
                     if (chr_idx == starchstrip_globals.chromosomes_num) {
@@ -440,15 +493,22 @@ STARCHSTRIP_check_chromosome_stream_names()
             starchstrip_globals.chromosomes_to_process_num = num_records_to_exclude;
 #ifdef __cplusplus
             starchstrip_globals.chromosomes_to_process = static_cast<char**>( malloc(sizeof(char*) * starchstrip_globals.chromosomes_to_process_num) );
+            for (chr_idx = 0; chr_idx < starchstrip_globals.chromosomes_to_process_num; ++chr_idx) {
+                starchstrip_globals.chromosomes_to_process[chr_idx] = nullptr;
+            }
 #else
             starchstrip_globals.chromosomes_to_process = malloc(sizeof(char*) * starchstrip_globals.chromosomes_to_process_num);
-#endif
             for (chr_idx = 0; chr_idx < starchstrip_globals.chromosomes_to_process_num; ++chr_idx) {
                 starchstrip_globals.chromosomes_to_process[chr_idx] = NULL;
             }
+#endif
             chr_idx = 0;
             chr_to_process_idx = 0;
+#ifdef __cplusplus
+            for (iter = starchstrip_globals.archive_records; iter != nullptr; iter = iter->next) {
+#else
             for (iter = starchstrip_globals.archive_records; iter != NULL; iter = iter->next) {
+#endif
                 while (strcmp(iter->chromosome, starchstrip_globals.chromosomes[chr_idx]) > 0) {
                     chr_idx++;
                     if (chr_idx == starchstrip_globals.chromosomes_num) {
@@ -605,13 +665,16 @@ STARCHSTRIP_init_chromosomes_list()
 #ifdef __cplusplus
     starchstrip_globals.chromosomes_num = static_cast<size_t>( delimiters_found + 1 );
     starchstrip_globals.chromosomes = static_cast<char**>( malloc(sizeof(char*) * starchstrip_globals.chromosomes_num) );
+    for (size_t chr_idx = 0; chr_idx < starchstrip_globals.chromosomes_num; ++chr_idx) {
+        starchstrip_globals.chromosomes[chr_idx] = nullptr;
+    }
 #else
     starchstrip_globals.chromosomes_num = (size_t) delimiters_found + 1;
     starchstrip_globals.chromosomes = malloc(sizeof(char*) * starchstrip_globals.chromosomes_num);
-#endif
     for (size_t chr_idx = 0; chr_idx < starchstrip_globals.chromosomes_num; ++chr_idx) {
         starchstrip_globals.chromosomes[chr_idx] = NULL;
     }
+#endif
 
     /* populate chromosome name array */
     size_t start = 0;
@@ -671,24 +734,38 @@ STARCHSTRIP_init_globals()
     fprintf(stderr, "--- STARCHSTRIP_init_globals() - enter ---\n");
 #endif
 
+#ifdef __cplusplus
+    starchstrip_globals.chromosomes_str = nullptr;
+    starchstrip_globals.chromosomes = nullptr;
+    starchstrip_globals.chromosomes_to_process = nullptr;
+    starchstrip_globals.output_records = nullptr;
+    starchstrip_globals.archive_fn = nullptr;
+    starchstrip_globals.archive_metadata_json = nullptr;
+    starchstrip_globals.archive_fp = nullptr;
+    starchstrip_globals.archive_records = nullptr;
+    starchstrip_globals.archive_version = nullptr;
+    starchstrip_globals.archive_timestamp = nullptr;
+    starchstrip_globals.archive_note = nullptr;
+#else
     starchstrip_globals.chromosomes_str = NULL;
     starchstrip_globals.chromosomes = NULL;
-    starchstrip_globals.chromosomes_num = 0;
     starchstrip_globals.chromosomes_to_process = NULL;
-    starchstrip_globals.chromosomes_to_process_num = 0;
-    starchstrip_globals.inclusion_flag = kStarchFalse;
-    starchstrip_globals.exclusion_flag = kStarchFalse;
-    starchstrip_globals.cumulative_output_size = 0;
     starchstrip_globals.output_records = NULL;
-    // --
     starchstrip_globals.archive_fn = NULL;
     starchstrip_globals.archive_metadata_json = NULL;
     starchstrip_globals.archive_fp = NULL;
     starchstrip_globals.archive_records = NULL;
-    starchstrip_globals.archive_type = STARCH_DEFAULT_COMPRESSION_TYPE;
     starchstrip_globals.archive_version = NULL;
     starchstrip_globals.archive_timestamp = NULL;
     starchstrip_globals.archive_note = NULL;
+#endif
+    starchstrip_globals.chromosomes_num = 0;
+    starchstrip_globals.chromosomes_to_process_num = 0;
+    starchstrip_globals.inclusion_flag = kStarchFalse;
+    starchstrip_globals.exclusion_flag = kStarchFalse;
+    starchstrip_globals.cumulative_output_size = 0;
+    // --
+    starchstrip_globals.archive_type = STARCH_DEFAULT_COMPRESSION_TYPE;
     starchstrip_globals.archive_metadata_offset = UINT64_C(0);
     starchstrip_globals.archive_header_flag = kStarchFalse;
     starchstrip_globals.archive_suppress_error_msgs = kStarchTrue;
@@ -706,6 +783,53 @@ STARCHSTRIP_delete_globals()
     fprintf(stderr, "--- STARCHSTRIP_delete_globals() - enter ---\n");
 #endif
 
+#ifdef __cplusplus
+    for (size_t idx = 0; idx < starchstrip_globals.chromosomes_num; ++idx) {
+        free(starchstrip_globals.chromosomes[idx]);
+        starchstrip_globals.chromosomes[idx] = nullptr;
+    }
+    free(starchstrip_globals.chromosomes);
+    starchstrip_globals.chromosomes = nullptr;
+    starchstrip_globals.chromosomes_num = 0;
+
+    free(starchstrip_globals.chromosomes_str);
+    starchstrip_globals.chromosomes_str = nullptr;
+
+    for (size_t idx = 0; idx < starchstrip_globals.chromosomes_to_process_num; ++idx) {
+        free(starchstrip_globals.chromosomes_to_process[idx]);
+        starchstrip_globals.chromosomes_to_process[idx] = nullptr;
+    }
+    free(starchstrip_globals.chromosomes_to_process);
+    starchstrip_globals.chromosomes_to_process = nullptr;
+    starchstrip_globals.chromosomes_to_process_num = 0;
+
+    free(starchstrip_globals.archive_fn);
+    starchstrip_globals.archive_fn = nullptr;
+    if (starchstrip_globals.archive_metadata_json) {
+        json_decref(starchstrip_globals.archive_metadata_json);
+        starchstrip_globals.archive_metadata_json = nullptr;
+    }
+    if (starchstrip_globals.archive_fp) {
+        fclose(starchstrip_globals.archive_fp);
+        starchstrip_globals.archive_fp = nullptr;
+    }
+    if (starchstrip_globals.archive_records) {
+        STARCH_freeMetadata(&starchstrip_globals.archive_records);
+        starchstrip_globals.archive_records = nullptr;
+    }
+    if (starchstrip_globals.archive_version) {
+        free(starchstrip_globals.archive_version);
+        starchstrip_globals.archive_version = nullptr;
+    }
+    if (starchstrip_globals.archive_timestamp) {
+        free(starchstrip_globals.archive_timestamp);
+        starchstrip_globals.archive_timestamp = nullptr;
+    }
+    if (starchstrip_globals.archive_note) {
+        free(starchstrip_globals.archive_note);
+        starchstrip_globals.archive_note = nullptr;
+    }
+#else
     for (size_t idx = 0; idx < starchstrip_globals.chromosomes_num; ++idx) {
         free(starchstrip_globals.chromosomes[idx]);
         starchstrip_globals.chromosomes[idx] = NULL;
@@ -751,6 +875,7 @@ STARCHSTRIP_delete_globals()
         free(starchstrip_globals.archive_note);
         starchstrip_globals.archive_note = NULL;
     }
+#endif
 
     STARCH_freeMetadata(&starchstrip_globals.output_records);
 

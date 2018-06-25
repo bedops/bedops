@@ -83,17 +83,31 @@ static struct starch_client_global_args_t {
     size_t numberInputFiles;
 } starch_client_global_args;
 
+#ifdef __cplusplus
 static struct option starch_client_long_options[] = {    
-    {"note",            required_argument, NULL, 'n'},
-    {"bzip2",           no_argument,       NULL, 'b'},
-    {"gzip",            no_argument,       NULL, 'g'},
-    {"omit-signature",  no_argument,       NULL, 'o'},
-    {"report-progress", required_argument, NULL, 'r'},
-    {"header",          no_argument,       NULL, 'e'},
-    {"version",         no_argument,       NULL, 'v'},
-    {"help",            no_argument,       NULL, 'h'},
-    {NULL,              no_argument,       NULL,  0 }
+    {"note",            required_argument,    nullptr, 'n'},
+    {"bzip2",           no_argument,          nullptr, 'b'},
+    {"gzip",            no_argument,          nullptr, 'g'},
+    {"omit-signature",  no_argument,          nullptr, 'o'},
+    {"report-progress", required_argument,    nullptr, 'r'},
+    {"header",          no_argument,          nullptr, 'e'},
+    {"version",         no_argument,          nullptr, 'v'},
+    {"help",            no_argument,          nullptr, 'h'},
+    {nullptr,           no_argument,          nullptr,  0 }
 };
+#else
+static struct option starch_client_long_options[] = {    
+    {"note",            required_argument,    NULL, 'n'},
+    {"bzip2",           no_argument,          NULL, 'b'},
+    {"gzip",            no_argument,          NULL, 'g'},
+    {"omit-signature",  no_argument,          NULL, 'o'},
+    {"report-progress", required_argument,    NULL, 'r'},
+    {"header",          no_argument,          NULL, 'e'},
+    {"version",         no_argument,          NULL, 'v'},
+    {"help",            no_argument,          NULL, 'h'},
+    {NULL,              no_argument,          NULL,  0 }
+};
+#endif
 
 static const char *starch_client_opt_string = "n:bgorevh?";
 

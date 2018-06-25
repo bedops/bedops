@@ -57,8 +57,11 @@ namespace starch {
 #define STARCHCAT_RETRANSFORM_BUFFER_SIZE 1024*1024
 #define STARCHCAT_FIELD_BUFFER_MAX_LENGTH 16
 
-#define GCC_COMPILER (defined(__GNUC__) && !defined(__clang__))
-#define CLANG_COMPILER defined(__clang__)
+#if defined(__GNUC__) && !defined(__clang__)
+#define HAS_GNU 1
+#else
+#define HAS_GNU 0
+#endif
 
 /*
     This is simply a struct containing a starch file's
@@ -177,6 +180,18 @@ static struct starchcat_client_global_args_t {
     LineCountType reportProgressN;
 } starchcat_client_global_args;
 
+#ifdef __cplusplus
+static struct option starchcat_client_long_options[] = {    
+    {"note",            required_argument, nullptr, 'n'},
+    {"bzip2",           no_argument,       nullptr, 'b'},
+    {"gzip",            no_argument,       nullptr, 'g'},
+    {"omit-signature",  no_argument,       nullptr, 'o'},
+    {"report-progress", required_argument, nullptr, 'r'},
+    {"version",         no_argument,       nullptr, 'v'},
+    {"help",            no_argument,       nullptr, 'h'},
+    {nullptr,           no_argument,       nullptr,  0 }
+};
+#else
 static struct option starchcat_client_long_options[] = {    
     {"note",            required_argument, NULL, 'n'},
     {"bzip2",           no_argument,       NULL, 'b'},
@@ -187,6 +202,7 @@ static struct option starchcat_client_long_options[] = {
     {"help",            no_argument,       NULL, 'h'},
     {NULL,              no_argument,       NULL,  0 }
 };
+#endif
 
 static const char *starchcat_client_opt_string = "n:bgorvh?";
 

@@ -46,18 +46,27 @@ main(int argc, char **argv)
 #ifdef DEBUG
     fprintf (stderr, "\n--- starch main() - enter ---\n");
 #endif
-    int parseValue = 0;
-    CompressionType type;
+#ifdef __cplusplus
+    char *note = nullptr;
+    char *tag = nullptr;
+    char *bedFn = nullptr;
+    FILE *bedFnPtr = nullptr;
+    Metadata *metadata = nullptr;
+    unsigned char *starchHeader = nullptr;
+#else
     char *note = NULL;
     char *tag = NULL;
     char *bedFn = NULL;
     FILE *bedFnPtr = NULL;
     Metadata *metadata = NULL;
+    unsigned char *starchHeader = NULL;
+#endif
+    int parseValue = 0;
+    CompressionType type;
     Boolean bedGeneratePerChrSignatureFlag = kStarchFalse;
     Boolean bedReportProgressFlag = kStarchFalse;
     LineCountType bedReportProgressN = 0;
     Boolean bedHeaderFlag = kStarchFalse;
-    unsigned char *starchHeader = NULL;
 
     setlocale (LC_ALL, "POSIX");
 
@@ -93,7 +102,7 @@ main(int argc, char **argv)
             if ((bedHeaderFlag == kStarchTrue) &&
 #ifdef __cplusplus
                  (STARCH_transformInput(&metadata, 
-                                       NULL, 
+                                       nullptr, 
                                        static_cast<const CompressionType>( type ), 
                                        reinterpret_cast<const char *>( tag ), 
                                        reinterpret_cast<const char *>( note )) != 0))
@@ -108,7 +117,7 @@ main(int argc, char **argv)
             else if ((bedHeaderFlag == kStarchFalse) &&
 #ifdef __cplusplus
                 (STARCH_transformHeaderlessInput(&metadata, 
-                                                 NULL, 
+                                                 nullptr, 
                                                  static_cast<const CompressionType>( type ), 
                                                  reinterpret_cast<const char *>( tag ), 
                                                  static_cast<const Boolean>( kStarchFinalizeTransformTrue ), 
@@ -212,6 +221,22 @@ main(int argc, char **argv)
     }
 
     /* cleanup */
+#ifdef __cplusplus
+    if (bedFnPtr != nullptr) {
+        fclose (bedFnPtr);
+        bedFnPtr = nullptr;
+    }
+    if (metadata != nullptr)
+        STARCH_freeMetadata (&metadata);
+    if (starchHeader) {
+        free (starchHeader);
+        starchHeader = nullptr;
+    }
+    if (starch_client_global_args.uniqueTag) {
+        free (starch_client_global_args.uniqueTag);
+        starch_client_global_args.uniqueTag = nullptr;
+    }
+#else
     if (bedFnPtr != NULL) {
         fclose (bedFnPtr);
         bedFnPtr = NULL;
@@ -226,6 +251,7 @@ main(int argc, char **argv)
         free (starch_client_global_args.uniqueTag);
         starch_client_global_args.uniqueTag = NULL;
     }
+#endif
 
 #ifdef DEBUG
     fprintf (stderr, "\n--- starch main() - exit ---\n");
@@ -244,16 +270,23 @@ STARCH_initializeGlobals()
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCH_initializeGlobals() ---\n");
 #endif
+#ifdef __cplusplus
+    starch_client_global_args.note = nullptr;
+    starch_client_global_args.inputFile = nullptr;
+    starch_client_global_args.uniqueTag = nullptr;
+    starch_client_global_args.inputFiles = nullptr;
+#else
     starch_client_global_args.note = NULL;
+    starch_client_global_args.inputFile = NULL;
+    starch_client_global_args.uniqueTag = NULL;
+    starch_client_global_args.inputFiles = NULL;
+#endif
     starch_client_global_args.compressionType = STARCH_DEFAULT_COMPRESSION_TYPE;
     starch_client_global_args.generatePerChromosomeSignatureFlag = kStarchTrue;
     starch_client_global_args.reportProgressFlag = kStarchFalse;
     starch_client_global_args.reportProgressN = 0;
     starch_client_global_args.headerFlag = kStarchFalse;
-    starch_client_global_args.inputFile = NULL;
-    starch_client_global_args.uniqueTag = NULL;
     starch_client_global_args.numberInputFiles = 0;
-    starch_client_global_args.inputFiles = NULL;
 }
 
 int
@@ -294,7 +327,11 @@ STARCH_parseCommandLineOptions(int argc, char **argv)
         case 'r':
             starch_client_global_args.reportProgressFlag = kStarchTrue;
             errno = 0;
+#ifdef __cplusplus
+            starch_client_global_args.reportProgressN = strtoumax(optarg, nullptr, 10);
+#else
             starch_client_global_args.reportProgressN = strtoumax(optarg, NULL, 10);
+#endif
             if (errno == ERANGE) {
                 fprintf (stderr, "ERROR: Numerical value is outside of range.\n");
                 return STARCH_FATAL_ERROR;
@@ -353,13 +390,15 @@ STARCH_printUsage(int errorType)
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCH_printUsage() ---\n");
 #endif
-    char *avStr = NULL;
 #ifdef __cplusplus
+    char *avStr = nullptr;
     avStr = static_cast<char *>( malloc (STARCH_ARCHIVE_VERSION_STRING_LENGTH) );
+    if (avStr != nullptr) {
 #else
+    char *avStr = NULL;
     avStr = malloc (STARCH_ARCHIVE_VERSION_STRING_LENGTH);
-#endif
     if (avStr != NULL) {
+#endif
         int result = sprintf (avStr, "%d.%d.%d", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION);
         if (result != -1) {
             switch (errorType) {
@@ -381,13 +420,15 @@ STARCH_printRevision()
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCH_printRevision() ---\n");
 #endif
-    char *avStr = NULL;
 #ifdef __cplusplus
+    char *avStr = nullptr;
     avStr = static_cast<char *>( malloc (STARCH_ARCHIVE_VERSION_STRING_LENGTH) );
+    if (avStr != nullptr) {
 #else
+    char *avStr = NULL;
     avStr = malloc (STARCH_ARCHIVE_VERSION_STRING_LENGTH);
-#endif
     if (avStr != NULL) {
+#endif
         int result = sprintf (avStr, "%d.%d.%d", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION);
         if (result != -1)
             fprintf (stderr, "%s\n  binary version: %s (creates archive version: %s)\n", name, BEDOPS::version(), avStr);

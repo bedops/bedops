@@ -60,9 +60,18 @@ main(int argc, char **argv)
 #ifdef DEBUG
     fprintf(stderr, "\n--- unstarch main() enter ---\n");
 #endif
-    int resultValue = 0;
-    int parseValue = 0;
-    CompressionType type = STARCH_DEFAULT_COMPRESSION_TYPE;
+#ifdef __cplusplus
+    char *archiveTimestamp = nullptr;
+    char *note = nullptr;
+    char *whichChromosome = nullptr;
+    char *inFile = nullptr;
+    char *option = nullptr;
+    FILE *inFilePtr = nullptr;
+    Metadata *records = nullptr;
+    ArchiveVersion *archiveVersion = nullptr;
+    json_t *metadataJSON = nullptr;
+    char *jsonString = nullptr;
+#else
     char *archiveTimestamp = NULL;
     char *note = NULL;
     char *whichChromosome = NULL;
@@ -71,13 +80,17 @@ main(int argc, char **argv)
     FILE *inFilePtr = NULL;
     Metadata *records = NULL;
     ArchiveVersion *archiveVersion = NULL;
+    json_t *metadataJSON = NULL;
+    char *jsonString = NULL;
+#endif
+    int resultValue = 0;
+    int parseValue = 0;
+    CompressionType type = STARCH_DEFAULT_COMPRESSION_TYPE;
     uint64_t metadataOffset = UINT64_C(0);
     Boolean headerFlag = kStarchFalse;
     Boolean showNewlineFlag = kStarchTrue;
-    json_t *metadataJSON = NULL;
     const Boolean suppressErrorMsgs = kStarchFalse; /* we want to see error messages */
     const Boolean preserveJSONRef = kStarchFalse; /* we generally do not want to preserve JSON reference */
-    char *jsonString = NULL;
     unsigned char mdHashBuffer[STARCH2_MD_FOOTER_SHA1_LENGTH + 1] = {0};
     Boolean signatureVerificationFlag = kStarchFalse;
 
@@ -315,15 +328,19 @@ main(int argc, char **argv)
             STARCH_SHA1_All(reinterpret_cast<const unsigned char *>( reinterpret_cast<unsigned char *>( jsonString ) ),
                 strlen(jsonString),
                 mdHashBuffer);
+            free(jsonString);
+            jsonString = nullptr;
+            json_decref(metadataJSON);
+            metadataJSON = nullptr;
 #else
             STARCH_SHA1_All((const unsigned char *) jsonString,
                 strlen(jsonString),
                 mdHashBuffer);
-#endif
             free(jsonString);
             jsonString = NULL;
             json_decref(metadataJSON);
             metadataJSON = NULL;
+#endif
         }
         else {
             fprintf(stderr, "ERROR: Could not encode JSON structure into string representation\n");
@@ -349,7 +366,27 @@ main(int argc, char **argv)
                 UNSTARCH_printUsage(EXIT_FAILURE);
                 return EXIT_FAILURE;
             }
-            if (STARCH_listJSONMetadata(NULL, NULL, records, type, archiveVersion, archiveTimestamp, note, headerFlag, showNewlineFlag) != STARCH_EXIT_SUCCESS) {
+#ifdef __cplusplus
+            if (STARCH_listJSONMetadata(nullptr, 
+					nullptr, 
+					records, 
+					type, 
+					archiveVersion, 
+					archiveTimestamp, 
+					note, 
+					headerFlag, 
+					showNewlineFlag) != STARCH_EXIT_SUCCESS) {
+#else
+            if (STARCH_listJSONMetadata(NULL, 
+					NULL, 
+					records, 
+					type, 
+					archiveVersion, 
+					archiveTimestamp, 
+					note, 
+					headerFlag, 
+					showNewlineFlag) != STARCH_EXIT_SUCCESS) {
+#endif
                 fprintf(stderr, "ERROR: Metadata extraction failed\n");
                 resultValue = EXIT_FAILURE;
                 UNSTARCH_printUsage(EXIT_FAILURE);
@@ -367,7 +404,7 @@ main(int argc, char **argv)
                     case kBzip2: {
 #ifdef __cplusplus
                         if (UNSTARCH_extractDataWithBzip2(&inFilePtr,
-                                                          NULL,
+                                                          nullptr,
                                                           whichChromosome,
                                                           reinterpret_cast<const Metadata *>( records ),
                                                           static_cast<const unsigned long long>( metadataOffset ),
@@ -388,7 +425,7 @@ main(int argc, char **argv)
                     case kGzip: {
 #ifdef __cplusplus
                         if (UNSTARCH_extractDataWithGzip(&inFilePtr,
-                                                         NULL,
+                                                         nullptr,
                                                          whichChromosome,
                                                          reinterpret_cast<const Metadata *>( records ),
                                                          static_cast<const unsigned long long>( metadataOffset ),
@@ -418,7 +455,7 @@ main(int argc, char **argv)
                     case kBzip2: {
 #ifdef __cplusplus
                         if (UNSTARCH_extractDataWithBzip2(&inFilePtr,
-                                                          NULL,
+                                                          nullptr,
                                                           whichChromosome,
                                                           reinterpret_cast<const Metadata *>( records ),
                                                           static_cast<const unsigned long long>( sizeof(starchRevision2HeaderBytes) ),
@@ -439,7 +476,7 @@ main(int argc, char **argv)
                     case kGzip: {
 #ifdef __cplusplus
                         if (UNSTARCH_extractDataWithGzip(&inFilePtr,
-                                                         NULL,
+                                                         nullptr,
                                                          whichChromosome,
                                                          reinterpret_cast<const Metadata *>( records ),
                                                          static_cast<const unsigned long long>( sizeof(starchRevision2HeaderBytes) ),
@@ -884,10 +921,17 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
     fprintf(stderr, "\n--- UNSTARCH_parseCommandLineInputs() ---\n");
 #endif
 
+#ifdef __cplusplus
+    char *hdr1 = nullptr;
+    char *ftr1 = nullptr;
+    char *hdr2 = nullptr;
+    char *ftr2 = nullptr;
+#else
     char *hdr1 = NULL;
     char *ftr1 = NULL;
     char *hdr2 = NULL;
     char *ftr2 = NULL;
+#endif
 
 #ifdef DEBUG
     fprintf(stderr, "\targc: %d\n", argc);
@@ -1061,7 +1105,11 @@ UNSTARCH_parseCommandLineInputs(int argc, char **argv, char **chr, char **fn, ch
         return UNSTARCH_FATAL_ERROR;
     }
 
+#ifdef __cplusplus
+    *optn = (ftr1) ? STARCH_strdup(ftr1) : ((ftr2) ? STARCH_strdup(ftr2) : nullptr);
+#else
     *optn = (ftr1) ? STARCH_strdup(ftr1) : ((ftr2) ? STARCH_strdup(ftr2) : NULL);
+#endif
 
     if (*optn) {
         if (strcmp(*optn, "help") == 0) {
@@ -1158,13 +1206,15 @@ UNSTARCH_printUsage(int errorType)
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_printUsage() ---\n");
 #endif
-    char *avStr = NULL;
 #ifdef __cplusplus
+    char *avStr = nullptr;
     avStr = static_cast<char *>( malloc(STARCH_ARCHIVE_VERSION_STRING_LENGTH) );
+    if (avStr != nullptr) {
 #else
+    char *avStr = NULL;
     avStr = malloc(STARCH_ARCHIVE_VERSION_STRING_LENGTH);
-#endif
     if (avStr != NULL) {
+#endif
         int result = sprintf(avStr, "%d.%d.%d", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION);
         if (result != -1) {
             switch (errorType) {
@@ -1192,13 +1242,15 @@ UNSTARCH_printRevision()
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_printRevision() ---\n");
 #endif
-    char *avStr = NULL;
 #ifdef __cplusplus
+    char *avStr = nullptr;
     avStr = static_cast<char *>( malloc(STARCH_ARCHIVE_VERSION_STRING_LENGTH) );
+    if (avStr != nullptr) {
 #else
+    char *avStr = NULL;
     avStr = malloc(STARCH_ARCHIVE_VERSION_STRING_LENGTH);
-#endif
     if (avStr != NULL) {
+#endif
         int result = sprintf(avStr, "%d.%d.%d", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION);
         if (result != -1)
             fprintf(stdout,
@@ -1274,8 +1326,12 @@ UNSTARCH_printMetadataSha1Signature(unsigned char *sha1Buffer)
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_printMetadataSha1Signature() ---\n");
 #endif
-    size_t sha1BufferLength = STARCH2_MD_FOOTER_SHA1_LENGTH;
+#ifdef __cplusplus
+    char *jsonBase64String = nullptr;
+#else
     char *jsonBase64String = NULL;
+#endif
+    size_t sha1BufferLength = STARCH2_MD_FOOTER_SHA1_LENGTH;
 
 #ifdef DEBUG
     fwrite(sha1Buffer, sizeof(unsigned char), STARCH2_MD_FOOTER_SHA1_LENGTH, stderr);
@@ -1300,7 +1356,11 @@ UNSTARCH_printMetadataSha1Signature(unsigned char *sha1Buffer)
     }
     fprintf(stdout, "%s\n", jsonBase64String);
     free(jsonBase64String);
+#ifdef __cplusplus
+    jsonBase64String = nullptr;
+#else
     jsonBase64String = NULL;
+#endif
 }
 
 #ifdef __cplusplus

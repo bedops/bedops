@@ -25,6 +25,10 @@ Released: **TBD**
 
   * Added --unmapped-val <val> option, where <val> replaces the empty string output of --echo-map* operations when there are no mapped elements.  --min/max-element operators will give results as before (the empty string).
 
+* :ref:General
+
+  * Reduced :code:`warning: zero as null pointer constant [-Wzero-as-null-pointer-constant]` compiler warnings via Clang.
+
 =================
 Previous versions
 =================
