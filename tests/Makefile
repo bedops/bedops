@@ -1,6 +1,7 @@
 CWD := $(shell pwd)
 SWITCH = $(CWD)/../bin/switch-BEDOPS-binary-type
 ALL_BINARY_TYPES = typical megarow float128
+SHELL := /bin/bash
 
 all: tests
 
@@ -12,10 +13,10 @@ tests:
 
 bedops: 
 	for btype in ${ALL_BINARY_TYPES}; do \
-		$(SWITCH) --$$btype $(BINDIR) || exit $$?; \
+		(cd $(CWD)/../bin && $(SWITCH) --$$btype . && cd $(CWD)) || exit $$?; \
 		$(MAKE) all -C $(CWD)/bedops BUILDTYPE=$$btype; \
 	done
 
 clean:
-	$(SWITCH) --typical $(BINDIR)
+	(cd $(CWD)/../bin && $(SWITCH) --typical . && cd $(CWD)) || exit $$?
 	@rm -rf /tmp/tmp.*

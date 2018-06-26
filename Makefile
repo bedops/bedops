@@ -20,7 +20,7 @@ export BINARY_TYPE     = ${DEFAULT_BINARY_TYPE}
 DEBUG_TYPE             = ${TYPICAL}
 WRAPPERS               = $(wildcard ${APPDIR}/conversion/src/wrappers/*)
 CWD                   := $(shell pwd)
-export BINDIR          = $(CWD)/bin
+BINDIR                 = bin
 BINDIR_MODULE          = modules
 export DESTBINDIR      = .
 
@@ -65,8 +65,7 @@ typical:
 	$(MAKE) BINARY_TYPE=$(TYPICAL) -f ${SELF}
 
 symlink_post_install_all:
-	cd ${BINDIR} && ./switch-BEDOPS-binary-type --typical .
-	cd ${CWD}
+	cd ${BINDIR} && ./switch-BEDOPS-binary-type --typical . && cd ${CWD}
 
 symlink_typical:
 	$(eval SRCNAMES=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(TYPICAL)' -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`)
