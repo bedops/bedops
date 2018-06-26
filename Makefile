@@ -20,9 +20,9 @@ export BINARY_TYPE     = ${DEFAULT_BINARY_TYPE}
 DEBUG_TYPE             = ${TYPICAL}
 WRAPPERS               = $(wildcard ${APPDIR}/conversion/src/wrappers/*)
 CWD                   := $(shell pwd)
-BINDIR                 = bin
+export BINDIR          = $(CWD)/bin
 BINDIR_MODULE          = modules
-
+export DESTBINDIR      = .
 
 default:
 ifeq ($(KERNEL), Darwin)
@@ -45,7 +45,7 @@ all:
 	$(MAKE) megarow -f ${SELF}
 	$(MAKE) float128 -f ${SELF}
 	$(MAKE) install_all -f ${SELF}
-	$(MAKE) symlink_typical -f ${SELF}
+	$(MAKE) symlink_post_install_all -f ${SELF}
 
 module_all:
 	$(MAKE) support -f ${SELF}
@@ -63,6 +63,10 @@ megarow:
 
 typical:
 	$(MAKE) BINARY_TYPE=$(TYPICAL) -f ${SELF}
+
+symlink_post_install_all:
+	cd ${BINDIR} && ./switch-BEDOPS-binary-type --typical .
+	cd ${CWD}
 
 symlink_typical:
 	$(eval SRCNAMES=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(TYPICAL)' -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`)

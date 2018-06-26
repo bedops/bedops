@@ -83,6 +83,7 @@ then
     TYPE=float128
 fi
 
+echo $BINDIR
 for SRCNAME in `find ${BINDIR} -maxdepth 1 -mindepth 1 -type f -name "*${TYPE}" -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`
 do
     DESTNAME=`echo ${SRCNAME} | perl -Tpe 's/-'${TYPE}'//'`
