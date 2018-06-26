@@ -12,6 +12,7 @@ operations: prep merge
 
 prep:
 	@[ -f $(BIN) ] || echo "Missing [$(APP)]"
+	$(BIN) --version
 
 merge:
 	@echo "[$(APP) --$@]"
