@@ -242,7 +242,7 @@ install_starch_scripts_all: prep_c
 install_conversion_scripts: prep_c
 	cp $(WRAPPERS) ${BINDIR}
 
-.PHONY: $(WRAPPERS)
+.PHONY: $(WRAPPERS) tests
 
 install_conversion_scripts_all: $(WRAPPERS)
 
@@ -396,6 +396,9 @@ else
 	find . -exec sed -i "s/"$$OLD_CPD"/"$$NEW_CPD"/g" {} \;
 endif
 
+#######################
+# packaging
+
 docker: packaging/docker/Dockerfile
 	docker build -t bedops -f packaging/docker/Dockerfile  .
 
@@ -404,3 +407,9 @@ rpm: packaging/rpm/Dockerfile
 
 deb: packaging/deb/Dockerfile
 	docker build -t bedops:deb -f packaging/deb/Dockerfile .
+
+#######################
+# tests
+
+tests:
+	$(MAKE) all -f tests/Makefile
