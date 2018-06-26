@@ -180,8 +180,8 @@ namespace Visitors {
     // PrintAllScorePrecision()
     //==========================
     struct PrintAllScorePrecision {
-      PrintAllScorePrecision(int precision, bool inScientific)
-        : precision_(precision), scientific_(inScientific)
+      PrintAllScorePrecision(int precision, bool inScientific, const std::string& onEmpty = "")
+        : precision_(precision), scientific_(inScientific), oe_(onEmpty)
         { /* */ }
 
       template <typename T>
@@ -205,7 +205,8 @@ namespace Visitors {
       }
 
       void operator()(const Signal::NaN& s) const {
-        PrintTypes::Print("");
+        if ( !oe_.empty() )
+          PrintTypes::Print(oe_.c_str());
       }
 
     protected:
@@ -223,6 +224,7 @@ namespace Visitors {
     protected:
       int precision_;
       bool scientific_;
+      std::string oe_;
     };
 
     //================

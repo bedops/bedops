@@ -608,11 +608,11 @@ namespace BedMap {
         rtn = new typename VTypes::Max(pt);
       else if ( nm == visName<typename VTypes::MaxElementStable>() ) {
         typedef typename VTypes::MaxElementStable::ProcessType MPT;
-        rtn = new typename VTypes::MaxElementStable(MPT(precision, useScientific));
+        rtn = new typename VTypes::MaxElementStable(MPT(precision, useScientific, onEmptyMap));
       }
       else if ( nm == visName<typename VTypes::MaxElementRand>() ) {
         typedef typename VTypes::MaxElementRand::ProcessType MPT;
-        rtn = new typename VTypes::MaxElementRand(MPT(precision, useScientific));
+        rtn = new typename VTypes::MaxElementRand(MPT(precision, useScientific, onEmptyMap));
       }
       else if ( nm == visName<typename VTypes::Median>() )
         rtn = new typename VTypes::Median(pt);
@@ -631,11 +631,11 @@ namespace BedMap {
         rtn = new typename VTypes::Min(pt);
       else if ( nm == visName<typename VTypes::MinElementRand>() ) {
         typedef typename VTypes::MinElementRand::ProcessType MPT;
-        rtn = new typename VTypes::MinElementRand(MPT(precision, useScientific));
+        rtn = new typename VTypes::MinElementRand(MPT(precision, useScientific, onEmptyMap));
       }
       else if ( nm == visName<typename VTypes::MinElementStable>() ) {
         typedef typename VTypes::MinElementStable::ProcessType MPT;
-        rtn = new typename VTypes::MinElementStable(MPT(precision, useScientific));
+        rtn = new typename VTypes::MinElementStable(MPT(precision, useScientific, onEmptyMap));
       }
       else if ( nm == visName<typename VTypes::StdDev>() )
         rtn = new typename VTypes::StdDev(pt);

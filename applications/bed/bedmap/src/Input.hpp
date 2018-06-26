@@ -487,7 +487,8 @@ namespace BedMap {
     usage << "      --sci                 Use scientific notation for score outputs.                              \n";
     usage << "      --skip-unmapped       Print no output for a row with no mapped elements.                      \n";
     usage << "      --sweep-all           Ensure <map-file> is read completely (helps to prevent broken pipes).   \n";
-    usage << "      --unmapped-val <val>  Use <val> in place of the empty string on unmapped --echo-map* ops.     \n";
+    usage << "      --unmapped-val <val>  Print <val> on unmapped --echo-map* and --min/max-element* operations.  \n";
+    usage << "                              The default is to print nothing.                                      \n";
     usage << "      --version             Print program information.                                              \n";
     usage << "                                                                                                    \n";
     usage << "                                                                                                    \n";
