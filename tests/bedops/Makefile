@@ -3,12 +3,13 @@ CWD := $(abspath $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 BIN = $(CWD)/../../bin/bedops
 TMP := $(shell mktemp -d)
 DATA = $(CWD)/data
+SHELL := /bin/bash
 
 all: 
 	@echo "Testing binary [$(APP)] and build type [$(BUILDTYPE)]"
-	@$(MAKE) operations
+	@$(MAKE) tests
 
-operations: prep merge complement intersection difference symdiff element-of not-element-of union
+tests: prep merge complement intersection difference symdiff element-of not-element-of union partition chrom chop stdin named-pipe
 
 prep:
 	@[ -f $(BIN) ] || echo "Missing binary [$(APP)] for build type [$(BUILDTYPE)]"
@@ -43,17 +44,17 @@ merge:
 	@printf " ...passed!\n"
 #	Test 006
 	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 006]"
-	@$(BIN) -m $(DATA)/006.merge.006A.test $(DATA)/006.merge.006B.test $(DATA)/006.merge.006C.test > $(TMP)/006.merge.006.observed
+	@$(BIN) -m $(DATA)/006.merge.006a.test $(DATA)/006.merge.006b.test $(DATA)/006.merge.006c.test > $(TMP)/006.merge.006.observed
 	@diff $(TMP)/006.merge.006.observed $(DATA)/006.merge.006.expected || (printf " ...failed!\n" && exit 1)
 	@printf " ...passed!\n"
 #	Test 007
 	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 007]"
-	@$(BIN) -m $(DATA)/007.merge.007A.test $(DATA)/007.merge.007B.test > $(TMP)/007.merge.007.observed
+	@$(BIN) -m $(DATA)/007.merge.007a.test $(DATA)/007.merge.007b.test > $(TMP)/007.merge.007.observed
 	@diff $(TMP)/007.merge.007.observed $(DATA)/007.merge.007.expected || (printf " ...failed!\n" && exit 1)
 	@printf " ...passed!\n"
 #	Test 008
 	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 008]"
-	@$(BIN) -m $(DATA)/004.complement.004A.test $(DATA)/004.complement.004B.test $(DATA)/004.complement.004C.test > $(TMP)/008.merge.008.observed
+	@$(BIN) -m $(DATA)/004.complement.004a.test $(DATA)/004.complement.004b.test $(DATA)/004.complement.004c.test > $(TMP)/008.merge.008.observed
 	@diff $(TMP)/008.merge.008.observed $(DATA)/008.merge.008.expected || (printf " ...failed!\n" && exit 1)
 	@printf " ...passed!\n"
 #	Test 009
@@ -80,7 +81,7 @@ complement:
 	@printf " ...passed!\n"
 #	Test 004
 	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 004]"
-	@$(BIN) -c $(DATA)/004.complement.004A.test $(DATA)/004.complement.004B.test $(DATA)/004.complement.004C.test > $(TMP)/004.complement.004.observed
+	@$(BIN) -c $(DATA)/004.complement.004a.test $(DATA)/004.complement.004b.test $(DATA)/004.complement.004c.test > $(TMP)/004.complement.004.observed
 	@diff $(TMP)/004.complement.004.observed $(DATA)/004.complement.004.expected || (printf " ...failed!\n" && exit 1)
 	@printf " ...passed!\n"
 #	Test 005
@@ -98,16 +99,26 @@ complement:
 	@$(BIN) -c -L $(DATA)/002.merge.002.expected > $(TMP)/007.complement.007.observed
 	@diff $(TMP)/007.complement.007.observed $(DATA)/007.complement.007.expected || (printf " ...failed!\n" && exit 1)
 	@printf " ...passed!\n"
+#	Test 008
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 008]"
+	@$(BIN) -c -L $(DATA)/005.merge.005.expected > $(TMP)/008.complement.008.observed
+	@diff $(TMP)/008.complement.008.observed $(DATA)/008.complement.008.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+#	Test 009
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 009]"
+	@$(BIN) -c -L $(DATA)/004.complement.004a.test $(DATA)/004.complement.004b.test $(DATA)/004.complement.004c.test > $(TMP)/009.complement.009.observed
+	@diff $(TMP)/009.complement.009.observed $(DATA)/009.complement.009.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
 
 intersection:
 #	Test 001
 	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 001]"
-	@$(BIN) -i $(DATA)/001.intersection.001A.test $(DATA)/001.intersection.001B.test > $(TMP)/001.intersection.001.observed
+	@$(BIN) -i $(DATA)/001.intersection.001a.test $(DATA)/001.intersection.001b.test > $(TMP)/001.intersection.001.observed
 	@diff $(TMP)/001.intersection.001.observed $(DATA)/001.intersection.001.expected || (printf " ...failed!\n" && exit 1)
 	@printf " ...passed!\n"
 #	Test 002
 	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 002]"
-	@$(BIN) -i $(DATA)/001.intersection.001A.test $(DATA)/001.intersection.001B.test $(DATA)/002.intersection.002.test > $(TMP)/002.intersection.002.observed
+	@$(BIN) -i $(DATA)/001.intersection.001a.test $(DATA)/001.intersection.001b.test $(DATA)/002.intersection.002.test > $(TMP)/002.intersection.002.observed
 	@diff $(TMP)/002.intersection.002.observed $(DATA)/002.intersection.002.expected || (printf " ...failed!\n" && exit 1)
 	@printf " ...passed!\n"
 #	Test 003
@@ -188,7 +199,7 @@ symdiff:
 element-of:
 #	Test 001
 	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 001]"
-	@$(BIN) -e $(DATA)/007.merge.007B.test $(DATA)/007.merge.007B.test > $(TMP)/001.element-of.001.observed
+	@$(BIN) -e $(DATA)/007.merge.007b.test $(DATA)/007.merge.007b.test > $(TMP)/001.element-of.001.observed
 	@diff $(TMP)/001.element-of.001.observed $(DATA)/001.element-of.001.expected || (printf " ...failed!\n" && exit 1)
 	@printf " ...passed!\n"
 #	Test 002
@@ -210,7 +221,7 @@ element-of:
 not-element-of:
 #	Test 001
 	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 001]"
-	@$(BIN) -n $(DATA)/007.merge.007B.test $(DATA)/007.merge.007B.test > $(TMP)/001.not-element-of.001.observed
+	@$(BIN) -n $(DATA)/007.merge.007b.test $(DATA)/007.merge.007b.test > $(TMP)/001.not-element-of.001.observed
 	@diff $(TMP)/001.not-element-of.001.observed $(DATA)/001.not-element-of.001.expected || (printf " ...failed!\n" && exit 1)
 	@printf " ...passed!\n"
 #	Test 002
@@ -234,4 +245,129 @@ union:
 	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 002]"
 	@$(BIN) -u --range -100 $(DATA)/001.union.001.expected > $(TMP)/002.union.002.observed
 	@diff $(TMP)/002.union.002.observed $(DATA)/002.union.002.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+#	Test 003
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 003]"
+	@$(BIN) -u --range 500 $(DATA)/003.union.003.test > $(TMP)/003.union.003.observed
+	@diff $(TMP)/003.union.003.observed $(DATA)/003.union.003.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+#	Test 004
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 004]"
+	@$(BIN) -u --range -5:-8 $(DATA)/004.union.004.test > $(TMP)/004.union.004.observed
+	@diff $(TMP)/004.union.004.observed $(DATA)/004.union.004.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+#	Test 005
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 005]"
+	@$(BIN) -u --range 0:-79 $(DATA)/004.union.004.test > $(TMP)/005.union.005.observed
+	@diff $(TMP)/005.union.005.observed $(DATA)/005.union.005.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+#	Test 006
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 006]"
+	@$(BIN) -u --range 0:-80 $(DATA)/004.union.004.test > $(TMP)/006.union.006.observed
+	@diff $(TMP)/006.union.006.observed $(DATA)/006.union.006.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+#	Test 007
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 007]"
+	@$(BIN) -u --range -5:5 $(DATA)/004.union.004.test > $(TMP)/007.union.007.observed
+	@diff $(TMP)/007.union.007.observed $(DATA)/007.union.007.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+#	Test 008
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 008]"
+	@$(BIN) -u --range 5 $(DATA)/004.union.004.test > $(TMP)/008.union.008.observed
+	@diff $(TMP)/008.union.008.observed $(DATA)/008.union.008.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+#	Test 009
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 009]"
+	@$(BIN) -u --range -5:-8 $(DATA)/009.union.009.test > $(TMP)/009.union.009.observed
+	@diff $(TMP)/009.union.009.observed $(DATA)/009.union.009.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+
+partition:
+#	Test 001
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 001]"
+	@$(BIN) -p $(DATA)/001.partition.001a.test $(DATA)/001.partition.001b.test $(DATA)/001.partition.001c.test >  $(TMP)/001.partition.001.observed
+	@diff $(TMP)/001.partition.001.observed $(DATA)/001.partition.001.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+#	Test 002
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 002]"
+	@$(BIN) -p $(DATA)/002.partition.002a.test $(DATA)/002.partition.002b.test $(DATA)/002.partition.002c.test $(DATA)/002.partition.002d.test $(DATA)/002.partition.002e.test > $(TMP)/002.partition.002.observed
+	@diff $(TMP)/002.partition.002.observed $(DATA)/002.partition.002.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+#	Test 003
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 003]"
+	@$(BIN) -p $(DATA)/003.partition.003.test > $(TMP)/003.partition.003.observed
+	@diff $(TMP)/003.partition.003.observed $(DATA)/003.partition.003.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+#	Test 004
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 004]"
+	@$(BIN) -p $(DATA)/004.partition.004.test > $(TMP)/004.partition.004.observed
+	@diff $(TMP)/004.partition.004.observed $(DATA)/004.partition.004.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+#	Test 005
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 005]"
+	@$(BIN) -p $(DATA)/004.partition.004.test > $(TMP)/004.partition.004.observed
+	@diff $(TMP)/004.partition.004.observed $(DATA)/004.partition.004.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+
+chrom:
+#	Test 001
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 001]"
+	@$(BIN) --chrom chr6 -u $(DATA)/008.complement.008.expected > $(TMP)/001.chrom.001.observed
+	@diff $(TMP)/001.chrom.001.observed $(DATA)/001.chrom.001.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+#	Test 002
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 002]"
+	@$(BIN) --chrom chr4 -m $(DATA)/008.complement.008.expected > $(TMP)/002.chrom.002.observed
+	@diff $(TMP)/002.chrom.002.observed $(DATA)/002.chrom.002.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+#	Test 003
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 003]"
+	@$(BIN) --chrom chr7 -c $(DATA)/008.complement.008.expected > $(TMP)/003.chrom.003.observed
+	@diff $(TMP)/003.chrom.003.observed $(DATA)/003.chrom.003.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+#	Test 004
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 004]"
+	@$(BIN) --ec --chrom chr7 -c -L $(DATA)/008.complement.008.expected > $(TMP)/004.chrom.004.observed
+	@diff $(TMP)/004.chrom.004.observed $(DATA)/004.chrom.004.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+
+chop:
+#	Test 001
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 001]"
+	@$(BIN) --chop 100 $(DATA)/001.chop.001a.test $(DATA)/001.chop.001b.test > $(TMP)/001.chop.001.observed
+	@diff $(TMP)/001.chop.001.observed $(DATA)/001.chop.001.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+#	Test 002
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 002]"
+	@$(BIN) --chop 100 -x $(DATA)/001.chop.001a.test $(DATA)/001.chop.001b.test > $(TMP)/002.chop.002.observed
+	@diff $(TMP)/002.chop.002.observed $(DATA)/002.chop.002.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+#	Test 003
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 003]"
+	@$(BIN) --chop 100 --stagger 53 $(DATA)/001.chop.001a.test $(DATA)/001.chop.001b.test > $(TMP)/003.chop.003.observed
+	@diff $(TMP)/003.chop.003.observed $(DATA)/003.chop.003.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+#	Test 004
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 004]"
+	@$(BIN) --chop 100 --stagger 53 -x $(DATA)/001.chop.001a.test $(DATA)/001.chop.001b.test > $(TMP)/004.chop.004.observed
+	@diff $(TMP)/004.chop.004.observed $(DATA)/004.chop.004.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+#	Test 005
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 005]"
+	@$(BIN) --chop $(DATA)/005.chop.005.test > $(TMP)/005.chop.005.observed
+	@diff $(TMP)/005.chop.005.observed $(DATA)/005.chop.005.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+
+stdin:
+#	Test 001
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 001]"
+	@$(BIN) -u $(DATA)/001.chop.001a.test $(DATA)/001.chop.001b.test | $(BIN) --chop 100 --stagger 53 -x - > $(TMP)/001.stdin.001.observed
+	@diff $(TMP)/001.stdin.001.observed $(DATA)/001.stdin.001.expected || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+
+named-pipe:
+#	Test 001
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 001]"
+	@$(BIN) --chop 100 --stagger 53 <($(BIN) -u $(DATA)/001.chop.001a.test $(DATA)/001.chop.001b.test) > $(TMP)/001.named-pipe.001.observed
+	@diff $(TMP)/001.named-pipe.001.observed $(DATA)/001.named-pipe.001.expected || (printf " ...failed!\n" && exit 1)
 	@printf " ...passed!\n"
