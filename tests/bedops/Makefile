@@ -9,9 +9,11 @@ all:
 	@echo "Testing binary [$(APP)] and build type [$(BUILDTYPE)]"
 	@$(MAKE) tests
 
-tests: prep merge complement intersection difference symdiff element-of not-element-of union partition chrom chop stdin named-pipe
+tests: bedops_prep merge complement intersection difference symdiff element-of not-element-of union partition chrom chop stdin named-pipe ec
+	@echo "Removing [$(TMP)]"
+	@rm -rf $(TMP)
 
-prep:
+bedops_prep:
 	@[ -f $(BIN) ] || echo "Missing binary [$(APP)] for build type [$(BUILDTYPE)]"
 	@echo "Writing to [$(TMP)]"
 	$(BIN) --version
@@ -371,3 +373,14 @@ named-pipe:
 	@$(BIN) --chop 100 --stagger 53 <($(BIN) -u $(DATA)/001.chop.001a.test $(DATA)/001.chop.001b.test) > $(TMP)/001.named-pipe.001.observed
 	@diff $(TMP)/001.named-pipe.001.observed $(DATA)/001.named-pipe.001.expected || (printf " ...failed!\n" && exit 1)
 	@printf " ...passed!\n"
+
+ec:
+#	Test 001
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 001]"
+	@if $(BIN) --ec --chop 20 --chrom chr1 $(DATA)/001.ec.001a.test 2> /dev/null; then printf " ...passed! (not expected to pass)\n"; exit 1; else printf " ...failed! (but expected to fail)\n"; exit 0; fi
+#	Test 002
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 002]"
+	@if $(BIN) --ec --chop 20 --chrom chr2 $(DATA)/001.ec.001a.test 2> /dev/null; then printf " ...passed! (not expected to pass)\n"; exit 1; else printf " ...failed! (but expected to fail)\n"; exit 0; fi
+#	Test 003
+	@printf "[$(APP)-$(BUILDTYPE) --$@] - [Test 003]"
+	@if $(BIN) --ec --chop 20 --chrom chr1 <(sort-bed $(DATA)/001.ec.001a.test) > /dev/null 2>&1; then printf " ...passed!\n"; exit 0; else printf " ...failed!\n"; exit 1; fi

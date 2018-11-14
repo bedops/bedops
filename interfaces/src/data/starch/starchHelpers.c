@@ -1437,7 +1437,7 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
                 if (stop > start)
                     coordDiff = stop - start;
                 else {
-                    fprintf(stderr, "ERROR: BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
+                    fprintf(stderr, "ERROR: (A) BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
                     return STARCH_FATAL_ERROR;
                 }
                 if (coordDiff != lcDiff) {
@@ -2429,7 +2429,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 
                     /* reset flag, lastPosition and lcDiff, increment record index */
 #ifdef DEBUG
-                    fprintf(stderr, "\t(final-between-chromosome) resetting per-chromosome stream transformation parameters...\n");
+                    fprintf(stderr, "\t(final-between-chromosome A) resetting per-chromosome stream transformation parameters...\n");
 #endif
                     withinChr = kStarchFalse;
                     lastPosition = 0;
@@ -2488,7 +2488,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                     if (stop > start)
                         coordDiff = stop - start;
                     else {
-                        fprintf(stderr, "ERROR: BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
+                        fprintf(stderr, "ERROR: (B) BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
                         return STARCH_FATAL_ERROR;
                     }
                     if (coordDiff != lcDiff) {
@@ -2739,7 +2739,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
             if (stop > start)
                 coordDiff = stop - start;
             else {
-                fprintf(stderr, "ERROR: BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
+                fprintf(stderr, "ERROR: (C) BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
                 return STARCH_FATAL_ERROR;
             }
             if (coordDiff != lcDiff) {
@@ -2815,7 +2815,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
             }
         }
         else {
-            fprintf(stderr, "ERROR: BED data is corrupt at line %lu\n", lineIdx);
+            fprintf(stderr, "ERROR: (D) BED data is corrupt at line %lu\n", lineIdx);
             return STARCH_FATAL_ERROR;
         }
     }
@@ -3312,6 +3312,9 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
             maxStringLength = (maxStringLength >= cIdx) ? maxStringLength : cIdx;
 
             if (STARCH_createTransformTokensForHeaderlessInput(untransformedBuffer, '\t', &chromosome, &start, &stop, &remainder) == 0) {
+#ifdef DEBUG                        
+                fprintf(stderr, "\t(tokens) chromosome: [%s] start [%" PRId64 "] stop [%" PRId64 "] remainder [%s]\n", chromosome, start, stop, remainder);
+#endif
                 if (pRemainder) {
                     previousAndCurrentChromosomesAreIdentical = ((prevChromosome) && (strcmp(chromosome, prevChromosome) == 0)) ? kStarchTrue : kStarchFalse;
                     /* if previous start and stop coordinates are the same, compare the remainder here */
@@ -3696,7 +3699,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 
                     /* reset flag, lastPosition and lcDiff, increment record index */
 #ifdef DEBUG
-                    fprintf(stderr, "\t(final-between-chromosome) resetting per-chromosome stream transformation parameters...\n");
+                    fprintf(stderr, "\t(final-between-chromosome B) resetting per-chromosome stream transformation parameters...\n");
 #endif
                     withinChr = kStarchFalse;
                     lastPosition = 0;
@@ -3730,7 +3733,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                 if (stop > start)
                     coordDiff = stop - start;
                 else {
-                    fprintf(stderr, "ERROR: BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
+                    fprintf(stderr, "ERROR: (E) BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
                     return STARCH_FATAL_ERROR;
                 }
                 if (coordDiff != lcDiff) {
@@ -3994,7 +3997,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
             if (stop > start)
                 coordDiff = stop - start;
             else {
-                fprintf(stderr, "ERROR: BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
+                fprintf(stderr, "ERROR: (F) BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
                 return STARCH_FATAL_ERROR;
             }
             if (coordDiff != lcDiff) {
@@ -4101,7 +4104,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
             }
         }
         else {
-            fprintf(stderr, "ERROR: BED data is corrupt at line %lu\n", lineIdx);
+            fprintf(stderr, "ERROR: (G) BED data is corrupt at line %lu\n", lineIdx);
             return STARCH_FATAL_ERROR;
         }
     }
