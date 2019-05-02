@@ -15,7 +15,7 @@ Current version
 v2.4.36
 -------
 
-Released: **TBD**
+Released: **May 2, 2019**
 
 * :ref:`bedmap <bedmap>`
 
@@ -23,11 +23,13 @@ Released: **TBD**
 
   * To avoid mapping problems, map elements should not contain spaces in the ID or subsequent non-interval fields. Use of the :code:`--ec` can help identify problems in map input, at the cost of a longer runtime. The documentation is clarified to warn users about avoiding spaces in map input. Thanks to Wouter Meuleman for the report and providing test input.
 
-  * Added --unmapped-val <val> option, where <val> replaces the empty string output of --echo-map* operations when there are no mapped elements.  --min/max-element operators will give results as before (the empty string).
+  * Added :code:`--unmapped-val <val>` option, where :code:`<val>` replaces the empty string output of :code:`--echo-map*` operations when there are no mapped elements. The :code:`--min/max-element` operators will give results as before (the empty string).
 
 * :ref:General
 
   * Reduced :code:`warning: zero as null pointer constant [-Wzero-as-null-pointer-constant]` compiler warnings via Clang.
+
+  * Begun work on a comprehensive test suite for BEDOPS applications. Tests are available via source distribution in :code:`${root}/tests` and can be run by entering :code:`make` in this directory.
 
 =================
 Previous versions
