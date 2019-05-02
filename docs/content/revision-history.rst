@@ -12,6 +12,30 @@ Current version
 ===============
 
 -------
+v2.4.36
+-------
+
+Released: **May 2, 2019**
+
+* :ref:`bedmap <bedmap>`
+
+  * Resolved an issue preventing use of a :code:`bash` process substitution or Unix named pipe in the reference position: *i.e.*, :code:`bedmap --options <(processToGenerateReferenceElements) map.bed` and similar would issue incorrect output. Thanks to Wouter Meuleman and others for reports and test input.
+
+  * To avoid mapping problems, map elements should not contain spaces in the ID or subsequent non-interval fields. Use of the :code:`--ec` can help identify problems in map input, at the cost of a longer runtime. The documentation is clarified to warn users about avoiding spaces in map input. Thanks to Wouter Meuleman for the report and providing test input.
+
+  * Added :code:`--unmapped-val <val>` option, where :code:`<val>` replaces the empty string output of :code:`--echo-map*` operations when there are no mapped elements. The :code:`--min/max-element` operators will give results as before (the empty string).
+
+* :ref:General
+
+  * Reduced :code:`warning: zero as null pointer constant [-Wzero-as-null-pointer-constant]` compiler warnings via Clang.
+
+  * Begun work on a comprehensive test suite for BEDOPS applications. Tests are available via source distribution in :code:`${root}/tests` and can be run by entering :code:`make` in this directory.
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.35
 -------
 
@@ -20,10 +44,6 @@ Released: **May 2, 2018**
 * :ref:`starch <starch>`
 
   * When compressing records, if the last interval in the former chromosome is identical to the first interval of the next chromosome, then a test on the sort order of the remainder string of that interval is applied (incorrectly). This is patched to test that chromosome names are identical before applying sort order rules. Thanks to Andrew Nishida for the report and for providing test input.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.34

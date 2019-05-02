@@ -57,11 +57,13 @@ char *
 STARCH_strdup(const char *str)
 {
   /* Cygwin does not include support for strdup() so we include our own implementation here */
-    char *dup = NULL;
-    if (str) {
 #ifdef __cplusplus
+    char *dup = nullptr;
+    if (str) {
         dup = static_cast<char *>( malloc(strlen(str) + 1) ); /* sizeof(char) = 1, of course */
 #else
+    char *dup = NULL;
+    if (str) {
         dup = malloc(strlen(str) + 1); /* sizeof(char) = 1, of course */
 #endif
         if (!dup) {
@@ -79,8 +81,13 @@ STARCH_compressFileWithGzip(const char *inFn, char **outFn, off_t *outFnSize)
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_compressFileWithGzip() ---\n");
 #endif
+#ifdef __cplusplus
+    FILE *inFnPtr = nullptr;
+    FILE *outFnPtr = nullptr;
+#else
     FILE *inFnPtr = NULL;
-    FILE *outFnPtr = NULL;    
+    FILE *outFnPtr = NULL;
+#endif
     struct stat outSt;
 
     /* create output file handle */
@@ -135,9 +142,15 @@ STARCH_compressFileWithBzip2(const char *inFn, char **outFn, off_t *outFnSize)
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_compressFileWithBzip2() ---\n");
 #endif
+#ifdef __cplusplus
+    FILE *inFnPtr = nullptr;
+    FILE *outFnPtr = nullptr;
+    BZFILE *bzFp = nullptr;
+#else
     FILE *inFnPtr = NULL;
     FILE *outFnPtr = NULL;
     BZFILE *bzFp = NULL;
+#endif
     int nBzBuf = STARCH_BZ_BUFFER_MAX_LENGTH;
     char bzBuf[STARCH_BZ_BUFFER_MAX_LENGTH];
     int bzError;
@@ -170,7 +183,11 @@ STARCH_compressFileWithBzip2(const char *inFn, char **outFn, off_t *outFnSize)
     }
     bzFp = BZ2_bzWriteOpen( &bzError, outFnPtr, STARCH_BZ_COMPRESSION_LEVEL, 0, 0 );
     if (bzError != BZ_OK) {
+#ifdef __cplusplus
+        BZ2_bzWriteClose ( &bzError, bzFp, 0, nullptr, nullptr );
+#else
         BZ2_bzWriteClose ( &bzError, bzFp, 0, NULL, NULL );
+#endif
         fprintf(stderr, "ERROR: Could not open bzip2 file handle\n");
         return STARCH_FATAL_ERROR;
     }
@@ -185,7 +202,11 @@ STARCH_compressFileWithBzip2(const char *inFn, char **outFn, off_t *outFnSize)
         if (idx == STARCH_BZ_BUFFER_MAX_LENGTH) {
             BZ2_bzWrite( &bzError, bzFp, bzBuf, nBzBuf );
             if (bzError == BZ_IO_ERROR) {
+#ifdef __cplusplus
+                BZ2_bzWriteClose ( &bzError, bzFp, 0, nullptr, nullptr );
+#else
                 BZ2_bzWriteClose ( &bzError, bzFp, 0, NULL, NULL );
+#endif
                 fprintf(stderr, "ERROR: Could not write to bzip2 file handle\n");
                 return STARCH_FATAL_ERROR;
             }
@@ -200,13 +221,21 @@ STARCH_compressFileWithBzip2(const char *inFn, char **outFn, off_t *outFnSize)
     BZ2_bzWrite(&bzError, bzFp, bzBuf, (int) idx);
 #endif
     if (bzError == BZ_IO_ERROR) {   
+#ifdef __cplusplus
+        BZ2_bzWriteClose ( &bzError, bzFp, 0, nullptr, nullptr );
+#else
         BZ2_bzWriteClose ( &bzError, bzFp, 0, NULL, NULL );
+#endif
         fprintf(stderr, "ERROR: Could not write to bzip2 file handle\n");
         return STARCH_FATAL_ERROR;
     }
 
     /* close bzip2 stream */
+#ifdef __cplusplus
+    BZ2_bzWriteClose( &bzError, bzFp, 0, nullptr, nullptr );
+#else
     BZ2_bzWriteClose( &bzError, bzFp, 0, NULL, NULL );
+#endif
     if (bzError == BZ_IO_ERROR) {
         fprintf(stderr, "ERROR: Could not close bzip2 file handle\n");
         return STARCH_FATAL_ERROR;
@@ -366,7 +395,7 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
                     }
                     /* convert element string to start coordinate */
 #ifdef __cplusplus
-                    *start = static_cast<int64_t>( strtoull(reinterpret_cast<const char *>( buffer ), NULL, STARCH_RADIX) );
+                    *start = static_cast<int64_t>( strtoull(reinterpret_cast<const char *>( buffer ), nullptr, STARCH_RADIX) );
 #else
                     *start = (int64_t) strtoull((const char *)buffer, NULL, STARCH_RADIX);
 #endif
@@ -393,7 +422,7 @@ STARCH_createTransformTokens(const char *s, const char delim, char **chr, int64_
                     }
                     /* convert element string to stop coordinate */
 #ifdef __cplusplus
-                    *stop = static_cast<int64_t>( strtoull(reinterpret_cast<const char *>( buffer ), NULL, STARCH_RADIX) );
+                    *stop = static_cast<int64_t>( strtoull(reinterpret_cast<const char *>( buffer ), nullptr, STARCH_RADIX) );
 #else
                     *stop = (int64_t) strtoull((const char *)buffer, NULL, STARCH_RADIX);
 #endif
@@ -471,10 +500,15 @@ STARCH_createTransformTokensForHeaderlessInput(const char *s, const char delim, 
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_createTransformTokensForHeaderlessInput() ---\n");
 #endif
-    unsigned int charCnt, sCnt, elemCnt;
-    char buffer[STARCH_BUFFER_MAX_LENGTH];
+#ifdef __cplusplus
+    char *chrCopy = nullptr;
+    char *remainderCopy = nullptr;
+#else
     char *chrCopy = NULL;
     char *remainderCopy = NULL;
+#endif
+    unsigned int charCnt, sCnt, elemCnt;
+    char buffer[STARCH_BUFFER_MAX_LENGTH];
     unsigned int idIdx = 0U;
     unsigned int restIdx = 0U;
 
@@ -540,7 +574,7 @@ STARCH_createTransformTokensForHeaderlessInput(const char *s, const char delim, 
                     }
                     /* convert element string to start coordinate */
 #ifdef __cplusplus
-                    *start = static_cast<int64_t>( strtoll(reinterpret_cast<const char *>( buffer ), NULL, STARCH_RADIX) );
+                    *start = static_cast<int64_t>( strtoll(reinterpret_cast<const char *>( buffer ), nullptr, STARCH_RADIX) );
 #else
                     *start = (int64_t) strtoll((const char *)buffer, NULL, STARCH_RADIX);
 #endif
@@ -567,7 +601,7 @@ STARCH_createTransformTokensForHeaderlessInput(const char *s, const char delim, 
                     }
                     /* convert element string to stop coordinate */
 #ifdef __cplusplus
-                    *stop = static_cast<int64_t>( strtoll(reinterpret_cast<const char *>( buffer ), NULL, STARCH_RADIX) );
+                    *stop = static_cast<int64_t>( strtoll(reinterpret_cast<const char *>( buffer ), nullptr, STARCH_RADIX) );
 #else
                     *stop = (int64_t) strtoll((const char *)buffer, NULL, STARCH_RADIX);
 #endif
@@ -664,22 +698,33 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_transformInput() ---\n");
 #endif
-    int c;
-    int cIdx = 0;
-    int recIdx = 0;
-    char buffer[STARCH_BUFFER_MAX_LENGTH];
+#ifdef __cplusplus
+    char *outFn = nullptr;
+    FILE *outFnPtr = nullptr;
+    FILE *streamPtr = const_cast<FILE *>( fp );
+    char *outCompressedFn = nullptr;
+    char *remainder = nullptr;
+    char *prevChromosome = nullptr;
+    char *chromosome = nullptr;
+    Metadata *firstRecord = nullptr;
+    char *legacyMdBuf = nullptr;
+    char *dynamicMdBuf = nullptr;
+#else
     char *outFn = NULL;
     FILE *outFnPtr = NULL;
-#ifdef __cplusplus
-    FILE *streamPtr = const_cast<FILE *>( fp );
-#else
     FILE *streamPtr = (FILE *) fp;
-#endif
     char *outCompressedFn = NULL;
     char *remainder = NULL;
     char *prevChromosome = NULL;
     char *chromosome = NULL;
     Metadata *firstRecord = NULL;
+    char *legacyMdBuf = NULL;
+    char *dynamicMdBuf = NULL;
+#endif
+    int c;
+    int cIdx = 0;
+    int recIdx = 0;
+    char buffer[STARCH_BUFFER_MAX_LENGTH];
     int64_t start = 0;
     int64_t stop = 0;
     int64_t previousStop = 0;
@@ -690,8 +735,6 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
     Boolean withinChr = kStarchFalse;
     unsigned long lineIdx = 0UL;
     off_t outCompressedFnSize = 0;
-    char *legacyMdBuf = NULL;
-    char *dynamicMdBuf = NULL;
     BedLineType lineType = kBedLineTypeUndefined;
     char nonCoordLineBuf[STARCH_BUFFER_MAX_LENGTH] = {0};
     Boolean nonCoordLineBufNeedsPrinting = kStarchFalse;
@@ -720,18 +763,24 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                 */
                 if ( (lineType == kBedLineCoordinates) && ((!prevChromosome) || (strcmp(chromosome, prevChromosome) != 0)) ) {
                     /* close old output file pointer */
+#ifdef __cplusplus
+                    if (outFnPtr != nullptr) {
+                        fclose(outFnPtr);
+                        outFnPtr = nullptr;
+
+                        if (type == kBzip2) {
+                            /* bzip-compress the previous file */
+                            if (STARCH_compressFileWithBzip2(reinterpret_cast<const char *>( outFn ), &outCompressedFn, static_cast<off_t *>( &outCompressedFnSize ) ) != 0) {
+                                fprintf(stderr, "ERROR: Could not bzip2 compress per-chromosome output file %s\n", outFn);
+                                return STARCH_FATAL_ERROR;
+                            }
+#else
                     if (outFnPtr != NULL) {
                         fclose(outFnPtr);
                         outFnPtr = NULL;
 
                         if (type == kBzip2) {
                             /* bzip-compress the previous file */
-#ifdef __cplusplus
-                            if (STARCH_compressFileWithBzip2(reinterpret_cast<const char *>( outFn ), &outCompressedFn, static_cast<off_t *>( &outCompressedFnSize ) ) != 0) {
-                                fprintf(stderr, "ERROR: Could not bzip2 compress per-chromosome output file %s\n", outFn);
-                                return STARCH_FATAL_ERROR;
-                            }
-#else
                             if (STARCH_compressFileWithBzip2((const char *)outFn, &outCompressedFn, (off_t *) &outCompressedFnSize ) != 0) {
                                 fprintf(stderr, "ERROR: Could not bzip2 compress per-chromosome output file %s\n", outFn);
                                 return STARCH_FATAL_ERROR;
@@ -776,14 +825,24 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                                                                totalUniqueBases,
                                                                duplicateElementExistsFlag,
                                                                nestedElementExistsFlag,
+#ifdef __cplusplus
+							       nullptr,
+#else
                                                                NULL,
+#endif
                                                                STARCH_DEFAULT_LINE_STRING_LENGTH) != STARCH_EXIT_SUCCESS) {
                             fprintf(stderr, "ERROR: Could not update metadata%s\n", outFn);
                             return STARCH_FATAL_ERROR;
                         }
 
                         /* cleanup */
-                        free(outCompressedFn); outCompressedFn = NULL;
+#ifdef __cplusplus
+                        free(outCompressedFn); 
+			outCompressedFn = nullptr;
+#else
+                        free(outCompressedFn); 
+			outCompressedFn = NULL;
+#endif
                     }
 			    
 		    /* test if current chromosome is already a Metadata record */
@@ -828,7 +887,11 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                                                     totalUniqueBases,
                                                     duplicateElementExistsFlag,
                                                     nestedElementExistsFlag,
+#ifdef __cplusplus
+                                                    nullptr,
+#else
                                                     NULL,
+#endif
                                                     STARCH_DEFAULT_LINE_STRING_LENGTH);
                         firstRecord = *md;
                     }
@@ -842,19 +905,27 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                                                  totalUniqueBases,
                                                  duplicateElementExistsFlag,
                                                  nestedElementExistsFlag,
+#ifdef __cplusplus
+						 nullptr,
+#else
                                                  NULL,
+#endif
                                                  STARCH_DEFAULT_LINE_STRING_LENGTH);
                     }
 
                     /* make previous chromosome the current chromosome */
+#ifdef __cplusplus
+                    if (prevChromosome != nullptr) {
+                        free(prevChromosome);
+                        prevChromosome = nullptr;
+                    }
+                    prevChromosome = static_cast<char *>( malloc(strlen(chromosome) + 1) );
+                    strncpy(prevChromosome, reinterpret_cast<const char *>( chromosome ), strlen(chromosome) + 1);
+#else
                     if (prevChromosome != NULL) {
                         free(prevChromosome);
                         prevChromosome = NULL;
                     }
-#ifdef __cplusplus
-                    prevChromosome = static_cast<char *>( malloc(strlen(chromosome) + 1) );
-                    strncpy(prevChromosome, reinterpret_cast<const char *>( chromosome ), strlen(chromosome) + 1);
-#else
                     prevChromosome = malloc(strlen(chromosome) + 1);
                     strncpy(prevChromosome, (const char *)chromosome, strlen(chromosome) + 1);
 #endif
@@ -947,12 +1018,21 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                 }
 
                 /* cleanup unused data */
+#ifdef __cplusplus
+                if (withinChr == kStarchTrue) {
+                    free(chromosome); chromosome = nullptr;
+                }
+                if (remainder) {
+                    free(remainder); remainder = nullptr;
+                }
+#else
                 if (withinChr == kStarchTrue) {
                     free(chromosome); chromosome = NULL;
                 }
                 if (remainder) {
                     free(remainder); remainder = NULL;
                 }
+#endif
                 cIdx = 0;                
             }
             else {
@@ -965,12 +1045,15 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
     }
     
     /* compress the remaining file */
+#ifdef __cplusplus
+    if (outFnPtr != nullptr) {
+        fclose(outFnPtr); outFnPtr = nullptr;
+        if (type == kBzip2) {
+            if (STARCH_compressFileWithBzip2(reinterpret_cast<const char *>( outFn ), &outCompressedFn, static_cast<off_t *>( &outCompressedFnSize ) ) != 0) {
+#else
     if (outFnPtr != NULL) {
         fclose(outFnPtr); outFnPtr = NULL;
         if (type == kBzip2) {
-#ifdef __cplusplus
-            if (STARCH_compressFileWithBzip2(reinterpret_cast<const char *>( outFn ), &outCompressedFn, static_cast<off_t *>( &outCompressedFnSize ) ) != 0) {
-#else
             if (STARCH_compressFileWithBzip2((const char *)outFn, &outCompressedFn, (off_t *) &outCompressedFnSize ) != 0) {
 #endif
                 fprintf(stderr, "ERROR: Could not bzip2 compress per-chromosome output file %s\n", outFn);
@@ -1012,9 +1095,17 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
                                            totalUniqueBases,
                                            duplicateElementExistsFlag,
                                            nestedElementExistsFlag,
+#ifdef __cplusplus
+					   nullptr,
+#else
                                            NULL,
+#endif
                                            STARCH_DEFAULT_LINE_STRING_LENGTH);
-        free(outCompressedFn); outCompressedFn = NULL; 
+#ifdef __cplusplus
+        free(outCompressedFn); outCompressedFn = nullptr;
+#else
+        free(outCompressedFn); outCompressedFn = NULL;
+#endif
     }
 
     /* reposition metadata pointer to first record */
@@ -1025,28 +1116,31 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
     if ((STARCH_MAJOR_VERSION == 1) && (STARCH_MINOR_VERSION == 0) && (STARCH_REVISION_VERSION == 0)) {
 #ifdef __cplusplus
         legacyMdBuf = static_cast<char *>( malloc(STARCH_LEGACY_METADATA_SIZE + 1) );
-#else
-        legacyMdBuf = malloc(STARCH_LEGACY_METADATA_SIZE + 1);
-#endif
-        if (legacyMdBuf != NULL) {
-#ifdef __cplusplus
+        if (legacyMdBuf != nullptr) {
             if (STARCH_writeJSONMetadata(reinterpret_cast<const Metadata *>( *md ), &legacyMdBuf, const_cast<CompressionType *>( &type ), kStarchFalse, reinterpret_cast<const char *>( note )) != STARCH_EXIT_SUCCESS) {
-#else
-            if (STARCH_writeJSONMetadata((const Metadata *)*md, &legacyMdBuf, (CompressionType *) &type, kStarchFalse, (const char *) note) != STARCH_EXIT_SUCCESS) {
-#endif
                 fprintf(stderr, "ERROR: Could not write metadata to buffer\n");
                 return STARCH_FATAL_ERROR;
             }
-#ifdef __cplusplus
             if (STARCH_mergeMetadataWithCompressedFiles(reinterpret_cast<const Metadata *>( *md ), legacyMdBuf) != STARCH_EXIT_SUCCESS) {
+                fprintf(stderr, "ERROR: Could not merge metadata with compressed streams\n");
+                return STARCH_FATAL_ERROR;
+            }
+            free(legacyMdBuf);
+            legacyMdBuf = nullptr;
 #else
+        legacyMdBuf = malloc(STARCH_LEGACY_METADATA_SIZE + 1);
+        if (legacyMdBuf != NULL) {
+            if (STARCH_writeJSONMetadata((const Metadata *)*md, &legacyMdBuf, (CompressionType *) &type, kStarchFalse, (const char *) note) != STARCH_EXIT_SUCCESS) {
+                fprintf(stderr, "ERROR: Could not write metadata to buffer\n");
+                return STARCH_FATAL_ERROR;
+            }
             if (STARCH_mergeMetadataWithCompressedFiles((const Metadata *)*md, legacyMdBuf) != STARCH_EXIT_SUCCESS) {
-#endif
                 fprintf(stderr, "ERROR: Could not merge metadata with compressed streams\n");
                 return STARCH_FATAL_ERROR;
             }
             free(legacyMdBuf);
             legacyMdBuf = NULL;
+#endif
         }
         else 
             return STARCH_FATAL_ERROR;
@@ -1055,17 +1149,23 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
         /* this is the custom header version of the parser, so we set headerFlag to TRUE */
 #ifdef __cplusplus
         if (STARCH_writeJSONMetadata(reinterpret_cast<const Metadata *>( *md ), &dynamicMdBuf, const_cast<CompressionType *>( &type ), kStarchTrue, reinterpret_cast<const char *>( note )) != STARCH_EXIT_SUCCESS) {
-#else
-        if (STARCH_writeJSONMetadata((const Metadata *)*md, &dynamicMdBuf, (CompressionType *) &type, kStarchTrue, (const char *) note) != STARCH_EXIT_SUCCESS) {
-#endif
             fprintf(stderr, "ERROR: Could not write metadata to buffer\n");
             return STARCH_FATAL_ERROR;
         }
-#ifdef __cplusplus
         if (STARCH_mergeMetadataWithCompressedFiles(reinterpret_cast<const Metadata *>( *md ), dynamicMdBuf) != STARCH_EXIT_SUCCESS) {
+            fprintf(stderr, "ERROR: Could not merge metadata with compressed streams\n");
+            return STARCH_FATAL_ERROR;
+        }
+        if (dynamicMdBuf != nullptr) {
+            free(dynamicMdBuf);
+            dynamicMdBuf = nullptr;
+        }
 #else
+        if (STARCH_writeJSONMetadata((const Metadata *)*md, &dynamicMdBuf, (CompressionType *) &type, kStarchTrue, (const char *) note) != STARCH_EXIT_SUCCESS) {
+            fprintf(stderr, "ERROR: Could not write metadata to buffer\n");
+            return STARCH_FATAL_ERROR;
+        }
         if (STARCH_mergeMetadataWithCompressedFiles((const Metadata *)*md, dynamicMdBuf) != STARCH_EXIT_SUCCESS) {
-#endif
             fprintf(stderr, "ERROR: Could not merge metadata with compressed streams\n");
             return STARCH_FATAL_ERROR;
         }
@@ -1073,6 +1173,7 @@ STARCH_transformInput(Metadata **md, const FILE *fp, const CompressionType type,
             free(dynamicMdBuf);
             dynamicMdBuf = NULL;
         }
+#endif
         else
             return STARCH_FATAL_ERROR;
     }
@@ -1099,22 +1200,33 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_transformHeaderlessInput() ---\n");
 #endif
-    int c;
-    int cIdx = 0;
-    int recIdx = 0;
-    char buffer[STARCH_BUFFER_MAX_LENGTH];
+#ifdef __cplusplus
+    char *outFn = nullptr;
+    FILE *outFnPtr = nullptr;
+    FILE *streamPtr = const_cast<FILE *>( fp );
+    char *outCompressedFn = nullptr;
+    char *remainder = nullptr;
+    char *prevChromosome = nullptr;
+    char *chromosome = nullptr;
+    Metadata *firstRecord = nullptr;
+    char *legacyMdBuf = nullptr; 
+    char *dynamicMdBuf = nullptr;
+#else
     char *outFn = NULL;
     FILE *outFnPtr = NULL;
-#ifdef __cplusplus
-    FILE *streamPtr = const_cast<FILE *>( fp );
-#else
     FILE *streamPtr = (FILE *) fp;
-#endif
     char *outCompressedFn = NULL;
     char *remainder = NULL;
     char *prevChromosome = NULL;
     char *chromosome = NULL;
     Metadata *firstRecord = NULL;
+    char *legacyMdBuf = NULL; 
+    char *dynamicMdBuf = NULL;
+#endif
+    int c;
+    int cIdx = 0;
+    int recIdx = 0;
+    char buffer[STARCH_BUFFER_MAX_LENGTH];
     int64_t start = 0;
     int64_t stop = 0;
     int64_t previousStop = 0;
@@ -1125,8 +1237,6 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
     Boolean withinChr = kStarchFalse;
     unsigned long lineIdx = 0UL;
     off_t outCompressedFnSize = 0;
-    char *legacyMdBuf = NULL; 
-    char *dynamicMdBuf = NULL;
     BaseCountType totalNonUniqueBases = 0;
     BaseCountType totalUniqueBases = 0;
     Boolean duplicateElementExistsFlag = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
@@ -1154,15 +1264,19 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
                 if ( (!prevChromosome) || (strcmp(chromosome, prevChromosome) != 0) ) 
                 {
                     /* close old output file pointer */
+#ifdef __cplusplus
+                    if (outFnPtr != nullptr) {
+                        fclose(outFnPtr); 
+                        outFnPtr = nullptr;
+                        if (type == kBzip2) {
+                            /* bzip-compress the previous file */
+                            if (STARCH_compressFileWithBzip2(reinterpret_cast<const char *>( outFn ), &outCompressedFn, static_cast<off_t *>( &outCompressedFnSize ) ) != 0) {
+#else
                     if (outFnPtr != NULL) {
                         fclose(outFnPtr); 
                         outFnPtr = NULL;
-
                         if (type == kBzip2) {
                             /* bzip-compress the previous file */
-#ifdef __cplusplus
-                            if (STARCH_compressFileWithBzip2(reinterpret_cast<const char *>( outFn ), &outCompressedFn, static_cast<off_t *>( &outCompressedFnSize ) ) != 0) {
-#else
                             if (STARCH_compressFileWithBzip2((const char *)outFn, &outCompressedFn, (off_t *) &outCompressedFnSize ) != 0) {
 #endif
                                 fprintf(stderr, "ERROR: Could not bzip2 compress per-chromosome output file %s\n", outFn);
@@ -1204,14 +1318,22 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
                                                                totalUniqueBases,
                                                                duplicateElementExistsFlag,
                                                                nestedElementExistsFlag,
+#ifdef __cplusplus
+							       nullptr,
+#else
                                                                NULL,
+#endif
                                                                STARCH_DEFAULT_LINE_STRING_LENGTH) != STARCH_EXIT_SUCCESS) {
                             fprintf(stderr, "ERROR: Could not update metadata%s\n", outFn);
                             return STARCH_FATAL_ERROR;
                         }
 
                         /* cleanup */
+#ifdef __cplusplus
+                        free(outCompressedFn); outCompressedFn = nullptr;
+#else
                         free(outCompressedFn); outCompressedFn = NULL;
+#endif
                     }
 
 		    /* test if current chromosome is already a Metadata record */
@@ -1253,7 +1375,11 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
                                                     totalUniqueBases, 
                                                     duplicateElementExistsFlag,
                                                     nestedElementExistsFlag,
+#ifdef __cplusplus
+						    nullptr,
+#else
                                                     NULL,
+#endif
                                                     STARCH_DEFAULT_LINE_STRING_LENGTH);
                         firstRecord = *md;
                     }
@@ -1267,19 +1393,27 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
                                                  totalUniqueBases,
                                                  duplicateElementExistsFlag,
                                                  nestedElementExistsFlag,
+#ifdef __cplusplus
+						 nullptr,
+#else
                                                  NULL,
+#endif
                                                  STARCH_DEFAULT_LINE_STRING_LENGTH);
                     }
 
                     /* make previous chromosome the current chromosome */
+#ifdef __cplusplus
+                    if (prevChromosome != nullptr) {
+                        free(prevChromosome);
+                        prevChromosome = nullptr;
+                    }
+                    prevChromosome = static_cast<char *>( malloc(strlen(chromosome) + 1) );
+                    strncpy(prevChromosome, reinterpret_cast<const char *>( chromosome ), strlen(chromosome) + 1);
+#else
                     if (prevChromosome != NULL) {
                         free(prevChromosome);
                         prevChromosome = NULL;
                     }
-#ifdef __cplusplus
-                    prevChromosome = static_cast<char *>( malloc(strlen(chromosome) + 1) );
-                    strncpy(prevChromosome, reinterpret_cast<const char *>( chromosome ), strlen(chromosome) + 1);
-#else
                     prevChromosome = malloc(strlen(chromosome) + 1);
                     strncpy(prevChromosome, (const char *)chromosome, strlen(chromosome) + 1);
 #endif
@@ -1303,7 +1437,7 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
                 if (stop > start)
                     coordDiff = stop - start;
                 else {
-                    fprintf(stderr, "ERROR: BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
+                    fprintf(stderr, "ERROR: (A) BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
                     return STARCH_FATAL_ERROR;
                 }
                 if (coordDiff != lcDiff) {
@@ -1360,11 +1494,19 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
                 /* cleanup unused data */
                 if (withinChr == kStarchTrue) {
                     free(chromosome);
+#ifdef __cplusplus
+                    chromosome = nullptr;
+#else
                     chromosome = NULL;
+#endif
                 }
                 if (remainder) {
                     free(remainder);
+#ifdef __cplusplus
+                    remainder = nullptr;
+#else
                     remainder = NULL;
+#endif
                 }
                 cIdx = 0;                
             }
@@ -1378,12 +1520,12 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
     }
     
     /* compress the remaining file */
-    if (outFnPtr != NULL) {
+#ifdef __cplusplus
+    if (outFnPtr != nullptr) {
         fclose(outFnPtr); 
-        outFnPtr = NULL;
+        outFnPtr = nullptr;
         
         if (type == kBzip2) {
-#ifdef __cplusplus
             if (STARCH_compressFileWithBzip2(reinterpret_cast<const char *>( outFn ), 
                                              &outCompressedFn, 
                                              static_cast<off_t *>( &outCompressedFnSize )) != 0) {
@@ -1391,6 +1533,11 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
                 return STARCH_FATAL_ERROR;
             }
 #else
+    if (outFnPtr != NULL) {
+        fclose(outFnPtr); 
+        outFnPtr = NULL;
+        
+        if (type == kBzip2) {
             if (STARCH_compressFileWithBzip2((const char *)outFn, 
                                              &outCompressedFn, 
                                              (off_t *) &outCompressedFnSize) != 0) {
@@ -1443,11 +1590,20 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
                                            totalUniqueBases,
                                            duplicateElementExistsFlag,
                                            nestedElementExistsFlag,
+#ifdef __cplusplus
+					   nullptr,
+#else
                                            NULL,
+#endif
                                            STARCH_DEFAULT_LINE_STRING_LENGTH);
 
-        free(outCompressedFn); outCompressedFn = NULL; 
+#ifdef __cplusplus
+        free(outCompressedFn); outCompressedFn = nullptr;
+        free(outFn); outFn = nullptr;
+#else
+        free(outCompressedFn); outCompressedFn = NULL;
         free(outFn); outFn = NULL;
+#endif
     }
 
     /* 
@@ -1473,38 +1629,43 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
     if ((STARCH_MAJOR_VERSION == 1) && (STARCH_MINOR_VERSION == 0) && (STARCH_REVISION_VERSION == 0)) {
 #ifdef __cplusplus
         legacyMdBuf = static_cast<char *>( malloc(STARCH_LEGACY_METADATA_SIZE + 1) );
-#else
-        legacyMdBuf = malloc(STARCH_LEGACY_METADATA_SIZE + 1);
-#endif
-        if (legacyMdBuf != NULL) {
+        if (legacyMdBuf != nullptr) {
             /* headerless input was not supported in this version, so it is set to FALSE */
-#ifdef __cplusplus
             if (STARCH_writeJSONMetadata(reinterpret_cast<const Metadata *>( *md ), 
 					 &legacyMdBuf, 
 					 const_cast<CompressionType *>( &type ), 
 					 kStarchFalse, 
 					 reinterpret_cast<const char *>( note )) != STARCH_EXIT_SUCCESS) {
+                fprintf(stderr, "ERROR: Could not write metadata to buffer\n");
+                return STARCH_FATAL_ERROR;
+            }
+            if (STARCH_mergeMetadataWithCompressedFiles(reinterpret_cast<const Metadata *>( *md ), legacyMdBuf) != STARCH_EXIT_SUCCESS) {
+                fprintf(stderr, "ERROR: Could not merge metadata with compressed streams\n");
+                return STARCH_FATAL_ERROR;
+            }
+            free(legacyMdBuf);
+            legacyMdBuf = nullptr;
+	}
 #else
+        legacyMdBuf = malloc(STARCH_LEGACY_METADATA_SIZE + 1);
+        if (legacyMdBuf != NULL) {
+            /* headerless input was not supported in this version, so it is set to FALSE */
             if (STARCH_writeJSONMetadata((const Metadata *) *md, 
 					 &legacyMdBuf, 
 					 (CompressionType *) &type, 
 					 kStarchFalse, 
 					 (const char *) note) != STARCH_EXIT_SUCCESS) {
-#endif
                 fprintf(stderr, "ERROR: Could not write metadata to buffer\n");
                 return STARCH_FATAL_ERROR;
             }
-#ifdef __cplusplus
-            if (STARCH_mergeMetadataWithCompressedFiles(reinterpret_cast<const Metadata *>( *md ), legacyMdBuf) != STARCH_EXIT_SUCCESS) {
-#else
             if (STARCH_mergeMetadataWithCompressedFiles((const Metadata *) *md, legacyMdBuf) != STARCH_EXIT_SUCCESS) {
-#endif
                 fprintf(stderr, "ERROR: Could not merge metadata with compressed streams\n");
                 return STARCH_FATAL_ERROR;
             }
             free(legacyMdBuf);
             legacyMdBuf = NULL;
         }
+#endif
         else 
             return STARCH_FATAL_ERROR;
     }
@@ -1516,21 +1677,28 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
 				     const_cast<CompressionType *>( &type ), 
 				     kStarchFalse, 
 				     reinterpret_cast<const char *>( note )) != STARCH_EXIT_SUCCESS) {
+            fprintf(stderr, "ERROR: Could not write metadata to buffer\n");
+            return STARCH_FATAL_ERROR;
+        }
+        if (STARCH_mergeMetadataWithCompressedFiles(reinterpret_cast<const Metadata *>( *md ), dynamicMdBuf) != STARCH_EXIT_SUCCESS) {
+            fprintf(stderr, "ERROR: Could not merge metadata with compressed streams\n");
+            return STARCH_FATAL_ERROR;
+        }
+
+        if (dynamicMdBuf != nullptr) {
+            free(dynamicMdBuf);
+            dynamicMdBuf = nullptr;
+        }
 #else
         if (STARCH_writeJSONMetadata((const Metadata *) *md, 
 				     &dynamicMdBuf, 
 				     (CompressionType *) &type, 
 				     kStarchFalse, 
 				     (const char *) note) != STARCH_EXIT_SUCCESS) {
-#endif
             fprintf(stderr, "ERROR: Could not write metadata to buffer\n");
             return STARCH_FATAL_ERROR;
         }
-#ifdef __cplusplus
-        if (STARCH_mergeMetadataWithCompressedFiles(reinterpret_cast<const Metadata *>( *md ), dynamicMdBuf) != STARCH_EXIT_SUCCESS) {
-#else
         if (STARCH_mergeMetadataWithCompressedFiles((const Metadata *) *md, dynamicMdBuf) != STARCH_EXIT_SUCCESS) {
-#endif
             fprintf(stderr, "ERROR: Could not merge metadata with compressed streams\n");
             return STARCH_FATAL_ERROR;
         }
@@ -1539,6 +1707,7 @@ STARCH_transformHeaderlessInput(Metadata **md, const FILE *fp, const Compression
             free(dynamicMdBuf);
             dynamicMdBuf = NULL;
         }
+#endif
         else
             return STARCH_FATAL_ERROR;
     }
@@ -1597,12 +1766,15 @@ STARCH_strndup(const char *s, size_t n)
 
 #ifdef __cplusplus
     result = static_cast<char *>( malloc(len + 1) );
+    if (!result) {
+        return nullptr;
+    }
 #else
     result = malloc(len + 1);
+    if (!result) {
+        return NULL;
+    }
 #endif
-
-    if (!result)
-        return NULL;    
 
     result[len] = '\0';
 #ifdef __cplusplus
@@ -1703,6 +1875,27 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH2_transformHeaderedBEDInput() ---\n");
 #endif
+#ifdef __cplusplus
+    char *pRemainder = nullptr;
+    char *prevChromosome = nullptr;
+    char *chromosome = nullptr;
+    char *remainder = nullptr;
+    char *compressedFn = nullptr;
+    Metadata *firstRecord = nullptr;
+    char *json = nullptr;
+    char *base64EncodedSha1Digest = nullptr;
+    BZFILE *bzFp = nullptr;
+#else
+    char *pRemainder = NULL;
+    char *prevChromosome = NULL;
+    char *chromosome = NULL;
+    char *remainder = NULL;
+    char *compressedFn = NULL;
+    Metadata *firstRecord = NULL;
+    char *json = NULL;
+    char *base64EncodedSha1Digest = NULL;
+    BZFILE *bzFp = NULL;
+#endif
     int c;
     unsigned int cIdx = 0;
     char untransformedBuffer[STARCH_BUFFER_MAX_LENGTH];
@@ -1713,14 +1906,10 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     int64_t stop = 0;
     int64_t pStart = -1;
     int64_t pStop = -1;
-    char *pRemainder = NULL;
     int64_t previousStop = 0;
     int64_t lastPosition = 0;
     int64_t lcDiff = 0;
     int64_t coordDiff = 0;
-    char *prevChromosome = NULL;
-    char *chromosome = NULL;
-    char *remainder = NULL;
     Boolean withinChr = kStarchFalse;
     unsigned long totalNonUniqueBases = 0UL;
     unsigned long totalUniqueBases = 0UL;
@@ -1731,12 +1920,8 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     size_t recIdx = 0U;
     size_t currentRecSize = 0U;
     size_t cumulativeRecSize = 0U;
-    char *compressedFn = NULL;
-    Metadata *firstRecord = NULL;
-    char *json = NULL;
     CompressionType type = compressionType;
     unsigned char sha1Digest[STARCH2_MD_FOOTER_SHA1_LENGTH] = {0};
-    char *base64EncodedSha1Digest = NULL;
     int zError = -1;
     char zBuffer[STARCH_Z_BUFFER_MAX_LENGTH] = {0};
     z_stream zStream;
@@ -1748,7 +1933,6 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     unsigned int bzBytesWrittenLo32 = 0U;
     unsigned int bzBytesWrittenHi32 = 0U;
     FILE *outFp = stdout;
-    BZFILE *bzFp = NULL;
     char footerCumulativeRecordSizeBuffer[STARCH2_MD_FOOTER_CUMULATIVE_RECORD_SIZE_LENGTH + 1] = {0};
     char footerRemainderBuffer[STARCH2_MD_FOOTER_REMAINDER_LENGTH] = {0};
     char footerBuffer[STARCH2_MD_FOOTER_LENGTH] = {0};
@@ -1816,10 +2000,16 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     else if (compressionType == kGzip) {
 #ifdef DEBUG
         fprintf(stderr, "\tsetting up gzip stream...\n");
-#endif        
+#endif
+#ifdef __cplusplus
+        zStream.zalloc = nullptr;
+        zStream.zfree  = nullptr;
+        zStream.opaque = nullptr;
+#else
         zStream.zalloc = Z_NULL;
         zStream.zfree  = Z_NULL;
         zStream.opaque = Z_NULL;
+#endif
         /* cf. http://www.zlib.net/manual.html for level information */
         /* zError = deflateInit2(&zStream, STARCH_Z_COMPRESSION_LEVEL, Z_DEFLATED, STARCH_Z_WINDOW_BITS, STARCH_Z_MEMORY_LEVEL, Z_DEFAULT_STRATEGY); */
         zError = deflateInit(&zStream, STARCH_Z_COMPRESSION_LEVEL);
@@ -1869,7 +2059,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                         return STARCH_FATAL_ERROR;
                     }
                     free(pRemainder);
+#ifdef __cplusplus
+                    pRemainder = nullptr;
+#else
                     pRemainder = NULL;
+#endif
                 }
 
                 if ((reportProgressFlag == kStarchTrue) && (lineIdx % reportProgressN == 0)) {
@@ -1973,13 +2167,21 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                                     }
                                 }
                             }
+#ifdef __cplusplus
+                            bzBytesWritten = static_cast<size_t>( bzBytesWrittenHi32 ) << 32 | bzBytesWrittenLo32;
+#else
                             bzBytesWritten = (size_t) bzBytesWrittenHi32 << 32 | bzBytesWrittenLo32;
+#endif
                             cumulativeRecSize += bzBytesWritten;
                             currentRecSize += bzBytesWritten;
                             bzBytesWritten = 0;
                             bzBytesWrittenLo32 = 0U;
                             bzBytesWrittenHi32 = 0U;
+#ifdef __cplusplus
+                            bzFp = nullptr;
+#else
                             bzFp = NULL;
+#endif
 
                             if (STARCH_updateMetadataForChromosome(md, 
                                                                    prevChromosome, 
@@ -2112,9 +2314,15 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 #ifdef DEBUG
                             fprintf(stderr, "\t(final-between-chromosome) creating fresh z-stream\n");
 #endif
+#ifdef __cplusplus
+                            zStream.zalloc = nullptr;
+                            zStream.zfree  = nullptr;
+                            zStream.opaque = nullptr;
+#else
                             zStream.zalloc = Z_NULL;
                             zStream.zfree  = Z_NULL;
                             zStream.opaque = Z_NULL;
+#endif
 #ifdef DEBUG
                             fprintf(stderr, "\t(final-between-chromosome) initializing z-stream\n");
 #endif
@@ -2145,7 +2353,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                         /* clean up per-chromosome hash digest */
                         if (base64EncodedSha1Digest) {
                             free(base64EncodedSha1Digest);
+#ifdef __cplusplus
+                            base64EncodedSha1Digest = nullptr;
+#else
                             base64EncodedSha1Digest = NULL;
+#endif
                         }
                     }
 
@@ -2155,7 +2367,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                     fprintf(stderr, "\t(final-between-chromosome) creating placeholder md record at chromosome: %s (compressedFn: %s)\n", chromosome, compressedFn);
 #endif
                     if (recIdx == 0) {
+#ifdef __cplusplus
+                        *md = nullptr;
+#else
                         *md = NULL;
+#endif
                         *md = STARCH_createMetadata(chromosome, 
                                                     compressedFn, 
                                                     0, 
@@ -2187,28 +2403,33 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                     }
 
                     /* make previous chromosome the current chromosome */
-                    if (prevChromosome != NULL) {
-                        free(prevChromosome);
-                        prevChromosome = NULL;
-                    }
 #ifdef __cplusplus
+                    if (prevChromosome != nullptr) {
+                        free(prevChromosome);
+                        prevChromosome = nullptr;
+                    }
                     prevChromosome = static_cast<char *>( malloc(strlen(chromosome) + 1) );
-#else
-                    prevChromosome = malloc(strlen(chromosome) + 1);
-#endif
                     if (!prevChromosome) {
                         fprintf(stderr, "ERROR: Could not allocate space for previous chromosome marker.");
                         return STARCH_FATAL_ERROR;
                     }
-#ifdef __cplusplus
                     strncpy(prevChromosome, reinterpret_cast<const char *>( chromosome ), strlen(chromosome) + 1);
 #else
+                    if (prevChromosome != NULL) {
+                        free(prevChromosome);
+                        prevChromosome = NULL;
+                    }
+                    prevChromosome = malloc(strlen(chromosome) + 1);
+                    if (!prevChromosome) {
+                        fprintf(stderr, "ERROR: Could not allocate space for previous chromosome marker.");
+                        return STARCH_FATAL_ERROR;
+                    }
                     strncpy(prevChromosome, (const char *) chromosome, strlen(chromosome) + 1);
 #endif
 
                     /* reset flag, lastPosition and lcDiff, increment record index */
 #ifdef DEBUG
-                    fprintf(stderr, "\t(final-between-chromosome) resetting per-chromosome stream transformation parameters...\n");
+                    fprintf(stderr, "\t(final-between-chromosome A) resetting per-chromosome stream transformation parameters...\n");
 #endif
                     withinChr = kStarchFalse;
                     lastPosition = 0;
@@ -2216,7 +2437,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                     pStop = -1;
                     if (pRemainder) { 
                         free(pRemainder);
+#ifdef __cplusplus
+                        pRemainder = nullptr; 
+#else
                         pRemainder = NULL; 
+#endif
                     }
                     previousStop = 0;
                     lcDiff = 0;
@@ -2263,7 +2488,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                     if (stop > start)
                         coordDiff = stop - start;
                     else {
-                        fprintf(stderr, "ERROR: BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
+                        fprintf(stderr, "ERROR: (B) BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
                         return STARCH_FATAL_ERROR;
                     }
                     if (coordDiff != lcDiff) {
@@ -2449,7 +2674,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                     pStop = stop;
                     if (pRemainder) { 
                         free(pRemainder);
+#ifdef __cplusplus
+                        pRemainder = nullptr;
+#else
                         pRemainder = NULL;
+#endif
                     }
                     if (remainder)
                         pRemainder = STARCH_strndup(remainder, strlen(remainder));
@@ -2457,11 +2686,19 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
 
                 if (withinChr == kStarchTrue) {
                     free(chromosome);
+#ifdef __cplusplus
+                    chromosome = nullptr;
+#else
                     chromosome = NULL;
+#endif
                 }
                 if (remainder) {
                     free(remainder);
+#ifdef __cplusplus
+                    remainder = nullptr;
+#else
                     remainder = NULL;
+#endif
                 }
                 cIdx = 0;
             }
@@ -2502,7 +2739,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
             if (stop > start)
                 coordDiff = stop - start;
             else {
-                fprintf(stderr, "ERROR: BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
+                fprintf(stderr, "ERROR: (C) BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
                 return STARCH_FATAL_ERROR;
             }
             if (coordDiff != lcDiff) {
@@ -2570,11 +2807,15 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                     return STARCH_FATAL_ERROR;
                 }
                 free(pRemainder);
+#ifdef __cplusplus
+                pRemainder = nullptr;
+#else
                 pRemainder = NULL;
+#endif
             }
         }
         else {
-            fprintf(stderr, "ERROR: BED data is corrupt at line %lu\n", lineIdx);
+            fprintf(stderr, "ERROR: (D) BED data is corrupt at line %lu\n", lineIdx);
             return STARCH_FATAL_ERROR;
         }
     }
@@ -2663,7 +2904,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
                 }
             }
         }
+#ifdef __cplusplus
+        bzBytesWritten = static_cast<size_t>( bzBytesWrittenHi32 ) << 32 | bzBytesWrittenLo32;
+#else
         bzBytesWritten = (size_t) bzBytesWrittenHi32 << 32 | bzBytesWrittenLo32;
+#endif
         cumulativeRecSize += bzBytesWritten;
         currentRecSize += bzBytesWritten;
 
@@ -2744,7 +2989,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
            be NULL, as will the char pointer prevChromosome. So we put in a stub metadata record.
         */
         lineIdx = 0;
+#ifdef __cplusplus
+        *md = nullptr;
+#else
         *md = NULL;
+#endif
         *md = STARCH_createMetadata(nullChr, 
                                     nullCompressedFn, 
                                     currentRecSize, 
@@ -2765,7 +3014,11 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     /* clean up per-chromosome hash digest */
     if (base64EncodedSha1Digest) {
         free(base64EncodedSha1Digest);
+#ifdef __cplusplus
+        base64EncodedSha1Digest = nullptr;
+#else
         base64EncodedSha1Digest = NULL;
+#endif
     }
 
     /* reset metadata pointer */
@@ -2839,6 +3092,24 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
     fprintf(stdout, "%s", footerBuffer);
     fflush(stdout);
 
+#ifdef __cplusplus
+    if (json) {
+        free(json);
+        json = nullptr;
+    }
+    if (compressedFn) {
+        free(compressedFn);
+        compressedFn = nullptr;
+    }
+    if (prevChromosome) {
+        free(prevChromosome);
+        prevChromosome = nullptr;
+    }
+    if (base64EncodedSha1Digest) {
+        free(base64EncodedSha1Digest);
+        base64EncodedSha1Digest = nullptr;
+    }
+#else
     if (json) {
         free(json);
         json = NULL;
@@ -2855,6 +3126,7 @@ STARCH2_transformHeaderedBEDInput(const FILE *inFp, Metadata **md, const Compres
         free(base64EncodedSha1Digest);
         base64EncodedSha1Digest = NULL;
     }
+#endif
 
     return STARCH_EXIT_SUCCESS;
 }
@@ -2864,6 +3136,29 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH2_transformHeaderlessBEDInput() ---\n");
+#endif
+#ifdef __cplusplus
+    char *pRemainder = nullptr;
+    char *prevChromosome = nullptr;
+    char *chromosome = nullptr;
+    char *remainder = nullptr;
+    char *compressedFn = nullptr;
+    Metadata *firstRecord = nullptr;
+    char *json = nullptr;
+    char *jsonCopy = nullptr;
+    char *base64EncodedSha1Digest = nullptr;
+    BZFILE *bzFp = nullptr;
+#else
+    char *pRemainder = NULL;
+    char *prevChromosome = NULL;
+    char *chromosome = NULL;
+    char *remainder = NULL;
+    char *compressedFn = NULL;
+    Metadata *firstRecord = NULL;
+    char *json = NULL;
+    char *jsonCopy = NULL;
+    char *base64EncodedSha1Digest = NULL;
+    BZFILE *bzFp = NULL;
 #endif
     int c;
     unsigned int cIdx = 0;
@@ -2875,14 +3170,10 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     int64_t stop = 0;
     int64_t pStart = -1;
     int64_t pStop = -1;
-    char *pRemainder = NULL;
     int64_t previousStop = 0;
     int64_t lastPosition = 0;
     int64_t lcDiff = 0;
     int64_t coordDiff = 0;
-    char *prevChromosome = NULL;
-    char *chromosome = NULL;
-    char *remainder = NULL;
     Boolean withinChr = kStarchFalse;
     unsigned long totalNonUniqueBases = 0UL;
     unsigned long totalUniqueBases = 0UL;
@@ -2893,13 +3184,8 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     size_t recIdx = 0U;
     size_t currentRecSize = 0U;
     size_t cumulativeRecSize = 0U;
-    char *compressedFn = NULL;
-    Metadata *firstRecord = NULL;
-    char *json = NULL;
-    char *jsonCopy = NULL;
     CompressionType type = compressionType;
     unsigned char sha1Digest[STARCH2_MD_FOOTER_SHA1_LENGTH] = {0};
-    char *base64EncodedSha1Digest = NULL;
     int zError = -1;
     char zBuffer[STARCH_Z_BUFFER_MAX_LENGTH] = {0};
     z_stream zStream;
@@ -2911,7 +3197,6 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     unsigned int bzBytesWrittenLo32 = 0U;
     unsigned int bzBytesWrittenHi32 = 0U;
     FILE *outFp = stdout;
-    BZFILE *bzFp = NULL;
     char footerCumulativeRecordSizeBuffer[STARCH2_MD_FOOTER_CUMULATIVE_RECORD_SIZE_LENGTH + 1] = {0};
     char footerRemainderBuffer[STARCH2_MD_FOOTER_REMAINDER_LENGTH] = {0};
     char footerBuffer[STARCH2_MD_FOOTER_LENGTH] = {0};
@@ -2976,10 +3261,16 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     else if (compressionType == kGzip) {
 #ifdef DEBUG
         fprintf(stderr, "\tsetting up gzip stream...\n");
-#endif        
+#endif
+#ifdef __cplusplus
+        zStream.zalloc = nullptr;
+        zStream.zfree  = nullptr;
+        zStream.opaque = nullptr;
+#else
         zStream.zalloc = Z_NULL;
         zStream.zfree  = Z_NULL;
         zStream.opaque = Z_NULL;
+#endif
         /* cf. http://www.zlib.net/manual.html for level information */
         /* zError = deflateInit2(&zStream, STARCH_Z_COMPRESSION_LEVEL, Z_DEFLATED, STARCH_Z_WINDOW_BITS, STARCH_Z_MEMORY_LEVEL, Z_DEFAULT_STRATEGY); */
         zError = deflateInit(&zStream, STARCH_Z_COMPRESSION_LEVEL);
@@ -3021,6 +3312,9 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
             maxStringLength = (maxStringLength >= cIdx) ? maxStringLength : cIdx;
 
             if (STARCH_createTransformTokensForHeaderlessInput(untransformedBuffer, '\t', &chromosome, &start, &stop, &remainder) == 0) {
+#ifdef DEBUG                        
+                fprintf(stderr, "\t(tokens) chromosome: [%s] start [%" PRId64 "] stop [%" PRId64 "] remainder [%s]\n", chromosome, start, stop, remainder);
+#endif
                 if (pRemainder) {
                     previousAndCurrentChromosomesAreIdentical = ((prevChromosome) && (strcmp(chromosome, prevChromosome) == 0)) ? kStarchTrue : kStarchFalse;
                     /* if previous start and stop coordinates are the same, compare the remainder here */
@@ -3028,8 +3322,12 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                         fprintf(stderr, "ERROR: (C) Elements with same start and stop coordinates have remainders in wrong sort order.\nBe sure to first sort input with sort-bed or remove --do-not-sort option from conversion script.\nDebug:\nchromosome [%s] start [%" PRId64 "] stop [%" PRId64 "]\nline [%ld]\nremainder A [%s]\nremainder B [%s]\nstrcmp(A,B) [%d]\n", chromosome, start, stop, lineIdx, remainder, pRemainder, strcmp(remainder, pRemainder));
                         return STARCH_FATAL_ERROR;
                     }
-                    free(pRemainder); 
+                    free(pRemainder);
+#ifdef __cplusplus
+                    pRemainder = nullptr;
+#else
                     pRemainder = NULL;
+#endif
                 }
 
                 if ((reportProgressFlag == kStarchTrue) && (lineIdx % reportProgressN == 0)) {
@@ -3132,13 +3430,21 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                                     }
                                 }
                             }
+#ifdef __cplusplus
+                            bzBytesWritten = static_cast<size_t>( bzBytesWrittenHi32 ) << 32 | bzBytesWrittenLo32;
+#else
                             bzBytesWritten = (size_t) bzBytesWrittenHi32 << 32 | bzBytesWrittenLo32;
+#endif
                             cumulativeRecSize += bzBytesWritten;
                             currentRecSize += bzBytesWritten;
                             bzBytesWritten = 0;
                             bzBytesWrittenLo32 = 0U;
                             bzBytesWrittenHi32 = 0U;
+#ifdef __cplusplus
+			    bzFp = nullptr;
+#else
                             bzFp = NULL;
+#endif
 
                             if (STARCH_updateMetadataForChromosome(md, 
                                                                    prevChromosome, 
@@ -3271,9 +3577,15 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 #ifdef DEBUG
                             fprintf(stderr, "\t(final-between-chromosome) creating fresh z-stream\n");
 #endif
+#ifdef __cplusplus
+                            zStream.zalloc = nullptr;
+                            zStream.zfree  = nullptr;
+                            zStream.opaque = nullptr;
+#else
                             zStream.zalloc = Z_NULL;
                             zStream.zfree  = Z_NULL;
                             zStream.opaque = Z_NULL;
+#endif
 #ifdef DEBUG
                             fprintf(stderr, "\t(final-between-chromosome) initializing z-stream\n");
 #endif
@@ -3304,7 +3616,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                         /* clean up per-chromosome hash digest */
                         if (base64EncodedSha1Digest) {
                             free(base64EncodedSha1Digest);
+#ifdef __cplusplus
+                            base64EncodedSha1Digest = nullptr;
+#else
                             base64EncodedSha1Digest = NULL;
+#endif
                         }
                     }
 
@@ -3314,7 +3630,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                     fprintf(stderr, "\t(final-between-chromosome) creating placeholder md record at chromosome: %s (compressedFn: %s) (signature: %s)\n", chromosome, compressedFn, base64EncodedSha1Digest);
 #endif
                     if (recIdx == 0) {
+#ifdef __cplusplus
+                        *md = nullptr;
+#else
                         *md = NULL;
+#endif
                         *md = STARCH_createMetadata(chromosome, 
                                                     compressedFn, 
                                                     0, 
@@ -3323,7 +3643,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                                                     0UL, 
                                                     STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE, 
                                                     STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE,
+#ifdef __cplusplus
+                                                    nullptr,
+#else
                                                     NULL,
+#endif
                                                     STARCH_DEFAULT_LINE_STRING_LENGTH);
                         if (!*md) { 
                             fprintf(stderr, "ERROR: Not enough memory is available\n");
@@ -3341,18 +3665,26 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                                                  0UL, 
                                                  STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE,
                                                  STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE,
+#ifdef __cplusplus
+                                                 nullptr,
+#else
                                                  NULL,
+#endif
                                                  STARCH_DEFAULT_LINE_STRING_LENGTH);
                     }
 
                     /* make previous chromosome the current chromosome */
+#ifdef __cplusplus
+                    if (prevChromosome != nullptr) {
+                        free(prevChromosome);
+                        prevChromosome = nullptr;
+                    }
+                    prevChromosome = static_cast<char *>( malloc(strlen(chromosome) + 1) );
+#else
                     if (prevChromosome != NULL) {
                         free(prevChromosome);
                         prevChromosome = NULL;
                     }
-#ifdef __cplusplus
-                    prevChromosome = static_cast<char *>( malloc(strlen(chromosome) + 1) );
-#else
                     prevChromosome = malloc(strlen(chromosome) + 1);
 #endif
                     if (!prevChromosome) {
@@ -3367,7 +3699,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
 
                     /* reset flag, lastPosition and lcDiff, increment record index */
 #ifdef DEBUG
-                    fprintf(stderr, "\t(final-between-chromosome) resetting per-chromosome stream transformation parameters...\n");
+                    fprintf(stderr, "\t(final-between-chromosome B) resetting per-chromosome stream transformation parameters...\n");
 #endif
                     withinChr = kStarchFalse;
                     lastPosition = 0;
@@ -3375,7 +3707,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                     pStop = -1;
                     if (pRemainder) { 
                         free(pRemainder);
+#ifdef __cplusplus
+                        pRemainder = nullptr; 
+#else
                         pRemainder = NULL; 
+#endif
                     }
                     previousStop = 0;
                     lcDiff = 0;
@@ -3397,7 +3733,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                 if (stop > start)
                     coordDiff = stop - start;
                 else {
-                    fprintf(stderr, "ERROR: BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
+                    fprintf(stderr, "ERROR: (E) BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
                     return STARCH_FATAL_ERROR;
                 }
                 if (coordDiff != lcDiff) {
@@ -3594,6 +3930,23 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                 /* set pElement values */
                 pStart = start;
                 pStop = stop;
+#ifdef __cplusplus
+                if (pRemainder) { 
+                    free(pRemainder);
+                    pRemainder = nullptr;
+                }
+                if (remainder)
+                    pRemainder = STARCH_strndup(remainder, strlen(remainder));
+
+                if (withinChr == kStarchTrue)  {
+                    free(chromosome);
+                    chromosome = nullptr;
+                }
+                if (remainder) {
+                    free(remainder);
+                    remainder = nullptr;
+                }
+#else
                 if (pRemainder) { 
                     free(pRemainder);
                     pRemainder = NULL;
@@ -3609,6 +3962,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                     free(remainder);
                     remainder = NULL;
                 }
+#endif
                 cIdx = 0;
             }
             else {
@@ -3643,7 +3997,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
             if (stop > start)
                 coordDiff = stop - start;
             else {
-                fprintf(stderr, "ERROR: BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
+                fprintf(stderr, "ERROR: (F) BED data is corrupt at line %lu (stop: %" PRId64 ", start: %" PRId64 ")\n", lineIdx, stop, start);
                 return STARCH_FATAL_ERROR;
             }
             if (coordDiff != lcDiff) {
@@ -3742,11 +4096,15 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                     return STARCH_FATAL_ERROR;
                 }
                 free(pRemainder);
+#ifdef __cplusplus
+                pRemainder = nullptr;
+#else
                 pRemainder = NULL;
+#endif
             }
         }
         else {
-            fprintf(stderr, "ERROR: BED data is corrupt at line %lu\n", lineIdx);
+            fprintf(stderr, "ERROR: (G) BED data is corrupt at line %lu\n", lineIdx);
             return STARCH_FATAL_ERROR;
         }
     }
@@ -3840,7 +4198,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
                 }
             }
         }
+#ifdef __cplusplus
+        bzBytesWritten = static_cast<size_t>( bzBytesWrittenHi32 ) << 32 | bzBytesWrittenLo32;
+#else
         bzBytesWritten = (size_t) bzBytesWrittenHi32 << 32 | bzBytesWrittenLo32;
+#endif
         cumulativeRecSize += bzBytesWritten;
         currentRecSize += bzBytesWritten;
 #ifdef DEBUG
@@ -3925,7 +4287,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
            be NULL, as will the char pointer prevChromosome. So we put in a stub metadata record.
         */
         lineIdx = 0;
+#ifdef __cplusplus
+        *md = nullptr;
+#else
         *md = NULL;
+#endif
         *md = STARCH_createMetadata(nullChr, 
                                     nullCompressedFn, 
                                     currentRecSize, 
@@ -3946,7 +4312,11 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     /* clean up per-chromosome hash digest */
     if (base64EncodedSha1Digest) {
         free(base64EncodedSha1Digest);
+#ifdef __cplusplus
+        base64EncodedSha1Digest = nullptr;
+#else
         base64EncodedSha1Digest = NULL;
+#endif
     }
 
     /* reset metadata pointer */
@@ -4022,6 +4392,24 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
     fprintf(stdout, "%s", footerBuffer);
     fflush(stdout);
 
+#ifdef __cplusplus
+    if (json) {
+        free(json);
+        json = nullptr;
+    }
+    if (compressedFn) {
+        free(compressedFn); 
+        compressedFn = nullptr;
+    }
+    if (prevChromosome) {
+        free(prevChromosome); 
+        prevChromosome = nullptr;
+    }
+    if (base64EncodedSha1Digest) {
+        free(base64EncodedSha1Digest); 
+        base64EncodedSha1Digest = nullptr;
+    }
+#else
     if (json) {
         free(json);
         json = NULL;
@@ -4038,6 +4426,7 @@ STARCH2_transformHeaderlessBEDInput(const FILE *inFp, Metadata **md, const Compr
         free(base64EncodedSha1Digest); 
         base64EncodedSha1Digest = NULL;
     }
+#endif
 
     return STARCH_EXIT_SUCCESS;
 }

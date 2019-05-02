@@ -93,6 +93,15 @@ static struct globals {
     Boolean archive_preserve_json_ref;
 } starchstrip_globals;
 
+#ifdef __cplusplus
+static struct option starchstrip_long_options[] = { 
+    { "include",         required_argument,     nullptr,     'i' },
+    { "exclude",         required_argument,     nullptr,     'x' },
+    { "version",         no_argument,           nullptr,     'v' },
+    { "help",            no_argument,           nullptr,     'h' },
+    { nullptr,           no_argument,           nullptr,      0  }
+};
+#else
 static struct option starchstrip_long_options[] = { 
     { "include",         required_argument,     NULL,     'i' },
     { "exclude",         required_argument,     NULL,     'x' },
@@ -100,6 +109,7 @@ static struct option starchstrip_long_options[] = {
     { "help",            no_argument,           NULL,     'h' },
     { NULL,              no_argument,           NULL,      0  }
 };
+#endif
 
 static const char *starchstrip_opt_string = "i:x:vh?";
 

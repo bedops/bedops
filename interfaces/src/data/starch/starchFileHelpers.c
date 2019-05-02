@@ -94,11 +94,19 @@ STARCH_fopen(const char *filename, const char *type)
     fprintf(stderr, "\n--- STARCH_fopen() ---\n");
     fprintf(stderr, "\tfilename: %s\ttype: %s\n\n", filename, type);
 #endif
+#ifdef __cplusplus
+    FILE *fnPtr = nullptr;
+#else
     FILE *fnPtr = NULL;
+#endif
 
     fnPtr = fopen(filename, type);
     
+#ifdef __cplusplus
+    if ((fnPtr == nullptr) && (errno != 0)) {
+#else
     if ((fnPtr == NULL) && (errno != 0)) {
+#endif
         switch (errno) {
             case EACCES:
                 fprintf(stderr, "ERROR: EACCES - Search permission is denied on a component of the path prefix, or the file exists and the permissions specified by mode are denied, or the file does not exist and write permission is denied for the parent directory of the file to be created\n");
@@ -148,11 +156,13 @@ STARCH_fopen(const char *filename, const char *type)
             default:
 #ifdef __cplusplus
                 fprintf(stderr, "ERROR: UNKNOWN - Run into unknown file access error (%d)\n", static_cast<int>( errno ));
+        }
+        return nullptr;
 #else
                 fprintf(stderr, "ERROR: UNKNOWN - Run into unknown file access error (%d)\n", (int) errno);
-#endif
         }
         return NULL;
+#endif
     }
 
     return fnPtr;
@@ -171,9 +181,15 @@ STARCH_gzip_deflate(FILE *source, FILE *dest, int level)
     unsigned char out[STARCH_Z_CHUNK + 1];
 
     /* allocate deflate state */
+#ifdef __cplusplus
+    strm.zalloc = nullptr;
+    strm.zfree = nullptr;
+    strm.opaque = nullptr;
+#else
     strm.zalloc = Z_NULL;
     strm.zfree = Z_NULL;
     strm.opaque = Z_NULL;
+#endif
 
     /* deflateInit2 allows creation of archive with gzip header, i.e. a gzip file */
     /* cf. http://www.zlib.net/manual.html */

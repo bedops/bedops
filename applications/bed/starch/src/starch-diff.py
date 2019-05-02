@@ -32,7 +32,7 @@ import logging
 name = "starch-diff"
 citation = "  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract"
 authors = "  authors:  Alex Reynolds and Shane Neph"
-version = "  version:  2.4.35"
+version = "  version:  2.4.36"
 usage = "  $ starch-diff [ --chr <chr> ] starch-file-1 starch-file-2 [ starch-file-3 ... ]"
 help = """
   The 'starch-diff' utility compares the signatures of two or more specified 

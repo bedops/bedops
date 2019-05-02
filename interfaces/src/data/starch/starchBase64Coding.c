@@ -73,8 +73,13 @@ STARCH_encodeBase64(char **output, const size_t outputLength, const unsigned cha
 #else
     unsigned char *inputPointer = (unsigned char *) inputBytes;
 #endif
+#ifdef __cplusplus
+    char *objPointer = nullptr;
+    char *strResult = nullptr;
+#else
     char *objPointer = NULL;
     char *strResult = NULL;
+#endif
     size_t bytesLength = inputLength;
     /* size_t resultLength = (((bytesLength + 2) / 3) * 4) + 1; */
 

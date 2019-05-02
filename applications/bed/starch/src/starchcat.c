@@ -69,19 +69,29 @@ main (int argc, char **argv)
 #ifdef DEBUG
     fprintf (stderr, "\n--- starchcat main() - enter ---\n");
 #endif
+#ifdef __cplusplus
+    char *note = nullptr;
+    ChromosomeSummaries *summaries = nullptr;
+    ChromosomeSummary *summary = nullptr;
+    MetadataRecord *mdRecords = nullptr;
+    char **chromosomes = nullptr;
+    json_t **metadataJSONs = nullptr;
+    unsigned char *header = nullptr;
+#else
     char *note = NULL;
     ChromosomeSummaries *summaries = NULL;
     ChromosomeSummary *summary = NULL;
     MetadataRecord *mdRecords = NULL;
+    char **chromosomes = NULL;
+    json_t **metadataJSONs = NULL;
+    unsigned char *header = NULL;
+#endif
     CompressionType outputType = STARCH_DEFAULT_COMPRESSION_TYPE;
     int parseResult = 0;
     unsigned int firstArgc = UINT_MAX;
     unsigned int numRecords = 0U;
-    char **chromosomes = NULL;
     unsigned int numChromosomes = 0U;
-    json_t **metadataJSONs = NULL;
     size_t cumulativeRecSize = 0U;
-    unsigned char *header = NULL;
     Boolean bedGeneratePerChrSignatureFlag = kStarchFalse;
     Boolean bedReportProgressFlag = kStarchFalse;
     LineCountType bedReportProgressN = 0;
@@ -243,10 +253,15 @@ STARCHCAT_initializeGlobals()
     fprintf (stderr, "\n--- STARCHCAT_initializeGlobals() ---\n");
 #endif
 
+#ifdef __cplusplus
+    starchcat_client_global_args.note = nullptr;
+    starchcat_client_global_args.inputFiles = nullptr;
+#else
     starchcat_client_global_args.note = NULL;
+    starchcat_client_global_args.inputFiles = NULL;
+#endif
     starchcat_client_global_args.compressionType = STARCH_DEFAULT_COMPRESSION_TYPE;
     starchcat_client_global_args.numberInputFiles = 0;
-    starchcat_client_global_args.inputFiles = NULL;
     starchcat_client_global_args.generatePerChromosomeSignatureFlag = kStarchTrue;
 }
 
@@ -281,7 +296,11 @@ STARCHCAT_parseCommandLineOptions(int argc, char **argv)
             case 'r':
                 starchcat_client_global_args.reportProgressFlag = kStarchTrue;
                 errno = 0;
+#ifdef __cplusplus
+                starchcat_client_global_args.reportProgressN = strtoumax(optarg, nullptr, 10);
+#else
                 starchcat_client_global_args.reportProgressN = strtoumax(optarg, NULL, 10);
+#endif
                 if (errno == ERANGE) {
                     fprintf (stderr, "ERROR: Numerical value is outside of range.\n");
                     return STARCHCAT_FATAL_ERROR;
@@ -319,13 +338,18 @@ STARCHCAT2_copyInputRecordToOutput(Metadata **outMd, const char *outTag, const C
         of data to standard output. The output metadata specifics are copied
         over without alterations to the stream.
     */
+#ifdef __cplusplus
+    char *outFn = nullptr;
+    char *outSignature = nullptr;
+#else
     char *outFn = NULL;
+    char *outSignature = NULL;
+#endif
     FILE *outFnPtr = stdout;
     uint64_t startOffset = 0;
     uint64_t endOffset = 0;
     uint64_t outFileSize = 0;
     uint64_t outFileSizeCounter = 0;
-    char *outSignature = NULL;
     LineCountType outFileLineCount = 0;
     LineLengthType outFileLineMaxStringLength = STARCH_DEFAULT_LINE_STRING_LENGTH;
     BaseCountType outFileNonUniqueBases = 0;
@@ -389,7 +413,11 @@ STARCHCAT2_copyInputRecordToOutput(Metadata **outMd, const char *outTag, const C
     fprintf(stderr, "\tdetermined startOffset -> %" PRId64 "\n", startOffset);
 #endif
 
+#ifdef __cplusplus
+    for (iter = inMd; iter != nullptr; iter = iter->next) {
+#else
     for (iter = inMd; iter != NULL; iter = iter->next) {
+#endif
         if (strcmp(iter->chromosome, inChr) == 0) {
             if (((av->major == 1) && (av->minor >= 4)) || (av->major == 2)) {
                 outFileLineCount = iter->lineCount;
@@ -548,6 +576,15 @@ STARCHCAT_copyInputRecordToOutput(Metadata **outMd, const char *outTag, const Co
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCHCAT_copyInputRecordToOutput() ---\n");
 #endif
+#ifdef __cplusplus
+    FILE *outFnPtr = nullptr;
+    char *outFn = nullptr;
+    char *outSignature = nullptr;
+#else
+    FILE *outFnPtr = NULL;
+    char *outFn = NULL;
+    char *outSignature = NULL;
+#endif
     uint64_t startOffset = inRec->mdOffset;
     uint64_t endOffset = 0;
     uint64_t outFileSize = 0;
@@ -561,9 +598,6 @@ STARCHCAT_copyInputRecordToOutput(Metadata **outMd, const char *outTag, const Co
     Metadata *iter, *inMd = inRec->metadata;
     const ArchiveVersion *av = inRec->av;
     char buffer[STARCHCAT_COPY_BUFFER_MAXSIZE];
-    FILE *outFnPtr = NULL;
-    char *outFn = NULL;
-    char *outSignature = NULL;
     size_t nBytesRead = 0;
 
     if (!inMd) {
@@ -611,7 +645,11 @@ STARCHCAT_copyInputRecordToOutput(Metadata **outMd, const char *outTag, const Co
     }
 
     /* determine the offsets of the stream-of-interest */
+#ifdef __cplusplus
+    for (iter = inMd; iter != nullptr; iter = iter->next) {
+#else
     for (iter = inMd; iter != NULL; iter = iter->next) {
+#endif
         if (strcmp(iter->chromosome, inChr) != 0)
             startOffset += iter->size;
         else {
@@ -761,19 +799,25 @@ STARCHCAT2_rewriteInputRecordToOutput(Metadata **outMd, const char *outTag, cons
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCHCAT2_rewriteInputRecordToOutput() ---\n");
 #endif
+#ifdef __cplusplus
+    char *outTagFn = nullptr;
+    unsigned char *retransformLineBuf = nullptr;
+    unsigned char *retransformBuf = nullptr;
+#else
+    char *outTagFn = NULL;
+    unsigned char *retransformLineBuf = NULL;
+    unsigned char *retransformBuf = NULL;
+#endif
     FILE *inFp = inRec->fp;
     FILE *outFp = stdout;
     CompressionType inType = inRec->type;
-    char *outTagFn = NULL;
     SignedCoordType startOffset = 0;
     Metadata *iter, *inMd = inRec->metadata;
     ArchiveVersion *av = inRec->av;
 
     /* intermediate buffer variables */
-    unsigned char *retransformLineBuf = NULL;
     int64_t nRetransformLineBuf = 0;
     int64_t nRetransformLineBufPos = 0;
-    unsigned char *retransformBuf = NULL;
     int64_t nRetransformBuf = 0;
 
     /* allocate memory for intermediate buffer variables */
@@ -798,17 +842,25 @@ STARCHCAT2_rewriteInputRecordToOutput(Metadata **outMd, const char *outTag, cons
     }
 
     /* bzip2 variables */
+#ifdef __cplusplus
+    BZFILE *bzInFp = nullptr;
+    BZFILE *bzOutFp = nullptr;
+    unsigned char *bzReadBuf = nullptr;
+    unsigned char *bzRemainderBuf = nullptr;
+    unsigned char *bzLineBuf = nullptr;
+#else
     BZFILE *bzInFp = NULL;
     BZFILE *bzOutFp = NULL;
+    unsigned char *bzReadBuf = NULL;
+    unsigned char *bzRemainderBuf = NULL;
+    unsigned char *bzLineBuf = NULL;
+#endif
     int bzInError = BZ_OK;
     int bzOutError = BZ_OK;
-    unsigned char *bzReadBuf = NULL;
     size_t nBzReadBuf = STARCH_BZ_BUFFER_MAX_LENGTH;
-    unsigned char *bzRemainderBuf = NULL;
     size_t nBzRemainderBuf = 0;
     size_t nBzRead = 0;
     size_t bzBufIndex = 0;
-    unsigned char *bzLineBuf = NULL;
     unsigned int bzOutBytesConsumedLo32 = 0U;
     unsigned int bzOutBytesConsumedHi32 = 0U;
     size_t bzOutBytesWritten = 0;
@@ -847,19 +899,27 @@ STARCHCAT2_rewriteInputRecordToOutput(Metadata **outMd, const char *outTag, cons
     }
 
     /* gzip variables */
+#ifdef __cplusplus
+    unsigned char *zOutBuffer = nullptr;
+    unsigned char *zReadBuf = nullptr;
+    unsigned char *zOutBuf = nullptr;
+    unsigned char *zRemainderBuf = nullptr;
+    unsigned char *zLineBuf = nullptr;
+#else
+    unsigned char *zOutBuffer = NULL;
+    unsigned char *zReadBuf = NULL;
+    unsigned char *zOutBuf = NULL;
+    unsigned char *zRemainderBuf = NULL;
+    unsigned char *zLineBuf = NULL;
+#endif
     z_stream zInStream;
     z_stream zOutStream;
     int zInError = -1;
     int zOutError = -1;
-    unsigned char *zOutBuffer = NULL;
-    unsigned char *zReadBuf = NULL;
-    unsigned char *zOutBuf = NULL;
     size_t zInHave = 0;
     size_t zOutHave = 0;
     size_t zBufIndex = 0;
-    unsigned char *zRemainderBuf = NULL;
     size_t nZRemainderBuf = 0;
-    unsigned char *zLineBuf = NULL;
 
     /* allocate memory for gzip variables */
 #ifdef __cplusplus
@@ -913,19 +973,26 @@ STARCHCAT2_rewriteInputRecordToOutput(Metadata **outMd, const char *outTag, cons
     }
 
     /* transformation variables */
+#ifdef __cplusplus
+    char *t_firstInputToken = nullptr;
+    char *t_secondInputToken = nullptr;
+    char *t_currChr = nullptr;
+    char *t_currRemainder = nullptr;
+#else
+    char *t_firstInputToken = NULL;
+    char *t_secondInputToken = NULL;
+    char *t_currChr = NULL;
+    char *t_currRemainder = NULL;
+#endif
     size_t lastNewlineOffset = 0U;
     unsigned char bufChar = '\0';
     size_t bufCharIndex = 0;
     SignedCoordType t_start = 0;
     SignedCoordType t_pLength = 0;
     SignedCoordType t_lastEnd = 0;
-    char *t_firstInputToken = NULL;
-    char *t_secondInputToken = NULL;
-    char *t_currChr = NULL;
     size_t t_currChrLen = 0U;
     SignedCoordType t_currStart = 0;
     SignedCoordType t_currStop = 0;
-    char *t_currRemainder = NULL;
     size_t t_currRemainderLen = 0U;
     LineCountType t_lineIdx = 0;
     SignedCoordType t_pStart = 0;
@@ -964,7 +1031,11 @@ STARCHCAT2_rewriteInputRecordToOutput(Metadata **outMd, const char *outTag, cons
     /* hash variables */
     struct sha1_ctx t_perChromosomeHashCtx;
     unsigned char t_sha1Digest[STARCH2_MD_FOOTER_SHA1_LENGTH] = {0};
+#ifdef __cplusplus
+    char *t_base64EncodedSha1Digest = nullptr;
+#else
     char *t_base64EncodedSha1Digest = NULL;
+#endif
 
     static const char tab = '\t';
 
@@ -1009,7 +1080,11 @@ STARCHCAT2_rewriteInputRecordToOutput(Metadata **outMd, const char *outTag, cons
     else if (av->major == 1)
         startOffset += inRec->mdOffset;
 
+#ifdef __cplusplus
+    for (iter = inMd; iter != nullptr; iter = iter->next) {
+#else
     for (iter = inMd; iter != NULL; iter = iter->next) {
+#endif
         if (strcmp(iter->chromosome, inChr) == 0)
             break;
         else
@@ -1078,9 +1153,15 @@ STARCHCAT2_rewriteInputRecordToOutput(Metadata **outMd, const char *outTag, cons
 #ifdef DEBUG
             fprintf (stderr, "\tsetting up gzip write stream...\n");
 #endif
+#ifdef __cplusplus
+            zOutStream.zalloc = nullptr;
+            zOutStream.zfree  = nullptr;
+            zOutStream.opaque = nullptr;
+#else
             zOutStream.zalloc = Z_NULL;
             zOutStream.zfree  = Z_NULL;
             zOutStream.opaque = Z_NULL;
+#endif
             /* cf. http://www.zlib.net/manual.html for level information */
             /* zOutError = deflateInit2(&zOutStream, STARCH_Z_COMPRESSION_LEVEL, Z_DEFLATED, STARCH_Z_WINDOW_BITS, STARCH_Z_MEMORY_LEVEL, Z_DEFAULT_STRATEGY); */
             zOutError = deflateInit(&zOutStream, STARCH_Z_COMPRESSION_LEVEL);
@@ -1123,7 +1204,11 @@ STARCHCAT2_rewriteInputRecordToOutput(Metadata **outMd, const char *outTag, cons
 #ifdef DEBUG
             fprintf (stderr, "\tsetting up bzip2 read stream...\n");
 #endif
+#ifdef __cplusplus
+            bzInFp = BZ2_bzReadOpen(&bzInError, inFp, STARCH_BZ_VERBOSITY, STARCH_BZ_SMALL, nullptr, 0); /* http://www.bzip.org/1.0.5/bzip2-manual-1.0.5.html#bzreadopen */
+#else
             bzInFp = BZ2_bzReadOpen(&bzInError, inFp, STARCH_BZ_VERBOSITY, STARCH_BZ_SMALL, NULL, 0); /* http://www.bzip.org/1.0.5/bzip2-manual-1.0.5.html#bzreadopen */
+#endif
             if (bzInError != BZ_OK) {
                 switch (bzInError) {
                     case BZ_CONFIG_ERROR: {
@@ -1586,11 +1671,18 @@ STARCHCAT2_rewriteInputRecordToOutput(Metadata **outMd, const char *outTag, cons
 #ifdef DEBUG
             fprintf (stderr, "\tsetting up gzip read stream...\n");
 #endif
+#ifdef __cplusplus
+            zInStream.zalloc = nullptr;
+            zInStream.zfree = nullptr;
+            zInStream.opaque = nullptr;
+            zInStream.next_in = nullptr;
+#else
             zInStream.zalloc = Z_NULL;
             zInStream.zfree = Z_NULL;
             zInStream.opaque = Z_NULL;
-            zInStream.avail_in = 0;
             zInStream.next_in = Z_NULL;
+#endif
+            zInStream.avail_in = 0;
             /* cf. http://www.zlib.net/manual.html for level information */
             zInError = inflateInit2(&zInStream, (15+32));
             if (zInError != Z_OK) {
@@ -2035,7 +2127,11 @@ STARCHCAT2_rewriteInputRecordToOutput(Metadata **outMd, const char *outTag, cons
                     }
                 }
             }
+#ifdef __cplusplus
+            bzOutBytesWritten = static_cast<size_t>( bzOutBytesWrittenHi32 ) << 32 | bzOutBytesWrittenLo32;
+#else
             bzOutBytesWritten = (size_t) bzOutBytesWrittenHi32 << 32 | bzOutBytesWrittenLo32;
+#endif
             t_fileSize += bzOutBytesWritten;
             *cumulativeOutputSize += bzOutBytesWritten;
             bzOutBytesWritten = 0;
@@ -2061,9 +2157,15 @@ STARCHCAT2_rewriteInputRecordToOutput(Metadata **outMd, const char *outTag, cons
                     }
                 }
             }
+#ifdef __cplusplus
+            zOutStream.zalloc = nullptr;
+            zOutStream.zfree  = nullptr;
+            zOutStream.opaque = nullptr;
+#else
             zOutStream.zalloc = Z_NULL;
             zOutStream.zfree  = Z_NULL;
             zOutStream.opaque = Z_NULL;
+#endif
             break;
         }
         case kUndefined: {
@@ -2136,98 +2238,154 @@ STARCHCAT2_rewriteInputRecordToOutput(Metadata **outMd, const char *outTag, cons
         fprintf(stderr, "outTagFn freed...\n");
 #endif
         free(outTagFn);
+#ifdef __cplusplus
+        outTagFn = nullptr;
+#else
         outTagFn = NULL;
+#endif
     }
     if (t_base64EncodedSha1Digest) {
 #ifdef DEBUG
         fprintf(stderr, "t_base64EncodedSha1Digest freed...\n");
 #endif
         free(t_base64EncodedSha1Digest);
+#ifdef __cplusplus
+        t_base64EncodedSha1Digest = nullptr;
+#else
         t_base64EncodedSha1Digest = NULL;
+#endif
     }
     if (retransformLineBuf) {
 #ifdef DEBUG
         fprintf(stderr, "retransformLineBuf freed...\n");
 #endif
         free(retransformLineBuf);
+#ifdef __cplusplus
+        retransformLineBuf = nullptr;
+#else
         retransformLineBuf = NULL;
+#endif
     }
     if (retransformBuf) {
 #ifdef DEBUG
         fprintf(stderr, "retransformBuf freed...\n");
 #endif
         free(retransformBuf);
+#ifdef __cplusplus
+        retransformBuf = nullptr;
+#else
         retransformBuf = NULL;
+#endif
     }
     if (bzReadBuf) {
 #ifdef DEBUG
         fprintf(stderr, "bzReadBuf freed...\n");
 #endif
         free(bzReadBuf);
+#ifdef __cplusplus
+        bzReadBuf = nullptr;
+#else
         bzReadBuf = NULL;
+#endif
     }
     if (bzRemainderBuf) {
 #ifdef DEBUG
         fprintf(stderr, "bzRemainderBuf freed...\n");
 #endif
         free(bzRemainderBuf);
+#ifdef __cplusplus
+        bzRemainderBuf = nullptr;
+#else
         bzRemainderBuf = NULL;
+#endif
     }
     if (bzLineBuf) {
 #ifdef DEBUG
         fprintf(stderr, "bzLineBuf freed...\n");
 #endif
         free(bzLineBuf);
+#ifdef __cplusplus
+        bzLineBuf = nullptr;
+#else
         bzLineBuf = NULL;
+#endif
     }
     if (zOutBuffer) {
 #ifdef DEBUG
         fprintf(stderr, "zOutBuffer freed...\n");
 #endif
         free(zOutBuffer);
+#ifdef __cplusplus
+        zOutBuffer = nullptr;
+#else
         zOutBuffer = NULL;
+#endif
     }
     if (zReadBuf) {
 #ifdef DEBUG
         fprintf(stderr, "zReadBuf freed...\n");
 #endif
         free(zReadBuf);
+#ifdef __cplusplus
+        zReadBuf = nullptr;
+#else
         zReadBuf = NULL;
+#endif
     }
     if (zOutBuf) {
 #ifdef DEBUG
         fprintf(stderr, "zOutBuf freed...\n");
 #endif
         free(zOutBuf);
+#ifdef __cplusplus
+        zOutBuf = nullptr;
+#else
         zOutBuf = NULL;
+#endif
     }
     if (zRemainderBuf) {
 #ifdef DEBUG
         fprintf(stderr, "zRemainderBuf freed...\n");
 #endif
         free(zRemainderBuf);
+#ifdef __cplusplus
+        zRemainderBuf = nullptr;
+#else
         zRemainderBuf = NULL;
+#endif
     }
     if (zLineBuf) {
 #ifdef DEBUG
         fprintf(stderr, "zLineBuf freed...\n");
 #endif
         free(zLineBuf);
+#ifdef __cplusplus
+        zLineBuf = nullptr;
+#else
         zLineBuf = NULL;
+#endif
     }
     if (t_firstInputToken) {
 #ifdef DEBUG
         fprintf(stderr, "t_firstInputToken freed...\n");
 #endif
         free(t_firstInputToken);
+#ifdef __cplusplus
+        t_firstInputToken = nullptr;
+#else
         t_firstInputToken = NULL;
+#endif
     }
     if (t_secondInputToken) {
 #ifdef DEBUG
         fprintf(stderr, "t_secondInputToken freed...\n");
 #endif
         free(t_secondInputToken);
+#ifdef __cplusplus
+        t_secondInputToken = nullptr;
+#else
         t_secondInputToken = NULL;
+#endif
     }
 
     return STARCHCAT_EXIT_SUCCESS;
@@ -2245,14 +2403,22 @@ STARCHCAT_rewriteInputRecordToOutput(Metadata **outMd, const char *outTag, const
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCHCAT_rewriteInputRecordToOutput() ---\n");
 #endif
-    FILE *inFp = inRec->fp;
-    Metadata *inMd = inRec->metadata;
-    CompressionType inType = inRec->type;
+#ifdef __cplusplus
+    char *uncomprOutFn = nullptr;
+    char *comprOutFn = nullptr;
+    FILE *uncomprOutFnPtr = nullptr;
+    FILE *transformFnPtr = nullptr;
+    char *note = nullptr;
+#else
     char *uncomprOutFn = NULL;
     char *comprOutFn = NULL;
     FILE *uncomprOutFnPtr = NULL;
     FILE *transformFnPtr = NULL;
     char *note = NULL;
+#endif
+    FILE *inFp = inRec->fp;
+    Metadata *inMd = inRec->metadata;
+    CompressionType inType = inRec->type;
 
     /* extract input record to uncompressed file */
 #ifdef __cplusplus
@@ -2325,7 +2491,11 @@ STARCHCAT_rewriteInputRecordToOutput(Metadata **outMd, const char *outTag, const
 
     /* cleanup */
     fclose(uncomprOutFnPtr);
+#ifdef __cplusplus
+    uncomprOutFnPtr = nullptr;
+#else
     uncomprOutFnPtr = NULL;
+#endif
 
     /* transform and recompress extracted, headerless data with new output type */
     transformFnPtr = STARCH_fopen(uncomprOutFn, "rb");
@@ -2357,7 +2527,11 @@ STARCHCAT_rewriteInputRecordToOutput(Metadata **outMd, const char *outTag, const
 
     /* cleanup */
     fclose(transformFnPtr);
+#ifdef __cplusplus
+    transformFnPtr = nullptr;
+#else
     transformFnPtr = NULL;
+#endif
 
     /* delete uncompressed/untransformed file */
     if ( remove(uncomprOutFn) != 0 ) {
@@ -2407,11 +2581,19 @@ STARCHCAT2_parseCoordinatesFromBedLine(const char *lineBuf, const size_t inRecId
 #ifdef __cplusplus
             switch (fieldIdx) {
                 case TOKEN_START_FIELD_INDEX: {
+#ifdef __cplusplus
+                    starts[inRecIdx] = static_cast<SignedCoordType>( strtoll(reinterpret_cast<const char *>( fieldBuf ), nullptr, STARCH_RADIX) );
+#else
                     starts[inRecIdx] = static_cast<SignedCoordType>( strtoll(reinterpret_cast<const char *>( fieldBuf ), NULL, STARCH_RADIX) );
+#endif
                     break;
                 }
                 case TOKEN_STOP_FIELD_INDEX: {
+#ifdef __cplusplus
+                    stops[inRecIdx] = static_cast<SignedCoordType>( strtoll(reinterpret_cast<const char *>( fieldBuf ), nullptr, STARCH_RADIX) );
+#else
                     stops[inRecIdx] = static_cast<SignedCoordType>( strtoll(reinterpret_cast<const char *>( fieldBuf ), NULL, STARCH_RADIX) );
+#endif
                     break;
                 }
                 default:
@@ -2420,11 +2602,19 @@ STARCHCAT2_parseCoordinatesFromBedLine(const char *lineBuf, const size_t inRecId
 #else
             switch (fieldIdx) {
                 case TOKEN_START_FIELD_INDEX: {
+#ifdef __cplusplus
+                    starts[inRecIdx] = (SignedCoordType) strtoll((const char *)fieldBuf, nullptr, STARCH_RADIX);
+#else
                     starts[inRecIdx] = (SignedCoordType) strtoll((const char *)fieldBuf, NULL, STARCH_RADIX);
+#endif
                     break;
                 }
                 case TOKEN_STOP_FIELD_INDEX: {
+#ifdef __cplusplus
+                    stops[inRecIdx] = (SignedCoordType) strtoll((const char *)fieldBuf, nullptr, STARCH_RADIX);
+#else
                     stops[inRecIdx] = (SignedCoordType) strtoll((const char *)fieldBuf, NULL, STARCH_RADIX);
+#endif
                     break;
                 }
                 default:
@@ -2572,7 +2762,11 @@ STARCHCAT2_identifyLowestBedElementV2p2(const Boolean *eobFlags, const SignedCoo
 
     if (checkStopFlag == kStarchTrue) {
 
+#ifdef __cplusplus
+        size_t *lowestStopMatches = nullptr;
+#else
         size_t *lowestStopMatches = NULL;
+#endif
         size_t lowestStopMatchesCapacity = 0;
 #ifdef __cplusplus
         lowestStopMatches = static_cast<size_t *> (malloc(numRecords * sizeof(*lowestStopMatches)));
@@ -2618,7 +2812,11 @@ STARCHCAT2_identifyLowestBedElementV2p2(const Boolean *eobFlags, const SignedCoo
         }
 
         free(lowestStopMatches);
+#ifdef __cplusplus
+        lowestStopMatches = nullptr;
+#else
         lowestStopMatches = NULL;
+#endif
     }
 
 #ifdef DEBUG
@@ -2707,31 +2905,68 @@ STARCHCAT2_mergeInputRecordsToOutput(const char *inChr, Metadata **outMd, const 
             b. If all starch files are off-line, do the same, but quit afterwards -- we're done.
     */
 
-    size_t inRecIdx = 0U;
+#ifdef __cplusplus
+    char **extractionBuffers = nullptr;
+    size_t *nExtractionBuffers = nullptr;
+    int *extractionBufferOffsets = nullptr;
+    char **extractionRemainderBufs = nullptr;
+    size_t *nExtractionRemainderBufs = nullptr;
+    char *compressionBuffer = nullptr;
+    LineCountType *extractedLineCounts = nullptr;
+    char **extractedElements = nullptr;
+    SignedCoordType *starts = nullptr;
+    SignedCoordType *stops = nullptr;
+    char **remainders = nullptr;
+    Boolean *eobFlags = nullptr;
+    Boolean *eofFlags = nullptr;
+    FILE *inFp = nullptr;
+    BZFILE *bzOutFp = nullptr;
+    FILE **zInFps = nullptr;
+    BZFILE **bzInFps = nullptr;
+    z_stream *zInStreams = nullptr;
+    char *finalSignature = nullptr;
+    char *finalOutTagFn = nullptr;
+    MetadataRecord *inRecord = nullptr;
+    size_t *nBzReads = nullptr;
+    size_t *nZReads = nullptr;
+    TransformState **transformStates = nullptr;
+    char *retransformedOutputBuffer = nullptr;
+    TransformState *outputRetransformState = nullptr;
+#else
     char **extractionBuffers = NULL;
     size_t *nExtractionBuffers = NULL;
     int *extractionBufferOffsets = NULL;
     char **extractionRemainderBufs = NULL;
     size_t *nExtractionRemainderBufs = NULL;
     char *compressionBuffer = NULL;
-    LineCountType compressionLineCount = 0;
     LineCountType *extractedLineCounts = NULL;
     char **extractedElements = NULL;
     SignedCoordType *starts = NULL;
     SignedCoordType *stops = NULL;
     char **remainders = NULL;
-    size_t remainderCapacity = TOKENS_MAX_LENGTH + 1;
-    size_t lowestStartElementIdx = 0U;
     Boolean *eobFlags = NULL;
     Boolean *eofFlags = NULL;
-    Boolean allEOF = kStarchFalse;
     FILE *inFp = NULL;
-    FILE *outFp = stdout;
     BZFILE *bzOutFp = NULL;
     FILE **zInFps = NULL;
-    z_stream zOutStream;
     BZFILE **bzInFps = NULL;
     z_stream *zInStreams = NULL;
+    char *finalSignature = NULL;
+    char *finalOutTagFn = NULL;
+    MetadataRecord *inRecord = NULL;
+    size_t *nBzReads = NULL;
+    size_t *nZReads = NULL;
+    TransformState **transformStates = NULL;
+    char *retransformedOutputBuffer = NULL;
+    TransformState *outputRetransformState = NULL;
+#endif
+    size_t inRecIdx = 0U;
+    LineCountType compressionLineCount = 0;
+    size_t remainderCapacity = TOKENS_MAX_LENGTH + 1;
+    size_t lowestStartElementIdx = 0U;
+    Boolean allEOF = kStarchFalse;
+    FILE *outFp = stdout;
+    z_stream zOutStream;
     CompressionType inType = kUndefined;
     uint64_t bzOutBytesConsumed = 0;
     uint64_t bzOutBytesWritten = 0;
@@ -2742,14 +2977,6 @@ STARCHCAT2_mergeInputRecordsToOutput(const char *inChr, Metadata **outMd, const 
     BaseCountType finalTotalUniqueBases = 0;
     Boolean finalDuplicateElementExists = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
     Boolean finalNestedElementExists = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
-    char *finalSignature = NULL;
-    char *finalOutTagFn = NULL;
-    MetadataRecord *inRecord = NULL;
-    size_t *nBzReads = NULL;
-    size_t *nZReads = NULL;
-    TransformState **transformStates = NULL;
-    char *retransformedOutputBuffer = NULL;
-    TransformState *outputRetransformState = NULL;
     Boolean flushZStreamFlag = kStarchFalse;
     size_t nCompressionBuffer = STARCHCAT_RETRANSFORM_LINE_COUNT_MAX * TOKENS_MAX_LENGTH + 1;
     int lowestElementRes = STARCHCAT_EXIT_SUCCESS;
@@ -2757,7 +2984,11 @@ STARCHCAT2_mergeInputRecordsToOutput(const char *inChr, Metadata **outMd, const 
     /* hash variables */
     struct sha1_ctx r_perChromosomeHashCtx;
     unsigned char r_sha1Digest[STARCH2_MD_FOOTER_SHA1_LENGTH];
+#ifdef __cplusplus
+    char *r_base64EncodedSha1Digest = nullptr;
+#else
     char *r_base64EncodedSha1Digest = NULL;
+#endif
 
     /* setup */
 #ifdef __cplusplus
@@ -3008,7 +3239,11 @@ STARCHCAT2_mergeInputRecordsToOutput(const char *inChr, Metadata **outMd, const 
         outputRetransformState->r_lastPosition              = 0;
         outputRetransformState->r_totalNonUniqueBases       = 0;
         outputRetransformState->r_totalUniqueBases          = 0;
+#ifdef __cplusplus
+        outputRetransformState->r_signature                 = nullptr;
+#else
         outputRetransformState->r_signature                 = NULL;
+#endif
         outputRetransformState->r_lineMaxStringLength       = STARCH_DEFAULT_LINE_STRING_LENGTH;
         outputRetransformState->r_duplicateElementExists    = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
         outputRetransformState->r_nestedElementExists       = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
@@ -3324,19 +3559,35 @@ STARCHCAT2_mergeInputRecordsToOutput(const char *inChr, Metadata **outMd, const 
         if (STARCHCAT2_testSummaryForChromosomeExistence(inChr, summary, inRecIdx) == STARCHCAT_EXIT_SUCCESS) { 
             if (extractionBuffers[inRecIdx]) {
                 free(extractionBuffers[inRecIdx]);
+#ifdef __cplusplus
+                extractionBuffers[inRecIdx] = nullptr;
+#else
                 extractionBuffers[inRecIdx] = NULL;
+#endif
             }
             if (extractedElements[inRecIdx]) {
                 free(extractedElements[inRecIdx]);
+#ifdef __cplusplus
+                extractedElements[inRecIdx] = nullptr;
+#else
                 extractedElements[inRecIdx] = NULL;
+#endif
             }
             if (extractionRemainderBufs[inRecIdx]) {
                 free(extractionRemainderBufs[inRecIdx]);
+#ifdef __cplusplus
+                extractionRemainderBufs[inRecIdx] = nullptr;
+#else
                 extractionRemainderBufs[inRecIdx] = NULL;
+#endif
             }
             if (remainders[inRecIdx]) {
                 free(remainders[inRecIdx]);
+#ifdef __cplusplus
+                remainders[inRecIdx] = nullptr;
+#else
                 remainders[inRecIdx] = NULL;
+#endif
             }
             inRecord = *(summary->records) + inRecIdx;
             inType = inRecord->type; /* get record type of input stream */
@@ -3364,95 +3615,187 @@ STARCHCAT2_mergeInputRecordsToOutput(const char *inChr, Metadata **outMd, const 
     }
     if (extractionBuffers) {
         free(extractionBuffers);
+#ifdef __cplusplus
+        extractionBuffers = nullptr;
+#else
         extractionBuffers = NULL;
+#endif
     }
     if (nExtractionBuffers) {
         free(nExtractionBuffers);
+#ifdef __cplusplus
+        nExtractionBuffers = nullptr;
+#else
         nExtractionBuffers = NULL;
+#endif
     }
     if (extractionBufferOffsets) {
         free(extractionBufferOffsets);
+#ifdef __cplusplus
+        extractionBufferOffsets = nullptr;
+#else
         extractionBufferOffsets = NULL;
+#endif
     }
     if (compressionBuffer) {
         free(compressionBuffer);
+#ifdef __cplusplus
+        compressionBuffer = nullptr;
+#else
         compressionBuffer = NULL;
+#endif
     }
     if (zInFps) {
         free(zInFps);
+#ifdef __cplusplus
+        zInFps = nullptr;
+#else
         zInFps = NULL;
+#endif
     }
     if (extractedLineCounts) {
         free(extractedLineCounts);
+#ifdef __cplusplus
+        extractedLineCounts = nullptr;
+#else
         extractedLineCounts = NULL;
+#endif
     }
     if (extractedElements) {
         free(extractedElements);
+#ifdef __cplusplus
+        extractedElements = nullptr;
+#else
         extractedElements = NULL;
+#endif
     }
     if (eobFlags) {
         free(eobFlags);
+#ifdef __cplusplus
+        eobFlags = nullptr;
+#else
         eobFlags = NULL;
+#endif
     }
     if (eofFlags) {
         free(eofFlags);
+#ifdef __cplusplus
+        eofFlags = nullptr;
+#else
         eofFlags = NULL;
+#endif
     }
     if (starts) {
         free(starts);
+#ifdef __cplusplus
+        starts = nullptr;
+#else
         starts = NULL;
+#endif
     }
     if (stops) {
         free(stops);
+#ifdef __cplusplus
+        stops = nullptr;
+#else
         stops = NULL;
+#endif
     }
     if (remainders) {
         free(remainders);
+#ifdef __cplusplus
+        remainders = nullptr;
+#else
         remainders = NULL;
+#endif
     }
     if (transformStates) {
         free(transformStates);
+#ifdef __cplusplus
+        transformStates = nullptr;
+#else
         transformStates = NULL;
+#endif
     }
     if (extractionRemainderBufs) {
         free(extractionRemainderBufs);
+#ifdef __cplusplus
+        extractionRemainderBufs = nullptr;
+#else
         extractionRemainderBufs = NULL;
+#endif
     }
     if (nExtractionRemainderBufs) {
         free(nExtractionRemainderBufs);
+#ifdef __cplusplus
+        nExtractionRemainderBufs = nullptr;
+#else
         nExtractionRemainderBufs = NULL;
+#endif
     }
     if (bzInFps) {
         free(bzInFps);
+#ifdef __cplusplus
+        bzInFps = nullptr;
+#else
         bzInFps = NULL;
+#endif
     }
     if (nBzReads) {
         free(nBzReads);
+#ifdef __cplusplus
+        nBzReads = nullptr;
+#else
         nBzReads = NULL;
+#endif
     }
     if (zInStreams) {
         free(zInStreams);
+#ifdef __cplusplus
+        zInStreams = nullptr;
+#else
         zInStreams = NULL;
+#endif
     }
     if (nZReads) {
         free(nZReads);
+#ifdef __cplusplus
+        nZReads = nullptr;
+#else
         nZReads = NULL;
+#endif
     }
     if (retransformedOutputBuffer) {
         free(retransformedOutputBuffer);
+#ifdef __cplusplus
+        retransformedOutputBuffer = nullptr;
+#else
         retransformedOutputBuffer = NULL;
+#endif
     }
     if (outputRetransformState) {
         free(outputRetransformState);
+#ifdef __cplusplus
+        outputRetransformState = nullptr;
+#else
         outputRetransformState = NULL;
+#endif
     }
     if (finalOutTagFn) {
         free(finalOutTagFn);
+#ifdef __cplusplus
+        finalOutTagFn = nullptr;
+#else
         finalOutTagFn = NULL;
+#endif
     }
     if (r_base64EncodedSha1Digest) {
         free(r_base64EncodedSha1Digest);
+#ifdef __cplusplus
+        r_base64EncodedSha1Digest = nullptr;
+#else
         r_base64EncodedSha1Digest = NULL;
+#endif
     }
 
     return STARCHCAT_EXIT_SUCCESS;
@@ -3472,19 +3815,39 @@ STARCHCAT_mergeInputRecordsToOutput(Metadata **outMd, const char *outTag, const 
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCHCAT_mergeInputRecordsToOutput() ---\n");
 #endif
+#ifdef __cplusplus
+    MetadataRecord *inRec = nullptr;
+    char *tempOutFn = nullptr;
+    char **tempOutFns = nullptr;
+    FILE *tempOutFp = nullptr;
+    FILE **tempOutFps = nullptr;
+    char **lineBuffers = nullptr;
+    SignedCoordType *starts = nullptr;
+    SignedCoordType *stops = nullptr;
+    int *lowestStartIdxs = nullptr;
+    char *uncomprOutFn = nullptr;
+    FILE *uncomprOutFnPtr = nullptr;
+    FILE *transformFnPtr = nullptr;
+    char *note = nullptr;
+#else
     MetadataRecord *inRec = NULL;
     char *tempOutFn = NULL;
     char **tempOutFns = NULL;
     FILE *tempOutFp = NULL;
     FILE **tempOutFps = NULL;
-    unsigned int inRecIdx;
-    unsigned int allEOFFlag = 0U;
     char **lineBuffers = NULL;
-    unsigned int bufferIdx;
-    int c;
     SignedCoordType *starts = NULL;
     SignedCoordType *stops = NULL;
     int *lowestStartIdxs = NULL;
+    char *uncomprOutFn = NULL;
+    FILE *uncomprOutFnPtr = NULL;
+    FILE *transformFnPtr = NULL;
+    char *note = NULL;
+#endif
+    unsigned int inRecIdx;
+    unsigned int allEOFFlag = 0U;
+    unsigned int bufferIdx;
+    int c;
     unsigned int lsiIdx, lsiTestIdx;
     SignedCoordType lowestStart;
     SignedCoordType lowestStop;
@@ -3492,10 +3855,6 @@ STARCHCAT_mergeInputRecordsToOutput(Metadata **outMd, const char *outTag, const 
     unsigned long fieldIdx;
     char fieldBuffer[STARCHCAT_FIELD_BUFFER_MAX_LENGTH];
     unsigned int fieldBufferIdx;
-    char *uncomprOutFn = NULL;
-    FILE *uncomprOutFnPtr = NULL;
-    FILE *transformFnPtr = NULL;
-    char *note = NULL;
 
     /* 
         Set up temporary output streams, which will contain uncompressed,
@@ -3679,8 +4038,13 @@ STARCHCAT_mergeInputRecordsToOutput(Metadata **outMd, const char *outTag, const 
         */
         for (inRecIdx = 0U; inRecIdx < summary->numRecords; inRecIdx++) {
             fieldIdx = 0U;
+#ifdef __cplusplus
+            if (lineBuffers[inRecIdx] == nullptr) 
+                continue;
+#else
             if (lineBuffers[inRecIdx] == NULL) 
                 continue;
+#endif
             for (bufferIdx = 0U, fieldBufferIdx = 0U; bufferIdx < strlen(lineBuffers[inRecIdx]); bufferIdx++, fieldBufferIdx++) {
                 fieldBuffer[fieldBufferIdx] = lineBuffers[inRecIdx][bufferIdx];
                 if (fieldBuffer[fieldBufferIdx] == '\t') {
@@ -3689,9 +4053,9 @@ STARCHCAT_mergeInputRecordsToOutput(Metadata **outMd, const char *outTag, const 
                     fieldBufferIdx = static_cast<unsigned int>( -1 );
                     fieldIdx++;
                     if (fieldIdx == 2)
-                        starts[inRecIdx] = static_cast<SignedCoordType>( strtoll(fieldBuffer, NULL, 10) );
+                        starts[inRecIdx] = static_cast<SignedCoordType>( strtoll(fieldBuffer, nullptr, 10) );
                     else if (fieldIdx == 3)
-                        stops[inRecIdx] = static_cast<SignedCoordType>( strtoll(fieldBuffer, NULL, 10) );
+                        stops[inRecIdx] = static_cast<SignedCoordType>( strtoll(fieldBuffer, nullptr, 10) );
                     else if (fieldIdx > 3)
                         break;
 #else
@@ -3713,8 +4077,13 @@ STARCHCAT_mergeInputRecordsToOutput(Metadata **outMd, const char *outTag, const 
         */
         lsiIdx = 0U;
         for (inRecIdx = 0U; inRecIdx < summary->numRecords; inRecIdx++) {
+#ifdef __cplusplus
+            if (lineBuffers[inRecIdx] == nullptr) 
+                continue;
+#else
             if (lineBuffers[inRecIdx] == NULL) 
                 continue;
+#endif
             if (starts[inRecIdx] < lowestStart) {
                 lowestStart = starts[inRecIdx];
                 lsiIdx = 0U;
@@ -3771,7 +4140,11 @@ STARCHCAT_mergeInputRecordsToOutput(Metadata **outMd, const char *outTag, const 
             while ( (c = fgetc(tempOutFps[lsiIdx])) ) {
                 if (c == EOF) {
                     free(lineBuffers[lsiIdx]);
+#ifdef __cplusplus
+                    lineBuffers[lsiIdx] = nullptr;
+#else
                     lineBuffers[lsiIdx] = NULL;
+#endif
                     break;
                 }
 #ifdef __cplusplus
@@ -3804,7 +4177,11 @@ STARCHCAT_mergeInputRecordsToOutput(Metadata **outMd, const char *outTag, const 
             while ( (c = fgetc(tempOutFps[lowestStopIdx])) ) {
                 if (c == EOF) {
                     free(lineBuffers[lowestStopIdx]);
+#ifdef __cplusplus
+                    lineBuffers[lowestStopIdx] = nullptr;
+#else
                     lineBuffers[lowestStopIdx] = NULL;
+#endif
                     break;
                 }
 #ifdef __cplusplus
@@ -3823,7 +4200,11 @@ STARCHCAT_mergeInputRecordsToOutput(Metadata **outMd, const char *outTag, const 
         */
         allEOFFlag = 1;
         for (inRecIdx = 0U; inRecIdx < summary->numRecords; inRecIdx++) {
+#ifdef __cplusplus
+            if (lineBuffers[inRecIdx] != nullptr) {
+#else
             if (lineBuffers[inRecIdx] != NULL) {
+#endif
                 allEOFFlag = 0;
                 break;
             }
@@ -3905,7 +4286,11 @@ STARCHCAT_mergeInputRecordsToOutput(Metadata **outMd, const char *outTag, const 
 #endif
 
     fclose(transformFnPtr);
+#ifdef __cplusplus
+    transformFnPtr = nullptr;
+#else
     transformFnPtr = NULL;
+#endif
 
     /* 
         Delete uncompressed (untransformed) file as we no longer need it.
@@ -3933,15 +4318,25 @@ STARCHCAT_mergeChromosomeStreams(const ChromosomeSummaries *chrSums, const Compr
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCHCAT_mergeChromosomeStreams() ---\n");
 #endif
-    unsigned int chrIdx = 0U;
+#ifdef __cplusplus
+    ChromosomeSummary *summary = nullptr;
+    MetadataRecord *inputRecord = nullptr;
+    Metadata *headOutputMd = nullptr;
+    Metadata *outputMd = nullptr;
+    char *outputTag = nullptr;
+    char *inputChr = nullptr;
+    char *dynamicMdBuffer = nullptr;
+#else
     ChromosomeSummary *summary = NULL;
-    CompressionType inputType;
     MetadataRecord *inputRecord = NULL;
     Metadata *headOutputMd = NULL;
     Metadata *outputMd = NULL;
     char *outputTag = NULL;
     char *inputChr = NULL;
     char *dynamicMdBuffer = NULL;
+#endif
+    unsigned int chrIdx = 0U;
+    CompressionType inputType;
     Boolean firstOutputMd = kStarchTrue;
     Boolean hFlag = kStarchFalse; /* starchcat does not currently support headers */
 
@@ -4123,7 +4518,11 @@ STARCHCAT_freeChromosomeNames(char ***chrs, unsigned int numChromosomes)
     }
 
     free(*chrs);
+#ifdef __cplusplus
+    *chrs = nullptr;
+#else
     *chrs = NULL;
+#endif
 
     return STARCHCAT_EXIT_SUCCESS;
 }
@@ -4144,7 +4543,11 @@ STARCHCAT_freeChromosomeSummaries (ChromosomeSummaries **chrSums)
     STARCHCAT_freeChromosomeSummary( &((*chrSums)->summary), (const unsigned int) (*chrSums)->numChromosomes );
 #endif
     free(*chrSums);
+#ifdef __cplusplus
+    *chrSums = nullptr;
+#else
     *chrSums = NULL;
+#endif
 
     return STARCHCAT_EXIT_SUCCESS;
 }
@@ -4161,16 +4564,20 @@ STARCHCAT_allocChromosomeSummaries(ChromosomeSummaries **chrSums, const unsigned
 
 #ifdef __cplusplus
     *chrSums = static_cast<ChromosomeSummaries *>( malloc( sizeof(ChromosomeSummaries) * numChromosomes ) );
+    if (*chrSums == nullptr) {
+        fprintf(stderr, "ERROR: Could not allocate space for chromosome summaries.\n");
+        return STARCHCAT_EXIT_FAILURE;
+    }
+    (*chrSums)->summary = nullptr;
 #else
     *chrSums = malloc( sizeof(ChromosomeSummaries) * numChromosomes );
-#endif
-
     if (*chrSums == NULL) {
         fprintf(stderr, "ERROR: Could not allocate space for chromosome summaries.\n");
         return STARCHCAT_EXIT_FAILURE;
     }
-
     (*chrSums)->summary = NULL;
+#endif
+
     (*chrSums)->numChromosomes = 0U;
 
     return STARCHCAT_EXIT_SUCCESS;
@@ -4204,12 +4611,19 @@ STARCHCAT_printChromosomeSummaries(const ChromosomeSummaries *chrSums)
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCHCAT_printChromosomeSummaries() ---\n");
 #endif
-    unsigned int chrIdx = 0U;
-    unsigned int recIdx = 0U;
+#ifdef __cplusplus
+    ChromosomeSummary *summary = nullptr;
+    MetadataRecord **recs = nullptr;
+    MetadataRecord *mdRecord = nullptr;
+    Metadata *iter, *md = nullptr;
+#else
     ChromosomeSummary *summary = NULL;
     MetadataRecord **recs = NULL;
     MetadataRecord *mdRecord = NULL;
     Metadata *iter, *md = NULL;
+#endif
+    unsigned int chrIdx = 0U;
+    unsigned int recIdx = 0U;
 
     if (!chrSums)
         return STARCHCAT_EXIT_FAILURE;
@@ -4224,11 +4638,13 @@ STARCHCAT_printChromosomeSummaries(const ChromosomeSummaries *chrSums)
             mdRecord = recs[recIdx];
 #ifdef __cplusplus
             md = static_cast<Metadata *>( mdRecord->metadata );
+            /* loop through Metadata * to look for matching chromosome */
+            for (iter = md; iter != nullptr; iter = iter->next) {
 #else
             md = (Metadata *) mdRecord->metadata;
-#endif
             /* loop through Metadata * to look for matching chromosome */
             for (iter = md; iter != NULL; iter = iter->next) {
+#endif
 #ifdef DEBUG
                 fprintf(stderr, "COMPARING [%s] chromosome iter [%s] vs summary [%s]\n", mdRecord->filename, iter->chromosome, summary->chromosome);
 #endif
@@ -4289,11 +4705,18 @@ STARCHCAT_freeChromosomeSummary(ChromosomeSummary **summary, const unsigned int 
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCHCAT_freeChromosomeSummary() ---\n");
 #endif
-    unsigned int chrIdx = 0U;
+#ifdef __cplusplus
+    ChromosomeSummary *summaryInstance = nullptr;
+
+    if (*summary == nullptr)
+        return STARCHCAT_EXIT_SUCCESS;
+#else
     ChromosomeSummary *summaryInstance = NULL;
 
     if (*summary == NULL)
         return STARCHCAT_EXIT_SUCCESS;
+#endif
+    unsigned int chrIdx = 0U;
 
     for (chrIdx = 0U; chrIdx < numChromosomes; chrIdx++) {
         summaryInstance = *summary + chrIdx;
@@ -4302,7 +4725,11 @@ STARCHCAT_freeChromosomeSummary(ChromosomeSummary **summary, const unsigned int 
 #endif
         if (summaryInstance->chromosome) {
             free( summaryInstance->chromosome );
+#ifdef __cplusplus
+            summaryInstance->chromosome = nullptr;
+#else
             summaryInstance->chromosome = NULL;
+#endif
         }
         if (summaryInstance->records)
             if ( STARCHCAT_freeMetadataRecords(summaryInstance->records, summaryInstance->numRecords) != STARCHCAT_EXIT_SUCCESS )
@@ -4318,10 +4745,18 @@ STARCHCAT_allocChromosomeSummary(ChromosomeSummary **summary, const unsigned int
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCHCAT_allocChromosomeSummary() ---\n");
 #endif
-    unsigned int chrIdx = 0U;
+#ifdef __cplusplus
+    ChromosomeSummary *instance = nullptr;
+#else
     ChromosomeSummary *instance = NULL;
+#endif
+    unsigned int chrIdx = 0U;
 
+#ifdef __cplusplus
+    if (*summary != nullptr) {
+#else
     if (*summary != NULL) {
+#endif
         fprintf(stderr, "ERROR: Chromosome summary is not empty.\n");
         return STARCHCAT_EXIT_FAILURE;
     }
@@ -4332,10 +4767,18 @@ STARCHCAT_allocChromosomeSummary(ChromosomeSummary **summary, const unsigned int
 
 #ifdef __cplusplus
     *summary = static_cast<ChromosomeSummary *>( malloc( sizeof(ChromosomeSummary) * numChromosomes ) );
+    if (*summary == nullptr) {
+        fprintf(stderr, "ERROR: Could not allocate space for chromosome summary.\n");
+        return STARCHCAT_EXIT_FAILURE;
+    }
+    for (chrIdx = 0U; chrIdx < numChromosomes; chrIdx++) {
+        instance = *summary + chrIdx;
+        instance->chromosome = nullptr;
+        instance->records = nullptr;
+        instance->numRecords = 0U;
+    }
 #else
     *summary = malloc( sizeof(ChromosomeSummary) * numChromosomes );
-#endif
-
     if (*summary == NULL) {
         fprintf(stderr, "ERROR: Could not allocate space for chromosome summary.\n");
         return STARCHCAT_EXIT_FAILURE;
@@ -4346,6 +4789,7 @@ STARCHCAT_allocChromosomeSummary(ChromosomeSummary **summary, const unsigned int
         instance->records = NULL;
         instance->numRecords = 0U;
     }
+#endif
 
     return STARCHCAT_EXIT_SUCCESS;
 }
@@ -4356,11 +4800,15 @@ STARCHCAT_buildChromosomeSummary(ChromosomeSummary **summary, const MetadataReco
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCHCAT_buildChromosomeSummary() ---\n");
 #endif
+#ifdef __cplusplus
+    Metadata *iter, *md = nullptr;
+#else
+    Metadata *iter, *md = NULL;
+#endif
     unsigned int numHits;
     unsigned int chrIdx;
     unsigned int recIdx;
     unsigned int hitIdx;
-    Metadata *iter, *md = NULL;
     ChromosomeSummary *instance;
 
     for (chrIdx = 0U; chrIdx < numChromosomes; chrIdx++) {
@@ -4372,7 +4820,11 @@ STARCHCAT_buildChromosomeSummary(ChromosomeSummary **summary, const MetadataReco
         instance->chromosome = STARCH_strdup( *(chromosomes + chrIdx) );
         for (recIdx = 0U; recIdx < numRecords; recIdx++) {
             md = (mdRecords + recIdx)->metadata;
+#ifdef __cplusplus
+            for (iter = md; iter != nullptr; iter = iter->next) {
+#else
             for (iter = md; iter != NULL; iter = iter->next) {
+#endif
 #ifdef DEBUG
                 fprintf(stderr, "\tcomparing [%s] against [record %u | %s]...\n", instance->chromosome, recIdx, iter->chromosome);
 #endif
@@ -4395,10 +4847,18 @@ STARCHCAT_buildChromosomeSummary(ChromosomeSummary **summary, const MetadataReco
 #endif
         instance->numRecords = numHits;
 
+#ifdef __cplusplus
+        if (instance->records != nullptr) {
+#else
         if (instance->records != NULL) {
+#endif
             for (recIdx = 0U, hitIdx = 0U; recIdx < numRecords; recIdx++) {
                 md = (mdRecords + recIdx)->metadata;
+#ifdef __cplusplus
+                for (iter = md; iter != nullptr; iter = iter->next)
+#else
                 for (iter = md; iter != NULL; iter = iter->next)
+#endif
                     if (strcmp(instance->chromosome, iter->chromosome) == 0) {
 #ifdef DEBUG
                         fprintf(stderr, "\treferencing metadata record idx %u -> hit idx %u\n", recIdx, hitIdx);
@@ -4430,7 +4890,11 @@ STARCHCAT_copyMetadataRecord(const MetadataRecord *mdRec)
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCHCAT_copyMetadataRecord() ---\n");
 #endif
+#ifdef __cplusplus
+    MetadataRecord *copy = nullptr;
+#else
     MetadataRecord *copy = NULL;
+#endif
 
 #ifdef __cplusplus
     copy = static_cast<MetadataRecord *>( malloc(sizeof(MetadataRecord)) );
@@ -4456,13 +4920,21 @@ STARCHCAT_buildUniqueChromosomeList(char ***chromosomes, unsigned int *numChr, c
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCHCAT_buildUniqueChromosomeList() ---\n");
 #endif
-    unsigned int idx = 0U;
-    size_t uninitIdx = 0U;
+#ifdef __cplusplus
+    Metadata *iter, *md = nullptr;
+    char **chr = nullptr;
+    char **chrCopy = nullptr;
+    char **sortedChr = nullptr;
+    char **sortedUniqChr = nullptr;
+#else
     Metadata *iter, *md = NULL;
     char **chr = NULL;
     char **chrCopy = NULL;
     char **sortedChr = NULL;
     char **sortedUniqChr = NULL;
+#endif
+    unsigned int idx = 0U;
+    size_t uninitIdx = 0U;
     size_t totalChr = 1;
     size_t currChr = 1;
     unsigned int allSortedChr = 0;
@@ -4475,7 +4947,11 @@ STARCHCAT_buildUniqueChromosomeList(char ***chromosomes, unsigned int *numChr, c
 #ifdef DEBUG
         fprintf(stderr, "\t%s\n", (mdRecords + idx)->filename);
 #endif
+#ifdef __cplusplus
+        for (iter = md; iter != nullptr; iter = iter->next, currChr++) {
+#else
         for (iter = md; iter != NULL; iter = iter->next, currChr++) {
+#endif
             if (currChr == totalChr) {
                 totalChr *= 2;
 #ifdef __cplusplus
@@ -4488,8 +4964,13 @@ STARCHCAT_buildUniqueChromosomeList(char ***chromosomes, unsigned int *numChr, c
                     return STARCHCAT_EXIT_FAILURE;
                 }
                 chr = chrCopy;
-                for (uninitIdx = totalChr - 1; uninitIdx >= currChr; uninitIdx--)
+                for (uninitIdx = totalChr - 1; uninitIdx >= currChr; uninitIdx--) {
+#ifdef __cplusplus
+                    *(chr + uninitIdx) = nullptr;
+#else
                     *(chr + uninitIdx) = NULL;
+#endif
+		}
             }
 #ifdef DEBUG
             fprintf(stderr, "\t\t(%zu | %zu) %-25s\n", totalChr, currChr, iter->chromosome);
@@ -4541,18 +5022,30 @@ STARCHCAT_buildUniqueChromosomeList(char ***chromosomes, unsigned int *numChr, c
     *numChr = allSortedChr;
 
     /* delete temporary chromosome list */
+#ifdef __cplusplus
+    if (chr != nullptr) {
+#else
     if (chr != NULL) {
+#endif
         for (idx = 0U; idx < currChr; idx++) {
             if (*(chr + idx)) {
 #ifdef DEBUG
                 fprintf(stderr, "\tfreeing temporary chromosome... %s\n", *(chr + idx));
 #endif
                 free( *(chr + idx) );
+#ifdef __cplusplus
+                *(chr + idx) = nullptr;
+#else
                 *(chr + idx) = NULL;
+#endif
             }
         }
         free(chr);
+#ifdef __cplusplus
+        chr = nullptr;
+#else
         chr = NULL;
+#endif
     }
 
     return STARCHCAT_EXIT_SUCCESS;
@@ -4580,10 +5073,18 @@ STARCHCAT_allocMetadataRecords(MetadataRecord **mdRecords, const unsigned int nu
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCHCAT_allocMetadataRecords() ---\n");
 #endif
-    unsigned int recIdx = 0U;
+#ifdef __cplusplus
+    MetadataRecord *instance = nullptr;
+#else
     MetadataRecord *instance = NULL;
+#endif
+    unsigned int recIdx = 0U;
 
+#ifdef __cplusplus
+    if (*mdRecords != nullptr) {
+#else
     if (*mdRecords != NULL) {
+#endif
         fprintf(stderr, "ERROR: Metadata records are not empty.\n");
         return STARCHCAT_EXIT_FAILURE;
     }
@@ -4598,18 +5099,29 @@ STARCHCAT_allocMetadataRecords(MetadataRecord **mdRecords, const unsigned int nu
     *mdRecords = malloc( sizeof(MetadataRecord) * numRecords );
 #endif
 
+#ifdef __cplusplus
+    if (*mdRecords == nullptr) {
+#else
     if (*mdRecords == NULL) {
+#endif
         fprintf(stderr, "ERROR: Could not allocate space for metadata records.\n");
         return STARCHCAT_EXIT_FAILURE;
     }
     for (recIdx = 0U; recIdx < numRecords; recIdx++) {
-        instance = *mdRecords + recIdx;
+#ifdef __cplusplus
+        instance->metadata = nullptr;
+        instance->filename = nullptr;
+        instance->fp = nullptr;
+        instance->av = nullptr;
+#else
         instance->metadata = NULL;
         instance->filename = NULL;
         instance->fp = NULL;
+        instance->av = NULL;
+#endif
+        instance = *mdRecords + recIdx;
         instance->type = STARCH_DEFAULT_COMPRESSION_TYPE;
         instance->hFlag = kStarchFalse;
-        instance->av = NULL;
     }
 
     return STARCHCAT_EXIT_SUCCESS;
@@ -4621,8 +5133,12 @@ STARCHCAT_freeMetadataRecords(MetadataRecord **mdRecords, const unsigned int num
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCHCAT_freeMetadataRecords() ---\n");
 #endif
-    unsigned int recIdx = 0U;
+#ifdef __cplusplus
+    MetadataRecord *instance = nullptr;
+#else
     MetadataRecord *instance = NULL;
+#endif
+    unsigned int recIdx = 0U;
 
     if (! *mdRecords) {
         return STARCHCAT_EXIT_SUCCESS;
@@ -4636,23 +5152,43 @@ STARCHCAT_freeMetadataRecords(MetadataRecord **mdRecords, const unsigned int num
             instance = *mdRecords + recIdx;
             if (instance->filename) {
                 free(instance->filename);
+#ifdef __cplusplus
+                instance->filename = nullptr;
+#else
                 instance->filename = NULL;
+#endif
             }
             if (instance->metadata) {
                 STARCH_freeMetadata( &(instance->metadata) );
+#ifdef __cplusplus
+                instance->metadata = nullptr;
+#else
                 instance->metadata = NULL;
+#endif
             }
             if (instance->fp) {
                 fclose(instance->fp);
+#ifdef __cplusplus
+                instance->fp = nullptr;
+#else
                 instance->fp = NULL;
+#endif
             }
             if (instance->av) {
                 free(instance->av);
+#ifdef __cplusplus
+                instance->av = nullptr;
+#else
                 instance->av = NULL;
+#endif
             }
             if (instance->cTime) {
                 free(instance->cTime);
+#ifdef __cplusplus
+                instance->cTime = nullptr;
+#else
                 instance->cTime = NULL;
+#endif
             }
         }
     }
@@ -4670,24 +5206,37 @@ STARCHCAT_buildMetadataRecords(json_t ***metadataJSONs, MetadataRecord **mdRecor
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCHCAT_buildMetadataRecords() ---\n");
 #endif
-    unsigned int idx = 0U;
-    unsigned int realIdx = 0U;
+#ifdef __cplusplus
+    FILE *inFilePtr = nullptr;
+    char *inFile = nullptr;
+    Metadata *md = nullptr;
+    ArchiveVersion *version = nullptr;
+    char *creationTimestamp = nullptr;
+    char *cTime = nullptr;
+    char *note = nullptr;
+    MetadataRecord *mdRecord = nullptr;
+    json_t *mdJSON = nullptr;
+    struct tm *creationTimeInformation = nullptr;
+#else
     FILE *inFilePtr = NULL;
     char *inFile = NULL;
     Metadata *md = NULL;
-    CompressionType inType = STARCH_DEFAULT_COMPRESSION_TYPE;
     ArchiveVersion *version = NULL;
     char *creationTimestamp = NULL;
     char *cTime = NULL;
     char *note = NULL;
+    MetadataRecord *mdRecord = NULL;
+    json_t *mdJSON = NULL;
+    struct tm *creationTimeInformation = NULL;
+#endif
+    unsigned int idx = 0U;
+    unsigned int realIdx = 0U;
+    CompressionType inType = STARCH_DEFAULT_COMPRESSION_TYPE;
     uint64_t mdOffset = 0;
     Boolean hFlag = kStarchFalse;
-    MetadataRecord *mdRecord = NULL;
     const Boolean suppressErrorMsgs = kStarchFalse; /* i.e., we want to see error messages */
     const Boolean preserveJSONRef = kStarchTrue;
-    json_t *mdJSON = NULL;
     time_t creationTime;
-    struct tm *creationTimeInformation = NULL;
     size_t creationTimestampLength = STARCH_CREATION_TIMESTAMP_LENGTH;
     unsigned int numGzipRecs = 0U;
 
@@ -4700,15 +5249,18 @@ STARCHCAT_buildMetadataRecords(json_t ***metadataJSONs, MetadataRecord **mdRecor
         mdRecord = (*mdRecords + realIdx);
 
         /* reset */
-        inFilePtr = NULL;
 #ifdef __cplusplus
+        inFilePtr = nullptr;
         inFile = const_cast<char *>( argv[idx] );
+        md = nullptr;
+        version = nullptr;
 #else
+        inFilePtr = NULL;
         inFile = (char *) argv[idx];
-#endif
         md = NULL;
-        inType = STARCH_DEFAULT_COMPRESSION_TYPE;
         version = NULL;
+#endif
+        inType = STARCH_DEFAULT_COMPRESSION_TYPE;
         hFlag = kStarchFalse;
 
         /* debug */
@@ -4814,7 +5366,11 @@ STARCHCAT_buildMetadataRecords(json_t ***metadataJSONs, MetadataRecord **mdRecor
             }
             strncpy(cTime, creationTimestamp, strlen(creationTimestamp) + 1);
             free(creationTimestamp);
+#ifdef __cplusplus
+            creationTimestamp = nullptr;
+#else
             creationTimestamp = NULL;
+#endif
         }
         mdRecord->cTime = cTime;
 
@@ -4851,6 +5407,16 @@ STARCHCAT_buildMetadataRecords(json_t ***metadataJSONs, MetadataRecord **mdRecor
         }
 
         /* cleanup */
+#ifdef __cplusplus
+        if (md) {
+            STARCH_freeMetadata(&md);
+            md = nullptr;
+        }
+        if (version) {
+            free(version);
+            version = nullptr;
+        }
+#else
         if (md) {
             STARCH_freeMetadata(&md);
             md = NULL;
@@ -4859,6 +5425,7 @@ STARCHCAT_buildMetadataRecords(json_t ***metadataJSONs, MetadataRecord **mdRecor
             free(version);
             version = NULL;
         }
+#endif
     }
 
     return STARCHCAT_EXIT_SUCCESS;
@@ -4894,7 +5461,11 @@ STARCHCAT_printUsage(int errorType)
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCHCAT_printUsage() ---\n");
 #endif
+#ifdef __cplusplus
+    char *avStr = nullptr;
+#else
     char *avStr = NULL;
+#endif
 
 #ifdef __cplusplus
     avStr = static_cast<char *>( malloc (STARCH_ARCHIVE_VERSION_STRING_LENGTH) );
@@ -4926,7 +5497,11 @@ STARCHCAT_printRevision()
 #ifdef DEBUG
     fprintf (stderr, "\n--- STARCHCAT_printRevision() ---\n");
 #endif
+#ifdef __cplusplus
+    char *avStr = nullptr;
+#else
     char *avStr = NULL;
+#endif
 
 #ifdef __cplusplus
     avStr = static_cast<char *>( malloc (STARCH_ARCHIVE_VERSION_STRING_LENGTH) );
@@ -4934,7 +5509,11 @@ STARCHCAT_printRevision()
     avStr = malloc (STARCH_ARCHIVE_VERSION_STRING_LENGTH);
 #endif
 
+#ifdef __cplusplus
+    if (avStr != nullptr) {
+#else
     if (avStr != NULL) {
+#endif
         int result = sprintf (avStr, "%d.%d.%d", STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION);
         if (result != -1) {
             fprintf(stderr, "%s\n  binary version: %s (creates archive version: %s)\n", name, BEDOPS::version(), avStr);
@@ -5072,8 +5651,15 @@ STARCHCAT_checkMetadataJSONVersions(json_t ***mdJSONs, const unsigned int numRec
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCHCAT_checkMetadataJSONVersions() ---\n");
 #endif   
-    unsigned int idx;
-    json_t *mdJSON;
+#ifdef __cplusplus
+    json_t *streamArchive = nullptr;
+    json_t *streamArchiveVersion = nullptr;
+    const char *jsonObjKey = nullptr;
+    json_t *jsonObjValue = nullptr;
+    const char *jsonObjAvKey = nullptr;
+    json_t *jsonObjAvValue = nullptr;
+    ArchiveVersion *av = nullptr;
+#else
     json_t *streamArchive = NULL;
     json_t *streamArchiveVersion = NULL;
     const char *jsonObjKey = NULL;
@@ -5081,6 +5667,9 @@ STARCHCAT_checkMetadataJSONVersions(json_t ***mdJSONs, const unsigned int numRec
     const char *jsonObjAvKey = NULL;
     json_t *jsonObjAvValue = NULL;
     ArchiveVersion *av = NULL;
+#endif
+    unsigned int idx;
+    json_t *mdJSON;
 
 #ifdef __cplusplus
     av = static_cast<ArchiveVersion *>( malloc (sizeof(ArchiveVersion)) );
@@ -5102,32 +5691,43 @@ STARCHCAT_checkMetadataJSONVersions(json_t ***mdJSONs, const unsigned int numRec
 
         streamArchive = json_object_get(mdJSON, STARCH_METADATA_STREAM_ARCHIVE_KEY);
         if (streamArchive) {
+#ifdef __cplusplus
             json_object_foreach(streamArchive, jsonObjKey, jsonObjValue)
             {
                 if (strcmp(jsonObjKey, STARCH_METADATA_STREAM_ARCHIVE_VERSION_KEY) == 0) {
                     streamArchiveVersion = json_object_get(streamArchive, STARCH_METADATA_STREAM_ARCHIVE_VERSION_KEY);
                     json_object_foreach(streamArchiveVersion, jsonObjAvKey, jsonObjAvValue) 
                     {
-#ifdef __cplusplus
                         if ( strcmp(jsonObjAvKey, STARCH_METADATA_STREAM_ARCHIVE_VERSION_MAJOR_KEY) == 0)
                             av->major = static_cast<int>( json_integer_value(jsonObjAvValue) );
                         else if ( strcmp(jsonObjAvKey, STARCH_METADATA_STREAM_ARCHIVE_VERSION_MINOR_KEY) == 0)
                             av->minor = static_cast<int>( json_integer_value(jsonObjAvValue) );
                         else if ( strcmp(jsonObjAvKey, STARCH_METADATA_STREAM_ARCHIVE_VERSION_REVISION_KEY) == 0)
                             av->revision = static_cast<int>( json_integer_value(jsonObjAvValue) );
+                    }
+                    streamArchiveVersion = nullptr;
+                }
+            }
+            streamArchive = nullptr;
 #else
+            json_object_foreach(streamArchive, jsonObjKey, jsonObjValue)
+            {
+                if (strcmp(jsonObjKey, STARCH_METADATA_STREAM_ARCHIVE_VERSION_KEY) == 0) {
+                    streamArchiveVersion = json_object_get(streamArchive, STARCH_METADATA_STREAM_ARCHIVE_VERSION_KEY);
+                    json_object_foreach(streamArchiveVersion, jsonObjAvKey, jsonObjAvValue) 
+                    {
                         if ( strcmp(jsonObjAvKey, STARCH_METADATA_STREAM_ARCHIVE_VERSION_MAJOR_KEY) == 0)
                             av->major = (int) json_integer_value(jsonObjAvValue);
                         else if ( strcmp(jsonObjAvKey, STARCH_METADATA_STREAM_ARCHIVE_VERSION_MINOR_KEY) == 0)
                             av->minor = (int) json_integer_value(jsonObjAvValue);
                         else if ( strcmp(jsonObjAvKey, STARCH_METADATA_STREAM_ARCHIVE_VERSION_REVISION_KEY) == 0)
                             av->revision = (int) json_integer_value(jsonObjAvValue);
-#endif
                     }
                     streamArchiveVersion = NULL;
                 }
             }
             streamArchive = NULL;
+#endif
         }
         else {
             fprintf(stderr, "ERROR: Could not retrieve stream archive object from metadata JSON string\n");
@@ -5143,7 +5743,11 @@ STARCHCAT_checkMetadataJSONVersions(json_t ***mdJSONs, const unsigned int numRec
             return kStarchFalse;
         }
         json_decref(mdJSON);
+#ifdef __cplusplus
+        mdJSON = nullptr;
+#else
         mdJSON = NULL;
+#endif
     }
 
     return kStarchTrue;
@@ -5155,24 +5759,37 @@ STARCHCAT2_mergeChromosomeStreams(const ChromosomeSummaries *chrSums, const Comp
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCHCAT2_mergeChromosomeStreams() ---\n");
 #endif
+#ifdef __cplusplus
+    char *outputTag = nullptr;
+    ChromosomeSummary *summary = nullptr;
+    MetadataRecord *inputRecord = nullptr;
+    char *inputChr = nullptr;
+    Metadata *outputMd = nullptr;
+    Metadata *headOutputMd = nullptr;
+    char *dynamicMdBuffer = nullptr;
+    char *dynamicMdBufferCopy = nullptr;
+    char *base64EncodedSha1Digest = nullptr;
+    ArchiveVersion *av120 = nullptr;
+#else
     char *outputTag = NULL;
-    unsigned int chrIdx = 0U;
     ChromosomeSummary *summary = NULL;
-    CompressionType inputType;
     MetadataRecord *inputRecord = NULL;
     char *inputChr = NULL;
     Metadata *outputMd = NULL;
     Metadata *headOutputMd = NULL;
-    Boolean firstOutputMdFlag = kStarchTrue;
-    Boolean hFlag = kStarchFalse; /* starchcat does not currently support headers */
     char *dynamicMdBuffer = NULL;
     char *dynamicMdBufferCopy = NULL;
-    unsigned char sha1Digest[STARCH2_MD_FOOTER_SHA1_LENGTH] = {0};
     char *base64EncodedSha1Digest = NULL;
+    ArchiveVersion *av120 = NULL;
+#endif
+    unsigned int chrIdx = 0U;
+    CompressionType inputType;
+    Boolean firstOutputMdFlag = kStarchTrue;
+    Boolean hFlag = kStarchFalse; /* starchcat does not currently support headers */
+    unsigned char sha1Digest[STARCH2_MD_FOOTER_SHA1_LENGTH] = {0};
     char footerCumulativeRecordSizeBuffer[STARCH2_MD_FOOTER_CUMULATIVE_RECORD_SIZE_LENGTH + 1] = {0};
     char footerRemainderBuffer[STARCH2_MD_FOOTER_REMAINDER_LENGTH + 1] = {0};
     char footerBuffer[STARCH2_MD_FOOTER_LENGTH + 1] = {0};
-    ArchiveVersion *av120 = NULL;
     int footerCumulativeRecordSizeBufferCharsCopied = -1;
 
     if (!chrSums) {
@@ -5470,15 +6087,27 @@ STARCHCAT2_mergeChromosomeStreams(const ChromosomeSummaries *chrSums, const Comp
     /* cleanup */
     if (dynamicMdBuffer) {
         free(dynamicMdBuffer);
+#ifdef __cplusplus
+        dynamicMdBuffer = nullptr;
+#else
         dynamicMdBuffer = NULL;
+#endif
     }
     if (base64EncodedSha1Digest) {
         free(base64EncodedSha1Digest);
+#ifdef __cplusplus
+        base64EncodedSha1Digest = nullptr;
+#else
         base64EncodedSha1Digest = NULL;
+#endif
     }
     if (av120) {
         free(av120);
+#ifdef __cplusplus
+        av120 = nullptr;
+#else
         av120 = NULL;
+#endif
     }
 
     return STARCHCAT_EXIT_SUCCESS;
@@ -5536,9 +6165,15 @@ STARCHCAT2_setupGzipOutputStream(z_stream *zStream)
     int zError;
     z_stream *zStreamPtr = zStream;
 
+#ifdef __cplusplus
+    zStreamPtr->zalloc = nullptr;
+    zStreamPtr->zfree = nullptr;
+    zStreamPtr->opaque = nullptr;
+#else
     zStreamPtr->zalloc = Z_NULL;
     zStreamPtr->zfree = Z_NULL;
     zStreamPtr->opaque = Z_NULL;
+#endif
 
     /* cf. http://www.zlib.net/manual.html for level information */
 #ifdef __cplusplus
@@ -5580,16 +6215,27 @@ STARCHCAT2_testSummaryForChromosomeExistence(const char *chrName, const Chromoso
     fprintf(stderr, "\n--- STARCHCAT2_testSummaryForChromosomeExistence() ---\n");
 #endif 
 
+#ifdef __cplusplus
+    MetadataRecord *rec = nullptr;
+    MetadataRecord **recs = nullptr;
+    Metadata *md = nullptr;
+    Metadata *iter = nullptr;
+#else
     MetadataRecord *rec = NULL;
     MetadataRecord **recs = NULL;
     Metadata *md = NULL;
     Metadata *iter = NULL;
+#endif
 
     recs = chrSummary->records;
     rec = recs[recIndex];
 
     md = rec->metadata;
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+#else
     for (iter = md; iter != NULL; iter = iter->next) {
+#endif
         if (strcmp(iter->chromosome, chrName) == 0)
             return STARCHCAT_EXIT_SUCCESS;
     }
@@ -5604,11 +6250,18 @@ STARCHCAT2_setupInitialFileOffsets(const char *chrName, const ChromosomeSummary 
     fprintf(stderr, "\n--- STARCHCAT2_setupInitialFileOffsets() ---\n");
 #endif 
 
-    uint64_t offset = 0;
+#ifdef __cplusplus
+    MetadataRecord *rec = nullptr;
+    MetadataRecord **recs = nullptr;
+    Metadata *md = nullptr;
+    Metadata *iter = nullptr;
+#else
     MetadataRecord *rec = NULL;
     MetadataRecord **recs = NULL;
     Metadata *md = NULL;
     Metadata *iter = NULL;
+#endif
+    uint64_t offset = 0;
 
     recs = chrSummary->records;
     rec = recs[recIndex];
@@ -5618,7 +6271,12 @@ STARCHCAT2_setupInitialFileOffsets(const char *chrName, const ChromosomeSummary 
     else if (rec->av->major == 1)
         offset = rec->mdOffset;
     md = rec->metadata;
+
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+#else
     for (iter = md; iter != NULL; iter = iter->next) {
+#endif
         if (strcmp(iter->chromosome, chrName) == 0)
             break;
         else
@@ -5641,16 +6299,36 @@ STARCHCAT2_setupBzip2InputStream(const size_t recIdx, const ChromosomeSummary *c
     fprintf(stderr, "\n--- STARCHCAT2_setupBzip2InputStream() ---\n");
 #endif 
 
+#ifdef __cplusplus
+    MetadataRecord **inRecs = nullptr;
+    MetadataRecord *inRec = nullptr;
+    FILE *inFp = nullptr;
+#else
     MetadataRecord **inRecs = NULL;
     MetadataRecord *inRec = NULL;
     FILE *inFp = NULL;
+#endif
     int bzError = BZ_OK;
 
     inRecs = chrSummary->records;
     inRec = inRecs[recIdx];
     inFp = inRec->fp;
 
-    *bzStream = BZ2_bzReadOpen(&bzError, inFp, STARCH_BZ_VERBOSITY, STARCH_BZ_SMALL, NULL, 0);
+#ifdef __cplusplus
+    *bzStream = BZ2_bzReadOpen(&bzError, 
+			       inFp, 
+			       STARCH_BZ_VERBOSITY, 
+			       STARCH_BZ_SMALL, 
+			       nullptr, 
+			       0);
+#else
+    *bzStream = BZ2_bzReadOpen(&bzError, 
+			       inFp, 
+			       STARCH_BZ_VERBOSITY, 
+			       STARCH_BZ_SMALL, 
+			       NULL, 
+			       0);
+#endif
 
     if (!*bzStream) {
         fprintf(stderr, "ERROR: Could not instantiate BZFILE pointer\n");
@@ -5694,11 +6372,18 @@ STARCHCAT2_setupGzipInputStream(z_stream *zStream)
 
     int zError = Z_OK;
 
+#ifdef __cplusplus
+    zStream->zalloc = nullptr;
+    zStream->zfree = nullptr;
+    zStream->opaque = nullptr;
+    zStream->next_in = nullptr;
+#else
     zStream->zalloc = Z_NULL;
     zStream->zfree = Z_NULL;
     zStream->opaque = Z_NULL;
-    zStream->avail_in = 0;
     zStream->next_in = Z_NULL;
+#endif
+    zStream->avail_in = 0;
 
     /* cf. http://www.zlib.net/manual.html for level information */
     zError = inflateInit2(zStream, (15+32));
@@ -5822,9 +6507,15 @@ STARCHCAT2_breakdownGzipOutputStream(z_stream *zStream)
         return STARCHCAT_EXIT_FAILURE;
     }
 
+#ifdef __cplusplus
+    zStreamPtr->zalloc = nullptr;
+    zStreamPtr->zfree  = nullptr;
+    zStreamPtr->opaque = nullptr;
+#else
     zStreamPtr->zalloc = Z_NULL;
     zStreamPtr->zfree  = Z_NULL;
     zStreamPtr->opaque = Z_NULL;
+#endif
 
     return STARCHCAT_EXIT_SUCCESS;
 }
@@ -5840,11 +6531,19 @@ STARCHCAT2_fillExtractionBufferFromBzip2Stream(Boolean *eofFlag, char *recordChr
         return STARCHCAT_EXIT_SUCCESS;
 
     char *finalBuffer                           = extractionBuffer;
+#ifdef __cplusplus
+    unsigned char *bzReadBuf                    = nullptr;
+#else
     unsigned char *bzReadBuf                    = NULL;
+#endif
     size_t nBzReadBuf                           = 1024*1024/8;
     size_t bzBufIndex                           = 0;
     int bzError                                 = BZ_OK;
+#ifdef __cplusplus
+    unsigned char *bzLineBuf                    = nullptr;
+#else
     unsigned char *bzLineBuf                    = NULL;
+#endif
     size_t bzCharIndex                          = 0;
     static const char tab                       = '\t';
 
@@ -5865,11 +6564,16 @@ STARCHCAT2_fillExtractionBufferFromBzip2Stream(Boolean *eofFlag, char *recordChr
     size_t *t_nExtractionBuffer                 = &t_state->t_nExtractionBuffer;
     size_t *t_nExtractionBufferPos              = &t_state->t_nExtractionBufferPos;
 
+#ifdef __cplusplus
+    unsigned char *retransformedLineBuffer      = nullptr;
+    char *resizedExtractionBuffer               = nullptr;
+#else
     unsigned char *retransformedLineBuffer      = NULL;
+    char *resizedExtractionBuffer               = NULL;
+#endif
     int64_t nRetransformedLineBuffer            = 0;
     int64_t nRetransformedLineBufferPosition    = 0;
     size_t nResizedExtractionBuffer             = 0U;
-    char *resizedExtractionBuffer               = NULL;
 
     if (!*bzStream) {
         fprintf(stderr, "ERROR: Bzip2 stream is NULL. Something went wrong setting up extraction!\n");
@@ -6090,17 +6794,29 @@ STARCHCAT2_fillExtractionBufferFromBzip2Stream(Boolean *eofFlag, char *recordChr
     /* cleanup */
     if (bzReadBuf) {
         free(bzReadBuf);
+#ifdef __cplusplus
+        bzReadBuf = nullptr;
+#else
         bzReadBuf = NULL;
+#endif
     }
 
     if (bzLineBuf) {
         free(bzLineBuf);
+#ifdef __cplusplus
+        bzLineBuf = nullptr;
+#else
         bzLineBuf = NULL;
+#endif
     }
 
     if (retransformedLineBuffer) {
         free(retransformedLineBuffer);
+#ifdef __cplusplus
+        retransformedLineBuffer = nullptr;
+#else
         retransformedLineBuffer = NULL;
+#endif
     }
 
 #ifdef DEBUG
@@ -6117,12 +6833,18 @@ STARCHCAT2_fillExtractionBufferFromGzipStream(Boolean *eofFlag, FILE **inputFp, 
     fprintf(stderr, "\n--- STARCHCAT2_fillExtractionBufferFromGzipStream() ---\n");
 #endif
 
+#ifdef __cplusplus
+    unsigned char *zInBuf                       = nullptr;
+    unsigned char *zReadBuf                     = nullptr;
+    unsigned char *zLineBuf                     = nullptr;
+#else
     unsigned char *zInBuf                       = NULL;
     unsigned char *zReadBuf                     = NULL;
+    unsigned char *zLineBuf                     = NULL;
+#endif
     int zError                                  = Z_OK;
     size_t zCharIndex                           = 0;
     size_t zBufIndex                            = 0;
-    unsigned char *zLineBuf                     = NULL;
     static const char tab                       = '\t';
 
     LineCountType *t_lineIdxPtr                 = &t_state->t_lineIdx;
@@ -6142,12 +6864,17 @@ STARCHCAT2_fillExtractionBufferFromGzipStream(Boolean *eofFlag, FILE **inputFp, 
     size_t *t_nExtractionBuffer                 = &t_state->t_nExtractionBuffer;
     size_t *t_nExtractionBufferPos              = &t_state->t_nExtractionBufferPos;
 
-    char *extractionBufferStart                 = extractionBuffer;
+#ifdef __cplusplus
+    unsigned char *retransformedLineBuffer      = nullptr;
+    char *resizedExtractionBuffer               = nullptr;
+#else
     unsigned char *retransformedLineBuffer      = NULL;
+    char *resizedExtractionBuffer               = NULL;
+#endif
+    char *extractionBufferStart                 = extractionBuffer;
     int64_t nRetransformedLineBuffer            = 0;
     int64_t nRetransformedLineBufferPosition    = 0;
     size_t nResizedExtractionBuffer             = 0U;
-    char *resizedExtractionBuffer               = NULL;
 
 #ifdef DEBUG
     fprintf(stderr, "ALLOC in STARCHCAT2_fillExtractionBufferFromGzipStream()\n");
@@ -6226,10 +6953,17 @@ STARCHCAT2_fillExtractionBufferFromGzipStream(Boolean *eofFlag, FILE **inputFp, 
 #endif
 
     if (zStream->avail_in == 0) {
+#ifdef __cplusplus
+        free(zInBuf);
+        zInBuf = nullptr;
+        free(zReadBuf);
+        zReadBuf = nullptr;
+#else
         free(zInBuf);
         zInBuf = NULL;
         free(zReadBuf);
         zReadBuf = NULL;
+#endif
         *eofFlag = kStarchTrue;
         return STARCHCAT_EXIT_SUCCESS;
     }
@@ -6410,6 +7144,22 @@ STARCHCAT2_fillExtractionBufferFromGzipStream(Boolean *eofFlag, FILE **inputFp, 
 #endif
 
     /* cleanup */
+#ifdef __cplusplus
+    if (zInBuf) {
+        free(zInBuf);
+        zInBuf = nullptr;
+    }
+
+    if (zReadBuf) {
+        free(zReadBuf);
+        zReadBuf = nullptr;
+    }
+
+    if (retransformedLineBuffer) {
+        free(retransformedLineBuffer);
+        retransformedLineBuffer = nullptr;
+    }
+#else
     if (zInBuf) {
         free(zInBuf);
         zInBuf = NULL;
@@ -6424,6 +7174,7 @@ STARCHCAT2_fillExtractionBufferFromGzipStream(Boolean *eofFlag, FILE **inputFp, 
         free(retransformedLineBuffer);
         retransformedLineBuffer = NULL;
     }
+#endif
 
     return STARCHCAT_EXIT_SUCCESS;
 }
@@ -6513,7 +7264,7 @@ STARCHCAT2_parseCoordinatesFromBedLineV2(Boolean *eobFlag, const char *extracted
     }
 
 #ifdef __cplusplus
-    result = static_cast<SignedCoordType>( strtoll(startStr, NULL, STARCH_RADIX) );
+    result = static_cast<SignedCoordType>( strtoll(startStr, nullptr, STARCH_RADIX) );
 #else
     result = (SignedCoordType) strtoll(startStr, NULL, STARCH_RADIX);
 #endif
@@ -6531,7 +7282,7 @@ STARCHCAT2_parseCoordinatesFromBedLineV2(Boolean *eobFlag, const char *extracted
     *start = result;
 
 #ifdef __cplusplus
-    result = static_cast<SignedCoordType>( strtoll(stopStr, NULL, STARCH_RADIX) );
+    result = static_cast<SignedCoordType>( strtoll(stopStr, nullptr, STARCH_RADIX) );
 #else
     result = (SignedCoordType) strtoll(stopStr, NULL, STARCH_RADIX);
 #endif
@@ -6607,7 +7358,7 @@ STARCHCAT2_parseCoordinatesFromBedLineV2p2(Boolean *eobFlag, const char *extract
     }
 
 #ifdef __cplusplus
-    result = static_cast<SignedCoordType>( strtoll(startStr, NULL, STARCH_RADIX) );
+    result = static_cast<SignedCoordType>( strtoll(startStr, nullptr, STARCH_RADIX) );
 #else
     result = (SignedCoordType) strtoll(startStr, NULL, STARCH_RADIX);
 #endif
@@ -6625,7 +7376,7 @@ STARCHCAT2_parseCoordinatesFromBedLineV2p2(Boolean *eobFlag, const char *extract
     *start = result;
 
 #ifdef __cplusplus
-    result = static_cast<SignedCoordType>( strtoll(stopStr, NULL, STARCH_RADIX) );
+    result = static_cast<SignedCoordType>( strtoll(stopStr, nullptr, STARCH_RADIX) );
 #else
     result = (SignedCoordType) strtoll(stopStr, NULL, STARCH_RADIX);
 #endif
@@ -6669,13 +7420,13 @@ STARCHCAT2_transformCompressionBuffer (const char *compBuf, char *retransBuf, Tr
     fprintf(stderr, "\n--- STARCHCAT2_transformCompressionBuffer() ---\n");
 #endif
 
-#if CLANG_COMPILER
+#if HAS_GNU == 0
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpointer-bool-conversion"
 #endif
     if ((!retransState->r_chromosome) || (strlen(retransState->r_chromosome) == 0))
         return STARCH_EXIT_FAILURE;
-#if CLANG_COMPILER
+#if HAS_GNU == 0
 #pragma clang diagnostic pop
 #endif
 
@@ -6823,6 +7574,16 @@ STARCHCAT2_transformCompressionBuffer (const char *compBuf, char *retransBuf, Tr
         }
     }
 
+#ifdef __cplusplus
+    if (retransChromosome) {
+        free(retransChromosome);
+        retransChromosome = nullptr;
+    }
+    if (retransRemainder) {
+        free(retransRemainder);
+        retransRemainder = nullptr;
+    }
+#else
     if (retransChromosome) {
         free(retransChromosome);
         retransChromosome = NULL;
@@ -6831,6 +7592,7 @@ STARCHCAT2_transformCompressionBuffer (const char *compBuf, char *retransBuf, Tr
         free(retransRemainder);
         retransRemainder = NULL;
     }
+#endif
 
     return STARCH_EXIT_SUCCESS;
 }

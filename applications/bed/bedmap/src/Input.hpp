@@ -79,7 +79,7 @@ namespace BedMap {
         precision_(6), useScientific_(false), useMinMemory_(false), setPrec_(false), numFiles_(0),
         minRefFields_(0), minMapFields_(0), errorCheck_(false), sweepAll_(false),
         outDelim_("|"), multiDelim_(";"), fastMode_(false), rangeAlias_(false),
-        chrom_("all"), skipUnmappedRows_(false) {
+        chrom_("all"), skipUnmappedRows_(false), unmappedVal_("") {
 
       // Process user's operation options
       if ( argc <= 1 )
@@ -108,6 +108,12 @@ namespace BedMap {
           fastMode_ = true;
         } else if ( next == "sweep-all" ) { // --> sweep through all of second file
           sweepAll_ = true;
+        } else if ( next == "unmapped-val" ) {
+          Ext::Assert<ArgError>(unmappedVal_.empty(), "--unmapped-val specified multiple times");
+          Ext::Assert<ArgError>(argcntr < argc, "No value given for --unmapped-val");
+          unmappedVal_ = argv[argcntr++];
+          Ext::Assert<ArgError>(unmappedVal_.find("--") != 0,
+                                "Apparent option: " + std::string(argv[argcntr]) + " where <val> expected for --unmapped-val.");
         } else if ( next == "delim" ) {
           Ext::Assert<ArgError>(outDelim_ == "|", "--delim specified multiple times");
           Ext::Assert<ArgError>(argcntr < argc, "No output delimiter given");
@@ -399,6 +405,7 @@ namespace BedMap {
     bool rangeAlias_;
     std::string chrom_;
     bool skipUnmappedRows_;
+    std::string unmappedVal_;
 
   private:
     struct MapFields {
@@ -480,6 +487,8 @@ namespace BedMap {
     usage << "      --sci                 Use scientific notation for score outputs.                              \n";
     usage << "      --skip-unmapped       Print no output for a row with no mapped elements.                      \n";
     usage << "      --sweep-all           Ensure <map-file> is read completely (helps to prevent broken pipes).   \n";
+    usage << "      --unmapped-val <val>  Print <val> on unmapped --echo-map* and --min/max-element* operations.  \n";
+    usage << "                              The default is to print nothing.                                      \n";
     usage << "      --version             Print program information.                                              \n";
     usage << "                                                                                                    \n";
     usage << "                                                                                                    \n";

@@ -1,0 +1,3 @@
+To generate hg38 BED file:
+
+$ fetchChromSizes hg38 | awk -vOFS="\t" '($1!~/_/){print $1,"0",$2}' | sort-bed -

@@ -21,6 +21,8 @@
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 
+#include <sys/stat.h>
+
 #include <cctype>
 #include <cstdlib>
 #include <exception>
@@ -81,6 +83,7 @@ namespace BedMap {
                    bool nestCheck,
                    const std::string& colSep,
                    const std::string& multivalColSep,
+                   const std::string& onEmptyMap,
                    int precision,
                    bool useScientific,
                    bool fastMode,
@@ -123,21 +126,21 @@ int main(int argc, char **argv) {
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
       BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
                           input.minRefFields_, input.minMapFields_, input.errorCheck_, nestCheck,
-                          input.outDelim_, input.multiDelim_, prec, sci, input.fastMode_,
+                          input.outDelim_, input.multiDelim_, input.unmappedVal_, prec, sci, input.fastMode_,
                           input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
     } else if ( input.isPercRef_ ) { // % overlap relative to RefTypes's size (setops -e)
       Bed::PercentOverlapReference bedDist(input.percOvr_);
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
       BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
                           input.minRefFields_, input.minMapFields_, input.errorCheck_, nestCheck,
-                          input.outDelim_, input.multiDelim_, prec, sci, input.fastMode_,
+                          input.outDelim_, input.multiDelim_, input.unmappedVal_, prec, sci, input.fastMode_,
                           input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
     } else if ( input.isPercBoth_ ) { // % overlap relative to both MapType's and RefType's sizes
       Bed::PercentOverlapBoth bedDist(input.percOvr_);
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
       BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
                           input.minRefFields_, input.minMapFields_, input.errorCheck_, nestCheck,
-                          input.outDelim_, input.multiDelim_, prec, sci, input.fastMode_,
+                          input.outDelim_, input.multiDelim_, input.unmappedVal_, prec, sci, input.fastMode_,
                           input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
     } else if ( input.isExact_ ) { // must be identical coordinates; should work fine with fully-nested elements
       Bed::Exact bedDist;
@@ -146,28 +149,28 @@ int main(int argc, char **argv) {
       const bool noNestCheck = false; // safe with fully-nested elements
       BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
                           input.minRefFields_, input.minMapFields_, input.errorCheck_, noNestCheck,
-                          input.outDelim_, input.multiDelim_, prec, sci, fastMode,
+                          input.outDelim_, input.multiDelim_, input.unmappedVal_, prec, sci, fastMode,
                           input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
     } else if ( input.isPercEither_ ) { // % overlap relative to either MapType's or RefType's size
       Bed::PercentOverlapEither bedDist(input.percOvr_);
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
       BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
                           input.minRefFields_, input.minMapFields_, input.errorCheck_, nestCheck,
-                          input.outDelim_, input.multiDelim_, prec, sci, input.fastMode_,
+                          input.outDelim_, input.multiDelim_, input.unmappedVal_, prec, sci, input.fastMode_,
                           input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
     } else if ( input.isRangeBP_ ) { // buffer each reference element
       Bed::RangedDist bedDist(input.rangeBP_);
       Bed::RangedDist sweepDist(input.rangeBP_); // same as bedDist in this case
       BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
                           input.minRefFields_, input.minMapFields_, input.errorCheck_, nestCheck,
-                          input.outDelim_, input.multiDelim_, prec, sci, (input.fastMode_ || starchFast),
+                          input.outDelim_, input.multiDelim_, input.unmappedVal_, prec, sci, (input.fastMode_ || starchFast),
                           input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
     } else { // require a certain amount of bp overlap
       Bed::Overlapping bedDist(input.overlapBP_);
       Bed::Overlapping sweepDist(0); // dist type for sweep different from BedBaseVisitor's
       BedMap::selectSweep(sweepDist, bedDist, input.refFileName_, input.mapFileName_,
                           input.minRefFields_, input.minMapFields_, input.errorCheck_, nestCheck,
-                          input.outDelim_, input.multiDelim_, prec, sci, (input.fastMode_ || starchFast),
+                          input.outDelim_, input.multiDelim_, input.unmappedVal_, prec, sci, (input.fastMode_ || starchFast),
                           input.sweepAll_, input.chrom_, input.skipUnmappedRows_, visitorNames, visitorArgs);
     }
 
@@ -466,6 +469,7 @@ namespace BedMap {
     BaseVisitor* generate(const DistType&, const std::string& className,
                           const std::vector<std::string>&,
                           const std::string& multivalColSep,
+                          const std::string& onEmptyMap,
                           int precision, bool useScientific) {
 
       typedef VisitorTypes<BaseVisitor> VTypes;
@@ -479,19 +483,21 @@ namespace BedMap {
       else if ( nm == visName<typename VTypes::EchoMapAll>() ) {
         typedef typename VTypes::EchoMapAll::ProcessType PT;
         typedef typename PT::PType PType;
-        rtn = new typename VTypes::EchoMapAll(PT(PType(), multivalColSep));
+        rtn = new typename VTypes::EchoMapAll(PT(PType(), multivalColSep, onEmptyMap));
       }
       else if ( nm == visName<typename VTypes::EchoMapLength>() ) {
         typedef typename VTypes::EchoMapLength::ProcessType PT;
         typedef typename PT::PType PType;
-        rtn = new typename VTypes::EchoMapLength(PT(PType(), multivalColSep));
+        rtn = new typename VTypes::EchoMapLength(PT(PType(), multivalColSep, onEmptyMap));
       } else if ( nm == visName<typename VTypes::EchoMapIntersectLength>() ) {
         typedef typename VTypes::EchoMapIntersectLength::ProcessType PT;
         typedef typename PT::PType PType;
-        rtn = new typename VTypes::EchoMapIntersectLength(PT(PType(), multivalColSep));
-      } else if ( nm == visName<typename VTypes::EchoMapRange>() )
-        rtn = new typename VTypes::EchoMapRange;
-      else if ( nm == visName<typename VTypes::EchoRefAll>() )
+        rtn = new typename VTypes::EchoMapIntersectLength(PT(PType(), multivalColSep, onEmptyMap));
+      } else if ( nm == visName<typename VTypes::EchoMapRange>() ) {
+        typedef typename VTypes::EchoMapRange::ProcessType PT;
+        typedef typename PT::PType PType;
+        rtn = new typename VTypes::EchoMapRange(PT(PType(), onEmptyMap));
+      } else if ( nm == visName<typename VTypes::EchoRefAll>() )
         rtn = new typename VTypes::EchoRefAll;
       else if ( nm == visName<typename VTypes::EchoRefLength>() )
         rtn = new typename VTypes::EchoRefLength;
@@ -528,10 +534,11 @@ namespace BedMap {
     BaseVisitor* generate(const DistType& d, const std::string& className,
                           const std::vector<std::string>& args,
                           const std::string& multivalColSep,
+                          const std::string& onEmptyMap,
                           int precision, bool useScientific) {
 
       typedef VisitorTypes<BaseVisitor> VTypes;
-      BaseVisitor* rtn = SuperClass::generate(d, className, args, multivalColSep, precision, useScientific);
+      BaseVisitor* rtn = SuperClass::generate(d, className, args, multivalColSep, onEmptyMap, precision, useScientific);
       if ( rtn )
         return rtn;
 
@@ -540,10 +547,10 @@ namespace BedMap {
       if ( nm == visName<typename VTypes::EchoMapID>() ) {
         typedef typename VTypes::EchoMapID::ProcessType PT;
         typedef typename PT::PType PType;
-        rtn = new typename VTypes::EchoMapID(PT(PType(), multivalColSep));
+        rtn = new typename VTypes::EchoMapID(PT(PType(), multivalColSep, onEmptyMap));
       } else if ( nm == visName<typename VTypes::EchoMapUniqueID>() ) {
         typedef typename VTypes::EchoMapUniqueID::ProcessType PT;
-        rtn = new typename VTypes::EchoMapUniqueID(PT(multivalColSep));
+        rtn = new typename VTypes::EchoMapUniqueID(PT(multivalColSep, onEmptyMap));
       }
 
       return rtn;
@@ -564,10 +571,11 @@ namespace BedMap {
     BaseVisitor* generate(const DistType& d, const std::string& className,
                           const std::vector<std::string>& args,
                           const std::string& multivalColSep,
+                          const std::string& onEmptyMap,
                           int precision, bool useScientific) {
 
       typedef VisitorTypes<BaseVisitor> VTypes;
-      BaseVisitor* rtn = SuperClass::generate(d, className, args, multivalColSep, precision, useScientific);
+      BaseVisitor* rtn = SuperClass::generate(d, className, args, multivalColSep, onEmptyMap, precision, useScientific);
       if ( rtn )
         return rtn;
 
@@ -582,7 +590,7 @@ namespace BedMap {
         rtn = new typename VTypes::CoeffVariation(pt);
       else if ( nm == visName<typename VTypes::EchoMapScore>() ) {
         typedef typename VTypes::EchoMapScore::ProcessType PT;
-        rtn = new typename VTypes::EchoMapScore(PT(pt, multivalColSep));
+        rtn = new typename VTypes::EchoMapScore(PT(pt, multivalColSep, onEmptyMap));
       }
       else if ( nm == visName<typename VTypes::KthAverage>() ) {
         Ext::Assert<Ext::UserError>(1 == args.size(), "Need a value with " + nm);
@@ -600,11 +608,11 @@ namespace BedMap {
         rtn = new typename VTypes::Max(pt);
       else if ( nm == visName<typename VTypes::MaxElementStable>() ) {
         typedef typename VTypes::MaxElementStable::ProcessType MPT;
-        rtn = new typename VTypes::MaxElementStable(MPT(precision, useScientific));
+        rtn = new typename VTypes::MaxElementStable(MPT(precision, useScientific, onEmptyMap));
       }
       else if ( nm == visName<typename VTypes::MaxElementRand>() ) {
         typedef typename VTypes::MaxElementRand::ProcessType MPT;
-        rtn = new typename VTypes::MaxElementRand(MPT(precision, useScientific));
+        rtn = new typename VTypes::MaxElementRand(MPT(precision, useScientific, onEmptyMap));
       }
       else if ( nm == visName<typename VTypes::Median>() )
         rtn = new typename VTypes::Median(pt);
@@ -623,11 +631,11 @@ namespace BedMap {
         rtn = new typename VTypes::Min(pt);
       else if ( nm == visName<typename VTypes::MinElementRand>() ) {
         typedef typename VTypes::MinElementRand::ProcessType MPT;
-        rtn = new typename VTypes::MinElementRand(MPT(precision, useScientific));
+        rtn = new typename VTypes::MinElementRand(MPT(precision, useScientific, onEmptyMap));
       }
       else if ( nm == visName<typename VTypes::MinElementStable>() ) {
         typedef typename VTypes::MinElementStable::ProcessType MPT;
-        rtn = new typename VTypes::MinElementStable(MPT(precision, useScientific));
+        rtn = new typename VTypes::MinElementStable(MPT(precision, useScientific, onEmptyMap));
       }
       else if ( nm == visName<typename VTypes::StdDev>() )
         rtn = new typename VTypes::StdDev(pt);
@@ -656,7 +664,7 @@ namespace BedMap {
   //===============
   template <typename GV, typename BedDistType>
   std::vector<typename GV::BaseClass*>
-           getVisitors(GV& gv, const BedDistType& dt, const std::string& multivalColSep,
+           getVisitors(GV& gv, const BedDistType& dt, const std::string& multivalColSep, const std::string& onEmptyMap,
                        int precision, bool useScientific, const std::vector<std::string>& visitorNames,
                        const std::vector< std::vector<std::string> >& visitorArgs) {
 
@@ -664,7 +672,7 @@ namespace BedMap {
     std::vector<std::string>::const_iterator iter = visitorNames.begin();
     typename GV::BaseClass* bc = static_cast<typename GV::BaseClass*>(0);
     while ( iter != visitorNames.end() ) {
-      bc = gv.generate(dt, *iter, visitorArgs[iter-visitorNames.begin()], multivalColSep, precision, useScientific);
+      bc = gv.generate(dt, *iter, visitorArgs[iter-visitorNames.begin()], multivalColSep, onEmptyMap, precision, useScientific);
       if ( !bc )
         throw(Ext::ProgramError("Unknown Operation: " + *iter + ". Program Error Detected."));
       visitorGroup.push_back(bc);
@@ -710,13 +718,28 @@ namespace BedMap {
     typedef Bed::BTAllRestNoPool::Bed5Type BType;
   };
 
+  //==============
+  // named_pipe()
+  //==============
+  bool named_pipe(const std::string& fname) {
+    bool is_namedpipe = false;
+    if ( !fname.empty() && fname != "-" ) {
+      struct stat st;
+      if ( stat(fname.c_str(), &st) == -1 )
+        throw(Ext::InvalidFile("Error: stat() failed on: " + fname));
+      is_namedpipe = (S_ISFIFO(st.st_mode) != 0);
+    }
+    return is_namedpipe;
+  }
+
   //======================
   // checkStarchNesting()
   //======================
   bool checkStarchNesting(const std::string& f1, const std::string& f2) {
     constexpr bool NoUseMemPool = false;
     typedef SelectBED<3, NoUseMemPool>::BType BedType;
-    if ( f1 == "-" || f2 == "-" )
+
+    if ( f1 == "-" || f2 == "-" || named_pipe(f1) || named_pipe(f2) )
       return true; // not applicable
     Ext::FPWrap<Ext::InvalidFile> file1(f1);
     Bed::allocate_iterator_starch_bed_mm<BedType*> a(file1);
@@ -761,6 +784,7 @@ namespace BedMap {
                  bool nestCheck,
                  const std::string& colSep,
                  const std::string& multivalColSep,
+                 const std::string& onEmptyMap,
                  int precision,
                  bool useScientific,
                  const std::string& chrom,
@@ -781,7 +805,7 @@ namespace BedMap {
         typedef RefType MapType;
         typedef typename SelectBase<ProcessMode, BedDistType, RefType, MapType>::BaseClass BaseClass;
         BedMap::GenerateVisitors<BaseClass, 3> gv;
-        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, onEmptyMap, precision,
                                                            useScientific, visitorNames, visitorArgs);
         runSweep<BaseClass>(st, dt, refFileName, mapFileName, errorCheck, nestCheck,
                             ProcessMode, sweepAll, colSep, chrom, skipUnmappedRows, visitorGroup);
@@ -790,7 +814,7 @@ namespace BedMap {
         typedef RefType MapType;
         typedef typename SelectBase<ProcessMode, BedDistType, RefType, MapType>::BaseClass BaseClass;
         BedMap::GenerateVisitors<BaseClass, 3> gv;
-        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, onEmptyMap, precision,
                                                            useScientific, visitorNames, visitorArgs);
         runSweep<BaseClass>(st, dt, refFileName, mapFileName, errorCheck, nestCheck,
                             ProcessMode, sweepAll, colSep, chrom, skipUnmappedRows, visitorGroup);
@@ -803,7 +827,7 @@ namespace BedMap {
         typedef typename SelectBED<4, UseMemPool>::BType MapType;
         typedef typename SelectBase<ProcessMode, BedDistType, RefType, MapType>::BaseClass BaseClass;
         BedMap::GenerateVisitors<BaseClass, 4> gv;
-        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, onEmptyMap, precision,
                                                            useScientific, visitorNames, visitorArgs);
         runSweep<BaseClass>(st, dt, refFileName, mapFileName, errorCheck, nestCheck,
                             ProcessMode, sweepAll, colSep, chrom, skipUnmappedRows, visitorGroup);
@@ -814,7 +838,7 @@ namespace BedMap {
         typedef typename SelectBED<4, NoUseMemPool>::BType MapType;
         typedef typename SelectBase<ProcessMode, BedDistType, RefType, MapType>::BaseClass BaseClass;
         BedMap::GenerateVisitors<BaseClass, 4> gv;
-        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, onEmptyMap, precision,
                                                            useScientific, visitorNames, visitorArgs);
         runSweep<BaseClass>(st, dt, refFileName, mapFileName, errorCheck, nestCheck,
                             ProcessMode, sweepAll, colSep, chrom, skipUnmappedRows, visitorGroup);
@@ -827,7 +851,7 @@ namespace BedMap {
         typedef typename SelectBED<5, UseMemPool>::BType MapType;
         typedef typename SelectBase<ProcessMode, BedDistType, RefType, MapType>::BaseClass BaseClass;
         BedMap::GenerateVisitors<BaseClass, 5> gv;
-        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, onEmptyMap, precision,
                                                            useScientific, visitorNames, visitorArgs);
         runSweep<BaseClass>(st, dt, refFileName, mapFileName, errorCheck, nestCheck,
                             ProcessMode, sweepAll, colSep, chrom, skipUnmappedRows, visitorGroup);
@@ -838,7 +862,7 @@ namespace BedMap {
         typedef typename SelectBED<5, NoUseMemPool>::BType MapType;
         typedef typename SelectBase<ProcessMode, BedDistType, RefType, MapType>::BaseClass BaseClass;
         BedMap::GenerateVisitors<BaseClass, 5> gv;
-        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, onEmptyMap, precision,
                                                            useScientific, visitorNames, visitorArgs);
         runSweep<BaseClass>(st, dt, refFileName, mapFileName, errorCheck, nestCheck,
                             ProcessMode, sweepAll, colSep, chrom, skipUnmappedRows, visitorGroup);
@@ -858,6 +882,7 @@ namespace BedMap {
                  bool nestCheck,
                  const std::string& colSep,
                  const std::string& multivalColSep,
+                 const std::string& onEmptyMap,
                  int precision,
                  bool useScientific,
                  const std::string& chrom,
@@ -872,7 +897,7 @@ namespace BedMap {
         typedef typename SelectBED<3, UseMemPool>::BType RefType;
         typedef typename SelectBase<ProcessMode, BedDistType, RefType, RefType>::BaseClass BaseClass;
         BedMap::GenerateVisitors<BaseClass, 3> gv;
-        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, onEmptyMap, precision,
                                                            useScientific, visitorNames, visitorArgs);
         runSweep<BaseClass>(st, dt, refFileName, errorCheck, nestCheck,
                             ProcessMode, colSep, chrom, skipUnmappedRows, visitorGroup);
@@ -880,7 +905,7 @@ namespace BedMap {
         typedef typename SelectBED<3, NoUseMemPool>::BType RefType;
         typedef typename SelectBase<ProcessMode, BedDistType, RefType, RefType>::BaseClass BaseClass;
         BedMap::GenerateVisitors<BaseClass, 3> gv;
-        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, onEmptyMap, precision,
                                                            useScientific, visitorNames, visitorArgs);
         runSweep<BaseClass>(st, dt, refFileName, errorCheck, nestCheck,
                             ProcessMode, colSep, chrom, skipUnmappedRows, visitorGroup);
@@ -890,7 +915,7 @@ namespace BedMap {
         typedef typename SelectBED<4, UseMemPool>::BType RefType;
         typedef typename SelectBase<ProcessMode, BedDistType, RefType, RefType>::BaseClass BaseClass;
         BedMap::GenerateVisitors<BaseClass, 4> gv;
-        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, onEmptyMap, precision,
                                                            useScientific, visitorNames, visitorArgs);
         runSweep<BaseClass>(st, dt, refFileName, errorCheck, nestCheck,
                             ProcessMode, colSep, chrom, skipUnmappedRows, visitorGroup);
@@ -898,7 +923,7 @@ namespace BedMap {
         typedef typename SelectBED<4, NoUseMemPool>::BType RefType;
         typedef typename SelectBase<ProcessMode, BedDistType, RefType, RefType>::BaseClass BaseClass;
         BedMap::GenerateVisitors<BaseClass, 4> gv;
-        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, onEmptyMap, precision,
                                                            useScientific, visitorNames, visitorArgs);
         runSweep<BaseClass>(st, dt, refFileName, errorCheck, nestCheck,
                             ProcessMode, colSep, chrom, skipUnmappedRows, visitorGroup);
@@ -908,7 +933,7 @@ namespace BedMap {
         typedef typename SelectBED<5, UseMemPool>::BType RefType;
         typedef typename SelectBase<ProcessMode, BedDistType, RefType, RefType>::BaseClass BaseClass;
         BedMap::GenerateVisitors<BaseClass, 5> gv;
-        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, onEmptyMap, precision,
                                                            useScientific, visitorNames, visitorArgs);
         runSweep<BaseClass>(st, dt, refFileName, errorCheck, nestCheck,
                             ProcessMode, colSep, chrom, skipUnmappedRows, visitorGroup);
@@ -916,7 +941,7 @@ namespace BedMap {
         typedef typename SelectBED<5, NoUseMemPool>::BType RefType;
         typedef typename SelectBase<ProcessMode, BedDistType, RefType, RefType>::BaseClass BaseClass;
         BedMap::GenerateVisitors<BaseClass, 5> gv;
-        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, precision,
+        std::vector<BaseClass*> visitorGroup = getVisitors(gv, dt, multivalColSep, onEmptyMap, precision,
                                                            useScientific, visitorNames, visitorArgs);
         runSweep<BaseClass>(st, dt, refFileName, errorCheck, nestCheck,
                             ProcessMode, colSep, chrom, skipUnmappedRows, visitorGroup);
@@ -939,6 +964,7 @@ namespace BedMap {
                    bool nestCheck,
                    const std::string& colSep,
                    const std::string& multivalColSep,
+                   const std::string& onEmptyMap,
                    int precision,
                    bool useScientific,
                    bool fastMode,
@@ -955,19 +981,19 @@ namespace BedMap {
 
     if ( mapFileName.empty() ) { // single-file mode
       if ( fastMode )
-        callSweep<SpecialMode>(st, dt, refFileName, minRefFields, errorCheck, nestCheck, colSep, multivalColSep,
+        callSweep<SpecialMode>(st, dt, refFileName, minRefFields, errorCheck, nestCheck, colSep, multivalColSep, onEmptyMap,
                                precision, useScientific, chrom, skipUnmappedRows, visitorNames, visitorArgs);
       else
-        callSweep<GeneralMode>(st, dt, refFileName, minRefFields, errorCheck, nestCheck, colSep, multivalColSep,
+        callSweep<GeneralMode>(st, dt, refFileName, minRefFields, errorCheck, nestCheck, colSep, multivalColSep, onEmptyMap,
                                precision, useScientific, chrom, skipUnmappedRows, visitorNames, visitorArgs);
     } else { // dual-file mode
       if ( fastMode )
-        callSweep<SpecialMode>(st, dt, refFileName, mapFileName, minRefFields, minMapFields,
-                               errorCheck, nestCheck, colSep, multivalColSep, precision, useScientific,
+        callSweep<SpecialMode>(st, dt, refFileName, mapFileName, minRefFields, minMapFields, errorCheck,
+                               nestCheck, colSep, multivalColSep, onEmptyMap, precision, useScientific,
                                chrom, skipUnmappedRows, sweepAll, visitorNames, visitorArgs);
       else
-        callSweep<GeneralMode>(st, dt, refFileName, mapFileName, minRefFields, minMapFields,
-                               errorCheck, nestCheck, colSep, multivalColSep, precision, useScientific,
+        callSweep<GeneralMode>(st, dt, refFileName, mapFileName, minRefFields, minMapFields, errorCheck,
+                               nestCheck, colSep, multivalColSep, onEmptyMap, precision, useScientific,
                                chrom, skipUnmappedRows, sweepAll, visitorNames, visitorArgs);
     }
   }

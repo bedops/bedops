@@ -70,7 +70,11 @@ STARCH_createMetadata(char const *chr,
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_createMetadata() ---\n");
 #endif
+#ifdef __cplusplus
+    Metadata *newMetadata = nullptr;
+#else
     Metadata *newMetadata = NULL;
+#endif
     size_t fnLength = 0;
     size_t chrLength = 0;
     size_t signatureLength = 0;
@@ -88,11 +92,13 @@ STARCH_createMetadata(char const *chr,
     newMetadata = malloc(sizeof(Metadata));
 #endif
 
-    if ((newMetadata != NULL) && (chr != NULL) && (fn != NULL)) {
-        newMetadata->chromosome = NULL;
 #ifdef __cplusplus
+    if ((newMetadata != nullptr) && (chr != nullptr) && (fn != nullptr)) {
+        newMetadata->chromosome = nullptr;
         newMetadata->chromosome = static_cast<char *>( malloc(chrLength + 1) );
 #else
+    if ((newMetadata != NULL) && (chr != NULL) && (fn != NULL)) {
+        newMetadata->chromosome = NULL;
         newMetadata->chromosome = malloc(chrLength + 1);
 #endif
         if (!newMetadata->chromosome) {
@@ -101,10 +107,11 @@ STARCH_createMetadata(char const *chr,
         }
         strncpy(newMetadata->chromosome, chr, chrLength + 1);
 
-        newMetadata->filename = NULL;
 #ifdef __cplusplus
+        newMetadata->filename = nullptr;
         newMetadata->filename = static_cast<char *>( malloc(fnLength + 1) );
 #else
+        newMetadata->filename = NULL;
         newMetadata->filename = malloc(fnLength + 1);
 #endif
         if (!newMetadata->filename) {
@@ -114,11 +121,13 @@ STARCH_createMetadata(char const *chr,
         strncpy(newMetadata->filename, fn, fnLength + 1);
 
         /* we allow a NULL signature for placeholder purposes */
-        newMetadata->signature = NULL;
-        if (signature) {
 #ifdef __cplusplus
+        newMetadata->signature = nullptr;
+        if (signature) {
             newMetadata->signature = static_cast<char *>( malloc(signatureLength + 1) );
 #else
+        newMetadata->signature = NULL;
+        if (signature) {
             newMetadata->signature = malloc(signatureLength + 1);
 #endif
             if (!newMetadata->signature) {
@@ -135,7 +144,11 @@ STARCH_createMetadata(char const *chr,
         newMetadata->totalUniqueBases = totalUniqueBases;
         newMetadata->duplicateElementExists = duplicateElementExists;
         newMetadata->nestedElementExists = nestedElementExists;
+#ifdef __cplusplus
+        newMetadata->next = nullptr;
+#else
         newMetadata->next = NULL;
+#endif
     }
     else {
         fprintf(stderr, "ERROR: Could not allocate memory for metadata!\n");
@@ -174,8 +187,11 @@ STARCH_addMetadata(Metadata *md,
                                             nestedElementExists,
                                             signature,
                                             lineMaxStringLength);
-
+#ifdef __cplusplus
+    if ((newMd != nullptr) && (md->next == nullptr))
+#else
     if ((newMd != NULL) && (md->next == NULL))
+#endif
         md->next = newMd;
     else {
         fprintf(stderr, "ERROR: Could not allocate memory for metadata!\n");
@@ -191,9 +207,15 @@ STARCH_copyMetadata(const Metadata *md)
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_copyMetadata() ---\n");
 #endif
+#ifdef __cplusplus
+    Metadata *copy = nullptr;
+    Metadata *firstRec = nullptr;
+    const Metadata *iter = nullptr;
+#else
     Metadata *copy = NULL;
     Metadata *firstRec = NULL;
     const Metadata *iter = NULL;
+#endif
 
     /* copy first record */
     copy = STARCH_createMetadata(md->chromosome,
@@ -210,7 +232,11 @@ STARCH_copyMetadata(const Metadata *md)
     md = md->next;
 
     /* copy remainder */
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+#else
     for (iter = md; iter != NULL; iter = iter->next) {
+#endif
         copy = STARCH_addMetadata(copy,
                                   iter->chromosome,
                                   iter->filename,
@@ -263,20 +289,23 @@ STARCH_updateMetadataForChromosome(Metadata **md,
     if (! *md)
         return STARCH_NONFATAL_ERROR; 
 
-    for (iter = *md; iter != NULL; iter = iter->next) {
 #ifdef __cplusplus
+    for (iter = *md; iter != nullptr; iter = iter->next) {
         if (strcmp(reinterpret_cast<const char *>( iter->chromosome ), chr) == 0) {
 #else
+    for (iter = *md; iter != NULL; iter = iter->next) {
         if (strcmp((const char *)iter->chromosome, chr) == 0) {
 #endif
 #ifdef DEBUG
             fprintf(stderr, "\tupdating record for chr: %s\n", iter->chromosome);
 #endif
-            free(iter->filename); 
-            iter->filename = NULL;
+            free(iter->filename);
+
 #ifdef __cplusplus
+            iter->filename = nullptr;
             iter->filename = static_cast<char *>( malloc(strlen(fn) + 1) );
 #else
+            iter->filename = NULL;
             iter->filename = malloc(strlen(fn) + 1);
 #endif
             strncpy(iter->filename, fn, strlen(fn) + 1);
@@ -286,7 +315,11 @@ STARCH_updateMetadataForChromosome(Metadata **md,
             }
             if (iter->signature) {
                 free(iter->signature);
+#ifdef __cplusplus
+                iter->signature = nullptr;
+#else
                 iter->signature = NULL;
+#endif
             }
             if (signature) {
 #ifdef __cplusplus
@@ -334,10 +367,11 @@ STARCH_listMetadata(const Metadata *md,
     if (strcmp("all", chr) == 0) 
         chrFound = kStarchTrue;
     else {
-        for (iter = md; iter != NULL; iter = iter->next) {
 #ifdef __cplusplus
+        for (iter = md; iter != nullptr; iter = iter->next) {
             if (strcmp(reinterpret_cast<const char *>( iter->chromosome ), chr) == 0) {
 #else
+        for (iter = md; iter != NULL; iter = iter->next) {
             if (strcmp((const char *)iter->chromosome, chr) == 0) {
 #endif
                 chrFound = kStarchTrue;
@@ -359,10 +393,11 @@ STARCH_listMetadata(const Metadata *md,
                 "duplicateElementExists", 
                 "nestedElementExists", 
                 "signature");
-        for (iter = md; iter != NULL; iter = iter->next) {
 #ifdef __cplusplus
+        for (iter = md; iter != nullptr; iter = iter->next) {
             if ( (strcmp(reinterpret_cast<const char *>( iter->chromosome ), chr) == 0) || (strcmp("all", chr) == 0) )
 #else
+        for (iter = md; iter != NULL; iter = iter->next) {
             if ( (strcmp((const char *)iter->chromosome, chr) == 0) || (strcmp("all", chr) == 0) )
 #endif
                 fprintf(stdout, 
@@ -395,8 +430,11 @@ STARCH_listAllChromosomes(const Metadata *md)
         fprintf(stderr, "ERROR: Could not list chromosomes (metadata structure is empty)\n");
         return STARCH_EXIT_FAILURE;
     }
-
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next)
+#else
     for (iter = md; iter != NULL; iter = iter->next)
+#endif
         if (strcmp(kStarchNullChromosome, iter->chromosome) != 0) 
             fprintf(stdout, "%s\n", iter->chromosome);
 
@@ -416,8 +454,11 @@ STARCH_listChromosome(const Metadata *md,
         fprintf(stderr, "ERROR: Could not list chromosome (metadata structure is empty)\n");
         return STARCH_EXIT_FAILURE;
     }
-
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+#else
     for (iter = md; iter != NULL; iter = iter->next) {
+#endif
         if (strcmp(iter->chromosome, chr) == 0) {
             if (strcmp(kStarchNullChromosome, iter->chromosome) != 0) 
                 fprintf(stdout, "%s\n", iter->chromosome);
@@ -435,6 +476,30 @@ STARCH_freeMetadata(Metadata **md)
     fprintf(stderr, "\n--- STARCH_freeMetadata() ---\n");
 #endif
     Metadata *iter;
+#ifdef __cplusplus
+    Metadata *prev = nullptr;
+
+    if (! *md)
+        return;
+
+    for (iter = *md; iter != nullptr; iter = iter->next) {
+        if (iter->chromosome != nullptr)
+            free(iter->chromosome);
+        if (iter->filename != nullptr)
+            free(iter->filename);
+        if (iter->signature != nullptr)
+            free(iter->signature);
+        if (prev != nullptr)
+            free(prev);
+        
+        prev = iter;
+    }
+
+    if (prev != nullptr) {
+        free(prev);
+        prev = nullptr;
+    }
+#else
     Metadata *prev = NULL;
 
     if (! *md)
@@ -457,6 +522,7 @@ STARCH_freeMetadata(Metadata **md)
         free(prev);
         prev = NULL;
     }
+#endif
 }
 
 int 
@@ -472,7 +538,11 @@ STARCH_deleteCompressedFiles(const Metadata *md)
         return STARCH_EXIT_FAILURE;
     }
 
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+#else
     for (iter = md; iter != NULL; iter = iter->next) {
+#endif
         if (remove(iter->filename) != 0) {
             fprintf(stderr, "ERROR: Could not delete per-chromosome compressed file %s. Is your BED input not sorted lexographically? Does it contain custom UCSC headers (see --header)?\n", iter->filename);
             return STARCH_EXIT_FAILURE;
@@ -493,13 +563,53 @@ STARCH_generateJSONMetadata(const Metadata *md,
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_generateJSONMetadata() ---\n");
 #endif
+#ifdef __cplusplus
+    const Metadata *iter = nullptr;
+    json_t *metadataJSON = nullptr;
+    json_t *compressionFormat = json_integer(static_cast<json_int_t>(type));
+    json_t *streams = json_array();
+    json_t *stream = nullptr; 
+    json_t *streamChromosome = nullptr;
+    json_t *streamFilename = nullptr;
+    json_t *streamSize = nullptr;
+    json_t *streamLineCount = nullptr;
+    json_t *streamLineMaxStringLength = nullptr;
+    json_t *streamTotalNonUniqueBases = nullptr;
+    json_t *streamTotalUniqueBases = nullptr;
+    json_t *streamCustomHeaderFlag = nullptr;
+    json_t *streamDuplicateElementExistsFlag = nullptr;
+    json_t *streamNestedElementExistsFlag = nullptr;
+    json_t *streamSignature = nullptr;
+    json_t *streamArchive = nullptr;
+    json_t *streamArchiveType = nullptr;
+    json_t *streamArchiveNote = nullptr;
+    json_t *streamArchiveCreationTimestamp = nullptr;
+    json_t *streamArchiveVersion = nullptr;
+    json_t *streamArchiveVersionMajor = nullptr;
+    json_t *streamArchiveVersionMinor = nullptr;
+    json_t *streamArchiveVersionRevision = nullptr;
+    char *recordFilenameCopy = nullptr;
+    char *recordChromosome = nullptr;
+    char *recordSignature = nullptr;
+    char *recordToken = nullptr;
+    char *recordSize = nullptr;
+    char *creationTimestamp = nullptr;
+    char *jsonString = nullptr;
+    size_t creationTimestampLength = STARCH_CREATION_TIMESTAMP_LENGTH;
+    uint64_t filenameSize = 0;
+    LineCountType filenameLineCount = 0;
+    LineLengthType filenameLineMaxStringLength = 0UL;
+    BaseCountType totalNonUniqueBases = 0;
+    BaseCountType totalUniqueBases = 0;
+    time_t creationTime;
+    struct tm *creationTimeInformation = nullptr;
+
+    if (!md)
+        return nullptr;
+#else
     const Metadata *iter = NULL;
     json_t *metadataJSON = NULL;
-#ifdef __cplusplus
-    json_t *compressionFormat = json_integer(static_cast<json_int_t>(type));
-#else
     json_t *compressionFormat = json_integer((json_int_t)type);
-#endif
     json_t *streams = json_array();
     json_t *stream = NULL; 
     json_t *streamChromosome = NULL;
@@ -539,32 +649,49 @@ STARCH_generateJSONMetadata(const Metadata *md,
 
     if (!md)
         return NULL;
+#endif
     
     /* cf. http://www.digip.org/jansson/doc/2.3/apiref.html */
 
     metadataJSON = json_object();
     if (!metadataJSON) {
         fprintf(stderr, "ERROR: Could not instantiate metadata root object\n");
-        return NULL;    
+#ifdef __cplusplus
+	return nullptr;
+#else
+        return NULL;
+#endif
     }
 
     streamArchive = json_object();
     if (!streamArchive) {
         fprintf(stderr, "ERROR: Could not instantiate stream archive object\n");
+#ifdef __cplusplus
+        return nullptr;
+#else
         return NULL;
+#endif
     }
     
     streamArchiveType = json_string(STARCH_METADATA_STREAM_ARCHIVE_TYPE_VALUE);        
     if (!streamArchiveType) {
         fprintf(stderr, "ERROR: Could not instantiate stream archive type object\n");
+#ifdef __cplusplus
+	return nullptr;
+#else
         return NULL;
+#endif
     }
     json_object_set_new(streamArchive, STARCH_METADATA_STREAM_ARCHIVE_TYPE_KEY, streamArchiveType);
 
     streamCustomHeaderFlag = json_boolean(headerFlag == kStarchTrue); /* returns json_true() if true, else json_false() */
     if (!streamCustomHeaderFlag) {
         fprintf(stderr, "ERROR: Could not instantiate stream header flag object\n");
+#ifdef __cplusplus
+	return nullptr;
+#else
         return NULL;
+#endif
     }
     json_object_set_new(streamArchive, STARCH_METADATA_STREAM_HEADER_BED_TYPE_KEY, streamCustomHeaderFlag);
 
@@ -583,7 +710,11 @@ STARCH_generateJSONMetadata(const Metadata *md,
     }
     if ((!streamArchiveVersionMajor) || (!streamArchiveVersionMinor) || (!streamArchiveVersionRevision)) {  
         fprintf(stderr, "ERROR: Could not instantiate stream archive version objects\n");
+#ifdef __cplusplus
+	return nullptr;
+#else
         return NULL;
+#endif
     }
 
     /* 1.5+ archive */
@@ -596,9 +727,20 @@ STARCH_generateJSONMetadata(const Metadata *md,
             creationTimeInformation = localtime(&creationTime);
 #ifdef __cplusplus
             creationTimestamp = static_cast<char *>( malloc(creationTimestampLength) );
+            if (!creationTimestamp) {
+                fprintf(stderr, "ERROR: Could not instantiate stream archive creation timestamp string\n");
+                return nullptr;
+            }
+            strftime(creationTimestamp, creationTimestampLength, "%Y-%m-%dT%H:%M:%S%z", creationTimeInformation);
+            streamArchiveCreationTimestamp = json_string(creationTimestamp);
+            free(creationTimestamp);
+            creationTimestamp = nullptr;
+            if (!streamArchiveCreationTimestamp) {
+                fprintf(stderr, "ERROR: Could not instantiate stream archive creation timestamp JSON object\n");
+                return nullptr;
+            }
 #else
             creationTimestamp = malloc(creationTimestampLength);
-#endif
             if (!creationTimestamp) {
                 fprintf(stderr, "ERROR: Could not instantiate stream archive creation timestamp string\n");
                 return NULL;
@@ -611,6 +753,7 @@ STARCH_generateJSONMetadata(const Metadata *md,
                 fprintf(stderr, "ERROR: Could not instantiate stream archive creation timestamp JSON object\n");
                 return NULL;
             }
+#endif
         }
         else {
             /* unstarch - read from archive */
@@ -623,7 +766,11 @@ STARCH_generateJSONMetadata(const Metadata *md,
             streamArchiveNote = json_string(note);
             if (!streamArchiveNote) {
                 fprintf(stderr, "ERROR: Could not instantiate stream archive note object\n");
+#ifdef __cplusplus
+		return nullptr;
+#else
                 return NULL;
+#endif
             }
             json_object_set_new(streamArchive, STARCH_METADATA_STREAM_ARCHIVE_NOTE_KEY, streamArchiveNote);
         }
@@ -636,7 +783,11 @@ STARCH_generateJSONMetadata(const Metadata *md,
     json_object_set_new(streamArchive, STARCH_METADATA_STREAM_COMPRESSION_FORMAT_KEY, compressionFormat);
     json_object_set_new(metadataJSON, STARCH_METADATA_STREAM_ARCHIVE_KEY, streamArchive);
 
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+#else
     for (iter = md; iter != NULL; iter = iter->next) {
+#endif
         stream = json_object();
 
         recordFilenameCopy = STARCH_strndup(iter->filename, strlen(iter->filename) + 1);
@@ -706,14 +857,22 @@ STARCH_generateJSONMetadata(const Metadata *md,
             streamDuplicateElementExistsFlag = json_boolean(iter->duplicateElementExists == kStarchTrue);
             if (!streamDuplicateElementExistsFlag) {
                 fprintf(stderr, "ERROR: Could not instantiate stream duplicate-element-exists flag object\n");
+#ifdef __cplusplus
+		return nullptr;
+#else
                 return NULL;
+#endif
             }
             json_object_set_new(stream, STARCH_METADATA_STREAM_DUPLICATEELEMENTEXISTS_KEY, streamDuplicateElementExistsFlag);
 
             streamNestedElementExistsFlag = json_boolean(iter->nestedElementExists == kStarchTrue);
             if (!streamNestedElementExistsFlag) {
                 fprintf(stderr, "ERROR: Could not instantiate stream duplicate-element-exists flag object\n");
+#ifdef __cplusplus
+		return nullptr;
+#else
                 return NULL;
+#endif
             }
             json_object_set_new(stream, STARCH_METADATA_STREAM_NESTEDELEMENTEXISTS_KEY, streamNestedElementExistsFlag);
         }
@@ -770,7 +929,11 @@ STARCH_listJSONMetadata(FILE *out,
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_listJSONMetadata() ---\n");
 #endif
+#ifdef __cplusplus
+    char *jsonString = nullptr;
+#else
     char *jsonString = NULL;
+#endif
 
     if (!out)
         out = stdout;
@@ -803,11 +966,19 @@ STARCH_writeJSONMetadata(const Metadata *md,
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_writeJSONMetadata() ---\n");
 #endif
+#ifdef __cplusplus
+    char *jsonString = nullptr;
+    size_t jsonLength;
+
+    /* archive version and creation timestamp are NULL, in order to write default values */
+    jsonString = STARCH_generateJSONMetadata(md, *type, nullptr, nullptr, note, headerFlag); 
+#else
     char *jsonString = NULL;
     size_t jsonLength;
 
     /* archive version and creation timestamp are NULL, in order to write default values */
     jsonString = STARCH_generateJSONMetadata(md, *type, NULL, NULL, note, headerFlag); 
+#endif
 
     if (!jsonString) {
         fprintf(stderr, "ERROR: Could not write JSON-formatted metadata to buffer (JSON string is empty)\n");
@@ -817,18 +988,25 @@ STARCH_writeJSONMetadata(const Metadata *md,
     jsonLength = strlen(jsonString) + 1;
 
     /* dynamic buffer */
-    if (! *buf)
 #ifdef __cplusplus
+    if (! *buf) {
         *buf = static_cast<char *>( malloc(jsonLength + 2) );
+    }
+    if (*buf != nullptr) {
+        memcpy(*buf, jsonString, jsonLength);
+        free(jsonString);
+        jsonString = nullptr;
+    }
 #else
+    if (! *buf) {
         *buf = malloc(jsonLength + 2);
-#endif
-
+    }
     if (*buf != NULL) {
         memcpy(*buf, jsonString, jsonLength);
         free(jsonString);
         jsonString = NULL;
     }
+#endif
     else {
         fprintf(stderr, "ERROR: Could not allocate space for JSON-formatted metadata buffer\n");
         return STARCH_EXIT_FAILURE;
@@ -864,6 +1042,67 @@ STARCH_readJSONMetadata(json_t **metadataJSON,
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_readJSONMetadata() ---\n");
 #endif
+#ifdef __cplusplus
+    int charCnt = 0;
+    char *dynamicBuffer = nullptr;
+    char *dynamicBufferCopy = nullptr;
+    char legacyBuffer[STARCH_LEGACY_METADATA_SIZE];
+    char testMagicBuffer[STARCH_TEST_BYTE_COUNT] = {0};
+    char footerBuffer[STARCH2_MD_FOOTER_LENGTH + 1] = {0};
+    char currC = '\0';
+    char prevC = '\0';
+    uint64_t testMagicOffset = 0;
+    uint64_t mdOffsetIndex = 0;
+    Metadata *firstRec = nullptr;
+    json_t *streamArchive;
+    json_t *streamArchiveVersion = nullptr;
+    json_t *streamArchiveCreationTimestamp = nullptr;
+    json_t *streamArchiveNote = nullptr;
+    json_t *streams = nullptr;
+    json_t *stream = nullptr;
+    json_t *streamChromosome = nullptr;
+    json_t *streamFilename = nullptr;
+    json_t *streamSignature = nullptr;
+    json_t *streamSize = nullptr;
+    json_t *streamLineCount = nullptr;
+    json_t *streamLineMaxStringLength = nullptr;
+    json_t *streamTotalNonUniqueBases = nullptr;
+    json_t *streamTotalUniqueBases = nullptr;
+    json_t *streamDuplicateElementExistsFlag = nullptr;
+    json_t *streamNestedElementExistsFlag = nullptr;
+    json_t *streamsCompressionType = nullptr;
+    size_t streamIdx;
+    char *streamChr = nullptr;
+    char *streamFn = nullptr;
+    char *streamCTime = nullptr;
+    char *streamNote = nullptr;
+    char *streamSig = nullptr;
+    uint64_t streamSizeValue = 0;
+    char *testMagicPrecursor = nullptr;
+    json_error_t jsonParseError;
+    const char *jsonObjKey = nullptr;
+    json_t *jsonObjValue = nullptr;
+    const char *jsonObjAvKey = nullptr;
+    json_t *jsonObjAvValue = nullptr;
+    LineCountType streamLineCountValue = STARCH_DEFAULT_LINE_COUNT;
+    LineLengthType streamLineMaxStringLengthValue = STARCH_DEFAULT_LINE_STRING_LENGTH;
+    BaseCountType streamTotalNonUniqueBasesValue = STARCH_DEFAULT_NON_UNIQUE_BASE_COUNT;
+    BaseCountType streamTotalUniqueBasesValue = STARCH_DEFAULT_UNIQUE_BASE_COUNT;
+    Boolean streamDuplicateElementExistsValue = STARCH_DEFAULT_DUPLICATE_ELEMENT_FLAG_VALUE;
+    Boolean streamNestedElementExistsValue = STARCH_DEFAULT_NESTED_ELEMENT_FLAG_VALUE;
+    json_t *mdJSON = nullptr;
+    size_t mdHashIndex;
+    char offsetBuffer[STARCH2_MD_FOOTER_CUMULATIVE_RECORD_SIZE_LENGTH + 1] = {0};
+    unsigned char mdHashBuffer[STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH] = {0};
+    char *testMdHashBuffer = nullptr;
+    unsigned char testMdHashSha1Buffer[STARCH2_MD_FOOTER_SHA1_LENGTH];
+    off_t fSize;
+    off_t currentMdOffset;
+    size_t mdLength;
+    Boolean starchRevision2Flag = kStarchFalse;
+    unsigned char starchRevision2HeaderTestBytes[sizeof(starchRevision2HeaderBytes)] = {0};
+    size_t nReadBytes;
+#else
     int charCnt = 0;
     char *dynamicBuffer = NULL;
     char *dynamicBufferCopy = NULL;
@@ -923,6 +1162,7 @@ STARCH_readJSONMetadata(json_t **metadataJSON,
     Boolean starchRevision2Flag = kStarchFalse;
     unsigned char starchRevision2HeaderTestBytes[sizeof(starchRevision2HeaderBytes)] = {0};
     size_t nReadBytes;
+#endif
 
     if (! *version) {
 #ifdef __cplusplus
@@ -1048,7 +1288,11 @@ STARCH_readJSONMetadata(json_t **metadataJSON,
 
         /* release pre-magic-byte terminator check */
         free(testMagicPrecursor);
+#ifdef __cplusplus
+        testMagicPrecursor = nullptr;
+#else
         testMagicPrecursor = NULL;
+#endif
 
         /* set metadata offset */
         *mdOffset = testMagicOffset;
@@ -1133,7 +1377,7 @@ STARCH_readJSONMetadata(json_t **metadataJSON,
         }
         offsetBuffer[mdOffsetIndex] = '\0';
 #ifdef __cplusplus
-        currentMdOffset = static_cast<off_t>( strtoull(reinterpret_cast<const char *>( offsetBuffer ), NULL, STARCH_RADIX) );
+        currentMdOffset = static_cast<off_t>( strtoull(reinterpret_cast<const char *>( offsetBuffer ), nullptr, STARCH_RADIX) );
         *mdOffset = static_cast<uint64_t>( currentMdOffset );
 #else
         currentMdOffset = (off_t) strtoull((const char *)offsetBuffer, NULL, STARCH_RADIX);
@@ -1467,7 +1711,7 @@ STARCH_readJSONMetadata(json_t **metadataJSON,
                 return STARCH_EXIT_FAILURE;
             }
 #ifdef __cplusplus
-            streamSizeValue = static_cast<uint64_t>( strtoull(json_string_value(streamSize), NULL, STARCH_RADIX) );
+            streamSizeValue = static_cast<uint64_t>( strtoull(json_string_value(streamSize), nullptr, STARCH_RADIX) );
 #else
             streamSizeValue = (uint64_t) strtoull(json_string_value(streamSize), NULL, STARCH_RADIX);
 #endif
@@ -1659,10 +1903,17 @@ STARCH_readJSONMetadata(json_t **metadataJSON,
             free(streamFn);
         if (streamSig)
             free(streamSig);
+#ifdef __cplusplus
+        if ((mdJSON != nullptr) && (preserveJSONRef == kStarchFalse)) {
+            json_decref(mdJSON);
+            mdJSON = nullptr;
+        }
+#else
         if ((mdJSON != NULL) && (preserveJSONRef == kStarchFalse)) {
-            json_decref(mdJSON); 
+            json_decref(mdJSON);
             mdJSON = NULL;
-        }        
+        }
+#endif
     }
     else {
         /* version error */
@@ -1681,6 +1932,34 @@ STARCH_mergeMetadataWithCompressedFiles(const Metadata *md,
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_mergeMetadataWithCompressedFiles() ---\n");
 #endif
+#ifdef __cplusplus
+    const Metadata *iter = nullptr;
+    FILE *outPtr = nullptr;
+    FILE *chrFnPtr = nullptr;
+    int c;
+
+    if ((outPtr = freopen(nullptr, "wb", stdout)) != nullptr) {
+        fwrite(mdHeader, strlen(mdHeader), 1, outPtr);
+        for (iter = md; iter != nullptr; iter = iter->next) {  
+            chrFnPtr = fopen(iter->filename, "rb");
+            if (!chrFnPtr) {
+                fprintf(stderr, "ERROR: Could not open per-chromosome data file %s\n", iter->filename);
+                return STARCH_EXIT_FAILURE;
+            }
+            while ((c = fgetc(chrFnPtr)) != EOF) {
+                if (fputc(c, outPtr) == EOF) {
+                    fprintf(stderr, "ERROR: Could not write to standard output stream\n");
+                }
+            }
+            fclose(chrFnPtr);
+        }
+        fclose(outPtr);
+    }
+    else {
+        fprintf(stderr, "ERROR: Could not open standard output stream\n");
+        return STARCH_EXIT_FAILURE;
+    }
+#else
     const Metadata *iter = NULL;
     FILE *outPtr = NULL;
     FILE *chrFnPtr = NULL;
@@ -1707,6 +1986,7 @@ STARCH_mergeMetadataWithCompressedFiles(const Metadata *md,
         fprintf(stderr, "ERROR: Could not open standard output stream\n");
         return STARCH_EXIT_FAILURE;
     }
+#endif
     
     return STARCH_EXIT_SUCCESS;
 }
@@ -1733,10 +2013,11 @@ STARCH_copyArchiveVersion(const ArchiveVersion *oav)
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCH_copyArchiveVersion() ---\n");
 #endif
-    ArchiveVersion *av = NULL;
 #ifdef __cplusplus
+    ArchiveVersion *av = nullptr;
     av = static_cast<ArchiveVersion *>( malloc (sizeof(ArchiveVersion)) );
 #else
+    ArchiveVersion *av = NULL;
     av = malloc (sizeof(ArchiveVersion));
 #endif
     if (av) {
@@ -1782,10 +2063,19 @@ STARCH_readLegacyMetadata(const char *buf,
         offset. We leave out post-v1.2 features (line count, etc.).        
     */
 
+#ifdef __cplusplus
+    char *token = nullptr;
+    char *tokenCheck = nullptr;
+    char *recChromosome = nullptr;
+    char *recFilename = nullptr;
+    Metadata *firstRec = nullptr;
+#else
     char *token = NULL;
     char *tokenCheck = NULL;
     char *recChromosome = NULL;
     char *recFilename = NULL;
+    Metadata *firstRec = NULL;
+#endif
     unsigned long recFileSize = 0UL;
     LineCountType recLineCountValue = STARCH_DEFAULT_LINE_COUNT;
     BaseCountType recNonUniqueBaseCountValue = STARCH_DEFAULT_NON_UNIQUE_BASE_COUNT;
@@ -1797,7 +2087,6 @@ STARCH_readLegacyMetadata(const char *buf,
     size_t bufIdx, tokBufIdx, recTokBufIdx;
     int tokenCount;
     int recIdx = 0;
-    Metadata *firstRec = NULL;
 
     for (bufIdx = 0, tokBufIdx = 0; bufIdx < STARCH_LEGACY_METADATA_SIZE; bufIdx++, tokBufIdx++) {
         if (buf[bufIdx] == '\n') {
@@ -1805,7 +2094,11 @@ STARCH_readLegacyMetadata(const char *buf,
                 recIdx++;
             tokBuf[tokBufIdx] = '\0';
             token = strtok(tokBuf, "\t");
+#ifdef __cplusplus
+            for (tokenCount = 0; token != nullptr; tokenCount++) {
+#else
             for (tokenCount = 0; token != NULL; tokenCount++) {
+#endif
                 switch (tokenCount) {
                     case 0: {
 #ifdef __cplusplus
@@ -1875,15 +2168,61 @@ STARCH_readLegacyMetadata(const char *buf,
                     }
                     case 1: {
                         /* read file size */
+#ifdef __cplusplus
+                        recFileSize = strtoul(token, nullptr, STARCH_RADIX);
+#else
                         recFileSize = strtoul(token, NULL, STARCH_RADIX);
+#endif
                         break;
                     }
                 }
+#ifdef __cplusplus
+                token = strtok(nullptr, "\t");
+#else
                 token = strtok(NULL, "\t");
+#endif
             }
 
             /* if tokBufIdx is zero, then we are at the end of the metadata content */
             if (tokBufIdx != 0) {
+#ifdef __cplusplus
+                /* put record into metadata */
+                if (recIdx == 1) {
+                    *rec = STARCH_createMetadata(recChromosome, 
+                                                 recFilename, 
+                                                 recFileSize, 
+                                                 recLineCountValue, 
+                                                 recNonUniqueBaseCountValue, 
+                                                 recUniqueBaseCountValue, 
+                                                 recDuplicateElementExistsFlagValue, 
+                                                 recNestedElementExistsFlagValue,
+                                                 nullptr,
+                                                 STARCH_DEFAULT_LINE_STRING_LENGTH);
+                    firstRec = *rec;
+                }
+                else
+                    *rec = STARCH_addMetadata(*rec, 
+                                              recChromosome, 
+                                              recFilename, 
+                                              recFileSize, 
+                                              recLineCountValue, 
+                                              recNonUniqueBaseCountValue, 
+                                              recUniqueBaseCountValue, 
+                                              recDuplicateElementExistsFlagValue, 
+                                              recNestedElementExistsFlagValue,
+                                              nullptr,
+                                              STARCH_DEFAULT_LINE_STRING_LENGTH);
+
+                /* cleanup */
+                if (recFilename) {
+                    free(recFilename);
+                    recFilename = nullptr;
+                }
+                if (recChromosome) {
+                    free(recChromosome);
+                    recChromosome = nullptr;
+                }
+#else
                 /* put record into metadata */
                 if (recIdx == 1) {
                     *rec = STARCH_createMetadata(recChromosome, 
@@ -1920,6 +2259,7 @@ STARCH_readLegacyMetadata(const char *buf,
                     free(recChromosome);
                     recChromosome = NULL;
                 }
+#endif
             }
             else
                 break;
@@ -1974,12 +2314,18 @@ STARCH_strnstr(const char *haystack,
 
     pLen = haystackLen;
 #ifdef __cplusplus
-    for (p = const_cast<char *>( haystack ); p != NULL; p = static_cast<char *>( memchr(p + 1, *needle, pLen-1) )) {
+    for (p = const_cast<char *>( haystack ); p != nullptr; p = static_cast<char *>( memchr(p + 1, *needle, pLen-1) )) {
         pLen = haystackLen - static_cast<size_t>( p - haystack );
+        if (pLen < len)
+            return nullptr;
+        if (strncmp(p, needle, len) == 0)
+            return p;
+    }
+
+    return nullptr;
 #else
     for (p = (char *) haystack; p != NULL; p = (char *) memchr(p + 1, *needle, pLen-1)) {
         pLen = haystackLen - (size_t) (p - haystack);
-#endif
         if (pLen < len)
             return NULL;
         if (strncmp(p, needle, len) == 0)
@@ -1987,6 +2333,7 @@ STARCH_strnstr(const char *haystack,
     }
 
     return NULL;
+#endif
 }
 
 int
@@ -2002,7 +2349,11 @@ STARCH_chromosomeInMetadataRecords(const Metadata *md,
         return STARCH_EXIT_FAILURE;
     }
 
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next)
+#else
     for (iter = md; iter != NULL; iter = iter->next)
+#endif
         if (strcmp(chr, iter->chromosome) == 0)
 	    return STARCH_EXIT_SUCCESS;
     
@@ -2022,7 +2373,11 @@ STARCH_chromosomePositionedBeforeExistingMetadataRecord(const Metadata *md,
         return STARCH_EXIT_FAILURE;
     }
 
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next)
+#else
     for (iter = md; iter != NULL; iter = iter->next)
+#endif
         if (strcmp(chr, iter->chromosome) < 0)
         return STARCH_EXIT_SUCCESS;
     

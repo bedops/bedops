@@ -180,8 +180,8 @@ namespace Visitors {
     // PrintAllScorePrecision()
     //==========================
     struct PrintAllScorePrecision {
-      PrintAllScorePrecision(int precision, bool inScientific)
-        : precision_(precision), scientific_(inScientific)
+      PrintAllScorePrecision(int precision, bool inScientific, const std::string& onEmpty = "")
+        : precision_(precision), scientific_(inScientific), oe_(onEmpty)
         { /* */ }
 
       template <typename T>
@@ -205,7 +205,8 @@ namespace Visitors {
       }
 
       void operator()(const Signal::NaN& s) const {
-        PrintTypes::Print("");
+        if ( !oe_.empty() )
+          PrintTypes::Print(oe_.c_str());
       }
 
     protected:
@@ -223,6 +224,7 @@ namespace Visitors {
     protected:
       int precision_;
       bool scientific_;
+      std::string oe_;
     };
 
     //================
@@ -378,15 +380,18 @@ namespace Visitors {
     struct PrintUniqueRangeIDs : private Visitors::Helpers::PrintDelim {
       typedef Visitors::Helpers::PrintDelim Base;
 
-      explicit PrintUniqueRangeIDs(const std::string& delim = ";")
-          : Base(delim)
+      explicit PrintUniqueRangeIDs(const std::string& delim = ";", const std::string& onEmpty = "")
+          : Base(delim), oe_(onEmpty)
         { /* */ }
 
       template <typename Iter>
       void operator()(Iter beg, Iter end) const {
         typedef std::set<std::string> SortType;
-        if ( beg == end )
+        if ( beg == end ) {
+          if ( !oe_.empty() )
+            PrintTypes::Print(oe_.c_str());
           return;
+        }
         SortType srt;
         while ( beg != end ) {
           srt.insert((*beg)->id());
@@ -400,6 +405,9 @@ namespace Visitors {
           PrintTypes::Print(i->c_str());
         } // while
       }
+
+    private:
+      std::string oe_;
     };
 
     //=========================
@@ -448,9 +456,10 @@ namespace Visitors {
     //=====================
     template <typename PrintType>
     struct PrintGenomicRange {
+      typedef PrintType PType;
 
-      explicit PrintGenomicRange(const PrintType& p = PrintType())
-          : pt_(p)
+      explicit PrintGenomicRange(const PrintType& p = PrintType(), const std::string& onEmpty = "")
+          : pt_(p), oe_(onEmpty)
         { /* */ }
 
       template <typename Iter>
@@ -458,8 +467,11 @@ namespace Visitors {
         // It is often possible/likely that beg->end is not in an order
         //  of the original input file (sorted by sort-bed), due to
         //  issues of BED types (see BedBaseVisitor.hpp).
-        if ( beg == end )
+        if ( beg == end ) {
+          if ( !oe_.empty() )
+            PrintTypes::Print(oe_.c_str());
           return;
+        }
 
         typename std::remove_const<typename std::remove_pointer<typename Iter::value_type>::type>::type val = **beg;
         while ( ++beg != end ) {
@@ -474,6 +486,7 @@ namespace Visitors {
 
     private:
       PrintType pt_;
+      std::string oe_;
     };
 
   } // namespace BedHelpers

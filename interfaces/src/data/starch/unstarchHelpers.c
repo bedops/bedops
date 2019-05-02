@@ -59,14 +59,19 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
 #ifdef DEBUG_VERBOSE
     fprintf(stderr, "\n--- UNSTARCH_extractDataWithGzip() ---\n");
 #endif
+#ifdef __cplusplus
+    char* firstInputToken = nullptr;
+    char* secondInputToken = nullptr;
+#else
+    char* firstInputToken = NULL;
+    char* secondInputToken = NULL;
+#endif
     const Metadata* iter;
     char* chromosome;
     uint64_t size;	
     uint64_t cumulativeSize = 0;
     SignedCoordType start, pLength, lastEnd;
     char const* all = "all";
-    char* firstInputToken = NULL;
-    char* secondInputToken = NULL;
     unsigned char zInBuf[STARCH_Z_CHUNK];
     unsigned char zOutBuf[STARCH_Z_CHUNK];
     unsigned char zLineBuf[STARCH_Z_CHUNK];
@@ -106,7 +111,11 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
     }
     secondInputToken[0] = '\0';
 
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+#else
     for (iter = md; iter != NULL; iter = iter->next) {
+#endif
         chromosome = iter->chromosome; 
         size = iter->size;
         start = 0;
@@ -129,11 +138,18 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
             chrFound = kStarchTrue;
 
             /* initialized and open gzip stream */
+#ifdef __cplusplus
+            zStream.zalloc = nullptr;
+            zStream.zfree = nullptr;
+            zStream.opaque = nullptr;
+            zStream.next_in = nullptr;
+#else
             zStream.zalloc = Z_NULL;
             zStream.zfree = Z_NULL;
             zStream.opaque = Z_NULL;
-            zStream.avail_in = 0;
             zStream.next_in = Z_NULL;
+#endif
+            zStream.avail_in = 0;
 
             zError = inflateInit2(&zStream, (15+32)); /* cf. http://www.zlib.net/manual.html */
             if (zError != Z_OK) {
@@ -271,7 +287,11 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
     
     if (zRemainderBuf) {
         free(zRemainderBuf);
+#ifdef __cplusplus
+        zRemainderBuf = nullptr;
+#else
         zRemainderBuf = NULL;
+#endif
     }
 
     if (!chrFound) {
@@ -281,12 +301,20 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
 
     if (firstInputToken) {
         free(firstInputToken);
+#ifdef __cplusplus
+        firstInputToken = nullptr;
+#else
         firstInputToken = NULL;
+#endif
     }
     
     if (secondInputToken) {
         free(secondInputToken);
+#ifdef __cplusplus
+        secondInputToken = nullptr;
+#else
         secondInputToken = NULL;
+#endif
     }
 
     return 0;
@@ -298,14 +326,19 @@ UNSTARCH_extractDataWithBzip2(FILE **inFp, FILE *outFp, const char *whichChr, co
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_extractDataWithBzip2() ---\n");
 #endif
+#ifdef __cplusplus
+    char* firstInputToken = nullptr;
+    char* secondInputToken = nullptr;
+#else
+    char* firstInputToken = NULL;
+    char* secondInputToken = NULL;
+#endif
     const Metadata* iter;
     char* chromosome;
     uint64_t size;	
     uint64_t cumulativeSize = 0;
     SignedCoordType start, pLength, lastEnd;
     char const* all = "all";
-    char* firstInputToken = NULL;
-    char* secondInputToken = NULL;
     BZFILE *bzFp;
     int bzError;
     unsigned char *bzOutput;
@@ -337,8 +370,11 @@ UNSTARCH_extractDataWithBzip2(FILE **inFp, FILE *outFp, const char *whichChr, co
     }
     secondInputToken[0] = '\0';
 
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+#else
     for (iter = md; iter != NULL; iter = iter->next) {
-
+#endif
         chromosome = iter->chromosome; 
         size = iter->size;
         start = 0;
@@ -358,8 +394,11 @@ UNSTARCH_extractDataWithBzip2(FILE **inFp, FILE *outFp, const char *whichChr, co
         if ((strcmp(whichChr, all) == 0) || (strcmp(whichChr, chromosome) == 0)) {
 
             /* chrFound = UNSTARCH_TRUE; */
-
+#ifdef __cplusplus
+            bzFp = BZ2_bzReadOpen( &bzError, *inFp, 0, 0, nullptr, 0 ); /* http://www.bzip.org/1.0.5/bzip2-manual-1.0.5.html#bzcompress-init */
+#else
             bzFp = BZ2_bzReadOpen( &bzError, *inFp, 0, 0, NULL, 0 ); /* http://www.bzip.org/1.0.5/bzip2-manual-1.0.5.html#bzcompress-init */
+#endif
             if (bzError != BZ_OK) {
                 BZ2_bzReadClose( &bzError, bzFp );
                 fprintf(stderr, "ERROR: Bzip2 data stream could not be opened\n");
@@ -381,7 +420,11 @@ UNSTARCH_extractDataWithBzip2(FILE **inFp, FILE *outFp, const char *whichChr, co
                     firstInputToken[0] = '\0';
                     secondInputToken[0] = '\0';
                 }
+#ifdef __cplusplus
+            } while (bzOutput != nullptr);
+#else
             } while (bzOutput != NULL);
+#endif
             free(bzOutput);
 
             BZ2_bzReadClose(&bzError, bzFp);		
@@ -402,12 +445,20 @@ UNSTARCH_extractDataWithBzip2(FILE **inFp, FILE *outFp, const char *whichChr, co
 
     if (firstInputToken) {
         free(firstInputToken);
+#ifdef __cplusplus
+        firstInputToken = nullptr;
+#else
         firstInputToken = NULL;
+#endif
     }
     
     if (secondInputToken) {
         free(secondInputToken);
+#ifdef __cplusplus
+        secondInputToken = nullptr;
+#else
         secondInputToken = NULL;
+#endif
     }
 
     return 0;
@@ -419,10 +470,14 @@ UNSTARCH_bzReadLine(BZFILE *input, unsigned char **output)
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_bzReadLine() ---\n");
 #endif
+#ifdef __cplusplus
+    unsigned char *outputCopy = nullptr;
+#else
+    unsigned char *outputCopy = NULL;
+#endif
     size_t offset = 0;
     size_t len = UNSTARCH_COMPRESSED_BUFFER_MAX_LENGTH;
     int bzError;
-    unsigned char *outputCopy = NULL;
     Boolean runFlag = kStarchFalse;
 
     if ((!input) || (!*output)) {
@@ -469,7 +524,11 @@ UNSTARCH_bzReadLine(BZFILE *input, unsigned char **output)
             fprintf(stderr, "\trunFlag is false\n");
 #endif
         free(*output);
+#ifdef __cplusplus
+        *output = nullptr;
+#else
         *output = NULL;
+#endif
     }
 }
 
@@ -479,7 +538,11 @@ UNSTARCH_reverseTransformInput(const char *chr, const unsigned char *str, char d
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_reverseTransformInput() ---\n");
 #endif
+#ifdef __cplusplus
+    char *pTest = nullptr;
+#else
     char *pTest = NULL;
+#endif
     char *pTestChars;
     const char *pTestParam = "p";
 
@@ -517,7 +580,7 @@ UNSTARCH_reverseTransformInput(const char *chr, const unsigned char *str, char d
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
 #ifdef __cplusplus
-                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) );
                 *lastEnd = *start + *pLength;
                 fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, static_cast<SignedCoordType>( *start ), static_cast<SignedCoordType>( *lastEnd ), elemTok2);
 #else
@@ -528,8 +591,8 @@ UNSTARCH_reverseTransformInput(const char *chr, const unsigned char *str, char d
             }
             else {
 #ifdef __cplusplus
-                *lastEnd = static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) ) + *pLength;
-                fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) ), static_cast<SignedCoordType>( *lastEnd ), elemTok2);
+                *lastEnd = static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) ) + *pLength;
+                fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) ), static_cast<SignedCoordType>( *lastEnd ), elemTok2);
 #else
                 *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
                 fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX), (SignedCoordType) *lastEnd, elemTok2);
@@ -537,33 +600,37 @@ UNSTARCH_reverseTransformInput(const char *chr, const unsigned char *str, char d
             }
         }
         else {
-            pTest = NULL;
 #ifdef __cplusplus
+            pTest = nullptr;
             pTest = UNSTARCH_strnstr(reinterpret_cast<const char *>( elemTok1 ), pTestParam, 1);
 #else
+            pTest = NULL;
             pTest = UNSTARCH_strnstr((const char *)elemTok1, pTestParam, 1);
 #endif
             if (pTest) {
-                pTestChars = NULL;
 #ifdef __cplusplus
+                pTestChars = nullptr;
                 pTestChars = static_cast<char *>( malloc(strlen(elemTok1)) );
 #else
+                pTestChars = NULL;
                 pTestChars = malloc(strlen(elemTok1));
 #endif
                 strncpy(pTestChars, elemTok1 + 1, strlen(elemTok1));
                 if (!pTestChars)
                     return UNSTARCH_FATAL_ERROR;
 #ifdef __cplusplus
-                *pLength = static_cast<SignedCoordType>( strtoull(pTestChars, NULL, UNSTARCH_RADIX) );
+                *pLength = static_cast<SignedCoordType>( strtoull(pTestChars, nullptr, UNSTARCH_RADIX) );
+                free(pTestChars); 
+                pTestChars = nullptr;
 #else
                 *pLength = (SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
-#endif
                 free(pTestChars); 
                 pTestChars = NULL;
+#endif
             }
             else {
 #ifdef __cplusplus
-                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) );
 #else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
 #endif
@@ -586,10 +653,15 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_sReverseTransformInput() ---\n");
 #endif
+#ifdef __cplusplus
+    char *pTest = nullptr;
+    char *currentRemainderCopy = nullptr;
+#else
     char *pTest = NULL;
+    char *currentRemainderCopy = NULL;
+#endif
     char *pTestChars;
     const char *pTestParam = "p";
-    char *currentRemainderCopy = NULL;
 
     /* if *str begins with a reserved header name, then we shortcut and print the line without transformation */
 
@@ -631,7 +703,7 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
 #ifdef __cplusplus
-                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) );
 #else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
 #endif
@@ -690,7 +762,7 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
            }
             else {
 #ifdef __cplusplus
-                *lastEnd = static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) ) + *pLength;
+                *lastEnd = static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) ) + *pLength;
 #else
                 *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
 #endif
@@ -712,7 +784,7 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
                     return UNSTARCH_FATAL_ERROR;                
                 }
 #ifdef __cplusplus
-                *currentStart = static_cast<int64_t>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+                *currentStart = static_cast<int64_t>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) );
 #else
                 *currentStart = (int64_t) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
 #endif
@@ -746,33 +818,37 @@ UNSTARCH_sReverseTransformInput(const char *chr, const unsigned char *str, char 
             }
         }
         else {
-            pTest = NULL;
 #ifdef __cplusplus
+            pTest = nullptr;
             pTest = UNSTARCH_strnstr(reinterpret_cast<const char *>( elemTok1 ), pTestParam, 1);
 #else
+            pTest = NULL;
             pTest = UNSTARCH_strnstr((const char *)elemTok1, pTestParam, 1);
 #endif
             if (pTest) {
-                pTestChars = NULL;
 #ifdef __cplusplus
+                pTestChars = nullptr;
                 pTestChars = static_cast<char *>( malloc(strlen(elemTok1)) );
 #else
+                pTestChars = NULL;
                 pTestChars = malloc(strlen(elemTok1));
 #endif
                 strncpy(pTestChars, elemTok1 + 1, strlen(elemTok1));
                 if (!pTestChars)
                     return UNSTARCH_FATAL_ERROR;
 #ifdef __cplusplus
-                *pLength = static_cast<SignedCoordType>( strtoull(pTestChars, NULL, UNSTARCH_RADIX) );
+                *pLength = static_cast<SignedCoordType>( strtoull(pTestChars, nullptr, UNSTARCH_RADIX) );
+                free(pTestChars); 
+                pTestChars = nullptr;
 #else
                 *pLength = (SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
-#endif
                 free(pTestChars); 
                 pTestChars = NULL;
+#endif
             }
             else {
 #ifdef __cplusplus
-                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) );
 #else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
 #endif
@@ -813,7 +889,11 @@ UNSTARCH_reverseTransformIgnoringHeaderedInput(const char *chr, const unsigned c
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_reverseTransformIgnoringHeaderedInput() ---\n");
 #endif
+#ifdef __cplusplus
+    char *pTest = nullptr;
+#else
     char *pTest = NULL;
+#endif
     char *pTestChars;
     const char *pTestParam = "p";
 
@@ -851,7 +931,7 @@ UNSTARCH_reverseTransformIgnoringHeaderedInput(const char *chr, const unsigned c
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
 #ifdef __cplusplus
-                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) );
 #else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
 #endif
@@ -860,8 +940,8 @@ UNSTARCH_reverseTransformIgnoringHeaderedInput(const char *chr, const unsigned c
             }
             else {
 #ifdef __cplusplus
-                *lastEnd = static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) ) + *pLength;
-                fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) ), *lastEnd, elemTok2);
+                *lastEnd = static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) ) + *pLength;
+                fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) ), *lastEnd, elemTok2);
 #else
                 *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
                 fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX), *lastEnd, elemTok2);
@@ -869,33 +949,37 @@ UNSTARCH_reverseTransformIgnoringHeaderedInput(const char *chr, const unsigned c
             }
         }
         else {
-            pTest = NULL;
 #ifdef __cplusplus
+            pTest = nullptr;
             pTest = UNSTARCH_strnstr(reinterpret_cast<const char *>(elemTok1), pTestParam, 1);
 #else
+            pTest = NULL;
             pTest = UNSTARCH_strnstr((const char *)elemTok1, pTestParam, 1);
 #endif
             if (pTest) {
-                pTestChars = NULL;
 #ifdef __cplusplus
+                pTestChars = nullptr;
                 pTestChars = static_cast<char *>( malloc(strlen(elemTok1)) );
 #else
+                pTestChars = NULL;
                 pTestChars = malloc(strlen(elemTok1));
 #endif
                 strncpy(pTestChars, elemTok1 + 1, strlen(elemTok1));
                 if (!pTestChars)
                     return UNSTARCH_FATAL_ERROR;
 #ifdef __cplusplus
-                *pLength = static_cast<SignedCoordType>( strtoull(pTestChars, NULL, UNSTARCH_RADIX) );
+                *pLength = static_cast<SignedCoordType>( strtoull(pTestChars, nullptr, UNSTARCH_RADIX) );
+                free(pTestChars); 
+                pTestChars = nullptr;
 #else
                 *pLength = (SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
-#endif
                 free(pTestChars); 
                 pTestChars = NULL;
+#endif
             }
             else {
 #ifdef __cplusplus
-                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) );
 #else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
 #endif
@@ -934,8 +1018,12 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
     fprintf(stderr, "\tcurrentRemainderLen -> [%zu]\n", *currentRemainderLen);
     */
 #endif
-    char pTestChars[MAX_DEC_INTEGERS] = {0};
+#ifdef __cplusplus
+    char *currentRemainderCopy = nullptr;
+#else
     char *currentRemainderCopy = NULL;
+#endif
+    char pTestChars[MAX_DEC_INTEGERS] = {0};
 
     /* if *str begins with a reserved header name, then we shortcut */
 
@@ -969,7 +1057,7 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
 #ifdef __cplusplus
-                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) );
 #else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
 #endif
@@ -1038,12 +1126,16 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
             }
             else {
 #ifdef __cplusplus
-                *lastEnd = static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) ) + *pLength;
+                *lastEnd = static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) ) + *pLength;
 #else
                 *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
 #endif
 #ifdef DEBUG
+#ifdef __cplusplus
+                fprintf(stderr, "B: %s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (int64_t) strtoull(elemTok1, nullptr, UNSTARCH_RADIX), *lastEnd, elemTok2);
+#else
                 fprintf(stderr, "B: %s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (int64_t) strtoull(elemTok1, NULL, UNSTARCH_RADIX), *lastEnd, elemTok2);
+#endif
 #endif
                 if (! *currentChr) {
 #ifdef __cplusplus
@@ -1063,7 +1155,7 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
                     return UNSTARCH_FATAL_ERROR;
                 }
 #ifdef __cplusplus
-                *currentStart = static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+                *currentStart = static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) );
 #else
                 *currentStart = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
 #endif
@@ -1118,14 +1210,14 @@ UNSTARCH_sReverseTransformIgnoringHeaderedInput(const char *chr, const unsigned 
             if (elemTok1[0] == 'p') {
                 strncpy(pTestChars, elemTok1 + 1, strlen(elemTok1));
 #ifdef __cplusplus
-                *pLength = static_cast<SignedCoordType>( strtoull(pTestChars, NULL, UNSTARCH_RADIX) );
+                *pLength = static_cast<SignedCoordType>( strtoull(pTestChars, nullptr, UNSTARCH_RADIX) );
 #else
                 *pLength = (SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
 #endif
             }
             else {
 #ifdef __cplusplus
-                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) );
 #else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
 #endif
@@ -1163,7 +1255,11 @@ UNSTARCH_reverseTransformHeaderlessInput(const char *chr, const unsigned char *s
     fprintf(stderr, "\n--- elemTok1 : [%s]\n", elemTok1);
     fprintf(stderr, "\n--- elemTok2 : [%s]\n", elemTok2);
 #endif
+#ifdef __cplusplus
+    char *pTest = nullptr;
+#else
     char *pTest = NULL;
+#endif
     char *pTestChars;
     const char *pTestParam = "p";
 
@@ -1172,7 +1268,7 @@ UNSTARCH_reverseTransformHeaderlessInput(const char *chr, const unsigned char *s
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
 #ifdef __cplusplus
-                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) );
 #else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
 #endif
@@ -1181,8 +1277,8 @@ UNSTARCH_reverseTransformHeaderlessInput(const char *chr, const unsigned char *s
             }
             else {
 #ifdef __cplusplus
-                *lastEnd = static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) ) + *pLength;
-		fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) ), *lastEnd, elemTok2);
+                *lastEnd = static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) ) + *pLength;
+		fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) ), *lastEnd, elemTok2);
 #else
                 *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
 		fprintf(outFp, "%s\t%" PRId64 "\t%" PRId64 "\t%s\n", chr, (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX), *lastEnd, elemTok2);
@@ -1190,33 +1286,37 @@ UNSTARCH_reverseTransformHeaderlessInput(const char *chr, const unsigned char *s
             }
         }
         else {
-            pTest = NULL;
 #ifdef __cplusplus
+            pTest = nullptr;
             pTest = UNSTARCH_strnstr(reinterpret_cast<const char *>( elemTok1 ), pTestParam, 1);
 #else
+            pTest = NULL;
             pTest = UNSTARCH_strnstr((const char *)elemTok1, pTestParam, 1);
 #endif
             if (pTest) {
-                pTestChars = NULL;
 #ifdef __cplusplus
+                pTestChars = nullptr;
                 pTestChars = static_cast<char *>( malloc(strlen(elemTok1)) );
 #else
+                pTestChars = NULL;
                 pTestChars = malloc(strlen(elemTok1));
 #endif
                 strncpy(pTestChars, elemTok1 + 1, strlen(elemTok1));
                 if (!pTestChars)
                     return UNSTARCH_FATAL_ERROR;
 #ifdef __cplusplus
-                *pLength = static_cast<SignedCoordType>( strtoull(pTestChars, NULL, UNSTARCH_RADIX) );
+                *pLength = static_cast<SignedCoordType>( strtoull(pTestChars, nullptr, UNSTARCH_RADIX) );
+                free(pTestChars); 
+                pTestChars = nullptr;
 #else
                 *pLength = (SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
-#endif
                 free(pTestChars); 
                 pTestChars = NULL;
+#endif
             }
             else {
 #ifdef __cplusplus
-                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) );
 #else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
 #endif
@@ -1319,17 +1419,22 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_sReverseTransformHeaderlessInput() ---\n");
 #endif
+#ifdef __cplusplus
+    char *pTest = nullptr;
+    char *currentRemainderCopy = nullptr;
+#else
     char *pTest = NULL;
+    char *currentRemainderCopy = NULL;
+#endif
     char *pTestChars;
     const char *pTestParam = "p";
-    char *currentRemainderCopy = NULL;
 
     if (UNSTARCH_createInverseTransformTokens(str, delim, elemTok1, elemTok2) == 0) 
     { 
         if (elemTok2[0] != '\0') {
             if (*lastEnd > 0) {
 #ifdef __cplusplus
-                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) );
 #else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
 #endif
@@ -1387,7 +1492,7 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
             }
             else {
 #ifdef __cplusplus
-                *lastEnd = static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) ) + *pLength;
+                *lastEnd = static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) ) + *pLength;
 #else
                 *lastEnd = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX) + *pLength;
 #endif
@@ -1414,7 +1519,7 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
                     return UNSTARCH_FATAL_ERROR;                
                 }
 #ifdef __cplusplus
-                *currentStart = static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+                *currentStart = static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) );
 #else
                 *currentStart = (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
 #endif
@@ -1448,33 +1553,37 @@ UNSTARCH_sReverseTransformHeaderlessInput(const char *chr, const unsigned char *
             }
         }
         else {
-            pTest = NULL;
 #ifdef __cplusplus
+            pTest = nullptr;
             pTest = UNSTARCH_strnstr(reinterpret_cast<const char *>( elemTok1 ), pTestParam, 1);
 #else
+            pTest = NULL;
             pTest = UNSTARCH_strnstr((const char *)elemTok1, pTestParam, 1);
 #endif
             if (pTest) {
-                pTestChars = NULL;
 #ifdef __cplusplus
+                pTestChars = nullptr;
                 pTestChars = static_cast<char *>( malloc(strlen(elemTok1)) );
 #else
+                pTestChars = NULL;
                 pTestChars = malloc(strlen(elemTok1));
 #endif
                 strncpy(pTestChars, elemTok1 + 1, strlen(elemTok1));
                 if (!pTestChars)
                     return UNSTARCH_FATAL_ERROR;
 #ifdef __cplusplus
-                *pLength = static_cast<SignedCoordType>( strtoull(pTestChars, NULL, UNSTARCH_RADIX) );
+                *pLength = static_cast<SignedCoordType>( strtoull(pTestChars, nullptr, UNSTARCH_RADIX) );
+                free(pTestChars); 
+                pTestChars = nullptr;
 #else
                 *pLength = (SignedCoordType) strtoull(pTestChars, NULL, UNSTARCH_RADIX);
-#endif
                 free(pTestChars); 
                 pTestChars = NULL;
+#endif
             }
             else {
 #ifdef __cplusplus
-                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, NULL, UNSTARCH_RADIX) );
+                *start = *lastEnd + static_cast<SignedCoordType>( strtoull(elemTok1, nullptr, UNSTARCH_RADIX) );
 #else
                 *start = *lastEnd + (SignedCoordType) strtoull(elemTok1, NULL, UNSTARCH_RADIX);
 #endif
@@ -1600,15 +1709,18 @@ UNSTARCH_strnstr(const char *haystack, const char *needle, size_t haystackLen)
 
     pLen = haystackLen;
 #ifdef __cplusplus
-    for (p = const_cast<char *>( haystack ); p != NULL; p = static_cast<char *>( memchr(p + 1, *needle, pLen-1) )) {
+    for (p = const_cast<char *>( haystack ); p != nullptr; p = static_cast<char *>( memchr(p + 1, *needle, pLen-1) )) {
+        pLen = haystackLen - static_cast<size_t>( p - const_cast<char *>( haystack ) );
+        if (pLen < len) 
+            return nullptr;
+        if (strncmp(p, needle, len) == 0)
+            return p;
+    }
+
+    return nullptr;
 #else
     for (p = (char *) haystack; p != NULL; p = (char *) memchr(p + 1, *needle, pLen-1)) {
-#endif
-#ifdef __cplusplus
-        pLen = haystackLen - static_cast<size_t>( p - const_cast<char *>( haystack ) );
-#else
         pLen = haystackLen - (size_t) (p - haystack);
-#endif
         if (pLen < len) 
             return NULL;
         if (strncmp(p, needle, len) == 0)
@@ -1616,6 +1728,7 @@ UNSTARCH_strnstr(const char *haystack, const char *needle, size_t haystackLen)
     }
 
     return NULL;
+#endif
 }
 
 char * 
@@ -1632,12 +1745,15 @@ UNSTARCH_strndup(const char *s, size_t n)
 
 #ifdef __cplusplus
     result = static_cast<char *>( malloc(len + 1) );
-#else
-    result = malloc(len + 1);
-#endif
 
     if (!result)
-        return 0;
+        return nullptr;
+#else
+    result = malloc(len + 1);
+
+    if (!result)
+        return NULL;
+#endif
 
     result[len] = '\0';
 
@@ -1656,7 +1772,11 @@ UNSTARCH_lineCountForChromosome(const Metadata *md, const char *chr)
 #endif
     const Metadata *iter;
 
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+#else
     for (iter = md; iter != NULL; iter = iter->next) {
+#endif
         if (strcmp(chr, iter->chromosome) == 0) {
             return iter->lineCount;
         }
@@ -1691,7 +1811,11 @@ UNSTARCH_printLineCountForAllChromosomes(const Metadata *md)
     const Metadata *iter;
     LineCountType totalLineCount = 0;
 
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next)
+#else
     for (iter = md; iter != NULL; iter = iter->next)
+#endif
         totalLineCount += iter->lineCount;
 
     fprintf(stdout, "%" PRIu64 "\n", totalLineCount);
@@ -1705,7 +1829,11 @@ UNSTARCH_lineMaxStringLengthForChromosome(const Metadata *md, const char *chr)
 #endif
     const Metadata *iter;
 
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+#else
     for (iter = md; iter != NULL; iter = iter->next) {
+#endif
         if (strcmp(chr, iter->chromosome) == 0) {
             return iter->lineMaxStringLength;
         }
@@ -1740,7 +1868,11 @@ UNSTARCH_printLineMaxStringLengthForAllChromosomes(const Metadata *md)
     const Metadata *iter;
     LineLengthType lineMaxStringLength = STARCH_DEFAULT_LINE_STRING_LENGTH;
 
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next)
+#else
     for (iter = md; iter != NULL; iter = iter->next)
+#endif
         lineMaxStringLength = (lineMaxStringLength >= iter->lineMaxStringLength) ? lineMaxStringLength : iter->lineMaxStringLength;
 
     fprintf(stdout, "%lu\n", lineMaxStringLength);
@@ -1754,7 +1886,11 @@ UNSTARCH_nonUniqueBaseCountForChromosome(const Metadata *md, const char *chr)
 #endif
     const Metadata *iter;
 
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+#else
     for (iter = md; iter != NULL; iter = iter->next) {
+#endif
         if (strcmp(chr, iter->chromosome) == 0) {
             return iter->totalNonUniqueBases;
         }
@@ -1789,7 +1925,11 @@ UNSTARCH_printNonUniqueBaseCountForAllChromosomes(const Metadata *md)
     const Metadata *iter;
     BaseCountType totalBaseCount = 0;
 
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next)
+#else
     for (iter = md; iter != NULL; iter = iter->next)
+#endif
         totalBaseCount += iter->totalNonUniqueBases;
 
     fprintf(stdout, "%" PRIu64 "\n", totalBaseCount);
@@ -1803,7 +1943,11 @@ UNSTARCH_uniqueBaseCountForChromosome(const Metadata *md, const char *chr)
 #endif
     const Metadata *iter;
 
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+#else
     for (iter = md; iter != NULL; iter = iter->next) {
+#endif
         if (strcmp(chr, iter->chromosome) == 0)
             return iter->totalUniqueBases;
     }
@@ -1837,7 +1981,11 @@ UNSTARCH_printUniqueBaseCountForAllChromosomes(const Metadata *md)
     const Metadata *iter;
     BaseCountType totalBaseCount = 0;
 
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next)
+#else
     for (iter = md; iter != NULL; iter = iter->next)
+#endif
         totalBaseCount += iter->totalUniqueBases;
 
     fprintf(stdout, "%" PRIu64 "\n", totalBaseCount);
@@ -1851,7 +1999,11 @@ UNSTARCH_duplicateElementExistsForChromosome(const Metadata *md, const char *chr
 #endif 
     const Metadata *iter;
     
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+#else
     for (iter = md; iter != NULL; iter = iter->next) {
+#endif
         if (strcmp(chr, iter->chromosome) == 0)
             return iter->duplicateElementExists;
     }
@@ -1884,7 +2036,11 @@ UNSTARCH_printDuplicateElementExistsStringsForAllChromosomes(const Metadata *md)
 #endif
     const Metadata *iter;
 
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+#else
     for (iter = md; iter != NULL; iter = iter->next) {
+#endif
         if (UNSTARCH_duplicateElementExistsForChromosome(md, iter->chromosome) == kStarchTrue) {
             fprintf(stdout, "%s\n", UNSTARCH_booleanToString(kStarchTrue));
             return;
@@ -1922,20 +2078,23 @@ UNSTARCH_printDuplicateElementExistsIntegersForAllChromosomes(const Metadata *md
 #endif
     const Metadata *iter;
 
-    for (iter = md; iter != NULL; iter = iter->next) {
-        if (UNSTARCH_duplicateElementExistsForChromosome(md, iter->chromosome) == kStarchTrue) {
 #ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+        if (UNSTARCH_duplicateElementExistsForChromosome(md, iter->chromosome) == kStarchTrue) {
             fprintf(stdout, "%d\n", static_cast<int>( kStarchTrue ));
-#else
-            fprintf(stdout, "%d\n", (int) kStarchTrue);
-#endif
             return;
         }
     }
 
-#ifdef __cplusplus
     fprintf(stdout, "%d\n", static_cast<int>( kStarchFalse ));
 #else
+    for (iter = md; iter != NULL; iter = iter->next) {
+        if (UNSTARCH_duplicateElementExistsForChromosome(md, iter->chromosome) == kStarchTrue) {
+            fprintf(stdout, "%d\n", (int) kStarchTrue);
+            return;
+        }
+    }
+
     fprintf(stdout, "%d\n", (int) kStarchFalse);
 #endif
 }
@@ -1947,8 +2106,12 @@ UNSTARCH_nestedElementExistsForChromosome(const Metadata *md, const char *chr)
     fprintf(stderr, "\n--- UNSTARCH_nestedElementExistsForChromosome() ---\n");
 #endif 
     const Metadata *iter;
-    
+
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+#else    
     for (iter = md; iter != NULL; iter = iter->next) {
+#endif
         if (strcmp(chr, iter->chromosome) == 0)
             return iter->nestedElementExists;
     }
@@ -1980,7 +2143,11 @@ UNSTARCH_printNestedElementExistsStringsForAllChromosomes(const Metadata *md)
 #endif
     const Metadata *iter;
 
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+#else
     for (iter = md; iter != NULL; iter = iter->next) {
+#endif
         if (UNSTARCH_nestedElementExistsForChromosome(md, iter->chromosome) == kStarchTrue) {
             fprintf(stdout, "%s\n", UNSTARCH_booleanToString(kStarchTrue));
             return;
@@ -2018,20 +2185,23 @@ UNSTARCH_printNestedElementExistsIntegersForAllChromosomes(const Metadata *md)
 #endif
     const Metadata *iter;
 
-    for (iter = md; iter != NULL; iter = iter->next) {
-        if (UNSTARCH_nestedElementExistsForChromosome(md, iter->chromosome) == kStarchTrue) {
 #ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+        if (UNSTARCH_nestedElementExistsForChromosome(md, iter->chromosome) == kStarchTrue) {
             fprintf(stdout, "%d\n", static_cast<int>( kStarchTrue ));
-#else
-            fprintf(stdout, "%d\n", (int) kStarchTrue);
-#endif
             return;
         }
     }
 
-#ifdef __cplusplus
     fprintf(stdout, "%d\n", static_cast<int>( kStarchFalse ));
 #else
+    for (iter = md; iter != NULL; iter = iter->next) {
+        if (UNSTARCH_nestedElementExistsForChromosome(md, iter->chromosome) == kStarchTrue) {
+            fprintf(stdout, "%d\n", (int) kStarchTrue);
+            return;
+        }
+    }
+
     fprintf(stdout, "%d\n", (int) kStarchFalse);
 #endif
 }
@@ -2042,7 +2212,11 @@ UNSTARCH_printSignature(const Metadata *md, const char *chr, const unsigned char
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_printSignature() ---\n");
 #endif
+#ifdef __cplusplus
+    char *signature = nullptr;
+#else
     char *signature = NULL;
+#endif
 
     if (strcmp(chr, "all") == 0) {
         UNSTARCH_printAllSignatures(md, mdSha1Buffer);
@@ -2062,12 +2236,19 @@ UNSTARCH_signatureForChromosome(const Metadata *md, const char *chr)
 #endif
     const Metadata *iter;
     
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+        if ((strcmp(chr, iter->chromosome) == 0) && (iter->signature) && (strlen(iter->signature) > 0))
+            return iter->signature;
+    }
+    return nullptr;
+#else
     for (iter = md; iter != NULL; iter = iter->next) {
         if ((strcmp(chr, iter->chromosome) == 0) && (iter->signature) && (strlen(iter->signature) > 0))
             return iter->signature;
     }
-
     return NULL;
+#endif
 }
 
 void
@@ -2087,19 +2268,29 @@ UNSTARCH_printMetadataSignature(const unsigned char *mdSha1Buffer)
     fprintf(stderr, "\n--- UNSTARCH_printMetadataSignature() ---\n");
 #endif
     size_t mdSha1BufferLength = STARCH2_MD_FOOTER_SHA1_LENGTH;
-    char *jsonBase64String = NULL;
 
 #ifdef __cplusplus
+    char *jsonBase64String = nullptr;
+
     STARCH_encodeBase64(&jsonBase64String, 
             static_cast<const size_t>( STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH ), 
             const_cast<const unsigned char *>( mdSha1Buffer ), 
             static_cast<const size_t>( mdSha1BufferLength ));
+
+    if (!jsonBase64String) {
+        fprintf(stderr, "ERROR: Could not allocate space for Base64-encoded metadata string representation\n");
+        exit(-1);
+    }
+    fprintf(stdout, "metadata\t%s\n", jsonBase64String);
+    free(jsonBase64String);
+    jsonBase64String = nullptr;
 #else
+    char *jsonBase64String = NULL;
+
     STARCH_encodeBase64(&jsonBase64String, 
             (const size_t) STARCH2_MD_FOOTER_BASE64_ENCODED_SHA1_LENGTH, 
             (const unsigned char *) mdSha1Buffer, 
             (const size_t) mdSha1BufferLength);
-#endif
 
     if (!jsonBase64String) {
         fprintf(stderr, "ERROR: Could not allocate space for Base64-encoded metadata string representation\n");
@@ -2108,6 +2299,7 @@ UNSTARCH_printMetadataSignature(const unsigned char *mdSha1Buffer)
     fprintf(stdout, "metadata\t%s\n", jsonBase64String);
     free(jsonBase64String);
     jsonBase64String = NULL;
+#endif
 }
 
 void
@@ -2118,7 +2310,11 @@ UNSTARCH_printAllChromosomeSignatures(const Metadata *md)
 #endif
     const Metadata *iter;
     
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+#else
     for (iter = md; iter != NULL; iter = iter->next) {
+#endif
         fprintf(stdout, "%s\t%s\n", iter->chromosome, strlen(iter->signature) > 0 ? iter->signature : "NA");
     }
 }
@@ -2129,8 +2325,13 @@ UNSTARCH_verifySignature(FILE **inFp, const Metadata *md, const uint64_t mdOffse
 #ifdef DEBUG
     fprintf(stderr, "\n--- UNSTARCH_verifySignature() ---\n");
 #endif
+#ifdef __cplusplus
+    char *expectedSignature = nullptr;
+    char *observedSignature = nullptr;
+#else
     char *expectedSignature = NULL;
     char *observedSignature = NULL;
+#endif
     Boolean signaturesVerifiedFlag = kStarchFalse;
 
     if (strcmp(chr, "all") == 0) {
@@ -2161,7 +2362,11 @@ UNSTARCH_verifySignature(FILE **inFp, const Metadata *md, const uint64_t mdOffse
     }
     if (observedSignature) { 
         free(observedSignature);
-        observedSignature = NULL; 
+#ifdef __cplusplus
+        observedSignature = nullptr;
+#else
+        observedSignature = NULL;
+#endif
     }
     return signaturesVerifiedFlag;
 }
@@ -2180,22 +2385,31 @@ UNSTARCH_observedSignatureForChromosome(FILE **inFp, const Metadata *md, const u
         4) Return Base64 encoding of SHA-1 signature
     */
 
+#ifdef __cplusplus
+    const Metadata *iter = nullptr;
+    char *currentChromosome = nullptr;
+    char *base64EncodedSha1Digest = nullptr;
+#else
     const Metadata *iter = NULL;
     char *currentChromosome = NULL;
+    char *base64EncodedSha1Digest = NULL;
+#endif
     uint64_t size = 0;  
     uint64_t cumulativeSize = 0;
-
     unsigned char sha1Digest[STARCH2_MD_FOOTER_SHA1_LENGTH] = {0};
-    char *base64EncodedSha1Digest = NULL;
     struct sha1_ctx perChromosomeHashCtx;
 
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+#else
     for (iter = md; iter != NULL; iter = iter->next) {
+#endif
         currentChromosome = iter->chromosome; 
         size = iter->size;
 #ifdef __cplusplus
         if (STARCH_fseeko(*inFp, static_cast<off_t>( cumulativeSize + mdOffset ), SEEK_SET) != 0) {
             fprintf(stderr, "ERROR: Could not seek data in archive\n");
-            return NULL;
+            return nullptr;
         }            
 #else
         if (STARCH_fseeko(*inFp, (off_t) (cumulativeSize + mdOffset), SEEK_SET) != 0) {
@@ -2216,19 +2430,27 @@ UNSTARCH_observedSignatureForChromosome(FILE **inFp, const Metadata *md, const u
 
             switch (compType) {
                 case kBzip2: {
-                    BZFILE *bzFp = NULL;
                     int bzError = 0;
-                    unsigned char *bzOutput = NULL;
                     size_t bzOutputLength = UNSTARCH_COMPRESSED_BUFFER_MAX_LENGTH;
+#ifdef __cplusplus
+                    BZFILE *bzFp = nullptr;
+                    unsigned char *bzOutput = nullptr;
+                    bzFp = BZ2_bzReadOpen( &bzError, *inFp, 0, 0, nullptr, 0 ); /* http://www.bzip.org/1.0.5/bzip2-manual-1.0.5.html#bzcompress-init */
+                    if (bzError != BZ_OK) {
+                        BZ2_bzReadClose( &bzError, bzFp );
+                        fprintf(stderr, "ERROR: Bzip2 data stream could not be opened\n");
+                        return nullptr;
+                    }
+                    bzOutput = static_cast<unsigned char *>( malloc(bzOutputLength) );
+#else
+                    BZFILE *bzFp = NULL;
+                    unsigned char *bzOutput = NULL;
                     bzFp = BZ2_bzReadOpen( &bzError, *inFp, 0, 0, NULL, 0 ); /* http://www.bzip.org/1.0.5/bzip2-manual-1.0.5.html#bzcompress-init */
                     if (bzError != BZ_OK) {
                         BZ2_bzReadClose( &bzError, bzFp );
                         fprintf(stderr, "ERROR: Bzip2 data stream could not be opened\n");
                         return NULL;
                     }
-#ifdef __cplusplus
-                    bzOutput = static_cast<unsigned char *>( malloc(bzOutputLength) );
-#else
                     bzOutput = malloc(bzOutputLength);
 #endif
                     do {
@@ -2254,7 +2476,11 @@ UNSTARCH_observedSignatureForChromosome(FILE **inFp, const Metadata *md, const u
                             bzOutput[++len] = '\0';
                             sha1_process_bytes( bzOutput, len, &perChromosomeHashCtx );
                         }
+#ifdef __cplusplus
+                    } while (bzOutput != nullptr);
+#else
                     } while (bzOutput != NULL);
+#endif
                     /* cleanup */
                     if (bzOutput)
                         free(bzOutput);
@@ -2266,21 +2492,32 @@ UNSTARCH_observedSignatureForChromosome(FILE **inFp, const Metadata *md, const u
                     unsigned int zHave, zOutBufIdx;
                     size_t zBufIdx, zBufOffset;
                     int zError;
-                    unsigned char *zRemainderBuf = NULL;
                     unsigned char zInBuf[STARCH_Z_CHUNK];
                     unsigned char zOutBuf[STARCH_Z_CHUNK];
                     unsigned char zLineBuf[STARCH_Z_CHUNK];
-
+#ifdef __cplusplus
+                    unsigned char *zRemainderBuf = nullptr;
+                    zStream.zalloc = nullptr;
+                    zStream.zfree = nullptr;
+                    zStream.opaque = nullptr;
+                    zStream.next_in = nullptr;
+#else
+		    unsigned char *zRemainderBuf = NULL;
                     zStream.zalloc = Z_NULL;
                     zStream.zfree = Z_NULL;
                     zStream.opaque = Z_NULL;
-                    zStream.avail_in = 0;
                     zStream.next_in = Z_NULL;
+#endif
+                    zStream.avail_in = 0;
 
                     zError = inflateInit2(&zStream, (15+32)); /* cf. http://www.zlib.net/manual.html */
                     if (zError != Z_OK) {
                         fprintf(stderr, "ERROR: Could not initialize z-stream\n");
+#ifdef __cplusplus
+                        return nullptr;
+#else
                         return NULL;
+#endif
                     }
 
 #ifdef __cplusplus
@@ -2304,9 +2541,15 @@ UNSTARCH_observedSignatureForChromosome(FILE **inFp, const Metadata *md, const u
                             zStream.next_out = zOutBuf;
                             zError = inflate(&zStream, Z_NO_FLUSH);
                             switch (zError) {
+#ifdef __cplusplus
+                                case Z_NEED_DICT:  { fprintf(stderr, "ERROR: Z-stream needs dictionary\n");      return nullptr; }
+                                case Z_DATA_ERROR: { fprintf(stderr, "ERROR: Z-stream suffered data error\n");   return nullptr; }
+                                case Z_MEM_ERROR:  { fprintf(stderr, "ERROR: Z-stream suffered memory error\n"); return nullptr; }
+#else
                                 case Z_NEED_DICT:  { fprintf(stderr, "ERROR: Z-stream needs dictionary\n");      return NULL; }
                                 case Z_DATA_ERROR: { fprintf(stderr, "ERROR: Z-stream suffered data error\n");   return NULL; }
                                 case Z_MEM_ERROR:  { fprintf(stderr, "ERROR: Z-stream suffered memory error\n"); return NULL; }
+#endif
                             };
                             zHave = STARCH_Z_CHUNK - zStream.avail_out;
                             zOutBuf[zHave] = '\0';
@@ -2363,19 +2606,31 @@ UNSTARCH_observedSignatureForChromosome(FILE **inFp, const Metadata *md, const u
                     /* cleanup */
                     if (zRemainderBuf) {
                         free(zRemainderBuf);
+#ifdef __cplusplus
+                        zRemainderBuf = nullptr;
+#else
                         zRemainderBuf = NULL;
+#endif
                     }
                     /* close gzip stream */
                     zError = inflateEnd(&zStream);
                     if (zError != Z_OK) {
                         fprintf(stderr, "ERROR: Could not close z-stream (%d)\n", zError);
+#ifdef __cplusplus
+                        return nullptr;
+#else
                         return NULL;
+#endif
                     }
                     break;
                 }
                 case kUndefined: {
                     fprintf(stderr, "ERROR: Archive compression type is undefined\n");
+#ifdef __cplusplus
+                    return nullptr;
+#else
                     return NULL;
+#endif
                 }
             }
             
@@ -2395,7 +2650,11 @@ UNSTARCH_observedSignatureForChromosome(FILE **inFp, const Metadata *md, const u
         }
     }
     fprintf(stderr, "ERROR: Leaving UNSTARCH_observedSignatureForChromosome() without having processed chromosome [%s]\n", chr);
+#ifdef __cplusplus
+    return nullptr;
+#else
     return NULL;
+#endif
 }
 
 Boolean
@@ -2405,11 +2664,19 @@ UNSTARCH_verifyAllSignatures(FILE **inFp, const Metadata *md, const uint64_t mdO
     fprintf(stderr, "\n--- UNSTARCH_verifyAllSignatures() ---\n");
 #endif
 
+#ifdef __cplusplus
+    const Metadata *iter = nullptr;
+#else
     const Metadata *iter = NULL;
+#endif
     Boolean perChromosomeSignatureVerifiedFlag = kStarchFalse;
     Boolean allSignaturesVerifiedFlag = kStarchTrue;
 
+#ifdef __cplusplus
+    for (iter = md; iter != nullptr; iter = iter->next) {
+#else
     for (iter = md; iter != NULL; iter = iter->next) {
+#endif
         perChromosomeSignatureVerifiedFlag = UNSTARCH_verifySignature(inFp, md, mdOffset, iter->chromosome, compType);
         if (!perChromosomeSignatureVerifiedFlag) {
             allSignaturesVerifiedFlag = kStarchFalse;
