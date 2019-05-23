@@ -48,28 +48,28 @@ Contents
 
 .. |quick_start_html| raw:: html
 
-   <br><img src="_images/quick_start.png" style="height:150px;">
+   <br><img src="_static/quick_start.png" style="height:150px;">
 
 .. |downloads| raw:: html
 
-   <img src="_images/downloads_v3.png" style="height:36px; margin:0; width: auto !important;">
+   <img src="_static/downloads_v3.png" style="height:36px; margin:0; width: auto !important;">
    <div class="index_cols">
       <div class="col_element">
-         <img src="_images/linux_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
+         <img src="_static/linux_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
             <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.36/bedops_linux_x86_64-v2.4.36.tar.bz2">x86-64 (64-bit)</a> binaries</li>
             <li><a href="content/installation.html#linux">Installation instructions</a> for Linux hosts</li>
          </ul>
       </div>
       <div class="col_element">
-         <img src="_images/macosx_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
+         <img src="_static/macosx_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
             <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.36/BEDOPS.2.4.36.pkg.zip">Intel (64-bit, 10.10-10.13)</a> installer package</li>
             <li><a href="content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
          </ul>
       </div>
       <div class="col_element">
-         <img src="_images/source_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
+         <img src="_static/source_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
             <li><a href="https://github.com/bedops/bedops/archive/v2.4.36.tar.gz">Source code</a> (tar.gz)</li>
             <li><a href="https://github.com/bedops/bedops/archive/v2.4.36.zip">Source code</a> (zip)</li>
@@ -83,14 +83,14 @@ Contents
 
 .. |downloads_html| raw:: html
 
-   <img src="_images/downloads_v3.png" style="height:36px;">
+   <img src="_static/downloads_v3.png" style="height:36px;">
 
 .. |linux_png| image:: assets/index/linux_v2.png
                :height: 26px
 
 .. |linux_html| raw:: html
 
-   <img src="_images/linux_v2.png" style="height:26px;">
+   <img src="_static/linux_v2.png" style="height:26px;">
 
 .. |linux_downloads| raw:: html
 
@@ -104,7 +104,7 @@ Contents
 
 .. |macosx_html| raw:: html
 
-   <img src="_images/macosx_v2.png" style="height:26px;">
+   <img src="_static/macosx_v2.png" style="height:26px;">
 
 .. |macosx_downloads| raw:: html
 
@@ -118,7 +118,7 @@ Contents
 
 .. |source_html| raw:: html
 
-   <img src="_images/source_v2.png" style="height:26px;">
+   <img src="_static/source_v2.png" style="height:26px;">
 
 .. |source_downloads| raw:: html
 
@@ -130,10 +130,10 @@ Contents
 
 .. |reference| raw:: html
 
-   <img src="_images/reference_v2.png" style="height:36px; margin:0; width:auto !important;">
+   <img src="_static/reference_v2.png" style="height:36px; margin:0; width:auto !important;">
    <div class="index_cols">
       <div class="col_element">
-         <img src="_images/set_operations_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
+         <img src="_static/set_operations_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:2px; padding-right:0px; padding-left:20px;">
             <li><a href="content/reference/set-operations/bedops.html"><tt>bedops</tt></a> - apply set operations on any number of BED inputs</li>
             <li><a href="content/reference/set-operations/bedextract.html"><tt>bedextract</tt></a> - efficiently extract BED features</li>
@@ -141,13 +141,13 @@ Contents
         </ul>
       </div>
       <div class="col_element">
-         <img src="_images/statistics_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
+         <img src="_static/statistics_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:2px; padding-right:0px; padding-left:20px;">
             <li><a href="content/reference/statistics/bedmap.html"><tt>bedmap</tt></a> - map overlapping BED elements onto target regions and optionally compute any number of common statistical operations</li>
          </ul>
       </div>
       <div class="col_element">
-         <img src="_images/file_management_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
+         <img src="_static/file_management_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:2px; padding-right:0px; padding-left:20px;">
             <li><a href="content/reference/file-management/sorting/sort-bed.html"><tt>sort-bed</tt></a> - apply lexicographical sort to BED data</li>
             <li><a href="content/reference/file-management/compression/starch.html"><tt>starch</tt></a> and <a href="content/reference/file-management/compression/unstarch.html"><tt>unstarch</tt></a> - compress and extract BED data</li>
@@ -159,7 +159,7 @@ Contents
    </div>
    <div class="index_cols">
       <div class="col_element">
-         <img src="_images/performance_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
+         <img src="_static/performance_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
          <ul style="list-style-type:square; font-size:smaller; margin:0; margin-right:2px; padding-right:0px; padding-left:20px;">
             <li>Parallel <a href="content/reference/file-management/conversion/parallel_bam2bed.html"><tt>bam2bed</tt></a> and <a href="content/reference/file-management/conversion/parallel_bam2starch.html"><tt>bam2starch</tt></a> - parallelized conversion and compression of BAM data</li>
             <li><a href="content/performance.html#set-operations-with-bedops">Set operations with <tt>bedops</tt></li>
@@ -168,7 +168,7 @@ Contents
          </ul>
       </div>
       <div class="col_element">
-          <img src="_images/toc_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
+          <img src="_static/toc_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
           <ul style="list-style-type:square; font-size:smaller; margin:0; margin-right:2px; padding-right:0px; padding-left:20px;">
              <li><a href="content/summary.html">Table summary</a> of <strong>BEDOPS</strong> toolkit</li>
              <li><a href="content/reference/file-management/compression/starch-specification.html">Starch v2.2</a> format specification</li>
@@ -179,7 +179,7 @@ Contents
           </ul>
       </div>
       <div class="col_element">
-          <img src="_images/support_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
+          <img src="_static/support_v2.png" style="height:130px; margin:0; width:auto !important; margin-bottom:12px;">
           <ul style="list-style-type:square; font-size:smaller; margin:0; margin-right:2px; padding-right:0px; padding-left:20px;">
              <li><a href="content/installation.html">How to install <strong>BEDOPS</strong></a></li>
              <li><a href="content/usage-examples.html">Usage examples</a> of <strong>BEDOPS</strong> tools in action</li>
@@ -194,14 +194,14 @@ Contents
 
 .. |reference_html| raw:: html
 
-   <img src="_images/reference_v2.png" style="height:36px;">
+   <img src="_static/reference_v2.png" style="height:36px;">
 
 .. |set_operations_png| image:: assets/index/set_operations_v2.png
                         :height: 130px
 
 .. |set_operations_html| raw:: html
 
-   <img src="_images/set_operations_v2.png" style="height:130px;">
+   <img src="_static/set_operations_v2.png" style="height:130px;">
 
 .. |set_operations| raw:: html
 
@@ -216,7 +216,7 @@ Contents
 
 .. |statistics_html| raw:: html
 
-   <img src="_images/statistics_v2.png" style="height:130px;">
+   <img src="_static/statistics_v2.png" style="height:130px;">
 
 .. |statistics| raw:: html
 
@@ -229,7 +229,7 @@ Contents
 
 .. |file_management_html| raw:: html
 
-   <img src="_images/file_management_v2.png" style="height:130px;">
+   <img src="_static/file_management_v2.png" style="height:130px;">
 
 .. |file_management| raw:: html
 
@@ -245,7 +245,7 @@ Contents
 
 .. |performance_html| raw:: html
 
-   <img src="_images/performance_v2.png" style="height:130px;">
+   <img src="_static/performance_v2.png" style="height:130px;">
 
 .. |performance| raw:: html
 
@@ -260,7 +260,7 @@ Contents
 
 .. |support_html| raw:: html
 
-   <img src="_images/support_v2.png" style="height:130px;">
+   <img src="_static/support_v2.png" style="height:130px;">
 
 .. |support| raw:: html
 
@@ -275,7 +275,7 @@ Contents
 
 .. |other_html| raw:: html
 
-   <img src="_images/toc_v2.png" style="height:130px;">
+   <img src="_static/toc_v2.png" style="height:130px;">
 
 .. |other| raw:: html
 
