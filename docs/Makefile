@@ -51,7 +51,7 @@ clean:
 
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
-	find ./ -type f -name "*.png" -exec cp "{}" $(BUILDDIR)/html/_images \;
+	find $(BUILDDIR)/../assets -type f -name "*.png" -exec cp "{}" $(BUILDDIR)/html/_images \;
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
