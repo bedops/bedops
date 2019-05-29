@@ -16,13 +16,13 @@ The <a href="https://bedops.readthedocs.io/en/latest/content/overview.html#overv
 <table width="100%">
 <tr>
 <th width="33%" align="left">
-<img src="https://bedops.readthedocs.io/en/latest/_images/linux_v2.png" height="26px" style="height:26px !important; width: auto !important; margin-bottom:10px;">
+Linux
 </th>
 <th width="33%" align="left">
-<img src="https://bedops.readthedocs.io/en/latest/_images/macosx_v2.png" height="26px" style="height:26px !important; width: auto !important; margin-bottom:10px;">
+Mac OS X
 </th>
 <th width="34%" align="left">
-<img src="https://bedops.readthedocs.io/en/latest/_images/source_v2.png" height="26px" style="height:26px !important; width: auto !important; margin-bottom:10px;">
+Source code
 </th>
 </tr>
 <tr>
