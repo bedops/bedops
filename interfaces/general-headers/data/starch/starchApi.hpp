@@ -1519,6 +1519,11 @@ namespace starch
                 case kBzip2: {
                     // extract untransformed line from archive
                     UNSTARCH_bzReadLine(bzFp, &bzOutput);
+                    if (bzOutput && * bzOutput == '#')
+                    {
+                        UNSTARCH_bzReadLine(bzFp, &bzOutput);
+                    }
+
                     if (bzOutput) {
 #ifdef DEBUG
                         std::fprintf(stderr, "--> bzOutput [ %s ]\n", bzOutput);
@@ -1583,7 +1588,6 @@ namespace starch
                                     break;
                             } while (res != 0);
                         }
-
                         // if the first character of the first untransformed token is 'p', then
                         // we have not yet extracted a BED line, and so we call extractLine()
                         // once again to get BED output
@@ -1648,6 +1652,11 @@ namespace starch
 #ifdef DEBUG
                         std::fprintf(stderr, "--> needed to read a new chunk because we're in the middle of an incomplete line\n");
 #endif
+                        zReadLine();
+                    }
+
+                    if (zHave >= zOutBufIdx && !postBreakdownZValuesIdentical && * zLineBuf == '#')
+                    {
                         zReadLine();
                     }
 
