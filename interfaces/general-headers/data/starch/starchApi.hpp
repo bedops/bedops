@@ -727,6 +727,13 @@ namespace starch
         bool                            getAllChromosomesHaveDuplicateElement() { Metadata *_archMdIter; for (_archMdIter = archMd; _archMdIter != NULL; _archMdIter = _archMdIter->next) { if (UNSTARCH_duplicateElementExistsForChromosome(archMd, _archMdIter->chromosome) == kStarchTrue) return true; } return false; }
         bool                            getAllChromosomesHaveNestedElement() { Metadata *_archMdIter; for (_archMdIter = archMd; _archMdIter != NULL; _archMdIter = _archMdIter->next) { if (UNSTARCH_nestedElementExistsForChromosome(archMd, _archMdIter->chromosome) == kStarchTrue) return true; } return false; }
         inline bool                     isEOF() { return (!getCurrentChromosome()); }
+        inline bool isSpecialLine(const char* buf) {
+            return (std::strncmp(buf, kStarchBedHeaderTrack, strlen(kStarchBedHeaderTrack)) == 0 ||
+                    std::strncmp(buf, kStarchBedHeaderBrowser, strlen(kStarchBedHeaderBrowser)) == 0 ||
+                    std::strncmp(buf, kStarchBedHeaderSAM, strlen(kStarchBedHeaderSAM)) == 0 ||
+                    std::strncmp(buf, kStarchBedHeaderVCF, strlen(kStarchBedHeaderVCF)) == 0 ||
+                    std::strncmp(buf, kStarchBedGenericComment, strlen(kStarchBedGenericComment)) == 0);
+        }
 
         // ------------        
 
@@ -1519,7 +1526,7 @@ namespace starch
                 case kBzip2: {
                     // extract untransformed line from archive
                     UNSTARCH_bzReadLine(bzFp, &bzOutput);
-                    if (bzOutput && * bzOutput == '#')
+                    while (bzOutput && isSpecialLine(reinterpret_cast<char *>(bzOutput)))
                     {
                         UNSTARCH_bzReadLine(bzFp, &bzOutput);
                     }
@@ -1655,7 +1662,7 @@ namespace starch
                         zReadLine();
                     }
 
-                    if (zHave >= zOutBufIdx && !postBreakdownZValuesIdentical && * zLineBuf == '#')
+                    while (zHave >= zOutBufIdx && !postBreakdownZValuesIdentical && isSpecialLine(zLineBuf))
                     {
                         zReadLine();
                     }
