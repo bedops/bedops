@@ -69,3 +69,5 @@ applications/bed/closestfeats/bin/
 applications/bed/conversion/bin/
 applications/bed/sort-bed/bin/
 applications/bed/starch/bin/
+
+.vscode

@@ -187,6 +187,7 @@ int main(int argc, char **argv) {
     std::cout << "  citation: " << BedMap::citation << std::endl;
     std::cout << "  version:  " << BedMap::version << std::endl;
     std::cout << "  authors:  " << BedMap::authors << std::endl;
+    return EXIT_SUCCESS;
   } catch(const BedMap::NoInput& ni) { // show usage and exit failure
     std::cerr << BedMap::prognm << std::endl;
     std::cerr << "  citation: " << BedMap::citation << std::endl;

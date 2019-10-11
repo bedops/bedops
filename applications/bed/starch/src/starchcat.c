@@ -5107,7 +5107,9 @@ STARCHCAT_allocMetadataRecords(MetadataRecord **mdRecords, const unsigned int nu
         fprintf(stderr, "ERROR: Could not allocate space for metadata records.\n");
         return STARCHCAT_EXIT_FAILURE;
     }
+    
     for (recIdx = 0U; recIdx < numRecords; recIdx++) {
+        instance = *mdRecords + recIdx;
 #ifdef __cplusplus
         instance->metadata = nullptr;
         instance->filename = nullptr;
@@ -5119,7 +5121,6 @@ STARCHCAT_allocMetadataRecords(MetadataRecord **mdRecords, const unsigned int nu
         instance->fp = NULL;
         instance->av = NULL;
 #endif
-        instance = *mdRecords + recIdx;
         instance->type = STARCH_DEFAULT_COMPRESSION_TYPE;
         instance->hFlag = kStarchFalse;
     }
