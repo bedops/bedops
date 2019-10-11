@@ -1,0 +1,244 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>6.3.2.3. starchcat &#8212; BEDOPS v2.4.36</title>
+    <link rel="stylesheet" href="../../../../_static/better.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="6.3.2.4. Starch (v2.x) specification" href="starch-specification.html" />
+    <link rel="prev" title="6.3.2.2. unstarch" href="unstarch.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  </head><body>
+    <header id="pageheader"><h1><a href="../../../../index.html ">
+        BEDOPS v2.4.36
+    </a></h1></header>
+  <div class="related top">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="unstarch.html" title="Previous document">6.3.2.2. <cite>unstarch</cite></a>
+        </li>
+        <li>
+          <a href="starch-specification.html" title="Next document">6.3.2.4. Starch (v2.x) specification</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../../../../index.html">Home</a></li>
+      <li>
+        <a href="../../../reference.html">6. Reference</a>
+      </li>
+      <li>
+        <a href="../../file-management.html">6.3. File management</a>
+      </li>
+      <li>
+        <a href="../compression.html">6.3.2. Compression</a>
+      </li> 
+    </ul>
+  </nav>
+  </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="starchcat">
+<span id="id1"></span><h1>6.3.2.3. <cite>starchcat</cite><a class="headerlink" href="#starchcat" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">starchcat</span></code> utility efficiently merges per-chromosome records contained within one or more BEDOPS <a class="reference internal" href="starch-specification.html#starch-specification"><span class="std std-ref">Starch-formatted</span></a> archives. This is an equivalent operation to <code class="docutils literal notranslate"><span class="pre">bedops</span> <span class="pre">--everything</span></code> or <code class="docutils literal notranslate"><span class="pre">bedops</span> <span class="pre">-u</span></code> (a <a class="reference internal" href="../../set-operations/bedops.html#bedops-everything"><span class="std std-ref">multiset union</span></a>), but inputs are <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> archives rather than uncompressed BED files.</p>
+<p>As a further advantage to using this over <a class="reference internal" href="../../set-operations/bedops.html#bedops"><span class="std std-ref">bedops</span></a>, in the case where a <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> input contains BED elements exclusive to one chromosome, this utility will directly and quickly copy over compressed elements to a new archive, avoiding the need for costly and wasteful extraction and re-compression.</p>
+<p>In the general case, where two or more <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> inputs contain BED elements from the same chromosome, a <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><span class="std std-ref">sorted</span></a> merge is performed and the stream reprocessed into a <a class="reference internal" href="starch-specification.html#starch-specification"><span class="std std-ref">Starch-formatted</span></a> archive.</p>
+<div class="section" id="parallelization">
+<h2>6.3.2.3.1. Parallelization<a class="headerlink" href="#parallelization" title="Permalink to this headline">¶</a></h2>
+<p>Those with access to a computational cluster such as an Oracle/Sun Grid Engine or a group of hosts running SSH services should find <a class="reference internal" href="#starchcat"><span class="std std-ref">starchcat</span></a> highly useful, as this facilitates:</p>
+<ul class="simple">
+<li>Much faster compression of an entire genome of BED data, using nodes of a computational cluster to compress separate chromosomes, followed by a collation step with <a class="reference internal" href="#starchcat"><span class="std std-ref">starchcat</span></a> (see the <a class="reference internal" href="../../../usage-examples/starchcluster.html#starchcluster"><span class="std std-ref">Efficiently creating Starch-formatted archives with a cluster</span></a> documentation).</li>
+<li>Extraction, manipulation and reintegration of a <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> -ed chromosome into a larger <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> archive</li>
+<li>Refreshing metadata or re-compressing the data within a lone <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> archive.</li>
+</ul>
+<p>To demonstrate the first application of this utility, we have packaged a helper script with the BEDOPS suite called <a class="reference internal" href="../../../usage-examples/starchcluster.html#starchcluster"><span class="std std-ref">starchcluster</span></a>, which archives data much faster than <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> alone. By distributing work across the nodes of a computational cluster, the upper bound on compression time is almost entirely determined by the largest chromosome, reducing compression time by an order of magnitude.</p>
+</div>
+<div class="section" id="inputs-and-outputs">
+<h2>6.3.2.3.2. Inputs and outputs<a class="headerlink" href="#inputs-and-outputs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="input">
+<h3>6.3.2.3.2.1. Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
+<p>The input to <a class="reference internal" href="#starchcat"><span class="std std-ref">starchcat</span></a> consists of one or more BEDOPS <a class="reference internal" href="starch-specification.html#starch-specification"><span class="std std-ref">Starch-formatted</span></a> archive files.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If a single archive is provided as input, it may be reprocessed with specified options. When two or more archives are specified, the output will be the equivalent of a multiset union of the inputs.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This utility does not accept standard input.</p>
+</div>
+</div>
+<div class="section" id="output">
+<h3>6.3.2.3.2.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="#starchcat"><span class="std std-ref">starchcat</span></a> tool outputs a <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> -formatted archive to standard output, which is usually redirected to a file.</p>
+<p>Additionally, an optional compression flag specifies if the final <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> output should be compressed with either the <code class="docutils literal notranslate"><span class="pre">bzip2</span></code> or <code class="docutils literal notranslate"><span class="pre">gzip</span></code> method (the default being <code class="docutils literal notranslate"><span class="pre">bzip2</span></code>).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> inputs use a different backend compression method, the input stream is re-compressed before integrated into the larger archive. This will incur extra processing overhead.</p>
+</div>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>6.3.2.3.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">--help</span></code> option to list all options:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">starchcat</span>
+ <span class="n">citation</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">bioinformatics</span><span class="o">.</span><span class="n">oxfordjournals</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">content</span><span class="o">/</span><span class="mi">28</span><span class="o">/</span><span class="mi">14</span><span class="o">/</span><span class="mf">1919.</span><span class="n">abstract</span>
+ <span class="n">version</span><span class="p">:</span>  <span class="mf">2.4</span><span class="o">.</span><span class="mi">36</span> <span class="p">(</span><span class="n">typical</span><span class="p">)</span>
+ <span class="n">authors</span><span class="p">:</span>  <span class="n">Alex</span> <span class="n">Reynolds</span> <span class="ow">and</span> <span class="n">Shane</span> <span class="n">Neph</span>
+
+<span class="n">USAGE</span><span class="p">:</span> <span class="n">starchcat</span> <span class="p">[</span> <span class="o">--</span><span class="n">note</span><span class="o">=</span><span class="s2">&quot;...&quot;</span> <span class="p">]</span>
+                 <span class="p">[</span> <span class="o">--</span><span class="n">bzip2</span> <span class="o">|</span> <span class="o">--</span><span class="n">gzip</span> <span class="p">]</span>
+                 <span class="p">[</span> <span class="o">--</span><span class="n">omit</span><span class="o">-</span><span class="n">signature</span> <span class="p">]</span>
+                 <span class="p">[</span> <span class="o">--</span><span class="n">report</span><span class="o">-</span><span class="n">progress</span><span class="o">=</span><span class="n">N</span> <span class="p">]</span> <span class="o">&lt;</span><span class="n">starch</span><span class="o">-</span><span class="n">file</span><span class="o">-</span><span class="mi">1</span><span class="o">&gt;</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">starch</span><span class="o">-</span><span class="n">file</span><span class="o">-</span><span class="mi">2</span><span class="o">&gt;</span> <span class="o">...</span><span class="p">]</span>
+
+    <span class="o">*</span> <span class="n">At</span> <span class="n">least</span> <span class="n">one</span> <span class="n">lexicographically</span><span class="o">-</span><span class="nb">sorted</span><span class="p">,</span> <span class="n">headerless</span> <span class="n">starch</span> <span class="n">archive</span> <span class="ow">is</span>
+      <span class="n">required</span><span class="o">.</span>
+
+    <span class="o">*</span> <span class="n">While</span> <span class="n">two</span> <span class="ow">or</span> <span class="n">more</span> <span class="n">inputs</span> <span class="n">make</span> <span class="n">sense</span> <span class="k">for</span> <span class="n">a</span> <span class="n">multiset</span> <span class="n">union</span> <span class="n">operation</span><span class="p">,</span> <span class="n">you</span>
+      <span class="n">can</span> <span class="n">starchcat</span> <span class="n">one</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">order</span> <span class="n">to</span> <span class="n">update</span> <span class="n">its</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">recompress</span> <span class="n">it</span>
+      <span class="k">with</span> <span class="n">a</span> <span class="n">different</span> <span class="n">backend</span> <span class="n">method</span><span class="p">,</span> <span class="ow">or</span> <span class="n">add</span> <span class="n">a</span> <span class="n">note</span> <span class="n">annotation</span><span class="o">.</span>
+
+    <span class="o">*</span> <span class="n">Compressed</span> <span class="n">data</span> <span class="n">are</span> <span class="n">sent</span> <span class="n">to</span> <span class="n">standard</span> <span class="n">output</span><span class="o">.</span> <span class="n">Use</span> <span class="n">the</span> <span class="s1">&#39;&gt;&#39;</span> <span class="n">operator</span> <span class="n">to</span>
+      <span class="n">redirect</span> <span class="n">to</span> <span class="n">a</span> <span class="n">file</span><span class="o">.</span>
+
+    <span class="n">Process</span> <span class="n">Flags</span>
+    <span class="o">--------------------------------------------------------------------------</span>
+    <span class="o">--</span><span class="n">note</span><span class="o">=</span><span class="s2">&quot;foo bar...&quot;</span>   <span class="n">Append</span> <span class="n">note</span> <span class="n">to</span> <span class="n">output</span> <span class="n">archive</span> <span class="n">metadata</span> <span class="p">(</span><span class="n">optional</span><span class="p">)</span><span class="o">.</span>
+
+    <span class="o">--</span><span class="n">bzip2</span> <span class="o">|</span> <span class="o">--</span><span class="n">gzip</span>      <span class="n">Specify</span> <span class="n">backend</span> <span class="n">compression</span> <span class="nb">type</span> <span class="p">(</span><span class="n">optional</span><span class="p">,</span> <span class="n">default</span>
+                          <span class="ow">is</span> <span class="n">bzip2</span><span class="p">)</span><span class="o">.</span>
+
+    <span class="o">--</span><span class="n">omit</span><span class="o">-</span><span class="n">signature</span>      <span class="n">Skip</span> <span class="n">generating</span> <span class="n">per</span><span class="o">-</span><span class="n">chromosome</span> <span class="n">data</span> <span class="n">integrity</span> <span class="n">signature</span>
+                          <span class="p">(</span><span class="n">optional</span><span class="p">,</span> <span class="n">default</span> <span class="ow">is</span> <span class="n">to</span> <span class="n">generate</span> <span class="n">signature</span><span class="p">)</span><span class="o">.</span>
+
+    <span class="o">--</span><span class="n">report</span><span class="o">-</span><span class="n">progress</span><span class="o">=</span><span class="n">N</span>   <span class="n">Report</span> <span class="n">compression</span> <span class="n">progress</span> <span class="n">every</span> <span class="n">N</span> <span class="n">elements</span> <span class="n">per</span>
+                          <span class="n">chromosome</span> <span class="n">to</span> <span class="n">standard</span> <span class="n">error</span> <span class="n">stream</span> <span class="p">(</span><span class="n">optional</span><span class="p">)</span>
+
+    <span class="o">--</span><span class="n">version</span>             <span class="n">Show</span> <span class="n">binary</span> <span class="n">version</span><span class="o">.</span>
+
+    <span class="o">--</span><span class="n">help</span>                <span class="n">Show</span> <span class="n">this</span> <span class="n">usage</span> <span class="n">message</span><span class="o">.</span>
+</pre></div>
+</div>
+<div class="section" id="per-chromosome-data-integrity-signature">
+<h3>6.3.2.3.3.1. Per-chromosome data integrity signature<a class="headerlink" href="#per-chromosome-data-integrity-signature" title="Permalink to this headline">¶</a></h3>
+<p>By default, a data integrity signature is generated for each chromosome. This can be used to verify if chromosome streams from two or more Starch archives are identical, or used to test the integrity of a chromosome, to identify potential data corruption.</p>
+<p>Generating this signature adds to the computational cost of compression, or an integrity signature may not be useful for all archives. Add the <code class="docutils literal notranslate"><span class="pre">--omit-signature</span></code> option, if the compression time is too high or the data integrity signature is not needed.</p>
+</div>
+<div class="section" id="example">
+<h3>6.3.2.3.3.2. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<p>Let’s say we have a set of 23 <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> archives, one for each chromosome of the human genome: <code class="docutils literal notranslate"><span class="pre">chr1.starch</span></code>, <code class="docutils literal notranslate"><span class="pre">chr2.starch</span></code>, and so on, to <code class="docutils literal notranslate"><span class="pre">chrY.starch</span></code>. (To simplify this example, we leave out mitochondrial, random, pseudo- and other chromosomes.) We would like to build a new <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> archive from these 23 separate files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ starchcat chr1.starch chr2.starch ... chrY.starch &gt; humanGenome.starch
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="#starchcat"><span class="std std-ref">starchcat</span></a> utility parses the metadata from each of the 23 inputs, determines what data to either simple copy or reprocess, and then it performs the merge. Cleanup is performed afterwards, as necessary, and the output is a brand new <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> file, written to <code class="docutils literal notranslate"><span class="pre">humanGenome.starch</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>No filtering or processing is performed on extracted BED elements, before they are written to the final output. Thus, <em>it is possible for duplicate BED elements to occur</em>. It would be easy to use the <code class="docutils literal notranslate"><span class="pre">--signature</span></code> option to validate the expected content of a new Starch archive.</p>
+<p class="last">However, the final archive is sorted per <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><span class="std std-ref">sort-bed</span></a> ordering, so that data extracted from this archive will be ready for use with BEDOPS utilities.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When input archives contain data on disjoint chromosomes, use of <a class="reference internal" href="#starchcat"><span class="std std-ref">starchcat</span></a> is very efficient as data are simply copied, instead of extracted and re-compressed.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/logo_with_label_v3.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../../../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">6.3.2.3. <cite>starchcat</cite></a><ul>
+<li><a class="reference internal" href="#parallelization">6.3.2.3.1. Parallelization</a></li>
+<li><a class="reference internal" href="#inputs-and-outputs">6.3.2.3.2. Inputs and outputs</a><ul>
+<li><a class="reference internal" href="#input">6.3.2.3.2.1. Input</a></li>
+<li><a class="reference internal" href="#output">6.3.2.3.2.2. Output</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usage">6.3.2.3.3. Usage</a><ul>
+<li><a class="reference internal" href="#per-chromosome-data-integrity-signature">6.3.2.3.3.1. Per-chromosome data integrity signature</a></li>
+<li><a class="reference internal" href="#example">6.3.2.3.3.2. Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<form class="search" action="../../../../search.html" method="get">
+  <input type="text" name="q"
+   placeholder="type to search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  <div class="related bottom">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="unstarch.html" title="Previous document">6.3.2.2. <cite>unstarch</cite></a>
+        </li>
+        <li>
+          <a href="starch-specification.html" title="Next document">6.3.2.4. Starch (v2.x) specification</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../../../../index.html">Home</a></li>
+      <li>
+        <a href="../../../reference.html">6. Reference</a>
+      </li>
+      <li>
+        <a href="../../file-management.html">6.3. File management</a>
+      </li>
+      <li>
+        <a href="../compression.html">6.3.2. Compression</a>
+      </li> 
+    </ul>
+  </nav>
+  </div>
+  <footer id="pagefooter">&copy; 2011-2019, Shane Neph, Alex Reynolds.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+      1.8.5
+        with the <a href="http://github.com/irskep/sphinx-better-theme">
+          better</a> theme.
+
+  </footer>
+
+  
+  </body>
+</html>

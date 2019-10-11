@@ -1,0 +1,194 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>6.3.1.1. sort-bed &#8212; BEDOPS v2.4.36</title>
+    <link rel="stylesheet" href="../../../../_static/better.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="6.3.2. Compression" href="../compression.html" />
+    <link rel="prev" title="6.3.1. Sorting" href="../sorting.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  </head><body>
+    <header id="pageheader"><h1><a href="../../../../index.html ">
+        BEDOPS v2.4.36
+    </a></h1></header>
+  <div class="related top">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="../sorting.html" title="Previous document">6.3.1. Sorting</a>
+        </li>
+        <li>
+          <a href="../compression.html" title="Next document">6.3.2. Compression</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../../../../index.html">Home</a></li>
+      <li>
+        <a href="../../../reference.html">6. Reference</a>
+      </li>
+      <li>
+        <a href="../../file-management.html">6.3. File management</a>
+      </li>
+      <li>
+        <a href="../sorting.html">6.3.1. Sorting</a>
+      </li> 
+    </ul>
+  </nav>
+  </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="sort-bed">
+<span id="id1"></span><h1>6.3.1.1. <cite>sort-bed</cite><a class="headerlink" href="#sort-bed" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">sort-bed</span></code> utility sorts BED files of any size, even larger than system memory. BED files that are in lexicographic-chromosome order allow BEDOPS utilities to work efficiently with data from any species without software modifications. Further, sorted files can be traversed very quickly.</p>
+<p>Sorted BED order is defined first by lexicographic chromosome order, then ascending integer start coordinate order, and finally by ascending integer end coordinate order. To make the sort order unambiguous, a lexicographical sort is applied on fourth and subsequent columns, where present in the input BED dataset.</p>
+<p>Other utilities in the BEDOPS suite require data in sorted order as described. You only need to sort once: BEDOPS utilities all read and write data in sorted order.</p>
+<div class="section" id="migrating-older-bed-and-starch-files">
+<h2>6.3.1.1.1. Migrating older BED and Starch files<a class="headerlink" href="#migrating-older-bed-and-starch-files" title="Permalink to this headline">¶</a></h2>
+<p>The utility <code class="docutils literal notranslate"><span class="pre">update-sort-bed-migrate-candidates</span></code> recursively locates BED and pre-v2.4.20 Starch files in the specified parent directory, tests if they require re-sorting to conform to the updated, post-v2.4.20 ‘sort-bed’ order, and offers actions to log candidate files, or immediately apply a resort action that is performed locally or via a SLURM-managed cluster.</p>
+<p>The convenience utilities <code class="docutils literal notranslate"><span class="pre">update-sort-bed-slurm</span></code> and <code class="docutils literal notranslate"><span class="pre">update-sort-bed-starch-slurm</span></code> update the sort order of BED or Starch files sorted with pre-v2.4.20 <code class="docutils literal notranslate"><span class="pre">sort-bed</span></code> via a SLURM-based cluster. See <code class="docutils literal notranslate"><span class="pre">update-sort-bed-slurm</span> <span class="pre">--help</span></code> or <code class="docutils literal notranslate"><span class="pre">update-sort-bed-starch-slurm</span> <span class="pre">--help</span></code> for more details. These utilities can be used standalone or in conjunction with the <code class="docutils literal notranslate"><span class="pre">update-sort-bed-migrate-candidates</span></code> utility.</p>
+</div>
+<div class="section" id="inputs-and-outputs">
+<h2>6.3.1.1.2. Inputs and outputs<a class="headerlink" href="#inputs-and-outputs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="input">
+<h3>6.3.1.1.2.1. Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">sort-bed</span></code> utility requires one or more three-column BED file(s). Support for common headers (such as <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1">UCSC BED track headers</a>) is included, although headers will be stripped from the output.</p>
+</div>
+<div class="section" id="output">
+<h3>6.3.1.1.2.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">sort-bed</span></code> utility sends sorted BED data to standard output, which can be redirected to a file or piped to other utilities, including core BEDOPS utilities like <a class="reference internal" href="../../set-operations/bedops.html#bedops"><span class="std std-ref">bedops</span></a> and <a class="reference internal" href="../../statistics/bedmap.html#bedmap"><span class="std std-ref">bedmap</span></a>. Sort order is defined by a lexicographical sort on chromosome name, a numerical sort on start coordinates, a numerical sort on stop coordinates where there are start matches, and finally a lexicographical sort on the remainder of the BED element (if additional columns are present). Additional options may be specified to print only unique or duplicate elements, or check the sort order of input.</p>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>6.3.1.1.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">--help</span></code> option is fairly basic, but describes the usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sort</span><span class="o">-</span><span class="n">bed</span>
+  <span class="n">citation</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">bioinformatics</span><span class="o">.</span><span class="n">oxfordjournals</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">content</span><span class="o">/</span><span class="mi">28</span><span class="o">/</span><span class="mi">14</span><span class="o">/</span><span class="mf">1919.</span><span class="n">abstract</span>
+  <span class="n">version</span><span class="p">:</span>  <span class="mf">2.4</span><span class="o">.</span><span class="mi">36</span> <span class="p">(</span><span class="n">typical</span><span class="p">)</span>
+  <span class="n">authors</span><span class="p">:</span>  <span class="n">Scott</span> <span class="n">Kuehn</span>
+
+<span class="n">USAGE</span><span class="p">:</span> <span class="n">sort</span><span class="o">-</span><span class="n">bed</span> <span class="p">[</span><span class="o">--</span><span class="n">help</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">version</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">check</span><span class="o">-</span><span class="n">sort</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">max</span><span class="o">-</span><span class="n">mem</span> <span class="o">&lt;</span><span class="n">val</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">tmpdir</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">unique</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">duplicates</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">file1</span><span class="o">.</span><span class="n">bed</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">file2</span><span class="o">.</span><span class="n">bed</span><span class="o">&gt;</span> <span class="o">&lt;...&gt;</span>
+        <span class="n">Sort</span> <span class="n">BED</span> <span class="n">file</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span>
+        <span class="n">May</span> <span class="n">use</span> <span class="s1">&#39;-&#39;</span> <span class="n">to</span> <span class="n">indicate</span> <span class="n">stdin</span><span class="o">.</span>
+        <span class="n">Results</span> <span class="n">are</span> <span class="n">sent</span> <span class="n">to</span> <span class="n">stdout</span><span class="o">.</span>
+
+        <span class="o">&lt;</span><span class="n">val</span><span class="o">&gt;</span> <span class="k">for</span> <span class="o">--</span><span class="nb">max</span><span class="o">-</span><span class="n">mem</span> <span class="n">may</span> <span class="n">be</span> <span class="mi">8</span><span class="n">G</span><span class="p">,</span> <span class="mi">8000</span><span class="n">M</span><span class="p">,</span> <span class="ow">or</span> <span class="mi">8000000000</span> <span class="n">to</span> <span class="n">specify</span> <span class="mi">8</span> <span class="n">GB</span> <span class="n">of</span> <span class="n">memory</span><span class="o">.</span>
+        <span class="o">--</span><span class="n">tmpdir</span> <span class="ow">is</span> <span class="n">useful</span> <span class="n">only</span> <span class="k">with</span> <span class="o">--</span><span class="nb">max</span><span class="o">-</span><span class="n">mem</span><span class="o">.</span>
+        <span class="o">--</span><span class="n">unique</span> <span class="n">can</span> <span class="n">be</span> <span class="n">used</span> <span class="n">to</span> <span class="nb">print</span> <span class="n">only</span> <span class="n">unique</span> <span class="n">BED</span> <span class="n">elements</span> <span class="p">(</span><span class="n">similar</span> <span class="n">to</span> <span class="s2">&quot;sort -u&quot;</span><span class="p">)</span><span class="o">.</span>
+        <span class="o">--</span><span class="n">duplicates</span> <span class="n">can</span> <span class="n">be</span> <span class="n">used</span> <span class="n">to</span> <span class="nb">print</span> <span class="n">only</span> <span class="n">duplicated</span> <span class="ow">or</span> <span class="n">repeated</span> <span class="n">elements</span> <span class="p">(</span><span class="n">similar</span> <span class="n">to</span> <span class="s2">&quot;uniq -d&quot;</span><span class="p">)</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>A simple example of using <code class="docutils literal notranslate"><span class="pre">sort-bed</span></code> would be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sort-bed unsortedData.bed &gt; sortedData.bed
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">sort-bed</span></code> program efficiently sorts BED inputs. By default, all input records are read into system memory and sorted. If your BED dataset is larger than available system memory, use the <code class="docutils literal notranslate"><span class="pre">--max-mem</span></code> option to limit the amount of memory <code class="docutils literal notranslate"><span class="pre">sort-bed</span></code> uses to do its work:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sort-bed --max-mem 2G reallyHugeUnsortedData.bed &gt; reallyHugeSortedData.bed
+</pre></div>
+</div>
+<p>This option allows <code class="docutils literal notranslate"><span class="pre">sort-bed</span></code> to scale to input of any size.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">--tmpdir</span></code> option allows specification of an alternative temporary directory, when used in conjunction with <code class="docutils literal notranslate"><span class="pre">--max-mem</span></code> option. This is useful if the host operating system’s standard temporary directory (<em>e.g.</em>, <code class="docutils literal notranslate"><span class="pre">/tmp</span></code> on Linux or OS X) does not have sufficient space to hold intermediate results.</p>
+<p>For example, to use the current working directory to store temporary data, one could use the <code class="docutils literal notranslate"><span class="pre">$PWD</span></code> environment variable:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sort-bed --max-mem 2G --tmpdir $PWD reallyHugeUnsortedData.bed &gt; reallyHugeSortedData.bed
+</pre></div>
+</div>
+<p>Use of the <code class="docutils literal notranslate"><span class="pre">--check-sort</span></code> option returns a message if the input is sorted, or not.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">--unique</span></code> and <code class="docutils literal notranslate"><span class="pre">--duplicates</span></code> options print only unique or duplicated elements in sorted output, respectively. These options mimic <code class="docutils literal notranslate"><span class="pre">sort</span> <span class="pre">-u</span></code> and <code class="docutils literal notranslate"><span class="pre">uniq</span> <span class="pre">-d</span></code> commands, respectively.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/logo_with_label_v3.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../../../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">6.3.1.1. <cite>sort-bed</cite></a><ul>
+<li><a class="reference internal" href="#migrating-older-bed-and-starch-files">6.3.1.1.1. Migrating older BED and Starch files</a></li>
+<li><a class="reference internal" href="#inputs-and-outputs">6.3.1.1.2. Inputs and outputs</a><ul>
+<li><a class="reference internal" href="#input">6.3.1.1.2.1. Input</a></li>
+<li><a class="reference internal" href="#output">6.3.1.1.2.2. Output</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usage">6.3.1.1.3. Usage</a></li>
+</ul>
+</li>
+</ul>
+
+<form class="search" action="../../../../search.html" method="get">
+  <input type="text" name="q"
+   placeholder="type to search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  <div class="related bottom">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="../sorting.html" title="Previous document">6.3.1. Sorting</a>
+        </li>
+        <li>
+          <a href="../compression.html" title="Next document">6.3.2. Compression</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../../../../index.html">Home</a></li>
+      <li>
+        <a href="../../../reference.html">6. Reference</a>
+      </li>
+      <li>
+        <a href="../../file-management.html">6.3. File management</a>
+      </li>
+      <li>
+        <a href="../sorting.html">6.3.1. Sorting</a>
+      </li> 
+    </ul>
+  </nav>
+  </div>
+  <footer id="pagefooter">&copy; 2011-2019, Shane Neph, Alex Reynolds.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+      1.8.5
+        with the <a href="http://github.com/irskep/sphinx-better-theme">
+          better</a> theme.
+
+  </footer>
+
+  
+  </body>
+</html>

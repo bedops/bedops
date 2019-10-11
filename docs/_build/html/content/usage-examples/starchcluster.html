@@ -1,0 +1,167 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>4.6. Efficiently creating Starch-formatted archives with a cluster &#8212; BEDOPS v2.4.36</title>
+    <link rel="stylesheet" href="../../_static/better.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="4.7. Working with many input files at once with bedops and bedmap" href="multiple-inputs.html" />
+    <link rel="prev" title="4.5. Smoothing raw tag count data across the genome" href="smoothing-tags.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  </head><body>
+    <header id="pageheader"><h1><a href="../../index.html ">
+        BEDOPS v2.4.36
+    </a></h1></header>
+  <div class="related top">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="smoothing-tags.html" title="Previous document">4.5. Smoothing raw tag count data across the genome</a>
+        </li>
+        <li>
+          <a href="multiple-inputs.html" title="Next document">4.7. Working with many input files at once with <code class="docutils literal notranslate"><span class="pre">bedops</span></code> and <code class="docutils literal notranslate"><span class="pre">bedmap</span></code></a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../../index.html">Home</a></li>
+      <li>
+        <a href="../usage-examples.html">4. Usage examples</a>
+      </li> 
+    </ul>
+  </nav>
+  </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="efficiently-creating-starch-formatted-archives-with-a-cluster">
+<span id="starchcluster"></span><h1>4.6. Efficiently creating Starch-formatted archives with a cluster<a class="headerlink" href="#efficiently-creating-starch-formatted-archives-with-a-cluster" title="Permalink to this headline">¶</a></h1>
+<p>In this example, we demonstrate how to use <a class="reference internal" href="../reference/set-operations/bedextract.html#bedextract"><span class="std std-ref">bedextract</span></a> and <a class="reference internal" href="../reference/file-management/compression/starchcat.html#starchcat"><span class="std std-ref">starchcat</span></a> to efficiently generate Starch-formatted archives from BED datasets.</p>
+<div class="section" id="bedops-tools-in-use">
+<h2>4.6.1. BEDOPS tools in use<a class="headerlink" href="#bedops-tools-in-use" title="Permalink to this headline">¶</a></h2>
+<p>For this script, we use <a class="reference internal" href="../reference/set-operations/bedextract.html#bedextract"><span class="std std-ref">bedextract</span></a> to quickly build a list of chromosomes in an input BED dataset and extract records for each chromosome to separate files. We then use <a class="reference internal" href="../reference/file-management/compression/starch.html#starch"><span class="std std-ref">starch</span></a> to compress each per-chromosome file and <a class="reference internal" href="../reference/file-management/compression/starchcat.html#starchcat"><span class="std std-ref">starchcat</span></a> to concatenate per-chromosome Starch archives into one file.</p>
+</div>
+<div class="section" id="script">
+<h2>4.6.2. Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h2>
+<p>Three versions of the <code class="docutils literal notranslate"><span class="pre">starchcluster</span></code> script are included with the source and package distributions of BEDOPS (see <a class="reference internal" href="../installation.html#installation"><span class="std std-ref">Installation</span></a> for more detail).</p>
+<p>One version makes use of an <a class="reference external" href="http://en.wikipedia.org/wiki/Oracle_Grid_Engine">Oracle Grid Engine</a> (or Sun Grid Engine) cluster environment to distribute per-chromosome tasks, another script uses <a class="reference external" href="http://www.gnu.org/software/parallel/">GNU Parallel</a> to split the workload over cores or processors on the local host. Finally, we include a version that implements a <a class="reference external" href="https://en.wikipedia.org/wiki/Slurm_Workload_Manager">SLURM</a> -capable script.</p>
+</div>
+<div class="section" id="discussion">
+<h2>4.6.3. Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h2>
+<p>The overview that follows applies to the Grid Engine-based version of the <cite>starchcluster</cite> script. However, the general algorithm is identical for the Grid Engine-, GNU Parallel-, and SLURM-based compression scripts.</p>
+<div class="section" id="splitting-bed-files">
+<h3>4.6.3.1. Splitting BED files<a class="headerlink" href="#splitting-bed-files" title="Permalink to this headline">¶</a></h3>
+<p>Whole-genome analyses are often “<a class="reference external" href="http://en.wikipedia.org/wiki/Embarrassingly_parallel">embarassingly parallel</a>”, in that per-chromosome computations can be placed onto separate work nodes of a computational cluster, with results collated at the end in “<a class="reference external" href="http://en.wikipedia.org/wiki/MapReduce">map-reduce</a>” fashion.</p>
+<p>If we want to filter any BED file to retrieve elements from a specific chromosome (say, to compress a BED file, one chromosome at a time), to arrange this kind of analysis, one trivial—but very slow—way to do this involves sequentially walking line by line through the file to parse and test each element. This can take a while to do.</p>
+<p>However, just as BEDOPS tools use the information in <a class="reference internal" href="../reference/file-management/sorting/sort-bed.html#sort-bed"><span class="std std-ref">sorted data</span></a> to apply efficient set and statistical operations, we can use this same information to jump quickly through our data of interest.</p>
+<p>Specifically, sorting allows us to perform a <a class="reference external" href="http://en.wikipedia.org/wiki/Binary_search_algorithm">binary search</a>:</p>
+<ol class="arabic simple">
+<li>We jump to the middle byte of the BED file, stream to the nearest element, then parse and test the chromosome name.</li>
+<li>Either we have a match, or we jump to the middle of the remaining left or right half (decided by dictionary order), parse and test again.</li>
+<li>We repeat steps 1 and 2 until we have matches that define the bounds of the target chromosome.</li>
+</ol>
+<a class="reference internal image-reference" href="../../_images/reference_bedextract_mechanism1.png"><img alt="../../_images/reference_bedextract_mechanism1.png" src="../../_images/reference_bedextract_mechanism1.png" style="width: 99%;" /></a>
+<p>To indicate the kind of speed gain that the <a class="reference internal" href="../reference/set-operations/bedextract.html#bedextract"><span class="std std-ref">bedextract</span></a> tool provides, in local testing, a naïve listing of chromosomes from a 36 GB BED input using UNIX <code class="docutils literal notranslate"><span class="pre">cut</span></code> and <code class="docutils literal notranslate"><span class="pre">uniq</span></code> utilities took approximately 20 minutes to complete on a typical Core 2 Duo-based Linux workstation. Retrieval of the same chromosome listing with <code class="docutils literal notranslate"><span class="pre">bedextract</span> <span class="pre">--list-chr</span></code> took only 2 seconds (cache flushed—no cheating!).</p>
+</div>
+<div class="section" id="compressing-bed-subsets">
+<h3>4.6.3.2. Compressing BED subsets<a class="headerlink" href="#compressing-bed-subsets" title="Permalink to this headline">¶</a></h3>
+<p>Now we can very quickly demarcate where chromosomes start and stop in a BED file, we can apply <a class="reference internal" href="../reference/file-management/compression/starch.html#starch"><span class="std std-ref">starch</span></a> on those subsets on separate cluster nodes.</p>
+</div>
+<div class="section" id="stitching-together-compressed-sets">
+<h3>4.6.3.3. Stitching together compressed sets<a class="headerlink" href="#stitching-together-compressed-sets" title="Permalink to this headline">¶</a></h3>
+<p>Once we have per-chromosome Starch-formatted archives, we need some way to put them all together into one archive. This is where <a class="reference internal" href="../reference/file-management/compression/starchcat.html#starchcat"><span class="std std-ref">starchcat</span></a> comes in, taking all the per-chromosome archives as inputs and creating a new archive as output.</p>
+<p>The big picture view is like this:</p>
+<a class="reference internal image-reference" href="../../_images/starchcluster_mechanism.png"><img alt="../../_images/starchcluster_mechanism.png" src="../../_images/starchcluster_mechanism.png" style="width: 99%;" /></a>
+<p>As the figure notes, the compression time for a very large BED file is reduced roughly to the time taken to compress the largest chromosome in the original file. Parallelization of this process is an order of magnitude faster than compressing chromosomes in serial.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/logo_with_label_v3.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">4.6. Efficiently creating Starch-formatted archives with a cluster</a><ul>
+<li><a class="reference internal" href="#bedops-tools-in-use">4.6.1. BEDOPS tools in use</a></li>
+<li><a class="reference internal" href="#script">4.6.2. Script</a></li>
+<li><a class="reference internal" href="#discussion">4.6.3. Discussion</a><ul>
+<li><a class="reference internal" href="#splitting-bed-files">4.6.3.1. Splitting BED files</a></li>
+<li><a class="reference internal" href="#compressing-bed-subsets">4.6.3.2. Compressing BED subsets</a></li>
+<li><a class="reference internal" href="#stitching-together-compressed-sets">4.6.3.3. Stitching together compressed sets</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<form class="search" action="../../search.html" method="get">
+  <input type="text" name="q"
+   placeholder="type to search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  <div class="related bottom">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="smoothing-tags.html" title="Previous document">4.5. Smoothing raw tag count data across the genome</a>
+        </li>
+        <li>
+          <a href="multiple-inputs.html" title="Next document">4.7. Working with many input files at once with <code class="docutils literal notranslate"><span class="pre">bedops</span></code> and <code class="docutils literal notranslate"><span class="pre">bedmap</span></code></a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../../index.html">Home</a></li>
+      <li>
+        <a href="../usage-examples.html">4. Usage examples</a>
+      </li> 
+    </ul>
+  </nav>
+  </div>
+  <footer id="pagefooter">&copy; 2011-2019, Shane Neph, Alex Reynolds.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+      1.8.5
+        with the <a href="http://github.com/irskep/sphinx-better-theme">
+          better</a> theme.
+
+  </footer>
+
+  
+  </body>
+</html>

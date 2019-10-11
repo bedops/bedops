@@ -1,0 +1,828 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>6.1.1. bedops &#8212; BEDOPS v2.4.36</title>
+    <link rel="stylesheet" href="../../../_static/better.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="6.1.2. bedextract" href="bedextract.html" />
+    <link rel="prev" title="6.1. Set operations" href="../set-operations.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  </head><body>
+    <header id="pageheader"><h1><a href="../../../index.html ">
+        BEDOPS v2.4.36
+    </a></h1></header>
+  <div class="related top">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="../set-operations.html" title="Previous document">6.1. Set operations</a>
+        </li>
+        <li>
+          <a href="bedextract.html" title="Next document">6.1.2. <cite>bedextract</cite></a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../../../index.html">Home</a></li>
+      <li>
+        <a href="../../reference.html">6. Reference</a>
+      </li>
+      <li>
+        <a href="../set-operations.html">6.1. Set operations</a>
+      </li> 
+    </ul>
+  </nav>
+  </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="bedops">
+<span id="id1"></span><h1>6.1.1. <cite>bedops</cite><a class="headerlink" href="#bedops" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">bedops</span></code> is a core tool for finding relationships between two or more genomic datasets.</p>
+<p>This is an important category of problems to solve. As examples, one might want to:</p>
+<ul class="simple">
+<li>Know how much overlap exists between the elements of two datasets, to quantitatively establish the degree to which they are similar.</li>
+<li>Merge or filter elements. For example, retrieving non-overlapping, “unique” elements from multiple BED files.</li>
+<li>Split elements from multiple BED files into disjoint subsets.</li>
+</ul>
+<p>The <a class="reference internal" href="#bedops"><span class="std std-ref">bedops</span></a> program offers several Boolean set and multiset operations, including union, subset, and difference, to assist investigators with answering these types of questions.</p>
+<p>Importantly, <a class="reference internal" href="#bedops"><span class="std std-ref">bedops</span></a> handles any number of any-size inputs at once when computing results in order to maximize efficiency. This use case has <a class="reference internal" href="../../usage-examples/multiple-inputs.html#multiple-inputs"><span class="std std-ref">serious practical consequences</span></a> for many genomic studies.</p>
+<p>One can also use <a class="reference internal" href="#bedops"><span class="std std-ref">bedops</span></a> to symmetrically or asymmetrically pad coordinates.</p>
+<div class="section" id="inputs-and-outputs">
+<h2>6.1.1.1. Inputs and outputs<a class="headerlink" href="#inputs-and-outputs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="input">
+<h3>6.1.1.1.1. Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="#bedops"><span class="std std-ref">bedops</span></a> program reads <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><span class="std std-ref">sorted</span></a> BED data and BEDOPS <a class="reference internal" href="../file-management/compression/starch.html#starch"><span class="std std-ref">Starch-formatted</span></a> archives as input.</p>
+<p>Finally, <a class="reference internal" href="#bedops"><span class="std std-ref">bedops</span></a> requires specification of a set operation (and, optionally, may include modifier options).</p>
+<p>Support for common headers (including UCSC track headers) is offered through the <code class="docutils literal notranslate"><span class="pre">--header</span></code> option. Headers are stripped from output.</p>
+</div>
+<div class="section" id="output">
+<h3>6.1.1.1.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="#bedops"><span class="std std-ref">bedops</span></a> program returns <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><span class="std std-ref">sorted</span></a> BED results to standard output. This output can be redirected to a file or piped to other utilities.</p>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>6.1.1.2. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#bedops"><span class="std std-ref">bedops</span></a> program takes sorted BED-formatted data as input, either from a file or streamed from standard input. It will process any number of input files in parallel.</p>
+<p>If your data are unsorted, use BEDOPS <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><span class="std std-ref">sort-bed</span></a> to prepare data for <a class="reference internal" href="#bedops"><span class="std std-ref">bedops</span></a>. You only need to sort once, as all BEDOPS tools read and write sorted BED data.</p>
+<p>Because memory usage is very low, one can use sorted inputs of any size. Processing times generally follow a simple linear relationship with input sizes (<em>e.g.</em>, as the input size doubles, the processing time doubles accordingly).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">--help</span></code> option describes the set operation and other options available to the end user:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bedops</span>
+  <span class="n">citation</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">bioinformatics</span><span class="o">.</span><span class="n">oxfordjournals</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">content</span><span class="o">/</span><span class="mi">28</span><span class="o">/</span><span class="mi">14</span><span class="o">/</span><span class="mf">1919.</span><span class="n">abstract</span>
+  <span class="n">version</span><span class="p">:</span>  <span class="mf">2.4</span><span class="o">.</span><span class="mi">36</span> <span class="p">(</span><span class="n">typical</span><span class="p">)</span>
+  <span class="n">authors</span><span class="p">:</span>  <span class="n">Shane</span> <span class="n">Neph</span> <span class="o">&amp;</span> <span class="n">Scott</span> <span class="n">Kuehn</span>
+
+      <span class="n">USAGE</span><span class="p">:</span> <span class="n">bedops</span> <span class="p">[</span><span class="n">process</span><span class="o">-</span><span class="n">flags</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">operation</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">File</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">&gt;*</span>
+
+          <span class="n">Every</span> <span class="nb">input</span> <span class="n">file</span> <span class="n">must</span> <span class="n">be</span> <span class="nb">sorted</span> <span class="n">per</span> <span class="n">the</span> <span class="n">sort</span><span class="o">-</span><span class="n">bed</span> <span class="n">utility</span><span class="o">.</span>
+          <span class="n">Each</span> <span class="n">operation</span> <span class="n">requires</span> <span class="n">a</span> <span class="n">minimum</span> <span class="n">number</span> <span class="n">of</span> <span class="n">files</span> <span class="k">as</span> <span class="n">shown</span> <span class="n">below</span><span class="o">.</span>
+            <span class="n">There</span> <span class="ow">is</span> <span class="n">no</span> <span class="n">fixed</span> <span class="n">maximum</span> <span class="n">number</span> <span class="n">of</span> <span class="n">files</span> <span class="n">that</span> <span class="n">may</span> <span class="n">be</span> <span class="n">used</span><span class="o">.</span>
+          <span class="n">Input</span> <span class="n">files</span> <span class="n">must</span> <span class="n">have</span> <span class="n">at</span> <span class="n">least</span> <span class="n">the</span> <span class="n">first</span> <span class="mi">3</span> <span class="n">columns</span> <span class="n">of</span> <span class="n">the</span> <span class="n">BED</span> <span class="n">specification</span><span class="o">.</span>
+          <span class="n">The</span> <span class="n">program</span> <span class="n">accepts</span> <span class="n">BED</span> <span class="ow">and</span> <span class="n">Starch</span> <span class="n">file</span> <span class="n">formats</span><span class="o">.</span>
+          <span class="n">May</span> <span class="n">use</span> <span class="s1">&#39;-&#39;</span> <span class="k">for</span> <span class="n">a</span> <span class="n">file</span> <span class="n">to</span> <span class="n">indicate</span> <span class="n">reading</span> <span class="kn">from</span> <span class="nn">standard</span> <span class="nb">input</span> <span class="p">(</span><span class="n">BED</span> <span class="nb">format</span> <span class="n">only</span><span class="p">)</span><span class="o">.</span>
+
+      <span class="n">Process</span> <span class="n">Flags</span><span class="p">:</span>
+          <span class="o">--</span><span class="n">chrom</span> <span class="o">&lt;</span><span class="n">chromosome</span><span class="o">&gt;</span> <span class="n">Process</span> <span class="n">data</span> <span class="k">for</span> <span class="n">given</span> <span class="o">&lt;</span><span class="n">chromosome</span><span class="o">&gt;</span> <span class="n">only</span><span class="o">.</span>
+          <span class="o">--</span><span class="n">ec</span>                 <span class="n">Error</span> <span class="n">check</span> <span class="nb">input</span> <span class="n">files</span> <span class="p">(</span><span class="n">slower</span><span class="p">)</span><span class="o">.</span>
+          <span class="o">--</span><span class="n">header</span>             <span class="n">Accept</span> <span class="n">headers</span> <span class="p">(</span><span class="n">VCF</span><span class="p">,</span> <span class="n">GFF</span><span class="p">,</span> <span class="n">SAM</span><span class="p">,</span> <span class="n">BED</span><span class="p">,</span> <span class="n">WIG</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">any</span> <span class="nb">input</span> <span class="n">file</span><span class="o">.</span>
+          <span class="o">--</span><span class="n">help</span>               <span class="n">Print</span> <span class="n">this</span> <span class="n">message</span> <span class="ow">and</span> <span class="n">exit</span> <span class="n">successfully</span><span class="o">.</span>
+          <span class="o">--</span><span class="n">help</span><span class="o">-&lt;</span><span class="n">operation</span><span class="o">&gt;</span>   <span class="n">Detailed</span> <span class="n">help</span> <span class="n">on</span> <span class="o">&lt;</span><span class="n">operation</span><span class="o">&gt;.</span>
+                                 <span class="n">An</span> <span class="n">example</span> <span class="ow">is</span> <span class="o">--</span><span class="n">help</span><span class="o">-</span><span class="n">c</span> <span class="ow">or</span> <span class="o">--</span><span class="n">help</span><span class="o">-</span><span class="n">complement</span>
+          <span class="o">--</span><span class="nb">range</span> <span class="n">L</span><span class="p">:</span><span class="n">R</span>          <span class="n">Add</span> <span class="s1">&#39;L&#39;</span> <span class="n">bp</span> <span class="n">to</span> <span class="nb">all</span> <span class="n">start</span> <span class="n">coordinates</span> <span class="ow">and</span> <span class="s1">&#39;R&#39;</span> <span class="n">bp</span> <span class="n">to</span> <span class="n">end</span>
+                                 <span class="n">coordinates</span><span class="o">.</span> <span class="n">Either</span> <span class="n">value</span> <span class="n">may</span> <span class="n">be</span> <span class="o">+</span> <span class="ow">or</span> <span class="o">-</span> <span class="n">to</span> <span class="n">grow</span> <span class="ow">or</span>
+                                 <span class="n">shrink</span> <span class="n">regions</span><span class="o">.</span>  <span class="n">With</span> <span class="n">the</span> <span class="o">-</span><span class="n">e</span><span class="o">/-</span><span class="n">n</span> <span class="n">operations</span><span class="p">,</span> <span class="n">the</span> <span class="n">first</span>
+                                 <span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="n">file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">padded</span><span class="p">,</span> <span class="n">unlike</span> <span class="nb">all</span> <span class="n">other</span> <span class="n">files</span><span class="o">.</span>
+          <span class="o">--</span><span class="nb">range</span> <span class="n">S</span>            <span class="n">Pad</span> <span class="ow">or</span> <span class="n">shink</span> <span class="nb">input</span> <span class="n">file</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="n">coordinates</span> <span class="n">symmetrically</span> <span class="n">by</span> <span class="n">S</span><span class="o">.</span>
+                                 <span class="n">This</span> <span class="ow">is</span> <span class="n">shorthand</span> <span class="k">for</span><span class="p">:</span> <span class="o">--</span><span class="nb">range</span> <span class="o">-</span><span class="n">S</span><span class="p">:</span><span class="n">S</span><span class="o">.</span>
+          <span class="o">--</span><span class="n">version</span>            <span class="n">Print</span> <span class="n">program</span> <span class="n">information</span><span class="o">.</span>
+
+      <span class="n">Operations</span><span class="p">:</span> <span class="p">(</span><span class="n">choose</span> <span class="n">one</span> <span class="n">of</span><span class="p">)</span>
+          <span class="o">-</span><span class="n">c</span><span class="p">,</span> <span class="o">--</span><span class="n">complement</span> <span class="p">[</span><span class="o">-</span><span class="n">L</span><span class="p">]</span> <span class="n">File1</span> <span class="p">[</span><span class="n">File</span><span class="p">]</span><span class="o">*</span>
+          <span class="o">-</span><span class="n">d</span><span class="p">,</span> <span class="o">--</span><span class="n">difference</span> <span class="n">ReferenceFile</span> <span class="n">File2</span> <span class="p">[</span><span class="n">File</span><span class="p">]</span><span class="o">*</span>
+          <span class="o">-</span><span class="n">e</span><span class="p">,</span> <span class="o">--</span><span class="n">element</span><span class="o">-</span><span class="n">of</span> <span class="p">[</span><span class="n">number</span><span class="o">%</span> <span class="o">|</span> <span class="n">number</span><span class="p">]</span> <span class="n">ReferenceFile</span> <span class="n">File2</span> <span class="p">[</span><span class="n">File</span><span class="p">]</span><span class="o">*</span>
+                 <span class="n">by</span> <span class="n">default</span><span class="p">,</span> <span class="o">-</span><span class="n">e</span> <span class="mi">100</span><span class="o">%</span> <span class="ow">is</span> <span class="n">used</span><span class="o">.</span>  <span class="s1">&#39;bedops -e 1&#39;</span> <span class="ow">is</span> <span class="n">also</span> <span class="n">popular</span><span class="o">.</span>
+          <span class="o">-</span><span class="n">i</span><span class="p">,</span> <span class="o">--</span><span class="n">intersect</span> <span class="n">File1</span> <span class="n">File2</span> <span class="p">[</span><span class="n">File</span><span class="p">]</span><span class="o">*</span>
+          <span class="o">-</span><span class="n">m</span><span class="p">,</span> <span class="o">--</span><span class="n">merge</span> <span class="n">File1</span> <span class="p">[</span><span class="n">File</span><span class="p">]</span><span class="o">*</span>
+          <span class="o">-</span><span class="n">n</span><span class="p">,</span> <span class="o">--</span><span class="ow">not</span><span class="o">-</span><span class="n">element</span><span class="o">-</span><span class="n">of</span> <span class="p">[</span><span class="n">number</span><span class="o">%</span> <span class="o">|</span> <span class="n">number</span><span class="p">]</span> <span class="n">ReferenceFile</span> <span class="n">File2</span> <span class="p">[</span><span class="n">File</span><span class="p">]</span><span class="o">*</span>
+                 <span class="n">by</span> <span class="n">default</span><span class="p">,</span> <span class="o">-</span><span class="n">n</span> <span class="mi">100</span><span class="o">%</span> <span class="ow">is</span> <span class="n">used</span><span class="o">.</span>  <span class="s1">&#39;bedops -n 1&#39;</span> <span class="ow">is</span> <span class="n">also</span> <span class="n">popular</span><span class="o">.</span>
+          <span class="o">-</span><span class="n">p</span><span class="p">,</span> <span class="o">--</span><span class="n">partition</span> <span class="n">File1</span> <span class="p">[</span><span class="n">File</span><span class="p">]</span><span class="o">*</span>
+          <span class="o">-</span><span class="n">s</span><span class="p">,</span> <span class="o">--</span><span class="n">symmdiff</span> <span class="n">File1</span> <span class="n">File2</span> <span class="p">[</span><span class="n">File</span><span class="p">]</span><span class="o">*</span>
+          <span class="o">-</span><span class="n">u</span><span class="p">,</span> <span class="o">--</span><span class="n">everything</span> <span class="n">File1</span> <span class="p">[</span><span class="n">File</span><span class="p">]</span><span class="o">*</span>
+          <span class="o">-</span><span class="n">w</span><span class="p">,</span> <span class="o">--</span><span class="n">chop</span> <span class="p">[</span><span class="n">bp</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">stagger</span> <span class="p">[</span><span class="n">bp</span><span class="p">]]</span> <span class="p">[</span><span class="o">-</span><span class="n">x</span><span class="p">]</span> <span class="n">File1</span> <span class="p">[</span><span class="n">File</span><span class="p">]</span><span class="o">*</span>
+                 <span class="n">by</span> <span class="n">default</span><span class="p">,</span> <span class="o">-</span><span class="n">w</span> <span class="mi">1</span> <span class="ow">is</span> <span class="n">used</span> <span class="k">with</span> <span class="n">no</span> <span class="n">staggering</span><span class="o">.</span>
+
+      <span class="n">Example</span><span class="p">:</span> <span class="n">bedops</span> <span class="o">--</span><span class="nb">range</span> <span class="mi">10</span> <span class="o">-</span><span class="n">u</span> <span class="n">file1</span><span class="o">.</span><span class="n">bed</span>
+      <span class="n">NOTE</span><span class="p">:</span> <span class="n">Only</span> <span class="n">operations</span> <span class="o">-</span><span class="n">e</span><span class="o">|</span><span class="n">n</span><span class="o">|</span><span class="n">u</span> <span class="n">preserve</span> <span class="nb">all</span> <span class="n">columns</span> <span class="p">(</span><span class="n">no</span> <span class="n">flattening</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Extended help is available for all operations in <a class="reference internal" href="#bedops"><span class="std std-ref">bedops</span></a>. For example, the <code class="docutils literal notranslate"><span class="pre">--help-symmdiff</span></code> option in <a class="reference internal" href="#bedops"><span class="std std-ref">bedops</span></a> gives detailed information on the <code class="docutils literal notranslate"><span class="pre">--symmdiff</span></code> operation.</p>
+</div>
+</div>
+<div class="section" id="operations">
+<h2>6.1.1.3. Operations<a class="headerlink" href="#operations" title="Permalink to this headline">¶</a></h2>
+<p>To demonstrate the various operations in <a class="reference internal" href="#bedops"><span class="std std-ref">bedops</span></a>, we start with two simple datasets <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code>, containing genomic elements on generic chromsome <code class="docutils literal notranslate"><span class="pre">chrN</span></code>:</p>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_inputs&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_inputs&#64;2x.png" src="../../../_images/reference_setops_bedops_inputs&#64;2x.png" style="width: 99%;" /></a>
+<p>These datasets can be <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><span class="std std-ref">sorted</span></a> BED or <a class="reference internal" href="../file-management/compression/starch.html#starch"><span class="std std-ref">Starch-formatted</span></a> files or streams.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <a class="reference internal" href="#bedops"><span class="std std-ref">bedops</span></a> tool can operate on two or more multiple inputs, but we show here the results of operations acting on just two or three sets, in order to help demonstrate the basic principles of applying set operations.</p>
+</div>
+<div class="section" id="everything-u-everything">
+<span id="bedops-everything"></span><h3>6.1.1.3.1. Everything (-u, –everything)<a class="headerlink" href="#everything-u-everything" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">--everything</span></code> option is equivalent to concatenating and sorting BED elements from multiple files, but works much faster:</p>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_everything&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_everything&#64;2x.png" src="../../../_images/reference_setops_bedops_everything&#64;2x.png" style="width: 99%;" /></a>
+<p>As with all BEDOPS tools and operations, the output of this operation is <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><span class="std std-ref">sorted</span></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">--everything</span></code> option preserves all columns from all inputs. This is useful for multiset unions of datasets with additional ID, score or other metadata.</p>
+</div>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate the use of <code class="docutils literal notranslate"><span class="pre">--everything</span></code> in performing a multiset union, we show three sorted sets <code class="docutils literal notranslate"><span class="pre">First.bed</span></code>, <code class="docutils literal notranslate"><span class="pre">Second.bed</span></code> and <code class="docutils literal notranslate"><span class="pre">Third.bed</span></code> and the result of their union with <code class="docutils literal notranslate"><span class="pre">bedops</span></code>:</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more First.bed
+chr1      100     200
+chr2      150     300
+chr2      200     250
+chr3      100     150
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Second.bed
+chr2      50      150
+chr2      400     600
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Third.bed
+chr3      150     350
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ bedops --everything First.bed Second.bed Third.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Result.bed
+chr1      100     200
+chr2      50      150
+chr2      150     300
+chr2      200     250
+chr2      400     600
+chr3      100     150
+chr3      150     350
+</pre></div>
+</div>
+<p class="last">This example uses three input sets, but you can specify two, four or even more sets with <code class="docutils literal notranslate"><span class="pre">--everything</span></code> to take their union.</p>
+</div>
+</div>
+<div class="section" id="element-of-e-element-of">
+<span id="bedops-element-of"></span><h3>6.1.1.3.2. Element-of (-e, –element-of)<a class="headerlink" href="#element-of-e-element-of" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">--element-of</span></code> operation shows the elements of the first (“<em>reference</em>”) file that overlap elements in the second and subsequent “<em>query</em>” files by the specified length (in bases) or by percentage of length.</p>
+<p>In the following example, we search for elements in the reference set <code class="docutils literal notranslate"><span class="pre">A</span></code> which overlap elements in query set <code class="docutils literal notranslate"><span class="pre">B</span></code> by at least one base:</p>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_elementof_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_elementof_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_elementof_ab&#64;2x.png" style="width: 99%;" /></a>
+<p>Elements that are returned are always from the reference set (in this case, set <code class="docutils literal notranslate"><span class="pre">A</span></code>).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">--element-of</span></code> option preserves all columns from the first (reference) input.</p>
+</div>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>The argument to <code class="docutils literal notranslate"><span class="pre">--element-of</span></code> is a value that species to degree of overlap for elements. The value is either integral for per-base overlap,  or fractional for overlap measured by length.</p>
+<p>Here is a demonstration of the use of <code class="docutils literal notranslate"><span class="pre">--element-of</span> <span class="pre">1</span></code> on two sorted sets <code class="docutils literal notranslate"><span class="pre">First.bed</span></code> and <code class="docutils literal notranslate"><span class="pre">Second.bed</span></code>, which looks for elements in the <code class="docutils literal notranslate"><span class="pre">First</span></code> set that overlap elements in the <code class="docutils literal notranslate"><span class="pre">Second</span></code> set by one or more bases:</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more First.bed
+chr1      100     200
+chr1      150     160
+chr1      200     300
+chr1      400     475
+chr1      500     550
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Second.bed
+chr1      120     125
+chr1      150     155
+chr1      150     160
+chr1      460     470
+chr1      490     500
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ bedops --element-of 1 First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Result.bed
+chr1      100     200
+chr1      150     160
+chr1      400     475
+</pre></div>
+</div>
+<p>One base is the least stringent (default) integral criterion. We can be more restrictive about our overlap requirement by increasing this value, say to 15 bases:</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ bedops --element-of 15 First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Result.bed
+chr1      100     200
+</pre></div>
+</div>
+<p>Only this element from the <code class="docutils literal notranslate"><span class="pre">First</span></code> set overlaps one or more elements in the <code class="docutils literal notranslate"><span class="pre">Second</span></code> set by a total of fifteen or more bases.</p>
+<p>We can also use percentage of overlap as our argument. Let’s say that we only want elements from the <code class="docutils literal notranslate"><span class="pre">First</span></code> set, which overlap half their length or more of a qualifying element in the <code class="docutils literal notranslate"><span class="pre">Second</span></code> set:</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ bedops --element-of 50% First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash last highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Result.bed
+chr1      150     160
+</pre></div>
+</div>
+</div>
+<p>Note that <cite>–element-of</cite> is <em>not</em> a symmetric operation, as demonstrated by reversing the order of the reference and query set:</p>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_elementof_ba&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_elementof_ba&#64;2x.png" src="../../../_images/reference_setops_bedops_elementof_ba&#64;2x.png" style="width: 99%;" /></a>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>As we show here, by inverting the usual order of our sample sets <code class="docutils literal notranslate"><span class="pre">First</span></code> and <code class="docutils literal notranslate"><span class="pre">Second</span></code>, we retrieve elements from the <code class="docutils literal notranslate"><span class="pre">Second</span></code> set:</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ bedops --element-of 1 Second.bed First.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash last highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Result.bed
+chr1      120     125
+chr1      150     155
+chr1      150     160
+chr1      460     470
+</pre></div>
+</div>
+</div>
+<p>While this operation is not symmetric with respect to ordering of input sets, <code class="docutils literal notranslate"><span class="pre">--element-of</span></code> (<code class="docutils literal notranslate"><span class="pre">-e</span></code>) does produce exactly everything that <code class="docutils literal notranslate"><span class="pre">--not-element-of</span></code> (<code class="docutils literal notranslate"><span class="pre">-n</span></code>) does not, given the same overlap criterion and ordered input sets.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">We show usage examples with two files, but <code class="docutils literal notranslate"><span class="pre">--element-of</span></code> supports three or more input sets. For a more in-depth discussion of <code class="docutils literal notranslate"><span class="pre">--element-of</span></code> and how overlaps are determined with three or more input files, please review the <a class="reference external" href="http://bedops.uwencode.org/forum/index.php?topic=20.0">BEDOPS forum discussion</a> on this subject.</p>
+</div>
+</div>
+<div class="section" id="not-element-of-n-not-element-of">
+<span id="bedops-not-element-of"></span><h3>6.1.1.3.3. Not-element-of (-n, –not-element-of)<a class="headerlink" href="#not-element-of-n-not-element-of" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">--not-element-of</span></code> operation shows elements in the reference file which do not overlap elements in all other sets. For example:</p>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_notelementof_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_notelementof_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_notelementof_ab&#64;2x.png" style="width: 99%;" /></a>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>We again use sorted sets <code class="docutils literal notranslate"><span class="pre">First.bed</span></code> and <code class="docutils literal notranslate"><span class="pre">Second.bed</span></code> to demonstrate <code class="docutils literal notranslate"><span class="pre">--not-element-of</span></code>, in order to look for elements in the <code class="docutils literal notranslate"><span class="pre">First</span></code> set that <em>do not</em> overlap elements in the <code class="docutils literal notranslate"><span class="pre">Second</span></code> set by one or more bases:</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more First.bed
+chr1      100     200
+chr1      150     160
+chr1      200     300
+chr1      400     475
+chr1      500     550
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Second.bed
+chr1      120     125
+chr1      150     155
+chr1      150     160
+chr1      460     470
+chr1      490     500
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ bedops --not-element-of 1 First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash last highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Result.bed
+chr1      200     300
+chr1      500     550
+</pre></div>
+</div>
+</div>
+<p>As with the <code class="docutils literal notranslate"><span class="pre">--element-of</span></code> (<code class="docutils literal notranslate"><span class="pre">-e</span></code>) operator, the overlap criterion for <code class="docutils literal notranslate"><span class="pre">--not-element-of</span></code> (<code class="docutils literal notranslate"><span class="pre">-n</span></code>) can be specified either by length in bases, or by percentage of length.</p>
+<p>Similarly, this operation is not symmetric – the order of inputs will specify the reference set, and thus the elements in the result (if any).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">--not-element-of</span></code> operatior preserves columns from the first (reference) dataset.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The same caveat applies to use of <code class="docutils literal notranslate"><span class="pre">--not-element-of</span></code> (<code class="docutils literal notranslate"><span class="pre">-n</span></code>) as with <code class="docutils literal notranslate"><span class="pre">--element-of</span></code> (<code class="docutils literal notranslate"><span class="pre">-e</span></code>), namely that the second and all subsequent input files are merged before the set operation is applied. Please review the BEDOPS <a class="reference external" href="http://bedops.uwencode.org/forum/index.php?topic=20.0">forum discussion thread</a> on this topic for more details.</p>
+</div>
+</div>
+<div class="section" id="complement-c-complement">
+<span id="bedops-complement"></span><h3>6.1.1.3.4. Complement (-c, –complement)<a class="headerlink" href="#complement-c-complement" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">--complement</span></code> operation calculates the genomic regions in the gaps between the contiguous per-chromosome ranges defined by one or more inputs. The following example shows the use of two inputs:</p>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_complement_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_complement_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_complement_ab&#64;2x.png" style="width: 99%;" /></a>
+<p>Note this <strong>computed result</strong> will lack ID, score and other columnar data other than the first three columns that contain positional data. That is, computed elements will not come from any of the input sets, but are new elements created from the input set space.</p>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate <code class="docutils literal notranslate"><span class="pre">--complement</span></code>, we again use sorted sets <code class="docutils literal notranslate"><span class="pre">First.bed</span></code> and <code class="docutils literal notranslate"><span class="pre">Second.bed</span></code>, in order to compute the “gaps” between their inputs:</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more First.bed
+chr1      100     200
+chr1      150     160
+chr1      200     300
+chr1      400     475
+chr1      500     550
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Second.bed
+chr1      120     125
+chr1      150     155
+chr1      150     160
+chr1      460     470
+chr1      490     500
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ bedops --complement First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Result.bed
+chr1      300     400
+chr1      475     490
+</pre></div>
+</div>
+<p class="last">As we see here, for a given chromosome, gaps are computed between the leftmost and rightmost edges of elements in the union of elements across all input sets.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For a more in-depth discussion on using <code class="docutils literal notranslate"><span class="pre">--complement</span></code> with left and right bounds of input chromosomes, please review the BEDOPS <a class="reference external" href="http://bedops.uwencode.org/forum/index.php?topic=19.0">forum discussion</a> on this subject.</p>
+</div>
+</div>
+<div class="section" id="difference-d-difference">
+<span id="bedops-difference"></span><h3>6.1.1.3.5. Difference (-d, –difference)<a class="headerlink" href="#difference-d-difference" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">--difference</span></code> operation calculates the genomic regions found within the first (reference) input file, excluding regions in all other input files:</p>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_difference_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_difference_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_difference_ab&#64;2x.png" style="width: 99%;" /></a>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate <code class="docutils literal notranslate"><span class="pre">--difference</span></code>, we use sorted sets <code class="docutils literal notranslate"><span class="pre">First.bed</span></code> and <code class="docutils literal notranslate"><span class="pre">Second.bed</span></code> and compute the genomic space in <code class="docutils literal notranslate"><span class="pre">First</span></code> that excludes (or “subtracts”) ranges from <code class="docutils literal notranslate"><span class="pre">Second</span></code>:</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more First.bed
+chr1      100     200
+chr1      150     160
+chr1      200     300
+chr1      400     475
+chr1      500     550
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Second.bed
+chr1      120     125
+chr1      150     155
+chr1      150     160
+chr1      460     470
+chr1      490     500
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ bedops --difference First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash last highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Result.bed
+chr1      100     120
+chr1      125     150
+chr1      160     300
+chr1      400     460
+chr1      470     475
+chr1      500     550
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">As with <code class="docutils literal notranslate"><span class="pre">--element-of</span></code> and <code class="docutils literal notranslate"><span class="pre">--not-element-of</span></code>, this operation is not symmetric. While <code class="docutils literal notranslate"><span class="pre">--not-element-of</span></code> preserves all columns of elements found in the reference input and allows one to define overlaps, the <code class="docutils literal notranslate"><span class="pre">--difference</span></code> operator simply reports every genomic range as three-column BED, which does not overlap elements found in the second and subsequent input files by any amount.</p>
+</div>
+</div>
+<div class="section" id="symmetric-difference-s-symmdiff">
+<span id="bedops-symmetric-difference"></span><h3>6.1.1.3.6. Symmetric difference (-s, –symmdiff)<a class="headerlink" href="#symmetric-difference-s-symmdiff" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">--symmdiff</span></code> operation calculates the genomic range that is exclusive to each input, excluding any ranges shared across inputs:</p>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_symmetricdifference_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_symmetricdifference_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_symmetricdifference_ab&#64;2x.png" style="width: 99%;" /></a>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate <code class="docutils literal notranslate"><span class="pre">--symmdiff</span></code>, we use sorted sets <code class="docutils literal notranslate"><span class="pre">First.bed</span></code> and <code class="docutils literal notranslate"><span class="pre">Second.bed</span></code> and compute the genomic space that is unique to <code class="docutils literal notranslate"><span class="pre">First</span></code> and <code class="docutils literal notranslate"><span class="pre">Second</span></code>:</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more First.bed
+chr1      100     200
+chr1      150     160
+chr1      200     300
+chr1      400     475
+chr1      500     550
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Second.bed
+chr1      120     125
+chr1      150     155
+chr1      150     160
+chr1      460     470
+chr1      490     500
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ bedops --symmdiff First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash last highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Result.bed
+chr1      100     120
+chr1      125     150
+chr1      160     300
+chr1      400     460
+chr1      470     475
+chr1      490     550
+</pre></div>
+</div>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">It has been observed that <code class="docutils literal notranslate"><span class="pre">--symmdiff</span></code> (<code class="docutils literal notranslate"><span class="pre">-s</span></code>) is the same as the union of <code class="docutils literal notranslate"><span class="pre">--difference</span> <span class="pre">A</span> <span class="pre">B</span></code> with <code class="docutils literal notranslate"><span class="pre">--difference</span> <span class="pre">B</span> <span class="pre">A</span></code>, but <code class="docutils literal notranslate"><span class="pre">--symmdiff</span></code> runs faster in practice.</p>
+</div>
+</div>
+<div class="section" id="intersect-i-intersect">
+<span id="bedops-intersect"></span><h3>6.1.1.3.7. Intersect (-i, –intersect)<a class="headerlink" href="#intersect-i-intersect" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">--intersect</span></code> operation determines genomic regions common to all input sets:</p>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_intersect_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_intersect_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_intersect_ab&#64;2x.png" style="width: 99%;" /></a>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate <code class="docutils literal notranslate"><span class="pre">--intersect</span></code>, we use sorted sets <code class="docutils literal notranslate"><span class="pre">First.bed</span></code> and <code class="docutils literal notranslate"><span class="pre">Second.bed</span></code> and compute the genomic space that is common to both <code class="docutils literal notranslate"><span class="pre">First</span></code> and <code class="docutils literal notranslate"><span class="pre">Second</span></code>:</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more First.bed
+chr1      100     200
+chr1      150     160
+chr1      200     300
+chr1      400     475
+chr1      500     550
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Second.bed
+chr1      120     125
+chr1      150     155
+chr1      150     160
+chr1      460     470
+chr1      490     500
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ bedops --intersect First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Result.bed
+chr1      120     125
+chr1      150     160
+chr1      460     470
+</pre></div>
+</div>
+<p class="last">Notice how this computed result is quite different from that of <code class="docutils literal notranslate"><span class="pre">--element-of</span> <span class="pre">N</span></code>, which functions more like a LEFT JOIN operation in SQL.</p>
+</div>
+</div>
+<div class="section" id="merge-m-merge">
+<span id="bedops-merge"></span><h3>6.1.1.3.8. Merge (-m, –merge)<a class="headerlink" href="#merge-m-merge" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">--merge</span></code> operation flattens all disjoint, overlapping, and adjoining element regions into contiguous, disjoint regions:</p>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_merge_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_merge_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_merge_ab&#64;2x.png" style="width: 99%;" /></a>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate <code class="docutils literal notranslate"><span class="pre">--merge</span></code>, we use sorted sets <code class="docutils literal notranslate"><span class="pre">First.bed</span></code> and <code class="docutils literal notranslate"><span class="pre">Second.bed</span></code> and compute the contiguous genomic space across both <code class="docutils literal notranslate"><span class="pre">First</span></code> and <code class="docutils literal notranslate"><span class="pre">Second</span></code>:</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more First.bed
+chr1      100     200
+chr1      150     160
+chr1      200     300
+chr1      400     475
+chr1      500     550
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Second.bed
+chr1      120     125
+chr1      150     155
+chr1      150     160
+chr1      460     470
+chr1      490     500
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ bedops --merge First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash last highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Result.bed
+chr1      100     300
+chr1      400     475
+chr1      490     550
+</pre></div>
+</div>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">The preceding example shows use of <code class="docutils literal notranslate"><span class="pre">--merge</span></code> (<code class="docutils literal notranslate"><span class="pre">-m</span></code>) with two inputs, but the merge operation works just as well with one input, collapsing elements within the file that overlap or which are directly adjoining.</p>
+</div>
+</div>
+<div class="section" id="partition-p-partition">
+<span id="bedops-partition"></span><h3>6.1.1.3.9. Partition (-p, –partition)<a class="headerlink" href="#partition-p-partition" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">--partition</span></code> operator splits all overlapping input regions into a set of disjoint segments. One or more input files may be provided; this option will segment regions from all inputs:</p>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_partition_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_partition_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_partition_ab&#64;2x.png" style="width: 99%;" /></a>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate <code class="docutils literal notranslate"><span class="pre">--partition</span></code>, we use sorted sets <code class="docutils literal notranslate"><span class="pre">First.bed</span></code> and <code class="docutils literal notranslate"><span class="pre">Second.bed</span></code> and compute disjointed genomic regions across both <code class="docutils literal notranslate"><span class="pre">First</span></code> and <code class="docutils literal notranslate"><span class="pre">Second</span></code>:</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more First.bed
+chr1      100     200
+chr1      150     160
+chr1      200     300
+chr1      400     475
+chr1      500     550
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Second.bed
+chr1      120     125
+chr1      150     155
+chr1      150     160
+chr1      460     470
+chr1      490     500
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ bedops --partition First.bed Second.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Result.bed
+chr1      100     120
+chr1      120     125
+chr1      125     150
+chr1      150     155
+chr1      155     160
+chr1      160     200
+chr1      200     300
+chr1      400     460
+chr1      460     470
+chr1      470     475
+chr1      490     500
+chr1      500     550
+</pre></div>
+</div>
+<p class="last">Notice that the result set of partitioned elements excludes any duplicates from input regions, thus enforcing the disjoint nature of the computed result.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">As with <code class="docutils literal notranslate"><span class="pre">--merge</span></code>, <code class="docutils literal notranslate"><span class="pre">--complement</span></code> and other “computing” operations, note the lack of ID, score and other columnar data in this computed result.</p>
+</div>
+</div>
+<div class="section" id="chop-w-chop">
+<span id="bedops-chop"></span><h3>6.1.1.3.10. Chop (-w, –chop)<a class="headerlink" href="#chop-w-chop" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">--chop</span></code> operator merges all overlapping input regions and “chops” them up into a set of disjoint segments of identical length (with a default of one base). One or more input files may be provided; this option will segment regions from all inputs:</p>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_chop_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_chop_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_chop_ab&#64;2x.png" style="width: 99%;" /></a>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate <code class="docutils literal notranslate"><span class="pre">--chop</span></code>, we use a sorted set called <code class="docutils literal notranslate"><span class="pre">Regions.bed</span></code> and compute a set of one-base genomic regions constructed from the merged input elements:</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Regions.bed
+chr1      100     105
+chr1      120     127
+chr1      122     124
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ bedops --chop 1 Regions.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash last highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Result.bed
+chr1      100     101
+chr1      101     102
+chr1      102     103
+chr1      103     104
+chr1      104     105
+chr1      120     121
+chr1      121     122
+chr1      122     123
+chr1      123     124
+chr1      124     125
+chr1      125     126
+chr1      126     127
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Overlapping and nested regions are merged into contiguous ranges before chopping. The end result contains unique, non-overlapping elements.</p>
+</div>
+</div>
+<div class="section" id="stagger-stagger">
+<span id="bedops-stagger"></span><h3>6.1.1.3.11. Stagger (–stagger)<a class="headerlink" href="#stagger-stagger" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">--stagger</span></code> operator works in conjunction with <a class="reference internal" href="#bedops-chop"><span class="std std-ref">–chop</span></a>. While <code class="docutils literal notranslate"><span class="pre">--chop</span></code> sets the size of each cut, the <code class="docutils literal notranslate"><span class="pre">--stagger</span></code> operator moves the start position of each cut by the specified number of bases, across each merged interval.</p>
+<a class="reference internal image-reference" href="../../../_images/reference_setops_bedops_stagger_ab&#64;2x.png"><img alt="../../../_images/reference_setops_bedops_stagger_ab&#64;2x.png" src="../../../_images/reference_setops_bedops_stagger_ab&#64;2x.png" style="width: 99%;" /></a>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate <code class="docutils literal notranslate"><span class="pre">--stagger</span></code>, we use a sorted set called <code class="docutils literal notranslate"><span class="pre">Regions.bed</span></code> and compute a set of one-base genomic regions constructed from the merged input elements, but move the start position across the merged regions by three bases, before generating the next chop:</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Regions.bed
+chr1      100     105
+chr1      120     127
+chr1      122     124
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ bedops --chop 1 --stagger 3 Regions.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash last highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Result.bed
+chr1      100     101
+chr1      103     104
+chr1      120     121
+chr1      123     124
+chr1      126     127
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Overlapping and nested regions are merged into contiguous ranges before chopping and staggering. The end result contains unique, non-overlapping elements.</p>
+</div>
+</div>
+<div class="section" id="exclude-x">
+<h3>6.1.1.3.12. Exclude (-x)<a class="headerlink" href="#exclude-x" title="Permalink to this headline">¶</a></h3>
+<p>Like <code class="docutils literal notranslate"><span class="pre">--stagger</span></code>, <code class="docutils literal notranslate"><span class="pre">-x</span></code> is a sub-option of the <a class="reference internal" href="#bedops-chop"><span class="std std-ref">–chop</span></a> operator, and it may be used with or without <code class="docutils literal notranslate"><span class="pre">--stagger</span></code>.  This option will remove any remainder genomic chunk that is smaller than that specified with <code class="docutils literal notranslate"><span class="pre">--chop</span></code>.  For example, if you start with a 10 nt region and use <code class="docutils literal notranslate"><span class="pre">--chop</span> <span class="pre">4</span></code>, the final segment would be 2 nt in length if <code class="docutils literal notranslate"><span class="pre">-x</span></code> is not specified.  With <code class="docutils literal notranslate"><span class="pre">-x</span></code>, that last segment does not go to output.  With <code class="docutils literal notranslate"><span class="pre">-x</span></code>, the <code class="docutils literal notranslate"><span class="pre">chop</span></code> operation produces output regions that are all the same size.</p>
+</div>
+<div class="section" id="per-chromosome-operations-chrom">
+<span id="bedops-chrom"></span><h3>6.1.1.3.13. Per-chromosome operations (–chrom)<a class="headerlink" href="#per-chromosome-operations-chrom" title="Permalink to this headline">¶</a></h3>
+<p>All operations on inputs can be restricted to one chromosome, by adding the <code class="docutils literal notranslate"><span class="pre">--chrom</span> <span class="pre">&lt;val&gt;</span></code> operator.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This operator is highly useful for parallelization, where operations on large BED inputs can be split up by chromosome and pushed to separate nodes on a computational cluster. See the <a class="reference internal" href="../../usage-examples/starchcluster.html#starchcluster"><span class="std std-ref">Efficiently creating Starch-formatted archives with a cluster</span></a> documentation for a demonstration of this technique in action.</p>
+</div>
+<div class="admonition-example admonition">
+<p class="first admonition-title">Example</p>
+<p>To demonstrate the use of <code class="docutils literal notranslate"><span class="pre">--chrom</span></code> to restrict operations to a chromosome (such as <code class="docutils literal notranslate"><span class="pre">chr3</span></code>), we perform a per-chromosome union of elements from three sorted sets <code class="docutils literal notranslate"><span class="pre">First.bed</span></code>, <code class="docutils literal notranslate"><span class="pre">Second.bed</span></code> and <code class="docutils literal notranslate"><span class="pre">Third.bed</span></code>, each with elements from multiple chromosomes:</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more First.bed
+chr1      100     200
+chr2      150     300
+chr2      200     250
+chr3      100     150
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Second.bed
+chr2      50      150
+chr2      400     600
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Third.bed
+chr3      150     350
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ bedops --chrom chr3 --everything First.bed Second.bed Third.bed &gt; Result.bed
+</pre></div>
+</div>
+<div class="code bash last highlight-default notranslate"><div class="highlight"><pre><span></span>$ more Result.bed
+chr3      100     150
+chr3      150     350
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="range-range">
+<span id="bedops-range"></span><h3>6.1.1.3.14. Range (–range)<a class="headerlink" href="#range-range" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">--range</span></code> operation works in conjunction with other operations.</p>
+<p>When used with one value (<code class="docutils literal notranslate"><span class="pre">--range</span> <span class="pre">S</span></code>), this operation <strong>symmetrically</strong> pads all elements of input sets by the specified integral value <code class="docutils literal notranslate"><span class="pre">S</span></code>. When the specified value is positive, every genomic segment grows in size. An element will grow asymmetrically to prevent growth beyond base position 0, if needed. Otherwise, when negative, elements shrink, and any element with zero (or less) length is discarded.</p>
+<p>Alternatively, when used with two values (<code class="docutils literal notranslate"><span class="pre">--range</span> <span class="pre">L:R</span></code>), this operation <strong>asymmetrically</strong> pads elements, adding <code class="docutils literal notranslate"><span class="pre">L</span></code> to each start coordinate, and adding <code class="docutils literal notranslate"><span class="pre">R</span></code> to each stop coordinate. Negative values may be specified to grow or shrink the region, accordingly.</p>
+<p id="bed-index-shifting">This option is immediately useful for adjusting the coordinate index of BED files. For example, to shift from 1-based to 0-based coordinate indexing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ bedops --range -1:-1 --everything my1BasedCoordinates.bed &gt; my0BasedCoordinates.bed
+</pre></div>
+</div>
+<p>And, likewise, for 0-based to 1-based indexing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ bedops --range 1:1 --everything my0BasedCoordinates.bed &gt; my1BasedCoordinates.bed
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">--range</span></code> value is applied to inputs prior to the application of other operations (such as <code class="docutils literal notranslate"><span class="pre">--intersect</span></code> or <code class="docutils literal notranslate"><span class="pre">--merge</span></code>, etc.).</p>
+</div>
+<p>Padding elements with <a class="reference internal" href="#bedops"><span class="std std-ref">bedops</span></a> is much more efficient that doing so with <code class="docutils literal notranslate"><span class="pre">awk</span></code> or some other script, <em>and you do not need to go back and resort your data</em>. Even symmetric padding can cause data to become unsorted in non-obvious ways. Using <code class="docutils literal notranslate"><span class="pre">--range</span></code> ensures that your data remain sorted and it works efficiently with any set operation.</p>
+<p>Also, note that the <code class="docutils literal notranslate"><span class="pre">--element-of</span></code> and <code class="docutils literal notranslate"><span class="pre">--not-element-of</span></code> operations behave differently with <code class="docutils literal notranslate"><span class="pre">--range</span></code>, in that only the second and subsequent input files are padded.</p>
+</div>
+</div>
+<div class="section" id="starch-support">
+<span id="bedops-starch"></span><h2>6.1.1.4. Starch support<a class="headerlink" href="#starch-support" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#bedops"><span class="std std-ref">bedops</span></a> application supports use of <a class="reference internal" href="../file-management/compression/starch.html#starch"><span class="std std-ref">Starch</span></a>-formatted archives as inputs, as well as text-based BED data. One or multiple inputs may be Starch archives.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">By combining the <code class="docutils literal notranslate"><span class="pre">--chrom</span></code> operator with operations on <a class="reference internal" href="../file-management/compression/starch.html#starch"><span class="std std-ref">Starch</span></a> archives, the end user can achieve improved computing performance and disk space savings, particularly where <a class="reference internal" href="#bedops"><span class="std std-ref">bedops</span></a>, <a class="reference internal" href="../statistics/bedmap.html#bedmap"><span class="std std-ref">bedmap</span></a> and <a class="reference internal" href="closest-features.html#closest-features"><span class="std std-ref">closest-features</span></a> operations are applied with a computational cluster on separate chromosomes.</p>
+</div>
+</div>
+<div class="section" id="error-checking-ec">
+<span id="bedops-error-checking"></span><h2>6.1.1.5. Error checking (–ec)<a class="headerlink" href="#error-checking-ec" title="Permalink to this headline">¶</a></h2>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">--ec</span></code> option in conjunction with any aforementioned operation to do more stringent checking of the inputs’ compliance to <a class="reference internal" href="#bedops"><span class="std std-ref">bedops</span></a> requirements, including sorting checks, delimiter checks, among others.</p>
+<p>To demonstrate, we can deliberately introduce a typo in dataset <cite>A</cite>, using the <code class="docutils literal notranslate"><span class="pre">--ec</span></code> option to try to catch it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ bedops --ec --everything BEDFileA
+May use bedops --help for more help.
+
+Error: in BEDFileA
+First column should not have spaces.  Consider &#39;chr1&#39; vs. &#39;chr1 &#39;.  These are different names.
+See row: 3
+</pre></div>
+</div>
+<p>The typo introduced was the addition of a space within the third line of dataset <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Use of the <code class="docutils literal notranslate"><span class="pre">--ec</span></code> option will roughly <em>double</em> the running times of set operations, but it provides stringent error checking to ensure inputs and outputs are valid. <code class="docutils literal notranslate"><span class="pre">--ec</span></code> can help check problematic input and offers helpful hints for any needed corrections, when problems are detected.</p>
+</div>
+</div>
+<div class="section" id="tips">
+<h2>6.1.1.6. Tips<a class="headerlink" href="#tips" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="chaining-operations">
+<h3>6.1.1.6.1. Chaining operations<a class="headerlink" href="#chaining-operations" title="Permalink to this headline">¶</a></h3>
+<p>You can efficiently chain operations together, <em>e.g.</em>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ bedops --range 50 --merge A | bedops --intersect - B &gt; answer.bed
+</pre></div>
+</div>
+<p>In this example, elements from <code class="docutils literal notranslate"><span class="pre">A</span></code> are padded 50 bases up- and downstream and merged, before intersecting with coordinates in <code class="docutils literal notranslate"><span class="pre">B</span></code>.</p>
+</div>
+<div class="section" id="sorting-inputs">
+<h3>6.1.1.6.2. Sorting inputs<a class="headerlink" href="#sorting-inputs" title="Permalink to this headline">¶</a></h3>
+<p>For unsorted input, be sure to first use <a class="reference internal" href="../file-management/sorting/sort-bed.html#sort-bed"><span class="std std-ref">sort-bed</span></a> to presort the data stream before using with <a class="reference internal" href="#bedops"><span class="std std-ref">bedops</span></a>. Unsorted input will not work properly with BEDOPS tools.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">If you will use an initially-unsorted file more than once, save the results of sorting. You only need to sort once! BEDOPS tools take in and export sorted data.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/logo_with_label_v3.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">6.1.1. <cite>bedops</cite></a><ul>
+<li><a class="reference internal" href="#inputs-and-outputs">6.1.1.1. Inputs and outputs</a><ul>
+<li><a class="reference internal" href="#input">6.1.1.1.1. Input</a></li>
+<li><a class="reference internal" href="#output">6.1.1.1.2. Output</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usage">6.1.1.2. Usage</a></li>
+<li><a class="reference internal" href="#operations">6.1.1.3. Operations</a><ul>
+<li><a class="reference internal" href="#everything-u-everything">6.1.1.3.1. Everything (-u, –everything)</a></li>
+<li><a class="reference internal" href="#element-of-e-element-of">6.1.1.3.2. Element-of (-e, –element-of)</a></li>
+<li><a class="reference internal" href="#not-element-of-n-not-element-of">6.1.1.3.3. Not-element-of (-n, –not-element-of)</a></li>
+<li><a class="reference internal" href="#complement-c-complement">6.1.1.3.4. Complement (-c, –complement)</a></li>
+<li><a class="reference internal" href="#difference-d-difference">6.1.1.3.5. Difference (-d, –difference)</a></li>
+<li><a class="reference internal" href="#symmetric-difference-s-symmdiff">6.1.1.3.6. Symmetric difference (-s, –symmdiff)</a></li>
+<li><a class="reference internal" href="#intersect-i-intersect">6.1.1.3.7. Intersect (-i, –intersect)</a></li>
+<li><a class="reference internal" href="#merge-m-merge">6.1.1.3.8. Merge (-m, –merge)</a></li>
+<li><a class="reference internal" href="#partition-p-partition">6.1.1.3.9. Partition (-p, –partition)</a></li>
+<li><a class="reference internal" href="#chop-w-chop">6.1.1.3.10. Chop (-w, –chop)</a></li>
+<li><a class="reference internal" href="#stagger-stagger">6.1.1.3.11. Stagger (–stagger)</a></li>
+<li><a class="reference internal" href="#exclude-x">6.1.1.3.12. Exclude (-x)</a></li>
+<li><a class="reference internal" href="#per-chromosome-operations-chrom">6.1.1.3.13. Per-chromosome operations (–chrom)</a></li>
+<li><a class="reference internal" href="#range-range">6.1.1.3.14. Range (–range)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#starch-support">6.1.1.4. Starch support</a></li>
+<li><a class="reference internal" href="#error-checking-ec">6.1.1.5. Error checking (–ec)</a></li>
+<li><a class="reference internal" href="#tips">6.1.1.6. Tips</a><ul>
+<li><a class="reference internal" href="#chaining-operations">6.1.1.6.1. Chaining operations</a></li>
+<li><a class="reference internal" href="#sorting-inputs">6.1.1.6.2. Sorting inputs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<form class="search" action="../../../search.html" method="get">
+  <input type="text" name="q"
+   placeholder="type to search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  <div class="related bottom">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="../set-operations.html" title="Previous document">6.1. Set operations</a>
+        </li>
+        <li>
+          <a href="bedextract.html" title="Next document">6.1.2. <cite>bedextract</cite></a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../../../index.html">Home</a></li>
+      <li>
+        <a href="../../reference.html">6. Reference</a>
+      </li>
+      <li>
+        <a href="../set-operations.html">6.1. Set operations</a>
+      </li> 
+    </ul>
+  </nav>
+  </div>
+  <footer id="pagefooter">&copy; 2011-2019, Shane Neph, Alex Reynolds.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+      1.8.5
+        with the <a href="http://github.com/irskep/sphinx-better-theme">
+          better</a> theme.
+
+  </footer>
+
+  
+  </body>
+</html>

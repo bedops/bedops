@@ -1,0 +1,251 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>6.3.2.4. Starch (v2.x) specification &#8212; BEDOPS v2.4.36</title>
+    <link rel="stylesheet" href="../../../../_static/better.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="6.3.2.5. starch-diff" href="starch-diff.html" />
+    <link rel="prev" title="6.3.2.3. starchcat" href="starchcat.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  </head><body>
+    <header id="pageheader"><h1><a href="../../../../index.html ">
+        BEDOPS v2.4.36
+    </a></h1></header>
+  <div class="related top">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="starchcat.html" title="Previous document">6.3.2.3. <cite>starchcat</cite></a>
+        </li>
+        <li>
+          <a href="starch-diff.html" title="Next document">6.3.2.5. <cite>starch-diff</cite></a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../../../../index.html">Home</a></li>
+      <li>
+        <a href="../../../reference.html">6. Reference</a>
+      </li>
+      <li>
+        <a href="../../file-management.html">6.3. File management</a>
+      </li>
+      <li>
+        <a href="../compression.html">6.3.2. Compression</a>
+      </li> 
+    </ul>
+  </nav>
+  </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="starch-v2-x-specification">
+<span id="starch-specification"></span><h1>6.3.2.4. Starch (v2.x) specification<a class="headerlink" href="#starch-v2-x-specification" title="Permalink to this headline">¶</a></h1>
+<p>This document describes the specification for a “Starch v2.x”-formatted archive, which is created by the <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> and <a class="reference internal" href="starchcat.html#starchcat"><span class="std std-ref">starchcat</span></a> utilities and extracted with the <a class="reference internal" href="unstarch.html#unstarch"><span class="std std-ref">unstarch</span></a> utility.</p>
+<div class="section" id="archive-structure">
+<span id="starch-archive-structure"></span><h2>6.3.2.4.1. Archive structure<a class="headerlink" href="#archive-structure" title="Permalink to this headline">¶</a></h2>
+<p>A Starch v2.x archive is divided up into six portions:</p>
+<a class="reference internal image-reference" href="../../../../_images/starch_specification.png"><img alt="../../../../_images/starch_specification.png" src="../../../../_images/starch_specification.png" style="width: 99%;" /></a>
+<p>Each portion is explained below.</p>
+</div>
+<div class="section" id="magic-bytes">
+<span id="starch-archive-magic-bytes"></span><h2>6.3.2.4.2. Magic bytes<a class="headerlink" href="#magic-bytes" title="Permalink to this headline">¶</a></h2>
+<img alt="../../../../_images/starch_specification_magicbytes.png" src="../../../../_images/starch_specification_magicbytes.png" />
+<p>We use four <code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">char</span></code> bytes <code class="docutils literal notranslate"><span class="pre">ca5cade5</span></code> to identify the file as a Starch v2.x archive. BEDOPS utilities and applications which process Starch archives search for these magic bytes at the start of the file to identify it as a v2.x archive.</p>
+<p>If the file does not have these bytes, it may still be a legacy (v1, v1.2 or v1.5) Starch archive, which is identified and processed by other means not described in this document.</p>
+</div>
+<div class="section" id="chromosome-streams">
+<span id="starch-archive-chromosome-streams"></span><h2>6.3.2.4.3. Chromosome streams<a class="headerlink" href="#chromosome-streams" title="Permalink to this headline">¶</a></h2>
+<img alt="../../../../_images/starch_specification_chromosomestreams.png" src="../../../../_images/starch_specification_chromosomestreams.png" />
+<p>These variable-length data streams contain compressed, transformed BED data separated by chromosome.</p>
+<p>Transformation is performed on BED input to remove redundancy in the coordinate data provided in the second and third columns (“start” and “stop” coordinates). Data in any additional columns are left unchanged. Transformed data are highly reduced and compressed further with open-source <code class="docutils literal notranslate"><span class="pre">bzip2</span></code> or <code class="docutils literal notranslate"><span class="pre">gzip</span></code> libraries.</p>
+<p>Starch v2 streams extracted with <a class="reference internal" href="unstarch.html#unstarch"><span class="std std-ref">unstarch</span></a>, <a class="reference internal" href="../../set-operations/bedops.html#bedops"><span class="std std-ref">bedops</span></a>, <a class="reference internal" href="../../statistics/bedmap.html#bedmap"><span class="std std-ref">bedmap</span></a> or <a class="reference internal" href="../../set-operations/closest-features.html#closest-features"><span class="std std-ref">closest-features</span></a> are uncompressed with the requisite backend compression library calls and then reverse-transformed to recover the original BED input.</p>
+</div>
+<div class="section" id="metadata">
+<span id="starch-archive-metadata"></span><h2>6.3.2.4.4. Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h2>
+<p>The archive metadata is made up of data, offset and hash components, each with different characteristics as described below.</p>
+<div class="section" id="data">
+<span id="starch-archive-metadata-data"></span><h3>6.3.2.4.4.1. Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h3>
+<img alt="../../../../_images/starch_specification_metadata.png" src="../../../../_images/starch_specification_metadata.png" />
+<p>This variable-length portion of the archive is a <a class="reference external" href="http://www.json.org/">JSON</a> -formatted ASCII string that describes the Starch archive contents. We choose JSON as it provides a human-readable structure, allows easier extensibility for future revisions of BEDOPS and is a common format in web services, facilitating usage with web- and command-line-based bioinformatics pipelines.</p>
+<p>The format of a typical Starch v2 JSON object is made up of two key-value pairs, one for archive and the second for streams, which we describe in greater detail below.</p>
+<div class="section" id="archive">
+<span id="starch-archive-metadata-archive"></span><h4>6.3.2.4.4.1.1. Archive<a class="headerlink" href="#archive" title="Permalink to this headline">¶</a></h4>
+<p>The archive key scheme is described below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;archive&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;starch&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;customUCSCHeaders&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">Boolean</span><span class="p">),</span>
+    <span class="s2">&quot;creationTimestamp&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">string</span><span class="p">),</span>
+    <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;major&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;minor&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;revision&quot;</span><span class="p">:</span> <span class="mi">0</span> <span class="p">},</span>
+    <span class="s2">&quot;compressionFormat&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">unsigned</span> <span class="n">integer</span><span class="p">),</span>
+    <span class="s2">&quot;note&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">optional</span><span class="p">)</span>
+  <span class="p">},</span>
+  <span class="o">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>At this time, the <code class="docutils literal notranslate"><span class="pre">type</span></code> key will specify <code class="docutils literal notranslate"><span class="pre">starch</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">customUCSCHeaders</span></code> value is either <code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code>. If <code class="docutils literal notranslate"><span class="pre">true</span></code>, the <code class="docutils literal notranslate"><span class="pre">--header</span></code> option was provided to <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> when the archive was created, and the archive may likely contain <a class="reference external" href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1.7">UCSC headers</a> commonly encountered with UCSC Genome Browser data downloads. Archives created with <a class="reference internal" href="starchcat.html#starchcat"><span class="std std-ref">starchcat</span></a> do not support UCSC headers (<em>i.e.</em>, this value is false in archives created with <a class="reference internal" href="starchcat.html#starchcat"><span class="std std-ref">starchcat</span></a>).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">creationTimestamp</span></code> value is an <a class="reference external" href="http://en.wikipedia.org/wiki/ISO-8601">ISO 8601</a> string that specifies the creation date and time of the archive. Most scripting and programming languages can parse ISO 8601-formatted date strings with little or no extra work.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">version</span></code> is a triplet of integer values specifying the version of the archive. For a v2.x archive, the major version will be set to <code class="docutils literal notranslate"><span class="pre">2</span></code>. Major, minor and revision values need not necessarily be the identical to the version of the <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> binary used to create the archive.</p>
+<p>At this time (November 2016), we offer v2.0, v2.1, and v2.2 archives: Each version makes different stream metadata fields available.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">compressionFormat</span></code> key specifies the backend compression format used for the chromosome streams contained within the archive. We currently use <code class="docutils literal notranslate"><span class="pre">0</span></code> to specify <code class="docutils literal notranslate"><span class="pre">bzip2</span></code> and <code class="docutils literal notranslate"><span class="pre">1</span></code> to specify <code class="docutils literal notranslate"><span class="pre">gzip</span></code>. No other backend formats are available at this time.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">note</span></code> key is an optional string that can contain information if the <code class="docutils literal notranslate"><span class="pre">--note=&quot;abc...&quot;</span></code> option is provided to <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> when the archive is created. If this option is not specified at creation time, this key will not be present in the metadata.</p>
+</div>
+<div class="section" id="streams">
+<span id="starch-archive-metadata-stream"></span><h4>6.3.2.4.4.1.2. Streams<a class="headerlink" href="#streams" title="Permalink to this headline">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">streams</span></code> key scheme contains an array of objects, each describing the attributes of an individually-compressed chromosome stream, sorted on chromosome name:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="o">...</span><span class="p">,</span>
+  <span class="s2">&quot;streams&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;chromosome&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">string</span><span class="p">),</span>
+      <span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">string</span><span class="p">),</span>
+      <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">unsigned</span> <span class="n">integer</span><span class="p">),</span>
+      <span class="s2">&quot;uncompressedLineCount&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">unsigned</span> <span class="n">integer</span><span class="p">),</span>
+      <span class="s2">&quot;nonUniqueBaseCount&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">unsigned</span> <span class="n">integer</span><span class="p">),</span>
+      <span class="s2">&quot;uniqueBaseCount&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">unsigned</span> <span class="n">integer</span><span class="p">),</span>
+      <span class="s2">&quot;duplicateElementExists&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">Boolean</span><span class="p">),</span>
+      <span class="s2">&quot;nestedElementExists&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">Boolean</span><span class="p">),</span>
+      <span class="s2">&quot;signature&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">string</span><span class="p">),</span>
+      <span class="s2">&quot;uncompressedLineMaxStringLength&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">integer</span><span class="p">)</span>
+    <span class="p">},</span>
+    <span class="o">...</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">chromosome</span></code> key specifies the name of the chromosome associated with the compressed regions. For example, this might be <code class="docutils literal notranslate"><span class="pre">chr1</span></code>, <code class="docutils literal notranslate"><span class="pre">chrX</span></code>, etc.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">filename</span></code> key is a string that concatenates the chromosome name, process ID and host strings (unless a <code class="docutils literal notranslate"><span class="pre">unique-tag</span></code> value is given to <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> when creating an archive, which would replace the process ID and host values). It is a holdover from a procedure for creating legacy archives and exists for backwards-compatibility.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">size</span></code> key specifies the byte-size of the compressed stream and exists for calculating offsets within the archive where a chromosome stream begins (and ends). In this way, <a class="reference internal" href="unstarch.html#unstarch"><span class="std std-ref">unstarch</span></a> and other Starch-capable applications can extract data only from a desired chromosome, without wasteful processing of the remainder of the archive.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">uncompressedLineCount</span></code> key specifies the number of BED elements that were compressed into the chromosome stream. This is a precomputed equivalent to the result of a <code class="docutils literal notranslate"><span class="pre">wc</span> <span class="pre">-l</span></code> (line count) operation performed on BED elements that match the given chromosome, without needing to stream through the entire file.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">nonUniqueBaseCount</span></code> key specifies the sum of non-unique bases across all BED elements compressed into the chromosome stream. Non-uniqueness allows multiple counting of bases in elements which overlap.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">uniqueBaseCount</span></code> key specifies the sum of unique bases across all BED elements compressed into the chromosome stream. Uniqueness takes into account overlapping elements and therefore only counts bases once.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">duplicateElementExists</span></code> key specifies if there is a duplicate BED element somewhere within the compressed chromosome stream. A duplicate element is defined by matching chromosome name and start and stop coordinates; id, score, strand and other optional information are ignored when determining if a duplicate element exists.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">nestedElementExists</span></code> key specifies if there is a nested BED element somewhere within the compressed chromosome stream. Refer to BEDOPS documentation to see how <a class="reference internal" href="../../set-operations/nested-elements.html#nested-elements"><span class="std std-ref">nested elements</span></a> are defined.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">signature</span></code> key, available in v2.2 archives, specifies the Base64-encoded SHA-1 data integrity signature generated from the transformed chromosome stream (not the raw BED data, but the reduced or transformed form that is compressed). This can be used to compare the transformed bytes for chromosomes from different archives, or to validate the genomic data in a Starch archive by chromosome, or in entirety. (Note that, if <code class="docutils literal notranslate"><span class="pre">--omit-signature</span></code> was used to create a v2.2 archive, this key will not be present in the stream object.)</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">uncompressedLineMaxStringLength</span></code> key, available in v2.2 archives, specifies the maximum string length over all records in the chromosome stream.</p>
+</div>
+</div>
+<div class="section" id="offset">
+<span id="starch-archive-metadata-offset"></span><h3>6.3.2.4.4.2. Offset<a class="headerlink" href="#offset" title="Permalink to this headline">¶</a></h3>
+<img alt="../../../../_images/starch_specification_metadataoffset.png" src="../../../../_images/starch_specification_metadataoffset.png" />
+<p>The metadata offset is a 20-byte long, zero-padded string that specifies the number of bytes into the file where the JSON-formatted metadata string is stored.</p>
+<p>The <a class="reference internal" href="unstarch.html#unstarch"><span class="std std-ref">unstarch</span></a> utility and the newer versions of <a class="reference internal" href="../../set-operations/bedops.html#bedops"><span class="std std-ref">bedops</span></a> and <a class="reference internal" href="../../statistics/bedmap.html#bedmap"><span class="std std-ref">bedmap</span></a> applications use this offset to jump to the correct point in the file where the metadata can be read into memory and processed into an internal data structure.</p>
+</div>
+<div class="section" id="hash">
+<span id="starch-archive-metadata-checksum"></span><h3>6.3.2.4.4.3. Hash<a class="headerlink" href="#hash" title="Permalink to this headline">¶</a></h3>
+<img alt="../../../../_images/starch_specification_metadatachecksum.png" src="../../../../_images/starch_specification_metadatachecksum.png" />
+<p>The metadata hash is a 28-byte long, <a class="reference external" href="http://en.wikipedia.org/wiki/Base64">Base64</a> -encoded <a class="reference external" href="http://en.wikipedia.org/wiki/SHA-1#Data_Integrity">SHA-1</a> hash of the bytes that make up the JSON-formatted metadata string.</p>
+<p>This data is used to validate the integrity of the metadata: Any change to the metadata (<em>e.g.</em>, data corruption that changes stream offset values, or the data integrity signatures for each chromosome stream) causes <a class="reference internal" href="unstarch.html#unstarch"><span class="std std-ref">unstarch</span></a> and other Starch utilities and applications to exit early with a fatal, informative error.</p>
+</div>
+</div>
+<div class="section" id="padding">
+<span id="starch-archive-padding"></span><h2>6.3.2.4.5. Padding<a class="headerlink" href="#padding" title="Permalink to this headline">¶</a></h2>
+<img alt="../../../../_images/starch_specification_padding.png" src="../../../../_images/starch_specification_padding.png" />
+<p>The remainder of the file is made up of 80 bytes of padding, which are unused at this time.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/logo_with_label_v3.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../../../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">6.3.2.4. Starch (v2.x) specification</a><ul>
+<li><a class="reference internal" href="#archive-structure">6.3.2.4.1. Archive structure</a></li>
+<li><a class="reference internal" href="#magic-bytes">6.3.2.4.2. Magic bytes</a></li>
+<li><a class="reference internal" href="#chromosome-streams">6.3.2.4.3. Chromosome streams</a></li>
+<li><a class="reference internal" href="#metadata">6.3.2.4.4. Metadata</a><ul>
+<li><a class="reference internal" href="#data">6.3.2.4.4.1. Data</a><ul>
+<li><a class="reference internal" href="#archive">6.3.2.4.4.1.1. Archive</a></li>
+<li><a class="reference internal" href="#streams">6.3.2.4.4.1.2. Streams</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#offset">6.3.2.4.4.2. Offset</a></li>
+<li><a class="reference internal" href="#hash">6.3.2.4.4.3. Hash</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#padding">6.3.2.4.5. Padding</a></li>
+</ul>
+</li>
+</ul>
+
+<form class="search" action="../../../../search.html" method="get">
+  <input type="text" name="q"
+   placeholder="type to search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  <div class="related bottom">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="starchcat.html" title="Previous document">6.3.2.3. <cite>starchcat</cite></a>
+        </li>
+        <li>
+          <a href="starch-diff.html" title="Next document">6.3.2.5. <cite>starch-diff</cite></a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../../../../index.html">Home</a></li>
+      <li>
+        <a href="../../../reference.html">6. Reference</a>
+      </li>
+      <li>
+        <a href="../../file-management.html">6.3. File management</a>
+      </li>
+      <li>
+        <a href="../compression.html">6.3.2. Compression</a>
+      </li> 
+    </ul>
+  </nav>
+  </div>
+  <footer id="pagefooter">&copy; 2011-2019, Shane Neph, Alex Reynolds.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+      1.8.5
+        with the <a href="http://github.com/irskep/sphinx-better-theme">
+          better</a> theme.
+
+  </footer>
+
+  
+  </body>
+</html>

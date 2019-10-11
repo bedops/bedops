@@ -1,0 +1,298 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>6.3.3.6. gtf2bed &#8212; BEDOPS v2.4.36</title>
+    <link rel="stylesheet" href="../../../../_static/better.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="6.3.3.7. gvf2bed" href="gvf2bed.html" />
+    <link rel="prev" title="6.3.3.5. gff2bed" href="gff2bed.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  </head><body>
+    <header id="pageheader"><h1><a href="../../../../index.html ">
+        BEDOPS v2.4.36
+    </a></h1></header>
+  <div class="related top">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="gff2bed.html" title="Previous document">6.3.3.5. <cite>gff2bed</cite></a>
+        </li>
+        <li>
+          <a href="gvf2bed.html" title="Next document">6.3.3.7. <cite>gvf2bed</cite></a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../../../../index.html">Home</a></li>
+      <li>
+        <a href="../../../reference.html">6. Reference</a>
+      </li>
+      <li>
+        <a href="../../file-management.html">6.3. File management</a>
+      </li>
+      <li>
+        <a href="../conversion.html">6.3.3. Data conversion</a>
+      </li> 
+    </ul>
+  </nav>
+  </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="gtf2bed">
+<span id="id1"></span><h1>6.3.3.6. <cite>gtf2bed</cite><a class="headerlink" href="#gtf2bed" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">gtf2bed</span></code> script converts 1-based, closed <code class="docutils literal notranslate"><span class="pre">[start,</span> <span class="pre">end]</span></code> <a class="reference external" href="http://mblab.wustl.edu/GTF22.html">Gene Transfer Format v2.2</a> (GTF2.2) to sorted, 0-based, half-open <code class="docutils literal notranslate"><span class="pre">[start-1,</span> <span class="pre">end)</span></code> extended BED-formatted data.</p>
+<p>For convenience, we also offer <code class="docutils literal notranslate"><span class="pre">gtf2starch</span></code>, which performs the extra step of creating a Starch-formatted archive.</p>
+<div class="section" id="dependencies">
+<h2>6.3.3.6.1. Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">gtf2bed</span></code> script requires <a class="reference internal" href="convert2bed.html#convert2bed"><span class="std std-ref">convert2bed</span></a>. The <code class="docutils literal notranslate"><span class="pre">gtf2starch</span></code> script requires <a class="reference internal" href="../compression/starch.html#starch"><span class="std std-ref">starch</span></a>. Both dependencies are part of a typical BEDOPS installation.</p>
+<p>This script is also dependent on input that follows the GTF 2.2 specification. A GTF-format validator is available <a class="reference external" href="http://mblab.wustl.edu/software.html">here</a> to ensure your input follows specification.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Conversion of data which are GTF-like, but which do not follow the specification can cause parsing issues. If you run into problems, please check that your input follows the GTF specification.</p>
+</div>
+</div>
+<div class="section" id="source">
+<h2>6.3.3.6.2. Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">gtf2bed</span></code> and <code class="docutils literal notranslate"><span class="pre">gtf2starch</span></code> conversion scripts are part of the binary and source downloads of BEDOPS. See the <a class="reference internal" href="../../../installation.html#installation"><span class="std std-ref">Installation</span></a> documentation for more details.</p>
+</div>
+<div class="section" id="usage">
+<h2>6.3.3.6.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">gtf2bed</span></code> script parses GTF from standard input and prints sorted BED to standard output. The <code class="docutils literal notranslate"><span class="pre">gtf2starch</span></code> script uses an extra step to parse GTF to a compressed BEDOPS <a class="reference internal" href="../compression/starch-specification.html#starch-specification"><span class="std std-ref">Starch-formatted</span></a> archive, which is also directed to standard output.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">By default, all conversion scripts now output sorted BED data ready for use with BEDOPS utilities. If you do not want to sort converted output, use the <code class="docutils literal notranslate"><span class="pre">--do-not-sort</span></code> option. Run the script with the <code class="docutils literal notranslate"><span class="pre">--help</span></code> option for more details.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">If sorting converted data larger than system memory, use the <code class="docutils literal notranslate"><span class="pre">--max-mem</span></code> option to limit sort memory usage to a reasonable fraction of available memory, <em>e.g.</em>, <code class="docutils literal notranslate"><span class="pre">--max-mem</span> <span class="pre">2G</span></code> or similar. See <code class="docutils literal notranslate"><span class="pre">--help</span></code> for more details.</p>
+</div>
+</div>
+<div class="section" id="example">
+<h2>6.3.3.6.4. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>To demonstrate these scripts, we use a sample GTF input called <code class="docutils literal notranslate"><span class="pre">foo.gtf</span></code> (see the <a class="reference internal" href="#gtf2bed-downloads"><span class="std std-ref">Downloads</span></a> section to grab this file).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">chr20</span>      <span class="n">protein_coding</span>  <span class="n">exon</span>    <span class="mi">9874841</span> <span class="mi">9874841</span> <span class="o">.</span>       <span class="o">+</span>       <span class="o">.</span>       <span class="n">gene_id</span> <span class="s2">&quot;ENSBTAG00000020601&quot;</span><span class="p">;</span> <span class="n">transcript_id</span> <span class="s2">&quot;ENSBTAT0000002.4.36&quot;</span><span class="p">;</span> <span class="n">gene_name</span> <span class="s2">&quot;ZNF366&quot;</span><span class="p">;</span>
+<span class="n">chr20</span>      <span class="n">protein_coding</span>  <span class="n">CDS</span>     <span class="mi">9873504</span> <span class="mi">9874841</span> <span class="o">.</span>       <span class="o">+</span>       <span class="mi">0</span>       <span class="n">gene_id</span> <span class="s2">&quot;ENSBTAG00000020601&quot;</span><span class="p">;</span> <span class="n">transcript_id</span> <span class="s2">&quot;ENSBTAT0000002.4.36&quot;</span><span class="p">;</span> <span class="n">gene_name</span> <span class="s2">&quot;ZNF366&quot;</span><span class="p">;</span>
+<span class="n">chr20</span>      <span class="n">protein_coding</span>  <span class="n">exon</span>    <span class="mi">9877488</span> <span class="mi">9877679</span> <span class="o">.</span>       <span class="o">+</span>       <span class="o">.</span>       <span class="n">gene_id</span> <span class="s2">&quot;ENSBTAG00000020601&quot;</span><span class="p">;</span> <span class="n">transcript_id</span> <span class="s2">&quot;ENSBTAT0000002.4.36&quot;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>We can convert it to sorted BED data in the following manner:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ gtf2bed &lt; foo.gtf
+chr20   9874840 9874841 ZNF366  .       +       protein_coding  exon    .       gene_id &quot;ENSBTAG00000020601&quot;; transcript_id &quot;ENSBTAT0000002.4.36&quot;; gene_name &quot;ZNF366&quot;; zero_length_insertion &quot;True&quot;;
+chr20   9873503 9874841 ZNF366  .       +       protein_coding  CDS     0       gene_id &quot;ENSBTAG00000020601&quot;; transcript_id &quot;ENSBTAT0000002.4.36&quot;; gene_name &quot;ZNF366&quot;;
+chr20   9877487 9877679 ENSBTAG00000020601      .       +       protein_coding  exon    .       gene_id &quot;ENSBTAG00000020601&quot;; transcript_id &quot;ENSBTAT0000002.4.36&quot;;
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p>After, say, performing set or statistical operations with <a class="reference internal" href="../../set-operations/bedops.html#bedops"><span class="std std-ref">bedops</span></a>, <a class="reference internal" href="../../statistics/bedmap.html#bedmap"><span class="std std-ref">bedmap</span></a> etc., converting data back to GTF is accomplished through an <code class="docutils literal notranslate"><span class="pre">awk</span></code> statement that re-orders columns and shifts the coordinate index:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span>$ awk &#39;{print $1&quot;\t&quot;$7&quot;\t&quot;$8&quot;\t&quot;($2+1)&quot;\t&quot;$3&quot;\t&quot;$5&quot;\t&quot;$6&quot;\t&quot;$9&quot;\t&quot;(substr($0, index($0,$10)))}&#39; foo_subset.bed &gt; foo_subset.gtf
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Zero-length insertion elements are given an extra attribute called <code class="docutils literal notranslate"><span class="pre">zero_length_insertion</span></code> which lets a BED-to-GTF or other parser know that the element will require conversion back to a right-closed element <code class="docutils literal notranslate"><span class="pre">[a,</span> <span class="pre">b]</span></code>, where <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> are equal.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Note the conversion from 1- to 0-based coordinate indexing, in the transition from GTF to BED. <em>BEDOPS supports operations on input with any coordinate indexing</em>, but the coordinate change made here is believed to be convenient for most end users.</p>
+</div>
+</div>
+<div class="section" id="column-mapping">
+<span id="gtf2bed-column-mapping"></span><h2>6.3.3.6.5. Column mapping<a class="headerlink" href="#column-mapping" title="Permalink to this headline">¶</a></h2>
+<p>In this section, we describe how GTF2.2 columns are mapped to BED columns. We start with the first six UCSC BED columns as follows:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="43%" />
+<col width="33%" />
+<col width="24%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">GFF2.2 field</th>
+<th class="head">BED column index</th>
+<th class="head">BED field</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>seqname</td>
+<td>1</td>
+<td>chromosome</td>
+</tr>
+<tr class="row-odd"><td>start</td>
+<td>2</td>
+<td>start</td>
+</tr>
+<tr class="row-even"><td>end</td>
+<td>3</td>
+<td>stop</td>
+</tr>
+<tr class="row-odd"><td>gene_id</td>
+<td>4</td>
+<td>id</td>
+</tr>
+<tr class="row-even"><td>score</td>
+<td>5</td>
+<td>score</td>
+</tr>
+<tr class="row-odd"><td>strand</td>
+<td>6</td>
+<td>strand</td>
+</tr>
+</tbody>
+</table>
+<p>The remaining columns are mapped as follows:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="43%" />
+<col width="33%" />
+<col width="24%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">GFF2.2 field</th>
+<th class="head">BED column index</th>
+<th class="head">BED field</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>source</td>
+<td>7</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>feature</td>
+<td>8</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>frame</td>
+<td>9</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>attributes</td>
+<td>10</td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+<p>If present in the GTF2.2 input, the following column is also mapped:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="43%" />
+<col width="33%" />
+<col width="24%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">GFF2.2 field</th>
+<th class="head">BED column index</th>
+<th class="head">BED field</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>comments</td>
+<td>11</td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+<p>If we encounter zero-length insertion elements (which are defined where the <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">stop</span></code> GFF3 field values are equivalent), the <code class="docutils literal notranslate"><span class="pre">start</span></code> coordinate is decremented to convert to 0-based, half-open indexing, and a <code class="docutils literal notranslate"><span class="pre">zero_length_insertion</span></code> attribute is added to the <code class="docutils literal notranslate"><span class="pre">attributes</span></code> GTF2.2 field value.</p>
+</div>
+<div class="section" id="downloads">
+<span id="gtf2bed-downloads"></span><h2>6.3.3.6.6. Downloads<a class="headerlink" href="#downloads" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Sample GTF dataset: <a class="reference download internal" download="" href="../../../../_downloads/99dd304e268edfcb86131aad5a7d5f62/reference_gtf2bed_foo.gtf"><code class="xref download docutils literal notranslate"><span class="pre">foo.gtf</span></code></a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/logo_with_label_v3.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../../../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">6.3.3.6. <cite>gtf2bed</cite></a><ul>
+<li><a class="reference internal" href="#dependencies">6.3.3.6.1. Dependencies</a></li>
+<li><a class="reference internal" href="#source">6.3.3.6.2. Source</a></li>
+<li><a class="reference internal" href="#usage">6.3.3.6.3. Usage</a></li>
+<li><a class="reference internal" href="#example">6.3.3.6.4. Example</a></li>
+<li><a class="reference internal" href="#column-mapping">6.3.3.6.5. Column mapping</a></li>
+<li><a class="reference internal" href="#downloads">6.3.3.6.6. Downloads</a></li>
+</ul>
+</li>
+</ul>
+
+<form class="search" action="../../../../search.html" method="get">
+  <input type="text" name="q"
+   placeholder="type to search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  <div class="related bottom">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="gff2bed.html" title="Previous document">6.3.3.5. <cite>gff2bed</cite></a>
+        </li>
+        <li>
+          <a href="gvf2bed.html" title="Next document">6.3.3.7. <cite>gvf2bed</cite></a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../../../../index.html">Home</a></li>
+      <li>
+        <a href="../../../reference.html">6. Reference</a>
+      </li>
+      <li>
+        <a href="../../file-management.html">6.3. File management</a>
+      </li>
+      <li>
+        <a href="../conversion.html">6.3.3. Data conversion</a>
+      </li> 
+    </ul>
+  </nav>
+  </div>
+  <footer id="pagefooter">&copy; 2011-2019, Shane Neph, Alex Reynolds.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+      1.8.5
+        with the <a href="http://github.com/irskep/sphinx-better-theme">
+          better</a> theme.
+
+  </footer>
+
+  
+  </body>
+</html>

@@ -1,0 +1,477 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>6.3.2.2. unstarch &#8212; BEDOPS v2.4.36</title>
+    <link rel="stylesheet" href="../../../../_static/better.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="6.3.2.3. starchcat" href="starchcat.html" />
+    <link rel="prev" title="6.3.2.1. starch" href="starch.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  </head><body>
+    <header id="pageheader"><h1><a href="../../../../index.html ">
+        BEDOPS v2.4.36
+    </a></h1></header>
+  <div class="related top">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="starch.html" title="Previous document">6.3.2.1. <cite>starch</cite></a>
+        </li>
+        <li>
+          <a href="starchcat.html" title="Next document">6.3.2.3. <cite>starchcat</cite></a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../../../../index.html">Home</a></li>
+      <li>
+        <a href="../../../reference.html">6. Reference</a>
+      </li>
+      <li>
+        <a href="../../file-management.html">6.3. File management</a>
+      </li>
+      <li>
+        <a href="../compression.html">6.3.2. Compression</a>
+      </li> 
+    </ul>
+  </nav>
+  </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="unstarch">
+<span id="id1"></span><h1>6.3.2.2. <cite>unstarch</cite><a class="headerlink" href="#unstarch" title="Permalink to this headline">¶</a></h1>
+<p>With high-throughput sequencing generating large amounts of genomic data, archiving can be a critical part of an analysis toolkit. BEDOPS includes the <code class="docutils literal notranslate"><span class="pre">unstarch</span></code> utility to recover original BED input and whole-file or per-chromosome data attributes from archives created with <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> (these can be v1.x or <a class="reference internal" href="starch-specification.html#starch-specification"><span class="std std-ref">v2.x archives</span></a>).</p>
+<p>The <a class="reference internal" href="#unstarch"><span class="std std-ref">unstarch</span></a> utility includes <a class="reference external" href="http://en.wikipedia.org/wiki/Large_file_support">large file support</a> on 64-bit operating systems, enabling extraction of more than 2 GB of data (a common restriction on 32-bit systems).</p>
+<p>Starch data can be stored with one of two open-source backend compression methods, either <code class="docutils literal notranslate"><span class="pre">bzip2</span></code> or <code class="docutils literal notranslate"><span class="pre">gzip</span></code>. The <a class="reference internal" href="#unstarch"><span class="std std-ref">unstarch</span></a> utility will transparently extract data, without the end user needing to specify the backend type.</p>
+<div class="section" id="inputs-and-outputs">
+<h2>6.3.2.2.1. Inputs and outputs<a class="headerlink" href="#inputs-and-outputs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="input">
+<h3>6.3.2.2.1.1. Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="#unstarch"><span class="std std-ref">unstarch</span></a> utility takes in a Starch v1.x or v2.x archive as input.</p>
+</div>
+<div class="section" id="output">
+<h3>6.3.2.2.1.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
+<p>The typical output of <a class="reference internal" href="#unstarch"><span class="std std-ref">unstarch</span></a> is <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><span class="std std-ref">sorted</span></a> BED data, which is sent to standard output.</p>
+<p>Specifying certain options will instead send <a class="reference internal" href="#unstarch-archive-metadata"><span class="std std-ref">archive metadata</span></a> to standard output, either in text or JSON format, or export <a class="reference internal" href="#unstarch-stream-attributes"><span class="std std-ref">whole-file or per-chromosome attributes</span></a> (also to standard output).</p>
+</div>
+</div>
+<div class="section" id="requirements">
+<h2>6.3.2.2.2. Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<p>The metadata of a Starch v2.x archive must pass an integrity check before <a class="reference internal" href="#unstarch"><span class="std std-ref">unstarch</span></a> can extract data. Any manual changes to the metadata will cause extraction to fail.</p>
+</div>
+<div class="section" id="usage">
+<h2>6.3.2.2.3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">--help</span></code> option to list all options:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">unstarch</span>
+ <span class="n">citation</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">bioinformatics</span><span class="o">.</span><span class="n">oxfordjournals</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">content</span><span class="o">/</span><span class="mi">28</span><span class="o">/</span><span class="mi">14</span><span class="o">/</span><span class="mf">1919.</span><span class="n">abstract</span>
+ <span class="n">binary</span> <span class="n">version</span><span class="p">:</span> <span class="mf">2.4</span><span class="o">.</span><span class="mi">36</span> <span class="p">(</span><span class="n">typical</span><span class="p">)</span> <span class="p">(</span><span class="n">extracts</span> <span class="n">archive</span> <span class="n">version</span><span class="p">:</span> <span class="mf">2.2</span><span class="o">.</span><span class="mi">0</span> <span class="ow">or</span> <span class="n">older</span><span class="p">)</span>
+ <span class="n">authors</span><span class="p">:</span> <span class="n">Alex</span> <span class="n">Reynolds</span> <span class="ow">and</span> <span class="n">Shane</span> <span class="n">Neph</span>
+
+<span class="n">USAGE</span><span class="p">:</span> <span class="n">unstarch</span> <span class="p">[</span> <span class="o">&lt;</span><span class="n">chromosome</span><span class="o">&gt;</span> <span class="p">]</span>  <span class="p">[</span> <span class="o">--</span><span class="n">elements</span> <span class="o">|</span>
+                                    <span class="o">--</span><span class="n">elements</span><span class="o">-</span><span class="nb">max</span><span class="o">-</span><span class="n">string</span><span class="o">-</span><span class="n">length</span> <span class="o">|</span>
+                                    <span class="o">--</span><span class="n">bases</span> <span class="o">|</span> <span class="o">--</span><span class="n">bases</span><span class="o">-</span><span class="n">uniq</span> <span class="o">|</span>
+                                    <span class="o">--</span><span class="n">has</span><span class="o">-</span><span class="n">duplicates</span> <span class="o">|</span> <span class="o">--</span><span class="n">has</span><span class="o">-</span><span class="n">nested</span> <span class="o">|</span> <span class="o">--</span><span class="nb">list</span> <span class="o">|</span>
+                                    <span class="o">--</span><span class="nb">list</span><span class="o">-</span><span class="n">json</span> <span class="o">|</span> <span class="o">--</span><span class="nb">list</span><span class="o">-</span><span class="n">chromosomes</span> <span class="o">|</span>
+                                    <span class="o">--</span><span class="n">archive</span><span class="o">-</span><span class="n">timestamp</span> <span class="o">|</span> <span class="o">--</span><span class="n">note</span> <span class="o">|</span>
+                                    <span class="o">--</span><span class="n">archive</span><span class="o">-</span><span class="n">version</span> <span class="o">|</span> <span class="o">--</span><span class="ow">is</span><span class="o">-</span><span class="n">starch</span> <span class="o">|</span>
+                                    <span class="o">--</span><span class="n">signature</span> <span class="o">|</span> <span class="o">--</span><span class="n">verify</span><span class="o">-</span><span class="n">signature</span> <span class="p">]</span>
+                                    <span class="o">&lt;</span><span class="n">starch</span><span class="o">-</span><span class="n">file</span><span class="o">&gt;</span>
+
+    <span class="n">Modifiers</span>
+    <span class="o">--------------------------------------------------------------------------</span>
+    <span class="o">&lt;</span><span class="n">chromosome</span><span class="o">&gt;</span>                     <span class="n">Optional</span><span class="o">.</span> <span class="n">Either</span> <span class="n">unarchives</span> <span class="n">chromosome</span><span class="o">-</span>
+                                     <span class="n">specific</span> <span class="n">records</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">starch</span> <span class="n">archive</span>
+                                     <span class="n">file</span> <span class="ow">or</span> <span class="n">restricts</span> <span class="n">action</span> <span class="n">of</span> <span class="n">operator</span> <span class="n">to</span>
+                                     <span class="n">chromosome</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">,</span> <span class="n">chr1</span><span class="p">,</span> <span class="n">chrY</span><span class="p">,</span> <span class="n">etc</span><span class="o">.</span><span class="p">)</span><span class="o">.</span>
+
+    <span class="n">Process</span> <span class="n">Flags</span>
+    <span class="o">--------------------------------------------------------------------------</span>
+    <span class="o">--</span><span class="n">elements</span>                       <span class="n">Show</span> <span class="n">total</span> <span class="n">element</span> <span class="n">count</span> <span class="k">for</span> <span class="n">archive</span><span class="o">.</span> <span class="n">If</span>
+                                     <span class="o">&lt;</span><span class="n">chromosome</span><span class="o">&gt;</span> <span class="ow">is</span> <span class="n">specified</span><span class="p">,</span> <span class="n">the</span> <span class="n">result</span>
+                                     <span class="n">shows</span> <span class="n">the</span> <span class="n">element</span> <span class="n">count</span> <span class="k">for</span> <span class="n">the</span>
+                                     <span class="n">chromosome</span><span class="o">.</span>
+
+    <span class="o">--</span><span class="n">elements</span><span class="o">-</span><span class="nb">max</span><span class="o">-</span><span class="n">string</span><span class="o">-</span><span class="n">length</span>     <span class="n">Show</span> <span class="n">the</span> <span class="n">maximum</span> <span class="n">string</span> <span class="n">length</span> <span class="n">over</span> <span class="nb">all</span>
+                                     <span class="n">elements</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">chromosome</span><span class="o">&gt;</span><span class="p">,</span> <span class="k">if</span> <span class="n">specified</span><span class="o">.</span>
+                                     <span class="n">If</span> <span class="o">&lt;</span><span class="n">chromosome</span><span class="o">&gt;</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">specified</span><span class="p">,</span> <span class="n">the</span>
+                                     <span class="n">maximum</span> <span class="n">string</span> <span class="n">length</span> <span class="ow">is</span> <span class="n">shown</span> <span class="n">over</span> <span class="nb">all</span>
+                                     <span class="n">chromosomes</span><span class="o">.</span>
+
+    <span class="o">--</span><span class="n">bases</span><span class="p">,</span>
+    <span class="o">--</span><span class="n">bases</span><span class="o">-</span><span class="n">uniq</span>                     <span class="n">Show</span> <span class="n">total</span> <span class="ow">and</span> <span class="n">unique</span> <span class="n">base</span> <span class="n">counts</span><span class="p">,</span>
+                                     <span class="n">respectively</span><span class="p">,</span> <span class="k">for</span> <span class="n">archive</span><span class="o">.</span> <span class="n">If</span>
+                                     <span class="o">&lt;</span><span class="n">chromosome</span><span class="o">&gt;</span> <span class="ow">is</span> <span class="n">specified</span><span class="p">,</span> <span class="n">the</span> <span class="n">count</span> <span class="ow">is</span>
+                                     <span class="n">specific</span> <span class="n">to</span> <span class="n">the</span> <span class="n">chromosome</span><span class="p">,</span> <span class="k">if</span> <span class="n">available</span><span class="o">.</span>
+
+    <span class="o">--</span><span class="n">has</span><span class="o">-</span><span class="n">duplicate</span><span class="o">-</span><span class="k">as</span><span class="o">-</span><span class="n">string</span><span class="p">,</span>
+    <span class="o">--</span><span class="n">has</span><span class="o">-</span><span class="n">duplicate</span>                  <span class="n">Show</span> <span class="n">whether</span> <span class="n">there</span> <span class="ow">is</span> <span class="n">one</span> <span class="ow">or</span> <span class="n">more</span>
+                                     <span class="n">duplicate</span> <span class="n">elements</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">specified</span>
+                                     <span class="n">chromosome</span><span class="p">,</span> <span class="n">either</span> <span class="k">as</span> <span class="n">a</span> <span class="n">numerical</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">0</span><span class="p">)</span>
+                                     <span class="ow">or</span> <span class="n">string</span> <span class="p">(</span><span class="n">true</span><span class="o">/</span><span class="n">false</span><span class="p">)</span> <span class="n">value</span><span class="o">.</span> <span class="n">If</span> <span class="n">no</span>
+                                     <span class="o">&lt;</span><span class="n">chromosome</span><span class="o">&gt;</span> <span class="ow">is</span> <span class="n">specified</span><span class="p">,</span> <span class="n">the</span> <span class="n">value</span>
+                                     <span class="n">given</span> <span class="n">indicates</span> <span class="k">if</span> <span class="n">there</span> <span class="ow">is</span> <span class="n">one</span> <span class="ow">or</span> <span class="n">more</span>
+                                     <span class="n">duplicate</span> <span class="n">elements</span> <span class="n">across</span> <span class="nb">all</span> <span class="n">chromosome</span>
+                                     <span class="n">records</span><span class="o">.</span>
+
+    <span class="o">--</span><span class="n">has</span><span class="o">-</span><span class="n">nested</span><span class="o">-</span><span class="k">as</span><span class="o">-</span><span class="n">string</span><span class="p">,</span>
+    <span class="o">--</span><span class="n">has</span><span class="o">-</span><span class="n">nested</span>                     <span class="n">Show</span> <span class="n">whether</span> <span class="n">there</span> <span class="ow">is</span> <span class="n">one</span> <span class="n">ore</span> <span class="n">more</span> <span class="n">nested</span>
+                                     <span class="n">elements</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">chromosome</span><span class="p">,</span>
+                                     <span class="n">either</span> <span class="k">as</span> <span class="n">a</span> <span class="n">numerical</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">string</span>
+                                     <span class="p">(</span><span class="n">true</span><span class="o">/</span><span class="n">false</span><span class="p">)</span> <span class="n">value</span><span class="o">.</span> <span class="n">If</span> <span class="n">no</span> <span class="o">&lt;</span><span class="n">chromosome</span><span class="o">&gt;</span> <span class="ow">is</span>
+                                     <span class="n">specified</span><span class="p">,</span> <span class="n">the</span> <span class="n">value</span> <span class="n">given</span> <span class="n">indicates</span> <span class="k">if</span>
+                                     <span class="n">there</span> <span class="ow">is</span> <span class="n">one</span> <span class="ow">or</span> <span class="n">more</span> <span class="n">nested</span> <span class="n">elements</span>
+                                     <span class="n">across</span> <span class="nb">all</span> <span class="n">chromosome</span> <span class="n">records</span><span class="o">.</span>
+
+    <span class="o">--</span><span class="nb">list</span>                           <span class="n">List</span> <span class="n">archive</span> <span class="n">metadata</span> <span class="p">(</span><span class="n">output</span> <span class="ow">is</span> <span class="ow">in</span> <span class="n">text</span>
+                                     <span class="nb">format</span><span class="p">)</span><span class="o">.</span> <span class="n">If</span> <span class="n">chromosome</span> <span class="ow">is</span> <span class="n">specified</span><span class="p">,</span> <span class="n">the</span>
+                                     <span class="n">attributes</span> <span class="n">of</span> <span class="n">the</span> <span class="n">given</span> <span class="n">chromosome</span> <span class="n">are</span>
+                                     <span class="n">shown</span><span class="o">.</span>
+
+    <span class="o">--</span><span class="nb">list</span><span class="o">-</span><span class="n">json</span><span class="p">,</span>
+    <span class="o">--</span><span class="nb">list</span><span class="o">-</span><span class="n">json</span><span class="o">-</span><span class="n">no</span><span class="o">-</span><span class="n">trailing</span><span class="o">-</span><span class="n">newline</span>  <span class="n">List</span> <span class="n">archive</span> <span class="n">metadata</span> <span class="p">(</span><span class="n">output</span> <span class="ow">is</span> <span class="ow">in</span> <span class="n">JSON</span>
+                                     <span class="nb">format</span><span class="p">)</span>
+
+    <span class="o">--</span><span class="nb">list</span><span class="o">-</span><span class="nb">chr</span><span class="p">,</span>
+    <span class="o">--</span><span class="nb">list</span><span class="o">-</span><span class="n">chromosomes</span>               <span class="n">List</span> <span class="nb">all</span> <span class="ow">or</span> <span class="n">specified</span> <span class="n">chromosome</span> <span class="ow">in</span>
+                                     <span class="n">starch</span> <span class="n">archive</span> <span class="p">(</span><span class="n">like</span> <span class="s2">&quot;bedextract --list-</span>
+                                     <span class="nb">chr</span><span class="s2">&quot;). If &lt;chromosome&gt; is specified but</span>
+                                     <span class="ow">is</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">output</span> <span class="nb">list</span><span class="p">,</span> <span class="n">nothing</span> <span class="ow">is</span>
+                                     <span class="n">returned</span><span class="o">.</span>
+
+    <span class="o">--</span><span class="n">note</span>                           <span class="n">Show</span> <span class="n">descriptive</span> <span class="n">note</span><span class="p">,</span> <span class="k">if</span> <span class="n">available</span><span class="o">.</span>
+
+    <span class="o">--</span><span class="n">signature</span>                      <span class="n">Display</span> <span class="n">the</span> <span class="n">Base64</span><span class="o">-</span><span class="n">encoded</span> <span class="n">SHA</span><span class="o">-</span><span class="mi">1</span> <span class="n">data</span>
+                                     <span class="n">integrity</span> <span class="n">signature</span> <span class="k">for</span> <span class="n">specified</span>
+                                     <span class="o">&lt;</span><span class="n">chromosome</span><span class="o">&gt;</span><span class="p">,</span> <span class="ow">or</span> <span class="n">the</span> <span class="n">signatures</span> <span class="n">of</span> <span class="n">the</span>
+                                     <span class="n">metadata</span> <span class="ow">and</span> <span class="nb">all</span> <span class="n">available</span> <span class="n">chromosomes</span><span class="p">,</span>
+                                     <span class="k">if</span> <span class="n">the</span> <span class="o">&lt;</span><span class="n">chromosome</span><span class="o">&gt;</span> <span class="ow">is</span> <span class="n">unspecified</span><span class="o">.</span>
+
+    <span class="o">--</span><span class="n">verify</span><span class="o">-</span><span class="n">signature</span>               <span class="n">Verify</span> <span class="n">data</span> <span class="n">integrity</span> <span class="n">of</span> <span class="n">specified</span>
+                                     <span class="o">&lt;</span><span class="n">chromosome</span><span class="o">&gt;</span><span class="p">,</span> <span class="ow">or</span> <span class="n">the</span> <span class="n">integrity</span> <span class="n">of</span> <span class="nb">all</span>
+                                     <span class="n">available</span> <span class="n">chromosomes</span><span class="p">,</span> <span class="k">if</span> <span class="n">the</span>
+                                     <span class="o">&lt;</span><span class="n">chromosome</span><span class="o">&gt;</span> <span class="ow">is</span> <span class="n">unspecified</span><span class="o">.</span>
+
+    <span class="o">--</span><span class="n">archive</span><span class="o">-</span><span class="n">timestamp</span>              <span class="n">Show</span> <span class="n">archive</span> <span class="n">creation</span> <span class="n">timestamp</span> <span class="p">(</span><span class="n">ISO</span> <span class="mi">8601</span>
+                                     <span class="nb">format</span><span class="p">)</span><span class="o">.</span>
+
+    <span class="o">--</span><span class="n">archive</span><span class="o">-</span><span class="nb">type</span>                   <span class="n">Show</span> <span class="n">archive</span> <span class="n">compression</span> <span class="nb">type</span><span class="o">.</span>
+
+    <span class="o">--</span><span class="n">archive</span><span class="o">-</span><span class="n">version</span>                <span class="n">Show</span> <span class="n">archive</span> <span class="n">version</span><span class="o">.</span>
+
+    <span class="o">--</span><span class="ow">is</span><span class="o">-</span><span class="n">starch</span>                      <span class="n">Test</span> <span class="k">if</span> <span class="o">&lt;</span><span class="n">starch</span><span class="o">-</span><span class="n">file</span><span class="o">&gt;</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">valid</span> <span class="n">archive</span>
+                                     <span class="ow">and</span> <span class="nb">print</span> <span class="mi">0</span><span class="o">/</span><span class="mi">1</span> <span class="p">(</span><span class="n">false</span><span class="o">/</span><span class="n">true</span><span class="p">)</span> <span class="n">to</span> <span class="n">standard</span>
+                                     <span class="n">output</span><span class="o">.</span> <span class="n">Unstarch</span> <span class="n">will</span> <span class="n">also</span> <span class="k">return</span> <span class="n">a</span> <span class="n">non</span><span class="o">-</span>
+                                     <span class="n">zero</span> <span class="n">error</span> <span class="n">code</span> <span class="k">if</span> <span class="n">the</span> <span class="nb">input</span> <span class="n">file</span> <span class="ow">is</span> <span class="ow">not</span>
+                                     <span class="n">a</span> <span class="n">valid</span> <span class="n">archive</span><span class="o">.</span>
+
+    <span class="o">--</span><span class="n">version</span>                        <span class="n">Show</span> <span class="n">binary</span> <span class="n">version</span><span class="o">.</span>
+
+    <span class="o">--</span><span class="n">help</span>                           <span class="n">Show</span> <span class="n">this</span> <span class="n">usage</span> <span class="n">message</span><span class="o">.</span>
+</pre></div>
+</div>
+<div class="section" id="extraction">
+<h3>6.3.2.2.3.1. Extraction<a class="headerlink" href="#extraction" title="Permalink to this headline">¶</a></h3>
+<p>Specify a specific chromosome to extract data only from that chromosome. This is optional; if a chromosome is not specified, data are extracted from all chromosomes in the archive.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ unstarch chr12 example.starch
+...
+</pre></div>
+</div>
+</div>
+<div class="section" id="archive-attributes">
+<span id="unstarch-archive-metadata"></span><h3>6.3.2.2.3.2. Archive attributes<a class="headerlink" href="#archive-attributes" title="Permalink to this headline">¶</a></h3>
+<p>Archive attributes are described in greater depth in the <a class="reference internal" href="starch-specification.html#starch-specification"><span class="std std-ref">Starch specification</span></a> page. We provide an overview here of the major points.</p>
+<div class="section" id="metadata">
+<h4>6.3.2.2.3.2.1. Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h4>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">--list-json</span></code> or <code class="docutils literal notranslate"><span class="pre">--list</span></code> options to export the archive metadata as a JSON- or table-formatted text string, sent to standard output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ unstarch --list-json example.starch
+{
+  &quot;archive&quot;: {
+    &quot;type&quot;: &quot;starch&quot;,
+    &quot;customUCSCHeaders&quot;: false,
+    &quot;creationTimestamp&quot;: &quot;2014-05-01T14:09:29-0700&quot;,
+    &quot;version&quot;: {
+      &quot;major&quot;: 2,
+      &quot;minor&quot;: 2,
+      &quot;revision&quot;: 0
+    },
+    &quot;compressionFormat&quot;: 0
+  },
+  &quot;streams&quot;: [
+    {
+      &quot;chromosome&quot;: &quot;chr1&quot;,
+      &quot;filename&quot;: &quot;chr1.pid31740.fiddlehead.regulomecorp.com&quot;,
+      &quot;size&quot;: &quot;88330&quot;,
+      &quot;uncompressedLineCount&quot;: 10753,
+      &quot;nonUniqueBaseCount&quot;: 549829,
+      &quot;uniqueBaseCount&quot;: 548452,
+      &quot;duplicateElementExists&quot;: false,
+      &quot;nestedElementExists&quot;: false,
+      &quot;signature&quot;: &quot;XtnjojM1LyuMnZI4CIneSzgLI5Q=&quot;
+      &quot;uncompressedLineMaxStringLength&quot;: 371
+    },
+    ...
+  ]
+}
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">--list-chr</span></code> (or <code class="docutils literal notranslate"><span class="pre">--list-chromosomes</span></code>) option exports a list of chromosomes stored in the Starch archive.</p>
+</div>
+<div class="section" id="note">
+<h4>6.3.2.2.3.2.2. Note<a class="headerlink" href="#note" title="Permalink to this headline">¶</a></h4>
+<p>Using <code class="docutils literal notranslate"><span class="pre">--note</span></code> will export any note stored with the archive, when created.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">One can use <a class="reference internal" href="starchcat.html#starchcat"><span class="std std-ref">starchcat</span></a> to add a new note to an existing Starch archive.</p>
+</div>
+</div>
+<div class="section" id="timestamp">
+<h4>6.3.2.2.3.2.3. Timestamp<a class="headerlink" href="#timestamp" title="Permalink to this headline">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">--archive-timestamp</span></code> option will report the archive’s creation date and time as an <a class="reference external" href="http://en.wikipedia.org/wiki/ISO-8601">ISO 8601</a> -formatted string.</p>
+</div>
+<div class="section" id="compression-type">
+<h4>6.3.2.2.3.2.4. Compression type<a class="headerlink" href="#compression-type" title="Permalink to this headline">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">--archive-type</span></code> option will report the compression type of the archive, either <code class="docutils literal notranslate"><span class="pre">bzip2</span></code> or <code class="docutils literal notranslate"><span class="pre">gzip</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ unstarch --archive-type example.starch
+unstarch
+ archive compression type: bzip2
+</pre></div>
+</div>
+</div>
+<div class="section" id="version">
+<h4>6.3.2.2.3.2.5. Version<a class="headerlink" href="#version" title="Permalink to this headline">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">--version</span></code> option reports the Starch archive version. This value is different from the version of the <a class="reference internal" href="starch.html#starch"><span class="std std-ref">starch</span></a> binary used to create the archive.</p>
+</div>
+</div>
+<div class="section" id="whole-file-or-per-chromosome-attributes">
+<span id="unstarch-stream-attributes"></span><h3>6.3.2.2.3.3. Whole-file or per-chromosome attributes<a class="headerlink" href="#whole-file-or-per-chromosome-attributes" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="data-integrity">
+<h4>6.3.2.2.3.3.1. Data integrity<a class="headerlink" href="#data-integrity" title="Permalink to this headline">¶</a></h4>
+<p>For a specified chromosome, the <code class="docutils literal notranslate"><span class="pre">--signature</span></code> operator reports the very nearly unique “signature” or message digest generated from hashing the extracted, post-transform bytes within the chromosome stream with the <a class="reference external" href="https://en.wikipedia.org/wiki/SHA-1">SHA-1 hash function</a>, followed with an encoding step with the <a class="reference external" href="https://en.wikipedia.org/wiki/Base64">Base64</a> scheme to turn it into a human-readable string.</p>
+<p>If no chromosome is specified, this operator reports the encoded SHA-1 digests of the archive metadata and the signatures of each chromosome stream.</p>
+<p>Signatures can be used to compare chromosome streams between two or more archives.</p>
+<p>Further, use of the <code class="docutils literal notranslate"><span class="pre">--verify-signature</span></code> option with a chromosome name will compare the signature stored in the metadata (the “expected” signature) with an “observed” value generated from extracting the bytes of the chromosome record and hashing them, and then Base64-encoding the result.</p>
+<p>If the observed and expected signatures or digests are identical, this validates or verifies the integrity of the chromosome record. A mismatch would result in a non-zero exit state and suggest potential data corruption and the need for further investigation.</p>
+</div>
+<div class="section" id="elements">
+<h4>6.3.2.2.3.3.2. Elements<a class="headerlink" href="#elements" title="Permalink to this headline">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">--elements</span></code> operator reports the number of BED elements that were compressed into the chromosome stream, if specified. If no chromosome is specified, the sum of elements over all chromosomes is reported.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">This option is equivalent to a <code class="docutils literal notranslate"><span class="pre">wc</span> <span class="pre">-l</span></code> (line count) operation performed on BED elements that match the given chromosome, but is much, much faster as data are precomputed and stored with the archive, retrieved from the metadata in O(1) time.</p>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">--elements-max-string-length</span></code> operator reports the maximum string length of BED elements over the specified chromosome, or the maximum string length over all chromosomes, if no chromosome name is specified.</p>
+</div>
+<div class="section" id="bases">
+<h4>6.3.2.2.3.3.3. Bases<a class="headerlink" href="#bases" title="Permalink to this headline">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">--bases</span></code> and <code class="docutils literal notranslate"><span class="pre">--bases-uniq</span></code> flags return the overall and unique base counts for a specified chromosome, or the sum of counts over all chromosomes, if no one chromosome is specified.</p>
+</div>
+<div class="section" id="duplicate-element-s">
+<h4>6.3.2.2.3.3.4. Duplicate element(s)<a class="headerlink" href="#duplicate-element-s" title="Permalink to this headline">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">--has-duplicate</span></code> operator reports whether the chromosome stream contains one or more duplicate elements, printing a <code class="docutils literal notranslate"><span class="pre">0</span></code> if the chromosome does <em>not</em> contain a duplicate element, and a <code class="docutils literal notranslate"><span class="pre">1</span></code> if the chromosome <em>does</em> contain a duplicate.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">A duplicate element exists if there are two or more BED elements where the chromosome name and start and stop positions are identical. Id, score, strand and any other optional columns are ignored when determining if a duplicate element is present.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">To get a string value of <code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code> in place of <code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">0</span></code>, use the <code class="docutils literal notranslate"><span class="pre">--has-duplicate-as-string</span></code> operator, instead.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the chromosome name argument to <code class="docutils literal notranslate"><span class="pre">unstarch</span></code> is omitted, or set to <code class="docutils literal notranslate"><span class="pre">all</span></code>, the <code class="docutils literal notranslate"><span class="pre">--has-duplicate</span></code> and <code class="docutils literal notranslate"><span class="pre">--has-duplicate-as-string</span></code> operators will return a result for all chromosomes (if any one chromosome has one or more duplicate elements, the return value is <code class="docutils literal notranslate"><span class="pre">1</span></code> or <code class="docutils literal notranslate"><span class="pre">true</span></code>, respectively). If the chromosome name is provided and the archive does not contain metadata for the given chromosome, these operators will return a <code class="docutils literal notranslate"><span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code> result.</p>
+</div>
+</div>
+<div class="section" id="nested-element-s">
+<h4>6.3.2.2.3.3.5. Nested element(s)<a class="headerlink" href="#nested-element-s" title="Permalink to this headline">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">--has-nested</span></code> operator reports whether the chromosome stream contains one or more <a class="reference internal" href="../../set-operations/nested-elements.html#nested-elements"><span class="std std-ref">nested elements</span></a>, printing a <code class="docutils literal notranslate"><span class="pre">0</span></code> if the chromosome does <em>not</em> contain a nested element, and a <code class="docutils literal notranslate"><span class="pre">1</span></code> if the chromosome <em>does</em> contain a nested element.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The definition of a nested element relies on coordinates and is explained in the <a class="reference internal" href="../../set-operations/nested-elements.html#nested-elements"><span class="std std-ref">documentation for nested elements</span></a>. Id, score, strand and any other optional columns are ignored when determining if a nested element is present.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">To get a string value of <code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code> in place of <code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">0</span></code>, use the <code class="docutils literal notranslate"><span class="pre">--has-nested-as-string</span></code> operator, instead.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the chromosome name argument to <code class="docutils literal notranslate"><span class="pre">unstarch</span></code> is omitted, or set to <code class="docutils literal notranslate"><span class="pre">all</span></code>, the <code class="docutils literal notranslate"><span class="pre">--has-nested</span></code> and <code class="docutils literal notranslate"><span class="pre">--has-nested-as-string</span></code> operators will return a result for all chromosomes (if any one chromosome has one or more nested elements, the return value is <code class="docutils literal notranslate"><span class="pre">1</span></code> or <code class="docutils literal notranslate"><span class="pre">true</span></code>, respectively). If the chromosome name is provided and the archive does not contain metadata for the given chromosome, these operators will return a <code class="docutils literal notranslate"><span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code> result.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="example">
+<h2>6.3.2.2.4. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>To extract a generic Starch file input to a BED file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ unstarch example.starch &gt; example.bed
+</pre></div>
+</div>
+<p>This creates the <a class="reference internal" href="../sorting/sort-bed.html#sort-bed"><span class="std std-ref">sorted</span></a> file <code class="docutils literal notranslate"><span class="pre">example.bed</span></code>, containing BED data from extracting <code class="docutils literal notranslate"><span class="pre">example.starch</span></code>. This can be a <code class="docutils literal notranslate"><span class="pre">bzip2</span></code> or <code class="docutils literal notranslate"><span class="pre">gzip</span></code> -formatted Starch archive—<a class="reference internal" href="#unstarch"><span class="std std-ref">unstarch</span></a> knows how to extract either type transparently.</p>
+<p>To list the chromosomes in a Starch v2 archive, use the <code class="docutils literal notranslate"><span class="pre">--list-chr</span></code> (or <code class="docutils literal notranslate"><span class="pre">--list-chromosomes</span></code>) option:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ unstarch --list-chr example.starch
+chr1
+chr10
+chr11
+chr11_gl000202_random
+chr12
+chr13
+chr14
+chr15
+chr16
+chr17
+...
+</pre></div>
+</div>
+<p>To show the number of BED elements in chromosome <code class="docutils literal notranslate"><span class="pre">chr13</span></code>, use the <code class="docutils literal notranslate"><span class="pre">--elements</span></code> operator:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ unstarch chr13 --elements example.starch
+10753
+</pre></div>
+</div>
+<p>To find the number of unique bases in chromosome <code class="docutils literal notranslate"><span class="pre">chr8</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ unstarch chr8 --bases-uniq example.starch
+545822
+</pre></div>
+</div>
+<p>To report if the chromosome <code class="docutils literal notranslate"><span class="pre">chr14</span></code> contains at least one duplicate BED element:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ unstarch chr14 --has-duplicate-as-string example.starch
+true
+</pre></div>
+</div>
+<p>To show when the archive was created:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ unstarch --archive-timestamp example.starch
+2014-05-01T14:09:29-0700
+</pre></div>
+</div>
+<p>To get the SHA-1 message digest, or “signature” of chromosome <code class="docutils literal notranslate"><span class="pre">chr8</span></code>, use the <code class="docutils literal notranslate"><span class="pre">--signature</span></code> operator:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ unstarch chr8 --signature example.starch
+nZI4CIneSzgLI5QXtnjojM1LyuM=
+</pre></div>
+</div>
+<p>The signature is written to the standard output stream.</p>
+<p>To verify the data integrity of the same chromosome, use <code class="docutils literal notranslate"><span class="pre">--verify-signature</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ unstarch chr8 --verify-signature example.starch
+PROGRESS: Expected and observed data integrity signatures match for chromosome [chr8]
+</pre></div>
+</div>
+<p>Any output from <code class="docutils literal notranslate"><span class="pre">--verify-signature</span></code> is written to the standard error stream.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Some option calls will not work with legacy v1.x or v2.0 archives. For instance, to get a result for nested or duplicate elements, you need to input a v2.1 (or greater) archive. If you have a v1.x or v2.0 archive, use the <a class="reference internal" href="starchcat.html#starchcat"><span class="std std-ref">starchcat</span></a> utility to upgrade an older archive to a Starch v2.2 file, which will recalculate the metadata and make all current attributes available.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/logo_with_label_v3.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../../../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">6.3.2.2. <cite>unstarch</cite></a><ul>
+<li><a class="reference internal" href="#inputs-and-outputs">6.3.2.2.1. Inputs and outputs</a><ul>
+<li><a class="reference internal" href="#input">6.3.2.2.1.1. Input</a></li>
+<li><a class="reference internal" href="#output">6.3.2.2.1.2. Output</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#requirements">6.3.2.2.2. Requirements</a></li>
+<li><a class="reference internal" href="#usage">6.3.2.2.3. Usage</a><ul>
+<li><a class="reference internal" href="#extraction">6.3.2.2.3.1. Extraction</a></li>
+<li><a class="reference internal" href="#archive-attributes">6.3.2.2.3.2. Archive attributes</a><ul>
+<li><a class="reference internal" href="#metadata">6.3.2.2.3.2.1. Metadata</a></li>
+<li><a class="reference internal" href="#note">6.3.2.2.3.2.2. Note</a></li>
+<li><a class="reference internal" href="#timestamp">6.3.2.2.3.2.3. Timestamp</a></li>
+<li><a class="reference internal" href="#compression-type">6.3.2.2.3.2.4. Compression type</a></li>
+<li><a class="reference internal" href="#version">6.3.2.2.3.2.5. Version</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#whole-file-or-per-chromosome-attributes">6.3.2.2.3.3. Whole-file or per-chromosome attributes</a><ul>
+<li><a class="reference internal" href="#data-integrity">6.3.2.2.3.3.1. Data integrity</a></li>
+<li><a class="reference internal" href="#elements">6.3.2.2.3.3.2. Elements</a></li>
+<li><a class="reference internal" href="#bases">6.3.2.2.3.3.3. Bases</a></li>
+<li><a class="reference internal" href="#duplicate-element-s">6.3.2.2.3.3.4. Duplicate element(s)</a></li>
+<li><a class="reference internal" href="#nested-element-s">6.3.2.2.3.3.5. Nested element(s)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#example">6.3.2.2.4. Example</a></li>
+</ul>
+</li>
+</ul>
+
+<form class="search" action="../../../../search.html" method="get">
+  <input type="text" name="q"
+   placeholder="type to search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  <div class="related bottom">
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="starch.html" title="Previous document">6.3.2.1. <cite>starch</cite></a>
+        </li>
+        <li>
+          <a href="starchcat.html" title="Next document">6.3.2.3. <cite>starchcat</cite></a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="../../../../index.html">Home</a></li>
+      <li>
+        <a href="../../../reference.html">6. Reference</a>
+      </li>
+      <li>
+        <a href="../../file-management.html">6.3. File management</a>
+      </li>
+      <li>
+        <a href="../compression.html">6.3.2. Compression</a>
+      </li> 
+    </ul>
+  </nav>
+  </div>
+  <footer id="pagefooter">&copy; 2011-2019, Shane Neph, Alex Reynolds.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+      1.8.5
+        with the <a href="http://github.com/irskep/sphinx-better-theme">
+          better</a> theme.
+
+  </footer>
+
+  
+  </body>
+</html>

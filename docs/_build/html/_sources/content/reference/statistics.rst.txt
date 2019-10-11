@@ -1,0 +1,6 @@
+Statistics
+==========
+
+.. toctree::
+
+   statistics/bedmap

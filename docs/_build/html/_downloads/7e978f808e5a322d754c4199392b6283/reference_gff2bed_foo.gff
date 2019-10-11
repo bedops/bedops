@@ -1,0 +1,6 @@
+##gff-version 3
+chr1	Canada	exon	1300	1300	.	+	.	ID=exon00001;score=1
+chr1	USA	exon	1050	1500	.	-	0	ID=exon00002;Ontology_term="GO:0046703";Ontology_term="GO:0046704"
+chr1	Canada	exon	3000	3902	.	?	2	ID=exon00003;score=4;Name=foo
+chr1	.	exon	5000	5500	.	.	.	ID=exon00004;Gap=M8 D3 M6 I1 M6
+chr1	.	exon	7000	9000	10	+	1	ID=exon00005;Dbxref="NCBI_gi:10727410"
