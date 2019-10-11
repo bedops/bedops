@@ -17,9 +17,9 @@ v2.4.37
 
 Released: **TBD**
 
-* :ref:General
+* General
 
-  * Applied a workaround to whatever bug was introducted in `Issue 5709 <https://github.com/readthedocs/readthedocs.org/issues/5709>`_ that broke image serving for the document index (front page).
+  * Applied a placeholder workaround to whatever stupid bug was introducted in `Issue 5709 <https://github.com/readthedocs/readthedocs.org/issues/5709>`_ that broke image serving for the document index (front page).
 
 =================
 Previous versions
@@ -39,7 +39,7 @@ Released: **May 2, 2019**
 
   * Added :code:`--unmapped-val <val>` option, where :code:`<val>` replaces the empty string output of :code:`--echo-map*` operations when there are no mapped elements. The :code:`--min/max-element` operators will give results as before (the empty string).
 
-* :ref:General
+* General
 
   * Reduced :code:`warning: zero as null pointer constant [-Wzero-as-null-pointer-constant]` compiler warnings via Clang.
 
