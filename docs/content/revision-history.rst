@@ -15,6 +15,20 @@ Current version
 v2.4.37
 -------
 
+Released: **TBD**
+
+* :ref:General
+
+  * Applied a workaround to whatever bug was introducted in `Issue 5709 <https://github.com/readthedocs/readthedocs.org/issues/5709>`_ that broke image serving for the document index (front page).
+
+=================
+Previous versions
+=================
+
+-------
+v2.4.36
+-------
+
 Released: **May 2, 2019**
 
 * :ref:`bedmap <bedmap>`
@@ -30,10 +44,6 @@ Released: **May 2, 2019**
   * Reduced :code:`warning: zero as null pointer constant [-Wzero-as-null-pointer-constant]` compiler warnings via Clang.
 
   * Begun work on a comprehensive test suite for BEDOPS applications. Tests are available via source distribution in :code:`${root}/tests` and can be run by entering :code:`make` in this directory.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.35
