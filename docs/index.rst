@@ -33,6 +33,7 @@ Contents
    content/reference
    content/summary
    content/release
+   content/placeholder
 
 .. |header| raw:: html
 
