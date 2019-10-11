@@ -89,13 +89,20 @@ deflate_and_inflate_gz:
 	@diff $(TMP)/001.starch.deflate_and_inflate.gz.bed $(RANDOMINTERVALS) || (printf " ...failed!\n" && exit 1)
 	@printf " ...passed!\n"
 
-starchcat: starchcat_prep 
+starchcat: starchcat_prep starchcat_disjoint_chrs
 
 starchcat_prep:
 	@[ -f $(STARCHCAT) ] || echo "Missing binary [$(STARCHCAT)] for build type [$(BUILDTYPE)]"
 	@echo "Writing to [$(TMP)]"
 	$(STARCHCAT) --version
-
+	
+starchcat_disjoint_chrs:
+# Test 001
+	@printf "[$(APPGROUP)-$(STARCHCATBIN)-$(BUILDTYPE) --$@] - [Test 001]"
+	@$(STARCHCAT) $(DATA)/001.starchcat.disjoint_chrs.chr1.001.test $(DATA)/001.starchcat.disjoint_chrs.chr2.001.test > $(TMP)/001.starchcat.disjoint_chrs.chr1andChr2.001.observed
+	@diff <($(UNSTARCH) $(TMP)/001.starchcat.disjoint_chrs.chr1andChr2.001.observed) <($(UNSTARCH) $(DATA)/001.starchcat.disjoint_chrs.chr1andChr2.001.expected) || (printf " ...failed!\n" && exit 1)
+	@printf " ...passed!\n"
+	
 starchstrip: starchstrip_prep
 
 starchstrip_prep:
