@@ -17,13 +17,19 @@ v2.4.37
 
 Released: **TBD**
 
+* :ref:`bedmap <bedmap>`
+
+  * Running :code:`bedmap --version` now exits with a zero (non-error/success) status.
+
 * :ref:`starch <starch>`
 
   * When a Starch file with a header is provided as input to :code:`bedops` or :code:`bedmap`, the line is errantly processed as a BED interval. Thanks to `André M. Ribeiro-dos-Santos <https://github.com/bedops/bedops/pull/229>`_ for patching the Starch C++ API to skip headers.
+  * Added a unit test to :code:`tests/starch` to test headered Starch mapped against itself.
 
 * General
 
   * Applied a placeholder workaround to whatever stupid bug was introducted in `Issue 5709 <https://github.com/readthedocs/readthedocs.org/issues/5709>`_ that broke image serving for the document index (front page).
+  * Improved speed of generating random intervals in :code:`tests/starch` unit tests.
 
 =================
 Previous versions
