@@ -20,6 +20,7 @@ Released: **October 11, 2019**
 * :ref:`starchcat <starchcat>`
 
   * A bug was introduced in v2.4.36 that would cause segmentation faults when concatenating disjoint Starch files, which is fixed in this version. Thanks to Eric Rynes for the bug report.
+  * Added a unit test to :code:`tests/starch` to test this particular issue.
 
 * :ref:`bedmap <bedmap>`
 
