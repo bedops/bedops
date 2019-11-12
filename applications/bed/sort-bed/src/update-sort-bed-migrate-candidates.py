@@ -32,7 +32,7 @@ import logging
 name = "update-sort-bed-migrate-candidates"
 citation = "  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract"
 authors = "  authors:  Alex Reynolds and Shane Neph"
-version = "  version:  2.4.37"
+version = "  version:  2.4.38"
 usage = """  $ update-sort-bed-migrate-candidates [ --dry-run ] [ --debug ]
                                        [ --write-list |
                                          --resort-immediately |

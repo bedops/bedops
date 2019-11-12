@@ -12,6 +12,16 @@ Current version
 ===============
 
 -------
+v2.4.38
+-------
+
+Released: **TBD**
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.37
 -------
 
@@ -35,11 +45,7 @@ Released: **October 11, 2019**
 
   * Applied a placeholder workaround to whatever stupid bug was introducted in `Issue 5709 <https://github.com/readthedocs/readthedocs.org/issues/5709>`_ that broke image serving for the document index (front page).
   * Improved speed of generating random intervals in :code:`tests/starch` unit tests.
-
-=================
-Previous versions
-=================
-
+  
 -------
 v2.4.36
 -------

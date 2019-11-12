@@ -11,9 +11,9 @@ RUN yum -y install tar \
 
 # copy the source context into the local image & build/install
 #  note: make sure .dockerignore is up to date
-RUN mkdir /bedops-2.4.37
-ADD . /bedops-2.4.37
-RUN tar zcf /bedops-2.4.37.tar.gz bedops-2.4.37
-RUN rm -rf /bedops-2.4.37
-RUN rpmbuild -ta bedops-2.4.37.tar.gz
-RUN rm /bedops-2.4.37.tar.gz
+RUN mkdir /bedops-2.4.38
+ADD . /bedops-2.4.38
+RUN tar zcf /bedops-2.4.38.tar.gz bedops-2.4.38
+RUN rm -rf /bedops-2.4.38
+RUN rpmbuild -ta bedops-2.4.38.tar.gz
+RUN rm /bedops-2.4.38.tar.gz
