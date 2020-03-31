@@ -17,6 +17,10 @@ v2.4.38
 
 Released: **TBD**
 
+* :ref:`convert2bed <convert2bed>`
+
+  * Patches segmentation fault in malformed RepeatMasker input conversion. Thanks to `Mark Diekhans <https://github.com/bedops/bedops/issues/235>`_ for the bug report.
+
 =================
 Previous versions
 =================

@@ -27,7 +27,7 @@ endif
 default: support
 	$(MAKE) build -f $(SELF)
 
-SUBDIRS = bedmap/src sort-bed/src bedops/src closestfeats/src bedextract/src starch/src conversion/src starch/src
+SUBDIRS = bedmap/src sort-bed/src bedops/src closestfeats/src bedextract/src starch/src conversion/src
 SUBDIRS_FULL := $(patsubst %,${APPDIR}/%,$(SUBDIRS))
 
 .PHONY: $(SUBDIRS_FULL)

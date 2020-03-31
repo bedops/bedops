@@ -3253,10 +3253,14 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
             fprintf(stderr, "Error: Could not resize PERC_DIV string in RMSK element struct\n");
             exit(ENOMEM);
         }
-
     }
-    memcpy(c2b_globals.rmsk->element->perc_div, src + perc_div_start, perc_div_size);
-    c2b_globals.rmsk->element->perc_div[perc_div_size] = '\0';
+    if (perc_div_size > 0) {
+        memcpy(c2b_globals.rmsk->element->perc_div, src + perc_div_start, perc_div_size);
+        c2b_globals.rmsk->element->perc_div[perc_div_size] = '\0';
+    }
+    else {
+        c2b_globals.rmsk->element->perc_div[0] = '\0';
+    }
 
 #ifdef DEBUG
     fprintf(stderr, "perc_div [%s]\n", c2b_globals.rmsk->element->perc_div);
@@ -3277,10 +3281,14 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
             fprintf(stderr, "Error: Could not resize PERC_DELETED string in RMSK element struct\n");
             exit(ENOMEM);
         }
-
     }
-    memcpy(c2b_globals.rmsk->element->perc_deleted, src + perc_deleted_start, perc_deleted_size);
-    c2b_globals.rmsk->element->perc_deleted[perc_deleted_size] = '\0';
+    if (perc_deleted_size > 0) {
+        memcpy(c2b_globals.rmsk->element->perc_deleted, src + perc_deleted_start, perc_deleted_size);
+        c2b_globals.rmsk->element->perc_deleted[perc_deleted_size] = '\0';
+    }
+    else {
+        c2b_globals.rmsk->element->perc_deleted[0] = '\0';
+    }
 
 #ifdef DEBUG
     fprintf(stderr, "perc_deleted [%s]\n", c2b_globals.rmsk->element->perc_deleted);
@@ -3301,10 +3309,14 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
             fprintf(stderr, "Error: Could not resize PERC_INSERTED string in RMSK element struct\n");
             exit(ENOMEM);
         }
-
     }
-    memcpy(c2b_globals.rmsk->element->perc_inserted, src + perc_inserted_start, perc_inserted_size);
-    c2b_globals.rmsk->element->perc_inserted[perc_inserted_size] = '\0';
+    if (perc_inserted_size > 0) {
+        memcpy(c2b_globals.rmsk->element->perc_inserted, src + perc_inserted_start, perc_inserted_size);
+        c2b_globals.rmsk->element->perc_inserted[perc_inserted_size] = '\0';
+    }
+    else {
+        c2b_globals.rmsk->element->perc_inserted[0] = '\0';
+    }
 
 #ifdef DEBUG
     fprintf(stderr, "perc_inserted [%s]\n", c2b_globals.rmsk->element->perc_inserted);
@@ -3325,10 +3337,14 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
             fprintf(stderr, "Error: Could not resize QUERY_SEQ string in RMSK element struct\n");
             exit(ENOMEM);
         }
-
     }
-    memcpy(c2b_globals.rmsk->element->query_seq, src + query_seq_start, query_seq_size);
-    c2b_globals.rmsk->element->query_seq[query_seq_size] = '\0';
+    if (query_seq_size > 0) {
+        memcpy(c2b_globals.rmsk->element->query_seq, src + query_seq_start, query_seq_size);
+        c2b_globals.rmsk->element->query_seq[query_seq_size] = '\0';
+    }
+    else {
+        c2b_globals.rmsk->element->query_seq[0] = '\0';
+    }
 
 #ifdef DEBUG
     fprintf(stderr, "query_seq [%s]\n", c2b_globals.rmsk->element->query_seq);
@@ -3350,16 +3366,21 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.rmsk->element->query_start_str, src + query_start_start, query_start_size);
-    c2b_globals.rmsk->element->query_start_str[query_start_size] = '\0';
-    c2b_globals.rmsk->element->query_start = strtoull(c2b_globals.rmsk->element->query_start_str, NULL, 10);
-    if (errno == ERANGE) {
-        fprintf(stderr, "Error: Could not convert QUERY_START string [%s] to integer (check input)\n", c2b_globals.rmsk->element->query_start_str);
-        exit(ERANGE);
+    if (query_start_size > 0) {
+        memcpy(c2b_globals.rmsk->element->query_start_str, src + query_start_start, query_start_size);
+        c2b_globals.rmsk->element->query_start_str[query_start_size] = '\0';
+        c2b_globals.rmsk->element->query_start = strtoull(c2b_globals.rmsk->element->query_start_str, NULL, 10);
+        if (errno == ERANGE) {
+            fprintf(stderr, "Error: Could not convert QUERY_START string [%s] to integer (check input)\n", c2b_globals.rmsk->element->query_start_str);
+            exit(ERANGE);
+        }
+        /* subtract to make 0-indexed */
+        c2b_globals.rmsk->element->query_start--;
     }
-
-    /* subtract to make 0-indexed */
-    c2b_globals.rmsk->element->query_start--;
+    else {
+        c2b_globals.rmsk->element->query_start_str[0] = '\0';
+        c2b_globals.rmsk->element->query_start = 0;
+    }
 
 #ifdef DEBUG
     fprintf(stderr, "query_start_str [%s]\n", c2b_globals.rmsk->element->query_start_str);
@@ -3381,12 +3402,18 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.rmsk->element->query_end_str, src + query_end_start, query_end_size);
-    c2b_globals.rmsk->element->query_end_str[query_end_size] = '\0';
-    c2b_globals.rmsk->element->query_end = strtoull(c2b_globals.rmsk->element->query_end_str, NULL, 10);
-    if (errno == ERANGE) {
-        fprintf(stderr, "Error: Could not convert QUERY_END string [%s] to integer (check input)\n", c2b_globals.rmsk->element->query_end_str);
-        exit(ERANGE);
+    if (query_end_size > 0) {
+        memcpy(c2b_globals.rmsk->element->query_end_str, src + query_end_start, query_end_size);
+        c2b_globals.rmsk->element->query_end_str[query_end_size] = '\0';
+        c2b_globals.rmsk->element->query_end = strtoull(c2b_globals.rmsk->element->query_end_str, NULL, 10);
+        if (errno == ERANGE) {
+            fprintf(stderr, "Error: Could not convert QUERY_END string [%s] to integer (check input)\n", c2b_globals.rmsk->element->query_end_str);
+            exit(ERANGE);
+        }      
+    }
+    else {
+        c2b_globals.rmsk->element->query_end_str[0] = '\0';
+        c2b_globals.rmsk->element->query_end = 0;
     }
 
 #ifdef DEBUG
@@ -3408,10 +3435,14 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
             fprintf(stderr, "Error: Could not resize BASES_PAST_MATCH string in RMSK element struct\n");
             exit(ENOMEM);
         }
-
     }
-    memcpy(c2b_globals.rmsk->element->bases_past_match, src + bases_past_match_start, bases_past_match_size);
-    c2b_globals.rmsk->element->bases_past_match[bases_past_match_size] = '\0';
+    if (bases_past_match_size > 0) {
+        memcpy(c2b_globals.rmsk->element->bases_past_match, src + bases_past_match_start, bases_past_match_size);
+        c2b_globals.rmsk->element->bases_past_match[bases_past_match_size] = '\0';
+    }
+    else {
+        c2b_globals.rmsk->element->bases_past_match[0] = '\0';
+    }
 
 #ifdef DEBUG
     fprintf(stderr, "bases_past_match [%s]\n", c2b_globals.rmsk->element->bases_past_match);
@@ -3432,12 +3463,16 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
             fprintf(stderr, "Error: Could not resize STRAND string in RMSK element struct\n");
             exit(ENOMEM);
         }
-
     }
-    memcpy(c2b_globals.rmsk->element->strand, src + strand_start, strand_size);
-    c2b_globals.rmsk->element->strand[strand_size] = '\0';
-    if (strcmp(c2b_globals.rmsk->element->strand, c2b_rmsk_strand_complement) == 0) {
-        memcpy(c2b_globals.rmsk->element->strand, c2b_rmsk_strand_complement_replacement, strlen(c2b_rmsk_strand_complement_replacement) + 1);
+    if (strand_size > 0) {
+        memcpy(c2b_globals.rmsk->element->strand, src + strand_start, strand_size);
+        c2b_globals.rmsk->element->strand[strand_size] = '\0';
+        if (strcmp(c2b_globals.rmsk->element->strand, c2b_rmsk_strand_complement) == 0) {
+            memcpy(c2b_globals.rmsk->element->strand, c2b_rmsk_strand_complement_replacement, strlen(c2b_rmsk_strand_complement_replacement) + 1);
+        }
+    }
+    else {
+        c2b_globals.rmsk->element->strand[0] = '\0';
     }
 
 #ifdef DEBUG
@@ -3459,10 +3494,14 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
             fprintf(stderr, "Error: Could not resize REPEAT_NAME string in RMSK element struct\n");
             exit(ENOMEM);
         }
-
     }
-    memcpy(c2b_globals.rmsk->element->repeat_name, src + repeat_name_start, repeat_name_size);
-    c2b_globals.rmsk->element->repeat_name[repeat_name_size] = '\0';
+    if (repeat_name_size > 0) {
+        memcpy(c2b_globals.rmsk->element->repeat_name, src + repeat_name_start, repeat_name_size);
+        c2b_globals.rmsk->element->repeat_name[repeat_name_size] = '\0'; 
+    }
+    else {
+        c2b_globals.rmsk->element->repeat_name[0] = '\0'; 
+    }
 
 #ifdef DEBUG
     fprintf(stderr, "repeat_name [%s]\n", c2b_globals.rmsk->element->repeat_name);
@@ -3483,10 +3522,14 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
             fprintf(stderr, "Error: Could not resize REPEAT_CLASS string in RMSK element struct\n");
             exit(ENOMEM);
         }
-
     }
-    memcpy(c2b_globals.rmsk->element->repeat_class, src + repeat_class_start, repeat_class_size);
-    c2b_globals.rmsk->element->repeat_class[repeat_class_size] = '\0';
+    if (repeat_class_size > 0) {
+        memcpy(c2b_globals.rmsk->element->repeat_class, src + repeat_class_start, repeat_class_size);
+        c2b_globals.rmsk->element->repeat_class[repeat_class_size] = '\0';
+    }
+    else {
+        c2b_globals.rmsk->element->repeat_class[0] = '\0';
+    }
 
 #ifdef DEBUG
     fprintf(stderr, "repeat_class [%s]\n", c2b_globals.rmsk->element->repeat_class);
@@ -3507,10 +3550,14 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
             fprintf(stderr, "Error: Could not resize BASES_BEFORE_MATCH_COMP string in RMSK element struct\n");
             exit(ENOMEM);
         }
-
     }
-    memcpy(c2b_globals.rmsk->element->bases_before_match_comp, src + bases_before_match_comp_start, bases_before_match_comp_size);
-    c2b_globals.rmsk->element->bases_before_match_comp[bases_before_match_comp_size] = '\0';
+    if (bases_before_match_comp_size > 0) {
+        memcpy(c2b_globals.rmsk->element->bases_before_match_comp, src + bases_before_match_comp_start, bases_before_match_comp_size);
+        c2b_globals.rmsk->element->bases_before_match_comp[bases_before_match_comp_size] = '\0';
+    }
+    else {
+        c2b_globals.rmsk->element->bases_before_match_comp[0] = '\0';
+    }
 
 #ifdef DEBUG
     fprintf(stderr, "bases_before_match_comp [%s]\n", c2b_globals.rmsk->element->bases_before_match_comp);
@@ -3531,10 +3578,14 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
             fprintf(stderr, "Error: Could not resize MATCH_START string in RMSK element struct\n");
             exit(ENOMEM);
         }
-
     }
-    memcpy(c2b_globals.rmsk->element->match_start, src + match_start_start, match_start_size);
-    c2b_globals.rmsk->element->match_start[match_start_size] = '\0';
+    if (match_start_size > 0) {
+        memcpy(c2b_globals.rmsk->element->match_start, src + match_start_start, match_start_size);
+        c2b_globals.rmsk->element->match_start[match_start_size] = '\0';
+    }
+    else {
+        c2b_globals.rmsk->element->match_start[0] = '\0';
+    }
 
 #ifdef DEBUG
     fprintf(stderr, "match_start [%s]\n", c2b_globals.rmsk->element->match_start);
@@ -3557,8 +3608,13 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
         }
 
     }
-    memcpy(c2b_globals.rmsk->element->match_end, src + match_end_start, match_end_size);
-    c2b_globals.rmsk->element->match_end[match_end_size] = '\0';
+    if (match_end_size > 0) {
+        memcpy(c2b_globals.rmsk->element->match_end, src + match_end_start, match_end_size);
+        c2b_globals.rmsk->element->match_end[match_end_size] = '\0';
+    }
+    else {
+        c2b_globals.rmsk->element->match_end[0] = '\0';
+    }
 
 #ifdef DEBUG
     fprintf(stderr, "match_end [%s]\n", c2b_globals.rmsk->element->match_end);
@@ -3568,6 +3624,12 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
     ssize_t unique_id_start = rmsk_field_start_offsets[14];
     ssize_t unique_id_end = rmsk_field_end_offsets[14];
     ssize_t unique_id_size = unique_id_end - unique_id_start;
+#ifdef DEBUG
+    fprintf(stderr, "unique_id_start [%zd]\n", unique_id_start);
+    fprintf(stderr, "unique_id_end [%zd]\n", unique_id_end);
+    fprintf(stderr, "unique_id_size [%zd]\n", unique_id_size);
+    fprintf(stderr, "c2b_globals.rmsk->element->unique_id_capacity [%zd]\n", c2b_globals.rmsk->element->unique_id_capacity);
+#endif
     if (unique_id_size >= c2b_globals.rmsk->element->unique_id_capacity) {
         char *unique_id_resized = NULL;
         unique_id_resized = realloc(c2b_globals.rmsk->element->unique_id, unique_id_size + 1);
@@ -3579,10 +3641,14 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
             fprintf(stderr, "Error: Could not resize UNIQUE_ID string in RMSK element struct\n");
             exit(ENOMEM);
         }
-
     }
-    memcpy(c2b_globals.rmsk->element->unique_id, src + unique_id_start, unique_id_size);
-    c2b_globals.rmsk->element->unique_id[unique_id_size] = '\0';
+    if (unique_id_size > 0) {
+        memcpy(c2b_globals.rmsk->element->unique_id, src + unique_id_start, unique_id_size);
+        c2b_globals.rmsk->element->unique_id[unique_id_size] = '\0';
+    }
+    else {
+        c2b_globals.rmsk->element->unique_id[0] = '\0';
+    }
 
 #ifdef DEBUG
     fprintf(stderr, "unique_id [%s]\n", c2b_globals.rmsk->element->unique_id);
@@ -3604,14 +3670,19 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
                 fprintf(stderr, "Error: Could not resize HIGHER SCORE MATCH string in RMSK element struct\n");
                 exit(ENOMEM);
             }
-
         }
-        memcpy(c2b_globals.rmsk->element->higher_score_match, src + higher_score_match_start, higher_score_match_size);
-        c2b_globals.rmsk->element->higher_score_match[higher_score_match_size] = '\0';
-#ifdef DEBUG
-        fprintf(stderr, "higher_score_match [%s]\n", c2b_globals.rmsk->element->higher_score_match);
-#endif
+        if (higher_score_match_size > 0) {
+            memcpy(c2b_globals.rmsk->element->higher_score_match, src + higher_score_match_start, higher_score_match_size);
+            c2b_globals.rmsk->element->higher_score_match[higher_score_match_size] = '\0';
+        }
+        else {
+            c2b_globals.rmsk->element->higher_score_match[0] = '\0';
+        }
     }
+    
+#ifdef DEBUG
+    fprintf(stderr, "higher_score_match [%s]\n", c2b_globals.rmsk->element->higher_score_match);
+#endif
 
     c2b_line_convert_rmsk_ptr_to_bed(c2b_globals.rmsk->element, dest, dest_size, dest_capacity);
 
