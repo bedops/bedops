@@ -1,9 +1,9 @@
 /* 
    convert2bed.c
    -----------------------------------------------------------------------
-   Copyright (C) 2014-2018 Alex Reynolds
+   Copyright (C) 2014-2020 Alex Reynolds
    
-   wig2bed components, (C) 2011-2018 Scott Kuehn and Shane Neph
+   wig2bed components, (C) 2011-2020 Scott Kuehn and Shane Neph
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -1094,8 +1094,13 @@ c2b_line_convert_gtf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.gtf->element->seqname, src, seqname_size);
-    c2b_globals.gtf->element->seqname[seqname_size] = '\0';
+    if (seqname_size > 0) {
+        memcpy(c2b_globals.gtf->element->seqname, src, seqname_size);
+        c2b_globals.gtf->element->seqname[seqname_size] = '\0';
+    }
+    else {
+        c2b_globals.gtf->element->seqname[0] = '\0';
+    }
 
     /* 1 - source */
     ssize_t source_size = gtf_field_offsets[1] - gtf_field_offsets[0] - 1;
@@ -1111,8 +1116,13 @@ c2b_line_convert_gtf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.gtf->element->source, src + gtf_field_offsets[0] + 1, source_size);
-    c2b_globals.gtf->element->source[source_size] = '\0';
+    if (source_size > 0) {
+        memcpy(c2b_globals.gtf->element->source, src + gtf_field_offsets[0] + 1, source_size);
+        c2b_globals.gtf->element->source[source_size] = '\0';
+    }
+    else {
+        c2b_globals.gtf->element->source[0] = '\0';
+    }
 
     /* 2 - feature */
     ssize_t feature_size = gtf_field_offsets[2] - gtf_field_offsets[1] - 1;
@@ -1128,8 +1138,13 @@ c2b_line_convert_gtf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.gtf->element->feature, src + gtf_field_offsets[1] + 1, feature_size);
-    c2b_globals.gtf->element->feature[feature_size] = '\0';
+    if (feature_size > 0) {
+        memcpy(c2b_globals.gtf->element->feature, src + gtf_field_offsets[1] + 1, feature_size);
+        c2b_globals.gtf->element->feature[feature_size] = '\0';
+    }
+    else {
+        c2b_globals.gtf->element->feature[0] = '\0';
+    }
 
     /* 3 - start */
     ssize_t start_size = gtf_field_offsets[3] - gtf_field_offsets[2] - 1;
@@ -1145,9 +1160,15 @@ c2b_line_convert_gtf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.gtf->element->start_str, src + gtf_field_offsets[2] + 1, start_size);
-    c2b_globals.gtf->element->start_str[start_size] = '\0';
-    c2b_globals.gtf->element->start = strtoull(c2b_globals.gtf->element->start_str, NULL, 10);
+    if (start_size > 0) {
+        memcpy(c2b_globals.gtf->element->start_str, src + gtf_field_offsets[2] + 1, start_size);
+        c2b_globals.gtf->element->start_str[start_size] = '\0';
+        c2b_globals.gtf->element->start = strtoull(c2b_globals.gtf->element->start_str, NULL, 10);
+    }
+    else {
+        c2b_globals.gtf->element->start_str[0] = '\0';
+        c2b_globals.gtf->element->start = 0;
+    }
 
     /* 4 - end */
     ssize_t end_size = gtf_field_offsets[4] - gtf_field_offsets[3] - 1;
@@ -1163,9 +1184,15 @@ c2b_line_convert_gtf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.gtf->element->end_str, src + gtf_field_offsets[3] + 1, end_size);
-    c2b_globals.gtf->element->end_str[end_size] = '\0';
-    c2b_globals.gtf->element->end = strtoull(c2b_globals.gtf->element->end_str, NULL, 10);
+    if (end_size > 0) {
+        memcpy(c2b_globals.gtf->element->end_str, src + gtf_field_offsets[3] + 1, end_size);
+        c2b_globals.gtf->element->end_str[end_size] = '\0';
+        c2b_globals.gtf->element->end = strtoull(c2b_globals.gtf->element->end_str, NULL, 10);
+    }
+    else {
+        c2b_globals.gtf->element->end_str[0] = '\0';
+        c2b_globals.gtf->element->end = 1;
+    }    
 
     /* 5 - score */
     ssize_t score_size = gtf_field_offsets[5] - gtf_field_offsets[4] - 1;
@@ -1181,8 +1208,13 @@ c2b_line_convert_gtf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.gtf->element->score, src + gtf_field_offsets[4] + 1, score_size);
-    c2b_globals.gtf->element->score[score_size] = '\0';
+    if (score_size > 0) {
+        memcpy(c2b_globals.gtf->element->score, src + gtf_field_offsets[4] + 1, score_size);
+        c2b_globals.gtf->element->score[score_size] = '\0';
+    }
+    else {
+        c2b_globals.gtf->element->score[0] = '\0';
+    }
 
     /* 6 - strand */
     ssize_t strand_size = gtf_field_offsets[6] - gtf_field_offsets[5] - 1;
@@ -1198,8 +1230,13 @@ c2b_line_convert_gtf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.gtf->element->strand, src + gtf_field_offsets[5] + 1, strand_size);
-    c2b_globals.gtf->element->strand[strand_size] = '\0';
+    if (strand_size > 0) {
+        memcpy(c2b_globals.gtf->element->strand, src + gtf_field_offsets[5] + 1, strand_size);
+        c2b_globals.gtf->element->strand[strand_size] = '\0';
+    }
+    else {
+        c2b_globals.gtf->element->strand[0] = '\0';
+    }
 
     /* 7 - frame */
     ssize_t frame_size = gtf_field_offsets[7] - gtf_field_offsets[6] - 1;
@@ -1215,8 +1252,13 @@ c2b_line_convert_gtf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.gtf->element->frame, src + gtf_field_offsets[6] + 1, frame_size);
-    c2b_globals.gtf->element->frame[frame_size] = '\0';
+    if (frame_size > 0) {
+        memcpy(c2b_globals.gtf->element->frame, src + gtf_field_offsets[6] + 1, frame_size);
+        c2b_globals.gtf->element->frame[frame_size] = '\0';
+    }
+    else {
+        c2b_globals.gtf->element->frame[0] = '\0';
+    }
 
     /* 8 - attributes */
     ssize_t attributes_size = gtf_field_offsets[8] - gtf_field_offsets[7] - 1;
@@ -1232,8 +1274,13 @@ c2b_line_convert_gtf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.gtf->element->attributes, src + gtf_field_offsets[7] + 1, attributes_size);
-    c2b_globals.gtf->element->attributes[attributes_size] = '\0';
+    if (attributes_size > 0) {
+        memcpy(c2b_globals.gtf->element->attributes, src + gtf_field_offsets[7] + 1, attributes_size);
+        c2b_globals.gtf->element->attributes[attributes_size] = '\0';
+    }
+    else {
+        c2b_globals.gtf->element->attributes[0] = '\0';
+    }
 
     /* 9 - comments */
     ssize_t comments_size = 0;
@@ -1251,8 +1298,13 @@ c2b_line_convert_gtf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
                 exit(ENOMEM);
             }
         }
-        memcpy(c2b_globals.gtf->element->comments, src + gtf_field_offsets[8] + 1, comments_size);
-        c2b_globals.gtf->element->comments[comments_size] = '\0';
+        if (comments_size > 0) {
+            memcpy(c2b_globals.gtf->element->comments, src + gtf_field_offsets[8] + 1, comments_size);
+            c2b_globals.gtf->element->comments[comments_size] = '\0';
+        }
+        else {
+            c2b_globals.gtf->element->comments[0] = '\0';
+        }
     }
 
     /* 
@@ -1394,6 +1446,10 @@ c2b_line_convert_gtf_ptr_to_bed(c2b_gtf_t* g, char** dest_line_ptr, ssize_t* des
             fprintf(stderr, "Error: Could not resize dest_line_ptr string in GTF pointer conversion fn\n");
             exit(ENOMEM);
         }
+    }
+    
+    if (strlen(g->seqname) == 0) {
+        return;
     }
 
     if (strlen(g->comments) == 0) {
@@ -1683,8 +1739,13 @@ c2b_line_convert_gff_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.gff->element->seqid, src, seqid_size);
-    c2b_globals.gff->element->seqid[seqid_size] = '\0';
+    if (seqid_size > 0) {
+        memcpy(c2b_globals.gff->element->seqid, src, seqid_size);
+        c2b_globals.gff->element->seqid[seqid_size] = '\0';
+    }
+    else {
+        c2b_globals.gff->element->seqid[0] = '\0';
+    }
 
     /* 1 - source */
     ssize_t source_size = gff_field_offsets[1] - gff_field_offsets[0] - 1;
@@ -1700,8 +1761,13 @@ c2b_line_convert_gff_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.gff->element->source, src + gff_field_offsets[0] + 1, source_size);
-    c2b_globals.gff->element->source[source_size] = '\0';
+    if (source_size > 0) {
+        memcpy(c2b_globals.gff->element->source, src + gff_field_offsets[0] + 1, source_size);
+        c2b_globals.gff->element->source[source_size] = '\0';
+    }
+    else {
+        c2b_globals.gff->element->source[0] = '\0';
+    }
 
     /* 2 - type */
     ssize_t type_size = gff_field_offsets[2] - gff_field_offsets[1] - 1;
@@ -1717,8 +1783,13 @@ c2b_line_convert_gff_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.gff->element->type, src + gff_field_offsets[1] + 1, type_size);
-    c2b_globals.gff->element->type[type_size] = '\0';
+    if (type_size > 0) {
+        memcpy(c2b_globals.gff->element->type, src + gff_field_offsets[1] + 1, type_size);
+        c2b_globals.gff->element->type[type_size] = '\0';
+    }
+    else {
+        c2b_globals.gff->element->type[0] = '\0';
+    }
 
     /* 3 - start */
     ssize_t start_size = gff_field_offsets[3] - gff_field_offsets[2] - 1;
@@ -1734,9 +1805,15 @@ c2b_line_convert_gff_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.gff->element->start_str, src + gff_field_offsets[2] + 1, start_size);
-    c2b_globals.gff->element->start_str[start_size] = '\0';
-    c2b_globals.gff->element->start = strtoull(c2b_globals.gff->element->start_str, NULL, 10);
+    if (start_size > 0) {
+        memcpy(c2b_globals.gff->element->start_str, src + gff_field_offsets[2] + 1, start_size);
+        c2b_globals.gff->element->start_str[start_size] = '\0';
+        c2b_globals.gff->element->start = strtoull(c2b_globals.gff->element->start_str, NULL, 10);
+    }
+    else {
+        c2b_globals.gff->element->start_str[0] = '\0';
+        c2b_globals.gff->element->start = 1;
+    }
 
     /* 4 - end */
     ssize_t end_size = gff_field_offsets[4] - gff_field_offsets[3] - 1;
@@ -1752,9 +1829,15 @@ c2b_line_convert_gff_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.gff->element->end_str, src + gff_field_offsets[3] + 1, end_size);
-    c2b_globals.gff->element->end_str[end_size] = '\0';
-    c2b_globals.gff->element->end = strtoull(c2b_globals.gff->element->end_str, NULL, 10);
+    if (end_size > 0) {
+        memcpy(c2b_globals.gff->element->end_str, src + gff_field_offsets[3] + 1, end_size);
+        c2b_globals.gff->element->end_str[end_size] = '\0';
+        c2b_globals.gff->element->end = strtoull(c2b_globals.gff->element->end_str, NULL, 10);
+    }
+    else {
+        c2b_globals.gff->element->end_str[0] = '\0';
+        c2b_globals.gff->element->end = 1;
+    }
 
     /* 5 - score */
     ssize_t score_size = gff_field_offsets[5] - gff_field_offsets[4] - 1;
@@ -1770,8 +1853,13 @@ c2b_line_convert_gff_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.gff->element->score, src + gff_field_offsets[4] + 1, score_size);
-    c2b_globals.gff->element->score[score_size] = '\0';
+    if (score_size > 0) {
+        memcpy(c2b_globals.gff->element->score, src + gff_field_offsets[4] + 1, score_size);
+        c2b_globals.gff->element->score[score_size] = '\0';
+    }
+    else {
+        c2b_globals.gff->element->score[0] = '\0';
+    }
 
     /* 6 - strand */
     ssize_t strand_size = gff_field_offsets[6] - gff_field_offsets[5] - 1;
@@ -1787,8 +1875,13 @@ c2b_line_convert_gff_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.gff->element->strand, src + gff_field_offsets[5] + 1, strand_size);
-    c2b_globals.gff->element->strand[strand_size] = '\0';
+    if (strand_size > 0) {
+        memcpy(c2b_globals.gff->element->strand, src + gff_field_offsets[5] + 1, strand_size);
+        c2b_globals.gff->element->strand[strand_size] = '\0';
+    }
+    else {
+        c2b_globals.gff->element->strand[0] = '\0';
+    }
 
     /* 7 - phase */
     ssize_t phase_size = gff_field_offsets[7] - gff_field_offsets[6] - 1;
@@ -1804,8 +1897,13 @@ c2b_line_convert_gff_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.gff->element->phase, src + gff_field_offsets[6] + 1, phase_size);
-    c2b_globals.gff->element->phase[phase_size] = '\0';
+    if (phase_size > 0) {
+        memcpy(c2b_globals.gff->element->phase, src + gff_field_offsets[6] + 1, phase_size);
+        c2b_globals.gff->element->phase[phase_size] = '\0';
+    }
+    else {
+        c2b_globals.gff->element->phase[0] = '\0';
+    }
 
     /* 8 - attributes */
     ssize_t attributes_size = gff_field_offsets[8] - gff_field_offsets[7] - 1;
@@ -1821,8 +1919,13 @@ c2b_line_convert_gff_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             exit(ENOMEM);
         }
     }
-    memcpy(c2b_globals.gff->element->attributes, src + gff_field_offsets[7] + 1, attributes_size);
-    c2b_globals.gff->element->attributes[attributes_size] = '\0';
+    if (attributes_size > 0) {
+        memcpy(c2b_globals.gff->element->attributes, src + gff_field_offsets[7] + 1, attributes_size);
+        c2b_globals.gff->element->attributes[attributes_size] = '\0';
+    }
+    else {
+        c2b_globals.gff->element->attributes[0] = '\0';
+    }
 
     /* 
        Fix coordinate indexing, and (if needed) add attribute for zero-length record
@@ -1886,8 +1989,13 @@ c2b_line_convert_gff_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
                     exit(ENOMEM);
                 }
             }
-            memcpy(c2b_globals.gff->element->id, kv_tok + strlen(gff_id_prefix), strlen(kv_tok + strlen(gff_id_prefix)) + 1);
-            c2b_globals.gff->element->id[strlen(kv_tok + strlen(gff_id_prefix)) + 1] = '\0';
+            if (id_size > 0) {
+                memcpy(c2b_globals.gff->element->id, kv_tok + strlen(gff_id_prefix), strlen(kv_tok + strlen(gff_id_prefix)) + 1);
+                c2b_globals.gff->element->id[strlen(kv_tok + strlen(gff_id_prefix)) + 1] = '\0';
+            }
+            else {
+                c2b_globals.gff->element->id[0] = '\0';
+            }
         }
     }
     free(attributes_copy), attributes_copy = NULL;
@@ -1937,6 +2045,10 @@ c2b_line_convert_gff_ptr_to_bed(c2b_gff_t* g, char** dest_line_ptr, ssize_t* des
             fprintf(stderr, "Error: Could not resize dest_line_ptr string in GFF pointer conversion fn\n");
             exit(ENOMEM);
         }
+    }
+    
+    if (strlen(g->seqid) == 0) {
+        return;
     }
 
     *dest_size += sprintf(*dest_line_ptr + *dest_size,
@@ -3366,7 +3478,7 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
             exit(ENOMEM);
         }
     }
-    if (query_start_size > 0) {
+    if ((query_start_size > 0) && (query_start_size < C2B_MAX_OPERATION_FIELD_LENGTH_VALUE)) {
         memcpy(c2b_globals.rmsk->element->query_start_str, src + query_start_start, query_start_size);
         c2b_globals.rmsk->element->query_start_str[query_start_size] = '\0';
         c2b_globals.rmsk->element->query_start = strtoull(c2b_globals.rmsk->element->query_start_str, NULL, 10);
@@ -3375,7 +3487,9 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
             exit(ERANGE);
         }
         /* subtract to make 0-indexed */
-        c2b_globals.rmsk->element->query_start--;
+        if (c2b_globals.rmsk->element->query_start > 0) {
+            c2b_globals.rmsk->element->query_start--;
+        }
     }
     else {
         c2b_globals.rmsk->element->query_start_str[0] = '\0';
@@ -3383,6 +3497,7 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
     }
 
 #ifdef DEBUG
+    fprintf(stderr, "c2b_globals.rmsk->element->query_start [%llu]\n", c2b_globals.rmsk->element->query_start);
     fprintf(stderr, "query_start_str [%s]\n", c2b_globals.rmsk->element->query_start_str);
 #endif
 
@@ -3402,7 +3517,7 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
             exit(ENOMEM);
         }
     }
-    if (query_end_size > 0) {
+    if ((query_end_size > 0) && (query_end_size < C2B_MAX_OPERATION_FIELD_LENGTH_VALUE)) {
         memcpy(c2b_globals.rmsk->element->query_end_str, src + query_end_start, query_end_size);
         c2b_globals.rmsk->element->query_end_str[query_end_size] = '\0';
         c2b_globals.rmsk->element->query_end = strtoull(c2b_globals.rmsk->element->query_end_str, NULL, 10);
@@ -3417,8 +3532,14 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
     }
 
 #ifdef DEBUG
+    fprintf(stderr, "c2b_globals.rmsk->element->query_end [%llu]\n", c2b_globals.rmsk->element->query_end);
     fprintf(stderr, "query_end_str [%s]\n", c2b_globals.rmsk->element->query_end_str);
 #endif
+
+    if (c2b_globals.rmsk->element->query_start == c2b_globals.rmsk->element->query_end) {
+        fprintf(stderr, "Error: Invalid query coordinates at line [%llu]\n", c2b_globals.rmsk->line);
+        exit(EINVAL);
+    }
 
     /*  7 - Bases in query sequence past the ending position of match */
     ssize_t bases_past_match_start = rmsk_field_start_offsets[7];
@@ -5601,6 +5722,9 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
     */
     
     if (src[0] == c2b_wig_header_prefix) { 
+#ifdef DEBUG
+        fprintf (stderr, "--- convert2bed c2b_line_convert_wig_to_bed_unsorted() - c2b_wig_header_prefix - enter ---\n");
+#endif
         if (c2b_globals.wig->start_write) {
             c2b_globals.wig->start_write = kFalse;
             sprintf(c2b_globals.wig->id, 
@@ -5653,6 +5777,9 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
     }
     else if ((strncmp(src, c2b_wig_track_prefix, strlen(c2b_wig_track_prefix)) == 0) || 
              (strncmp(src, c2b_wig_browser_prefix, strlen(c2b_wig_browser_prefix)) == 0)) {
+#ifdef DEBUG
+        fprintf (stderr, "--- convert2bed c2b_line_convert_wig_to_bed_unsorted() - c2b_wig_track_prefix / c2b_wig_browser_prefix - enter ---\n");
+#endif
         if (c2b_globals.wig->start_write) {
             c2b_globals.wig->start_write = kFalse;
             sprintf(c2b_globals.wig->id,
@@ -5704,12 +5831,18 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
         }        
     }
     else if (strncmp(src, c2b_wig_variable_step_prefix, strlen(c2b_wig_variable_step_prefix)) == 0) {
+#ifdef DEBUG
+        fprintf (stderr, "--- convert2bed c2b_line_convert_wig_to_bed_unsorted() - c2b_wig_variable_step_prefix - enter ---\n");
+#endif
         memcpy(c2b_globals.src_line_str, src, src_size);
         c2b_globals.src_line_str[src_size] = '\0';
         int variable_step_fields = sscanf(c2b_globals.src_line_str, 
                                           "variableStep chrom=%s span=%" SCNu64 "\n", 
                                           c2b_globals.wig->chr, 
                                           &(c2b_globals.wig->span));
+#ifdef DEBUG
+        fprintf (stderr, "--- convert2bed c2b_line_convert_wig_to_bed_unsorted() - c2b_wig_variable_step_prefix - variable_step_fields [%d] ---\n", variable_step_fields);
+#endif
         if (variable_step_fields < 1) {
             fprintf(stderr, "Error: Invalid variableStep header on line %u\n", c2b_globals.wig->line);
             exit(EINVAL); /* Invalid argument (POSIX.1) */
@@ -5723,6 +5856,10 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
                     "%s.%u",
                     c2b_globals.wig->basename,
                     ++c2b_globals.wig->section);
+        }
+        if (strlen(c2b_globals.wig->id) == 0) {
+            fprintf(stderr, "Error: Invalid wig ID on line %u\n", c2b_globals.wig->line);
+            exit(EINVAL); /* Invalid argument (POSIX.1) */
         }
         if (c2b_globals.keep_header_flag) { 
             /* copy header line to destination stream buffer */
@@ -5766,6 +5903,9 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
         }                
     }
     else if (strncmp(src, c2b_wig_fixed_step_prefix, strlen(c2b_wig_fixed_step_prefix)) == 0) {
+#ifdef DEBUG
+        fprintf (stderr, "--- convert2bed c2b_line_convert_wig_to_bed_unsorted() - c2b_wig_fixed_step_prefix - enter ---\n");
+#endif
         memcpy(c2b_globals.src_line_str, src, src_size);
         c2b_globals.src_line_str[src_size] = '\0';
         int fixed_step_fields = sscanf(c2b_globals.src_line_str, 
@@ -5776,6 +5916,12 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
                                        &(c2b_globals.wig->span));
         if (fixed_step_fields < 3) {
             fprintf(stderr, "Error: Invalid fixedStep header on line %u\n", c2b_globals.wig->line);
+            exit(EINVAL); /* Invalid argument (POSIX.1) */
+        }
+        if (strlen(c2b_globals.wig->chr) >= C2B_MAX_CHROMOSOME_LENGTH) {
+            fprintf(stderr, "Error: Invalid WIG line %u\n", c2b_globals.wig->line);
+            fprintf(stderr, "Chromosome length is too long; check that you have Unix newlines (cat -A)\n" \
+                            "or increase TOKEN_CHR_MAX_LENGTH in BEDOPS.Constants.hpp and recompile BEDOPS\n");
             exit(EINVAL); /* Invalid argument (POSIX.1) */
         }
         if (fixed_step_fields == 3) {
@@ -5824,6 +5970,9 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
         }        
     }
     else if (strncmp(src, c2b_wig_chr_prefix, strlen(c2b_wig_chr_prefix)) == 0) {
+#ifdef DEBUG
+        fprintf (stderr, "--- convert2bed c2b_line_convert_wig_to_bed_unsorted() - c2b_wig_chr_prefix - enter ---\n");
+#endif
         memcpy(c2b_globals.src_line_str, src, src_size);
         c2b_globals.src_line_str[src_size] = '\0';
         int bed_fields = sscanf(c2b_globals.src_line_str, 
@@ -5834,6 +5983,12 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
                                 &(c2b_globals.wig->score));
         if (bed_fields != 4) {
             fprintf(stderr, "Error: Invalid WIG line %u\n", c2b_globals.wig->line);
+            exit(EINVAL); /* Invalid argument (POSIX.1) */
+        }
+        if (strlen(c2b_globals.wig->chr) >= C2B_MAX_CHROMOSOME_LENGTH) {
+            fprintf(stderr, "Error: Invalid WIG line %u\n", c2b_globals.wig->line);
+            fprintf(stderr, "Chromosome length is too long; check that you have Unix newlines (cat -A)\n" \
+                            "or increase TOKEN_CHR_MAX_LENGTH in BEDOPS.Constants.hpp and recompile BEDOPS\n");
             exit(EINVAL); /* Invalid argument (POSIX.1) */
         }
         c2b_globals.wig->pos_lines++;
@@ -5887,6 +6042,9 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
         *dest_size += strlen(c2b_globals.dest_line_str);
     }
     else {
+#ifdef DEBUG
+        fprintf (stderr, "--- convert2bed c2b_line_convert_wig_to_bed_unsorted() - src_line_str - enter ---\n");
+#endif
         memcpy(c2b_globals.src_line_str, src, src_size);
         c2b_globals.src_line_str[src_size] = '\0';
 
