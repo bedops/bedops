@@ -386,6 +386,8 @@ else
 	find docs/content -type f -exec sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" {} +
 endif
 
+#######################
+# OS X: use "brew install findutils" and "brew install gnu-sed"
 update_bedops_copyright_date:
 ifndef OLD_CPD
 	$(error Old copyright date variable OLD_CPD is undefined (e.g., 2011-2017))
