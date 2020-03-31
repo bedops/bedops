@@ -19,10 +19,9 @@ Released: **TBD**
 
 * :ref:`convert2bed <convert2bed>`
 
-  General improvements in handling malformed inputs.
-
   * Patches segmentation fault in malformed RepeatMasker input conversion. Thanks to `Mark Diekhans <https://github.com/bedops/bedops/issues/235>`_ for the bug report.
   * Patches abort and segmentation faults in malformed GVF, GFF, GTF, and WIG input conversion. Thanks to `Hongxu Chen <https://github.com/bedops/bedops/issues/217>`_ for the bug report.
+  * Patches documentation and help message for BAM and SAM conversion. Thanks to `Zhuoer Dong <https://github.com/bedops/bedops/issues/215>`_ for the report.
 
 =================
 Previous versions

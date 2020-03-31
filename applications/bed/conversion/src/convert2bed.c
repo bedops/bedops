@@ -3488,7 +3488,7 @@ c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* 
         }
         /* subtract to make 0-indexed */
         if (c2b_globals.rmsk->element->query_start > 0) {
-            c2b_globals.rmsk->element->query_start--;
+          c2b_globals.rmsk->element->query_start--;
         }
     }
     else {
@@ -5062,7 +5062,7 @@ c2b_line_convert_sam_ptr_to_bed(c2b_sam_t* s, char** dest_line_ptr, ssize_t* des
        -------------------------------------------------------------------------
        RNAME                     1                      chromosome
        POS - 1                   2                      start
-       POS + length(CIGAR) - 1   3                      stop
+       POS + length(SEQ) - 1     3                      stop
        QNAME                     4                      id
        MAPQ                      5                      score
        16 & FLAG                 6                      strand

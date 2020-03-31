@@ -759,7 +759,7 @@ static const char* bam_description =                                    \
     "\n"                                                                \
     "  - RNAME                     <-->   chromosome (1st column)\n"    \
     "  - POS - 1                   <-->   start (2nd column)\n"         \
-    "  - POS + length(CIGAR) - 1   <-->   stop (3rd column)\n"          \
+    "  - POS + length(SEQ) - 1     <-->   stop (3rd column)\n"          \
     "  - QNAME                     <-->   id (4th column)\n"            \
     "  - FLAG                      <-->   score (5th column)\n"         \
     "  - 16 & FLAG                 <-->   strand (6th column)\n"        \
@@ -1174,7 +1174,7 @@ static const char* sam_description =                                    \
     "\n"                                                                \
     "  - RNAME                     <-->   chromosome (1st column)\n"    \
     "  - POS - 1                   <-->   start (2nd column)\n"         \
-    "  - POS + length(CIGAR) - 1   <-->   stop (3rd column)\n"          \
+    "  - POS + length(SEQ) - 1     <-->   stop (3rd column)\n"          \
     "  - QNAME                     <-->   id (4th column)\n"            \
     "  - FLAG                      <-->   score (5th column)\n"         \
     "  - 16 & FLAG                 <-->   strand (6th column)\n"        \
