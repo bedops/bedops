@@ -387,13 +387,16 @@ else
 endif
 
 #######################
-# OS X: use "brew install findutils" and "brew install gnu-sed"
+# for users with OS X: 
+# "brew install findutils" and "brew install gnu-sed" 
+# will install "gfind" and "gsed" binaries
+
 update_bedops_copyright_date:
 ifndef OLD_CPD
 	$(error Old copyright date variable OLD_CPD is undefined (e.g., 2011-2017))
 endif
 ifndef NEW_CPD
-	$(error New copyright date variable NEW_CPD is undefined (e.g., 2011-2018))
+	$(error New copyright date variable NEW_CPD is undefined (e.g., 2011-2020))
 endif
 ifeq ($(KERNEL), Darwin)
 	gfind . -exec gsed -i "s/"$$OLD_CPD"/"$$NEW_CPD"/g" {} \;
