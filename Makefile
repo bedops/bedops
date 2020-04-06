@@ -336,34 +336,39 @@ install_osx_packaging_bins: prep_c all
 	./switch-BEDOPS-binary-type --typical .
 	-cd ${CWD}; \
 	mkdir -p ${OSXLIBDIR}; \
+	
+#######################
+# for users with OS X: 
+# "brew install findutils" and "brew install gnu-sed" 
+# will install "gfind" and "gsed" binaries
 
 update_bedops_version:
 ifndef OLD_VER
-	$(error Old version variable OLD_VER is undefined (e.g., 2.4.26))
+	$(error Old version variable OLD_VER is undefined (e.g., 2.4.37))
 endif
 ifndef NEW_VER
-	$(error New version variable NEW_VER is undefined (e.g., 2.4.27))
+	$(error New version variable NEW_VER is undefined (e.g., 2.4.38))
 endif
 ifeq ($(KERNEL), Darwin)
-	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" README.md
-	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/rpm/bedops.spec
-	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/rpm/Dockerfile
-	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/deb/control
-	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/deb/Dockerfile
-	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" interfaces/general-headers/suite/BEDOPS.Version.hpp
-	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/os_x/BEDOPS.pkgproj
-	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" docs/index.rst
-	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" docs/conf.py
-	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/conversion/src/convert2bed.h
-	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_gnuParallel.tcsh
-	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_sge.tcsh
-	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_slurm.tcsh
-	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starch-diff.py
-	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/Makefile.darwin
-	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/sort-bed/src/update-sort-bed-slurm.py
-	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/sort-bed/src/update-sort-bed-starch-slurm.py
-	sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/sort-bed/src/update-sort-bed-migrate-candidates.py
-	find docs/content -type f -exec sed -i "" -e "s/"$$OLD_VER"/"$$NEW_VER"/g" {} +
+	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" README.md
+	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/rpm/bedops.spec
+	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/rpm/Dockerfile
+	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/deb/control
+	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/deb/Dockerfile
+	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" interfaces/general-headers/suite/BEDOPS.Version.hpp
+	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/os_x/BEDOPS.pkgproj
+	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" docs/index.rst
+	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" docs/conf.py
+	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/conversion/src/convert2bed.h
+	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_gnuParallel.tcsh
+	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_sge.tcsh
+	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starchcluster_slurm.tcsh
+	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/starch-diff.py
+	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/starch/src/Makefile.darwin
+	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/sort-bed/src/update-sort-bed-slurm.py
+	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/sort-bed/src/update-sort-bed-starch-slurm.py
+	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" applications/bed/sort-bed/src/update-sort-bed-migrate-candidates.py
+	gfind docs/content -type f -exec gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" {} +
 else
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" README.md
 	sed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/rpm/bedops.spec

@@ -12,6 +12,24 @@ Current version
 ===============
 
 -------
+v2.4.39
+-------
+
+Released: **April 6, 2020**
+
+* :ref:`sort-bed <sort-bed>`
+
+  * Patched :code:`--unique` to report output identical to :code:`sort -u`, in order to resolve `Issue 236 <https://github.com/bedops/bedops/issues/236>`_.
+  
+* General
+
+  * Updated main :code:`Makefile` to use `Homebrew <https://brew.sh/>`_ GNU :code:`coreutils` and :code:`findutils` tools on the OS X target. If you build BEDOPS on OS X, you can add these tools with :code:`brew install coreutils findutils`.
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.38
 -------
 
@@ -27,10 +45,6 @@ Released: **March 31, 2020**
 * General
 
   * Updated outdated date information.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.37

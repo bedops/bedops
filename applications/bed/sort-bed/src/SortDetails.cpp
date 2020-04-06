@@ -1197,20 +1197,38 @@ printBed(FILE *out, BedData *beds, const bool printUniques, const bool printDupl
                     exit(EXIT_FAILURE);
                 }
 
-            for(i = 0; i < beds->numChroms; i++)
-                for(j = 0; j < beds->chroms[i]->numCoords; j++) 
-                    {
-                        if (j == 0) {
-                            sprintf(currElem,
-                                    "%s\t%" PRId64 "\t%" PRId64,
-                                    beds->chroms[i]->chromName, 
-                                    beds->chroms[i]->coords[j].startCoord, 
-                                    beds->chroms[i]->coords[j].endCoord);
-                            if(beds->chroms[i]->coords[j].data)
-                                sprintf(currElem + strlen(currElem), "\t%s\n", beds->chroms[i]->coords[j].data);
-                            else
-                                sprintf(currElem + strlen(currElem), "\n");
-                            if (beds->chroms[i]->numCoords > 1) {
+            for (i = 0; i < beds->numChroms; i++) 
+                {
+                    bool duplicateFound = false;
+                    for (j = 0; j < beds->chroms[i]->numCoords; j++) 
+                        {
+                            if (j == 0) {
+                                sprintf(currElem,
+                                        "%s\t%" PRId64 "\t%" PRId64,
+                                        beds->chroms[i]->chromName, 
+                                        beds->chroms[i]->coords[j].startCoord, 
+                                        beds->chroms[i]->coords[j].endCoord);
+                                if(beds->chroms[i]->coords[j].data)
+                                    sprintf(currElem + strlen(currElem), "\t%s\n", beds->chroms[i]->coords[j].data);
+                                else
+                                    sprintf(currElem + strlen(currElem), "\n");
+                                if (beds->chroms[i]->numCoords > 1) {
+                                    sprintf(nextElem,
+                                            "%s\t%" PRId64 "\t%" PRId64,
+                                            beds->chroms[i]->chromName, 
+                                            beds->chroms[i]->coords[j+1].startCoord, 
+                                            beds->chroms[i]->coords[j+1].endCoord);
+                                    if(beds->chroms[i]->coords[j].data)
+                                        sprintf(nextElem + strlen(nextElem), "\t%s\n", beds->chroms[i]->coords[j+1].data);
+                                    else
+                                        sprintf(nextElem + strlen(nextElem), "\n");
+                                }
+                                else {
+                                    nextElem[0] = '\0';
+                                }
+                            }
+                            else if (j < beds->chroms[i]->numCoords - 1) {
+                                memcpy(currElem, nextElem, strlen(nextElem)+1); 
                                 sprintf(nextElem,
                                         "%s\t%" PRId64 "\t%" PRId64,
                                         beds->chroms[i]->chromName, 
@@ -1222,52 +1240,50 @@ printBed(FILE *out, BedData *beds, const bool printUniques, const bool printDupl
                                     sprintf(nextElem + strlen(nextElem), "\n");
                             }
                             else {
+                                memcpy(currElem, nextElem, strlen(nextElem)+1); 
                                 nextElem[0] = '\0';
                             }
+    
+                            if (printUniques)
+                                {
+                                    if((prevElem[0] == '\0') && (strcmp(currElem, nextElem) != 0))
+                                        {
+                                            fprintf(out, "%s", currElem);
+                                        }
+                                    else if ((strcmp(prevElem, currElem) != 0) && (strcmp(currElem, nextElem) != 0))
+                                        {
+                                            fprintf(out, "%s", currElem);
+                                        }
+                                    else if ((strcmp(prevElem, currElem) == 0) && (strcmp(currElem, nextElem) != 0) && duplicateFound)
+                                        {
+                                            fprintf(out, "%s", currElem);
+                                            duplicateFound = false;
+                                        }
+                                    else if ((strcmp(currElem, nextElem) == 0) && !duplicateFound)
+                                        {
+                                            duplicateFound = true;
+                                        }
+                                    else if ((strcmp(currElem, nextElem) != 0) && duplicateFound)
+                                        {
+                                            duplicateFound = false;
+                                        }
+                                }
+                            else if (printDuplicates)
+                                {
+                                    if((strcmp(prevElem, currElem) == 0) && (strcmp(currElem, nextElem) == 0))
+                                        {
+                                            continue;
+                                        }
+                                    else if(strcmp(currElem, prevElem) == 0)
+                                        {
+                                            fprintf(out, "%s", currElem);
+                                        }
+                                }
+    
+                            memcpy(prevElem, currElem, strlen(currElem)+1);
                         }
-                        else if (j < beds->chroms[i]->numCoords - 1) {
-                            memcpy(currElem, nextElem, strlen(nextElem)+1); 
-                            sprintf(nextElem,
-                                    "%s\t%" PRId64 "\t%" PRId64,
-                                    beds->chroms[i]->chromName, 
-                                    beds->chroms[i]->coords[j+1].startCoord, 
-                                    beds->chroms[i]->coords[j+1].endCoord);
-                            if(beds->chroms[i]->coords[j].data)
-                                sprintf(nextElem + strlen(nextElem), "\t%s\n", beds->chroms[i]->coords[j+1].data);
-                            else
-                                sprintf(nextElem + strlen(nextElem), "\n");
-                        }
-                        else {
-                            memcpy(currElem, nextElem, strlen(nextElem)+1); 
-                            nextElem[0] = '\0';
-                        }
-
-                        if (printUniques)
-                            {
-                                if((prevElem[0] == '\0') && (strcmp(currElem, nextElem) != 0))
-                                    {
-                                        fprintf(out, "%s", currElem);
-                                    }
-                                else if ((strcmp(prevElem, currElem) != 0) && (strcmp(currElem, nextElem) != 0))
-                                    {
-                                        fprintf(out, "%s", currElem);
-                                    }
-                            }
-                        else if (printDuplicates)
-                            {
-                                if((strcmp(prevElem, currElem) == 0) && (strcmp(currElem, nextElem) == 0))
-                                    {
-                                        continue;
-                                    }
-                                else if(strcmp(currElem, prevElem) == 0)
-                                    {
-                                        fprintf(out, "%s", currElem);
-                                    }
-                            }
-
-                        memcpy(prevElem, currElem, strlen(currElem)+1);
-                    }
-
+                }
+            
             free(prevElem);
             prevElem = NULL;
             
