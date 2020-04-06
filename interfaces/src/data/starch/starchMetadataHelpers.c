@@ -1025,6 +1025,97 @@ STARCH_writeJSONMetadata(const Metadata *md,
     return STARCH_EXIT_SUCCESS;
 }
 
+int
+STARCH_JSONMetadataExists(FILE **fp, 
+                          const char *fn)
+{
+#ifdef DEBUG
+    fprintf(stderr, "\n--- STARCH_JSONMetadataExists() ---\n");
+#endif
+    size_t nReadBytes;
+    size_t idxBytes;
+    unsigned char starchRevision2HeaderTestBytes[sizeof(starchRevision2HeaderBytes)] = {0};
+    char testMagicBuffer[STARCH_TEST_BYTE_COUNT] = {0};
+    char currC = '\0';
+    char prevC = '\0';
+    char legacyBuffer[STARCH_LEGACY_METADATA_SIZE] = {0};
+    json_error_t jsonParseError;
+    json_t *metadataJSON = NULL;
+    
+    if (! *fp) {
+        *fp = STARCH_fopen(fn, "rbR");
+    }
+    if (! *fp) {
+        return STARCH_EXIT_FAILURE;
+    }
+    /* 
+        Read first four bytes to test if it has v2 Starch 
+        file magic bytes 
+    */
+    nReadBytes = fread(starchRevision2HeaderTestBytes, sizeof(unsigned char), sizeof(starchRevision2HeaderBytes), *fp);
+    if (nReadBytes != (sizeof(unsigned char) * sizeof(starchRevision2HeaderBytes))) {
+        fprintf(stderr, "ERROR: Total amount of bytes read not equal to Starch magic byte header length. Check file length.\n");
+        return STARCH_EXIT_FAILURE;
+    }
+    if (memcmp(starchRevision2HeaderTestBytes, starchRevision2HeaderBytes, sizeof(starchRevision2HeaderBytes)) == 0) {
+        return STARCH_EXIT_SUCCESS;      
+    }
+    /* 
+        If four bytes are not v2 Starch magic bytes, test if a
+        JSON entity is found in first STARCH_LEGACY_METADATA_SIZE 
+        bytes (8k) or until we reach EOF (possibly early, for a
+        short file).
+    */
+    STARCH_fseeko(*fp, 0, SEEK_SET);
+    nReadBytes = 0;
+    do {
+#ifdef __cplusplus
+        currC = static_cast<char>( fgetc(*fp) );
+#else
+        currC = (char) fgetc(*fp);
+#endif
+        fprintf(stderr, "currC [%zu] [%c]\n", nReadBytes, currC);
+        if ((prevC == currC) && (currC == '\n')) {
+            break;
+        }
+        else {
+            legacyBuffer[nReadBytes++] = currC;
+            prevC = currC;
+        }
+        if ((nReadBytes >= STARCH_TEST_BYTE_COUNT) && (nReadBytes < (STARCH_LEGACY_METADATA_SIZE - STARCH_TEST_BYTE_COUNT))) {
+            for (idxBytes = 0; idxBytes < STARCH_TEST_BYTE_COUNT; idxBytes++) {
+                testMagicBuffer[idxBytes] = legacyBuffer[nReadBytes - STARCH_TEST_BYTE_COUNT + idxBytes];
+            }
+            if ((memcmp(testMagicBuffer, bzip2MagicBytes, sizeof(bzip2MagicBytes) - 1) == 0) || (memcmp(testMagicBuffer, gzipMagicBytes, sizeof(gzipMagicBytes) - 1) == 0)) {
+                break;
+            }
+        }
+        if (nReadBytes == STARCH_LEGACY_METADATA_SIZE) {
+            break;
+        }
+    } while (currC != EOF);
+    if ((nReadBytes == STARCH_LEGACY_METADATA_SIZE) || (currC == EOF)) {
+        return STARCH_EXIT_FAILURE;
+    }
+    legacyBuffer[nReadBytes - STARCH_TEST_BYTE_COUNT] = '\0'; /* trim string */
+
+    /* 
+        Attempt to turn legacy buffer into JSON entity. 
+    */
+    metadataJSON = json_loads(legacyBuffer, JSON_DISABLE_EOF_CHECK, &jsonParseError);
+    if (!metadataJSON) {
+        fprintf(stderr, "ERROR: JSON parsing error on line %d: %s\n", jsonParseError.line, jsonParseError.text);
+        return STARCH_EXIT_FAILURE;
+    }
+    /* 
+        If we got this far, we have a JSON entity in the 
+        file, so it could be a v1 Starch archive. We don't
+        check too stringently, because these types of 
+        archives are no longer supported.
+    */
+    return STARCH_EXIT_SUCCESS;
+}
+
 int 
 STARCH_readJSONMetadata(json_t **metadataJSON, 
                         FILE **fp, 

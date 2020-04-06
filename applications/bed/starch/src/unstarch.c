@@ -268,22 +268,13 @@ main(int argc, char **argv)
     else if (resultValue == UNSTARCH_IS_STARCH_ARCHIVE_ERROR)
     {
         /* we suppress warnings from STARCH_readJSONMetadata() */
-        if (STARCH_readJSONMetadata( &metadataJSON,
-                     &inFilePtr,
+        if (STARCH_JSONMetadataExists( &inFilePtr,
 #ifdef __cplusplus
-                     reinterpret_cast<const char *>( inFile ),
+                     reinterpret_cast<const char *>( inFile )
 #else
-                     (const char *) inFile,
+                     (const char *) inFile
 #endif
-                     &records,
-                     &type,
-                     &archiveVersion,
-                     &archiveTimestamp,
-                     &note,
-                     &metadataOffset,
-                     &headerFlag,
-                     kStarchTrue,
-                     kStarchTrue) != STARCH_EXIT_SUCCESS) {
+                     ) != STARCH_EXIT_SUCCESS) {
             fprintf(stdout, "0\n"); /* false -- no valid metadata, therefore not a starch archive */
             return EXIT_SUCCESS;
         }

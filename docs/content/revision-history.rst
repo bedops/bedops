@@ -21,6 +21,10 @@ Released: **April 6, 2020**
 
   * Patched :code:`--unique` to report output identical to :code:`sort -u`, in order to resolve `Issue 236 <https://github.com/bedops/bedops/issues/236>`_.
   
+* :ref:`unstarch <unstarch>`
+
+  * Patched :code:`--is-starch` test option to read only up to, at most, 8kb to check for v2 or v1 (legacy) Starch archive data, to resolve `Issue 209 <https://github.com/bedops/bedops/issues/209>`_.
+  
 * General
 
   * Updated main :code:`Makefile` to use `Homebrew <https://brew.sh/>`_ GNU :code:`coreutils` and :code:`findutils` tools on the OS X target. If you build BEDOPS on OS X, you can add these tools with :code:`brew install coreutils findutils`.

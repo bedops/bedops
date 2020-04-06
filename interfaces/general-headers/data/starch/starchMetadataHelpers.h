@@ -244,6 +244,9 @@ char *           STARCH_generateJSONMetadata(const Metadata *md,
                                                  const char *note,
                                               const Boolean headerFlag);
 
+int              STARCH_JSONMetadataExists(FILE **fp,
+                                     const char *fn);
+
 int              STARCH_readJSONMetadata(json_t **metadataJSON,
                                            FILE **fp, 
                                      const char *fn, 
