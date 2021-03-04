@@ -1,6 +1,6 @@
 ## BEDOPS v2.4.40: high-performance genomic feature operations ##
 
-[![Bedops CI](https://github.com/bedops/bedops/actions/workflows/main.yml/badge.svg)](https://github.com/bedops/bedops/actions/workflows/main.yml) [![GitHub stars](https://img.shields.io/github/stars/bedops/bedops.svg)](https://github.com/bedops/bedops/stargazers) [![Project license](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://github.com/bedops/bedops/blob/master/LICENSE) [![Documentation Status](https://readthedocs.org/projects/bedops/badge/?version=latest)](https://readthedocs.org/projects/bedops/?badge=latest)
+[![BEDOPS CI](https://github.com/bedops/bedops/actions/workflows/main.yml/badge.svg)](https://github.com/bedops/bedops/actions/workflows/main.yml) [![GitHub stars](https://img.shields.io/github/stars/bedops/bedops.svg)](https://github.com/bedops/bedops/stargazers) [![Project license](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://github.com/bedops/bedops/blob/master/LICENSE) [![Documentation Status](https://readthedocs.org/projects/bedops/badge/?version=latest)](https://readthedocs.org/projects/bedops/?badge=latest)
 
 <!-- <img src="http://bedops.readthedocs.io/en/latest/_static/logo_with_label_v2.png" align="right" style="max-width:33%" /> -->
 

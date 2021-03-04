@@ -1,4 +1,4 @@
-name: Bedops CI
+name: BEDOPS CI
 
 on: [push, pull_request]
 
@@ -6,19 +6,20 @@ jobs:
 
   build:
 
-    name: Build all bedops binaries
+    name: Build and test BEDOPS suite
 
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        os : [ubuntu-16.04]
+        os : [ubuntu-16.04, macos-10.15]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup dependencies
+      - name: Setup OS-specific dependencies and environment
+
         if: matrix.os == 'ubuntu-16.04'
         run: |
           sudo apt-get install -qq gcc-4.8 g++-4.8
@@ -27,8 +28,17 @@ jobs:
           sudo update-alternatives \
             --install /usr/bin/g++ g++ /usr/bin/g++-4.8 100
 
-      - name: make all
+        if: matrix.os == 'macos-10.15'
+        env:
+          CC: clang
+          GCC: clang++
+          KERNEL: Darwin
+
+      - name: Build binaries
         run: make all
 
-      - name: make install_all
+      - name: Install binaries
         run: make install_all
+
+      - name: Test binaries
+        run: make tests
