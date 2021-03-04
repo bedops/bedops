@@ -3,7 +3,7 @@ name: Bedops CI
 on: [push, pull_request]
 
 jobs:
-  
+
   build:
 
     name: Build all bedops binaries
@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
 
       - name: Setup dependencies
         if: matrix.os == 'ubuntu-16.04'
