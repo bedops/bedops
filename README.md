@@ -1,6 +1,6 @@
 ## BEDOPS v2.4.40: high-performance genomic feature operations ##
 
-[![Build Status](https://travis-ci.org/bedops/bedops.svg?branch=master)](https://travis-ci.org/bedops/bedops) [![GitHub stars](https://img.shields.io/github/stars/bedops/bedops.svg)](https://github.com/bedops/bedops/stargazers) [![Project license](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://github.com/bedops/bedops/blob/master/LICENSE) [![Documentation Status](https://readthedocs.org/projects/bedops/badge/?version=latest)](https://readthedocs.org/projects/bedops/?badge=latest)
+[![Build Status](https://github.com/bedops/bedops/actions/main.yml/badge.svg)](https://github.com/bedops/bedops/) [![GitHub stars](https://img.shields.io/github/stars/bedops/bedops.svg)](https://github.com/bedops/bedops/stargazers) [![Project license](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://github.com/bedops/bedops/blob/master/LICENSE) [![Documentation Status](https://readthedocs.org/projects/bedops/badge/?version=latest)](https://readthedocs.org/projects/bedops/?badge=latest)
 
 <!-- <img src="http://bedops.readthedocs.io/en/latest/_static/logo_with_label_v2.png" align="right" style="max-width:33%" /> -->
 
