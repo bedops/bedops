@@ -18,8 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup OS-specific dependencies and environment
-      
+      - name: Ubuntu-specific setup
         if: matrix.os == 'ubuntu-16.04'
         run: |
           sudo apt-get install -qq gcc-4.8 g++-4.8
@@ -28,6 +27,7 @@ jobs:
           sudo update-alternatives \
             --install /usr/bin/g++ g++ /usr/bin/g++-4.8 100
 
+      - name: Mac OS X-specific setup
         if: matrix.os == 'macos-10.15'
         env:
           CC: clang
