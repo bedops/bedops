@@ -33,6 +33,8 @@ jobs:
           CC: clang
           GCC: clang++
           KERNEL: Darwin
+        run: |
+          env
 
       - name: Build binaries
         run: make all
