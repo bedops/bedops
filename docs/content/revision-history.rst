@@ -12,6 +12,20 @@ Current version
 ===============
 
 -------
+v2.4.40
+-------
+
+Released: **TBD**
+
+* General
+
+  * Migrated from Travis CI to Github Actions for continuous integration tests.
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.39
 -------
 
@@ -28,10 +42,6 @@ Released: **April 6, 2020**
 * General
 
   * Updated main :code:`Makefile` to use `Homebrew <https://brew.sh/>`_ GNU :code:`coreutils` and :code:`findutils` tools on the OS X target. If you build BEDOPS on OS X, you can add these tools with :code:`brew install coreutils findutils`.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.38

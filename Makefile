@@ -344,10 +344,10 @@ install_osx_packaging_bins: prep_c all
 
 update_bedops_version:
 ifndef OLD_VER
-	$(error Old version variable OLD_VER is undefined (e.g., 2.4.37))
+	$(error Old version variable OLD_VER is undefined (e.g., 2.4.39))
 endif
 ifndef NEW_VER
-	$(error New version variable NEW_VER is undefined (e.g., 2.4.38))
+	$(error New version variable NEW_VER is undefined (e.g., 2.4.40))
 endif
 ifeq ($(KERNEL), Darwin)
 	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" README.md
@@ -398,16 +398,23 @@ endif
 
 update_bedops_copyright_date:
 ifndef OLD_CPD
-	$(error Old copyright date variable OLD_CPD is undefined (e.g., 2011-2017))
+	$(error Old copyright date variable OLD_CPD is undefined (e.g., 2011-2020))
 endif
 ifndef NEW_CPD
-	$(error New copyright date variable NEW_CPD is undefined (e.g., 2011-2020))
+	$(error New copyright date variable NEW_CPD is undefined (e.g., 2011-2021))
 endif
 ifeq ($(KERNEL), Darwin)
 	gfind . -exec gsed -i "s/"$$OLD_CPD"/"$$NEW_CPD"/g" {} \;
 else
 	find . -exec sed -i "s/"$$OLD_CPD"/"$$NEW_CPD"/g" {} \;
 endif
+
+#######################
+# for users with OS X: 
+# "brew install pandoc"
+
+update_bedops_changelog_from_revision_history:
+	pandoc -s -o CHANGELOG.md docs/content/revision-history.rst
 
 #######################
 # packaging

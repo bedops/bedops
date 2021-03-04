@@ -58,22 +58,22 @@ Contents
       <div class="col_element">
          <img src="_static/linux_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
-            <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.39/bedops_linux_x86_64-v2.4.39.tar.bz2">x86-64 (64-bit)</a> binaries</li>
+            <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.40/bedops_linux_x86_64-v2.4.40.tar.bz2">x86-64 (64-bit)</a> binaries</li>
             <li><a href="content/installation.html#linux">Installation instructions</a> for Linux hosts</li>
          </ul>
       </div>
       <div class="col_element">
          <img src="_static/macosx_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
-            <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.39/BEDOPS.2.4.39.pkg.zip">Intel (64-bit, 10.10-10.15)</a> installer package</li>
+            <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.40/BEDOPS.2.4.40.pkg.zip">Intel (64-bit, 10.10-10.15)</a> installer package</li>
             <li><a href="content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
          </ul>
       </div>
       <div class="col_element">
          <img src="_static/source_v2.png" style="height:26px; width: auto !important; margin-bottom:10px;">
          <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
-            <li><a href="https://github.com/bedops/bedops/archive/v2.4.39.tar.gz">Source code</a> (tar.gz)</li>
-            <li><a href="https://github.com/bedops/bedops/archive/v2.4.39.zip">Source code</a> (zip)</li>
+            <li><a href="https://github.com/bedops/bedops/archive/v2.4.40.tar.gz">Source code</a> (tar.gz)</li>
+            <li><a href="https://github.com/bedops/bedops/archive/v2.4.40.zip">Source code</a> (zip)</li>
             <li><a href="content/installation.html#installation-via-source-code">Compilation instructions</a></li>
          </ul>
       </div>
@@ -96,7 +96,7 @@ Contents
 .. |linux_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.39/bedops_linux_x86_64-v2.4.39.tar.bz2">x86-64 (64-bit)</a> binaries</li>
+   <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.40/bedops_linux_x86_64-v2.4.40.tar.bz2">x86-64 (64-bit)</a> binaries</li>
    <li><a href="content/installation.html#linux">Installation instructions</a> for Linux hosts</li>
    </ul>
 
@@ -110,7 +110,7 @@ Contents
 .. |macosx_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.39/BEDOPS.2.4.39.pkg.zip">Intel (64-bit, 10.10-10.14)</a> installer package</li>
+   <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.40/BEDOPS.2.4.40.pkg.zip">Intel (64-bit, 10.10-10.14)</a> installer package</li>
    <li><a href="content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
    </ul>
 
@@ -124,8 +124,8 @@ Contents
 .. |source_downloads| raw:: html
 
    <ul style="list-style-type:square; font-size:smaller; margin:10px; padding:0;">
-   <li><a href="https://github.com/bedops/bedops/archive/v2.4.39.tar.gz">Source code</a> (tar.gz)</li>
-   <li><a href="https://github.com/bedops/bedops/archive/v2.4.39.zip">Source code</a> (zip)</li>
+   <li><a href="https://github.com/bedops/bedops/archive/v2.4.40.tar.gz">Source code</a> (tar.gz)</li>
+   <li><a href="https://github.com/bedops/bedops/archive/v2.4.40.zip">Source code</a> (zip)</li>
    <li><a href="content/installation.html#installation-via-source-code">Compilation instructions</a></li>
    </ul>
 

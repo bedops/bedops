@@ -54,7 +54,7 @@ In addition, using any of these three custom options automatically results in pr
 ::
 
   #CHROM POS     ID        REF    ALT     QUAL FILTER INFO                              FORMAT      NA00001        NA00002        NA00003
-  20     12.4.397 microsat1 GTC    G,GTCT  50   PASS   NS=3;DP=9;AA=G                    GT:GQ:DP    0/1:35:4       0/2:17:2       1/1:40:3
+  20     12.4.407 microsat1 GTC    G,GTCT  50   PASS   NS=3;DP=9;AA=G                    GT:GQ:DP    0/1:35:4       0/2:17:2       1/1:40:3
 
 When using ``--snvs``, ``--insertions`` or ``--deletions``, this record is split into two distinct BED records and filtered depending on which custom option was chosen. The ``--insertions`` option would only export the single-base position of the insertion in this mixed variant, while ``--deletions`` would show the deletion.
 

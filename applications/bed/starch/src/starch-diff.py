@@ -2,7 +2,7 @@
 
 #
 #    BEDOPS
-#    Copyright (C) 2011-2020 Shane Neph, Scott Kuehn and Alex Reynolds
+#    Copyright (C) 2011-2021 Shane Neph, Scott Kuehn and Alex Reynolds
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ import logging
 name = "starch-diff"
 citation = "  citation: http://bioinformatics.oxfordjournals.org/content/28/14/1919.abstract"
 authors = "  authors:  Alex Reynolds and Shane Neph"
-version = "  version:  2.4.39"
+version = "  version:  2.4.40"
 usage = "  $ starch-diff [ --chr <chr> ] starch-file-1 starch-file-2 [ starch-file-3 ... ]"
 help = """
   The 'starch-diff' utility compares the signatures of two or more specified 
