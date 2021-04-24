@@ -22,6 +22,11 @@ Released: **TBD**
         half-open indexing.
     -   Added `wig2bed` integration tests. See `tests/conversion/Makefile`
         and `wig2bed_*` targets for more detail.
+-   `starch <starch>`{.interpreted-text role="ref"}
+    -   Patched metadata generation function to resolve [issue 248]
+        (https://github.com/bedops/bedops/issues/248), where the chromosome
+        name would previously be truncated by a period character when 
+        creating a Starch archive.
 
 # Previous versions
 

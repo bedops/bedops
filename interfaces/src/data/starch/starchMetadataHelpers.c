@@ -790,12 +790,9 @@ STARCH_generateJSONMetadata(const Metadata *md,
 #endif
         stream = json_object();
 
-        recordFilenameCopy = STARCH_strndup(iter->filename, strlen(iter->filename) + 1);
-        recordToken = strtok(recordFilenameCopy, ".");
-        recordChromosome = STARCH_strndup(recordToken, strlen(recordToken) + 1);
+        recordChromosome = STARCH_strndup(iter->chromosome, strlen(iter->chromosome) + 1);
         streamChromosome = json_string(recordChromosome);
         json_object_set_new(stream, STARCH_METADATA_STREAM_CHROMOSOME_KEY, streamChromosome);
-        free(recordFilenameCopy);
         free(recordChromosome);
 
         streamFilename = json_string(iter->filename);

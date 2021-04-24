@@ -27,6 +27,10 @@ Released: **TBD**
   * Modified `wig2bed` start and end shift arithmetic to ensure conversion from 1-based, fully-closed indexing to 0-based, half-open indexing.
   * Added `wig2bed` integration tests. See `tests/conversion/Makefile` and `wig2bed_*` targets for more detail.
 
+* :ref:`starch <starch>`
+
+  * Patched metadata generation function to resolve `issue 248 <https://github.com/bedops/bedops/issues/248>`_, where the chromosome name would previously be truncated on a period character when creating a Starch archive.
+
 =================
 Previous versions
 =================
