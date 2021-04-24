@@ -26,13 +26,11 @@ INCLUDES             = -iquote$(HEAD) -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCD
 LIBLOCATION          = -L${LOCALJANSSONLIBDIR} -L${LOCALBZIP2LIBDIR} -L${LOCALZLIBLIBDIR}
 LIBRARIES            = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 STDFLAGS             = -Wall -pedantic -std=c++11 -stdlib=libc++
-BLDFLAGS             = ${CXXFLAGS:--O3} ${STDFLAGS}
 
+BLDFLAGS             = $(CXXFLAGS) -O3 ${STDFLAGS}
 FLAGS                = $(BLDFLAGS) $(MEGAFLAGS) $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
-
-DFLAGS               = -g ${CXXFLAGS:--O0} ${STDFLAGS} $(MEGAFLAGS) $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
-
-GPROFFLAGS           = ${CXXFLAGS:--O} -pg ${STDFLAGS} $(MEGAFLAGS) $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
+DFLAGS               = -g $(CXXFLAGS) -O0 ${STDFLAGS} $(MEGAFLAGS) $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
+GPROFFLAGS           = $(CXXFLAGS) -O -pg ${STDFLAGS} $(MEGAFLAGS) $(OBJDIR)/NaN.o $(OBJDIR)/starchConstants.o $(OBJDIR)/starchFileHelpers.o $(OBJDIR)/starchHelpers.o $(OBJDIR)/starchMetadataHelpers.o $(OBJDIR)/unstarchHelpers.o $(OBJDIR)/starchSha1Digest.o $(OBJDIR)/starchBase64Coding.o ${LIBLOCATION} ${INCLUDES}
 
 SOURCE1              = ExtractRows.cpp
 BINDIR               = ../bin

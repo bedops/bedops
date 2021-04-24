@@ -5,7 +5,7 @@ LIB3                 = $(MAIN)/interfaces/src/data/starch
 PROG                 = sort-bed-${BINARY_TYPE}
 DIST_DIR             = ../bin
 OBJ_DIR              = objects_${ARCH}_${BINARY_TYPE}
-OPTIMIZE             = ${CXXFLAGS:--O3} -std=c++11 -stdlib=libc++
+OPTIMIZE             = $(CXXFLAGS) -O3 -std=c++11 -stdlib=libc++
 WARNINGS             = -Wall
 MAIN                 = ../../../..
 HEAD                 = ${MAIN}/interfaces/general-headers
@@ -67,29 +67,29 @@ sortbuild: prep
 	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -c ${BLDFLAGS} ${MEGAFLAGS} CheckSort.cpp -o ${OBJ_DIR}/CheckSort.o ${INCLUDES}
 
 build_debug: prep check-cp
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g ${CXXFLAGS:--O0} -std=c++11 -stdlib=libc++ -c ${LIB3}/starchConstants.c -o ${OBJ_DIR}/starchConstants.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g ${CXXFLAGS:--O0} -std=c++11 -stdlib=libc++ -c ${LIB3}/starchFileHelpers.c -o ${OBJ_DIR}/starchFileHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g ${CXXFLAGS:--O0} -std=c++11 -stdlib=libc++ -c ${LIB3}/starchHelpers.c -o ${OBJ_DIR}/starchHelpers.o -iquote${HEAD} ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g ${CXXFLAGS:--O0} -std=c++11 -stdlib=libc++ -c ${LIB3}/starchMetadataHelpers.c -o ${OBJ_DIR}/starchMetadataHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g ${CXXFLAGS:--O0} -std=c++11 -stdlib=libc++ -c ${LIB3}/unstarchHelpers.c -o ${OBJ_DIR}/unstarchHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g ${CXXFLAGS:--O0} -std=c++11 -stdlib=libc++ -c ${LIB3}/starchSha1Digest.c -o  ${OBJ_DIR}/starchSha1Digest.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g ${CXXFLAGS:--O0} -std=c++11 -stdlib=libc++ -c ${LIB3}/starchBase64Coding.c -o  ${OBJ_DIR}/starchBase64Coding.o ${INCLUDES}
-	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g ${CXXFLAGS:--O0} -std=c++11 -stdlib=libc++ -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
-	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g ${CXXFLAGS:--O0} -std=c++11 -stdlib=libc++ -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
-	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g ${CXXFLAGS:--O0} -std=c++11 -stdlib=libc++ -c CheckSort.cpp -o ${OBJ_DIR}/CheckSort.o ${INCLUDES}
+	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g $(CXXFLAGS) -O0 -std=c++11 -stdlib=libc++ -c ${LIB3}/starchConstants.c -o ${OBJ_DIR}/starchConstants.o ${INCLUDES}
+	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g $(CXXFLAGS) -O0 -std=c++11 -stdlib=libc++ -c ${LIB3}/starchFileHelpers.c -o ${OBJ_DIR}/starchFileHelpers.o ${INCLUDES}
+	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g $(CXXFLAGS) -O0 -std=c++11 -stdlib=libc++ -c ${LIB3}/starchHelpers.c -o ${OBJ_DIR}/starchHelpers.o -iquote${HEAD} ${INCLUDES}
+	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g $(CXXFLAGS) -O0 -std=c++11 -stdlib=libc++ -c ${LIB3}/starchMetadataHelpers.c -o ${OBJ_DIR}/starchMetadataHelpers.o ${INCLUDES}
+	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g $(CXXFLAGS) -O0 -std=c++11 -stdlib=libc++ -c ${LIB3}/unstarchHelpers.c -o ${OBJ_DIR}/unstarchHelpers.o ${INCLUDES}
+	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g $(CXXFLAGS) -O0 -std=c++11 -stdlib=libc++ -c ${LIB3}/starchSha1Digest.c -o  ${OBJ_DIR}/starchSha1Digest.o ${INCLUDES}
+	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g $(CXXFLAGS) -O0 -std=c++11 -stdlib=libc++ -c ${LIB3}/starchBase64Coding.c -o  ${OBJ_DIR}/starchBase64Coding.o ${INCLUDES}
+	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g $(CXXFLAGS) -O0 -std=c++11 -stdlib=libc++ -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
+	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g $(CXXFLAGS) -O0 -std=c++11 -stdlib=libc++ -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
+	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -g $(CXXFLAGS) -O0 -std=c++11 -stdlib=libc++ -c CheckSort.cpp -o ${OBJ_DIR}/CheckSort.o ${INCLUDES}
 	${CXX} -o ${DIST_DIR}/debug.${PROG} ${MEGAFLAGS} ${LIBLOCATION} ${INCLUDES} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -g -lc++ ${STARCHOBJS} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o ${OBJ_DIR}/CheckSort.o ${LIBRARIES}
 
 build_gprof: prep check-cp
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -pg ${CXXFLAGS:--O} -std=c++11 -stdlib=libc++ -c ${LIB3}/starchConstants.c -o ${OBJ_DIR}/starchConstants.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -pg ${CXXFLAGS:--O} -std=c++11 -stdlib=libc++ -c ${LIB3}/starchFileHelpers.c -o ${OBJ_DIR}/starchFileHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -pg ${CXXFLAGS:--O} -std=c++11 -stdlib=libc++ -c ${LIB3}/starchHelpers.c -o ${OBJ_DIR}/starchHelpers.o -iquote${HEAD} ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -pg ${CXXFLAGS:--O} -std=c++11 -stdlib=libc++ -c ${LIB3}/starchMetadataHelpers.c -o ${OBJ_DIR}/starchMetadataHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -pg ${CXXFLAGS:--O} -std=c++11 -stdlib=libc++ -c ${LIB3}/unstarchHelpers.c -o ${OBJ_DIR}/unstarchHelpers.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -pg ${CXXFLAGS:--O} -std=c++11 -stdlib=libc++ -c ${LIB3}/starchSha1Digest.c -o  ${OBJ_DIR}/starchSha1Digest.o ${INCLUDES}
-	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS}-pg ${CXXFLAGS:--O} -std=c++11 -stdlib=libc++ -c ${LIB3}/starchBase64Coding.c -o  ${OBJ_DIR}/starchBase64Coding.o ${INCLUDES}
-	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -pg ${CXXFLAGS:--O} ${MEGAFLAGS} -std=c++11 -stdlib=libc++ -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
-	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -pg ${CXXFLAGS:--O} ${MEGAFLAGS} -std=c++11 -stdlib=libc++ -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
-	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -pg ${CXXFLAGS:--O} ${MEGAFLAGS} -std=c++11 -stdlib=libc++ -c CheckSort.cpp -o ${OBJ_DIR}/CheckSort.o ${INCLUDES}
+	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -pg $(CXXFLAGS) -O -std=c++11 -stdlib=libc++ -c ${LIB3}/starchConstants.c -o ${OBJ_DIR}/starchConstants.o ${INCLUDES}
+	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -pg $(CXXFLAGS) -O -std=c++11 -stdlib=libc++ -c ${LIB3}/starchFileHelpers.c -o ${OBJ_DIR}/starchFileHelpers.o ${INCLUDES}
+	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -pg $(CXXFLAGS) -O -std=c++11 -stdlib=libc++ -c ${LIB3}/starchHelpers.c -o ${OBJ_DIR}/starchHelpers.o -iquote${HEAD} ${INCLUDES}
+	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -pg $(CXXFLAGS) -O -std=c++11 -stdlib=libc++ -c ${LIB3}/starchMetadataHelpers.c -o ${OBJ_DIR}/starchMetadataHelpers.o ${INCLUDES}
+	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -pg $(CXXFLAGS) -O -std=c++11 -stdlib=libc++ -c ${LIB3}/unstarchHelpers.c -o ${OBJ_DIR}/unstarchHelpers.o ${INCLUDES}
+	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS} -pg $(CXXFLAGS) -O -std=c++11 -stdlib=libc++ -c ${LIB3}/starchSha1Digest.c -o  ${OBJ_DIR}/starchSha1Digest.o ${INCLUDES}
+	$(CXX) -x c++ -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} ${MEGAFLAGS}-pg $(CXXFLAGS) -O -std=c++11 -stdlib=libc++ -c ${LIB3}/starchBase64Coding.c -o  ${OBJ_DIR}/starchBase64Coding.o ${INCLUDES}
+	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -pg $(CXXFLAGS) -O ${MEGAFLAGS} -std=c++11 -stdlib=libc++ -c SortDetails.cpp -o ${OBJ_DIR}/SortDetails.o -I${HEAD}
+	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -pg $(CXXFLAGS) -O ${MEGAFLAGS} -std=c++11 -stdlib=libc++ -c Sort.cpp -o ${OBJ_DIR}/Sort.o -I${HEAD}
+	${CXX} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -pg $(CXXFLAGS) -O ${MEGAFLAGS} -std=c++11 -stdlib=libc++ -c CheckSort.cpp -o ${OBJ_DIR}/CheckSort.o ${INCLUDES}
 	${CXX} -o ${DIST_DIR}/gprof.${PROG}_${ARCH} ${LIBLOCATION} ${INCLUDES} ${MEGAFLAGS} -mmacosx-version-min=${MIN_OSX_VERSION} -arch ${ARCH} -g -lc++ ${STARCHOBJS} ${OBJ_DIR}/SortDetails.o ${OBJ_DIR}/Sort.o ${OBJ_DIR}/CheckSort.o ${LIBRARIES}
 
 prep:

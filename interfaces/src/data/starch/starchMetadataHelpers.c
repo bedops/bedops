@@ -588,10 +588,8 @@ STARCH_generateJSONMetadata(const Metadata *md,
     json_t *streamArchiveVersionMajor = nullptr;
     json_t *streamArchiveVersionMinor = nullptr;
     json_t *streamArchiveVersionRevision = nullptr;
-    char *recordFilenameCopy = nullptr;
     char *recordChromosome = nullptr;
     char *recordSignature = nullptr;
-    char *recordToken = nullptr;
     char *recordSize = nullptr;
     char *creationTimestamp = nullptr;
     char *jsonString = nullptr;
@@ -631,10 +629,8 @@ STARCH_generateJSONMetadata(const Metadata *md,
     json_t *streamArchiveVersionMajor = NULL;
     json_t *streamArchiveVersionMinor = NULL;
     json_t *streamArchiveVersionRevision = NULL;
-    char *recordFilenameCopy = NULL;
     char *recordChromosome = NULL;
     char *recordSignature = NULL;
-    char *recordToken = NULL;
     char *recordSize = NULL;
     char *creationTimestamp = NULL;
     char *jsonString = NULL;

@@ -35,10 +35,10 @@ BIN_VERSION               = v2.4.40
 TEST                      = ../test
 TEST_OSX_BINDIR           = ${TEST}/binaries/osx/${ARCH_VERSION}/bin
 
-CCFLAGS                   = ${MEGAFLAGS} -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB ${CFLAGS:--O2} ${WARNINGS} -std=c99 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH} -x c++ -v -stdlib=libc++ -std=c++11
-CXXFLAGS                  = ${MEGAFLAGS} -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB ${CXXFLAGS:--O2} ${WARNINGS} -std=c++11 -stdlib=libc++ -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH}
-CDFLAGS                   = ${MEGAFLAGS} -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB ${CFLAGS:--O0} -g ${WARNINGS} -std=c99 -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH} -x c++ -v -stdlib=libc++ -std=c++11
-CXXDFLAGS                 = ${MEGAFLAGS} -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB ${CXXFLAGS:--O0} -g ${WARNINGS} -std=c++11 -stdlib=libc++ -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH}
+STARCH_CFLAGS             = ${CFLAGS} ${MEGAFLAGS} -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 ${WARNINGS} -std=c99 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH} -x c++ -v -stdlib=libc++ -std=c++11
+STARCH_CXXFLAGS           = ${CXXFLAGS} ${MEGAFLAGS} -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 ${WARNINGS} -std=c++11 -stdlib=libc++ -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH}
+STARCH_CDFLAGS            = ${CFLAGS} ${MEGAFLAGS} -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g ${WARNINGS} -std=c99 -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH} -x c++ -v -stdlib=libc++ -std=c++11
+STARCH_CXXDFLAGS          = ${CXXFLAGS} ${MEGAFLAGS} -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g ${WARNINGS} -std=c++11 -stdlib=libc++ -DDEBUG=1 -mmacosx-version-min=$(MIN_OSX_VERSION) -arch ${ARCH}
 
 build: dependencies starchLibrary starch unstarch starchcat starchcluster starch-diff starchstrip
 	rm -f *~
@@ -48,13 +48,13 @@ build: dependencies starchLibrary starch unstarch starchcat starchcluster starch
 #   and pretty much everything else has dependencies-related prereqs at some level
 #   -> let make figure out hierarchy and eliminate mkdir/rm race conditions
 dependencies: mkdirs
-	${CC} ${CCFLAGS} -c ${OBJDIR}/starchConstants.c -o ${LOCALOBJDIR}/starchConstants.o ${INCLUDES}
-	${CC} ${CCFLAGS} -c ${OBJDIR}/starchMetadataHelpers.c -o  ${LOCALOBJDIR}/starchMetadataHelpers.o ${INCLUDES}
-	${CC} ${CCFLAGS} -c ${OBJDIR}/unstarchHelpers.c -o  ${LOCALOBJDIR}/unstarchHelpers.o ${INCLUDES}
-	${CC} ${CCFLAGS} -c ${OBJDIR}/starchHelpers.c -o  ${LOCALOBJDIR}/starchHelpers.o ${INCLUDES}
-	${CC} ${CCFLAGS} -c ${OBJDIR}/starchFileHelpers.c -o  ${LOCALOBJDIR}/starchFileHelpers.o ${INCLUDES}
-	${CC} ${CCFLAGS} -c ${OBJDIR}/starchSha1Digest.c -o  ${LOCALOBJDIR}/starchSha1Digest.o ${INCLUDES}
-	${CC} ${CCFLAGS} -c ${OBJDIR}/starchBase64Coding.c -o  ${LOCALOBJDIR}/starchBase64Coding.o ${INCLUDES}
+	${CC} ${STARCH_CFLAGS} -c ${OBJDIR}/starchConstants.c -o ${LOCALOBJDIR}/starchConstants.o ${INCLUDES}
+	${CC} ${STARCH_CFLAGS} -c ${OBJDIR}/starchMetadataHelpers.c -o  ${LOCALOBJDIR}/starchMetadataHelpers.o ${INCLUDES}
+	${CC} ${STARCH_CFLAGS} -c ${OBJDIR}/unstarchHelpers.c -o  ${LOCALOBJDIR}/unstarchHelpers.o ${INCLUDES}
+	${CC} ${STARCH_CFLAGS} -c ${OBJDIR}/starchHelpers.c -o  ${LOCALOBJDIR}/starchHelpers.o ${INCLUDES}
+	${CC} ${STARCH_CFLAGS} -c ${OBJDIR}/starchFileHelpers.c -o  ${LOCALOBJDIR}/starchFileHelpers.o ${INCLUDES}
+	${CC} ${STARCH_CFLAGS} -c ${OBJDIR}/starchSha1Digest.c -o  ${LOCALOBJDIR}/starchSha1Digest.o ${INCLUDES}
+	${CC} ${STARCH_CFLAGS} -c ${OBJDIR}/starchBase64Coding.c -o  ${LOCALOBJDIR}/starchBase64Coding.o ${INCLUDES}
 
 build_debug: dependencies_debug starchLibrary_debug starch_debug unstarch_debug starchcat_debug starchstrip_debug starchcluster starch-diff
 	rm -f *~
@@ -75,20 +75,20 @@ starchLibrary_debug: dependencies_debug
 	${AR} rcs ${LOCALSTARCHLIBDEBUG} ${LOCALOBJDIR}/starchConstants.o  ${LOCALOBJDIR}/unstarchHelpers.o  ${LOCALOBJDIR}/starchHelpers.o  ${LOCALOBJDIR}/starchMetadataHelpers.o  ${LOCALOBJDIR}/starchFileHelpers.o ${LOCALOBJDIR}/starchSha1Digest.o ${LOCALOBJDIR}/starchBase64Coding.o
 
 starch: starchLibrary
-	${CC} ${CCFLAGS} -c starch.c -o $(LOCALOBJDIR)/starch.o ${INCLUDES}
-	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/starch.o -o ${BINDIR}/starch-${BINARY_TYPE} ${LOCALSTARCHLIB} ${LIBRARIES}
+	${CC} ${STARCH_CFLAGS} -c starch.c -o $(LOCALOBJDIR)/starch.o ${INCLUDES}
+	${CXX} ${STARCH_CXXFLAGS} -lc++ $(LOCALOBJDIR)/starch.o -o ${BINDIR}/starch-${BINARY_TYPE} ${LOCALSTARCHLIB} ${LIBRARIES}
 
 starch_debug: starchLibrary_debug
-	${CC} ${CDFLAGS} -c starch.c -o $(LOCALOBJDIR)/debug.starch.o ${INCLUDES}
-	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.starch.o -o ${BINDIR}/debug.starch-${BINARY_TYPE} ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
+	${CC} ${STARCH_CDFLAGS} -c starch.c -o $(LOCALOBJDIR)/debug.starch.o ${INCLUDES}
+	${CXX} ${STARCH_CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.starch.o -o ${BINDIR}/debug.starch-${BINARY_TYPE} ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
 
 unstarch: starchLibrary
-	${CC} ${CCFLAGS} -c unstarch.c -o $(LOCALOBJDIR)/unstarch.o ${INCLUDES}
-	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/unstarch.o -o ${BINDIR}/unstarch-${BINARY_TYPE} ${LOCALSTARCHLIB} ${LIBRARIES}
+	${CC} ${STARCH_CFLAGS} -c unstarch.c -o $(LOCALOBJDIR)/unstarch.o ${INCLUDES}
+	${CXX} ${STARCH_CXXFLAGS} -lc++ $(LOCALOBJDIR)/unstarch.o -o ${BINDIR}/unstarch-${BINARY_TYPE} ${LOCALSTARCHLIB} ${LIBRARIES}
 
 unstarch_debug: starchLibrary_debug
-	${CC} ${CDFLAGS} -c unstarch.c -o $(LOCALOBJDIR)/debug.unstarch.o ${INCLUDES}
-	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.unstarch.o -o ${BINDIR}/debug.unstarch-${BINARY_TYPE} ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
+	${CC} ${STARCH_CDFLAGS} -c unstarch.c -o $(LOCALOBJDIR)/debug.unstarch.o ${INCLUDES}
+	${CXX} ${STARCH_CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.unstarch.o -o ${BINDIR}/debug.unstarch-${BINARY_TYPE} ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
 
 starchcluster: starchcat
 	cp starchcluster_sge.tcsh ${BINDIR}/starchcluster_sge-${BINARY_TYPE}
@@ -99,20 +99,20 @@ starch-diff: unstarch
 	cp starch-diff.py ${BINDIR}/starch-diff-${BINARY_TYPE}
 
 starchcat: starchLibrary
-	${CC} ${CCFLAGS} -c starchcat.c -o $(LOCALOBJDIR)/starchcat.o ${INCLUDES}
-	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/starchcat.o -o ${BINDIR}/starchcat-${BINARY_TYPE} ${LOCALSTARCHLIB} ${LIBRARIES}
+	${CC} ${STARCH_CFLAGS} -c starchcat.c -o $(LOCALOBJDIR)/starchcat.o ${INCLUDES}
+	${CXX} ${STARCH_CXXFLAGS} -lc++ $(LOCALOBJDIR)/starchcat.o -o ${BINDIR}/starchcat-${BINARY_TYPE} ${LOCALSTARCHLIB} ${LIBRARIES}
 
 starchcat_debug: starchLibrary_debug
-	${CC} ${CDFLAGS} -c starchcat.c -o $(LOCALOBJDIR)/starchcat.o ${INCLUDES}
-	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/starchcat.o -o ${BINDIR}/debug.starchcat-${BINARY_TYPE} ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
+	${CC} ${STARCH_CDFLAGS} -c starchcat.c -o $(LOCALOBJDIR)/starchcat.o ${INCLUDES}
+	${CXX} ${STARCH_CXXDFLAGS} -lc++ $(LOCALOBJDIR)/starchcat.o -o ${BINDIR}/debug.starchcat-${BINARY_TYPE} ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
 
 starchstrip: starchLibrary
-	${CC} ${CCFLAGS} -c starchstrip.c -o $(LOCALOBJDIR)/starchstrip.o ${INCLUDES}
-	${CXX} ${CXXFLAGS} -lc++ $(LOCALOBJDIR)/starchstrip.o -o ${BINDIR}/starchstrip-${BINARY_TYPE} ${LOCALSTARCHLIB} ${LIBRARIES}
+	${CC} ${STARCH_CFLAGS} -c starchstrip.c -o $(LOCALOBJDIR)/starchstrip.o ${INCLUDES}
+	${CXX} ${STARCH_CXXFLAGS} -lc++ $(LOCALOBJDIR)/starchstrip.o -o ${BINDIR}/starchstrip-${BINARY_TYPE} ${LOCALSTARCHLIB} ${LIBRARIES}
 
 starchstrip_debug: starchLibrary_debug
-	${CC} ${CDFLAGS} -c starchstrip.c -o $(LOCALOBJDIR)/debug.starchstrip.o ${INCLUDES}
-	${CXX} ${CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.starchstrip.o -o ${BINDIR}/debug.starchstrip-${BINARY_TYPE} ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
+	${CC} ${STARCH_CDFLAGS} -c starchstrip.c -o $(LOCALOBJDIR)/debug.starchstrip.o ${INCLUDES}
+	${CXX} ${STARCH_CXXDFLAGS} -lc++ $(LOCALOBJDIR)/debug.starchstrip.o -o ${BINDIR}/debug.starchstrip-${BINARY_TYPE} ${LOCALSTARCHLIBDEBUG} ${LIBRARIES}
 
 test: starch unstarch starchcat
 	cp ${BINDIR}/starch-${BINARY_TYPE} ${TEST_OSX_BINDIR}/starch-${BINARY_TYPE}

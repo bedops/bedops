@@ -1,8 +1,7 @@
 BLDFLAGS                  = -Wall -Wextra -pedantic -std=c99
 COMMONFLAGS               = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 ${MEGAFLAGS}
-CFLAGS                    = ${CFLAGS:--O3}
-CDFLAGS                   = -DDEBUG=1 -g ${CFLAGS:--O0} -fno-inline
-CPFLAGS                   = -pg ${CFLAGS:--O3}
+CDFLAGS                   = -DDEBUG=1 -g $(CFLAGS) -O0 -fno-inline
+CPFLAGS                   = -pg $(CFLAGS) -O3
 LIBS                      = -lpthread
 MAIN                      = ../../../..
 INTERFACES                = $(MAIN)/interfaces
@@ -24,8 +23,8 @@ setup:
 	mkdir -p $(OBJDIR)
 
 build: setup
-	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(MEGAFLAGS) $(BLDFLAGS) $(COMMONFLAGS) $(CFLAGS) -c $(SOURCE) -o $(OBJDIR)/$(PROG).o $(INCLUDES)
-	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(MEGAFLAGS) $(BLDFLAGS) $(COMMONFLAGS) $(CFLAGS) $(OBJDIR)/$(PROG).o -o $(DISTDIR)/$(PROG)-${BINARY_TYPE} $(LIBS)
+	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(MEGAFLAGS) $(BLDFLAGS) $(COMMONFLAGS) $(CFLAGS) -O3 -c $(SOURCE) -o $(OBJDIR)/$(PROG).o $(INCLUDES)
+	$(CC) -mmacosx-version-min=$(MIN_OSX_VERSION) -arch $(ARCH) $(MEGAFLAGS) $(BLDFLAGS) $(COMMONFLAGS) $(CFLAGS) -O3 $(OBJDIR)/$(PROG).o -o $(DISTDIR)/$(PROG)-${BINARY_TYPE} $(LIBS)
 	rm -rf $(OBJDIR)
 
 build_debug: setup
