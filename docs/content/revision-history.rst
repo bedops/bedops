@@ -19,7 +19,13 @@ Released: **TBD**
 
 * General
 
-  * Migrated from Travis CI to Github Actions for continuous integration tests.
+  * Migrated from Travis CI to Github Actions for CI testing.
+
+* :ref:`convert2bed <convert2bed>`
+
+  * Resolved `issue 253 <https://github.com/bedops/bedops/issues/253>`_ preventing conversion of Wiggle-formatted data that use non-UCSC chromosome naming scheme.
+  * Modified `wig2bed` start and end shift arithmetic to ensure conversion from 1-based, fully-closed indexing to 0-based, half-open indexing.
+  * Added `wig2bed` integration tests. See `tests/conversion/Makefile` and `wig2bed_*` targets for more detail.
 
 =================
 Previous versions

@@ -1390,6 +1390,7 @@ typedef struct wig_state {
     char* chr;
     char* id;
     boolean is_fixed_step;
+    boolean is_variable_step;
     boolean start_write;
     char* basename;
     int start_shift;

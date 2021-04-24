@@ -5716,6 +5716,11 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
                 c2b_globals.wig->basename,
                 c2b_globals.wig->section);
     }
+    else {
+        sprintf(c2b_globals.wig->id,
+                "id.%u",
+                c2b_globals.wig->line);
+    }
 
     /* 
        Legal header cases: line starts with '#' 
@@ -5850,6 +5855,7 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
         if (variable_step_fields == 1)
             c2b_globals.wig->span = 1;
         c2b_globals.wig->is_fixed_step = kFalse;
+        c2b_globals.wig->is_variable_step = kTrue;
         if (c2b_globals.wig->start_write) {
             c2b_globals.wig->start_write = kFalse;
             sprintf(c2b_globals.wig->id,
@@ -5928,6 +5934,7 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             c2b_globals.wig->span = 1;
         }
         c2b_globals.wig->is_fixed_step = kTrue;
+        c2b_globals.wig->is_variable_step = kFalse;
         if (c2b_globals.keep_header_flag) { 
             /* copy header line to destination stream buffer */
             if (!c2b_globals.wig->basename) {
@@ -6005,8 +6012,8 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
                     "id-%d\t"                   \
                     "%lf\n",
                     c2b_globals.wig->chr,
-                    c2b_globals.wig->start_pos - c2b_globals.wig->start_shift,
-                    c2b_globals.wig->end_pos - c2b_globals.wig->end_shift,
+                    c2b_globals.wig->start_pos + c2b_globals.wig->start_shift,
+                    c2b_globals.wig->end_pos + c2b_globals.wig->end_shift,
                     c2b_globals.wig->pos_lines,
                     c2b_globals.wig->score);
         }
@@ -6018,8 +6025,8 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
                     "%s-%d\t"                   \
                     "%lf\n",
                     c2b_globals.wig->chr,
-                    c2b_globals.wig->start_pos - c2b_globals.wig->start_shift,
-                    c2b_globals.wig->end_pos - c2b_globals.wig->end_shift,
+                    c2b_globals.wig->start_pos + c2b_globals.wig->start_shift,
+                    c2b_globals.wig->end_pos + c2b_globals.wig->end_shift,
                     c2b_globals.wig->id,
                     c2b_globals.wig->pos_lines,
                     c2b_globals.wig->score);
@@ -6049,7 +6056,6 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
         c2b_globals.src_line_str[src_size] = '\0';
 
         if (c2b_globals.wig->is_fixed_step) {
-
             int fixed_step_column_fields = sscanf(c2b_globals.src_line_str, "%lf\n", &(c2b_globals.wig->score));
             if (fixed_step_column_fields != 1) {
                 fprintf(stderr, "Error: Invalid WIG line %u\n", c2b_globals.wig->line);
@@ -6069,8 +6075,8 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
                         "id-%d\t"               \
                         "%lf\n",
                         c2b_globals.wig->chr,
-                        c2b_globals.wig->start_pos - c2b_globals.wig->start_shift,
-                        c2b_globals.wig->start_pos + c2b_globals.wig->span - c2b_globals.wig->end_shift,
+                        c2b_globals.wig->start_pos + c2b_globals.wig->start_shift,
+                        c2b_globals.wig->start_pos + c2b_globals.wig->start_shift + c2b_globals.wig->span + c2b_globals.wig->end_shift,
                         c2b_globals.wig->pos_lines,
                         c2b_globals.wig->score);
             }
@@ -6082,8 +6088,68 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
                         "%s-%d\t"               \
                         "%lf\n",
                         c2b_globals.wig->chr,
-                        c2b_globals.wig->start_pos - c2b_globals.wig->start_shift,
-                        c2b_globals.wig->start_pos + c2b_globals.wig->span - c2b_globals.wig->end_shift,
+                        c2b_globals.wig->start_pos + c2b_globals.wig->start_shift,
+                        c2b_globals.wig->start_pos + c2b_globals.wig->start_shift + c2b_globals.wig->span + c2b_globals.wig->end_shift,
+                        c2b_globals.wig->id,
+                        c2b_globals.wig->pos_lines,
+                        c2b_globals.wig->score);
+            }            
+            c2b_globals.wig->start_pos += c2b_globals.wig->step;
+            c2b_globals.wig->start_write = kTrue;
+            /* resize destination buffer, if necessary */
+            if ((ssize_t)(*dest_size + C2B_MAX_LINE_LENGTH_VALUE) > *dest_capacity) {
+                char *dest_line_resized = NULL;
+                dest_line_resized = realloc(*dest, *dest_capacity * 2);
+                if (dest_line_resized) {
+                    *dest_capacity *= 2;
+                    *dest = dest_line_resized;
+                }
+                else {
+                    fprintf(stderr, "Error: Could not resize dest string in WIG pointer conversion fn\n");
+                    exit(ENOMEM);
+                }
+            }
+            memcpy(*dest + *dest_size, c2b_globals.dest_line_str, strlen(c2b_globals.dest_line_str));
+            *dest_size += strlen(c2b_globals.dest_line_str);
+        }
+        else if (c2b_globals.wig->is_variable_step) {
+            int variable_step_column_fields = sscanf(c2b_globals.src_line_str, 
+                                                     "%" SCNu64 "\t%lf\n", 
+                                                     &(c2b_globals.wig->start_pos), 
+                                                     &(c2b_globals.wig->score));
+            if (variable_step_column_fields != 2) {
+                fprintf(stderr, "Error: Invalid WIG line %u\n", c2b_globals.wig->line);
+                exit(EINVAL); /* Invalid argument (POSIX.1) */
+            }
+            c2b_globals.wig->pos_lines++;
+            if ((c2b_globals.wig->start_pos == 0) && (!c2b_globals.zero_indexed_flag)) {
+                fprintf(stderr, "Error: WIG data contains 0-indexed element at line %u\n", c2b_globals.wig->line);
+                fprintf(stderr, "       Consider adding --zero-indexed (-x) option to convert zero-indexed WIG data\n");
+                exit(EINVAL); /* Invalid argument (POSIX.1) */
+            }
+            if (!c2b_globals.wig->basename) {
+                sprintf(c2b_globals.dest_line_str,
+                        "%s\t"                  \
+                        "%" PRIu64 "\t"         \
+                        "%" PRIu64 "\t"         \
+                        "id-%d\t"               \
+                        "%lf\n",
+                        c2b_globals.wig->chr,
+                        c2b_globals.wig->start_pos + c2b_globals.wig->start_shift,
+                        c2b_globals.wig->start_pos + c2b_globals.wig->start_shift + c2b_globals.wig->span + c2b_globals.wig->end_shift,
+                        c2b_globals.wig->pos_lines,
+                        c2b_globals.wig->score);
+            }
+            else {
+                sprintf(c2b_globals.dest_line_str,
+                        "%s\t"                  \
+                        "%" PRIu64 "\t"         \
+                        "%" PRIu64 "\t"         \
+                        "%s-%d\t"               \
+                        "%lf\n",
+                        c2b_globals.wig->chr,
+                        c2b_globals.wig->start_pos + c2b_globals.wig->start_shift,
+                        c2b_globals.wig->start_pos + c2b_globals.wig->start_shift + c2b_globals.wig->span + c2b_globals.wig->end_shift,
                         c2b_globals.wig->id,
                         c2b_globals.wig->pos_lines,
                         c2b_globals.wig->score);
@@ -6107,12 +6173,20 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             *dest_size += strlen(c2b_globals.dest_line_str);
         }
         else {
-            int variable_step_column_fields = sscanf(c2b_globals.src_line_str, 
-                                                     "%" SCNu64 "\t%lf\n", 
-                                                     &(c2b_globals.wig->start_pos), 
-                                                     &(c2b_globals.wig->score));
-            if (variable_step_column_fields != 2) {
+            int bed_fields = sscanf(c2b_globals.src_line_str, 
+                                    "%s\t%" SCNu64 "\t%" SCNu64 "\t%lf\n", 
+                                    c2b_globals.wig->chr,
+                                    &(c2b_globals.wig->start_pos), 
+                                    &(c2b_globals.wig->end_pos), 
+                                    &(c2b_globals.wig->score));
+            if (bed_fields != 4) {
                 fprintf(stderr, "Error: Invalid WIG line %u\n", c2b_globals.wig->line);
+                exit(EINVAL); /* Invalid argument (POSIX.1) */
+            }
+            if (strlen(c2b_globals.wig->chr) >= C2B_MAX_CHROMOSOME_LENGTH) {
+                fprintf(stderr, "Error: Invalid WIG line %u\n", c2b_globals.wig->line);
+                fprintf(stderr, "Chromosome length is too long; check that you have Unix newlines (cat -A)\n" \
+                                "or increase TOKEN_CHR_MAX_LENGTH in BEDOPS.Constants.hpp and recompile BEDOPS\n");
                 exit(EINVAL); /* Invalid argument (POSIX.1) */
             }
             c2b_globals.wig->pos_lines++;
@@ -6123,32 +6197,31 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
             }
             if (!c2b_globals.wig->basename) {
                 sprintf(c2b_globals.dest_line_str,
-                        "%s\t"                  \
-                        "%" PRIu64 "\t"         \
-                        "%" PRIu64 "\t"         \
-                        "id-%d\t"               \
+                        "%s\t"                      \
+                        "%" PRIu64 "\t"             \
+                        "%" PRIu64 "\t"             \
+                        "id-%d\t"                   \
                         "%lf\n",
                         c2b_globals.wig->chr,
-                        c2b_globals.wig->start_pos - c2b_globals.wig->start_shift,
-                        c2b_globals.wig->start_pos + c2b_globals.wig->span - c2b_globals.wig->end_shift,
+                        c2b_globals.wig->start_pos + c2b_globals.wig->start_shift,
+                        c2b_globals.wig->end_pos + c2b_globals.wig->end_shift,
                         c2b_globals.wig->pos_lines,
                         c2b_globals.wig->score);
             }
             else {
                 sprintf(c2b_globals.dest_line_str,
-                        "%s\t"                  \
-                        "%" PRIu64 "\t"         \
-                        "%" PRIu64 "\t"         \
-                        "%s-%d\t"               \
+                        "%s\t"                      \
+                        "%" PRIu64 "\t"             \
+                        "%" PRIu64 "\t"             \
+                        "%s-%d\t"                   \
                         "%lf\n",
                         c2b_globals.wig->chr,
-                        c2b_globals.wig->start_pos - c2b_globals.wig->start_shift,
-                        c2b_globals.wig->start_pos + c2b_globals.wig->span - c2b_globals.wig->end_shift,
+                        c2b_globals.wig->start_pos + c2b_globals.wig->start_shift,
+                        c2b_globals.wig->end_pos + c2b_globals.wig->end_shift,
                         c2b_globals.wig->id,
                         c2b_globals.wig->pos_lines,
                         c2b_globals.wig->score);
-            }            
-            c2b_globals.wig->start_pos += c2b_globals.wig->step;
+            }
             c2b_globals.wig->start_write = kTrue;
             /* resize destination buffer, if necessary */
             if ((ssize_t)(*dest_size + C2B_MAX_LINE_LENGTH_VALUE) > *dest_capacity) {
@@ -7428,10 +7501,13 @@ c2b_init_global_wig_state()
     c2b_globals.wig->chr = NULL;
     c2b_globals.wig->id = NULL;
     c2b_globals.wig->is_fixed_step = kFalse;
+    c2b_globals.wig->is_variable_step = kFalse;
     c2b_globals.wig->start_write = kFalse;
     c2b_globals.wig->basename = NULL;
-    c2b_globals.wig->start_shift = 1;
-    c2b_globals.wig->end_shift = 1;
+
+    /* default indexing shift from WIG to BED is 1-based, fully-closed to 0-based, half-open */
+    c2b_globals.wig->start_shift = -1;
+    c2b_globals.wig->end_shift = 0;
 
     c2b_globals.wig->chr = malloc(C2B_MAX_CHROMOSOME_LENGTH);
     if (!c2b_globals.wig->chr) {
