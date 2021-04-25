@@ -33,6 +33,21 @@ The ``gtf2bed`` script parses GTF from standard input and prints sorted BED to s
 
 .. tip:: If sorting converted data larger than system memory, use the ``--max-mem`` option to limit sort memory usage to a reasonable fraction of available memory, *e.g.*, ``--max-mem 2G`` or similar. See ``--help`` for more details.
 
+The attributes field of the GTF file is parsed to extract the ``gene_id`` value, which is placed in the ID field (fourth column). 
+
+Another attribute can be copied, instead, by using the ``--attribute-key=<val>`` option, where ``<val>`` is one of the following reserved keywords:
+
+* ``gene_id`` (default)
+* ``gene_name``
+* ``gene_type``
+* ``transcript_id``
+* ``transcript_name``
+* ``exon_id``
+* ``havana_gene``
+* ``havana_transcript``
+
+If there is no attribute value available for the specified keyword, a placeholder (``.``) is added to that record in the ID field. 
+
 =======
 Example
 =======

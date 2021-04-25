@@ -35,6 +35,30 @@ The header data of a GFF file is usually discarded, unless you add the ``--keep-
 
 .. tip:: If sorting converted data larger than system memory, use the ``--max-mem`` option to limit sort memory usage to a reasonable fraction of available memory, *e.g.*, ``--max-mem 2G`` or similar. See ``--help`` for more details.
 
+The attributes field of the GFF file is parsed to extract the ``gene_id`` value, which is placed in the ID field (fourth column).
+
+Another attribute can be copied, instead, by using the ``--attribute-key=<val>`` option, where ``<val>`` is one of the following reserved keywords:
+
+* ``gene_id`` (default)
+* ``gene_name``
+* ``gene_type``
+* ``transcript_id``
+* ``transcript_name``
+* ``transcript_type``
+* ``exon_id``
+* ``exon_number``
+* ``havana_gene``
+* ``havana_transcript``
+* ``ccdsid``
+* ``protein_id``
+* ``ont``
+* ``hgnc_id``
+* ``mgi_id``
+
+Descriptions of these keywords are available from the `Gencode GFF specification documentation <https://www.gencodegenes.org/pages/data_format.html>`_.
+
+Some records may not have certain attributes. If there is no attribute value available for the specified keyword, a placeholder (``.``) is added to that record in the output ID field. 
+
 =======
 Example
 =======

@@ -1336,61 +1336,91 @@ c2b_line_convert_gtf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
     const char *kv_tok;
     char *gene_id_str = NULL;
     char *transcript_id_str = NULL;
+    char *transcript_name_str = NULL;
+    char *gene_name_str = NULL;
+    char *gene_type_str = NULL;
+    char *exon_id_str = NULL;
+    char *havana_gene_str = NULL;
+    char *havana_transcript_str = NULL;
     boolean gene_id_value_defined = kFalse;
     boolean transcript_id_value_defined = kFalse;
-    while((kv_tok = c2b_strsep(&attributes_copy, c2b_gtf_field_delimiter)) != NULL) {
+    boolean transcript_name_value_defined = kFalse;
+    boolean gene_name_value_defined = kFalse;
+    boolean gene_type_value_defined = kFalse;
+    boolean exon_id_value_defined = kFalse;
+    boolean havana_gene_value_defined = kFalse;
+    boolean havana_transcript_value_defined = kFalse;
+    while ((kv_tok = c2b_strsep(&attributes_copy, c2b_gtf_field_delimiter)) != NULL) {
         gene_id_str = strstr(kv_tok, c2b_gtf_gene_id_prefix);
-        if (gene_id_str) {
-            /* we remove quotation marks around ID string value */
-            char *gtf_id_start = NULL;
-            gtf_id_start = strchr(kv_tok + strlen(c2b_gtf_gene_id_prefix), c2b_gtf_id_delimiter);
-            if (gtf_id_start - (kv_tok + strlen(c2b_gtf_gene_id_prefix)) < 0) {
-                gtf_id_start = NULL;
-            }
-            char *gtf_id_end = NULL;
-            if (gtf_id_start) {
-                gtf_id_end = strchr(gtf_id_start + 1, c2b_gtf_id_delimiter);
-                if (gtf_id_end - (kv_tok + strlen(c2b_gtf_gene_id_prefix)) <= 0) {
-                    gtf_id_end = NULL;
-                }
-            }
-            if (!gtf_id_start || !gtf_id_end) {
-                fprintf(stderr, "Error: Could not parse ID from GTF attributes (malformed GTF at line [%" PRIu64 "]?)\n", c2b_globals.gtf->line_count + 1);
-                exit(ENODATA); /* No data available (POSIX.1) */
-            }
-            if ((gtf_id_start && gtf_id_end) && (gtf_id_start != gtf_id_end)) {
-                ssize_t id_size = gtf_id_end - gtf_id_start - 1;
-                if (id_size >= c2b_globals.gtf->element->id_capacity) {
-                    char *id_resized = NULL;
-                    id_resized = realloc(c2b_globals.gtf->element->id, id_size + 1);
-                    if (id_resized) {
-                        c2b_globals.gtf->element->id = id_resized;
-                        c2b_globals.gtf->element->id_capacity = id_size + 1;
-                    }
-                    else {
-                        fprintf(stderr, "Error: Could not resize ID string in GTF element struct\n");
-                        exit(ENOMEM);
-                    }
-                }
-                memcpy(c2b_globals.gtf->element->id, gtf_id_start + 1, id_size);
-                c2b_globals.gtf->element->id[id_size] = '\0';
-            }
-            else {
-                c2b_globals.gtf->element->id[0] = '\0';
-            }
-            if (strlen(c2b_globals.gtf->element->id) == 0) {
-                strcpy(c2b_globals.gtf->element->id, c2b_gtf_field_placeholder);
+        if (gene_id_str) { 
+            if (c2b_globals.gtf->attribute_key_for_id == GENE_ID_GTF_ATTRIBUTE_KEY) {
+                c2b_gtf_copy_attribute_to_id(kv_tok, c2b_gtf_gene_id_prefix);
             }
             gene_id_value_defined = kTrue;
         }
         transcript_id_str = strstr(kv_tok, c2b_gtf_transcript_id_prefix);
         if (transcript_id_str) {
+            if (c2b_globals.gtf->attribute_key_for_id == TRANSCRIPT_ID_GTF_ATTRIBUTE_KEY) {
+                c2b_gtf_copy_attribute_to_id(kv_tok, c2b_gtf_transcript_id_prefix);
+            }
             transcript_id_value_defined = kTrue;
+        }
+        transcript_name_str = strstr(kv_tok, c2b_gtf_transcript_name_prefix);
+        if (transcript_name_str) {
+            if (c2b_globals.gtf->attribute_key_for_id == TRANSCRIPT_NAME_GTF_ATTRIBUTE_KEY) {
+                c2b_gtf_copy_attribute_to_id(kv_tok, c2b_gtf_transcript_name_prefix);
+            }
+            transcript_name_value_defined = kTrue;
+        }
+        gene_name_str = strstr(kv_tok, c2b_gtf_gene_name_prefix);
+        if (gene_name_str) {
+            if (c2b_globals.gtf->attribute_key_for_id == GENE_NAME_GTF_ATTRIBUTE_KEY) {
+                c2b_gtf_copy_attribute_to_id(kv_tok, c2b_gtf_gene_name_prefix);
+            }
+            gene_name_value_defined = kTrue;
+        }
+        gene_type_str = strstr(kv_tok, c2b_gtf_gene_type_prefix);
+        if (gene_type_str) {
+            if (c2b_globals.gtf->attribute_key_for_id == GENE_TYPE_GTF_ATTRIBUTE_KEY) {
+                c2b_gtf_copy_attribute_to_id(kv_tok, c2b_gtf_gene_type_prefix);
+            }
+            gene_type_value_defined = kTrue;
+        }
+        exon_id_str = strstr(kv_tok, c2b_gtf_exon_id_prefix);
+        if (exon_id_str) {
+            if (c2b_globals.gtf->attribute_key_for_id == EXON_ID_GTF_ATTRIBUTE_KEY) {
+                c2b_gtf_copy_attribute_to_id(kv_tok, c2b_gtf_exon_id_prefix);
+            }
+            exon_id_value_defined = kTrue;
+        }
+        havana_gene_str = strstr(kv_tok, c2b_gtf_havana_gene_prefix);
+        if (havana_gene_str) {
+            if (c2b_globals.gtf->attribute_key_for_id == HAVANA_GENE_GTF_ATTRIBUTE_KEY) {
+                c2b_gtf_copy_attribute_to_id(kv_tok, c2b_gtf_havana_gene_prefix);
+            }
+            havana_gene_value_defined = kTrue;
+        }
+        havana_transcript_str = strstr(kv_tok, c2b_gtf_havana_transcript_prefix);
+        if (havana_transcript_str) {
+            if (c2b_globals.gtf->attribute_key_for_id == HAVANA_TRANSCRIPT_GTF_ATTRIBUTE_KEY) {
+                c2b_gtf_copy_attribute_to_id(kv_tok, c2b_gtf_havana_transcript_prefix);
+            }
+            havana_transcript_value_defined = kTrue;
         }
     }
     if (!gene_id_value_defined || !transcript_id_value_defined) {
-        fprintf(stderr, "Error: Potentially missing gene or transcript ID from GTF attributes (malformed GTF at line [%" PRIu64 "]?)\n", c2b_globals.gtf->line_count + 1);
-        exit(ENODATA); /* No data available (POSIX.1) */        
+        fprintf(stderr, "Warning: Potentially missing gene or transcript ID from GTF attributes (malformed GTF at line [%" PRIu64 "]?)\n", c2b_globals.gtf->line_count + 1);
+        // exit(ENODATA); /* No data available (POSIX.1) */  
+    }
+    if ((!gene_id_value_defined && (c2b_globals.gtf->attribute_key_for_id == GENE_ID_GTF_ATTRIBUTE_KEY)) ||
+        (!transcript_id_value_defined && (c2b_globals.gtf->attribute_key_for_id == TRANSCRIPT_ID_GTF_ATTRIBUTE_KEY)) ||
+        (!transcript_name_value_defined && (c2b_globals.gtf->attribute_key_for_id == TRANSCRIPT_NAME_GTF_ATTRIBUTE_KEY)) ||
+        (!gene_name_value_defined && (c2b_globals.gtf->attribute_key_for_id == GENE_NAME_GTF_ATTRIBUTE_KEY)) ||
+        (!gene_type_value_defined && (c2b_globals.gtf->attribute_key_for_id == GENE_TYPE_GTF_ATTRIBUTE_KEY)) ||
+        (!exon_id_value_defined && (c2b_globals.gtf->attribute_key_for_id == EXON_ID_GTF_ATTRIBUTE_KEY)) ||
+        (!havana_gene_value_defined && (c2b_globals.gtf->attribute_key_for_id == HAVANA_GENE_GTF_ATTRIBUTE_KEY)) ||
+        (!havana_transcript_value_defined && (c2b_globals.gtf->attribute_key_for_id == HAVANA_TRANSCRIPT_GTF_ATTRIBUTE_KEY))) {
+        strcpy(c2b_globals.gtf->element->id, c2b_gtf_field_placeholder);
     }
     free(attributes_copy), attributes_copy = NULL;
 
@@ -1400,6 +1430,52 @@ c2b_line_convert_gtf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
 
     c2b_line_convert_gtf_ptr_to_bed(c2b_globals.gtf->element, dest, dest_size, dest_capacity);
     c2b_globals.gtf->line_count++;
+}
+
+static inline void
+c2b_gtf_copy_attribute_to_id(const char* token, const char* prefix)
+{
+    char *gtf_id_start = NULL;
+    char *gtf_id_end = NULL;
+
+    /* we remove quotation marks around ID string value */
+    gtf_id_start = strchr(token + strlen(prefix), c2b_gtf_id_delimiter);
+    if (gtf_id_start - (token + strlen(prefix)) < 0) {
+        gtf_id_start = NULL;
+    }
+    if (gtf_id_start) {
+        gtf_id_end = strchr(gtf_id_start + 1, c2b_gtf_id_delimiter);
+        if (gtf_id_end - (token + strlen(prefix)) <= 0) {
+            gtf_id_end = NULL;
+        }
+    }
+    if (!gtf_id_start || !gtf_id_end) {
+        fprintf(stderr, "Error: Could not parse ID from GTF gene_id attribute (malformed GTF at line [%" PRIu64 "]?)\n", c2b_globals.gtf->line_count + 1);
+        exit(ENODATA); /* No data available (POSIX.1) */
+    }
+    if ((gtf_id_start && gtf_id_end) && (gtf_id_start != gtf_id_end)) {
+        ssize_t id_size = gtf_id_end - gtf_id_start - 1;
+        if (id_size >= c2b_globals.gtf->element->id_capacity) {
+            char *id_resized = NULL;
+            id_resized = realloc(c2b_globals.gtf->element->id, id_size + 1);
+            if (id_resized) {
+                c2b_globals.gtf->element->id = id_resized;
+                c2b_globals.gtf->element->id_capacity = id_size + 1;
+            }
+            else {
+                fprintf(stderr, "Error: Could not resize ID string in GTF element struct\n");
+                exit(ENOMEM);
+            }
+        }
+        memcpy(c2b_globals.gtf->element->id, gtf_id_start + 1, id_size);
+        c2b_globals.gtf->element->id[id_size] = '\0';
+    }
+    else {
+        c2b_globals.gtf->element->id[0] = '\0';
+    }
+    if (strlen(c2b_globals.gtf->element->id) == 0) {
+        strcpy(c2b_globals.gtf->element->id, c2b_gtf_field_placeholder);
+    }
 }
 
 static inline void
@@ -1968,35 +2044,160 @@ c2b_line_convert_gff_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
     }
     memcpy(attributes_copy, c2b_globals.gff->element->attributes, strlen(c2b_globals.gff->element->attributes) + 1);
     const char *kv_tok;
-    const char *gff_id_prefix = "ID=";
-    const char *gff_null_id = ".";
-    char *id_str = NULL;
-    memcpy(c2b_globals.gff->element->id, gff_null_id, strlen(gff_null_id) + 1);
-    c2b_globals.gff->element->id[strlen(gff_null_id)] = '\0';
-    while ((kv_tok = c2b_strsep(&attributes_copy, ";")) != NULL) {
-        id_str = strstr(kv_tok, gff_id_prefix);
-        if (id_str) {
-            ssize_t id_size = strlen(id_str);
-            if (id_size >= c2b_globals.gff->element->id_capacity) {
-                char *id_resized = NULL;
-                id_resized = realloc(c2b_globals.gff->element->id, id_size + 1);
-                if (id_resized) {
-                    c2b_globals.gff->element->id = id_resized;
-                    c2b_globals.gff->element->id_capacity = id_size + 1;
-                }
-                else {
-                    fprintf(stderr, "Error: Could not resize ID string in GFF element struct\n");
-                    exit(ENOMEM);
-                }
+    char *gene_id_str = NULL;
+    char *gene_name_str = NULL;
+    char *gene_type_str = NULL;
+    char *transcript_id_str = NULL;
+    char *transcript_name_str = NULL;
+    char *transcript_type_str = NULL;
+    char *exon_id_str = NULL;
+    char *exon_number_str = NULL;
+    char *havana_gene_str = NULL;
+    char *havana_transcript_str = NULL;
+    char *ccdsid_str = NULL;
+    char *protein_id_str = NULL;
+    char *ont_str = NULL;
+    char *hgnc_id_str = NULL;
+    char *mgi_id_str = NULL;
+    boolean gene_id_value_defined = kFalse;
+    boolean gene_name_value_defined = kFalse;
+    boolean gene_type_value_defined = kFalse;
+    boolean transcript_id_value_defined = kFalse;
+    boolean transcript_name_value_defined = kFalse;
+    boolean transcript_type_value_defined = kFalse;
+    boolean exon_id_value_defined = kFalse;
+    boolean exon_number_value_defined = kFalse;
+    boolean havana_gene_value_defined = kFalse;
+    boolean havana_transcript_value_defined = kFalse;
+    boolean ccdsid_value_defined = kFalse;
+    boolean protein_id_value_defined = kFalse;
+    boolean ont_value_defined = kFalse;
+    boolean hgnc_id_value_defined = kFalse;
+    boolean mgi_id_value_defined = kFalse;
+    while ((kv_tok = c2b_strsep(&attributes_copy, c2b_gff_field_delimiter)) != NULL) {
+        gene_id_str = strstr(kv_tok, c2b_gff_gene_id_prefix);
+        if (gene_id_str) { 
+            if (c2b_globals.gff->attribute_key_for_id == GENE_ID_GFF_ATTRIBUTE_KEY) {
+                c2b_gff_copy_attribute_to_id(kv_tok, c2b_gff_gene_id_prefix);
             }
-            if (id_size > 0) {
-                memcpy(c2b_globals.gff->element->id, kv_tok + strlen(gff_id_prefix), strlen(kv_tok + strlen(gff_id_prefix)) + 1);
-                c2b_globals.gff->element->id[strlen(kv_tok + strlen(gff_id_prefix)) + 1] = '\0';
-            }
-            else {
-                c2b_globals.gff->element->id[0] = '\0';
-            }
+            gene_id_value_defined = kTrue;
         }
+        gene_name_str = strstr(kv_tok, c2b_gff_gene_name_prefix);
+        if (gene_name_str) {
+            if (c2b_globals.gff->attribute_key_for_id == GENE_NAME_GFF_ATTRIBUTE_KEY) {
+                c2b_gff_copy_attribute_to_id(kv_tok, c2b_gff_gene_name_prefix);
+            }
+            gene_name_value_defined = kTrue;
+        }
+        gene_type_str = strstr(kv_tok, c2b_gff_gene_type_prefix);
+        if (gene_type_str) {
+            if (c2b_globals.gff->attribute_key_for_id == GENE_TYPE_GFF_ATTRIBUTE_KEY) {
+                c2b_gff_copy_attribute_to_id(kv_tok, c2b_gff_gene_type_prefix);
+            }
+            gene_type_value_defined = kTrue;
+        }
+        transcript_id_str = strstr(kv_tok, c2b_gff_transcript_id_prefix);
+        if (transcript_id_str) {
+            if (c2b_globals.gff->attribute_key_for_id == TRANSCRIPT_ID_GFF_ATTRIBUTE_KEY) {
+                c2b_gff_copy_attribute_to_id(kv_tok, c2b_gff_transcript_id_prefix);
+            }
+            transcript_id_value_defined = kTrue;
+        }
+        transcript_name_str = strstr(kv_tok, c2b_gff_transcript_name_prefix);
+        if (transcript_name_str) {
+            if (c2b_globals.gff->attribute_key_for_id == TRANSCRIPT_NAME_GFF_ATTRIBUTE_KEY) {
+                c2b_gff_copy_attribute_to_id(kv_tok, c2b_gff_transcript_name_prefix);
+            }
+            transcript_name_value_defined = kTrue;
+        }
+        transcript_type_str = strstr(kv_tok, c2b_gff_transcript_type_prefix);
+        if (transcript_type_str) {
+            if (c2b_globals.gff->attribute_key_for_id == TRANSCRIPT_TYPE_GFF_ATTRIBUTE_KEY) {
+                c2b_gff_copy_attribute_to_id(kv_tok, c2b_gff_transcript_type_prefix);
+            }
+            transcript_type_value_defined = kTrue;
+        }
+        exon_id_str = strstr(kv_tok, c2b_gff_exon_id_prefix);
+        if (exon_id_str) {
+            if (c2b_globals.gff->attribute_key_for_id == EXON_ID_GFF_ATTRIBUTE_KEY) {
+                c2b_gff_copy_attribute_to_id(kv_tok, c2b_gff_exon_id_prefix);
+            }
+            exon_id_value_defined = kTrue;
+        }
+        exon_number_str = strstr(kv_tok, c2b_gff_exon_number_prefix);
+        if (exon_number_str) {
+            if (c2b_globals.gff->attribute_key_for_id == EXON_NUMBER_GFF_ATTRIBUTE_KEY) {
+                c2b_gff_copy_attribute_to_id(kv_tok, c2b_gff_exon_number_prefix);
+            }
+            exon_number_value_defined = kTrue;
+        }
+        havana_gene_str = strstr(kv_tok, c2b_gff_havana_gene_prefix);
+        if (havana_gene_str) {
+            if (c2b_globals.gff->attribute_key_for_id == HAVANA_GENE_GFF_ATTRIBUTE_KEY) {
+                c2b_gff_copy_attribute_to_id(kv_tok, c2b_gff_havana_gene_prefix);
+            }
+            havana_gene_value_defined = kTrue;
+        }
+        havana_transcript_str = strstr(kv_tok, c2b_gff_havana_transcript_prefix);
+        if (havana_transcript_str) {
+            if (c2b_globals.gff->attribute_key_for_id == HAVANA_TRANSCRIPT_GFF_ATTRIBUTE_KEY) {
+                c2b_gff_copy_attribute_to_id(kv_tok, c2b_gff_havana_transcript_prefix);
+            }
+            havana_transcript_value_defined = kTrue;
+        }
+        ccdsid_str = strstr(kv_tok, c2b_gff_ccdsid_prefix);
+        if (ccdsid_str) {
+            if (c2b_globals.gff->attribute_key_for_id == CCDSID_GFF_ATTRIBUTE_KEY) {
+                c2b_gff_copy_attribute_to_id(kv_tok, c2b_gff_ccdsid_prefix);
+            }
+            ccdsid_value_defined = kTrue;
+        }
+        protein_id_str = strstr(kv_tok, c2b_gff_protein_id_prefix);
+        if (protein_id_str) {
+            if (c2b_globals.gff->attribute_key_for_id == PROTEIN_ID_GFF_ATTRIBUTE_KEY) {
+                c2b_gff_copy_attribute_to_id(kv_tok, c2b_gff_protein_id_prefix);
+            }
+            protein_id_value_defined = kTrue;
+        }
+        ont_str = strstr(kv_tok, c2b_gff_ont_prefix);
+        if (ont_str) {
+            if (c2b_globals.gff->attribute_key_for_id == ONT_GFF_ATTRIBUTE_KEY) {
+                c2b_gff_copy_attribute_to_id(kv_tok, c2b_gff_ont_prefix);
+            }
+            ont_value_defined = kTrue;
+        }
+        hgnc_id_str = strstr(kv_tok, c2b_gff_hgnc_id_prefix);
+        if (hgnc_id_str) {
+            if (c2b_globals.gff->attribute_key_for_id == HGNC_ID_GFF_ATTRIBUTE_KEY) {
+                c2b_gff_copy_attribute_to_id(kv_tok, c2b_gff_hgnc_id_prefix);
+            }
+            hgnc_id_value_defined = kTrue;
+        }
+        mgi_id_str = strstr(kv_tok, c2b_gff_mgi_id_prefix);
+        if (mgi_id_str) {
+            if (c2b_globals.gff->attribute_key_for_id == MGI_ID_GFF_ATTRIBUTE_KEY) {
+                c2b_gff_copy_attribute_to_id(kv_tok, c2b_gff_mgi_id_prefix);
+            }
+            mgi_id_value_defined = kTrue;
+        }
+    }
+    if ((!gene_id_value_defined && (c2b_globals.gff->attribute_key_for_id == GENE_ID_GFF_ATTRIBUTE_KEY)) ||
+        (!gene_name_value_defined && (c2b_globals.gff->attribute_key_for_id == GENE_NAME_GFF_ATTRIBUTE_KEY)) ||
+        (!gene_type_value_defined && (c2b_globals.gff->attribute_key_for_id == GENE_TYPE_GFF_ATTRIBUTE_KEY)) ||
+        (!transcript_id_value_defined && (c2b_globals.gff->attribute_key_for_id == TRANSCRIPT_ID_GFF_ATTRIBUTE_KEY)) ||
+        (!transcript_name_value_defined && (c2b_globals.gff->attribute_key_for_id == TRANSCRIPT_NAME_GFF_ATTRIBUTE_KEY)) ||
+        (!transcript_type_value_defined && (c2b_globals.gff->attribute_key_for_id == TRANSCRIPT_TYPE_GFF_ATTRIBUTE_KEY)) ||
+        (!exon_id_value_defined && (c2b_globals.gff->attribute_key_for_id == EXON_ID_GFF_ATTRIBUTE_KEY)) ||
+        (!exon_number_value_defined && (c2b_globals.gff->attribute_key_for_id == EXON_NUMBER_GFF_ATTRIBUTE_KEY)) ||
+        (!havana_gene_value_defined && (c2b_globals.gff->attribute_key_for_id == HAVANA_GENE_GFF_ATTRIBUTE_KEY)) ||
+        (!havana_transcript_value_defined && (c2b_globals.gff->attribute_key_for_id == HAVANA_TRANSCRIPT_GFF_ATTRIBUTE_KEY)) ||
+        (!ccdsid_value_defined && (c2b_globals.gff->attribute_key_for_id == CCDSID_GFF_ATTRIBUTE_KEY)) ||
+        (!protein_id_value_defined && (c2b_globals.gff->attribute_key_for_id == PROTEIN_ID_GFF_ATTRIBUTE_KEY)) ||
+        (!ont_value_defined && (c2b_globals.gff->attribute_key_for_id == ONT_GFF_ATTRIBUTE_KEY)) ||
+        (!hgnc_id_value_defined && (c2b_globals.gff->attribute_key_for_id == HGNC_ID_GFF_ATTRIBUTE_KEY)) ||
+        (!mgi_id_value_defined && (c2b_globals.gff->attribute_key_for_id == MGI_ID_GFF_ATTRIBUTE_KEY))) 
+    {
+        strcpy(c2b_globals.gff->element->id, c2b_gff_field_placeholder);
     }
     free(attributes_copy), attributes_copy = NULL;
 
@@ -2005,6 +2206,45 @@ c2b_line_convert_gff_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
     */
 
     c2b_line_convert_gff_ptr_to_bed(c2b_globals.gff->element, dest, dest_size, dest_capacity);
+}
+
+static inline void
+c2b_gff_copy_attribute_to_id(const char* token, const char* prefix)
+{
+    const char *gff_id_start = NULL;
+    const char *gff_id_end = NULL;
+
+    gff_id_start = token + strlen(prefix);
+    if (gff_id_start) {
+        gff_id_end = token + strlen(token);
+    }
+    if (!gff_id_start || !gff_id_end) {
+        strcpy(c2b_globals.gff->element->id, c2b_gff_field_placeholder);
+        return;
+    }
+    if ((gff_id_start && gff_id_end) && (gff_id_start != gff_id_end)) {
+        ssize_t id_size = gff_id_end - gff_id_start;
+        if (id_size >= c2b_globals.gff->element->id_capacity) {
+            char *id_resized = NULL;
+            id_resized = realloc(c2b_globals.gff->element->id, id_size + 1);
+            if (id_resized) {
+                c2b_globals.gff->element->id = id_resized;
+                c2b_globals.gff->element->id_capacity = id_size + 1;
+            }
+            else {
+                fprintf(stderr, "Error: Could not resize ID string in GFF element struct\n");
+                exit(ENOMEM);
+            }
+        }
+        memcpy(c2b_globals.gff->element->id, gff_id_start, id_size);
+        c2b_globals.gff->element->id[id_size] = '\0';
+    }
+    else {
+        c2b_globals.gff->element->id[0] = '\0';
+    }
+    if (strlen(c2b_globals.gff->element->id) == 0) {
+        strcpy(c2b_globals.gff->element->id, c2b_gff_field_placeholder);
+    }
 }
 
 static inline void
@@ -7159,6 +7399,7 @@ c2b_init_globals()
     c2b_init_global_starch_params();
     c2b_globals.src_line_str = NULL;
     c2b_globals.dest_line_str = NULL;
+    c2b_globals.attribute_key = NULL;
 
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_init_globals() - exit  ---\n");
@@ -7193,6 +7434,7 @@ c2b_delete_globals()
     if (c2b_globals.starch) c2b_delete_global_starch_params();
     if (c2b_globals.src_line_str) free(c2b_globals.src_line_str), c2b_globals.src_line_str = NULL;
     if (c2b_globals.dest_line_str) free(c2b_globals.dest_line_str), c2b_globals.dest_line_str = NULL;
+    if (c2b_globals.attribute_key) free(c2b_globals.attribute_key), c2b_globals.attribute_key = NULL;
 
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_delete_globals() - exit  ---\n");
@@ -7213,6 +7455,8 @@ c2b_init_global_gff_state()
     }
 
     c2b_globals.gff->element = NULL, c2b_gff_init_element(&(c2b_globals.gff->element));
+
+    c2b_globals.gff->attribute_key_for_id = c2b_default_gff_attribute_key;
 
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_init_global_gff_state() - exit  ---\n");
@@ -7254,6 +7498,8 @@ c2b_init_global_gtf_state()
     c2b_globals.gtf->element = NULL, c2b_gtf_init_element(&(c2b_globals.gtf->element));
 
     c2b_globals.gtf->line_count = 0;
+
+    c2b_globals.gtf->attribute_key_for_id = c2b_default_gtf_attribute_key;
 
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_init_global_gtf_state() - exit  ---\n");
@@ -7686,6 +7932,8 @@ c2b_init_command_line_options(int argc, char **argv)
 
     char *input_format = NULL;
     char *output_format = NULL;
+    char *attribute_key = NULL;
+    boolean attribute_key_specified = kFalse;
     int client_long_index;
     int client_opt = getopt_long(argc,
                                  argv,
@@ -7789,6 +8037,18 @@ c2b_init_command_line_options(int argc, char **argv)
                 break;
             case 'a':
                 c2b_globals.all_reads_flag = kTrue;
+                break;
+            case 'A':
+                attribute_key = malloc(strlen(optarg) + 1);
+                if (!attribute_key) {
+                    fprintf(stderr, "Error: Could not allocate space for attribute key argument\n");
+                    c2b_print_usage(stderr);
+                    exit(ENOMEM); /* Not enough space (POSIX.1) */
+                }
+                memcpy(attribute_key, optarg, strlen(optarg) + 1);
+                c2b_globals.attribute_key = c2b_to_lowercase(attribute_key);
+                free(attribute_key), attribute_key = NULL;
+                attribute_key_specified = kTrue;
                 break;
             case 'k':
                 c2b_globals.keep_header_flag = kTrue;
@@ -7894,6 +8154,27 @@ c2b_init_command_line_options(int argc, char **argv)
         fprintf(stderr, "Error: Cannot specify Starch compression options without setting output format to Starch\n");
         c2b_print_usage(stderr);
         exit(EINVAL); /* Invalid argument (POSIX.1) */
+    }
+
+    if (c2b_globals.input_format_idx == GTF_FORMAT) {
+        if (attribute_key_specified) {
+            c2b_globals.gtf->attribute_key_for_id = c2b_to_gtf_attribute_key(c2b_globals.attribute_key);
+        }
+        if (c2b_globals.gtf->attribute_key_for_id == UNDEFINED_GTF_ATTRIBUTE_KEY) {
+            fprintf(stderr, "Error: Must specify correct GTF attribute tag key\n");
+            c2b_print_usage(stderr);
+            exit(EINVAL); /* Invalid argument (POSIX.1) */
+        }
+    }
+    else if (c2b_globals.input_format_idx == GFF_FORMAT) {
+        if (attribute_key_specified) {
+            c2b_globals.gff->attribute_key_for_id = c2b_to_gff_attribute_key(c2b_globals.attribute_key);
+        }
+        if (c2b_globals.gff->attribute_key_for_id == UNDEFINED_GFF_ATTRIBUTE_KEY) {
+            fprintf(stderr, "Error: Must specify correct GFF attribute tag key\n");
+            c2b_print_usage(stderr);
+            exit(EINVAL); /* Invalid argument (POSIX.1) */
+        }
     }
 
 #ifdef DEBUG
@@ -8124,4 +8405,51 @@ c2b_to_output_format(const char* output_format)
         (strcmp(output_format, "bed") == 0) ? BED_FORMAT :
         (strcmp(output_format, "starch") == 0) ? STARCH_FORMAT :
         UNDEFINED_FORMAT;
+}
+
+static c2b_gff_attribute_key_t
+c2b_to_gff_attribute_key(const char* attribute_key)
+{
+#ifdef DEBUG
+    fprintf(stderr, "--- c2b_to_gff_attribute_key() - enter ---\n");
+    fprintf(stderr, "--- c2b_to_gff_attribute_key() - exit  ---\n");
+#endif
+
+    return
+        (strcmp(attribute_key, "gene_id") == 0) ? GENE_ID_GFF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "gene_name") == 0) ? GENE_NAME_GFF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "gene_type") == 0) ? GENE_TYPE_GFF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "transcript_id") == 0) ? TRANSCRIPT_ID_GFF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "transcript_name") == 0) ? TRANSCRIPT_NAME_GFF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "transcript_type") == 0) ? TRANSCRIPT_TYPE_GFF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "exon_id") == 0) ? EXON_ID_GFF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "exon_number") == 0) ? EXON_NUMBER_GFF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "havana_gene") == 0) ? HAVANA_GENE_GFF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "havana_transcript") == 0) ? HAVANA_TRANSCRIPT_GFF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "ccdsid") == 0) ? CCDSID_GFF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "protein_id") == 0) ? PROTEIN_ID_GFF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "ont") == 0) ? ONT_GFF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "hgnc_id") == 0) ? HGNC_ID_GFF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "mgi_id") == 0) ? MGI_ID_GFF_ATTRIBUTE_KEY :
+        UNDEFINED_GFF_ATTRIBUTE_KEY;
+}
+
+static c2b_gtf_attribute_key_t
+c2b_to_gtf_attribute_key(const char* attribute_key)
+{
+#ifdef DEBUG
+    fprintf(stderr, "--- c2b_to_gtf_attribute_key() - enter ---\n");
+    fprintf(stderr, "--- c2b_to_gtf_attribute_key() - exit  ---\n");
+#endif
+
+    return
+        (strcmp(attribute_key, "gene_name") == 0) ? GENE_NAME_GTF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "transcript_id") == 0) ? TRANSCRIPT_ID_GTF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "transcript_name") == 0) ? TRANSCRIPT_NAME_GTF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "gene_id") == 0) ? GENE_ID_GTF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "gene_type") == 0) ? GENE_TYPE_GTF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "exon_id") == 0) ? EXON_ID_GTF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "havana_gene") == 0) ? HAVANA_GENE_GTF_ATTRIBUTE_KEY :
+        (strcmp(attribute_key, "havana_transcript") == 0) ? HAVANA_TRANSCRIPT_GTF_ATTRIBUTE_KEY :
+        UNDEFINED_GTF_ATTRIBUTE_KEY;
 }

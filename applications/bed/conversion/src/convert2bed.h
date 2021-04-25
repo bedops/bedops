@@ -109,10 +109,34 @@ extern const char* c2b_gff_fasta;
 extern const int c2b_gff_field_min;
 extern const int c2b_gff_field_max;
 extern const char* c2b_gff_zero_length_insertion_attribute;
+extern const char* c2b_gff_gene_id_prefix;
+extern const char* c2b_gff_gene_name_prefix;
+extern const char* c2b_gff_gene_type_prefix;
+extern const char* c2b_gff_transcript_id_prefix;
+extern const char* c2b_gff_transcript_name_prefix;
+extern const char* c2b_gff_transcript_type_prefix;
+extern const char* c2b_gff_exon_id_prefix;
+extern const char* c2b_gff_exon_number_prefix;
+extern const char* c2b_gff_havana_gene_prefix;
+extern const char* c2b_gff_havana_transcript_prefix;
+extern const char* c2b_gff_ccdsid_prefix;
+extern const char* c2b_gff_protein_id_prefix;
+extern const char* c2b_gff_ont_prefix;
+extern const char* c2b_gff_hgnc_id_prefix;
+extern const char* c2b_gff_mgi_id_prefix;
+extern const char c2b_gff_id_delimiter;
+extern const char* c2b_gff_field_delimiter;
+extern const char* c2b_gff_field_placeholder;
 extern const int c2b_gtf_field_min;
 extern const int c2b_gtf_field_max;
 extern const char* c2b_gtf_gene_id_prefix;
 extern const char* c2b_gtf_transcript_id_prefix;
+extern const char* c2b_gtf_transcript_name_prefix;
+extern const char* c2b_gtf_gene_name_prefix;
+extern const char* c2b_gtf_gene_type_prefix;
+extern const char* c2b_gtf_exon_id_prefix;
+extern const char* c2b_gtf_havana_gene_prefix;
+extern const char* c2b_gtf_havana_transcript_prefix;
 extern const char c2b_gtf_id_delimiter;
 extern const char* c2b_gtf_field_delimiter;
 extern const char* c2b_gtf_field_placeholder;
@@ -166,10 +190,34 @@ const char* c2b_gff_fasta = "##FASTA";
 const int c2b_gff_field_min = 9;
 const int c2b_gff_field_max = 9;
 const char* c2b_gff_zero_length_insertion_attribute = ";zero_length_insertion=True";
+const char* c2b_gff_gene_id_prefix = "gene_id=";
+const char* c2b_gff_transcript_id_prefix = "transcript_id=";
+const char* c2b_gff_transcript_name_prefix = "transcript_name=";
+const char* c2b_gff_transcript_type_prefix = "transcript_type=";
+const char* c2b_gff_gene_name_prefix = "gene_name=";
+const char* c2b_gff_gene_type_prefix = "gene_type=";
+const char* c2b_gff_exon_id_prefix = "exon_id=";
+const char* c2b_gff_exon_number_prefix = "exon_number=";
+const char* c2b_gff_havana_gene_prefix = "havana_gene=";
+const char* c2b_gff_havana_transcript_prefix = "havana_transcript=";
+const char* c2b_gff_ccdsid_prefix = "ccdsis=";
+const char* c2b_gff_protein_id_prefix = "protein_id=";
+const char* c2b_gff_ont_prefix = "ont=";
+const char* c2b_gff_hgnc_id_prefix = "hgnc_id=";
+const char* c2b_gff_mgi_id_prefix = "mgi_id=";
+const char c2b_gff_id_delimiter = '"';
+const char* c2b_gff_field_delimiter = ";";
+const char* c2b_gff_field_placeholder = ".";
 const int c2b_gtf_field_min = 9;
 const int c2b_gtf_field_max = 10;
 const char* c2b_gtf_gene_id_prefix = "gene_id ";
 const char* c2b_gtf_transcript_id_prefix = "transcript_id ";
+const char* c2b_gtf_transcript_name_prefix = "transcript_name ";
+const char* c2b_gtf_gene_name_prefix = "gene_name ";
+const char* c2b_gtf_gene_type_prefix = "gene_type ";
+const char* c2b_gtf_exon_id_prefix = "exon_id ";
+const char* c2b_gtf_havana_gene_prefix = "havana_gene ";
+const char* c2b_gtf_havana_transcript_prefix = "havana_transcript ";
 const char c2b_gtf_id_delimiter = '"';
 const char* c2b_gtf_field_delimiter = ";";
 const char* c2b_gtf_field_placeholder = ".";
@@ -844,7 +892,8 @@ static const char* gff_description =                                    \
     "\n"                                                                \
     "  - The 'seqid' GFF column data maps to the chromosome label (1st BED column)\n" \
     "  - The 'ID' attribute in the 'attributes' GFF column (if present) maps to\n" \
-    "    the element ID (4th BED column)\n"                             \
+    "    the element ID (4th BED column). This can be changed with the --attribute-key\n" \
+    "    option (see below)\n"                                          \
     "  - The 'score' and 'strand' GFF columns (if present) are mapped to the\n" \
     "    5th and 6th BED columns, respectively\n"                       \
     "\n"                                                                \
@@ -861,7 +910,26 @@ static const char* gff_description =                                    \
 static const char* gff_options =                                        \
     "  GFF conversion options:\n\n"                                     \
     "  --keep-header (-k)\n"                                            \
-    "      Preserve header section as pseudo-BED elements\n";
+    "      Preserve header section as pseudo-BED elements\n\n"          \
+    "  --attribute-key=<val> (-A <val>)\n"                              \
+    "      Copy attribute key value to ID field, if present. Can be one of:\n" \
+    "        - gene_id (default)\n"                                     \
+    "        - gene_name\n"                                             \
+    "        - gene_type\n"                                             \
+    "        - transcript_id\n"                                         \
+    "        - transcript_name\n"                                       \
+    "        - transcript_type\n"                                       \
+    "        - exon_id\n"                                               \
+    "        - exon_number\n"                                           \
+    "        - ccdsid\n"                                                \
+    "        - protein_id\n"                                            \
+    "        - ont\n"                                                   \
+    "        - hgnc_id\n"                                               \
+    "        - mgi_id\n"                                                \
+    "        - havana_gene\n"                                           \
+    "        - havana_transcript\n\n"                                   \
+    "      Descriptions of field keys are available from Gencode:\n"    \
+    "        https://www.gencodegenes.org/pages/data_format.html\n";
 
 static const char* gff_usage =                                          \
     "  Converts 1-based, closed [a, b] GFF3 input into 0-based, half-\n" \
@@ -926,7 +994,8 @@ static const char* gtf_description =                                    \
     "\n"                                                                \
     "  - The 'seqname' GTF column data maps to the chromosome label (1st BED column)\n" \
     "  - The 'gene_id' attribute in the 'attributes' GTF column (if present) maps to \n" \
-    "    the element ID (4th BED column)\n"                             \
+    "    the element ID (4th BED column). This can be changed with the --attribute-key\n" \
+    "    option (see below)\n"                             \
     "  - The 'score' and 'strand' GFF columns (if present) are mapped to the\n" \
     "    5th and 6th BED columns, respectively\n"                       \
     "\n"                                                                \
@@ -936,7 +1005,18 @@ static const char* gtf_description =                                    \
     "  and a 'zero_length_insertion' attribute is added to the 'attributes' GTF\n" \
     "  column data.\n";
 
-static const char* gtf_options = NULL;
+static const char* gtf_options =                                        \
+    "  GTF conversion options:\n\n"                                     \
+    "  --attribute-key=<val> (-A <val>)\n"                              \
+    "      Copy attribute key value to ID field, if present. Can be one of:\n" \
+    "        - gene_id (default)\n"                                     \
+    "        - gene_name\n"                                             \
+    "        - gene_type\n"                                             \
+    "        - transcript_id\n"                                         \
+    "        - transcript_name\n"                                       \
+    "        - exon_id\n"                                               \
+    "        - havana_gene\n"                                           \
+    "        - havana_transcript\n";
 
 static const char* gvf_name = "convert2bed -i gvf";
 
@@ -1341,13 +1421,52 @@ static const char* format_undefined_usage =                             \
     "  Note: Please specify format to get detailed usage parameters:\n\n" \
     "  --help[-bam|-gff|-gtf|-gvf|-psl|-rmsk|-sam|-vcf|-wig] (-h <fmt>)\n";
 
+typedef enum gff_attribute_key {
+    GENE_ID_GFF_ATTRIBUTE_KEY,
+    GENE_NAME_GFF_ATTRIBUTE_KEY,
+    GENE_TYPE_GFF_ATTRIBUTE_KEY,
+    TRANSCRIPT_ID_GFF_ATTRIBUTE_KEY,
+    TRANSCRIPT_NAME_GFF_ATTRIBUTE_KEY,
+    TRANSCRIPT_TYPE_GFF_ATTRIBUTE_KEY,
+    EXON_ID_GFF_ATTRIBUTE_KEY,
+    EXON_NUMBER_GFF_ATTRIBUTE_KEY,
+    HAVANA_GENE_GFF_ATTRIBUTE_KEY,
+    HAVANA_TRANSCRIPT_GFF_ATTRIBUTE_KEY,
+    CCDSID_GFF_ATTRIBUTE_KEY,
+    PROTEIN_ID_GFF_ATTRIBUTE_KEY,
+    ONT_GFF_ATTRIBUTE_KEY,
+    HGNC_ID_GFF_ATTRIBUTE_KEY,
+    MGI_ID_GFF_ATTRIBUTE_KEY,
+    UNDEFINED_GFF_ATTRIBUTE_KEY
+} c2b_gff_attribute_key_t;
+
+extern const c2b_gff_attribute_key_t c2b_default_gff_attribute_key;
+const c2b_gff_attribute_key_t c2b_default_gff_attribute_key = GENE_ID_GFF_ATTRIBUTE_KEY;
+
 typedef struct gff_state {
     c2b_gff_t* element;
+    c2b_gff_attribute_key_t attribute_key_for_id;
 } c2b_gff_state_t;
+
+typedef enum gtf_attribute_key {
+    GENE_ID_GTF_ATTRIBUTE_KEY,
+    TRANSCRIPT_ID_GTF_ATTRIBUTE_KEY,
+    TRANSCRIPT_NAME_GTF_ATTRIBUTE_KEY,
+    GENE_NAME_GTF_ATTRIBUTE_KEY,
+    GENE_TYPE_GTF_ATTRIBUTE_KEY,
+    EXON_ID_GTF_ATTRIBUTE_KEY,
+    HAVANA_GENE_GTF_ATTRIBUTE_KEY,
+    HAVANA_TRANSCRIPT_GTF_ATTRIBUTE_KEY,
+    UNDEFINED_GTF_ATTRIBUTE_KEY
+} c2b_gtf_attribute_key_t;
+
+extern const c2b_gtf_attribute_key_t c2b_default_gtf_attribute_key;
+const c2b_gtf_attribute_key_t c2b_default_gtf_attribute_key = GENE_ID_GTF_ATTRIBUTE_KEY;
 
 typedef struct gtf_state {
     c2b_gtf_t* element;
     uint64_t line_count;
+    c2b_gtf_attribute_key_t attribute_key_for_id;
 } c2b_gtf_state_t;
 
 typedef struct psl_state {
@@ -1440,6 +1559,7 @@ static struct globals {
     c2b_starch_params_t* starch;
     char* src_line_str;
     char* dest_line_str;
+    char* attribute_key;
 } c2b_globals;
 
 static struct option c2b_client_long_options[] = {
@@ -1447,6 +1567,7 @@ static struct option c2b_client_long_options[] = {
     { "output",                        required_argument,   NULL,    'o' },
     { "do-not-sort",                   no_argument,         NULL,    'd' },
     { "all-reads",                     no_argument,         NULL,    'a' },
+    { "attribute-key",                 required_argument,   NULL,    'A' },
     { "keep-header",                   no_argument,         NULL,    'k' },
     { "split",                         no_argument,         NULL,    's' },
     { "split-with-deletions",          no_argument,         NULL,    'S' },
@@ -1476,111 +1597,115 @@ static struct option c2b_client_long_options[] = {
     { NULL,                            no_argument,         NULL,     0  }
 };
 
-static const char* c2b_client_opt_string = "i:o:daksSpRvtnzge:m:r:b:xhw12345678?";
+static const char* c2b_client_opt_string = "i:o:daA:ksSpRvtnzge:m:r:b:xhw12345678?";
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-    static void              c2b_init_conversion(c2b_pipeset_t* p);
-    static void              c2b_init_gff_conversion(c2b_pipeset_t* p);
-    static void              c2b_init_gtf_conversion(c2b_pipeset_t* p);
-    static void              c2b_init_gvf_conversion(c2b_pipeset_t* p);
-    static void              c2b_init_psl_conversion(c2b_pipeset_t* p);
-    static void              c2b_init_rmsk_conversion(c2b_pipeset_t* p);
-    static void              c2b_init_sam_conversion(c2b_pipeset_t* p);
-    static void              c2b_init_vcf_conversion(c2b_pipeset_t* p);
-    static void              c2b_init_wig_conversion(c2b_pipeset_t* p);
-    static void              c2b_init_generic_conversion(c2b_pipeset_t* p, void(*to_bed_line_functor)(char**, ssize_t*, ssize_t*, char*, ssize_t));
-    static void              c2b_init_bam_conversion(c2b_pipeset_t* p);
-    static inline void       c2b_cmd_cat_stdin(char* cmd);
-    static inline void       c2b_cmd_bam_to_sam(char* cmd);
-    static inline void       c2b_cmd_sort_bed(char* cmd);
-    static inline void       c2b_cmd_starch_bed(char* cmd);
-    static void              c2b_gtf_init_element(c2b_gtf_t** e);
-    static void              c2b_gtf_delete_element(c2b_gtf_t* e);
-    static void              c2b_line_convert_gtf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
-    static inline void       c2b_line_convert_gtf_ptr_to_bed(c2b_gtf_t* g, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity);
-    static void              c2b_gff_init_element(c2b_gff_t** e);
-    static void              c2b_gff_delete_element(c2b_gff_t* e);
-    static void              c2b_line_convert_gff_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
-    static inline void       c2b_line_convert_gff_ptr_to_bed(c2b_gff_t* g, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity);
-    static void              c2b_psl_init_element(c2b_psl_t** e);
-    static void              c2b_psl_delete_element(c2b_psl_t* e);
-    static void              c2b_line_convert_psl_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
-    static inline void       c2b_psl_blockSizes_to_ptr(char* s, uint64_t bc);
-    static inline void       c2b_psl_tStarts_to_ptr(char* s, uint64_t bc);
-    static inline void       c2b_line_convert_psl_ptr_to_bed(c2b_psl_t* p, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity);
-    static void              c2b_rmsk_init_element(c2b_rmsk_t** e);
-    static void              c2b_rmsk_delete_element(c2b_rmsk_t* e);
-    static void              c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
-    static inline void       c2b_line_convert_rmsk_ptr_to_bed(c2b_rmsk_t* r, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity);
-    static void              c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
-    static void              c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size); 
-    static inline void       c2b_sam_cigar_str_to_ops(char* s);
-    static void              c2b_sam_init_element(c2b_sam_t** e);
-    static void              c2b_sam_delete_element(c2b_sam_t* e);
-    static void              c2b_sam_init_cigar_ops(c2b_cigar_t** c, const ssize_t size);
-    static void              c2b_sam_resize_cigar_ops(c2b_cigar_t** new_c, c2b_cigar_t* old_c);
-    static void              c2b_sam_debug_cigar_ops(c2b_cigar_t* c);
-    static void              c2b_sam_delete_cigar_ops(c2b_cigar_t* c);
-    static inline void       c2b_line_convert_sam_ptr_to_bed(c2b_sam_t* s, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity, boolean print_modified_qname);
-    static void              c2b_line_convert_vcf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
-    static inline boolean    c2b_vcf_allele_is_id(char* s);
-    static inline boolean    c2b_vcf_record_is_snv(char* ref, char* alt);
-    static inline boolean    c2b_vcf_record_is_insertion(char* ref, char* alt);
-    static inline boolean    c2b_vcf_record_is_deletion(char* ref, char* alt);
-    static void              c2b_vcf_init_element(c2b_vcf_t** e);
-    static void              c2b_vcf_delete_element(c2b_vcf_t* e);
-    static inline void       c2b_line_convert_vcf_ptr_to_bed(c2b_vcf_t* v, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity);
-    static void              c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
-    static void *            c2b_read_bytes_from_stdin(void *arg);
-    static void *            c2b_process_intermediate_bytes_by_lines(void* arg);
-    static void *            c2b_write_in_bytes_to_in_process(void* arg);
-    static void *            c2b_write_out_bytes_to_in_process(void* arg);
-    static void *            c2b_write_in_bytes_to_stdout(void* arg);
-    static void *            c2b_write_out_bytes_to_stdout(void* arg);
-    static void              c2b_memrchr_offset(ssize_t* offset, char* buf, ssize_t buf_size, ssize_t len, char delim);
-    static void              c2b_init_pipeset(c2b_pipeset_t* p, const size_t num);
-    static void              c2b_debug_pipeset(c2b_pipeset_t* p, const size_t num);
-    static void              c2b_delete_pipeset(c2b_pipeset_t* p);
-    static void              c2b_set_close_exec_flag(int fd);
-    static void              c2b_unset_close_exec_flag(int fd);
-    static int               c2b_pipe4(int fd[2], int flags);
-    static pid_t             c2b_popen4(const char* cmd, int pin[2], int pout[2], int perr[2], int flags);
-    static void              c2b_test_dependencies();
-    static boolean           c2b_print_matches(char* path, char* fn);
-    static char *            c2b_strsep(char** stringp, const char* delim);
-    static boolean           c2b_is_there(char* candidate);
-    static void              c2b_init_globals();
-    static void              c2b_delete_globals();
-    static void              c2b_init_global_gff_state();
-    static void              c2b_delete_global_gff_state();
-    static void              c2b_init_global_gtf_state();
-    static void              c2b_delete_global_gtf_state();
-    static void              c2b_init_global_psl_state();
-    static void              c2b_delete_global_psl_state();
-    static void              c2b_init_global_rmsk_state();
-    static void              c2b_delete_global_rmsk_state();
-    static void              c2b_init_global_sam_state();
-    static void              c2b_delete_global_sam_state();
-    static void              c2b_init_global_vcf_state();
-    static void              c2b_delete_global_vcf_state();
-    static void              c2b_init_global_wig_state();
-    static void              c2b_delete_global_wig_state();
-    static void              c2b_init_global_cat_params();
-    static void              c2b_delete_global_cat_params();
-    static void              c2b_init_global_sort_params();
-    static void              c2b_delete_global_sort_params();
-    static void              c2b_init_global_starch_params();
-    static void              c2b_delete_global_starch_params();
-    static void              c2b_init_command_line_options(int argc, char** argv);
-    static void              c2b_print_version(FILE* stream);
-    static void              c2b_print_usage(FILE* stream);
-    static void              c2b_print_format_usage(FILE* stream);
-    static char*             c2b_to_lowercase(const char* src);
-    static c2b_format_t      c2b_to_input_format(const char* input_format);
-    static c2b_format_t      c2b_to_output_format(const char* output_format);
+    static void                       c2b_init_conversion(c2b_pipeset_t* p);
+    static void                       c2b_init_gff_conversion(c2b_pipeset_t* p);
+    static void                       c2b_init_gtf_conversion(c2b_pipeset_t* p);
+    static void                       c2b_init_gvf_conversion(c2b_pipeset_t* p);
+    static void                       c2b_init_psl_conversion(c2b_pipeset_t* p);
+    static void                       c2b_init_rmsk_conversion(c2b_pipeset_t* p);
+    static void                       c2b_init_sam_conversion(c2b_pipeset_t* p);
+    static void                       c2b_init_vcf_conversion(c2b_pipeset_t* p);
+    static void                       c2b_init_wig_conversion(c2b_pipeset_t* p);
+    static void                       c2b_init_generic_conversion(c2b_pipeset_t* p, void(*to_bed_line_functor)(char**, ssize_t*, ssize_t*, char*, ssize_t));
+    static void                       c2b_init_bam_conversion(c2b_pipeset_t* p);
+    static inline void                c2b_cmd_cat_stdin(char* cmd);
+    static inline void                c2b_cmd_bam_to_sam(char* cmd);
+    static inline void                c2b_cmd_sort_bed(char* cmd);
+    static inline void                c2b_cmd_starch_bed(char* cmd);
+    static void                       c2b_gtf_init_element(c2b_gtf_t** e);
+    static void                       c2b_gtf_delete_element(c2b_gtf_t* e);
+    static void                       c2b_line_convert_gtf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
+    static inline void                c2b_gtf_copy_attribute_to_id(const char* token, const char* prefix);
+    static inline void                c2b_line_convert_gtf_ptr_to_bed(c2b_gtf_t* g, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity);
+    static void                       c2b_gff_init_element(c2b_gff_t** e);
+    static void                       c2b_gff_delete_element(c2b_gff_t* e);
+    static void                       c2b_line_convert_gff_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
+    static inline void                c2b_gff_copy_attribute_to_id(const char* token, const char* prefix);
+    static inline void                c2b_line_convert_gff_ptr_to_bed(c2b_gff_t* g, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity);
+    static void                       c2b_psl_init_element(c2b_psl_t** e);
+    static void                       c2b_psl_delete_element(c2b_psl_t* e);
+    static void                       c2b_line_convert_psl_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
+    static inline void                c2b_psl_blockSizes_to_ptr(char* s, uint64_t bc);
+    static inline void                c2b_psl_tStarts_to_ptr(char* s, uint64_t bc);
+    static inline void                c2b_line_convert_psl_ptr_to_bed(c2b_psl_t* p, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity);
+    static void                       c2b_rmsk_init_element(c2b_rmsk_t** e);
+    static void                       c2b_rmsk_delete_element(c2b_rmsk_t* e);
+    static void                       c2b_line_convert_rmsk_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
+    static inline void                c2b_line_convert_rmsk_ptr_to_bed(c2b_rmsk_t* r, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity);
+    static void                       c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
+    static void                       c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size); 
+    static inline void                c2b_sam_cigar_str_to_ops(char* s);
+    static void                       c2b_sam_init_element(c2b_sam_t** e);
+    static void                       c2b_sam_delete_element(c2b_sam_t* e);
+    static void                       c2b_sam_init_cigar_ops(c2b_cigar_t** c, const ssize_t size);
+    static void                       c2b_sam_resize_cigar_ops(c2b_cigar_t** new_c, c2b_cigar_t* old_c);
+    static void                       c2b_sam_debug_cigar_ops(c2b_cigar_t* c);
+    static void                       c2b_sam_delete_cigar_ops(c2b_cigar_t* c);
+    static inline void                c2b_line_convert_sam_ptr_to_bed(c2b_sam_t* s, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity, boolean print_modified_qname);
+    static void                       c2b_line_convert_vcf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
+    static inline boolean             c2b_vcf_allele_is_id(char* s);
+    static inline boolean             c2b_vcf_record_is_snv(char* ref, char* alt);
+    static inline boolean             c2b_vcf_record_is_insertion(char* ref, char* alt);
+    static inline boolean             c2b_vcf_record_is_deletion(char* ref, char* alt);
+    static void                       c2b_vcf_init_element(c2b_vcf_t** e);
+    static void                       c2b_vcf_delete_element(c2b_vcf_t* e);
+    static inline void                c2b_line_convert_vcf_ptr_to_bed(c2b_vcf_t* v, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity);
+    static void                       c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
+    static void *                     c2b_read_bytes_from_stdin(void *arg);
+    static void *                     c2b_process_intermediate_bytes_by_lines(void* arg);
+    static void *                     c2b_write_in_bytes_to_in_process(void* arg);
+    static void *                     c2b_write_out_bytes_to_in_process(void* arg);
+    static void *                     c2b_write_in_bytes_to_stdout(void* arg);
+    static void *                     c2b_write_out_bytes_to_stdout(void* arg);
+    static void                       c2b_memrchr_offset(ssize_t* offset, char* buf, ssize_t buf_size, ssize_t len, char delim);
+    static void                       c2b_init_pipeset(c2b_pipeset_t* p, const size_t num);
+    static void                       c2b_debug_pipeset(c2b_pipeset_t* p, const size_t num);
+    static void                       c2b_delete_pipeset(c2b_pipeset_t* p);
+    static void                       c2b_set_close_exec_flag(int fd);
+    static void                       c2b_unset_close_exec_flag(int fd);
+    static int                        c2b_pipe4(int fd[2], int flags);
+    static pid_t                      c2b_popen4(const char* cmd, int pin[2], int pout[2], int perr[2], int flags);
+    static void                       c2b_test_dependencies();
+    static boolean                    c2b_print_matches(char* path, char* fn);
+    static char *                     c2b_strsep(char** stringp, const char* delim);
+    static boolean                    c2b_is_there(char* candidate);
+    static void                       c2b_init_globals();
+    static void                       c2b_delete_globals();
+    static void                       c2b_init_global_gff_state();
+    static void                       c2b_delete_global_gff_state();
+    static void                       c2b_init_global_gtf_state();
+    static void                       c2b_delete_global_gtf_state();
+    static void                       c2b_init_global_psl_state();
+    static void                       c2b_delete_global_psl_state();
+    static void                       c2b_init_global_rmsk_state();
+    static void                       c2b_delete_global_rmsk_state();
+    static void                       c2b_init_global_sam_state();
+    static void                       c2b_delete_global_sam_state();
+    static void                       c2b_init_global_vcf_state();
+    static void                       c2b_delete_global_vcf_state();
+    static void                       c2b_init_global_wig_state();
+    static void                       c2b_delete_global_wig_state();
+    static void                       c2b_init_global_cat_params();
+    static void                       c2b_delete_global_cat_params();
+    static void                       c2b_init_global_sort_params();
+    static void                       c2b_delete_global_sort_params();
+    static void                       c2b_init_global_starch_params();
+    static void                       c2b_delete_global_starch_params();
+    static void                       c2b_init_command_line_options(int argc, char** argv);
+    static void                       c2b_print_version(FILE* stream);
+    static void                       c2b_print_usage(FILE* stream);
+    static void                       c2b_print_format_usage(FILE* stream);
+    static char*                      c2b_to_lowercase(const char* src);
+    static c2b_format_t               c2b_to_input_format(const char* input_format);
+    static c2b_format_t               c2b_to_output_format(const char* output_format);
+    static c2b_gff_attribute_key_t    c2b_to_gff_attribute_key(const char* attribute_key);
+    static c2b_gtf_attribute_key_t    c2b_to_gtf_attribute_key(const char* attribute_key);
 
 #ifdef __cplusplus
 }

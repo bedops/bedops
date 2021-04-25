@@ -30,6 +30,16 @@ Released: **TBD**
         half-open indexing.
     -   Added `wig2bed` integration tests. See `tests/conversion/Makefile`
         and `wig2bed_*` targets for more detail.
+    -   In resolution of [issue 244]
+        (https://github.com/bedops/bedops/issues/244) the `gtf2bed` and 
+        `gff2bed` conversion scripts now support copying a subset of 
+        reserved attributes to the ID field by keyname. By default, `gtf2bed`
+        and `gff2bed` will parse the attributes string and copy the `gene_id`
+        value to the output ID field (i.e., fourth column). The 
+        `--attribute-key` option can be used to copy over `gene_name`, 
+        `transcript_name`, and several other attributes. See `gtf2bed --help`,
+        `gff2bed --help`, or the online documentation for more information.
+    -   Documentation updates for `gtf2bed` and `gff2bed`.
 -   `starch <starch>`{.interpreted-text role="ref"}
     -   Patched metadata generation function to resolve [issue 248]
         (https://github.com/bedops/bedops/issues/248), where the chromosome
