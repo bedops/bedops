@@ -40,6 +40,7 @@ Released: **TBD**
         `transcript_name`, and several other attributes. See `gtf2bed --help`,
         `gff2bed --help`, or the online documentation for more information.
     -   Documentation updates for `gtf2bed` and `gff2bed`.
+    -   Sample input updated for `gtf2bed` and `gff2bed` online documentation.
 -   `starch <starch>`{.interpreted-text role="ref"}
     -   Patched metadata generation function to resolve [issue 248]
         (https://github.com/bedops/bedops/issues/248), where the chromosome
