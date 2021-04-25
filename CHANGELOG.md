@@ -12,11 +12,15 @@ releases.
 Released: **TBD**
 
 -   General
-    -   Migrated from Travis CI to Github Actions for CI testing.
-    -   Modified Darwin makefiles to select between user-specified build 
-        flags (`CXXFLAGS` and `CFLAGS`) or to use our preset values. Resolves
-        [issue 242](https://github.com/bedops/bedops/issues/242) for OS X 
-        target.
+    -   Migrated from Travis CI to Github Actions for CI testing. Refer
+        to [main.yml]
+        (https://github.com/bedops/bedops/actions/workflows/main.yml) for
+        build logs.
+    -   Modified Linux and Darwin makefiles to allow user-specified build 
+        flags (`CXXFLAGS` and `CFLAGS`) in conjunction with our preset 
+        values. Resolves [issue 242]
+        (https://github.com/bedops/bedops/issues/242) for OS X and Linux
+        targets.
 -   `convert2bed <convert2bed>`{.interpreted-text role="ref"}
     -   Resolved [issue 253](https://github.com/bedops/bedops/issues/253) 
         preventing conversion of Wiggle-formatted data that use non-UCSC 

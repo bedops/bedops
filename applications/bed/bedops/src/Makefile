@@ -49,19 +49,19 @@ build_debug: $(BINDIR)/debug.$(PROG)
 dependencies: $(dependencies)
 
 $(BINDIR)/$(PROG) : $(dependencies)
-	mkdir -p $(BINDIR) && $(CXX) -o $@ $(FLAGS) ${LIBRARIES} $(SOURCE1)
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(CXXFLAGS) $(FLAGS) ${LIBRARIES} $(SOURCE1)
 
 $(BINDIR)/gprof.$(PROG) : $(dependencies)
-	mkdir -p $(BINDIR) && $(CXX) -o $@ $(GPROFFLAGS) ${LIBRARIES} $(SOURCE1)
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(CXXFLAGS) $(GPROFFLAGS) ${LIBRARIES} $(SOURCE1)
 
 $(BINDIR)/debug.$(PROG) : $(dependencies)
-	mkdir -p $(BINDIR) && $(CXX) -o $@ $(DFLAGS) ${LIBRARIES} $(SOURCE1)
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(CXXFLAGS) $(DFLAGS) ${LIBRARIES} $(SOURCE1)
 
 $(OBJDIR)/%.o : $(LIB1)/%.cpp
-	mkdir -p $(OBJDIR) && $(CXX) -c $(BLDFLAGS) $^ -o $@ ${INCLUDES}
+	mkdir -p $(OBJDIR) && $(CXX) -c $(CXXFLAGS) $(BLDFLAGS) $^ -o $@ ${INCLUDES}
 
 $(OBJDIR)/%.o : $(LIB3)/%.c
-	mkdir -p $(OBJDIR) && $(CXX) -c ${BLDFLAGS} $^ -o $@ ${INCLUDES}
+	mkdir -p $(OBJDIR) && $(CXX) -c $(CXXFLAGS) ${BLDFLAGS} $^ -o $@ ${INCLUDES}
 
 test:
 	mkdir -p $(TMPTESTDIR)

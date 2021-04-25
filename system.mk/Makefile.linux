@@ -7,8 +7,12 @@ ZLIBVERSION           = zlib-1.2.7
 WHICHZLIB            := ${PARTY3}/${ZLIBVERSION}
 APPDIR                = applications/bed
 WDIR                  = ${shell pwd}
-export CC             = gcc
-export CXX            = g++
+ifndef CC
+	export CC         = gcc
+endif
+ifndef CXX
+	export CXX        = g++
+endif
 SELF                  = ${WDIR}/system.mk/Makefile.linux
 BINDIR                = bin
 BINDIR_MODULE         = modules
@@ -16,7 +20,7 @@ BINDIR_MODULE         = modules
 default: support
 	$(MAKE) build -f $(SELF)
 
-SUBDIRS = ${APPDIR}/bedmap/src ${APPDIR}/sort-bed/src ${APPDIR}/bedops/src ${APPDIR}/closestfeats/src ${APPDIR}/bedextract/src ${APPDIR}/starch/src ${APPDIR}/conversion/src
+SUBDIRS = ${APPDIR}/bedextract/src ${APPDIR}/bedmap/src ${APPDIR}/bedops/src ${APPDIR}/closestfeats/src ${APPDIR}/conversion/src ${APPDIR}/sort-bed/src ${APPDIR}/starch/src 
 .PHONY: $(SUBDIRS)
 
 build: $(SUBDIRS)

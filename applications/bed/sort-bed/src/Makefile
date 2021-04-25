@@ -69,32 +69,32 @@ update-sort-bed-migrate-candidates-${BINARY_TYPE}:
 	mkdir -p $(BINDIR) && cp update-sort-bed-migrate-candidates.py $(BINDIR)/update-sort-bed-migrate-candidates-${BINARY_TYPE}
 
 $(BINDIR)/$(PROG) : $(dependencies)
-	mkdir -p $(BINDIR) && $(CXX) -o $@ $(FLAGS) $^ ${LIBRARIES}
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(CXXFLAGS) $(FLAGS) $^ ${LIBRARIES}
 
 $(BINDIR)/gprof.$(PROG) : $(dependencies)
-	mkdir -p $(BINDIR) && $(CXX) -o $@ $(GPROFFLAGS) $^ ${LIBRARIES}
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(CXXFLAGS) $(GPROFFLAGS) $^ ${LIBRARIES}
 
 $(BINDIR)/debug.$(PROG) : $(debug_dependencies)
-	mkdir -p $(BINDIR) && $(CXX) -o $@ $(DFLAGS) $^ ${LIBRARIES}
+	mkdir -p $(BINDIR) && $(CXX) -o $@ $(CXXFLAGS) $(DFLAGS) $^ ${LIBRARIES}
 	rm -rf ${OBJDIR}
 
 $(OBJDIR)/%.o : $(LIB1)/%.cpp
-	mkdir -p $(OBJDIR) && $(CXX) -c $(BLDFLAGS) $^ -o $@ ${INCLUDES}
+	mkdir -p $(OBJDIR) && $(CXX) -c $(CXXFLAGS) $(BLDFLAGS) $^ -o $@ ${INCLUDES}
 
 $(OBJDIR)/%.o : $(LIB3)/%.c
-	mkdir -p $(OBJDIR) && $(CXX) -c ${BLDFLAGS} $^ -o $@ ${INCLUDES}
+	mkdir -p $(OBJDIR) && $(CXX) -c $(CXXFLAGS) ${BLDFLAGS} $^ -o $@ ${INCLUDES}
 
 $(OBJDIR)/%.o : %.cpp
-	mkdir -p $(OBJDIR) && $(CXX) -c ${BLDFLAGS} $^ -o $@ ${INCLUDES}
+	mkdir -p $(OBJDIR) && $(CXX) -c $(CXXFLAGS) ${BLDFLAGS} $^ -o $@ ${INCLUDES}
 
 $(OBJDIR)/%.do : $(LIB1)/%.cpp
-	mkdir -p $(OBJDIR) && $(CXX) -c $(DFLAGS) $^ -o $@ ${INCLUDES}
+	mkdir -p $(OBJDIR) && $(CXX) -c $(CXXFLAGS) $(DFLAGS) $^ -o $@ ${INCLUDES}
 
 $(OBJDIR)/%.do : $(LIB3)/%.c
-	mkdir -p $(OBJDIR) && $(CXX) -c ${DFLAGS} $^ -o $@ ${INCLUDES}
+	mkdir -p $(OBJDIR) && $(CXX) -c $(CXXFLAGS) ${DFLAGS} $^ -o $@ ${INCLUDES}
 
 $(OBJDIR)/%.do : %.cpp
-	mkdir -p $(OBJDIR) && $(CXX) -c ${DFLAGS} $^ -o $@ ${INCLUDES}
+	mkdir -p $(OBJDIR) && $(CXX) -c $(CXXFLAGS) ${DFLAGS} $^ -o $@ ${INCLUDES}
 
 clean:
 	rm -rf ${OBJDIR}

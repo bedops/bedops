@@ -32,15 +32,15 @@ LOCALOBJDIR               = objects${POSTFIX}
 INCLUDES                  = -iquote${MAIN} -iquote${HEAD} -iquote${PARTY3} -I${LOCALJANSSONINCDIR} -I${LOCALBZIP2INCDIR} -I${LOCALZLIBINCDIR}
 LIBRARIES                 = ${LOCALJANSSONLIB} ${LOCALBZIP2LIB} ${LOCALZLIBLIB}
 ARCH_VERSION              = v2.2
-BIN_VERSION               = v2.4.27
+BIN_VERSION               = v2.4.40
 TEST                      = ../test
 TEST_LINUX_BINDIR         = ${TEST}/binaries/linux/${ARCH_VERSION}/bin
 TEST_OSX_BINDIR           = ${TEST}/binaries/osx/${ARCH_VERSION}/bin
 AR                        = ar
 SFLAGS                    = -static
-CXXFLAGS                  = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 -Wformat -Wall -Wextra -Wswitch-enum -std=c++11 ${SFLAGS} -s
-CXXDFLAGS                 = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g -Wformat -Wall -Wextra -Wswitch-enum -std=c++11 -DDEBUG_VERBOSE=1 ${SFLAGS} -DDEBUG=1
-CXXGFLAGS                 = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O -Wformat -Wall -Wextra -Wswitch-enum -std=c++11 -DDEBUG_VERBOSE=1 ${SFLAGS} -DDEBUG=1 -pg
+STARCH_CXXFLAGS           = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O2 -Wformat -Wall -Wextra -Wswitch-enum -std=c++11 ${SFLAGS} -s
+STARCH_CXXDFLAGS          = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O0 -g -Wformat -Wall -Wextra -Wswitch-enum -std=c++11 -DDEBUG_VERBOSE=1 ${SFLAGS} -DDEBUG=1
+STARCH_CXXGFLAGS          = -D__STDC_CONSTANT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE=1 -DUSE_ZLIB -DUSE_BZLIB -O -Wformat -Wall -Wextra -Wswitch-enum -std=c++11 -DDEBUG_VERBOSE=1 ${SFLAGS} -DDEBUG=1 -pg
 
 STARCH_NAMES              = starchConstants unstarchHelpers starchHelpers starchMetadataHelpers starchFileHelpers starchSha1Digest starchBase64Coding
 STARCH_OBJECTS            = $(addprefix $(LOCALOBJDIR)/, $(addsuffix .o, $(STARCH_NAMES)))
@@ -67,18 +67,18 @@ starchstrip: $(BINDIR)/starchstrip-$(BINARY_TYPE)
 
 $(BINDIR)/%-$(BINARY_TYPE) : %.c $(LOCALSTARCHLIB) $(LIBRARIES)
 	mkdir -p $(BINDIR)
-	${CXX} ${CXXFLAGS} ${MEGAFLAGS} -c $*.c -o $(LOCALOBJDIR)/$*.o ${INCLUDES}
-	${CXX} ${CXXFLAGS} ${MEGAFLAGS} $(LOCALOBJDIR)/$*.o -o $@ ${LOCALSTARCHLIB} ${LIBRARIES}
+	${CXX} ${CXXFLAGS} ${STARCH_CXXFLAGS} ${MEGAFLAGS} -c $*.c -o $(LOCALOBJDIR)/$*.o ${INCLUDES}
+	${CXX} ${CXXFLAGS} ${STARCH_CXXFLAGS} ${MEGAFLAGS} $(LOCALOBJDIR)/$*.o -o $@ ${LOCALSTARCHLIB} ${LIBRARIES}
 
 $(BINDIR)/debug.% : %.c $(LOCALSTARCHLIB) $(LIBRARIES)
 	mkdir -p $(BINDIR)
-	${CXX} ${CXXDFLAGS} ${MEGAFLAGS} -c $*.c -o $(LOCALOBJDIR)/$*.o ${INCLUDES}
-	${CXX} ${CXXDFLAGS} ${MEGAFLAGS} $(LOCALOBJDIR)/$*.o -o $@-$(BINARY_TYPE) ${LOCALSTARCHLIB} ${LIBRARIES}
+	${CXX} ${CXXFLAGS} ${STARCH_CXXDFLAGS} ${MEGAFLAGS} -c $*.c -o $(LOCALOBJDIR)/$*.o ${INCLUDES}
+	${CXX} ${CXXFLAGS} ${STARCH_CXXDFLAGS} ${MEGAFLAGS} $(LOCALOBJDIR)/$*.o -o $@-$(BINARY_TYPE) ${LOCALSTARCHLIB} ${LIBRARIES}
 
 $(BINDIR)/gprof.% : %.c $(LOCALSTARCHLIB) $(LIBRARIES)
 	mkdir -p $(BINDIR)
-	${CXX} ${CXXGFLAGS} ${MEGAFLAGS} -c $*.c -o $(LOCALOBJDIR)/$*.o ${INCLUDES}
-	${CXX} ${CXXGFLAGS} ${MEGAFLAGS} $(LOCALOBJDIR)/$*.o -o $@ ${LOCALSTARCHLIB} ${LIBRARIES}
+	${CXX} ${CXXFLAGS} ${STARCH_CXXGFLAGS} ${MEGAFLAGS} -c $*.c -o $(LOCALOBJDIR)/$*.o ${INCLUDES}
+	${CXX} ${CXXFLAGS} ${STARCH_CXXGFLAGS} ${MEGAFLAGS} $(LOCALOBJDIR)/$*.o -o $@ ${LOCALSTARCHLIB} ${LIBRARIES}
 
 $(BINDIR)/% : %.tcsh
 	mkdir -p $(BINDIR)
@@ -104,7 +104,7 @@ $(LOCALSTARCHLIB) : $(STARCH_OBJECTS)
 
 $(LOCALOBJDIR)/%.o : $(OBJDIR)/%.c $(LIBRARIES)
 	mkdir -p $(LOCALOBJDIR)
-	${CXX} ${CXXFLAGS} ${MEGAFLAGS} -c $< -o $@ ${INCLUDES}
+	${CXX} ${CXXFLAGS} ${STARCH_CXXFLAGS} ${MEGAFLAGS} -c $< -o $@ ${INCLUDES}
 
 test: starch unstarch starchcat
 	cp ${BINDIR}/starch-${BINARY_TYPE} ${TEST_LINUX_BINDIR}/starch-${BINARY_TYPE}
