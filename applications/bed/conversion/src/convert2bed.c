@@ -1409,8 +1409,11 @@ c2b_line_convert_gtf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
         }
     }
     if (!gene_id_value_defined || !transcript_id_value_defined) {
-        fprintf(stderr, "Warning: Potentially missing gene or transcript ID from GTF attributes (malformed GTF at line [%" PRIu64 "]?)\n", c2b_globals.gtf->line_count + 1);
-        // exit(ENODATA); /* No data available (POSIX.1) */  
+        if (!c2b_globals.gtf->attribute_missing_warning_issued) {
+            fprintf(stderr, "Warning: Potentially missing gene or transcript ID from GTF attributes (malformed GTF at line [%" PRIu64 "]?)\n", c2b_globals.gtf->line_count + 1);
+            c2b_globals.gtf->attribute_missing_warning_issued = kTrue;
+            // exit(ENODATA); /* No data available (POSIX.1) */      
+        }
     }
     if ((!gene_id_value_defined && (c2b_globals.gtf->attribute_key_for_id == GENE_ID_GTF_ATTRIBUTE_KEY)) ||
         (!transcript_id_value_defined && (c2b_globals.gtf->attribute_key_for_id == TRANSCRIPT_ID_GTF_ATTRIBUTE_KEY)) ||
@@ -7500,6 +7503,8 @@ c2b_init_global_gtf_state()
     c2b_globals.gtf->line_count = 0;
 
     c2b_globals.gtf->attribute_key_for_id = c2b_default_gtf_attribute_key;
+
+    c2b_globals.gtf->attribute_missing_warning_issued = kFalse;
 
 #ifdef DEBUG
     fprintf(stderr, "--- c2b_init_global_gtf_state() - exit  ---\n");

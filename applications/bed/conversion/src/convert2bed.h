@@ -1467,6 +1467,7 @@ typedef struct gtf_state {
     c2b_gtf_t* element;
     uint64_t line_count;
     c2b_gtf_attribute_key_t attribute_key_for_id;
+    boolean attribute_missing_warning_issued;
 } c2b_gtf_state_t;
 
 typedef struct psl_state {
