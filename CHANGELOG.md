@@ -42,9 +42,14 @@ Released: **TBD**
     -   Documentation updates for `gtf2bed` and `gff2bed`.
     -   Sample input updated for `gtf2bed` and `gff2bed` online documentation
         to resolve [issue 240](https://github.com/bedops/bedops/issues/240).
-    -   Conversion of GTF to BED would fail with an error where one of either 
+    -   Conversion of GTF to BED would fail with an error where one of either
         the `gene_id` or `transcript_id` attribute is missing, such as in
         Ensembl-sourced GTF. This behavior has been changed to a warning.
+    -   Application parameters that require strings are checked for `NULL`
+        string values, returning with an error when a required parameter is
+        missing. Resolves
+        [issue 256](https://github.com/bedops/bedops/issues/256) and more
+        generally for other options.
 -   `starch <starch>`{.interpreted-text role="ref"}
     -   Patched metadata generation function to resolve [issue 248]
         (https://github.com/bedops/bedops/issues/248), where the chromosome

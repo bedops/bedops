@@ -7952,6 +7952,11 @@ c2b_init_command_line_options(int argc, char **argv)
         switch (client_opt) 
             {
             case 'i':
+                if (!optarg) {
+                    fprintf(stderr, "Error: Specify value when using --input/-i option\n");
+                    c2b_print_usage(stderr);
+                    exit(EINVAL); /* Invalid argument (POSIX.1) */
+                }
                 input_format = malloc(strlen(optarg) + 1);
                 if (!input_format) {
                     fprintf(stderr, "Error: Could not allocate space for input format argument\n");
@@ -7961,9 +7966,19 @@ c2b_init_command_line_options(int argc, char **argv)
                 memcpy(input_format, optarg, strlen(optarg) + 1);
                 c2b_globals.input_format = c2b_to_lowercase(input_format);
                 c2b_globals.input_format_idx = c2b_to_input_format(c2b_globals.input_format);
+                if (c2b_globals.input_format_idx == UNDEFINED_FORMAT) {
+                    fprintf(stderr, "Error: Specify allowed input format when using --input/-i option\n");
+                    c2b_print_usage(stderr);
+                    exit(EINVAL); /* Invalid argument (POSIX.1) */
+                }
                 free(input_format), input_format = NULL;
                 break;
             case 'o':
+                if (!optarg) {
+                    fprintf(stderr, "Error: Specify value when using --output/-o option\n");
+                    c2b_print_usage(stderr);
+                    exit(EINVAL); /* Invalid argument (POSIX.1) */
+                }
                 output_format = malloc(strlen(optarg) + 1);
                 if (!output_format) {
                     fprintf(stderr, "Error: Could not allocate space for output format argument\n");
@@ -7976,6 +7991,11 @@ c2b_init_command_line_options(int argc, char **argv)
                 free(output_format), output_format = NULL;
                 break;
             case 'm':
+                if (!optarg) {
+                    fprintf(stderr, "Error: Specify value when using --max-mem/-m option\n");
+                    c2b_print_usage(stderr);
+                    exit(EINVAL); /* Invalid argument (POSIX.1) */
+                }
                 c2b_globals.sort->max_mem_value = malloc(strlen(optarg) + 1);
                 if (!c2b_globals.sort->max_mem_value) {
                     fprintf(stderr, "Error: Could not allocate space for sort-bed max-mem argument\n");
@@ -7985,6 +8005,11 @@ c2b_init_command_line_options(int argc, char **argv)
                 memcpy(c2b_globals.sort->max_mem_value, optarg, strlen(optarg) + 1);
                 break;
             case 'r':
+                if (!optarg) {
+                    fprintf(stderr, "Error: Specify value when using --sort-tmpdir/-r option\n");
+                    c2b_print_usage(stderr);
+                    exit(EINVAL); /* Invalid argument (POSIX.1) */
+                }
                 c2b_globals.sort->sort_tmpdir_path = malloc(strlen(optarg) + 1);
                 if (!c2b_globals.sort->sort_tmpdir_path) {
                     fprintf(stderr, "Error: Could not allocate space for sort-bed temporary directory argument\n");
@@ -7994,6 +8019,11 @@ c2b_init_command_line_options(int argc, char **argv)
                 memcpy(c2b_globals.sort->sort_tmpdir_path, optarg, strlen(optarg) + 1);
                 break;
             case 'e':
+                if (!optarg) {
+                    fprintf(stderr, "Error: Specify value when using --starch-note/-e option\n");
+                    c2b_print_usage(stderr);
+                    exit(EINVAL); /* Invalid argument (POSIX.1) */
+                }
                 c2b_globals.starch->note = malloc(strlen(optarg) + 1);
                 if (!c2b_globals.starch->note) {
                     fprintf(stderr, "Error: Could not allocate space for Starch note\n");
@@ -8003,6 +8033,11 @@ c2b_init_command_line_options(int argc, char **argv)
                 memcpy(c2b_globals.starch->note, optarg, strlen(optarg) + 1);
                 break;
             case 'b':
+                if (!optarg) {
+                    fprintf(stderr, "Error: Specify value when using --multisplit/-b option\n");
+                    c2b_print_usage(stderr);
+                    exit(EINVAL); /* Invalid argument (POSIX.1) */
+                }
                 c2b_globals.wig->basename = malloc(strlen(optarg) + 1);
                 if (!c2b_globals.wig->basename) {
                     fprintf(stderr, "Error: Could not allocate space for WIG basename\n");
@@ -8044,6 +8079,11 @@ c2b_init_command_line_options(int argc, char **argv)
                 c2b_globals.all_reads_flag = kTrue;
                 break;
             case 'A':
+                if (!optarg) {
+                    fprintf(stderr, "Error: Specify value when using --attribute-key/-A option\n");
+                    c2b_print_usage(stderr);
+                    exit(EINVAL); /* Invalid argument (POSIX.1) */
+                }
                 attribute_key = malloc(strlen(optarg) + 1);
                 if (!attribute_key) {
                     fprintf(stderr, "Error: Could not allocate space for attribute key argument\n");
