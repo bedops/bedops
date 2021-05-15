@@ -55,6 +55,11 @@ Released: **TBD**
         (https://github.com/bedops/bedops/issues/248), where the chromosome
         name would previously be truncated by a period character when 
         creating a Starch archive.
+-   `bedmap <bedmap>`{.interpreted-text role="ref"}
+    -   Patched C++11-deprecated calls to `std::mem_fun` and `std::bind2nd`
+        in `MultiVisitor.hpp` and `MedianAbsoluteDeviationVisitor.hpp` 
+        visitors to reduce compile-time warnings and improve C++11 
+        compatibility.
 
 # Previous versions
 

@@ -91,7 +91,8 @@ namespace Visitors {
       for ( IterType i = BaseClass::scoresBuf_.begin(); i != BaseClass::scoresBuf_.end(); ++i )
         vec.push_back(static_cast<MT>(**i));
 
-      std::transform(vec.begin(), vec.end(), vec.begin(), std::bind2nd(details::abs_diff<MT>(), median));
+      // std::transform(vec.begin(), vec.end(), vec.begin(), std::bind2nd(details::abs_diff<MT>(), median)); # deprecated in C++11
+      std::transform(vec.begin(), vec.end(), vec.begin(), std::bind(details::abs_diff<MT>(), std::placeholders::_1, median));
       std::size_t sz = vec.size();
       MT mad = 0;
       if ( sz % 2 == 0 ) {

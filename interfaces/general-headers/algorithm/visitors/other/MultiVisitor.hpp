@@ -70,13 +70,15 @@ namespace Visitors {
 
     void Add(MapType* u) {
       void (BaseClass::*memberFuncPtr)(MapType*) = &BaseClass::Add;
-      std::for_each(t_.begin(), t_.end(), std::bind2nd(std::mem_fun(memberFuncPtr), u));
+      // std::for_each(t_.begin(), t_.end(), std::bind2nd(std::mem_fun(memberFuncPtr), u)); # deprecated in C++11
+      std::for_each(t_.begin(), t_.end(), std::bind(std::mem_fn(memberFuncPtr), std::placeholders::_1, u));
       ++cnt_;
     }
     
     void Delete(MapType* u) {
       void (BaseClass::*memberFuncPtr)(MapType*) = &BaseClass::Delete;
-      std::for_each(t_.begin(), t_.end(), std::bind2nd(std::mem_fun(memberFuncPtr), u));
+      // std::for_each(t_.begin(), t_.end(), std::bind2nd(std::mem_fun(memberFuncPtr), u)); # deprecated in C++11
+      std::for_each(t_.begin(), t_.end(), std::bind(std::mem_fn(memberFuncPtr), std::placeholders::_1, u));
       --cnt_;
     }
     
@@ -99,7 +101,8 @@ namespace Visitors {
 
     void SetReference(RefType* t) {
       void (BaseClass::*memberFuncPtr)(RefType*) = &BaseClass::SetReference;
-      std::for_each(t_.begin(), t_.end(), std::bind2nd(std::mem_fun(memberFuncPtr), t));
+      // std::for_each(t_.begin(), t_.end(), std::bind2nd(std::mem_fun(memberFuncPtr), t)); # deprecated in C++11
+      std::for_each(t_.begin(), t_.end(), std::bind(std::mem_fn(memberFuncPtr), std::placeholders::_1, t));
     }
 
     /* not used by BED visitors to date.  Pain if it is with nested elements. */
@@ -110,7 +113,8 @@ namespace Visitors {
     */
 
     void End() {
-      std::for_each(t_.begin(), t_.end(), std::mem_fun(&BaseClass::End));
+      // std::for_each(t_.begin(), t_.end(), std::mem_fun(&BaseClass::End));
+      std::for_each(t_.begin(), t_.end(), std::mem_fn(&BaseClass::End));
     }
 
     virtual ~MultiVisitor() {

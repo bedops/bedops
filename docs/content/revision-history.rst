@@ -37,6 +37,10 @@ Released: **TBD**
 
   * Patched metadata generation function to resolve `issue 248 <https://github.com/bedops/bedops/issues/248>`_, where the chromosome name would previously be truncated on a period character when creating a Starch archive.
 
+* :ref:`bedmap <bedmap>`
+
+  * Patched C++11-deprecated calls to ``std::mem_fun`` and ``std::bind2nd`` in ``MultiVisitor.hpp`` and ``MedianAbsoluteDeviationVisitor.hpp`` visitors to reduce compile-time warnings and improve C++11 compatibility.
+
 =================
 Previous versions
 =================
