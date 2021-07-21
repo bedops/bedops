@@ -34,7 +34,7 @@ Source code
 </td>
 <td valign="top">
 <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
-<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.40/BEDOPS.2.4.40.pkg.zip">Intel (64-bit, 10.10-10.15)</a> installer package</li>
+<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.40/BEDOPS.2.4.40.pkg.zip">Intel/Rosetta (64-bit, 10.10-11.4)</a> installer package</li>
 <li><a href="http://bedops.readthedocs.io/en/latest/content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
 </ul>
 </td>
