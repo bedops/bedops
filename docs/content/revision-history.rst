@@ -15,7 +15,7 @@ Current version
 v2.4.40
 -------
 
-Released: **TBD**
+Released: **July 21, 2021**
 
 * General
 
