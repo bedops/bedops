@@ -350,6 +350,7 @@ ifndef NEW_VER
 	$(error New version variable NEW_VER is undefined (e.g., 2.4.40))
 endif
 ifeq ($(KERNEL), Darwin)
+	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" CITATION.cff
 	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" README.md
 	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/rpm/bedops.spec
 	gsed -i "s/"$$OLD_VER"/"$$NEW_VER"/g" packaging/rpm/Dockerfile
