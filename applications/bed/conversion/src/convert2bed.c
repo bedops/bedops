@@ -6104,7 +6104,7 @@ c2b_line_convert_wig_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* d
                     ++c2b_globals.wig->section);
         }
         if (strlen(c2b_globals.wig->id) == 0) {
-            fprintf(stderr, "Error: Invalid wig ID on line %u\n", c2b_globals.wig->line);
+            fprintf(stderr, "Error: Invalid wig ID on line %u (input may contain multiple sections: please see --help for more information on the --multisplit=... option)\n", c2b_globals.wig->line);
             exit(EINVAL); /* Invalid argument (POSIX.1) */
         }
         if (c2b_globals.keep_header_flag) { 
