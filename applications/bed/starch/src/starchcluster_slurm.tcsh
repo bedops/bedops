@@ -2,11 +2,11 @@
 
 # author  : sjn and apr
 # date    : 13 Sep 2016
-# version : v2.4.40
+# version : v2.4.41
 
 #
 #    BEDOPS
-#    Copyright (C) 2011-2021 Shane Neph, Scott Kuehn and Alex Reynolds
+#    Copyright (C) 2011-2022 Shane Neph, Scott Kuehn and Alex Reynolds
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by

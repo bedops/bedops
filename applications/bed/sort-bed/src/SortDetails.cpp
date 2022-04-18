@@ -5,7 +5,7 @@
 */
 //
 //    BEDOPS
-//    Copyright (C) 2011-2021 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2022 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -880,7 +880,7 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                                     chromEntryCount = appendChromBedEntry(beds->chroms[jidx], startPos, endPos, NULL, &totalBytes, maxMem);
                                 }
 
-                            if (static_cast<int>(chromEntryCount) < 0)
+                            if (static_cast<Bed::SignedCoordType>(chromEntryCount) < 0)
                                 {
                                     fprintf(stderr, "Error: %s, %d: Unable to create BED structure.\n", __FILE__, __LINE__);
                                     return EXIT_FAILURE;
@@ -958,7 +958,7 @@ processData(char const **bedFileNames, unsigned int numFiles, const double maxMe
                                     chromEntryCount = appendChromBedEntry(chrom, startPos, endPos, NULL, &totalBytes, maxMem);
                                 }
 
-                            if(static_cast<int>(chromEntryCount) < 0) 
+                            if(static_cast<Bed::SignedCoordType>(chromEntryCount) < 0) 
                                 {
                                     fprintf(stderr, "Error: %s, %d: Unable to create BED structure.\n", __FILE__, __LINE__);
                                     return EXIT_FAILURE;

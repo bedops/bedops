@@ -12,6 +12,20 @@ Current version
 ===============
 
 -------
+v2.4.41
+-------
+
+Released: **TBD**
+
+* :ref:`sort-bed <sort-bed>`
+
+  * Resolved `issue 265 <https://github.com/bedops/bedops/issues/265>`_ leading to overflow and early failure in sorting inputs with more than ``MAX_INT`` per-chromosome lines.
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.40
 -------
 
@@ -40,10 +54,6 @@ Released: **July 21, 2021**
 * :ref:`bedmap <bedmap>`
 
   * Patched C++11-deprecated calls to ``std::mem_fun`` and ``std::bind2nd`` in ``MultiVisitor.hpp`` and ``MedianAbsoluteDeviationVisitor.hpp`` visitors to reduce compile-time warnings and improve C++11 compatibility.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.39

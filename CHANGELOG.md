@@ -9,7 +9,7 @@ releases.
 
 ## v2.4.40
 
-Released: **July 21, 2021**
+Released: **July 21, 2022**
 
 -   General
     -   Migrated from Travis CI to Github Actions for CI testing. Refer
