@@ -21,6 +21,10 @@ Released: **TBD**
 
   * Resolved `issue 265 <https://github.com/bedops/bedops/issues/265>`_ leading to overflow and early failure in sorting inputs with more than ``MAX_INT`` per-chromosome lines.
 
+* :ref:`convert2bed <convert2bed>`
+
+  * Addressed `issue 255 <https://github.com/bedops/bedops/issues/255>`_ by printing a warning to standard error, which suggests using ``--max-mem`` and ``--sort-tmpdir``, or ``--do-not-sort``, to manage post-conversion sort order for inputs larger than half of system memory.
+
 =================
 Previous versions
 =================

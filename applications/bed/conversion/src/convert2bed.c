@@ -809,10 +809,7 @@ c2b_cmd_sort_bed(char* cmd)
         sort_bed_args[strlen(sort_bed_max_mem_arg) + strlen(sort_bed_args)] = '\0';
     }
     else {
-        memcpy(sort_bed_args, 
-               sort_bed_max_mem_default_arg, 
-               strlen(sort_bed_max_mem_default_arg) + 1);
-        sort_bed_args[strlen(sort_bed_max_mem_default_arg)] = '\0';
+        fprintf(stderr, "Warning: If your Wiggle data is a significant portion of available system memory, use the --max-mem and --sort-tmpdir options, or use --do-not-sort to disable post-conversion sorting. See --help for more information.\n");
     }
     if (c2b_globals.sort->sort_tmpdir_path) {
         memcpy(sort_bed_args + strlen(sort_bed_args),
