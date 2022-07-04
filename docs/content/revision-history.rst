@@ -17,6 +17,10 @@ v2.4.41
 
 Released: **TBD**
 
+* :ref:`bedmap <bedmap>`
+
+  * Patched `issue 267 <https://github.com/bedops/bedops/issues/267>`_ to remove unneeded ``const`` property from member functions, where it caused compilation problems with newer versions of Clang toolkit. Thanks to John Marshall and Shane Neph for feedback.
+
 * :ref:`sort-bed <sort-bed>`
 
   * Resolved `issue 265 <https://github.com/bedops/bedops/issues/265>`_ leading to overflow and early failure in sorting inputs with more than ``MAX_INT`` per-chromosome lines.

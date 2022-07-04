@@ -78,7 +78,7 @@ namespace Ext {
       _open = 0;
     }
 
-    inline std::size_t next_set(std::size_t start) const {
+    inline std::size_t next_set(std::size_t start) {
       start += 1;
       std::size_t bin = start/BASE;
       if ( _charset[bin] ) {

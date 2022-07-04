@@ -77,7 +77,7 @@ namespace {
     }
 
     bool Empty() const { return empty_; }
-    void Clear() const { empty_ = true; }
+    void Clear() { empty_ = true; }
 
   private:
     bool empty_;
