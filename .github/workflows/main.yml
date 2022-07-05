@@ -21,11 +21,11 @@ jobs:
       - name: Ubuntu-specific setup
         if: matrix.os == 'ubuntu-latest'
         run: |
-          sudo apt-get install -qq gcc-7.4 g++-7.4
+          sudo apt-get install -qq gcc-9 g++-9
           sudo update-alternatives \
-            --install /usr/bin/gcc gcc /usr/bin/gcc-7.4 100
+            --install /usr/bin/gcc gcc /usr/bin/gcc-9 100
           sudo update-alternatives \
-            --install /usr/bin/g++ g++ /usr/bin/g++-7.4 100
+            --install /usr/bin/g++ g++ /usr/bin/g++-9 100
 
       - name: Mac OS X-specific setup
         if: matrix.os == 'macos-10.15'
