@@ -30,6 +30,10 @@ Released: **TBD**
   * Addressed `issue 255 <https://github.com/bedops/bedops/issues/255>`_ by printing a warning to standard error, which suggests using ``--max-mem`` and ``--sort-tmpdir``, or ``--do-not-sort``, to manage post-conversion sort order for inputs larger than half of system memory.
   * Addressed `issue 239 <https://github.com/bedops/bedops/issues/239>`_ by printing a warning to standard error, which suggests using ``--multisplit=...`` if Wiggle input contains multiple sections.
 
+* Github Actions
+
+  * Updated Ubuntu ``main.yaml`` test run on to ``ubuntu-latest`` image. Thanks to John Marshall for the advice.
+
 =================
 Previous versions
 =================
