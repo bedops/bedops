@@ -68,21 +68,33 @@ symlink_post_install_all:
 	cd ${BINDIR} && ./switch-BEDOPS-binary-type --typical . && cd ${CWD}
 
 symlink_typical:
+ifeq ($(KERNEL), Darwin)
 	$(eval SRCNAMES=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(TYPICAL)' -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`)
+else
+	$(eval SRCNAMES=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(TYPICAL)' -print0 | xargs -I{} -0 sh -c 'basename {}' | xargs -L1`)
+endif
 	for SRCNAME in ${SRCNAMES}; do \
 		DESTNAME=`echo $$SRCNAME | sed 's/-$(TYPICAL)//'`; \
 		ln -sf $$SRCNAME $(BINDIR)/$${DESTNAME}; \
 	done
 
 symlink_megarow:
+ifeq ($(KERNEL), Darwin)
 	$(eval SRCNAMES=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(MEGAROW)' -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`)
+else
+	$(eval SRCNAMES=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(MEGAROW)' -print0 | xargs -I{} -0 sh -c 'basename {}' | xargs -L1`)
+endif
 	for SRCNAME in ${SRCNAMES}; do \
 		DESTNAME=`echo $$SRCNAME | sed 's/-$(MEGAROW)//'`; \
 		ln -sf $$SRCNAME $(BINDIR)/$${DESTNAME}; \
 	done
 
 symlink_float128:
+ifeq ($(KERNEL), Darwin)
 	$(eval SRCNAMES=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(FLOAT128)' -print0 | xargs -L1 -0 -I{} sh -c 'basename {}'`)
+else
+	$(eval SRCNAMES=`find $(BINDIR)/ -maxdepth 1 -mindepth 1 -type f -name '*$(FLOAT128)' -print0 | xargs -I{} -0 sh -c 'basename {}' | xargs -L1`)
+endif
 	for SRCNAME in ${SRCNAMES}; do \
 		DESTNAME=`echo $$SRCNAME | sed 's/-$(FLOAT128)//'`; \
 		ln -sf $$SRCNAME $(BINDIR)/$${DESTNAME}; \
