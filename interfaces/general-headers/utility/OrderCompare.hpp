@@ -28,8 +28,7 @@ namespace Ordering {
 
   // function objects for comparing values, then addresses
   template <typename T1, typename T2=T1>
-  struct CompValueThenAddressLesser
-    : public std::binary_function<T1 const*, T2 const*, bool> {
+  struct CompValueThenAddressLesser {
       inline bool operator()(T1 const* t1, T2 const* t2) const {
         if ( *t1 != *t2 )
           return(*t1 < *t2);
@@ -38,8 +37,7 @@ namespace Ordering {
   };
 
   template <typename T1, typename T2=T1>
-  struct CompValueThenAddressGreater
-    : public std::binary_function<T1 const*, T2 const*, bool> {
+  struct CompValueThenAddressGreater {
       inline bool operator()(T1 const* t1, T2 const* t2) const {
         if ( *t1 != *t2 )
           return(*t1 > *t2);
