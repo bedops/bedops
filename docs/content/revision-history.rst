@@ -30,9 +30,11 @@ Released: **TBD**
   * Addressed `issue 255 <https://github.com/bedops/bedops/issues/255>`_ by printing a warning to standard error, which suggests using ``--max-mem`` and ``--sort-tmpdir``, or ``--do-not-sort``, to manage post-conversion sort order for inputs larger than half of system memory.
   * Addressed `issue 239 <https://github.com/bedops/bedops/issues/239>`_ by printing a warning to standard error, which suggests using ``--multisplit=...`` if Wiggle input contains multiple sections.
 
-* Github Actions
+* General
 
   * Updated Ubuntu ``main.yaml`` test run on to ``ubuntu-latest`` image. Thanks to John Marshall for the advice.
+  * Modified ``symlink_*`` targets in ``Makefile`` to cull ``xargs`` warnings on Linux hosts. Thanks to Shane Neph for the report and fix.
+  * Removed deprecated ``binary_function<>`` calls from utility library. Thanks to Shane Neph for the report and fix.
 
 =================
 Previous versions
