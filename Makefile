@@ -65,7 +65,7 @@ typical:
 	$(MAKE) BINARY_TYPE=$(TYPICAL) -f ${SELF}
 
 symlink_post_install_all:
-	cd ${BINDIR} && ./switch-BEDOPS-binary-type --typical ${BINDIR} && cd ${CWD}
+	cd ${BINDIR} && ./switch-BEDOPS-binary-type --typical . && cd ${CWD}
 
 symlink_typical:
 ifeq ($(KERNEL), Darwin)
