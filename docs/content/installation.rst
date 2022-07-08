@@ -76,9 +76,15 @@ Compilation of BEDOPS on Linux requires GCC 4.8.2 (both ``gcc`` and ``g++`` and 
      $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50
      $ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50
 
-   The specifics of this process will depend on your distribution and what you want to install. Please check with your system administration or support staff if you are unsure what your options are.
+   Alternatively, in a Fedora, CentOS- or RH-like environment:
 
-   You may also need to install static libraries. For instance, in a CentOS- or RH-like environment:
+   ::
+
+     $ sudo yum update
+     $ sudo yum install "Development Tools"
+     $ sudo yum install gcc-c++
+
+   You may also need to install static libraries. In a Fedora/CentOS/RH-like environment:
 
    ::
 
@@ -92,6 +98,8 @@ Compilation of BEDOPS on Linux requires GCC 4.8.2 (both ``gcc`` and ``g++`` and 
      $ sudo apt-get install libc6-dev
      $ sudo apt-get install build-essentials
 
+   The specifics of this process will depend on your distribution and what you want to install. Please check with your system administration or support staff if you are unsure what your options are.
+     
 2. Install a ``git`` client of your choice, if you do not already have one installed. Github offers an `installation guide <https://help.github.com/articles/set-up-git#platform-all>`_.
 
    Alternatively, use ``apt-get`` or another package manager to install one, *e.g.* in Ubuntu:
