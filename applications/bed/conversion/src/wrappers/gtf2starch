@@ -34,6 +34,8 @@ starch_bzip2=false
 starch_gzip=false
 starch_note=""
 starch_not_set=false
+attribute_key_set=false
+attribute_key="gene_id"
 
 # format-specific
 
@@ -48,6 +50,11 @@ while getopts "$optspec" optchar; do
     case "${optchar}" in
         -)
             case "${OPTARG}" in
+		attribute-key)
+                    val="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+		    attribute_key=${val}
+		    attribute_key_set=true
+		    ;;		
                 starch-bzip2)
                     starch_bzip2=true
                     ;;
@@ -106,6 +113,10 @@ while getopts "$optspec" optchar; do
                     #if [ "$OPTERR" = 1 ] && [ "${optspec:0:1}" != ":" ]; then echo "Unknown option --${OPTARG}" >&2; fi
                     ;;
             esac;;
+	a)
+	    attribute_key=${OPTARG}
+	    attribute_key_set=true
+	    ;;	
         e)
             starch_note="\"${OPTARG}\""
             starch_note_set=true
@@ -149,6 +160,7 @@ if [ "${do_not_sort}" = true ]; then options="${options} --do-not-sort"; fi
 if [ "${starch_gzip}" = false ]; then starch_bzip2=true; else options="${options} --starch-gzip"; fi
 if [ "${starch_bzip2}" = true ]; then options="${options} --starch-bzip2"; fi
 if [ "${starch_note_set}" = true ]; then options="${options} --starch-note=\"${starch_note}\""; fi
+if [ "${attribute_key_set}" = true ]; then options="${options} --attribute-key=${attribute_key}"; fi
 
 # format-specific
 

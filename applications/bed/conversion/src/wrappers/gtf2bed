@@ -30,6 +30,8 @@ max_mem_set=false
 max_mem="2G"
 sort_tmpdir_set=false
 sort_tmpdir="/tmp"
+attribute_key_set=false
+attribute_key="gene_id"
 
 # format-specific
 
@@ -44,6 +46,11 @@ while getopts "$optspec" optchar; do
     case "${optchar}" in
         -)
             case "${OPTARG}" in
+		attribute-key)
+                    val="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
+		    attribute_key=${val}
+		    attribute_key_set=true
+		    ;;
                 sort-tmpdir)
                     val="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
                     sort_tmpdir=${val}
@@ -86,6 +93,10 @@ while getopts "$optspec" optchar; do
                     #if [ "$OPTERR" = 1 ] && [ "${optspec:0:1}" != ":" ]; then echo "Unknown option --${OPTARG}" >&2; fi
                     ;;
             esac;;
+	a)
+	    attribute_key=${OPTARG}
+	    attribute_key_set=true
+	    ;;
         r)
             sort_tmpdir=${OPTARG}
             sort_tmpdir_set=true
@@ -116,6 +127,7 @@ options="--input=${input_format} --output=${output_format}"
 if [ "${max_mem_set}" = true ]; then options="${options} --max-mem=${max_mem}"; fi
 if [ "${sort_tmpdir_set}" = true ]; then options="${options} --sort-tmpdir=${sort_tmpdir}"; fi
 if [ "${do_not_sort}" = true ]; then options="${options} --do-not-sort"; fi
+if [ "${attribute_key_set}" = true ]; then options="${options} --attribute-key=${attribute_key}"; fi
 
 # format-specific
 
