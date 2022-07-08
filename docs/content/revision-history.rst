@@ -17,6 +17,10 @@ v2.4.41
 
 Released: **TBD**
 
+* :ref:`convert2bed <convert2bed>`
+
+  * Patched ``gtf2bed`` and ``gtf2starch`` wrapper scripts to support ``--attribute-key=foo`` option, which previously only worked with ``convert2bed --input=gtf --attribute-key=foo``.
+
 * :ref:`bedmap <bedmap>`
 
   * Patched `issue 267 <https://github.com/bedops/bedops/issues/267>`_ to remove unneeded ``const`` property from member functions, where it caused compilation problems with newer versions of Clang toolkit. Thanks to John Marshall and Shane Neph for feedback.
@@ -34,7 +38,7 @@ Released: **TBD**
 
   * Updated Ubuntu ``main.yaml`` test run on to ``ubuntu-latest`` image. Thanks to John Marshall for the advice.
   * Modified ``symlink_*`` targets in ``Makefile`` to cull ``xargs`` warnings on Linux hosts. Thanks to Shane Neph for the report and fix.
-  * Removed deprecated ``binary_function<>`` calls from utility library. Thanks to Shane Neph for the report and fix.
+  * Removed C++11-deprecated calls to ``binary_function<>`` from utility library. Thanks to Shane Neph for the report and fix.
   * Modified ``switch-BEDOPS-binary-type`` helper script to cull useless error messages.
 
 =================
