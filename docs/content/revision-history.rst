@@ -35,6 +35,7 @@ Released: **TBD**
   * Updated Ubuntu ``main.yaml`` test run on to ``ubuntu-latest`` image. Thanks to John Marshall for the advice.
   * Modified ``symlink_*`` targets in ``Makefile`` to cull ``xargs`` warnings on Linux hosts. Thanks to Shane Neph for the report and fix.
   * Removed deprecated ``binary_function<>`` calls from utility library. Thanks to Shane Neph for the report and fix.
+  * Modified ``switch-BEDOPS-binary-type`` helper script to cull useless error messages.
 
 =================
 Previous versions
