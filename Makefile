@@ -65,7 +65,7 @@ typical:
 	$(MAKE) BINARY_TYPE=$(TYPICAL) -f ${SELF}
 
 symlink_post_install_all:
-	cd ${BINDIR} && ./switch-BEDOPS-binary-type --typical . && cd ${CWD}
+	cd ${BINDIR} && ./switch-BEDOPS-binary-type --typical ${BINDIR} && cd ${CWD}
 
 symlink_typical:
 ifeq ($(KERNEL), Darwin)
@@ -348,7 +348,7 @@ install_osx_packaging_bins: prep_c all
 	./switch-BEDOPS-binary-type --typical .
 	-cd ${CWD}; \
 	mkdir -p ${OSXLIBDIR}; \
-	
+
 #######################
 # for users with OS X: 
 # "brew install findutils" and "brew install gnu-sed" 
