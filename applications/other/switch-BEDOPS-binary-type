@@ -2,7 +2,7 @@
 # author : sjn + apr
 # date : July.2017
 
-BINDIR=$(dirname `which bedops`)
+BINDIR=$(dirname `which bedops` 2> /dev/null)
 [ -n "${2}" ] && BINDIR=${2}
 
 CMD="switch-BEDOPS-binary-type"
