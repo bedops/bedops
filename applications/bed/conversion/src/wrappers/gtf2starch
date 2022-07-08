@@ -45,7 +45,7 @@ help()
     exit $1
 }
 
-optspec=":e:zgr:m:dh-:"
+optspec=":a:e:zgr:m:dh-:"
 while getopts "$optspec" optchar; do
     case "${optchar}" in
         -)
@@ -54,7 +54,12 @@ while getopts "$optspec" optchar; do
                     val="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
 		    attribute_key=${val}
 		    attribute_key_set=true
-		    ;;		
+		    ;;
+		attribute-key=*)
+                    val=${OPTARG#*=}
+                    attribute_key=${val}
+                    attribute_key_set=true
+                    ;;		
                 starch-bzip2)
                     starch_bzip2=true
                     ;;

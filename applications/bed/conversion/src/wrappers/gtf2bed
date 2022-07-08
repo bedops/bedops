@@ -41,7 +41,7 @@ help()
     exit $1
 }
 
-optspec=":r:m:dh-:"
+optspec=":a:r:m:dh-:"
 while getopts "$optspec" optchar; do
     case "${optchar}" in
         -)
@@ -51,6 +51,11 @@ while getopts "$optspec" optchar; do
 		    attribute_key=${val}
 		    attribute_key_set=true
 		    ;;
+		attribute-key=*)
+                    val=${OPTARG#*=}
+                    attribute_key=${val}
+                    attribute_key_set=true
+                    ;;
                 sort-tmpdir)
                     val="${!OPTIND}"; OPTIND=$(( $OPTIND + 1 ))
                     sort_tmpdir=${val}
