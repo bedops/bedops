@@ -116,10 +116,11 @@ template <typename BedFile1, typename BedFile2>
 void runDistances(BedFile1& refFile, BedFile2& nonRefFile, const Input& input) {
   bool printDistances = input.PrintDistances();
   bool suppressRefField = input.SuppressReference();
+  bool suppressQueryField = input.SuppressQuery();
   if ( input.ShortestOnly() )
-    findDistances(refFile, nonRefFile, input.AllowOverlaps(), PrintShortest(input.Delimiter(), printDistances, suppressRefField));
+    findDistances(refFile, nonRefFile, input.AllowOverlaps(), PrintShortest(input.Delimiter(), printDistances, suppressRefField, suppressQueryField));
   else
-    findDistances(refFile, nonRefFile, input.AllowOverlaps(), PrintAll(input.Delimiter(), printDistances, suppressRefField));
+    findDistances(refFile, nonRefFile, input.AllowOverlaps(), PrintAll(input.Delimiter(), printDistances, suppressRefField, suppressQueryField));
 }
 
 //=============

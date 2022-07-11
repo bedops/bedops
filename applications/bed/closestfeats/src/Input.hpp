@@ -44,7 +44,7 @@ namespace FeatDist {
   struct Input {
     // Constructor
     Input(int argc, char **argv)
-      : ec_(false), shortestOnly_(false), distances_(false), suppressRef_(false),
+      : ec_(false), shortestOnly_(false), distances_(false), suppressRef_(false), suppressQuery_(false),
         overlaps_(true), delim_("|"), refFile_(""), nonRefFile_(""), chr_("all") {
 
       typedef Ext::UserError UE;
@@ -82,6 +82,8 @@ namespace FeatDist {
           distances_ = true;
         else if ( next == "--no-ref" )
           suppressRef_ = true;
+        else if ( next == "--no-query" )
+          suppressQuery_ = true;
         else if ( next == "--help" )
           throw(HelpException());
         else if ( next == "--shortest" ) { // silently supported for bckwd compatibility
@@ -128,11 +130,14 @@ namespace FeatDist {
 
     bool SuppressReference() const
       { return(suppressRef_); }
+    
+    bool SuppressQuery() const
+      { return(suppressQuery_); }
 
   private:
     bool ec_;
     bool shortestOnly_;
-    bool distances_, suppressRef_, overlaps_;
+    bool distances_, suppressRef_, suppressQuery_, overlaps_;
     std::string delim_;
     std::string refFile_, nonRefFile_;
     std::string chr_;
@@ -162,6 +167,7 @@ namespace FeatDist {
     msg += "    --help                 Print this message and exit successfully.\n";
     msg += "    --no-overlaps          Overlapping elements from <query-file> will not be reported.\n";
     msg += "    --no-ref               Do not echo elements from <input-file>.\n";
+    msg += "    --no-query             Do not echo elements from <query-file>.\n";
     msg += "    --version              Print program information.\n";
     msg += "\n";
     msg += "  NOTES:\n";

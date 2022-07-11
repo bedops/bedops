@@ -47,8 +47,8 @@ namespace FeatDist {
     typedef Visitors::Helpers::PrintDelim Base;
 
     explicit PrintAll(const std::string& delim = "|", bool printDistances = false,
-                      bool suppressRefField = false)
-       : Base(delim), printDist_(printDistances), suppressRefField_(suppressRefField)
+                      bool suppressRefField = false, bool suppressQueryField = false)
+       : Base(delim), printDist_(printDistances), suppressRefField_(suppressRefField), suppressQueryField_(suppressQueryField)
       { /* */ }
 
     template <typename BedType1, typename BedType2>
@@ -59,15 +59,23 @@ namespace FeatDist {
       }
 
       if ( left ) {
-        PrintTypes::Print(*left);
+        if ( !suppressQueryField_ ) {
+          PrintTypes::Print(*left);
+        }
         if ( printDist_ ) {
-          Base::operator()();
+          if ( !suppressQueryField_ ) {
+            Base::operator()();
+          }
           PrintTypes::Print(getDistance(left, ref));
         }
       } else {
-        PrintTypes::Print(none);
+        if ( !suppressQueryField_ ) {
+          PrintTypes::Print(none);
+        }
         if ( printDist_ ) {
-          Base::operator()();
+          if ( !suppressQueryField_ ) {
+            Base::operator()();
+          }
           PrintTypes::Print(none);
         }
       }
@@ -75,26 +83,37 @@ namespace FeatDist {
       Base::operator()();
       if ( right ) {
         if ( printDist_ ) {
-          PrintTypes::Print(*right);
-          Base::operator()();
+          if ( !suppressQueryField_ ) {
+            PrintTypes::Print(*right);
+            Base::operator()();
+          }
           PrintTypes::Println(getDistance(right, ref));
         }
-        else
-          PrintTypes::Println(*right);
+        else {
+          if ( !suppressQueryField_ ) {
+            PrintTypes::Println(*right);
+          }
+        }
       } else {
         if ( printDist_ ) {
-          PrintTypes::Print(none);
-          Base::operator()();
+          if ( !suppressQueryField_ ) {
+            PrintTypes::Print(none);
+            Base::operator()();
+          }
           PrintTypes::Println(none);
         }
-        else
-          PrintTypes::Println(none);
+        else {
+          if ( !suppressQueryField_ ) {
+            PrintTypes::Println(none);
+          }
+        }
       }
     }
 
   protected:
     bool printDist_;
     bool suppressRefField_;
+    bool suppressQueryField_;
   };
 
 
@@ -105,8 +124,8 @@ namespace FeatDist {
     typedef Visitors::Helpers::PrintDelim Base;
 
     explicit PrintShortest(const std::string& delim = "|", bool printDistances = false,
-                           bool suppressRefField = false)
-       : Base(delim), printDist_(printDistances), suppressRefField_(suppressRefField)
+                           bool suppressRefField = false, bool suppressQueryField = false)
+       : Base(delim), printDist_(printDistances), suppressRefField_(suppressRefField), suppressQueryField_(suppressQueryField)
          { /* */ }
 
     template <typename BedType1, typename BedType2>
@@ -127,29 +146,38 @@ namespace FeatDist {
         }
         return;
       }
-
+      
       if ( left ) {
         if ( left->end() <= ref->start() ) { // <= not < : matches getDistance()
           dist1 = static_cast<Bed::SignedCoordType>(ref->start() - left->end() + 1);
           if ( !right ) {
             if ( printDist_ ) {
-              PrintTypes::Print(*left);
-              Base::operator()();
+              if ( !suppressQueryField_ ) {
+                PrintTypes::Print(*left);
+                Base::operator()();
+              }
               PrintTypes::Println(getDistance(left, ref));
             }
             else {
-              PrintTypes::Println(*left);
+              if ( !suppressQueryField_ ) {
+                PrintTypes::Println(*left);
+              }
             }
             return;
           }
         } else { // must overlap or be adjacent by def'n of "left"
           if ( printDist_ ) {
-            PrintTypes::Print(*left);
-            Base::operator()();
+            if ( !suppressQueryField_ ) {
+              PrintTypes::Print(*left);
+              Base::operator()();
+            }
             PrintTypes::Println(0);
           }
-          else
-            PrintTypes::Println(*left);
+          else {
+            if ( !suppressQueryField_ ) {
+              PrintTypes::Println(*left);
+            }
+          }
           return;
         }
       }
@@ -157,12 +185,17 @@ namespace FeatDist {
       if ( right ) {
         if ( !left ) {
           if ( printDist_ ) {
-            PrintTypes::Print(*right);
-            Base::operator()();
+            if ( !suppressQueryField_ ) {
+              PrintTypes::Print(*right);
+              Base::operator()();
+            }
             PrintTypes::Println(getDistance(right, ref));
           }
-          else
-            PrintTypes::Println(*right);
+          else {
+            if ( !suppressQueryField_ ) {
+              PrintTypes::Println(*right);
+            }
+          }
           return;
         }
 
@@ -170,38 +203,54 @@ namespace FeatDist {
           dist2 = static_cast<Bed::SignedCoordType>(right->start() - ref->end() + 1);
         else { // must overlap or be adjacent by def'n of "right"
           if ( printDist_ ) {
-            PrintTypes::Print(*right);
-            Base::operator()();
+            if ( !suppressQueryField_ ) {
+              PrintTypes::Print(*right);
+              Base::operator()();
+            }
             PrintTypes::Println(0);
           }
-          else
-            PrintTypes::Println(*right);
+          else {
+            if ( !suppressQueryField_ ) {
+              PrintTypes::Println(*right);
+            }
+          }
           return;
         }
       }
 
       if ( dist1 <= dist2 ) {
         if ( printDist_ ) {
-          PrintTypes::Print(*left);
-          Base::operator()();
+          if ( !suppressQueryField_ ) {
+            PrintTypes::Print(*left);
+            Base::operator()();
+          }
           PrintTypes::Println(getDistance(left, ref));
         }
-        else
-          PrintTypes::Println(*left);
+        else {
+          if ( !suppressQueryField_ ) {
+            PrintTypes::Println(*left);
+          }
+        }
       } else {
         if ( printDist_ ) {
-          PrintTypes::Print(*right);
-          Base::operator()();
+          if ( !suppressQueryField_ ) {
+            PrintTypes::Print(*right);
+            Base::operator()();
+          }
           PrintTypes::Println(getDistance(right, ref));
         }
-        else
-          PrintTypes::Println(*right);
+        else {
+          if ( !suppressQueryField_ ) {
+            PrintTypes::Println(*right);
+          }
+        }
       }
     }
 
   protected:
     bool printDist_;
     bool suppressRefField_;
+    bool suppressQueryField_;
   };
 
 } // namespace FeatDist

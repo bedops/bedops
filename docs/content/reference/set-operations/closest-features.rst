@@ -68,6 +68,7 @@ The ``--help`` option describes the various operations and options available to 
       --help                 : Print this message and exit successfully.
       --no-overlaps          : Overlapping elements from <query-file> will not be reported.
       --no-ref               : Do not echo elements from <input-file>.
+      --no-query             : Do not echo elements from <query-file>.
       --version              : Print program information.
 
     NOTES:
