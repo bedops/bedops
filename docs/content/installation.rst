@@ -407,14 +407,14 @@ Building an OS X installer package for redistribution
 
      $ mv packaging/os_x/build/BEDOPS\ X.Y.Z.pkg /tmp/BEDOPS.X.Y.Z.unsigned.pkg
 
-7. Find the ``Developer ID Installer`` name that will be used to digitally sign the installer ``pkg`` file, *e.g.*:
+7. Find the ``3rd Party Mac Developer Installer`` name that will be used to digitally sign the installer ``pkg`` file, *e.g.*:
 
    ::
 
-     $ security find-certificate -a -c "Developer ID Installer" | grep "alis"
-         "alis"<blob>="Developer ID Installer: Foo B. Baz (ABCD12345678)"
+     $ security find-certificate -a -c "3rd Party Mac Developer Installer" | grep "alis"
+         "alis"<blob>="3rd Party Mac Developer Installer: Foo B. Baz (ABCD12345678)"
 
-   Here, the name is ``Developer ID Installer: Foo B. Baz``. 
+   Here, the name is ``3rd Party Mac Developer Installer: Foo B. Baz``. 
 
    (This certificate name is unique to the developer. If necessary, you may need to sign up for a `Mac Developer Program <https://developer.apple.com/programs/mac/>`_ account with Apple to set up `required certificates <https://developer.apple.com/library/mac/documentation/IDEs/Conceptual/AppDistributionGuide/DistributingApplicationsOutside/DistributingApplicationsOutside.html>`_.)
 
@@ -422,7 +422,7 @@ Building an OS X installer package for redistribution
 
    ::
 
-     $ productsign --timestamp --sign "Developer ID Installer: Foo B. Baz" /tmp/BEDOPS.X.Y.Z.unsigned.pkg /tmp/BEDOPS.X.Y.Z.signed.pkg
+     $ productsign --timestamp --sign "3rd Party Mac Developer Installer: Foo B. Baz" /tmp/BEDOPS.X.Y.Z.unsigned.pkg /tmp/BEDOPS.X.Y.Z.signed.pkg
 
 9. Compress the signed ``pkg`` file (via OS X zip, for instance) and publish via GitHub releases (see :ref:`release preparation <release>` for information about publishing the installer).
 
