@@ -331,6 +331,9 @@ typedef struct sam {
     ssize_t mapq_capacity;
     char* cigar;
     ssize_t cigar_capacity;
+    char* modified_cigar;
+    ssize_t modified_cigar_capacity;
+    ssize_t modified_cigar_size;
     char* rnext;
     ssize_t rnext_capacity;
     char* pnext;
@@ -1648,7 +1651,7 @@ extern "C" {
     static void                       c2b_sam_resize_cigar_ops(c2b_cigar_t** new_c, c2b_cigar_t* old_c);
     static void                       c2b_sam_debug_cigar_ops(c2b_cigar_t* c);
     static void                       c2b_sam_delete_cigar_ops(c2b_cigar_t* c);
-    static inline void                c2b_line_convert_sam_ptr_to_bed(c2b_sam_t* s, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity, boolean print_modified_qname);
+    static inline void                c2b_line_convert_sam_ptr_to_bed(c2b_sam_t* s, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity, boolean print_modified_qname, boolean print_modified_cigar);
     static void                       c2b_line_convert_vcf_to_bed_unsorted(char** dest, ssize_t* dest_size, ssize_t* dest_capacity, char* src, ssize_t src_size);
     static inline boolean             c2b_vcf_allele_is_id(char* s);
     static inline boolean             c2b_vcf_record_is_snv(char* ref, char* alt);

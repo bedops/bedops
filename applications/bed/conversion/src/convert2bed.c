@@ -4262,11 +4262,11 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char** dest, ssize_
 #ifdef DEBUG
     c2b_sam_debug_cigar_ops(c2b_globals.sam->cigar);
 #endif
-    ssize_t cigar_length = 0;
+    // ssize_t cigar_length = 0;
     ssize_t op_idx = 0;
-    for (op_idx = 0; op_idx < c2b_globals.sam->cigar->length; ++op_idx) {
-        cigar_length += c2b_globals.sam->cigar->ops[op_idx].bases;
-    }
+    // for (op_idx = 0; op_idx < c2b_globals.sam->cigar->length; ++op_idx) {
+    //     cigar_length += c2b_globals.sam->cigar->ops[op_idx].bases;
+    // }
 
     /* 
        Firstly, is the read mapped? If not, and c2b_globals.all_reads_flag is kFalse, we skip over this line
@@ -4543,7 +4543,7 @@ c2b_line_convert_sam_to_bed_unsorted_without_split_operation(char** dest, ssize_
             }
     }
 
-    c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, dest_capacity, kFalse);
+    c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, dest_capacity, kFalse, kFalse);
 }
 
 static void
@@ -4640,11 +4640,11 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char** dest, ssize_t* 
 #ifdef DEBUG
     c2b_sam_debug_cigar_ops(c2b_globals.sam->cigar);
 #endif
-    ssize_t cigar_length = 0;
+    // ssize_t cigar_length = 0;
     ssize_t op_idx = 0;
-    for (op_idx = 0; op_idx < c2b_globals.sam->cigar->length; ++op_idx) {
-        cigar_length += c2b_globals.sam->cigar->ops[op_idx].bases;
-    }
+    // for (op_idx = 0; op_idx < c2b_globals.sam->cigar->length; ++op_idx) {
+    //     cigar_length += c2b_globals.sam->cigar->ops[op_idx].bases;
+    // }
 
     /* 
        Firstly, is the read mapped? If not, and c2b_globals.all_reads_flag is kFalse, we skip over this line
@@ -4909,6 +4909,9 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char** dest, ssize_t* 
             next_op = c2b_globals.sam->cigar->ops[op_idx + 1].operation;
         }
         unsigned int bases = c2b_globals.sam->cigar->ops[op_idx].bases;
+        c2b_globals.sam->element->modified_cigar[0] = '\0';
+        c2b_globals.sam->element->modified_cigar_size = 0;
+        int desired_modified_cigar_size = 0;
         if (c2b_globals.split_with_deletions_flag) {
             switch (current_op) 
                 {
@@ -4931,7 +4934,22 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char** dest, ssize_t* 
                         }
                         // block_idx string can be up to (C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION-1) characters long
                         sprintf(c2b_globals.sam->element->modified_qname, "%s/%zu", c2b_globals.sam->element->qname, block_idx++);
-                        c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, dest_capacity, kTrue);
+                        desired_modified_cigar_size = snprintf(NULL, 0, "%s%d%c", c2b_globals.sam->element->modified_cigar, bases, current_op);
+                        if (c2b_globals.sam->element->modified_cigar_capacity <= desired_modified_cigar_size) {
+                            char* modified_cigar_resized = NULL;
+                            modified_cigar_resized = realloc(c2b_globals.sam->element->modified_cigar, c2b_globals.sam->element->modified_cigar_capacity * 2);
+                            if (modified_cigar_resized) {
+                                c2b_globals.sam->element->modified_cigar = modified_cigar_resized;
+                                c2b_globals.sam->element->modified_cigar_capacity *= 2;
+                            }
+                            else {
+                                fprintf(stderr, "Error: Could not resize modified CIGAR string in SAM element struct\n");
+                                exit(ENOMEM);
+                            }
+                        }
+                        sprintf(c2b_globals.sam->element->modified_cigar, "%s%d%c", c2b_globals.sam->element->modified_cigar, bases, current_op);
+                        c2b_globals.sam->element->modified_cigar_size = desired_modified_cigar_size;
+                        c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, dest_capacity, kTrue, kTrue);
                         c2b_globals.sam->element->start = c2b_globals.sam->element->stop;
                     }
                     break;
@@ -4939,6 +4957,21 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char** dest, ssize_t* 
                 case 'D':
                     c2b_globals.sam->element->stop += bases;
                     c2b_globals.sam->element->start = c2b_globals.sam->element->stop;
+                    desired_modified_cigar_size = snprintf(NULL, 0, "%s%d%c", c2b_globals.sam->element->modified_cigar, bases, current_op);
+                    if (c2b_globals.sam->element->modified_cigar_capacity <= desired_modified_cigar_size) {
+                        char* modified_cigar_resized = NULL;
+                        modified_cigar_resized = realloc(c2b_globals.sam->element->modified_cigar, c2b_globals.sam->element->modified_cigar_capacity * 2);
+                        if (modified_cigar_resized) {
+                            c2b_globals.sam->element->modified_cigar = modified_cigar_resized;
+                            c2b_globals.sam->element->modified_cigar_capacity *= 2;
+                        }
+                        else {
+                            fprintf(stderr, "Error: Could not resize modified CIGAR string in SAM element struct\n");
+                            exit(ENOMEM);
+                        }
+                    }
+                    c2b_globals.sam->element->modified_cigar_size = desired_modified_cigar_size;
+                    sprintf(c2b_globals.sam->element->modified_cigar, "%s%d%c", c2b_globals.sam->element->modified_cigar, bases, current_op);
                 case 'H':
                 case 'I':
                 case 'P':
@@ -4953,7 +4986,7 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char** dest, ssize_t* 
                 {
                 case 'M':
                     c2b_globals.sam->element->stop += bases;
-                    if ((previous_op == default_cigar_op_operation) || (previous_op == 'D') || (previous_op == 'N')) {
+                    if ((previous_op == default_cigar_op_operation) || (previous_op == 'D') || (previous_op == 'N') || (previous_op == 'S')) {
                         ssize_t desired_modified_qname_capacity = c2b_globals.sam->element->qname_capacity + C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION;
                         if (c2b_globals.sam->element->modified_qname_capacity <= desired_modified_qname_capacity) {
                             // resize modified qname capacity to fit
@@ -4968,10 +5001,25 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char** dest, ssize_t* 
                                 exit(ENOMEM);
                             }
                         }
+                        desired_modified_cigar_size = snprintf(NULL, 0, "%s%d%c", c2b_globals.sam->element->modified_cigar, bases, current_op);
+                        if (c2b_globals.sam->element->modified_cigar_capacity <= desired_modified_cigar_size) {
+                            char* modified_cigar_resized = NULL;
+                            modified_cigar_resized = realloc(c2b_globals.sam->element->modified_cigar, c2b_globals.sam->element->modified_cigar_capacity * 2);
+                            if (modified_cigar_resized) {
+                                c2b_globals.sam->element->modified_cigar = modified_cigar_resized;
+                                c2b_globals.sam->element->modified_cigar_capacity *= 2;
+                            }
+                            else {
+                                fprintf(stderr, "Error: Could not resize modified CIGAR string in SAM element struct\n");
+                                exit(ENOMEM);
+                            }
+                        }
+                        sprintf(c2b_globals.sam->element->modified_cigar, "%s%d%c", c2b_globals.sam->element->modified_cigar, bases, current_op);
+                        c2b_globals.sam->element->modified_cigar_size = desired_modified_cigar_size;
                         if ((next_op == 'N') || (next_op == '\0')) {
                             // block_idx string can be up to (C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION-1) characters long
                             sprintf(c2b_globals.sam->element->modified_qname, "%s/%zu", c2b_globals.sam->element->qname, block_idx++);
-                            c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, dest_capacity, kTrue);
+                            c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, dest_capacity, kTrue, kTrue);
                             c2b_globals.sam->element->start = c2b_globals.sam->element->stop;
                         }
                     }
@@ -4979,9 +5027,39 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char** dest, ssize_t* 
                 case 'N':
                     c2b_globals.sam->element->stop += bases;
                     c2b_globals.sam->element->start = c2b_globals.sam->element->stop;
+                    desired_modified_cigar_size = snprintf(NULL, 0, "%s%d%c", c2b_globals.sam->element->modified_cigar, bases, current_op);
+                    if (c2b_globals.sam->element->modified_cigar_capacity <= desired_modified_cigar_size) {
+                        char* modified_cigar_resized = NULL;
+                        modified_cigar_resized = realloc(c2b_globals.sam->element->modified_cigar, c2b_globals.sam->element->modified_cigar_capacity * 2);
+                        if (modified_cigar_resized) {
+                            c2b_globals.sam->element->modified_cigar = modified_cigar_resized;
+                            c2b_globals.sam->element->modified_cigar_capacity *= 2;
+                        }
+                        else {
+                            fprintf(stderr, "Error: Could not resize modified CIGAR string in SAM element struct\n");
+                            exit(ENOMEM);
+                        }
+                    }
+                    sprintf(c2b_globals.sam->element->modified_cigar, "%s%d%c", c2b_globals.sam->element->modified_cigar, bases, current_op);
+                    c2b_globals.sam->element->modified_cigar_size = desired_modified_cigar_size;
                     break;
                 case 'D':
                     c2b_globals.sam->element->stop += bases;
+                    desired_modified_cigar_size = snprintf(NULL, 0, "%s%d%c", c2b_globals.sam->element->modified_cigar, bases, current_op);
+                    if (c2b_globals.sam->element->modified_cigar_capacity <= desired_modified_cigar_size) {
+                        char* modified_cigar_resized = NULL;
+                        modified_cigar_resized = realloc(c2b_globals.sam->element->modified_cigar, c2b_globals.sam->element->modified_cigar_capacity * 2);
+                        if (modified_cigar_resized) {
+                            c2b_globals.sam->element->modified_cigar = modified_cigar_resized;
+                            c2b_globals.sam->element->modified_cigar_capacity *= 2;
+                        }
+                        else {
+                            fprintf(stderr, "Error: Could not resize modified CIGAR string in SAM element struct\n");
+                            exit(ENOMEM);
+                        }
+                    }
+                    sprintf(c2b_globals.sam->element->modified_cigar, "%s%d%c", c2b_globals.sam->element->modified_cigar, bases, current_op);
+                    c2b_globals.sam->element->modified_cigar_size = desired_modified_cigar_size;
                     break;
                 case 'H':
                 case 'I':
@@ -5002,7 +5080,7 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char** dest, ssize_t* 
     */
 
     if (block_idx == 1) {
-        c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, dest_capacity, kFalse);
+        c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, dest_capacity, kFalse, kFalse);
     }
 }
 
@@ -5114,6 +5192,15 @@ c2b_sam_init_element(c2b_sam_t** e)
     }
     (*e)->cigar_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
 
+    (*e)->modified_cigar = NULL, (*e)->modified_cigar = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->modified_cigar)));
+    if (!(*e)->modified_cigar) { 
+        fprintf(stderr, "Error: Could not allocate space for SAM element modified cigar malloc operation\n");
+        c2b_print_usage(stderr);
+        exit(ENOMEM); /* Not enough space (POSIX.1) */
+    }
+    (*e)->modified_cigar_capacity = C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL;
+    (*e)->modified_cigar_size = 0;
+
     (*e)->rnext = NULL, (*e)->rnext = malloc(C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_INITIAL * sizeof(*((*e)->rnext)));
     if (!(*e)->rnext) { 
         fprintf(stderr, "Error: Could not allocate space for SAM element rnext malloc operation\n");
@@ -5192,6 +5279,7 @@ c2b_sam_delete_element(c2b_sam_t* e)
     if (e->rname)           { free(e->rname),           e->rname = NULL;           }
     if (e->mapq)            { free(e->mapq),            e->mapq = NULL;            }
     if (e->cigar)           { free(e->cigar),           e->cigar = NULL;           }
+    if (e->modified_cigar)  { free(e->modified_cigar),  e->modified_cigar = NULL;  }
     if (e->rnext)           { free(e->rnext),           e->rnext = NULL;           }
     if (e->pnext)           { free(e->pnext),           e->pnext = NULL;           }
     if (e->tlen)            { free(e->tlen),            e->tlen = NULL;            }
@@ -5290,7 +5378,7 @@ c2b_sam_delete_cigar_ops(c2b_cigar_t* c)
 }
 
 static inline void
-c2b_line_convert_sam_ptr_to_bed(c2b_sam_t* s, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity, boolean print_modified_qname)
+c2b_line_convert_sam_ptr_to_bed(c2b_sam_t* s, char** dest_line_ptr, ssize_t* dest_size, ssize_t* dest_capacity, boolean print_modified_qname, boolean print_modified_cigar)
 {
     
     /*
@@ -5367,7 +5455,7 @@ c2b_line_convert_sam_ptr_to_bed(c2b_sam_t* s, char** dest_line_ptr, ssize_t* des
                               s->mapq,
                               s->strand,
                               s->flag,
-                              s->cigar,
+                              (print_modified_cigar ? s->modified_cigar : s->cigar),
                               s->rnext,
                               s->pnext,
                               s->tlen,
@@ -5397,7 +5485,7 @@ c2b_line_convert_sam_ptr_to_bed(c2b_sam_t* s, char** dest_line_ptr, ssize_t* des
                               s->mapq,
                               s->strand,
                               s->flag,
-                              s->cigar,
+                              (print_modified_cigar ? s->modified_cigar : s->cigar),
                               s->rnext,
                               s->pnext,
                               s->tlen,

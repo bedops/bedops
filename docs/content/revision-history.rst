@@ -17,26 +17,24 @@ v2.4.41
 
 Released: **TBD**
 
-* :ref:`convert2bed <convert2bed>`
-
-  * Patched ``gtf2bed`` and ``gtf2starch`` wrapper scripts to support ``--attribute-key=foo`` option, which previously only worked with ``convert2bed --input=gtf --attribute-key=foo``.
-
 * :ref:`bedmap <bedmap>`
 
   * Patched `issue 267 <https://github.com/bedops/bedops/issues/267>`_ to remove unneeded ``const`` property from member functions, where it caused compilation problems with newer versions of Clang toolkit. Thanks to John Marshall and Shane Neph for feedback.
 
 * :ref:`closest-features <closest-features>`
 
-  * Added ``--no-query`` option to suppress printing "left" or "right" (or both) query regions to output.
+  * Added ``--no-query`` option to suppress printing "left" or "right" (or both) query regions to output. When combined with ``--no-refs`` the output will report raw distance values.
+
+* :ref:`convert2bed <convert2bed>`
+
+  * Patched ``gtf2bed`` and ``gtf2starch`` wrapper scripts to support ``--attribute-key=foo`` option, which previously only worked with ``convert2bed --input=gtf --attribute-key=foo``.
+  * Addressed `issue 255 <https://github.com/bedops/bedops/issues/255>`_ by printing a warning to standard error, which suggests using ``--max-mem`` and ``--sort-tmpdir``, or ``--do-not-sort``, to manage post-conversion sort order for inputs larger than half of system memory.
+  * Addressed `issue 239 <https://github.com/bedops/bedops/issues/239>`_ by printing a warning to standard error, which suggests using ``--multisplit=...`` if Wiggle input contains multiple sections.
+  * Modified CIGAR string output of ``bam2*`` and ``sam2*`` conversion when used with the ``--split`` option, addressing `issue 268 <https://github.com/bedops/bedops/issues/268>`_. Thanks to Lalit Mudgal for the bug report.
 
 * :ref:`sort-bed <sort-bed>`
 
   * Resolved `issue 265 <https://github.com/bedops/bedops/issues/265>`_ leading to overflow and early failure in sorting inputs with more than ``MAX_INT`` per-chromosome lines.
-
-* :ref:`convert2bed <convert2bed>`
-
-  * Addressed `issue 255 <https://github.com/bedops/bedops/issues/255>`_ by printing a warning to standard error, which suggests using ``--max-mem`` and ``--sort-tmpdir``, or ``--do-not-sort``, to manage post-conversion sort order for inputs larger than half of system memory.
-  * Addressed `issue 239 <https://github.com/bedops/bedops/issues/239>`_ by printing a warning to standard error, which suggests using ``--multisplit=...`` if Wiggle input contains multiple sections.
 
 * General
 
