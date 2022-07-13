@@ -7,6 +7,52 @@ releases.
 
 # Current version {#revision_history_of_current_version}
 
+## v2.4.41
+
+-   `bedmap <bedmap>`{.interpreted-text role="ref"}
+    -   Patched [issue 267](https://github.com/bedops/bedops/issues/267)
+        to remove unneeded `const` property from member functions, where
+        it caused compilation problems with newer versions of Clang
+        toolkit. Thanks to John Marshall and Shane Neph for feedback.
+-   `closest-features <closest-features>`{.interpreted-text role="ref"}
+    -   Added `--no-query` option to suppress printing \"left\" or
+        \"right\" (or both) query regions to output. When combined with
+        `--no-refs` the output will report raw distance values.
+-   `convert2bed <convert2bed>`{.interpreted-text role="ref"}
+    -   Patched `gtf2bed` and `gtf2starch` wrapper scripts to support
+        `--attribute-key=foo` option, which previously only worked with
+        `convert2bed --input=gtf --attribute-key=foo`.
+    -   Addressed [issue
+        255](https://github.com/bedops/bedops/issues/255) by printing a
+        warning to standard error, which suggests using `--max-mem` and
+        `--sort-tmpdir`, or `--do-not-sort`, to manage post-conversion
+        sort order for inputs larger than half of system memory.
+    -   Addressed [issue
+        239](https://github.com/bedops/bedops/issues/239) by printing a
+        warning to standard error, which suggests using
+        `--multisplit=...` if Wiggle input contains multiple sections.
+    -   Modified CIGAR string output of `bam2*` and `sam2*` conversion
+        when used with the `--split` option, addressing [issue
+        268](https://github.com/bedops/bedops/issues/268). Thanks to
+        Lalit Mudgal for the bug report.
+-   `sort-bed <sort-bed>`{.interpreted-text role="ref"}
+    -   Resolved [issue
+        265](https://github.com/bedops/bedops/issues/265) leading to
+        overflow and early failure in sorting inputs with more than
+        `MAX_INT` per-chromosome lines.
+-   General
+    -   Updated Ubuntu `main.yaml` test run on to `ubuntu-latest` image.
+        Thanks to John Marshall for the advice.
+    -   Modified `symlink_*` targets in `Makefile` to cull `xargs`
+        warnings on Linux hosts. Thanks to Shane Neph for the report and
+        fix.
+    -   Removed C++11-deprecated calls to `binary_function<>` from
+        utility library. Thanks to Shane Neph for the report and fix.
+    -   Modified `switch-BEDOPS-binary-type` helper script to cull
+        useless error messages.
+
+# Previous versions
+
 ## v2.4.40
 
 Released: **July 21, 2022**
@@ -60,8 +106,6 @@ Released: **July 21, 2022**
         in `MultiVisitor.hpp` and `MedianAbsoluteDeviationVisitor.hpp` 
         visitors to reduce compile-time warnings and improve C++11 
         compatibility.
-
-# Previous versions
 
 ## v2.4.39
 

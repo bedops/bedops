@@ -15,7 +15,7 @@ Current version
 v2.4.41
 -------
 
-Released: **TBD**
+Released: **July 13, 2022**
 
 * :ref:`bedmap <bedmap>`
 
