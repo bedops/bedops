@@ -12,6 +12,16 @@ Current version
 ===============
 
 -------
+v2.4.42
+-------
+
+Released: **TBD**
+
+=================
+Previous versions
+=================
+
+-------
 v2.4.41
 -------
 
@@ -42,10 +52,6 @@ Released: **July 13, 2022**
   * Modified ``symlink_*`` targets in ``Makefile`` to cull ``xargs`` warnings on Linux hosts. Thanks to Shane Neph for the report and fix.
   * Removed C++11-deprecated calls to ``binary_function<>`` from utility library. Thanks to Shane Neph for the report and fix.
   * Modified ``switch-BEDOPS-binary-type`` helper script to cull useless error messages.
-
-=================
-Previous versions
-=================
 
 -------
 v2.4.40

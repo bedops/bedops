@@ -411,10 +411,10 @@ endif
 
 update_bedops_copyright_date:
 ifndef OLD_CPD
-	$(error Old copyright date variable OLD_CPD is undefined (e.g., 2011-2020))
+	$(error Old copyright date variable OLD_CPD is undefined (e.g., 2011-2022))
 endif
 ifndef NEW_CPD
-	$(error New copyright date variable NEW_CPD is undefined (e.g., 2011-2022))
+	$(error New copyright date variable NEW_CPD is undefined (e.g., 2011-2023))
 endif
 ifeq ($(KERNEL), Darwin)
 	gfind . -exec gsed -i "s/"$$OLD_CPD"/"$$NEW_CPD"/g" {} \;

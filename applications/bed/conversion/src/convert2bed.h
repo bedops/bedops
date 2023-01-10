@@ -3,7 +3,7 @@
    -----------------------------------------------------------------------
    Copyright (C) 2014-2018 Alex Reynolds
 
-   wig2bed components, (C) 2011-2022 Scott Kuehn and Shane Neph
+   wig2bed components, (C) 2011-2023 Scott Kuehn and Shane Neph
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@
 
 #include "suite/BEDOPS.Constants.hpp"
 
-#define C2B_VERSION "2.4.41"
+#define C2B_VERSION "2.4.42"
 
 typedef int boolean;
 extern const boolean kTrue;

@@ -1,7 +1,7 @@
 cff-version: 1.0.3
 message: If you use BEDOPS in your research, please cite the following manuscript.
 title: BEDOPS
-version: 2.4.41
+version: 2.4.42
 date-released: 2022-07-21
 doi: 10.1093/bioinformatics/bts277
 commit: 355911acd3e474b755def3283a76151e2299049b

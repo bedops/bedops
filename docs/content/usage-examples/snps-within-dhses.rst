@@ -30,7 +30,7 @@ The output of this :ref:`bedmap` statement might look something like this:
 
 ::
 
-  chr1    10799576    10799577    rs12.4.418  Systolic_blood_pressure Cardiovascular|chr1 10799460    10799610    MCV-1   9.18063
+  chr1    10799576    10799577    rs12.4.428  Systolic_blood_pressure Cardiovascular|chr1 10799460    10799610    MCV-1   9.18063
 
 The output is delimited by pipe symbols (``|``), showing the reference element (SNP) and the mapped element (DHS). 
 

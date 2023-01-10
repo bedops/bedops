@@ -7,6 +7,10 @@ releases.
 
 # Current version {#revision_history_of_current_version}
 
+## v2.4.42
+
+# Previous versions
+
 ## v2.4.41
 
 -   `bedmap <bedmap>`{.interpreted-text role="ref"}
@@ -50,8 +54,6 @@ releases.
         utility library. Thanks to Shane Neph for the report and fix.
     -   Modified `switch-BEDOPS-binary-type` helper script to cull
         useless error messages.
-
-# Previous versions
 
 ## v2.4.40
 

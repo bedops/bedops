@@ -8,7 +8,7 @@
 
 //
 //    BEDOPS
-//    Copyright (C) 2011-2022 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2023 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ namespace BEDOPS {
 #endif
 
   static const char* version() {
-    return "2.4.41 " BUILD_OPTS; // preprocessor string concatenation
+    return "2.4.42 " BUILD_OPTS; // preprocessor string concatenation
   }
 
   static const char* citation() {
