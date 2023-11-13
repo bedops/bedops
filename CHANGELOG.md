@@ -12,6 +12,10 @@ releases.
 Released: **TBD**
 
 -   `convert2bed <convert2bed>`{.interpreted-text role="ref"}
+    -   Patched use of `gff2bed` for AUGUSTUS-formatted GFF annotations,
+        addressing [issue
+        275](https://github.com/bedops/bedops/issues/275). Thanks to
+        shbrainard for the bug report.
     -   Patched use of `sam2bed` and `bam2bed` with soft-clipped reads
         and the [\--split]{.title-ref} operation, addressing [issue
         281](https://github.com/bedops/bedops/issues/281). Thanks to

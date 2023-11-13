@@ -186,6 +186,7 @@ const char c2b_line_delim = '\n';
 const char c2b_space_delim = 0x20;
 const char c2b_sam_header_prefix = '@';
 const char* c2b_gff_header = "##gff-version 3";
+const char* c2b_gff_augustus_header = "# ";
 const char* c2b_gff_fasta = "##FASTA";
 const int c2b_gff_field_min = 9;
 const int c2b_gff_field_max = 9;

@@ -2287,11 +2287,16 @@ c2b_line_convert_gff_ptr_to_bed(c2b_gff_t* g, char** dest_line_ptr, ssize_t* des
         }
     }
     
+    size_t seqid_offset = 0;
     if (strlen(g->seqid) == 0) {
         return;
     }
+    if (strncmp(g->seqid, c2b_gff_augustus_header, 2) == 0) {
+        seqid_offset = 2;
+    }
 
-    *dest_size += sprintf(*dest_line_ptr + *dest_size,
+    if (seqid_offset == 0) {
+        *dest_size += sprintf(*dest_line_ptr + *dest_size,
                           "%s\t"                \
                           "%" PRIu64 "\t"       \
                           "%" PRIu64 "\t"       \
@@ -2312,6 +2317,30 @@ c2b_line_convert_gff_ptr_to_bed(c2b_gff_t* g, char** dest_line_ptr, ssize_t* des
                           g->type,
                           g->phase,
                           g->attributes);
+    }
+    else {
+        *dest_size += sprintf(*dest_line_ptr + *dest_size,
+                          "#%s\t"                \
+                          "%" PRIu64 "\t"       \
+                          "%" PRIu64 "\t"       \
+                          "%s\t"                \
+                          "%s\t"                \
+                          "%s\t"                \
+                          "%s\t"                \
+                          "%s\t"                \
+                          "%s\t"                \
+                          "%s\n",
+                          g->seqid + seqid_offset,
+                          g->start,
+                          g->end,
+                          g->id,
+                          g->score,
+                          g->strand,
+                          g->source,
+                          g->type,
+                          g->phase,
+                          g->attributes);
+    }
 }
 
 static void
