@@ -5016,7 +5016,7 @@ c2b_line_convert_sam_to_bed_unsorted_with_split_operation(char** dest, ssize_t* 
                         }
                         sprintf(c2b_globals.sam->element->modified_cigar, "%s%d%c", c2b_globals.sam->element->modified_cigar, bases, current_op);
                         c2b_globals.sam->element->modified_cigar_size = desired_modified_cigar_size;
-                        if ((next_op == 'N') || (next_op == '\0')) {
+                        if ((next_op == 'N') || (next_op == 'S') || (next_op == '\0')) {
                             // block_idx string can be up to (C2B_SAM_ELEMENT_FIELD_LENGTH_VALUE_EXTENSION-1) characters long
                             sprintf(c2b_globals.sam->element->modified_qname, "%s/%zu", c2b_globals.sam->element->qname, block_idx++);
                             c2b_line_convert_sam_ptr_to_bed(c2b_globals.sam->element, dest, dest_size, dest_capacity, kTrue, kTrue);

@@ -9,9 +9,22 @@ releases.
 
 ## v2.4.42
 
+Released: **TBD**
+
+-   `convert2bed <convert2bed>`{.interpreted-text role="ref"}
+    -   Patched use of `sam2bed` and `bam2bed` with soft-clipped reads
+        and the [\--split]{.title-ref} operation, addressing [issue
+        281](https://github.com/bedops/bedops/issues/281). Thanks to
+        malyshev-andrey for the bug report.
+-   General
+    -   Updated readthedocs YAML setup per
+        [documentation](https://blog.readthedocs.com/use-build-os-config/).
+
 # Previous versions
 
 ## v2.4.41
+
+Released: **July 13, 2022**
 
 -   `bedmap <bedmap>`{.interpreted-text role="ref"}
     -   Patched [issue 267](https://github.com/bedops/bedops/issues/267)
@@ -57,57 +70,62 @@ releases.
 
 ## v2.4.40
 
-Released: **July 21, 2022**
+Released: **July 21, 2021**
 
 -   General
     -   Migrated from Travis CI to Github Actions for CI testing. Refer
-        to [main.yml]
-        (https://github.com/bedops/bedops/actions/workflows/main.yml) for
-        build logs.
-    -   Modified Linux and Darwin makefiles to allow user-specified build 
-        flags (`CXXFLAGS` and `CFLAGS`) in conjunction with our preset 
-        values. Resolves [issue 242]
-        (https://github.com/bedops/bedops/issues/242) for OS X and Linux
-        targets.
+        to
+        [main.yml](https://github.com/bedops/bedops/actions/workflows/main.yml)
+        for build logs.
+    -   Modified Linux and Darwin makefiles to allow user-specified
+        build flags ([CXXFLAGS]{.title-ref} and [CFLAGS]{.title-ref}) in
+        conjunction with our preset values. Resolves [issue
+        242](https://github.com/bedops/bedops/issues/242) for OS X and
+        Linux targets.
 -   `convert2bed <convert2bed>`{.interpreted-text role="ref"}
-    -   Resolved [issue 253](https://github.com/bedops/bedops/issues/253) 
-        preventing conversion of Wiggle-formatted data that use non-UCSC 
-        chromosome naming scheme.
-    -   Modified `wig2bed` start and end shift arithmetic to ensure 
-        conversion from 1-based, fully-closed indexing to 0-based, 
-        half-open indexing.
-    -   Added `wig2bed` integration tests. See `tests/conversion/Makefile`
-        and `wig2bed_*` targets for more detail.
-    -   In resolution of [issue 244]
-        (https://github.com/bedops/bedops/issues/244) the `gtf2bed` and 
-        `gff2bed` conversion scripts now support copying a subset of 
-        reserved attributes to the ID field by keyname. By default, `gtf2bed`
-        and `gff2bed` will parse the attributes string and copy the `gene_id`
-        value to the output ID field (i.e., fourth column). The 
-        `--attribute-key` option can be used to copy over `gene_name`, 
-        `transcript_name`, and several other attributes. See `gtf2bed --help`,
-        `gff2bed --help`, or the online documentation for more information.
+    -   Resolved [issue
+        253](https://github.com/bedops/bedops/issues/253) preventing
+        conversion of Wiggle-formatted data that use non-UCSC chromosome
+        naming scheme.
+    -   Modified [wig2bed]{.title-ref} start and end shift arithmetic to
+        ensure conversion from 1-based, fully-closed indexing to
+        0-based, half-open indexing.
+    -   Added [wig2bed]{.title-ref} integration tests. See
+        [tests/conversion/Makefile]{.title-ref} and
+        [wig2bed\_\*]{.title-ref} targets for more detail.
+    -   In resolution of [issue
+        244](https://github.com/bedops/bedops/issues/244) the `gtf2bed`
+        and `gff2bed` conversion scripts now support copying a subset of
+        reserved attributes to the ID field by keyname. By default,
+        `gtf2bed` and `gff2bed` will parse the attributes string and
+        copy the `gene_id` value to the output ID field (i.e., fourth
+        column). The `--attribute-key` option can be used to copy over
+        `gene_name`, `transcript_name`, and several other attributes.
+        See `gtf2bed --help`, `gff2bed --help`, or the online
+        documentation for more information.
     -   Documentation updates for `gtf2bed` and `gff2bed`.
-    -   Sample input updated for `gtf2bed` and `gff2bed` online documentation
-        to resolve [issue 240](https://github.com/bedops/bedops/issues/240).
-    -   Conversion of GTF to BED would fail with an error where one of either
-        the `gene_id` or `transcript_id` attribute is missing, such as in
-        Ensembl-sourced GTF. This behavior has been changed to a warning.
-    -   Application parameters that require strings are checked for `NULL`
-        string values, returning with an error when a required parameter is
-        missing. Resolves
-        [issue 256](https://github.com/bedops/bedops/issues/256) and more
+    -   Sample input updated for `gtf2bed` and `gff2bed` online
+        documentation to resolve [issue
+        240](https://github.com/bedops/bedops/issues/240).
+    -   Conversion of GTF to BED would fail with an error where one of
+        either the `gene_id` or `transcript_id` attribute is missing,
+        such as in Ensembl-sourced GTF. This behavior has been changed
+        to a warning.
+    -   Application parameters that require strings are checked for
+        `NULL` string values, returning with an error when a required
+        parameter is missing. Resolves [issue
+        256](https://github.com/bedops/bedops/issues/256) and more
         generally for other options.
 -   `starch <starch>`{.interpreted-text role="ref"}
-    -   Patched metadata generation function to resolve [issue 248]
-        (https://github.com/bedops/bedops/issues/248), where the chromosome
-        name would previously be truncated by a period character when 
-        creating a Starch archive.
+    -   Patched metadata generation function to resolve [issue
+        248](https://github.com/bedops/bedops/issues/248), where the
+        chromosome name would previously be truncated on a period
+        character when creating a Starch archive.
 -   `bedmap <bedmap>`{.interpreted-text role="ref"}
-    -   Patched C++11-deprecated calls to `std::mem_fun` and `std::bind2nd`
-        in `MultiVisitor.hpp` and `MedianAbsoluteDeviationVisitor.hpp` 
-        visitors to reduce compile-time warnings and improve C++11 
-        compatibility.
+    -   Patched C++11-deprecated calls to `std::mem_fun` and
+        `std::bind2nd` in `MultiVisitor.hpp` and
+        `MedianAbsoluteDeviationVisitor.hpp` visitors to reduce
+        compile-time warnings and improve C++11 compatibility.
 
 ## v2.4.39
 

@@ -17,6 +17,14 @@ v2.4.42
 
 Released: **TBD**
 
+* :ref:`convert2bed <convert2bed>`
+
+  * Patched use of ``sam2bed`` and ``bam2bed`` with soft-clipped reads and the `--split` operation, addressing `issue 281 <https://github.com/bedops/bedops/issues/281>`_. Thanks to malyshev-andrey for the bug report.
+
+* General
+
+  * Updated readthedocs YAML setup per `documentation <https://blog.readthedocs.com/use-build-os-config/>`_.
+
 =================
 Previous versions
 =================
