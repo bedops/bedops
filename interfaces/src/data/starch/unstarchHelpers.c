@@ -85,6 +85,7 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
     size_t zBufIdx, zBufOffset;
     int zError;
     Boolean chrFound = kStarchFalse;
+    Boolean isEmpty = kStarchFalse;
 
     if (!outFp)
         outFp = stdout;
@@ -122,6 +123,12 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
         pLength = 0;
         lastEnd = 0;
 
+        /* empty chromosome */
+        if (size == 0) {
+            isEmpty = kStarchTrue;
+            continue;
+        }
+
 #ifdef __cplusplus
         if (STARCH_fseeko(*inFp, static_cast<off_t>( cumulativeSize + mdOffset ), SEEK_SET) != 0) {
 #else
@@ -131,6 +138,7 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
             return UNSTARCH_FATAL_ERROR;
         }
         cumulativeSize += size;
+        isEmpty = kStarchFalse;
 
         if ((strcmp(whichChr, all) == 0) || (strcmp(whichChr, chromosome) == 0)) {
 
@@ -294,10 +302,12 @@ UNSTARCH_extractDataWithGzip(FILE **inFp, FILE *outFp, const char *whichChr, con
 #endif
     }
 
-    if (!chrFound) {
-        fprintf(stderr, "ERROR: Could not find specified chromosome\n");
-        return UNSTARCH_FATAL_ERROR;
-    }
+    // to mirror behavior with bzip2 extraction, we do nothing if chromosome is not found
+    
+    // if (!chrFound && !isEmpty) {
+    //     fprintf(stderr, "WARNING: Could not find specified chromosome\n");
+    //     return UNSTARCH_FATAL_ERROR;
+    // }
 
     if (firstInputToken) {
         free(firstInputToken);

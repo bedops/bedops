@@ -11,6 +11,14 @@ releases.
 
 Released: **TBD**
 
+-   `unstarch <unstarch>`{.interpreted-text role="ref"}
+    -   Patched [issue 284](https://github.com/bedops/bedops/issues/284)
+        to resolve using `unstarch --gzip` on gzip-backed Starch archive
+        with a zero-size chromosome, which can happen when a zero-byte
+        file is passed into `starch`. The behavior now matches
+        `unstarch --bzip2` on a bzip2-backed Starch archive, which
+        returns no output and a zero exit status code (no error). Thanks
+        to bgulko for the bug report.
 -   `convert2bed <convert2bed>`{.interpreted-text role="ref"}
     -   Patched use of `gff2bed` for AUGUSTUS-formatted GFF annotations,
         addressing [issue
