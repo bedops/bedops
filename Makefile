@@ -414,7 +414,7 @@ ifndef OLD_CPD
 	$(error Old copyright date variable OLD_CPD is undefined (e.g., 2011-2022))
 endif
 ifndef NEW_CPD
-	$(error New copyright date variable NEW_CPD is undefined (e.g., 2011-2024))
+	$(error New copyright date variable NEW_CPD is undefined (e.g., 2011-2025))
 endif
 ifeq ($(KERNEL), Darwin)
 	gfind . -exec gsed -i "s/"$$OLD_CPD"/"$$NEW_CPD"/g" {} \;

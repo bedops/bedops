@@ -43,7 +43,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'BEDOPS'
-copyright = u'2011-2024, Shane Neph, Alex Reynolds'
+copyright = u'2011-2025, Shane Neph, Alex Reynolds'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

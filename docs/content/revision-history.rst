@@ -15,7 +15,7 @@ Current version
 v2.4.42
 -------
 
-Released: **TBD**
+Released: **April 10, 2025**
 
 * :ref:`unstarch <unstarch>`
 
@@ -28,7 +28,7 @@ Released: **TBD**
 
 * :ref:`starchcat <starchcat>`
 
-  * Testing modifications to `STARCHCAT_freeMetadataJSONObjects` and related functions handling JSON metadata memory allocation and cleanup.
+  * Modifications to functions handling JSON metadata memory allocation and cleanup to reduce segmentation faults, addressing `issue 286 <https://github.com/bedops/bedops/issues/286>`_. Thanks to Mark Grivainis and Matt Maurano for the bug report.
 
 * General
 

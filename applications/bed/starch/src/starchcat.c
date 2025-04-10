@@ -6,7 +6,7 @@
 
 //
 //    BEDOPS
-//    Copyright (C) 2011-2024 Shane Neph, Scott Kuehn and Alex Reynolds
+//    Copyright (C) 2011-2025 Shane Neph, Scott Kuehn and Alex Reynolds
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -5301,6 +5301,12 @@ STARCHCAT_buildMetadataRecords(json_t ***metadataJSONs, MetadataRecord **mdRecor
         /* debug */
 
 #ifdef DEBUG
+	char *json_str = json_dumps(mdJSON, JSON_INDENT(2));
+	if (json_str) {
+	  fprintf(stderr, "mdJSON [%003u]:\n%s\n", realIdx, json_str);
+	  free(json_str);
+	}
+
         switch (inType) {
             case kBzip2: {
                 fprintf(stderr, "\ttype: bzip2\n");
@@ -5639,19 +5645,14 @@ STARCHCAT_freeMetadataJSONObjects(json_t ***mdJSONs, const unsigned int numRecs)
     fprintf(stderr, "\n--- STARCHCAT_freeMetadataJSONObjects() ---\n");
 #endif   
     unsigned int idx;
+    json_t *mdJSON = NULL;
 
     for (idx = 0U; idx < numRecs; idx++) {
-        fprintf(stderr, "\tfreeing metadata JSON object %u...\n", idx);
-        if (*(*mdJSONs + idx)) {
-          char *json_str = json_dumps((*mdJSONs + idx), JSON_INDENT(2));
-          if (json_str) {
-              printf("mdJSONs:\n%s\n", json_str);
-              free(json_str);
-          } else {
-              fprintf(stderr, "Failed to convert mdJSONs to a string\n");
-          }
+        mdJSON = *(*mdJSONs + idx);
+        if (mdJSON) {
+	    json_decref(mdJSON);
+	    mdJSON = NULL;
         }
-        // json_decref(*(*mdJSONs + idx));
     }
 
     return kStarchTrue;
@@ -5662,7 +5663,7 @@ STARCHCAT_checkMetadataJSONVersions(json_t ***mdJSONs, const unsigned int numRec
 {
 #ifdef DEBUG
     fprintf(stderr, "\n--- STARCHCAT_checkMetadataJSONVersions() ---\n");
-#endif   
+#endif
 #ifdef __cplusplus
     json_t *streamArchive = nullptr;
     json_t *streamArchiveVersion = nullptr;
@@ -5754,12 +5755,6 @@ STARCHCAT_checkMetadataJSONVersions(json_t ***mdJSONs, const unsigned int numRec
             fprintf(stderr, "ERROR: Cannot process newer archive (v%d.%d.%d) with older version of tools (v%d.%d.%d). Please update your toolkit.\n", av->major, av->minor, av->revision, STARCH_MAJOR_VERSION, STARCH_MINOR_VERSION, STARCH_REVISION_VERSION);
             return kStarchFalse;
         }
-        json_decref(mdJSON);
-#ifdef __cplusplus
-        mdJSON = nullptr;
-#else
-        mdJSON = NULL;
-#endif
     }
 
     return kStarchTrue;
