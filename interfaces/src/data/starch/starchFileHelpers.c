@@ -194,7 +194,8 @@ STARCH_gzip_deflate(FILE *source, FILE *dest, int level)
     /* deflateInit2 allows creation of archive with gzip header, i.e. a gzip file */
     /* cf. http://www.zlib.net/manual.html */
 #ifdef __cplusplus
-    ret = deflateInit2cpp(&strm, level, Z_DEFLATED, (15+16), 8, Z_DEFAULT_STRATEGY);
+    // ret = deflateInit2cpp(&strm, level, Z_DEFLATED, (15+16), 8, Z_DEFAULT_STRATEGY);
+    ret = deflateInit2(&strm, level, Z_DEFLATED, (15+16), 8, Z_DEFAULT_STRATEGY);
 #else
     ret = deflateInit2(&strm, level, Z_DEFLATED, (15+16), 8, Z_DEFAULT_STRATEGY);
 #endif

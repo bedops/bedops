@@ -3,7 +3,7 @@ BZIP2VERSION          = bzip2-1.0.6
 WHICHBZIP2           := ${PARTY3}/${BZIP2VERSION}
 JANSSONVERSION        = jansson-2.6
 WHICHJANSSON         := ${PARTY3}/${JANSSONVERSION}
-ZLIBVERSION           = zlib-1.2.7
+ZLIBVERSION           = zlib-1.3.1
 WHICHZLIB            := ${PARTY3}/${ZLIBVERSION}
 APPDIR                = applications/bed
 OSXPKGROOT            = packaging/os_x
@@ -27,7 +27,8 @@ endif
 default: support
 	$(MAKE) build -f $(SELF)
 
-SUBDIRS = bedextract/src bedmap/src bedops/src closestfeats/src conversion/src sort-bed/src starch/src
+# SUBDIRS = bedextract/src bedmap/src bedops/src closestfeats/src conversion/src sort-bed/src starch/src
+SUBDIRS = starch/src
 SUBDIRS_FULL := $(patsubst %,${APPDIR}/%,$(SUBDIRS))
 
 .PHONY: $(SUBDIRS_FULL)

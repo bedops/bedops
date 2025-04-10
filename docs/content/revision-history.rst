@@ -26,9 +26,14 @@ Released: **TBD**
   * Patched use of ``gff2bed`` for AUGUSTUS-formatted GFF annotations, addressing `issue 275 <https://github.com/bedops/bedops/issues/275>`_. Thanks to shbrainard for the bug report.
   * Patched use of ``sam2bed`` and ``bam2bed`` with soft-clipped reads and the `--split` operation, addressing `issue 281 <https://github.com/bedops/bedops/issues/281>`_. Thanks to malyshev-andrey for the bug report.
 
+* :ref:`starchcat <starchcat>`
+
+  * Testing modifications to `STARCHCAT_freeMetadataJSONObjects` and related functions handling JSON metadata memory allocation and cleanup.
+
 * General
 
   * Updated readthedocs YAML setup per `documentation <https://blog.readthedocs.com/use-build-os-config/>`_.
+  * Updated zlib from 1.2.7 to 1.3.1, which is the latest stable release. This is a minor update to the zlib library, which includes some bug fixes and performance improvements.
 
 =================
 Previous versions

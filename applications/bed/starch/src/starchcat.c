@@ -5640,8 +5640,19 @@ STARCHCAT_freeMetadataJSONObjects(json_t ***mdJSONs, const unsigned int numRecs)
 #endif   
     unsigned int idx;
 
-    for (idx = 0U; idx < numRecs; idx++)
-        json_decref(*(*mdJSONs + idx));
+    for (idx = 0U; idx < numRecs; idx++) {
+        fprintf(stderr, "\tfreeing metadata JSON object %u...\n", idx);
+        if (*(*mdJSONs + idx)) {
+          char *json_str = json_dumps((*mdJSONs + idx), JSON_INDENT(2));
+          if (json_str) {
+              printf("mdJSONs:\n%s\n", json_str);
+              free(json_str);
+          } else {
+              fprintf(stderr, "Failed to convert mdJSONs to a string\n");
+          }
+        }
+        // json_decref(*(*mdJSONs + idx));
+    }
 
     return kStarchTrue;
 }
@@ -6178,7 +6189,8 @@ STARCHCAT2_setupGzipOutputStream(z_stream *zStream)
 
     /* cf. http://www.zlib.net/manual.html for level information */
 #ifdef __cplusplus
-    zError = deflateInit2cpp(zStreamPtr, STARCH_Z_COMPRESSION_LEVEL, Z_DEFLATED, STARCH_Z_WINDOW_BITS, STARCH_Z_MEMORY_LEVEL, Z_DEFAULT_STRATEGY);
+    // zError = deflateInit2cpp(zStreamPtr, STARCH_Z_COMPRESSION_LEVEL, Z_DEFLATED, STARCH_Z_WINDOW_BITS, STARCH_Z_MEMORY_LEVEL, Z_DEFAULT_STRATEGY);
+    zError = deflateInit2(zStreamPtr, STARCH_Z_COMPRESSION_LEVEL, Z_DEFLATED, STARCH_Z_WINDOW_BITS, STARCH_Z_MEMORY_LEVEL, Z_DEFAULT_STRATEGY);
 #else
     zError = deflateInit2(zStreamPtr, STARCH_Z_COMPRESSION_LEVEL, Z_DEFLATED, STARCH_Z_WINDOW_BITS, STARCH_Z_MEMORY_LEVEL, Z_DEFAULT_STRATEGY);
 #endif
