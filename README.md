@@ -1,7 +1,6 @@
 ## BEDOPS v2.4.42: high-performance genomic feature operations ##
 
-[![BEDOPS CI](https://github.com/bedops/bedops/actions/workflows/main.yml/badge.svg)](https://github.com/bedops/bedops/actions/workflows/main.yml) [![GitHub stars](https://img.shields.io/github/stars/bedops/bedops.svg)](https://github.com/bedops/bedops/stargazers) [![Project license](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://github.com/bedops/bedops/blob/master/LICENSE) [![Documentation Status](https://readthedocs.org/projects/bedops/badge/?version=latest)](https://readthedocs.org/projects/bedops/?badge=latest)
-
+[![GitHub stars](https://img.shields.io/github/stars/bedops/bedops.svg)](https://github.com/bedops/bedops/stargazers) [![Project license](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://github.com/bedops/bedops/blob/master/LICENSE)
 <!-- <img src="http://bedops.readthedocs.io/en/latest/_static/logo_with_label_v2.png" align="right" style="max-width:33%" /> -->
 
 ### About ###
@@ -15,13 +14,10 @@ The <a href="https://bedops.readthedocs.io/en/latest/content/overview.html#overv
 
 <table width="100%">
 <tr>
-<th width="33%" align="left">
+<th width="50%" align="left">
 Linux
 </th>
-<th width="33%" align="left">
-Mac OS X
-</th>
-<th width="34%" align="left">
+<th width="50%" align="left">
 Source code
 </th>
 </tr>
@@ -30,12 +26,6 @@ Source code
 <ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
 <li><a href="https://github.com/bedops/bedops/releases/download/v2.4.42/bedops_linux_x86_64-v2.4.42.tar.bz2">x86-64 (64-bit)</a> binaries</li>
 <li><a href="http://bedops.readthedocs.io/en/latest/content/installation.html#linux">Installation instructions</a> for Linux hosts</li>
-</ul>
-</td>
-<td valign="top">
-<ul style="list-style-type:square; font-size:smaller; margin-left:0; margin-right:0px; padding-right:0px; padding-left:20px;">
-<li><a href="https://github.com/bedops/bedops/releases/download/v2.4.42/BEDOPS.2.4.42.pkg.zip">Intel/Rosetta (64-bit, 10.10-11.4)</a> installer package</li>
-<li><a href="http://bedops.readthedocs.io/en/latest/content/installation.html#mac-os-x">Installation instructions</a> for Mac OS X hosts</li>
 </ul>
 </td>
 <td valign="top">
