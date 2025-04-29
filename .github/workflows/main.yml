@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        os : [ubuntu-latest, macos-10.15]
+        os : [ubuntu-latest]
 
     steps:
       - name: Checkout
@@ -26,15 +26,6 @@ jobs:
             --install /usr/bin/gcc gcc /usr/bin/gcc-9 100
           sudo update-alternatives \
             --install /usr/bin/g++ g++ /usr/bin/g++-9 100
-
-      - name: Mac OS X-specific setup
-        if: matrix.os == 'macos-10.15'
-        env:
-          CC: clang
-          CXX: clang++
-          KERNEL: Darwin
-        run: |
-          env
 
       - name: Build binaries
         run: make all
